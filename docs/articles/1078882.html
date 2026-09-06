@@ -1,0 +1,221 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>I asked Claude Code to assemble website mockups and found out how tokens are spent</title>
+  <meta name="description" content="In late March 2026, Figma opened its canvas to AI agents. Claude Code, Codex, and similar tools gained the ability to create and edit mockups via the Figma MCP server. I decided to test how well Claude Code could transfer website designs into mockups and how much it would cost. To do this, I selecte">
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.65;
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 32px 20px 64px;
+      color: #1f2328;
+    }
+    header {
+      border-bottom: 1px solid #d8dee4;
+      margin-bottom: 28px;
+      padding-bottom: 20px;
+    }
+    .source {
+      color: #57606a;
+      font-size: 0.95rem;
+    }
+    img, video, iframe {
+      max-width: 100%;
+      height: auto;
+    }
+    pre {
+      overflow-x: auto;
+      padding: 16px;
+      background: #f6f8fa;
+      border-radius: 6px;
+    }
+    code {
+      font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+    }
+    blockquote {
+      border-left: 4px solid #d0d7de;
+      margin-left: 0;
+      padding-left: 16px;
+      color: #57606a;
+    }
+    footer {
+      border-top: 1px solid #d8dee4;
+      margin-top: 40px;
+      padding-top: 20px;
+      color: #57606a;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>I asked Claude Code to assemble website mockups and found out how tokens are spent</h1>
+    <p>In late March 2026, Figma opened its canvas to AI agents. Claude Code, Codex, and similar tools gained the ability to create and edit mockups via the Figma MCP server. I decided to test how well Claude Code could transfer website designs into mockups and how much it would cost. To do this, I selected several landing pages and asked the agent to transfer them to the canvas, trying to provide either a screenshot or a website link. Each time, I observed the agent&#x27;s steps, the number of tool calls, and the number of tokens (i.e., money) spent. Read more</p>
+    <p class="source">
+      Machine-translated from Habr.
+      <a href="https://habr.com/ru/articles/1078882/?utm_campaign=1078882&amp;utm_source=habrahabr&amp;utm_medium=rss">Read the original Russian article</a>.
+      Sat, 05 Sep 2026 19:35:56 GMT
+    </p>
+  </header>
+  <main>
+<div><p>In late March 2026, <a href="https://www.figma.com/blog/the-figma-canvas-is-now-open-to-agents/">Figma opened its canvas to AI agents</a>. Claude Code, Codex, and similar tools gained the ability to create and edit mockups via the Figma MCP server.</p><p>I decided to test how well Claude Code could transfer website designs into mockups and how much it would cost. To do this, I selected several landing pages and asked the agent to transfer them to the canvas—I tried providing either a screenshot or a website link. Each time, I observed the agent's steps, the number of tool calls, and the number of tokens (i.e., money) spent.</p><p>When interacting with Figma MCP, the agent essentially assembles the mockup using JavaScript. Claude Code generates code that, through the Figma Plugin API, creates frames and layers, setting their sizes, coordinates, colors, fonts, and other properties.</p><figure><img alt="Flow of an AI agent working with Figma MCP" loading="lazy" src="https://habrastorage.org/r/w1560/getpro/habr/upload_files/a1e/36a/302/a1e36a30243a4739c4f267cdcd74cd77.png" title="Flow of an AI agent working with Figma MCP"/><div><figcaption>Flow of an AI agent working with Figma MCP</figcaption></div></figure><h4>How the experiment was conducted</h4><p>I selected three pages:</p><ul><li><p>The hero section of <a href="https://hermes-agent.nousresearch.com">Hermes Agent</a></p></li><li><p>The main page of <a href="https://posthog.com">PostHog</a></p></li><li><p>The first screen of <a href="https://tailwindcss.com">Tailwind CSS</a></p></li></ul><p>For the Hermes and PostHog websites, I provided the agent with a screenshot of the pages in the prompt. I also included a folder with images, logos, and other assets from the website in the agent's context. For Tailwind, I only gave the agent a link to the website: the agent was supposed to study the HTML and CSS, find the necessary assets, and capture the page in the browser itself.</p><p>I used the Opus 5 model with an effort level of high. For each session with Claude Code, I created a clean harness—without additional skills, memory, or plugins. This way, the agent could only use the Figma MCP during the session.</p><p>After each agent run, I calculated:</p><ul><li><p>the cost of the entire session</p></li><li><p>the working time</p></li><li><p>the number of tool calls</p></li><li><p>the cost of MCP calls</p></li><li><p>expenses for analysis and intermediate checks</p></li><li><p>visual similarity to the original</p></li></ul><p>After launching the agent, I did not interfere with its work and waited until the design was fully completed.</p><details><summary>Prompts for the agent</summary><div><p>For the first two websites—design creation from an image:</p><blockquote><p>Recreate this landing page section as a design: &lt;Image&gt;. Make exactly one frame of the landing page via Figma MCP. Use the assets folder to get the exact illustrations from the page and place them as is: you may only change their size—no CSS filters, blend modes, recoloring, opacity or cropping. Work in this Figma file: &lt;URL</p></blockquote><p>For the last website—design creation from a link:</p><blockquote><p>Recreate the landing page at &lt;SITE-URL&gt; as a design—the first screen as it looks in the browser at 1440px wide. Make exactly one frame via Figma MCP. Use the real logos and images from the site. Work in this Figma file: &lt;URL&gt;</p></blockquote></div></details><h4>Results</h4><p>The results after three sessions with Figma were as follows:</p><div><table><tbody><tr><td><p>Total cost</p></td><td><p>$34.21</p></td></tr><tr><td><p>Time</p></td><td><p>98.5 minutes</p></td></tr><tr><td><p>Tokens</p></td><td><p>40.6 million</p></td></tr></tbody></table></div><p>Delving into the details, we can identify the following stages of the agent's work and the costs for each stage:</p><div><div><table><tbody><tr><th><p>Stage</p></th><th><p>Cost</p></th></tr><tr><td><p>Analysis before canvas work</p></td><td><p>$9.10</p></td></tr><tr><td><p>MCP calls</p></td><td><p>$14.96</p></td></tr><tr><td><p>Work around MCP</p></td><td><p>$10.15</p></td></tr><tr><td><p>Canvas work: MCP calls + work around MCP</p></td><td><p>$25.11</p></td></tr><tr><td><p>Entire session</p></td><td><p>$34.21</p></td></tr></tbody></table></div></div><ol><li><p><strong>Analysis before canvas</strong>—all responses up to the point where the agent started working with the Figma document</p></li><li><p><strong>MCP calls</strong>—responses where the agent called the MCP tool, as well as subsequent responses where it received the result of that call</p></li><li><p><strong>Work around MCP</strong>—other actions after starting the mockup assembly: Bash commands, file reading, downloading and comparing screenshots</p></li></ol><details><summary>Generated mockups</summary><div><figure><img alt="Comparison of the original HermesAgent with the generated mockup" loading="lazy" src="https://habrastorage.org/r/w1560/getpro/habr/upload_files/bbe/fdb/090/bbefdb090060724b7acc5717aaf9c4e9.png" title="Comparison of the original HermesAgent with the generated mockup"/><div><figcaption>Comparison of the original HermesAgent with the generated mockup</figcaption></div></figure><figure><img alt="Comparison of the original PostHog with the generated mockup" loading="lazy" src="https://habrastorage.org/r/w1560/getpro/habr/upload_files/856/318/895/856318895575cd3c442ad223ed86d6c9.png" title="Comparison of the original PostHog with the generated mockup"/><div><figcaption>Comparison of the original PostHog with the generated mockup</figcaption></div></figure><figure><img alt="Comparison of the original Tailwind CSS with the generated mockup" loading="lazy" src="https://habrastorage.org/r/w1560/getpro/habr/upload_files/7f6/16b/d00/7f616bd00926a614ad50fe406fa25167.png" title="Comparison of the original Tailwind CSS with the generated mockup"/><div><figcaption>Comparison of the original Tailwind CSS with the generated mockup</figcaption></div></figure></div></details><h4>How I calculated tokens and cost</h4><p>After each session, Claude Code saves a log in JSONL format. It records the agent's messages, tool calls, and the <code>usage</code> field for each model response. From <code>usage</code>, I took four values:</p><ul><li><p><code>input_tokens</code>—new input tokens</p></li><li><p><code>output_tokens</code>—model response, including code and tool arguments</p></li><li><p><code>cache_read_input_tokens</code>—context read from cache</p></li><li><p><code>cache_creation_input_tokens</code>—context written to cache</p></li></ul><p>In the "Tokens" line, I summed all four values. To calculate the cost, I used the Opus 5 tariff with hourly caching: $5 per million input tokens, $25 per million output tokens, $0.50 for reading from cache, and $10 for writing to cache.</p><p>Here is the main part of the script that converts tokens of one response into dollars:</p><pre><code>PRICE = { 
+    "input_tokens": 5.0, 
+    "output_tokens": 25.0, 
+    "cache_read_input_tokens": 0.5, 
+    "cache_creation_input_tokens": 10.0, 
+} 
+
+def cost(usage): 
+    return sum( 
+        usage.get(token_type, 0) * price 
+        for token_type, price in PRICE.items() 
+    ) / 1_000_000</code><div><a href="https://sourcecraft.dev/"><img loading="lazy"/></a></div></pre><p>Let's break down each step the agent took to complete this task in detail.</p><h4>What Claude Code does before assembling the design</h4><p>Before assembling the mockup, the agent doesn't start by creating elements. First, it analyzes the photo or website link: block sizes, coordinates, colors, fonts, and image cropping rules. Based on the logs from the three sessions, I found that the analysis method heavily depends on the input data.</p><p><strong>If only a screenshot is provided</strong></p><p>In the tests with Hermes and PostHog, the agent only had a screenshot of the page. Therefore, it analyzed the image approximately as follows:</p><ol><li><p>It checked the file format and resolution using <code>file</code> and <code>sips</code>, and reduced large screenshots for general viewing.</p></li><li><p>It cropped out the navigation, header, buttons, and other complex areas into separate images and opened them using an image reading tool.</p></li><li><p>Using the Python library for image manipulation—Pillow—it read pixel colors, built masks relative to the background, and found element boundaries.</p></li><li><p>It separately analyzed the attached SVG, PNG, and WebP files: their sizes, alpha channels, and the position of the visible part within the file.</p></li><li><p>It rendered several font variations using <code>PIL.ImageFont</code>: comparing character widths and uppercase letter heights.</p></li></ol><p>Here is a real fragment from the session when analyzing the Hermes website. First, the agent divided the 4070×2056 pixel screenshot into zones and took several color samples:</p><pre><code>from PIL import Image 
+
+im = Image.open("hero.png").convert("RGB") 
+print(im.size) 
+
+im.crop((0, 0, 4070, 460)).save("crop_nav.png") 
+im.crop((350, 520, 2000, 1900)).save("crop_left.png") 
+im.crop((400, 1550, 1800, 1850)).save("crop_term.png") 
+
+for point in [ 
+    (20, 20), (2000, 1000), (500, 760), 
+    (700, 1450), (500, 1660), (1000, 1760), 
+]: 
+    print(point, im.getpixel(point))</code><div><a href="https://sourcecraft.dev/"><img loading="lazy"/></a></div></pre><p>The agent checked the pixel colors at several pre-selected points in the image. First, it took two points on free background areas and got the same value <code>(0, 46, 228)</code>. This is how it determined the main blue color of the page <code>#002ee4</code>. Then it checked points within the text and button: their color turned out to be <code>(243, 243, 243)</code>, or <code>#f3f3f3</code>. The agent used these values when creating the background, text, and button in the mockup. Separate enlarged fragments of the screenshot helped it to more accurately examine fonts, element boundaries, and internal spacing.</p><p>To measure geometry, Claude Code built a mask: a pixel was considered part of an element if it differed significantly from the known background. Below is a shortened fragment of the script the agent used:</p><pre><code>from PIL import Image 
+
+im = Image.open("hero.png").convert("RGB") 
+px = im.load() 
+background = (0, 46, 228) 
+
+def is_foreground(color): 
+    return sum(abs(color[i] - background[i]) for i in range(3)) &gt; 60 
+
+def bbox(x0, y0, x1, y1, label, step=1): 
+    min_x, min_y = 10**9, 10**9 
+    max_x, max_y = -1, -1 
+
+    for y in range(y0, y1, step): 
+        for x in range(x0, x1, step): 
+            if is_foreground(px[x, y]): 
+                min_x, max_x = min(min_x, x), max(max_x, x) 
+                min_y, max_y = min(min_y, y), max(max_y, y) 
+
+    print(label, min_x, min_y, max_x, max_y) 
+
+bbox(300, 650, 2100, 1300, "headline") 
+bbox(300, 1390, 2100, 1520, "button") 
+bbox(300, 1600, 2100, 1860, "terminal")</code><div><a href="https://sourcecraft.dev/"><img loading="lazy"/></a></div></pre><p>The script measured the visible boundaries of the headline, button, and other elements. Based on these coordinates, the agent determined their width, alignment, and distances between elements. It refined the dimensions of containers and internal padding separately using enlarged image fragments.</p><p>Along with the website screenshot, the Hermes agent received the original illustration file for the Hero section. To place it correctly in the mockup, it tried different sizes and positions, overlaying the result onto the original screenshot. The agent used a similar method to determine the position of background images for PostHog.</p><p>It turned out that analyzing a screenshot, as shown in the cost table, involves dozens of small iterations:</p><blockquote><p>cropping → viewing → measuring → new hypothesis → another crop.</p></blockquote><p>Fonts and decorative images required particularly many steps, where a single color and rectangular boundary were not enough for the agent.</p><p><strong>If a link is provided</strong></p><p>The Tailwind agent acted differently. First, it obtained the page's HTML, found the connected CSS files and assets, and then opened the site in a headless Chrome with a fixed window size of 1440×900. The Chrome DevTools Protocol was used to control the browser. Within the page, the agent traversed the DOM and for each visible node, it called two functions: <code>getBoundingClientRect()</code> and <code>getComputedStyle()</code>.</p><p>Below is a shortened fragment of JavaScript from the session—I only removed the Chrome launch and WebSocket connection boilerplate:</p><pre><code>(() =&gt; { 
+  const out = []; 
+
+  const walk = (element, depth) =&gt; { 
+    const rect = element.getBoundingClientRect(); 
+    if (rect.bottom &lt; -60 || rect.top &gt; 1450) return; 
+
+    const style = getComputedStyle(element); 
+    const text = [...element.childNodes] 
+      .filter(node =&gt; node.nodeType === 3) 
+      .map(node =&gt; node.textContent) 
+      .join("") 
+      .trim(); 
+
+    out.push({ 
+      depth, 
+      tag: element.tagName, 
+      x: +rect.x.toFixed(1), 
+      y: +rect.y.toFixed(1), 
+      width: +rect.width.toFixed(1), 
+      height: +rect.height.toFixed(1), 
+      font: `${style.fontFamily} ${style.fontSize}/${style.lineHeight}`, 
+      weight: style.fontWeight, 
+      letterSpacing: style.letterSpacing, 
+      color: style.color, 
+      background: style.backgroundColor, 
+      borderRadius: style.borderRadius, 
+      text: text.slice(0, 90), 
+    }); 
+
+    for (const child of element.children) { 
+      walk(child, depth + 1); 
+    } 
+  }; 
+
+  walk(document.body, 0); 
+  return JSON.stringify(out); 
+})();</code><div><a href="https://sourcecraft.dev/"><img loading="lazy"/></a></div></pre><p>In one pass through the page, the agent collected approximately 430 elements: their sizes, positions, fonts, colors, and border radii. For example, it determined that the headline was set in Inter font at 96×96 pixels. For the code panel and the card, the agent also obtained precise dimensions, spacing, colors, and shadows. All this data became the specification for further mockup assembly.</p><p>While working, Claude Code still decided to take a screenshot of the page. However, it used it only once, as a visual check. The agent obtained the main parameters not from pixels, but directly from the page.</p><p>This explains the difference in analysis cost. When working from a screenshot, the agent is forced to repeatedly test hypotheses, whereas a link allows for extracting most of the geometry and styles in a single DOM traversal.</p><p>Below is a comparison table of the analysis stage costs—screenshot of the site in the prompt versus a link.</p><div><div><table><tbody><tr><th><p>Input data</p></th><th><p>Website</p></th><th><p>Average analysis cost</p></th></tr><tr><td><p>Screenshot</p></td><td><p>Hermes</p></td><td><p>$8.20</p></td></tr><tr><td><p>Screenshot</p></td><td><p>PostHog</p></td><td><p>$7.86</p></td></tr><tr><td><p>Link</p></td><td><p>Tailwind</p></td><td><p>$3.56</p></td></tr></tbody></table></div></div><h4>Where tokens are spent during mockup assembly</h4><p>After analysis, Claude Code studies the MCP instructions, creates elements, takes a screenshot of the result, and corrects discrepancies.</p><p>The cycle looks something like this:</p><blockquote><p>assembly → screenshot → comparison → correction → new screenshot</p></blockquote><p><strong>Element creation</strong></p><p>In Figma, the result is created using JavaScript and the Plugin API. First, the agent must load the font, then create a text layer, set its content, size, line height, letter spacing, color, and coordinates:</p><pre><code>await figma.loadFontAsync({ family: 'Inter', style: 'Regular' }); 
+
+const h1 = figma.createText(); 
+const h1.name = 'Headline'; 
+h1.fontName = { family: 'Inter', style: 'Regular' }; 
+h1.characters = 'Rapidly build modern websites\nwithout ever leaving your HTML.'; 
+h1.fontSize = 96; 
+h1.lineHeight = { unit: 'PIXELS', value: 96 }; 
+h1.letterSpacing = { unit: 'PIXELS', value: -4.8 }; 
+h1.fills = [{ type: 'SOLID', color: { r: 0.012, g: 0.027, b: 0.071 } }]; 
+h1.resize(1344, 192); 
+h1.x = 48; 
+h1.y = 153; 
+root.appendChild(h1); 
+</code><div><a href="https://sourcecraft.dev/"><img loading="lazy"/></a></div></pre><p>For composite elements, the code became longer. For example, the button was created as an Auto Layout frame, and the text as a separate child layer:</p><pre><code>const button = figma.createAutoLayout('HORIZONTAL', { name: 'Get started' }); 
+button.paddingLeft = 16; 
+button.paddingRight = 16; 
+button.paddingTop = 8; 
+button.paddingBottom = 8; 
+button.cornerRadius = 32; 
+button.fills = [S('#000000')]; 
+
+const label = figma.createText(); 
+label.fontName = { family: 'Inter', style: 'Semi Bold' }; 
+label.characters = 'Get started'; 
+label.fontSize = 14; 
+label.lineHeight = { unit: 'PIXELS', value: 24 }; 
+label.fills = [S('#ffffff')]; 
+
+button.appendChild(label); 
+button.x = 48; 
+button.y = 481; 
+root.appendChild(button); 
+</code><div><a href="https://sourcecraft.dev/"><img loading="lazy"/></a></div></pre><p>Figma MCP creates editable native layers. For each of them, the agent has to explicitly describe the properties.</p><p>Recreating the code panel required particularly many actions.</p><figure><img alt="The code panel is highlighted in red" loading="lazy" src="https://habrastorage.org/r/w1560/getpro/habr/upload_files/0f5/267/3bd/0f52673bda1078cb06e976526e1874ea.png" title="The code panel is highlighted in red"/><div><figcaption>The code panel is highlighted in red</figcaption></div></figure><p>In Figma, the agent created a separate text layer for each of the 14 lines, calculated the <code>y</code> coordinate, and colored ranges of characters with separate calls:</p><pre><code>lines.forEach((segments, index) =&gt; { 
+  const line = figma.createText(); 
+  line.fontName = { family: 'IBM Plex Mono', style: 'Regular' }; 
+  line.characters = segments.map(segment =&gt; segment[0]).join(''); 
+  line.fontSize = 13; 
+  line.lineHeight = { unit: 'PIXELS', value: 24 }; 
+  line.x = 48; 
+  line.y = 12 + 24 * index; 
+  codePanel.appendChild(line); 
+
+  let start = 0; 
+  for (const [text, color] of segments) { 
+    line.setRangeFills(start, start + text.length, [S(color)]); 
+    start += text.length; 
+  } 
+}); 
+</code><div><a href="https://sourcecraft.dev/"><img loading="lazy"/></a></div></pre><p>During the work with the canvas, the agent generated 221.7 thousand output tokens. The native structure requires creating objects step-by-step and explicitly passing their properties. Since output tokens are more expensive than input tokens, long tool arguments significantly affected the final cost.</p><p><strong>Screenshot verification</strong></p><p>When verifying the Tailwind landing screen, the agent noticed that the description under the headline "Rapidly build modern websites…" wrapped differently than on the original site. It fixed the wrapping in the correct place, changed the width of the text block, and requested its screenshot again.</p><p>After creating a block, the agent took its screenshot and compared it with the original. The MCP function <code>get_screenshot</code> returned not the image itself, but a temporary link to a PNG file:</p><pre><code>{ 
+  "image_url": "https://www.figma.com/api/mcp/asset/...png", 
+  "width": 1440, 
+  "height": 900 
+}</code><div><a href="https://sourcecraft.dev/"><img loading="lazy"/></a></div></pre><p>Then the agent downloaded the file and opened it separately:</p><pre><code>curl -L -o screenshot.png "https://www.figma.com/api/mcp/asset/...png"</code><div><a href="https://sourcecraft.dev/"><img loading="lazy"/></a></div></pre><p>That is, the cycle looked something like this:</p><blockquote><p>request screenshot → get link → download → open → correct element</p></blockquote><p>During the Tailwind assembly, the agent also wrote a small JavaScript script to compare the result with the original. Both images were loaded into Canvas, after which the script iterated through the pixel arrays and counted noticeable color discrepancies:</p><pre><code>let different = 0; 
+
+for (let i = 0; i &lt; reference.length; i += 4) { 
+  const difference = 
+    Math.abs(reference[i] - result[i]) + 
+    Math.abs(reference[i + 1] - result[i + 1]) + 
+    Math.abs(reference[i + 2] - result[i + 2]); 
+
+  if (difference &gt; 60) { 
+    different++; 
+  } 
+} 
+</code><div><a href="https://sourcecraft.dev/"><img loading="lazy"/></a></div></pre><p>With each verification, additional commands were generated for downloading and opening the file. Therefore, part of the expenses for "work around MCP" occurred after the agent had already started assembling the mockup.</p><h4>Conclusion</h4><p>The main part of the expenses is related not to the creation of the mockup itself, but to how the agent obtains data, controls the canvas, and verifies the result. A link to the website proved to be more cost-effective than a screenshot: ready-made HTML and CSS allow for extracting structure, styles, and assets directly, without reconstructing them pixel by pixel.</p><p>It is clear that a mockup is only half the journey. In the second part, I will conduct the reverse experiment: I will provide Claude Code with the created mockups and ask it to turn them into working code.</p></div>
+  </main>
+  <footer>
+    Translation generated with Gemini 2.5 Flash-Lite.
+    The original article remains the source of record.
+  </footer>
+</body>
+</html>

@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>How to use cloud AI models within a company&#x27;s network and not get fired by Information Security?</title>
+  <meta name="description" content="Or an example of what happens if the role of package manager is entrusted to AI. [Read your company&#x27;s security policy before proceeding] Read more">
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.65;
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 32px 20px 64px;
+      color: #1f2328;
+    }
+    header {
+      border-bottom: 1px solid #d8dee4;
+      margin-bottom: 28px;
+      padding-bottom: 20px;
+    }
+    .source {
+      color: #57606a;
+      font-size: 0.95rem;
+    }
+    img, video, iframe {
+      max-width: 100%;
+      height: auto;
+    }
+    pre {
+      overflow-x: auto;
+      padding: 16px;
+      background: #f6f8fa;
+      border-radius: 6px;
+    }
+    code {
+      font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+    }
+    blockquote {
+      border-left: 4px solid #d0d7de;
+      margin-left: 0;
+      padding-left: 16px;
+      color: #57606a;
+    }
+    footer {
+      border-top: 1px solid #d8dee4;
+      margin-top: 40px;
+      padding-top: 20px;
+      color: #57606a;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>How to use cloud AI models within a company&#x27;s network and not get fired by Information Security?</h1>
+    <p>Or an example of what happens if the role of package manager is entrusted to AI. [Read your company&#x27;s security policy before proceeding] Read more</p>
+    <p class="source">
+      Machine-translated from Habr.
+      <a href="https://habr.com/ru/articles/1078824/?utm_campaign=1078824&amp;utm_source=habrahabr&amp;utm_medium=rss">Read the original Russian article</a>.
+      Sat, 05 Sep 2026 14:25:33 GMT
+    </p>
+  </header>
+  <main>
+<div><p>Or an example of what happens if the role of package manager is entrusted to AI.</p><figure><img loading="lazy" src="https://habrastorage.org/r/w1560/getpro/habr/upload_files/61e/7ae/095/61e7ae0953d7b24ac4e647285f990d10.png"/></figure><p>The short answer is: use <strong>templates</strong>.</p><p>A <strong>template</strong> is a general framework on the basis of which other projects with unique business logic can be developed.</p><p>A <strong>template</strong> is not necessarily Open Source. Projects can very well be hosted in a separate private company repository. But! By default, company management and employees must remember and understand that this template is developed using cloud models, and therefore, be prepared for copying, leakage, or publication.</p><p>As a result, we get a separation:</p><ul><li><p>we work with templates in the cloud</p></li><li><p>for internal projects, we use corporate tools</p></li></ul><p>Everything seems simple.</p><p>The only difficult part is how to develop the template in the long term?</p><p>What if the template cannot be packaged into a library? How to transfer changes in such a case?</p><p>Entrust the role of package manager to AI.</p><p>An example from personal experience.</p><p><a href="https://github.com/fomenko-ai/pytest-hardware-template"><strong>pytest‑hardware‑template</strong></a><strong> </strong>— a template for testing network, laboratory, embedded, and other physical equipment.</p><ul><li><p>Copy the project.</p></li><li><p>Adapt it for your own needs using the skill <a href="https://github.com/fomenko-ai/pytest-hardware-template/tree/main/skills/adapt-internal-infrastructure">‘adapt‑internal‑infrastructure’</a>.</p></li><li><p>When a necessary update appears, transfer a <u>commit or a separate functionality</u> of the template using the skill <a href="https://github.com/fomenko-ai/pytest-hardware-template/tree/main/skills/adapt-template-change">‘adapt‑template‑change’</a>.</p></li></ul><p>As it turned out in practice, today even small local models are sufficient for high-quality transfer. If you have already made changes to the project, in case of a conflict, the agent will offer options on how to adapt the changes. The larger the model and the smaller the volume of changes, the better. The more clearly, but unambiguously and concisely, the architectural rules are formulated in <a href="https://github.com/fomenko-ai/pytest-hardware-template/blob/main/AGENTS.md">AGENTS.md</a>, the fewer questions FROM the agent and TO the agent will arise in the future.</p><p>The developer will only have to follow these architectural rules themselves:)</p><p>By the way, about architecture.</p><p>The <strong>pytest‑hardware‑template</strong> project was initially conceived NOT as a library, but specifically as a universal template.</p><p>But during development, parts became visible that, in the future, when a public API is established, would be convenient to transfer to a separate library.</p><p>At a minimum, it will help save tokens and time.</p><p>Therefore, for developers of the template and projects created on its basis, the documentation includes <a href="https://github.com/fomenko-ai/pytest-hardware-template/blob/main/docs/decisions/0001-prepare-for-library-publication.md">a special decision on the architecture and possible publication as a library</a>.</p><p>Yes, yes, yes...</p><p>Finally!</p><p>It's time to ask that very question.</p><p><em>“Alexey, a new project, templates, sounds trendy and modern. But what about legacy?”</em><br/><br/>Conduct project audits.</p><p>Where there is sense and opportunity — isolate parts for working with cloud models.</p><p>Where there is neither sense nor opportunity — think again.</p><p>Yes, it's not easy.</p><p>Sometimes even the procedure for approving the publication of a small piece of code in Open Source can take months.</p><p>An example from personal experience.</p><p><a href="https://github.com/fomenko-ai/yaml-test-params"><strong>yaml‑test‑params</strong></a> — a library for dynamically generating test parameters from YAML configuration files.</p><p>The project was initially a small auxiliary module, about 200–300 lines of code. The approval process took a month. As a result, it became a library.</p><p>Is it worth the effort?</p><p>From the examples above, the main advantage that cloud models provided was ideas, features, architectural options that came from dialogue with the model.</p><p>It's good when you know what to ask.</p><p>But when the image of functionality is just swirling in your thoughts, you have to search, try out options.</p><p>As my own practice shows, the combination of large model sizes and the built-in search engines of cloud AI providers makes a tangible difference, which is worth rethinking internal company processes and project architectures for.</p><p>Perhaps even rewrite something from scratch.</p></div>
+  </main>
+  <footer>
+    Translation generated with Gemini 2.5 Flash-Lite.
+    The original article remains the source of record.
+  </footer>
+</body>
+</html>

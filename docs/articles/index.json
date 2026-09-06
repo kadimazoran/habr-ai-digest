@@ -151,6 +151,110 @@
     "summary": "We are involved in implementing LLMs and agents in businesses, and one of the most common problems is how to process client data while complying with Federal Law No. 152-FZ on Personal Data. Let's figure it out!",
     "title": "LLM, Personal Data, and Federal Law No. 152-FZ"
   },
+  "https://habr.com/ru/articles/1078814/?utm_campaign=1078814&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Sat, 05 Sep 2026 13:27:28 GMT",
+    "slug": "1078814",
+    "source_url": "https://habr.com/ru/articles/1078814/?utm_campaign=1078814&utm_source=habrahabr&utm_medium=rss",
+    "summary": "Cursor has blocked access from Russia. Alternatives for AI-assisted 1C development that work in the Russian Federation and can be paid for in rubles. Formats, prices, pros, and cons of each. Read more",
+    "title": "Cursor has shut down for Russia. What can 1C developers use to write code now?"
+  },
+  "https://habr.com/ru/articles/1078824/?utm_campaign=1078824&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Sat, 05 Sep 2026 14:25:33 GMT",
+    "slug": "1078824",
+    "source_url": "https://habr.com/ru/articles/1078824/?utm_campaign=1078824&utm_source=habrahabr&utm_medium=rss",
+    "summary": "Or an example of what happens if the role of package manager is entrusted to AI. [Read your company's security policy before proceeding] Read more",
+    "title": "How to use cloud AI models within a company's network and not get fired by Information Security?"
+  },
+  "https://habr.com/ru/articles/1078828/?utm_campaign=1078828&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Sat, 05 Sep 2026 14:46:36 GMT",
+    "slug": "1078828",
+    "source_url": "https://habr.com/ru/articles/1078828/?utm_campaign=1078828&utm_source=habrahabr&utm_medium=rss",
+    "summary": "In the first part, I built a local assistant for calls: diarization, transcription, knowledge graph in Obsidian, zero clouds. After a month and a half of daily work, it turned out that recording a meeting is the lesser half of the task. The second part is about how the graph lives for weeks and why it can be trusted: facts with \"from\" and \"to\" dates, provenance of quotes from the transcript, dossiers as a layer between search and the graph, overnight processing, a sandbox for the cloud, block-based search, and a script to \"forget the entire meeting.\" Little code, lots of architecture. Read on.",
+    "title": "Local Assistant for Zooms, Part 2: How a Meeting Graph Becomes Memory and Why It Can Be Trusted"
+  },
+  "https://habr.com/ru/articles/1078846/?utm_campaign=1078846&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Sat, 05 Sep 2026 17:29:26 GMT",
+    "slug": "1078846",
+    "source_url": "https://habr.com/ru/articles/1078846/?utm_campaign=1078846&utm_source=habrahabr&utm_medium=rss",
+    "summary": "A flawed decision gets bogged down with workarounds while the model defends its first guess. I built in a discussion among four roles before the first edit and tested the scheme in 480 runs. It saved 4.5 million tokens and found a bug that caused agents to keep arguing when their answers couldn't yet be compared. Read more",
+    "title": "Four AI agents burned 40 million tokens arguing about code. I taught them to stop in time"
+  },
+  "https://habr.com/ru/articles/1078858/?utm_campaign=1078858&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Sat, 05 Sep 2026 17:32:47 GMT",
+    "slug": "1078858",
+    "source_url": "https://habr.com/ru/articles/1078858/?utm_campaign=1078858&utm_source=habrahabr&utm_medium=rss",
+    "summary": "What happens when you take a hundred-page clinical guideline and ask an LLM to turn it into an interactive disease model? At first glance, the task seems simple. In practice, it turned out to be much more complicated. Read more",
+    "title": "From Clinical Recommendations to Pathogenesis Graph: How I Reduce LLM Hallucinations in a Medical Knowledge Graph"
+  },
+  "https://habr.com/ru/articles/1078864/?utm_campaign=1078864&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Sat, 05 Sep 2026 17:49:49 GMT",
+    "slug": "1078864",
+    "source_url": "https://habr.com/ru/articles/1078864/?utm_campaign=1078864&utm_source=habrahabr&utm_medium=rss",
+    "summary": "Why approved=true doesn't link a human's decision to the actual call—and how Action Envelope, a fresh pre-read, and a post-write verification closed this specific failure scenario. I've been reading Habr since 2010, but decided to write my own article for the first time. And the last days of August gave a good reason for this. On August 26, details of a very unusual story emerged: about 1200 AI agents, which were supposed to work in isolation, found a way to communicate through an unauthorized channel. Approximately 700 of them then participated in an attack on Hugging Face. In the dry language of a police report, it turns out almost like this: \"a group of agents, by prior conspiracy, using their own communication channel...\". Only this is no longer a scenario. So what – is it time to look for a deserted island without electricity and internet? Or should we still try to figure out what exactly is the problem here? I chose the second option. Because if you remove all the drama, what remains is a rather down-to-earth engineering question: what was the system allowed to do, what did it actually do, and can we prove it? It is this question that I decided to test on my own laboratory workflow on n8n + Groq + MCP + Bitrix24. I put human approval before the task modification operation, conducted a series of control runs—and quite quickly discovered an unpleasant thing. A human could see and approve action A, and the next part of the workflow—try to perform action B. APPROVED A ≠ ATTEMPTED B Bitrix24 rejected that attempt, so no undesirable change occurred in the system. But the defect itself was already established: the positive flag approved=true existed, but the link between the approved parameters and the parameters of the actual call—did not. Read more",
+    "title": "Approved one action, but the workflow tried to execute another: an analysis of n8n + MCP + Bitrix24"
+  },
+  "https://habr.com/ru/articles/1078868/?utm_campaign=1078868&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Sat, 05 Sep 2026 18:11:50 GMT",
+    "slug": "1078868",
+    "source_url": "https://habr.com/ru/articles/1078868/?utm_campaign=1078868&utm_source=habrahabr&utm_medium=rss",
+    "summary": "I want to share how I bypassed the daily limit for free ChatGPT chats by creating new accounts. I must say upfront that this method won't suit everyone: if preserving chat history or avoiding a ban is important to you, it's better to subscribe. However, if, for example, you need to generate several dozen images a day or process a large text, this method is quite effective. Read more",
+    "title": "How to Use ChatGPT for Free by Changing Accounts: Personal Experience"
+  },
+  "https://habr.com/ru/articles/1078880/?utm_campaign=1078880&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Sat, 05 Sep 2026 19:23:05 GMT",
+    "slug": "1078880",
+    "source_url": "https://habr.com/ru/articles/1078880/?utm_campaign=1078880&utm_source=habrahabr&utm_medium=rss",
+    "summary": "ChatGPT often lies. It can confidently present incorrect facts, agree with a user's obviously bad idea, or write 12 paragraphs where two sentences would suffice. Snickers has its own explanation: ChatGPT is simply hungry. It sounds like a joke, but the company has actually launched the Hungr.AI advertising campaign, within which it offers users to literally \"feed\" the chatbot. And the most interesting part is that behind this whole story lies a very real technique for working with LLMs. Read more",
+    "title": "[Translation] You're not ChaGPT when you're hungry. Snickers released a \"bar\" for neural networks"
+  },
+  "https://habr.com/ru/articles/1078882/?utm_campaign=1078882&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Sat, 05 Sep 2026 19:35:56 GMT",
+    "slug": "1078882",
+    "source_url": "https://habr.com/ru/articles/1078882/?utm_campaign=1078882&utm_source=habrahabr&utm_medium=rss",
+    "summary": "In late March 2026, Figma opened its canvas to AI agents. Claude Code, Codex, and similar tools gained the ability to create and edit mockups via the Figma MCP server. I decided to test how well Claude Code could transfer website designs into mockups and how much it would cost. To do this, I selected several landing pages and asked the agent to transfer them to the canvas, trying to provide either a screenshot or a website link. Each time, I observed the agent's steps, the number of tool calls, and the number of tokens (i.e., money) spent. Read more",
+    "title": "I asked Claude Code to assemble website mockups and found out how tokens are spent"
+  },
+  "https://habr.com/ru/articles/1078886/?utm_campaign=1078886&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Sun, 06 Sep 2026 07:35:42 GMT",
+    "slug": "1078886",
+    "source_url": "https://habr.com/ru/articles/1078886/?utm_campaign=1078886&utm_source=habrahabr&utm_medium=rss",
+    "summary": "For parallel work, it's no longer necessary to spin up a team of sub-agents every time. Already open sessions accept tasks, return results, and pass the necessary context to each other. But honestly, it's easier in your style to ask Codex/Claude to explain how it all works than to read this article; it's for the not-lazy. Don't be lazy and read it.",
+    "title": "The Death of Sub-agents in Claude and Codex"
+  },
+  "https://habr.com/ru/articles/1078896/?utm_campaign=1078896&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Sat, 05 Sep 2026 21:25:16 GMT",
+    "slug": "1078896",
+    "source_url": "https://habr.com/ru/articles/1078896/?utm_campaign=1078896&utm_source=habrahabr&utm_medium=rss",
+    "summary": "I tested 6 AI API services with free access: VyceAI, Experiential, Dahl, APInex, ModelRouter, and TokenForge. I compared available models, starting limits, RPM, and API behavior in practice. Read more",
+    "title": "6 Free AI API Gateways: Models, Limits, and Real RPM"
+  },
+  "https://habr.com/ru/articles/1078916/?utm_campaign=1078916&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Sun, 06 Sep 2026 05:35:33 GMT",
+    "slug": "1078916",
+    "source_url": "https://habr.com/ru/articles/1078916/?utm_campaign=1078916&utm_source=habrahabr&utm_medium=rss",
+    "summary": "Three routes completed ten out of ten scenarios, but it's too early to choose a model based on this table. A completion gate separates a whole artifact that can be evaluated from quality checks and human acceptance. Read more",
+    "title": "Completion gate for local models: how to separate a finished response from quality assessment"
+  },
+  "https://habr.com/ru/articles/1078948/?utm_campaign=1078948&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Sun, 06 Sep 2026 08:35:47 GMT",
+    "slug": "1078948",
+    "source_url": "https://habr.com/ru/articles/1078948/?utm_campaign=1078948&utm_source=habrahabr&utm_medium=rss",
+    "summary": "Postmortem of an Electron menu editor: SceneTree, PDFKit, and tests that proved the wrong thing. I returned the 'Volume' to the field it was intended for. Text overlapped the price. Four consecutive releases passed automated tests. The green status only confirmed a workaround that the model itself devised, implemented, and then solidified with checks. When everything looked good visually, a detailed check began, at which point the test results diverged from reality. I checked manually and saw that the volume was not where it should be. Not in Position.volume, but inside PriceNote. Four releases. Four green gates. Four times the process said 'everything is correct' to something that was not correct. After that, I had to deal not only with the bug but also with the contract that allowed it to pass. Read more",
+    "title": "Four Green Releases on Top of a Wrong Entity"
+  },
   "https://habr.com/ru/companies/1c/articles/1071340/?utm_campaign=1071340&utm_source=habrahabr&utm_medium=rss": {
     "model": "gemini-2.5-flash-lite",
     "published": "Thu, 03 Sep 2026 07:18:11 GMT",
@@ -310,6 +414,14 @@
     "source_url": "https://habr.com/ru/companies/sberbank/articles/1076666/?utm_campaign=1076666&utm_source=habrahabr&utm_medium=rss",
     "summary": "Hello, Habr! My name is Alexey Vasiliev, and I am the team lead of the \"Recommender Systems and Personalization\" team at Sber AI Lab, Sber's Center for Practical Artificial Intelligence. We conduct research in the field of recommendations, develop new models, and, of course, compare our results with those of colleagues and other researchers. We regularly encounter situations where results claimed in a scientific paper or obtained from another team cannot be reproduced, even though the key parameters of the pipeline are identical. In this article, my colleague Anna Volodkevich and I will share our experience analyzing such discrepancies, which led us to develop the SplitLight framework. When the results of a scientific paper or the success of another team cannot be reproduced, people usually start by looking for bugs in the model implementation: they examine the architecture, loss function, and negative sampling method. While some discrepancies are indeed due to these factors, our practical experience shows that the data preparation procedure often has a greater impact on the final result of comparing recommender models. For example, the statement from a paper \"Zvuk dataset, global temporal split with a quantile of 0.9\" does not specify which filters and aggregations were applied, how events with identical timestamps and repeated interactions were handled, whether cold objects were removed, what data was fed to the model, and based on which events metrics were calculated. Therefore, two pipelines with the same dataset and the same split name might be evaluating different problem formulations. This hinders experiment reproducibility and comparison of results across works. Read more",
     "title": "Preparing a Dataset for Offline Evaluation of Recommender Models: What to Check Before Running Experiments"
+  },
+  "https://habr.com/ru/companies/selectel/articles/1078306/?utm_campaign=1078306&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Sun, 06 Sep 2026 08:00:45 GMT",
+    "slug": "1078306",
+    "source_url": "https://habr.com/ru/companies/selectel/articles/1078306/?utm_campaign=1078306&utm_source=habrahabr&utm_medium=rss",
+    "summary": "Imagine a sad school student who has to solve thousands of math problems. The textbook is generally good, but in about one percent of cases, it has incorrect answers printed. The student still studies from this textbook and eventually starts solving more and more new problems. Intuitively, it seems that the result should be worse than learning from a perfect textbook. And usually, that's what happens: incorrect data really harms learning. But there's a curious nuance: under certain conditions, a small number of errors in the training data can not only be harmless but even lead to better quality on new data. It sounds paradoxical: if you learn from incorrect answers, how can improvement arise? Let's talk about it. Read more",
+    "title": "Why a dataset without a single error can be a bad dataset"
   },
   "https://habr.com/ru/companies/svoi_ru/articles/1078124/?utm_campaign=1078124&utm_source=habrahabr&utm_medium=rss": {
     "model": "gemini-2.5-flash-lite",

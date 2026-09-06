@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Four Green Releases on Top of a Wrong Entity</title>
+  <meta name="description" content="Postmortem of an Electron menu editor: SceneTree, PDFKit, and tests that proved the wrong thing. I returned the &#x27;Volume&#x27; to the field it was intended for. Text overlapped the price. Four consecutive releases passed automated tests. The green status only confirmed a workaround that the mode">
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.65;
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 32px 20px 64px;
+      color: #1f2328;
+    }
+    header {
+      border-bottom: 1px solid #d8dee4;
+      margin-bottom: 28px;
+      padding-bottom: 20px;
+    }
+    .source {
+      color: #57606a;
+      font-size: 0.95rem;
+    }
+    img, video, iframe {
+      max-width: 100%;
+      height: auto;
+    }
+    pre {
+      overflow-x: auto;
+      padding: 16px;
+      background: #f6f8fa;
+      border-radius: 6px;
+    }
+    code {
+      font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+    }
+    blockquote {
+      border-left: 4px solid #d0d7de;
+      margin-left: 0;
+      padding-left: 16px;
+      color: #57606a;
+    }
+    footer {
+      border-top: 1px solid #d8dee4;
+      margin-top: 40px;
+      padding-top: 20px;
+      color: #57606a;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Four Green Releases on Top of a Wrong Entity</h1>
+    <p>Postmortem of an Electron menu editor: SceneTree, PDFKit, and tests that proved the wrong thing. I returned the &#x27;Volume&#x27; to the field it was intended for. Text overlapped the price. Four consecutive releases passed automated tests. The green status only confirmed a workaround that the model itself devised, implemented, and then solidified with checks. When everything looked good visually, a detailed check began, at which point the test results diverged from reality. I checked manually and saw that the volume was not where it should be. Not in Position.volume, but inside PriceNote. Four releases. Four green gates. Four times the process said &#x27;everything is correct&#x27; to something that was not correct. After that, I had to deal not only with the bug but also with the contract that allowed it to pass. Read more</p>
+    <p class="source">
+      Machine-translated from Habr.
+      <a href="https://habr.com/ru/articles/1078948/?utm_campaign=1078948&amp;utm_source=habrahabr&amp;utm_medium=rss">Read the original Russian article</a>.
+      Sun, 06 Sep 2026 08:35:47 GMT
+    </p>
+  </header>
+  <main>
+<div><p><em>Postmortem of an Electron menu editor: SceneTree, PDFKit, and tests that proved the wrong thing</em></p><p>I returned the 'Volume' to the field it was intended for.</p><p>Text overlapped the price.</p><p>Four consecutive releases passed automated tests. The green status only confirmed a workaround that the model itself devised, implemented, and then solidified with checks.</p><p>When everything looked good visually, a detailed check began, at which point the test results diverged from reality. I checked manually and saw that the volume was not where it should be. Not in Position.volume, but inside PriceNote. Four releases. Four green gates. Four times the process said 'everything is correct' to something that was not correct. After that, I had to deal not only with the bug but also with the contract that allowed it to pass.</p><h2>A mundane task with typographical tolerances</h2><p>I am a system architect. Ten years ago, I wrote websites in PHP and JavaScript; now, I write small scripts in Python and VBS. In my main job, I spend more time analyzing requirements, constraints, and architectural decisions than writing application code. My wife works for a large restaurant chain. She received new requirements for printed materials and Adobe Illustrator templates, but they didn't have Illustrator, and no one knew how to work with it. Initially, the task was reduced to a single menu edit. My local Qwen 2.5 handled it, but you can't install it in a restaurant. This is where I saw a suitable testing ground, a real task where I could see: How quickly can something be created, and can it be understood, tested, supported, and managed?</p><p>What was needed was not a replacement for Illustrator, but an editor with a narrow scope of action.</p><p>Over several iterations, one template turned into three document families, Russian and English versions appeared, undo/redo, text formatting, project saving, preflight, PDF export, and builds for two OS. The list of functions itself was ordinary. What was unusual was the cost of the discrepancy between what was visible on the screen and what was produced in the PDF output.</p><p>The first interface appeared quickly. There was no mockup: I described the panels in FT and TZ, and the model assembled a working screen and even added drag-and-drop elements that I hadn't asked for. It looked convincing.</p><p><strong>By 2026, the story of 'an architect building an application with agents' is no longer news. Therefore, there will be no excursion into prompts. What's more interesting is how a process with separated roles, release gates, and a large set of tests still produced the wrong entity.</strong></p><figure><img alt=
+  </main>
+  <footer>
+    Translation generated with Gemini 2.5 Flash-Lite.
+    The original article remains the source of record.
+  </footer>
+</body>
+</html>

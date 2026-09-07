@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>How I Use Generative Models as an Opponent in Several AI Projects</title>
+  <meta name="description" content="A conversation with a model easily creates a sense of progress. In half an hour, you can get several architectural options, a risk table, a test plan, and a convincing summary for a meeting. But if nothing has changed in the project after the conversation, perhaps there was no progress. I try to end">
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.65;
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 32px 20px 64px;
+      color: #1f2328;
+    }
+    header {
+      border-bottom: 1px solid #d8dee4;
+      margin-bottom: 28px;
+      padding-bottom: 20px;
+    }
+    .source {
+      color: #57606a;
+      font-size: 0.95rem;
+    }
+    img, video, iframe {
+      max-width: 100%;
+      height: auto;
+    }
+    pre {
+      overflow-x: auto;
+      padding: 16px;
+      background: #f6f8fa;
+      border-radius: 6px;
+    }
+    code {
+      font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+    }
+    blockquote {
+      border-left: 4px solid #d0d7de;
+      margin-left: 0;
+      padding-left: 16px;
+      color: #57606a;
+    }
+    footer {
+      border-top: 1px solid #d8dee4;
+      margin-top: 40px;
+      padding-top: 20px;
+      color: #57606a;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>How I Use Generative Models as an Opponent in Several AI Projects</h1>
+    <p>A conversation with a model easily creates a sense of progress. In half an hour, you can get several architectural options, a risk table, a test plan, and a convincing summary for a meeting. But if nothing has changed in the project after the conversation, perhaps there was no progress. I try to end such work with one of the specific results: a question to the responsible participant; a diagram of module boundaries; an input/output data contract; a test scenario; a record of an architectural decision; a &quot;not confirmed&quot; status; or a measurement on the source data. In the passenger flow project, this led to a separation of responsibilities. One loop checks video, builds a timeline, links it to telematics, and forms candidate intervals. Another performs detection, tracking, and determines the direction of movement. Read more</p>
+    <p class="source">
+      Machine-translated from Habr.
+      <a href="https://habr.com/ru/articles/1078632/?utm_campaign=1078632&amp;utm_source=habrahabr&amp;utm_medium=rss">Read the original Russian article</a>.
+      Mon, 07 Sep 2026 06:26:14 GMT
+    </p>
+  </header>
+  <main>
+<div><p>On paper, the task seemed almost insultingly simple: a camera sees the bus interior, a model recognizes people, and the output is the number of passengers who entered and exited.</p><p>But the closer we got to a real route, the less the task resembled ordinary detection. It turned out that first, we needed to agree on times, stops, identifiers, and even what exactly constitutes an entry event. A model can correctly see a person and still produce an incorrect business result.</p><p>At some point, I realized: the main threat to an AI project isn't always a weak algorithm. Sometimes, premature confidence that we've understood the task correctly is more dangerous.</p><p>I manage several projects simultaneously and regularly use generative models in my work. They help me analyze requirements, discuss architecture, test hypotheses, prepare task specifications, and look at code from different angles. But over time, my attitude towards them has changed.</p><p>Previously, the question "Suggest a good solution" seemed natural. Now, I formulate the request much more often differently:</p><blockquote><p>Here's my option. Don't improve it and don't agree with me. Find the assumptions under which it will stop working. Indicate what needs to be checked in the data, in the code, and with the client.</p></blockquote><p>A generative model has become not a source of correct answers for me, but an accessible opponent. And this is perhaps much more useful.</p><h3>When Computer Vision is Only Part of the Task</h3><p>In the passenger flow control project, it was necessary to connect several worlds.</p><p>The first world contained video. In it, a person appears in the doorway area, moves inside or outside, can be obscured by another passenger, turn around, or linger on the steps.</p><p>The second world contained telematics: movement time, coordinates, speed, and estimated stops.</p><p>The third was the business logic. It was necessary not just to detect a person, but to link the event to a specific route and segment of the route. If this link is not provable, a nice number on the dashboard means little.</p><p>The initial logic was self-evident:</p><pre><code>camera --&gt; person detection --&gt; determining entry or exit --&gt; linking to time and stop --&gt; passenger flow per route</code></pre><div><a href=
+  </main>
+  <footer>
+    Translation generated with Gemini 2.5 Flash-Lite.
+    The original article remains the source of record.
+  </footer>
+</body>
+</html>

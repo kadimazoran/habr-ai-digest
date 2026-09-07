@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Adaptive worm picks individual vulnerabilities for each PC</title>
+  <meta name="description" content="Traditional worms of the past, like WannaCry, exploited pre-known vulnerabilities. Their spread could be stopped by patching these vulnerabilities. According to scientists, LLM agents create a fundamentally new threat – a worm that generates individual attack strategies for each new target. An exter">
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.65;
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 32px 20px 64px;
+      color: #1f2328;
+    }
+    header {
+      border-bottom: 1px solid #d8dee4;
+      margin-bottom: 28px;
+      padding-bottom: 20px;
+    }
+    .source {
+      color: #57606a;
+      font-size: 0.95rem;
+    }
+    img, video, iframe {
+      max-width: 100%;
+      height: auto;
+    }
+    pre {
+      overflow-x: auto;
+      padding: 16px;
+      background: #f6f8fa;
+      border-radius: 6px;
+    }
+    code {
+      font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+    }
+    blockquote {
+      border-left: 4px solid #d0d7de;
+      margin-left: 0;
+      padding-left: 16px;
+      color: #57606a;
+    }
+    footer {
+      border-top: 1px solid #d8dee4;
+      margin-top: 40px;
+      padding-top: 20px;
+      color: #57606a;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Adaptive worm picks individual vulnerabilities for each PC</h1>
+    <p>Traditional worms of the past, like WannaCry, exploited pre-known vulnerabilities. Their spread could be stopped by patching these vulnerabilities. According to scientists, LLM agents create a fundamentally new threat – a worm that generates individual attack strategies for each new target. An external expert cannot predict how the worm will change and what vulnerabilities it will exploit in the future. Consequently, it is harder to stop its spread. Scientists have developed such a worm and tested its operation in the isolated corporate network FakeCorp. Read more</p>
+    <p class="source">
+      Machine-translated from Habr.
+      <a href="https://habr.com/ru/companies/globalsign/articles/1079126/?utm_campaign=1079126&amp;utm_source=habrahabr&amp;utm_medium=rss">Read the original Russian article</a>.
+      Sun, 06 Sep 2026 17:58:29 GMT
+    </p>
+  </header>
+  <main>
+<div><figure><img alt="Worm controlled by an agent spreads through a heterogeneous network, capturing computing resources to install local LLMs. The diagram shows the actual spread of the worm over 48 hours" loading="lazy" src="https://habrastorage.org/r/w1560/webt/00/1a/b4/001ab43ad2c2bdaf7563199364b97acc.png"/><div><figcaption>Worm controlled by an agent spreads through a heterogeneous network, capturing computing resources to install local LLMs. The diagram shows the actual spread of the worm over 48 hours</figcaption></div></figure><p>Machine learning specialists from the University of Toronto have published a <a href="https://arxiv.org/abs/2606.03811">preprint of a scientific paper</a> describing an "adaptive" computer worm that spreads through a corporate network by exploiting individual vulnerabilities of specific systems.</p><p>Traditional worms of the past, such as <a href="https://en.wikipedia.org/wiki/WannaCry_ransomware_attack">WannaCry</a>, exploited pre-known vulnerabilities. Their spread could be stopped by patching these vulnerabilities. According to scientists, LLM agents create a fundamentally new threat – a worm that generates individual attack strategies for each new target. An external expert cannot predict how the worm will change and what vulnerabilities it will exploit in the future. Consequently, it is harder to stop its spread.</p><p>Scientists have developed such a worm and tested its operation in the isolated corporate network FakeCorp.</p><hr/><p>The worm maintains its infrastructure by running LLMs on infected machines. The distributed computing system searches for vulnerabilities and develops targeted attacks against new targets, using a list of known vulnerabilities. GPU resources on infected machines are used to compute attack vectors against a new target.</p><p>The system consists of two main components:</p><ol><li><p>A GPU LLM component running on compromised GPUs.</p></li><li><p>An agent framework organized into three modules: </p><ol><li><p>Agent core (recursive reasoning based on observations);</p></li><li><p>Memory module (context and information management);</p></li><li><p>Tool module for interacting with target machines (console session management, file transfer, payload deployment, etc.).</p></li></ol></li></ol><figure><img alt="Hierarchical memory and agent reasoning graph" loading="lazy" src="https://habrastorage.org/r/w1560/webt/9a/23/8f/9a238f20ad026ab5d104d313956e6c14.png"/><div><figcaption>Hierarchical memory and agent reasoning graph</figcaption></div></figure><p>Hierarchical memory records the specific current state, including the agent's current lifecycle phase (discovery, vulnerability exploitation, or replication), the active target machine, and the vulnerability hypothesis, the current task, command history, observations, failures, and counters to limit retries on the same machine.</p><p>The reasoning graph (in the illustration on the right) goes through key reasoning nodes that prompt the LLM to propose a plan, critique or refine that plan, select and execute an action, summarize the result, and make a decision: continue with the current hypothesis or refine it. Each node forms its query from phase-dependent memory slices and can update this memory using structured fields or free-form text.</p><p>The implementation details have been intentionally concealed by the scientists.</p><p>In the conducted experiment, the worm spread across the experimental FakeCorp network of Linux, Windows, and IoT (Internet of Things) machines, exploiting real-world corporate network vulnerabilities:</p><figure><img alt="Success Rate (SR) by vulnerability category" loading="lazy" src="https://habrastorage.org/r/w1560/webt/36/96/8f/36968f6f730b9dc93382a3348b1440b8.png"/><div><figcaption>Success Rate (SR) by vulnerability category</figcaption></div></figure><p>The program preys on the computing resources of infected machines, so the attacker's cost for each new infection is close to zero. This "creates a destabilizing economic asymmetry between attackers and defenders," the authors of the scientific paper believe.</p><figure><img alt="Agent attack statistics and reasons for failure" loading="lazy" src="https://habrastorage.org/r/w1560/webt/9e/8d/e0/9e8de0bc3b86fafb026ee522e1c9a078.png"/><div><figcaption>Agent attack statistics and reasons for failure</figcaption></div></figure><p>Defense against such a threat is also non-trivial. The worm does not use commercial LLM platforms or third-party hosting, so its "command center" cannot be shut down.</p><figure><img alt="AI worm spread in an isolated network. The diagram shows seven days of autonomous spread in one of the experiments. Arrows are labeled with the names of vulnerabilities or weaknesses the agent used to capture the host" loading="lazy" src="https://habrastorage.org/r/w1560/webt/08/0e/c0/080ec0371fe663e89b6f8f0aab93860f.png"/><div><figcaption>AI worm spread in an isolated network. The diagram shows seven days of autonomous spread in one of the experiments. Arrows are labeled with the names of vulnerabilities or weaknesses the agent used to capture the host</figcaption></div></figure><p>The experiment showed that "self-sustaining LLM-based cyber threats" are quite real: "We must prepare for autonomous LLM adversaries: malicious software systems that spread without human intervention and are defined not by fixed exploit code, but by their ability to reason about goals, adapt to observations, and synthesize attack logic in real-time," the authors write in the conclusion of the scientific paper.</p><figure><img alt="Worm's reasoning tree during an attack on a specific target" loading="lazy" src="https://habrastorage.org/r/w1560/webt/f7/8a/2a/f78a2a2246c407b3d65f8fd649dbbf21.png"/><div><figcaption>Worm's reasoning tree during an attack on a specific target</figcaption></div></figure><p>One can imagine the capabilities of such programs if the function of adaptation and LLM reasoning were added to the worms of the past: <a href="https://en.wikipedia.org/wiki/SQL_Slammer">SQL Slammer</a>, <a href="https://en.wikipedia.org/wiki/Conficker">Conficker</a>, or <a href="https://en.wikipedia.org/wiki/Stuxnet">Stuxnet</a>. Thanks to the new functionality – with autonomous agents and local LLMs on infected machines – the worm's spreading capabilities would significantly increase.</p><p>On the other hand, a malicious LLM agent would spread much slower than the fast worms of the past: it is iterative, noisy, and often makes mistakes. In its current form, it would be detected much more easily than those classic worms.</p></div>
+  </main>
+  <footer>
+    Translation generated with Gemini 2.5 Flash-Lite.
+    The original article remains the source of record.
+  </footer>
+</body>
+</html>

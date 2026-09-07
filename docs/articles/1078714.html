@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>&quot;Copilot Sees Only What the User Has Access To.&quot; That&#x27;s Why It Will Show Too Much</title>
+  <meta name="description" content="Microsoft&#x27;s documentation states that the assistant operates within the user&#x27;s permissions, with view access as the threshold. This promise is taken literally, shifting the burden to default settings where SharePoint&#x27;s public access is &quot;the most permissive option.&quot; The guide">
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.65;
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 32px 20px 64px;
+      color: #1f2328;
+    }
+    header {
+      border-bottom: 1px solid #d8dee4;
+      margin-bottom: 28px;
+      padding-bottom: 20px;
+    }
+    .source {
+      color: #57606a;
+      font-size: 0.95rem;
+    }
+    img, video, iframe {
+      max-width: 100%;
+      height: auto;
+    }
+    pre {
+      overflow-x: auto;
+      padding: 16px;
+      background: #f6f8fa;
+      border-radius: 6px;
+    }
+    code {
+      font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+    }
+    blockquote {
+      border-left: 4px solid #d0d7de;
+      margin-left: 0;
+      padding-left: 16px;
+      color: #57606a;
+    }
+    footer {
+      border-top: 1px solid #d8dee4;
+      margin-top: 40px;
+      padding-top: 20px;
+      color: #57606a;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>&quot;Copilot Sees Only What the User Has Access To.&quot; That&#x27;s Why It Will Show Too Much</h1>
+    <p>Microsoft&#x27;s documentation states that the assistant operates within the user&#x27;s permissions, with view access as the threshold. This promise is taken literally, shifting the burden to default settings where SharePoint&#x27;s public access is &quot;the most permissive option.&quot; The guide &quot;Get ready for Microsoft Copilot with SharePoint Advanced Management&quot; addresses accidental oversharing as a separate step. Tools from this guide are analyzed: a hundred sites and a 28-day window for the EEEU report, the choice between &quot;deny access&quot; and &quot;remove from search results without changing permissions.&quot; Also discussed is the limit of what&#x27;s confirmed regarding sensitivity labels. Quotes are taken from four learn.microsoft.com pages via live queries on September 4, 2026. What are the boundaries of permission analysis tools?</p>
+    <p class="source">
+      Machine-translated from Habr.
+      <a href="https://habr.com/ru/articles/1078714/?utm_campaign=1078714&amp;utm_source=habrahabr&amp;utm_medium=rss">Read the original Russian article</a>.
+      Mon, 07 Sep 2026 04:11:04 GMT
+    </p>
+  </header>
+  <main>
+<div><p>My name is Alexander Zhogov, I am the founder of the IT company "+Alliance," and I've been in IT for over twenty years. About a year ago, we started using Copilot within the company, and the access model turned out to be the part of its documentation that I reread most often.</p><p>The most reassuring phrase in Microsoft's documentation sounds something like this: the assistant only accesses data that the user already has rights to. The administrator breathes a sigh of relief. Prematurely: the promise is fulfilled literally, and the literalness here works against you.</p><h3>What Exactly Does the Documentation Promise</h3><p>The page "How does Microsoft Copilot work?" (<code>learn.microsoft.com/en-us/microsoft-365/copilot/microsoft-365-copilot-architecture</code>, <code>ms.date</code> = 2026-03-24) in the "User access and data privacy" section promises literally the following: "Copilot only accesses data that an individual user is authorized to access… Copilot doesn’t access data that the user doesn’t have permission to access". The scope is specified separately: "Operating inside the Microsoft 365 service boundary doesn’t grant Copilot tenant-wide visibility. Data access is always scoped to the signed-in user’s permissions" - operating within the Microsoft 365 service boundary does not give the assistant tenant-wide visibility.</p><p>The mechanism is described on the page "Data, Privacy, and Security for Microsoft Copilot" (<code>learn.microsoft.com/en-us/microsoft-365/copilot/microsoft-365-copilot-privacy</code>, <code>ms.date</code> = 2026-07-09): "Semantic Index honors the user identity-based access boundary so that the grounding process only accesses content that the current user is authorized to access". The threshold is also named there: "Microsoft Copilot only surfaces organizational data to which individual users have at least view permissions". The bar is not high: if an employee has view rights, it's their data for the assistant's output.</p><h3>Where the Promise Stops Being Reassuring</h3><p>The guide "Get ready for Microsoft Copilot with SharePoint Advanced Management" (<code>learn.microsoft.com/en-us/microsoft-365/copilot/get-ready-copilot-sharepoint-advanced-management</code>, <code>ms.date</code> = 2026-07-16) says the same thing about permissions: "Copilot and agents retrieve data from Microsoft Graph and respect existing permissions, sharing settings, and policies". And in the section on access configuration of the same guide, there is a sentence that changes the tone of the whole topic:</p><blockquote><p>"By default, SharePoint sets sharing settings to the most permissive option."</p></blockquote><p>Combine the two sentences. Permissions are respected in good faith, and by default, they are broad. We use Copilot for quick end-to-end search across internal data. Email, Teams chats, documents, OneDrive - the assistant collects material from all these sources at once with a single query. The same mechanism will also retrieve a document that someone once shared too widely and forgot about.</p><p>Microsoft calls this accidental oversharing and addresses it in a separate step of the same guide: "To help prevent accidental oversharing in Copilot and agentic experiences, adjust sharing settings for SharePoint and OneDrive. Use data access governance reports and insights to identify and prioritize oversharing risks".</p><h3>What Tools Analyze Permissions Before the Assistant is Enabled</h3><p>The guide names the analysis tools. The case where a list is more useful than reasoning.</p><p><strong>Content Management Assessment</strong> - "provides administrators with actionable insights and recommendations… Identify potentially overshared content". The tool finds potentially overshared content: the output for the administrator includes candidates for analysis and recommendations.</p><p><strong>Data access governance reports</strong> - "help you identify sites that contain potentially overshared or sensitive content". Inside the set are two reports that I would tackle first. Site permissions baseline report - a map of permissions by site. The "Everyone except external users" (EEEU) report - "helps you identify the top 100 sites where content was shared with your entire organization in the past 28 days".</p><p>Look at the selection boundaries: one hundred sites and 28 days. This is a snapshot; it doesn't work for tenant inventory. A site shared with the entire organization five weeks ago is no longer in the window. Hence my position: I would regularly pull the EEEU report. This is not a documentation requirement; it only mentions the report itself and its window.</p><h3>Two Tools That Are Easily Confused</h3><p>The first one restricts access:</p><blockquote><p>"By using Restricted Access Control, you grant access to SharePoint sites by using groups… Users who aren’t part of the specified group can’t access the site or its contents, even if they had prior access through permissions or a link."</p></blockquote><p>Everyone not in the group cannot access the site or its content, including those who previously had access through permissions or a link.</p><p>The second one doesn't touch permissions at all: Restricted Content Discovery, according to the same guide, "helps to: Prevent content from appearing in Copilot or agentic experiences and in organization-wide search queries; Reduce accidental exposure while leaving site permissions unchanged".</p><p>The entire difference is in the last three words, and they determine the choice. The site should not be accessible to people outside the group at all - restrict access. There is an active process related to permissions, but the site should not appear in the assistant's responses - hide content from search results. The second path is easier to agree on with the data owner: nothing breaks for them. This is my assessment; the documentation is silent on agreements.</p><h3>Sensitivity Labels: What Is Confirmed and What I Haven't Found</h3><p>The privacy page states: "When you have data that’s encrypted by Microsoft Purview Information Protection, Microsoft Copilot honors the usage rights granted to the user. This encryption can be applied by sensitivity labels or by restricted permissions in apps in Microsoft 365 by using Information Rights Management (IRM)". Encryption is applied by sensitivity labels or by restricting permissions in Microsoft 365 apps using IRM, and the assistant respects the usage rights granted to the user.</p><p>The next sentence in the same paragraph is the most practical in the entire section:</p><blockquote><p>"For content accessed through agents in Microsoft 365, encryption can exclude programmatic access, thus limiting the agent from accessing the content."</p></blockquote><p>Encryption can exclude programmatic access and thus limit the agent's access to the content.</p><p>I want to say it more strongly: the label simply blocks the assistant from reading the file. I haven't found such a wording. We ran the privacy page and the license comparison page (<code>.../microsoft-365-copilot-license-feature-overview</code>) entirely with a live query on September 4, 2026: the latter has table rows "Label-aware agent interactions" and "Sensitivity context flows to AI agents" for the E7 level, there is no explicit statement about blocking there. Therefore, in conversations with IT security, I rely on "encryption can exclude programmatic access" and do not promise guarantees.</p><h3>What Remains in the Logs After the Assistant</h3><p>The same privacy section on interaction storage:</p><blockquote><p>"The stored data includes the user’s prompt and Copilot’s response, including citations to any information used to ground Copilot’s response… To view and manage this stored data, admins can use Content search or Microsoft Purview."</p></blockquote><p>For permission analysis, this is, in my opinion, workable material. Citations in the saved response are essentially a list of documents that the assistant accessed on behalf of a specific person. A hypothetical risk turns into file names.</p><p>The user cleans their activity history themselves: "Your users can delete their Copilot activity history… by going to the My Account portal".</p><h3>What the Documentation Doesn't Say - Discuss It Before the Meeting</h3><p>Three boundaries that I keep in mind.</p><p>There is no numerical assessment of the proportion of organizations with oversharing problems on these pages. The risk is described as a consequence of default settings. If you hear a round number like "N percent of companies" in someone else's presentation, ask where the number comes from: it's not from Microsoft documentation.</p><p>The documentation does not describe the behavior when permissions are changed on the fly: what happens when access is revoked exactly at the moment the response is generated is not stated on these pages.</p><p>A complete list of what falls under Restricted Content Discovery outside of SharePoint (e.g., OneDrive files) is not detailed separately.</p><p>Quotes were verified with live queries on September 4, 2026. The pages on <code>learn.microsoft.com</code> do not have revision numbers; <code>ms.date</code> and <code>updated_at</code> change silently - before referencing a page in an internal memo, re-verify the wording.</p><p>I'm still curious about synchronization. If anyone has measured this manually - I've set up a test account, revoked its access to a document, and timed how long it takes for the document to stop appearing in response citations - please write in the comments whether there was a lag, what it was, and on what tenant size. I don't have such a measurement, and at the time of verification, the documentation didn't provide an answer.</p></div>
+  </main>
+  <footer>
+    Translation generated with Gemini 2.5 Flash-Lite.
+    The original article remains the source of record.
+  </footer>
+</body>
+</html>

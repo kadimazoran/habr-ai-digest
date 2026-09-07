@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>5 New Solutions for 1C</title>
+  <meta name="description" content="We looked at several solutions that appeared in August and selected five different automation scenarios: from preparing data for neural networks to signing HR documents via &quot;Goskluch&quot;. Read more">
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.65;
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 32px 20px 64px;
+      color: #1f2328;
+    }
+    header {
+      border-bottom: 1px solid #d8dee4;
+      margin-bottom: 28px;
+      padding-bottom: 20px;
+    }
+    .source {
+      color: #57606a;
+      font-size: 0.95rem;
+    }
+    img, video, iframe {
+      max-width: 100%;
+      height: auto;
+    }
+    pre {
+      overflow-x: auto;
+      padding: 16px;
+      background: #f6f8fa;
+      border-radius: 6px;
+    }
+    code {
+      font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+    }
+    blockquote {
+      border-left: 4px solid #d0d7de;
+      margin-left: 0;
+      padding-left: 16px;
+      color: #57606a;
+    }
+    footer {
+      border-top: 1px solid #d8dee4;
+      margin-top: 40px;
+      padding-top: 20px;
+      color: #57606a;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>5 New Solutions for 1C</h1>
+    <p>We looked at several solutions that appeared in August and selected five different automation scenarios: from preparing data for neural networks to signing HR documents via &quot;Goskluch&quot;. Read more</p>
+    <p class="source">
+      Machine-translated from Habr.
+      <a href="https://habr.com/ru/companies/infostart/articles/1077706/?utm_campaign=1077706&amp;utm_source=habrahabr&amp;utm_medium=rss">Read the original Russian article</a>.
+      Mon, 07 Sep 2026 07:00:08 GMT
+    </p>
+  </header>
+  <main>
+<div><h2>LLM, Finance, "Goskluch", and Routine Automation</h2><p>We looked at several solutions that appeared in August and selected five different automation scenarios: from preparing data for neural networks to signing HR documents via "Goskluch".</p><h3>1. How to Transfer Data from 1C to a Neural Network Without Revealing Real Details</h3><p>One of the problems with corporate use of neural networks arises even before the first request is sent.</p><p>Suppose you need to send a table to a model for analysis. It may contain full names, bank details, addresses, phone numbers, amounts, or other data that you wouldn't want to send to an external service.</p><p><strong>"<a href="https://infostart.ru/marketplace/2757147/">Anonymizer PRO</a>"</strong> acts as an intermediate layer between the source data and the LLM: real values are replaced with pseudonyms, after which the anonymized set can be sent to ChatGPT, Claude, or YandexGPT. The received response can then be converted back, restoring the original values.</p><p>The processing can recognize, in particular:</p><ul><li><p>Full names and organization names;</p></li><li><p>INN, KPP, OGRN, and OGRNIP;</p></li><li><p>IIN and BIN of Kazakhstan;</p></li><li><p>Bank accounts, BIC, and IBAN;</p></li><li><p>Card numbers;</p></li><li><p>Passport data and SNILS;</p></li><li><p>Phone numbers and email addresses;</p></li><li><p>Addresses;</p></li><li><p>Dates of birth;</p></li><li><p>Car license plates.</p></li></ul><p>The handling of numerical indicators is more sophisticated. If financial values are simply replaced with random numbers, the neural network will lose the connection between them. For example, the proportions of expenses between departments or revenue dynamics will change. Therefore, amounts are multiplied by a single coefficient within the current session. This allows preserving proportions, shares, and outliers, and after the analysis is complete, the real values can be restored.</p><p>At the same time, the processing intentionally does not change data whose substitution could disrupt the meaning of the analysis: document dates, platform versions, article numbers, quantities, percentages, contract numbers, and accounting accounts.</p><p>The substitution dictionary is stored in the information base and is accessible to a specific user. Therefore, it is not necessary to complete the entire cycle in one session: you can return to the result later and restore the original values.</p><p>This approach can be useful, for example, when analyzing financial tables, customer requests, or large exports from 1C using external LLMs.</p><h3>2. AI Assistant Directly Inside 1C</h3><p>Another approach is to reduce the number of switches between 1C and the browser altogether.</p><p><strong>"Digital Employee in 1C"</strong> integrates the neural network interaction interface directly into the accounting system.</p><p>A chat with dialogue history is available inside. The user can create separate sessions, attach files and images, and export correspondence. Responses are generated through background jobs, so waiting for the LLM does not block the user's work in 1C.</p><p>But the most interesting scenario is related to corporate knowledge.</p><p>The system can upload:</p><ul><li><p>Regulations;</p></li><li><p>Instructions;</p></li><li><p>Internal policies;</p></li><li><p>Price lists;</p></li><li><p>Other corporate documents.</p></li></ul><p>Separate datasets for assistants are formed from these. For example, you can create a separate assistant for an accountant, HR specialist, support specialist, or sales manager.</p><p>Additionally, the assistant can access the information base data via OData.</p><p>Different operating modes are provided: only with database data, with training materials, a combined mode, working with a report, or automatic source selection.</p><p>Support for OpenAI, DeepSeek, Qwen, and the local TsA-32M model is declared for connection. When using a local LLM server, the solution can operate within the corporate network.</p><p>Image analysis is also supported: for example, you can send a photo or scan of a document to the chat and ask a question about its content.</p><p>The result is not just a "chat in 1C," but a potential access point to several information sources at once: a corporate knowledge base, information system data, and an external or local LLM.</p><h3>3. Financial Contour Instead of a Set of Excel Files</h3><p>AI is not the only focus of the August selection.</p><p>As a company grows, financial accounting often turns into a combination of several information bases, Excel files, correspondence, and separate approval processes.</p><p><strong>CorpFinance</strong> offers to consolidate these processes into a single contour.</p><p>The system includes:</p><ul><li><p>Treasury;</p></li><li><p>Budgeting;</p></li><li><p>Contract management;</p></li><li><p>Project budgeting;</p></li><li><p>Consolidation;</p></li><li><p>Management accounting.</p></li></ul><p>The treasury module includes requests for funds, approvals, limit control, and a payment calendar.</p><p>The budgeting block includes cash flow budgets, profit and loss budgets, management balance sheets, departmental and cost center budgets, and plan-vs-actual control.</p><p>For corporate groups, data consolidation and elimination of intercompany transactions are provided.</p><p>A broader financial contour can include management accounting, IFRS reporting, cost accounting, procurement management, and project budgeting.</p><p>A separate block is dedicated to contracts: you can register and approve contracts, and track performance and payment schedules.</p><p>However, the transition from spreadsheets is not necessarily a one-time event. Excel import is supported, and the system itself is modular: you can start, for example, with treasury and then connect new areas.</p><p>This is particularly relevant for companies that have already "outgrown Excel" but are not yet ready to rebuild their entire financial structure in one project.</p><h3>4. When Automation is One Correctly Modified Print Form</h3><p>Not every task requires a large subsystem.</p><p>Sometimes, it's enough for the user to make one operation, which they perform several times a day, more convenient.</p><p>An example is the external print <a href="https://infostart.ru/marketplace/2736258/">form <strong>M-15 with extended filling</strong></a> for "1C:Complex Automation 2".</p><p>It supplements the standard form without altering the main configuration. The user can choose how to fill the "Account, Subaccount" field:</p><ul><li><p>Determine the account based on the accounting settings of each line;</p></li><li><p>Use one account for all items;</p></li><li><p>Disable additional filling.</p></li></ul><p>The print form additionally displays:</p><ul><li><p>Price excluding VAT;</p></li><li><p>Amount excluding VAT;</p></li><li><p>VAT amount;</p></li><li><p>Amount including VAT;</p></li><li><p>Total VAT amount.</p></li></ul><p>All calculations are performed only for the printed representation and do not change the original document.</p><p>There is also saving of user settings and batch generation of multi-page M-15 forms for several documents at once.</p><p>Interestingly, the processing itself does not have its own layout: it takes the current standard form of the installed configuration and supplements the already generated tabular document.</p><p>Thanks to this, the structure of the standard form is preserved.</p><p>A good example of how the effect of automation does not always depend on the scale of development. Sometimes, a few correctly automated actions can save users more time than a large new subsystem.</p><h3>5. Signing HR Documents via "Goskluch" Directly from 1C</h3><p>Another scenario becomes particularly noticeable in companies with branch networks and remote employees.</p><p>If an employee is in another city, a simple order for leave or business trip can go through several emails, printouts, scans, and repeated requests.</p><p>The <strong>"Goskluch" integration module</strong> allows sending HR documents for electronic signature directly from 1C.</p><p>Two basic scenarios are supported:</p><ul><li><p>Sending one document to one or more employees;</p></li><li><p>Mass sending of several similar documents to a group of employees.</p></li></ul><p>For individuals, work with enhanced non-qualified and enhanced qualified electronic signatures is declared.</p><p>For authorized representatives of legal entities, a qualified electronic signature in the "Goskluch" mobile application is provided.</p><p>The signing route is configurable: you can define the sequence of participants and the set of signatories.</p><p>In addition to standard documents, custom HR print forms can be connected for exchange through standard 1C mechanisms.</p><p>The signing status is also tracked within 1C. You can see completed and rejected documents, find documents with expired deadlines, and resend them to the employee.</p><p>Signed documents are saved in an archive.</p><p>The module can also be used in conjunction with the "1C:Employee Portal" service, integrating "Goskluch" signing into the existing HR electronic document management system.</p><h3>What These Five Solutions Show</h3><p>These tools solve very different tasks, from preparing data for LLMs to printing a single specific invoice. But together, they clearly illustrate several directions in which automation around 1C is currently developing.</p><p>First: <strong>AI is gradually moving from a separate browser tool directly into the company's operational workflow</strong>. This creates demand for LLM integration with 1C, corporate knowledge bases, and data anonymization tools.</p><p>Second: The movement from individual spreadsheets and manual approvals towards <strong>end-to-end processes within the information system</strong> continues. This is evident in both financial accounting and HR electronic document management.</p><p>And third: Automation still doesn't necessarily mean a large project. Sometimes, it's quite enough to eliminate one repetitive manual scenario: supplement a print form, automate document sending, or eliminate data transfer between windows.</p><p>It is precisely in such small but regularly repeated operations that the most significant savings in working time are often found.</p></div>
+  </main>
+  <footer>
+    Translation generated with Gemini 2.5 Flash-Lite.
+    The original article remains the source of record.
+  </footer>
+</body>
+</html>

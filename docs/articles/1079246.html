@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>What Prevents AI from Becoming a Full-Fledged Work Tool: Outcomes of the &quot;AI Without Illusions&quot; Meetup</title>
+  <meta name="description" content="Those implementing AI have a new headache. The more a technology can do, the harder it is to figure out where to apply it. A chatbot just needs to answer a user&#x27;s request, but an agent can already be given access to a browser, corporate documents, code, and other tools. And with this, it&#x27;s">
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.65;
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 32px 20px 64px;
+      color: #1f2328;
+    }
+    header {
+      border-bottom: 1px solid #d8dee4;
+      margin-bottom: 28px;
+      padding-bottom: 20px;
+    }
+    .source {
+      color: #57606a;
+      font-size: 0.95rem;
+    }
+    img, video, iframe {
+      max-width: 100%;
+      height: auto;
+    }
+    pre {
+      overflow-x: auto;
+      padding: 16px;
+      background: #f6f8fa;
+      border-radius: 6px;
+    }
+    code {
+      font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+    }
+    blockquote {
+      border-left: 4px solid #d0d7de;
+      margin-left: 0;
+      padding-left: 16px;
+      color: #57606a;
+    }
+    footer {
+      border-top: 1px solid #d8dee4;
+      margin-top: 40px;
+      padding-top: 20px;
+      color: #57606a;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>What Prevents AI from Becoming a Full-Fledged Work Tool: Outcomes of the &quot;AI Without Illusions&quot; Meetup</h1>
+    <p>Those implementing AI have a new headache. The more a technology can do, the harder it is to figure out where to apply it. A chatbot just needs to answer a user&#x27;s request, but an agent can already be given access to a browser, corporate documents, code, and other tools. And with this, it&#x27;s no longer enough to ensure the model is smart. You also need to prove that it solves a specific task, fits into the process, and doesn&#x27;t bring new risks. This was the focus of the &quot;AI Without Illusions&quot; meetup. Experts analyzed corporate AI from various angles – from finding real human benefit and early agent scenarios to internal tools and their implementation across an entire organization. Read more</p>
+    <p class="source">
+      Machine-translated from Habr.
+      <a href="https://habr.com/ru/companies/ru_mts/articles/1079246/?utm_campaign=1079246&amp;utm_source=habrahabr&amp;utm_medium=rss">Read the original Russian article</a>.
+      Tue, 08 Sep 2026 07:10:54 GMT
+    </p>
+  </header>
+  <main>
+<div><figure><img loading="lazy" src="https://habrastorage.org/r/w1560/getpro/habr/upload_files/de2/fad/ae0/de2fadae09e98bd7d39daeb6b52595a6.jpeg"/></figure><p>Those implementing AI have a new headache. The more a technology can do, the harder it is to figure out where to apply it. A chatbot just needs to answer a user's request, but an agent can already be given access to a browser, corporate documents, code, and other tools. And with this, it's no longer enough to ensure the model is smart. You also need to prove that it solves a specific task, fits into the process, and doesn't bring new risks.</p><p>This was the focus of the "AI Without Illusions" meetup. Experts analyzed corporate AI from various angles – from finding real human benefit and early agent scenarios to internal tools and their implementation across an entire organization.</p><h2>A Good AI Feature Can Turn Out to Be Useless</h2><p>Discussions about AI usually start with what the <a href="https://habr.com/ru/companies/ru_mts/articles/1075826/">model can do.</a> What tools are connected to it, how complex a query it can handle. But from a product perspective, the order needs to be changed. Artem Mikheenko suggested looking at any new feature through the lens of the user's task.</p><blockquote><p><em>A simple test: remove the feature from the product. If the process doesn't change, then the value of this feature is questionable. The user doesn't need the feature itself. They need to solve a problem: reduce manual work and errors, stop jumping between a dozen chats and systems.</em></p></blockquote><p>This works particularly rigorously for corporate AI. Within a company, it's quite quick to build a tool that generates text, writes code, or searches for information. However, the mere existence of such a tool doesn't mean it will be used every day. If the technology doesn't change the process or requires more actions from a person than usual, it risks remaining a beautiful demo.</p><figure><img alt="Artem Mikheenko, Product Owner of MWS Tables. Talk "Why Your AI Is Needed by No One"" loading="lazy" src="https://habrastorage.org/r/w1560/getpro/habr/upload_files/563/aad/1b8/563aad1b8cb8aed3ea37a09a0ca73d13.jpeg" title="Artem Mikheenko, Product Owner of MWS Tables. Talk "Why Your AI Is Needed by No One""/><div><figcaption><em>Artem Mikheenko, Product Owner of MWS Tables. Talk "Why Your AI Is Needed by No One"</em></figcaption></div></figure><p>Evaluating an AI product solely by the quality of its response is insufficient – you need to understand how much of the work it actually takes over and what happens to the process after its introduction. A few saved minutes on a routine operation will provide much more value than an impressive model demo.</p><h2>From Response to Action</h2><p>The next step for assistants is the transition from generating responses to taking independent action. Pelageya Pashinskaya, using the MWS Life Assistant as an example, showed how this works. LLMs by themselves only work with text, so they are given tools: first a calculator, then something more complex, including a browser. As a result, the model can both tell the user how to do something and perform it independently.</p><p>This sounds like a minor interface change, but in fact, it's a different way of interacting with AI. In a regular chat, a person asks, gets an answer, and then acts themselves. With an agent, the task can be given entirely: it will choose the tools and the order in which to use them.</p><figure><img alt="Pelageya Pashinskaya, ML Engineer at MWS. Talk "What MWS Life Assistant Is For"" loading="lazy" src="https://habrastorage.org/r/w1560/getpro/habr/upload_files/b20/b11/6a4/b20b116a408f02acc8f5a265f3e85358.jpeg" title="Pelageya Pashinskaya, ML Engineer at MWS. Talk "What MWS Life Assistant Is For""/><div><figcaption><em>Pelageya Pashinskaya, ML Engineer at MWS. Talk "What MWS Life Assistant Is For"</em></figcaption></div></figure><p>And immediately, the cost of error increases. A person will notice and correct an inaccurate response. But if the model has already done something in the browser or accessed corporate data, the consequences become much more serious. The development of agent systems inevitably leads to work on issues of access, control, and responsibility.</p><h2>Corporate AI Can't Just Be Smart</h2><p>Mark Majidov showed another path for AI development. At T1, the digital developer assistant was conceived as a tool for IT professionals. But then new use cases grew around it. The company developed a demand for a universal corporate assistant, and thus the scenario of working with the model and proprietary corporate and personal documents was born.</p><p>The technical task subtly transforms into an organizational one. Employees will use AI services one way or another, so the company will either provide its own alternative or try to control the process. In the case of T1, the solution was deployed within the corporate network so that code and documentation remained in a controlled environment. Currently, it is used by over 5,000 employees of the holding and colleagues from VTB.</p><figure><img alt="Mark Majidov, Product Owner at T1. Talk "Digital Developer Assistant: From Open-Source Solutions to Secure Use within an Enterprise Corporation"" loading="lazy" src="https://habrastorage.org/r/w1560/getpro/habr/upload_files/093/19f/7dd/09319f7dd188c0555f5504fa6df48e58.jpeg" title="Mark Majidov, Product Owner at T1. Talk "Digital Developer Assistant: From Open-Source Solutions to Secure Use within an Enterprise Corporation""/><div><figcaption><em>Mark Majidov, Product Owner at T1. Talk "Digital Developer Assistant: From Open-Source Solutions to Secure Use within an Enterprise Corporation"</em></figcaption></div></figure><p>Corporate AI cannot be implemented once and forgotten. As the audience grows, so do the use cases, access requirements, and knowledge sources. What is suitable for a developer, analyst, or manager may not be suitable for another. Thus, product development turns into a constant search for balance between universality, utility, and the constraints of the corporate environment.</p><h2>From Pilot to Work Tool</h2><p>The main gap in implementation occurs when transitioning from a prototype to mass use. At the pilot stage, it's enough to show that the model can perform the task. When integrating into work processes, you need to understand who will use it every day, what data they have access to, who is responsible for the result, and how to measure all of this.</p><p>The number of requests to the model or the number of people who opened the chatbot tells almost nothing. It shows employee interest in the technology, not its business value. Much more important are the changes in the process itself: time saved per operation, reduction in manual steps and errors, redistribution of work between humans and AI.</p><figure><img alt="Meetup Audience" loading="lazy" src="https://habrastorage.org/r/w1560/getpro/habr/upload_files/9fe/7a8/04b/9fe7a804b53da8f2e0de3789a64777cb.jpeg" title="Meetup Audience"/><div><figcaption><em>Meetup Audience</em></figcaption></div></figure><p>AI implementation is increasingly resembling product and organizational work rather than an IT department task. The team needs to find a specific scenario, test it with live users, integrate it into existing processes, and only then scale it. At the same time, scaling should not kill control: the more authority an agent receives, the more important it is to define the boundaries of its autonomy in advance.</p><h2>So, What's the Bottom Line?</h2><p>Corporate AI is gradually moving away from the role of a reference book that simply answers questions. It is gaining access to data, learning to use external tools, performing chains of actions, and integrating into specific processes.</p><p>The quality of an individual model's work is becoming secondary. The best AI product is not the one that can do the most, but the one that noticeably changes a specific process and behaves predictably in the conditions for which it was created.</p><p>In a corporate environment, a beautiful demo or a successful experiment by one team is not enough. The technology still needs to be integrated into the infrastructure, security requirements must be considered, employees must be trained, and results must be tracked. This is ordinary product work, but the cost of error is higher.</p></div>
+  </main>
+  <footer>
+    Translation generated with Gemini 2.5 Flash-Lite.
+    The original article remains the source of record.
+  </footer>
+</body>
+</html>

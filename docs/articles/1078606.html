@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>The Gate is Green, but Useful Results Get Lost: Three Errors in an LLM Pipeline</title>
+  <meta name="description" content="The model didn&#x27;t return all records, the validator discarded usable data, and a manual queue hid suitable job postings. I&#x27;ll discuss three places where my pipeline lost useful results and the checks that helped detect them. Read on">
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.65;
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 32px 20px 64px;
+      color: #1f2328;
+    }
+    header {
+      border-bottom: 1px solid #d8dee4;
+      margin-bottom: 28px;
+      padding-bottom: 20px;
+    }
+    .source {
+      color: #57606a;
+      font-size: 0.95rem;
+    }
+    img, video, iframe {
+      max-width: 100%;
+      height: auto;
+    }
+    pre {
+      overflow-x: auto;
+      padding: 16px;
+      background: #f6f8fa;
+      border-radius: 6px;
+    }
+    code {
+      font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+    }
+    blockquote {
+      border-left: 4px solid #d0d7de;
+      margin-left: 0;
+      padding-left: 16px;
+      color: #57606a;
+    }
+    footer {
+      border-top: 1px solid #d8dee4;
+      margin-top: 40px;
+      padding-top: 20px;
+      color: #57606a;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>The Gate is Green, but Useful Results Get Lost: Three Errors in an LLM Pipeline</h1>
+    <p>The model didn&#x27;t return all records, the validator discarded usable data, and a manual queue hid suitable job postings. I&#x27;ll discuss three places where my pipeline lost useful results and the checks that helped detect them. Read on</p>
+    <p class="source">
+      Machine-translated from Habr.
+      <a href="https://habr.com/ru/articles/1078606/?utm_campaign=1078606&amp;utm_source=habrahabr&amp;utm_medium=rss">Read the original Russian article</a>.
+      Tue, 08 Sep 2026 08:13:41 GMT
+    </p>
+  </header>
+  <main>
+<div><h2>After LLM Review: Where the Pipeline Loses Useful Results</h2><p>In the <a href="https://habr.com/ru/articles/1062614/">first article</a>, I discussed how to limit the authority of an LLM judge. If an answer can be verified by ordinary code, the final word belongs to the code. If there's no confident decision, the case goes for manual review.</p><p>But sending a record for manual review doesn't guarantee a human will see it. And reviewing all received answers doesn't mean the model responded to all inputs.</p><p>I encountered this in a bot for selecting job postings. During analysis, I found three places where the result didn't reach the user: an incomplete model response, an overly strict validator, and a queue where suitable job postings remained out of view. Below, I'll show the errors and the checks that helped detect them. They will also be useful in other batch processing tasks using LLMs: documents, inquiries, resumes.</p><h3>How the Analysis Began</h3><p>The bot collects job postings, checks them against a candidate's profile, and shows suitable ones. At some point, it started sending only two job postings a week instead of dozens. Final checks were passing, but the bot's usefulness was minimal.</p><p>In one run, there were 543 posts. Of these, 530 received a <code>skip</code>, meaning "do not show." Of these rejections, 196 were due to a single role filter.</p><p>The first thought was to weaken the filter. But first, I decided to see what was happening to the posts between loading and display.</p><p>I'll immediately separate two things. In this run, all 543 posts received a result; none disappeared from the count. I found the error with lost records during code analysis, and later a new check caught it in other runs. Rejections and processing skips turned out to be different problems.</p><h3>1. Some Responses Didn't Reach Processing, but the Batch Was Considered Ready</h3><p>Posts are sent to the model in batches. For each post, it should return a markup. Then, the code checks the response and chooses a route: show the job posting, reject it, or send it for manual review.</p><p>Here's a simplified fragment of response processing:</p><pre><code>missing = expected_ids - seen_ids
+if missing:
+    errors.append(f"нет результата для: {sorted(missing)}")
+if errors:
+    print(f"[chunk {idx}] validation errors: {errors}")
+ok = True      # даже если есть ошибки
+break
+</code><div><a href="https://sourcecraft.dev/"><img loading="lazy"/></a></div></pre><p>The code noticed missing records, printed them to the log, and still set <code>ok = True</code>. The batch was considered processed, and no retry was performed.</p><p>Further pipeline processing only worked with the marked records. The rest did not end up in display, rejections, or the manual queue. Checks for the remaining responses might have passed: everything was fine with these responses.</p><p>The summary by route also didn't help. It only counted results that reached it. If the total number is taken from the same summary, the sum always adds up.</p><h4>What I Changed</h4><p>The input count is now taken before processing, regardless of the number of responses. For the entire run, equality is checked:</p><pre><code>входы = обработанные + отклонённые + технические ошибки + оговорённые исключения
+</code><div><a href="https://sourcecraft.dev/"><img loading="lazy"/></a></div></pre><p>Each record must be accounted for in only one category. Exceptions are defined in advance, with a name and quantity. If the numbers don't match or an unknown reason for exception is indicated, the run terminates with an error.</p><p>Quantities alone are not enough: a duplicate can compensate for a skip. Therefore, at the batch level, identifiers for expected and received records are needed. In the example above, they were already present, but the found difference didn't affect anything.</p><p>The number of technical errors is checked separately. If all records are accounted for, but the model timed out on each, the task is still not completed. For me, the acceptable number of errors for <code>judge_error</code> and <code>timeout</code> is zero. I call these conditions together the run contract.</p><h4>How the Check Worked</h4><p>A few days later, I was expanding the selection profile: first, I changed the rules in the code, then the prompt. It required re-marking 188 records.</p><p>168 received markup. Another 20 did not reach the routing stage. The check stopped the run:</p><pre><code>FAIL coverage: прогон не выполнил агрегатный контракт
+  reason 'missing_record' on 20 case(s), contract allows at most 0
+</code><div><a href="https://sourcecraft.dev/"><img loading="lazy"/></a></div></pre><p>Previously, these twenty records already had routes. After re-marking, the results disappeared. Without the new check, this would have looked like a successful update.</p><p>After correcting the prompt format, re-processing yielded results for all 20. However, the reason in the report turned out to be inaccurate: the model only failed to return two records. It returned the other eighteen, but they were rejected by the validator.</p><h3>2. The Validator Discarded a Job Posting Due to an Auxiliary Field</h3><p>Responses sometimes contained values not from the expected list. For example, a field with options <code>yes</code>, <code>no</code>, and <code>unknown</code> received <code>pass</code>. In other cases, the model returned a string where an object was expected.</p><p>The error repeated even with unchanged code and prompt. In one run, four out of 115 records remained without a result. In another, out of 764, an incorrect value appeared in 11 records. Six were saved by retrying the request, six remained without a result even after that. One more record was not returned by the model for another reason.</p><p>The prompt already explicitly stated:</p><pre><code>remote_from_russia и relocation принимают ТОЛЬКО yes/no/unknown - не pass/fail
+</code><div><a href="https://sourcecraft.dev/"><img loading="lazy"/></a></div></pre><p>The model still returned <code>pass</code>. Writing the prohibition again would not have been enough.</p><p>During analysis, it turned out that some problematic fields were only needed for reporting and sorting. The routing decision was made separately. But an incorrect hint led to the rejection of the entire job posting, even though other data allowed it to be processed.</p><h4>What I Changed</h4><p>For auxiliary fields, I replaced rejection with a default value. For example, an incorrect value in the <code>yes</code>/<code>no</code>/<code>unknown</code> field becomes <code>unknown</code>, not <code>no</code>: lack of certainty should not turn into a rejection.</p><p>At the same time, <code>pass</code> is not automatically converted to <code>yes</code>. The code should not guess what the model meant. The original value is saved nearby, and the replacement is reflected in the diagnostics.</p><p>This is how I handled eight auxiliary fields. This is not a general permission to accept any answer: an incorrect verification status or an incorrect quote necessary for justification still counts as an error.</p><p>Why the model sometimes confuses values, I haven't figured out yet. On re-processing seven records, it returned the correct answer itself; no replacements were needed. Perhaps it's related to the batch size or response length, but I haven't conducted a separate experiment on this.</p><h4>Why the Report Said the Model Returned Nothing</h4><p>Another error was found here. An invalid record initially received the reason <code>invalid_record</code> but did not end up in the list of successfully processed items. The next step considered everything not in this list as missing and overwrote the reason to <code>missing_record</code>.</p><p>Therefore, in the report, all twenty records appeared as missing, even though eighteen were received and rejected by the code.</p><p>I even carried this wording over to the first draft of the article. I noticed the difference when cross-referencing with the detailed log: the same identifiers first had an incorrect value, followed by a lack of result.</p><p>I separated the reasons. When deciding on a batch retry, both are considered: both a missing response and a response that failed validation. The count check correctly identified the loss, but by itself, it didn't explain how to fix it.</p><h3>3. A Job Posting Reached the Manual Queue, but Not a Human</h3><p>Now let's return to the 530 rejections. The count check won't find anything here: <code>skip</code> is a accounted result. It doesn't answer the question of whether the job posting was rejected correctly.</p><p>I collected feedback on the displayed cards: wrong role, unsuitable language, country restriction. I separately noted reasons that were not filtering errors, such as an already closed job posting.</p><p>Of the 33 rejected postings reviewed by users, 31 were related to the role. But in 30 cases from this group, the model itself answered <code>unknown</code>. Only in one case did it set <code>pass</code>, and the human disagreed.</p><p>This review helped analyze the displayed cards. It said nothing about the job postings the user didn't see. For this, I had to separately examine the rejected records and the manual queue.</p><p>In the queue, I found 22 job postings suitable for the profile. They received <code>unknown</code> and were almost never shown: the display limit was set, and the order was determined by the model's confidence in its own markup. This is not the same as the job posting matching the candidate's profile.</p><h4>What I Changed</h4><p>After changing the sorting on a tested set of 169 cards, all 22 suitable job postings made it into the display limit. Before the change, only one did.</p><p>This is a result on one set, not a measure of the entire system's completeness. But it showed a specific problem: suitable job postings were already in the queue, but the user barely saw them. Simply weakening the role filter wouldn't fix this.</p><p>I also had to adjust the method for checking hidden postings. In the first sample, all eight posts turned out not to be job postings at all. Therefore, I subsequently selected examples separately by rejection reason to check other filters as well.</p><p>In the first article, manual review was the solution for uncertain cases. Here, it turned out that this solution has a limitation: if the queue is larger than a person can review, it's important not only to put the record there but also to understand which records remain unaddressed.</p><h3>What You Can Check for Yourself</h3><p>To start, you don't necessarily need to change the model or install a library. I would check three situations on a small test batch:</p><ol><li><p>The model returned incomplete results. Is it visible which ones are missing? Does incomplete processing end with an error, or is the log the only trace?</p></li><li><p>The model made an error in an auxiliary field. Is it really necessary to reject the entire record because of it? Does the report distinguish such a rejection from a missing response?</p></li><li><p>A record went for manual review. Does it end up in the human-accessible display? What remains beyond the limit, and are there any useful results among them?</p></li></ol><p>It's also worth checking for duplicates instead of missed records. The sum in such a test might add up, so tracking by identifiers is necessary.</p><p>If specific calls to a certain branch are expected in the test set, also check that it was actually triggered. But don't expect this for any production batch: among ten new posts, there might honestly be no suitable job postings.</p><h3>Code and Result Boundaries</h3><p>I moved the overall check of outcome counts, routes, and error reasons into <code>grounded-judge-gate</code>:</p><pre><code>pip install grounded-judge-gate==0.3.0
+</code><div><a href="https://sourcecraft.dev/"><img loading="lazy"/></a></div></pre><p>The source code and tests for this version are fixed with the tag <a href="https://github.com/ErnisBadmae/grounded-judge-gate/tree/v0.3.0"><code>v0.3.0</code></a>. Processing of job posting fields, sorting, and queue auditing remained in the pipeline itself. The library does not determine which job posting a person needs.</p><p>The check detected losses three times in real runs: once after my correction, twice on new data with unchanged code. This is several weeks of observation, not proof of reliability during long-term operation.</p><p>I haven't yet established regular auditing of hidden job postings, so I still cannot name the overall completeness of the selection. Processing checks do not replace this measurement.</p><p>After the first analysis, I primarily focused on ensuring the system didn't accept questionable answers. Now, another question has been added: what useful information didn't reach the user? To answer this, I had to look at both the input records, the rejections, and the contents of the manual queue.</p></div>
+  </main>
+  <footer>
+    Translation generated with Gemini 2.5 Flash-Lite.
+    The original article remains the source of record.
+  </footer>
+</body>
+</html>

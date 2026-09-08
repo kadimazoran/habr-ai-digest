@@ -135,6 +135,14 @@
     "summary": "In recent years, writing working code has become almost trivially easy, while building a good software system has become harder. Today, someone without a traditional IT background can, in an evening, assemble an interface, API, database, and even deploy something. And then the real fun begins: the architecture starts to fall apart, dependencies take on a life of their own, security appears in \"version 2.0,\" and no one really understands why the system works at all. I wrote this article after observing colleagues, students, and acquaintances who are increasingly using AI for development. And I caught myself thinking: AI has made code production cheaper, but it has hardly made understanding what code to produce any cheaper. Hence the main question: what should a small IT company look like if a significant part of the work can already be done by digital performers? I present my controversial model of such a company: a smart analyst, an architect-developer, a super-tester, a dreamer, a DevOps engineer, and a security paranoid. Plus, the company's collective memory, because without it, neural networks quickly start reinventing the architecture from scratch. Perhaps half of these roles could indeed be filled by one person in slippers. But then, an unpleasantly large number of requirements arise for that person... What have you invented now?",
     "title": "The Architect, the Paranoid, the Dreamer, and Other Employees of the Future IT Company"
   },
+  "https://habr.com/ru/articles/1078606/?utm_campaign=1078606&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Tue, 08 Sep 2026 08:13:41 GMT",
+    "slug": "1078606",
+    "source_url": "https://habr.com/ru/articles/1078606/?utm_campaign=1078606&utm_source=habrahabr&utm_medium=rss",
+    "summary": "The model didn't return all records, the validator discarded usable data, and a manual queue hid suitable job postings. I'll discuss three places where my pipeline lost useful results and the checks that helped detect them. Read on",
+    "title": "The Gate is Green, but Useful Results Get Lost: Three Errors in an LLM Pipeline"
+  },
   "https://habr.com/ru/articles/1078632/?utm_campaign=1078632&utm_source=habrahabr&utm_medium=rss": {
     "model": "gemini-2.5-flash-lite",
     "published": "Mon, 07 Sep 2026 06:26:14 GMT",
@@ -255,6 +263,14 @@
     "summary": "For parallel work, it's no longer necessary to spin up a team of sub-agents every time. Already open sessions accept tasks, return results, and pass the necessary context to each other. But honestly, it's easier in your style to ask Codex/Claude to explain how it all works than to read this article; it's for the not-lazy. Don't be lazy and read it.",
     "title": "The Death of Sub-agents in Claude and Codex"
   },
+  "https://habr.com/ru/articles/1078890/?utm_campaign=1078890&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Tue, 08 Sep 2026 07:33:52 GMT",
+    "slug": "1078890",
+    "source_url": "https://habr.com/ru/articles/1078890/?utm_campaign=1078890&utm_source=habrahabr&utm_medium=rss",
+    "summary": "I'm writing this article because I spent quite a bit of time figuring out how to connect Google Workspace services to Claude Code CLI and OpenClaw. And I want to make it easier for others. I've tried to explain what's happening so that when you read your agent's instructions or documentation, you understand what they want from you. The article doesn't contain a step-by-step guide to setting up a specific client. It's a collection of knowledge on how to set up any client (e.g., one written by your agent). Connecting an agent to calendar and mail is a useful topic. I can't imagine scheduling meetings for many people manually anymore (though I have Vietnam flashbacks =)) Read more",
+    "title": "How to connect Google Calendar and Google Drive to an agent or Why is everything so complicated"
+  },
   "https://habr.com/ru/articles/1078896/?utm_campaign=1078896&utm_source=habrahabr&utm_medium=rss": {
     "model": "gemini-2.5-flash-lite",
     "published": "Sat, 05 Sep 2026 21:25:16 GMT",
@@ -326,6 +342,38 @@
     "source_url": "https://habr.com/ru/articles/1079274/?utm_campaign=1079274&utm_source=habrahabr&utm_medium=rss",
     "summary": "In this investigation, we explore the performance of Qwen3.8-27B models with different quantization levels (BF16, 8-bit, 4-bit) on a Mac Studio. Contrary to initial assumptions, increasing reasoning effort (reasoning_effort=xhigh) did not improve performance for quantized models, especially in coding tasks. Instead, a medium reasoning setting (medium, thinking_budget=2048) yielded better results for 4-bit and 8-bit models, demonstrating that more thinking doesn't always equate to better quality, particularly when specific artifacts like compilable code are required. The study suggests that for tasks demanding concrete outputs, models need to finish thinking and start producing, rather than getting lost in excessive deliberation.",
     "title": "The Case of Overthinking: Why Thinking Too Much is Harmful"
+  },
+  "https://habr.com/ru/articles/1079574/?utm_campaign=1079574&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Tue, 08 Sep 2026 07:44:57 GMT",
+    "slug": "1079574",
+    "source_url": "https://habr.com/ru/articles/1079574/?utm_campaign=1079574&utm_source=habrahabr&utm_medium=rss",
+    "summary": "At first glance, search in a service marketplace seems like a standard task. It involves a service catalog, Elasticsearch, query normalization, ranking, and caching – nothing unique. However, this is only on the surface. I'll explain how search works at Profi.ru, why we integrated an LLM, and why the language model complements, rather than replaces, our classic algorithm.",
+    "title": "We Added LLM to Search, But Didn't Replace Elasticsearch. Why?"
+  },
+  "https://habr.com/ru/articles/1079608/?utm_campaign=1079608&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Mon, 07 Sep 2026 20:29:53 GMT",
+    "slug": "1079608",
+    "source_url": "https://habr.com/ru/articles/1079608/?utm_campaign=1079608&utm_source=habrahabr&utm_medium=rss",
+    "summary": "The webinar summary below is part of a closed intensive course I put together around a series of webinars from the Maven platform about AI cases in American big tech. First, we watch a live stream with practitioners from Cursor, Meta, Netflix, and similar companies, and the next day, we discuss it in a small group. We don't watch adapted educational English, but the live speech of people who are currently building products on agents, and we extract vocabulary and life hacks from it. The webinar from which I made the article was conducted by Lauren Tan from Cursor. The webinar topic is trust in AI agents in development: how to reach the point where agents merge PRs without your involvement (about a built verification system). Below is a summary for those who want to understand the case in Russian. Enjoy :-) Read more",
+    "title": "[Translation] Cursor Case Study: 800+ PRs a Month, or How to Build Trust in AI Agents for Development"
+  },
+  "https://habr.com/ru/articles/1079638/?utm_campaign=1079638&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Tue, 08 Sep 2026 02:56:10 GMT",
+    "slug": "1079638",
+    "source_url": "https://habr.com/ru/articles/1079638/?utm_campaign=1079638&utm_source=habrahabr&utm_medium=rss",
+    "summary": "When an agent in production makes a mistake, the team's discussion goes in circles: \"the model is dumb,\" \"the prompt is flawed,\" \"the API is to blame.\" A recent study from Scale AI assigns blame for failures to the edge between components and the fault side. It turns out that \"the model is to blame\" almost never means \"fix it with fine-tuning\": I break down a taxonomy of 41 failure modes, a catalog summary, and four of my own failures with numbers – none were resolved by changing the model. Read on.",
+    "title": "Who Actually Broke Your AI Agent: The Model or the Harness?"
+  },
+  "https://habr.com/ru/articles/1079690/?utm_campaign=1079690&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Tue, 08 Sep 2026 07:20:45 GMT",
+    "slug": "1079690",
+    "source_url": "https://habr.com/ru/articles/1079690/?utm_campaign=1079690&utm_source=habrahabr&utm_medium=rss",
+    "summary": "I spend over a billion tokens a day (I checked the statistics for Minimax / GPT), sometimes running 7-9 agent threads for 12 hours. How do I manage not to go broke? How does what I do not fall apart, but somehow work? Previous article: https://habr.com/ru/articles/1030414/ More than 3 months have passed since May 1st. Several eras of AI agent quality and surrounding infrastructure have passed. Several paradigms have shifted. Sub-agents are no longer effective, Western frontiers have not fallen behind China, and much more. All in order. Read more",
+    "title": "A Billion Tokens a Day. Real Data on Subscription Sizes and Model Quality. AI Ambassador's Experience — Part 2"
   },
   "https://habr.com/ru/companies/1c/articles/1071340/?utm_campaign=1071340&utm_source=habrahabr&utm_medium=rss": {
     "model": "gemini-2.5-flash-lite",
@@ -471,6 +519,14 @@
     "summary": "The screen looked almost alive. The model assembled a page with cards, statuses, and badges in minutes. It seemed I could put my feet up and finish my coffee. But then the code reached review. Beneath the neat interface were styled.div, HEX colors, and props that never existed in our design system. The result was that very lab monster, wheezing but unable to live in the project. So, I conducted an experiment with one frontend task, one model, and four identical copies of the project. In the first case, I left the agent without hints; in the second, I gave it a skill with project rules; in the third, I connected MCP with design system documentation; and in the fourth, I combined everything. I wanted to find out which combination would turn code generation into an elixir of speed, and which would spawn another monster unable to survive an encounter with typecheck and build. Read on.",
     "title": "Four Copies of the Project and One Lab Monster. How to Teach an AI Agent to Write Code According to Design System Rules"
   },
+  "https://habr.com/ru/companies/raiffeisenbank/articles/1078392/?utm_campaign=1078392&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Tue, 08 Sep 2026 08:46:08 GMT",
+    "slug": "1078392",
+    "source_url": "https://habr.com/ru/companies/raiffeisenbank/articles/1078392/?utm_campaign=1078392&utm_source=habrahabr&utm_medium=rss",
+    "summary": "Let's consider a typical product task. We need to add a new feature. The team describes it using Specification-Driven Development, defining scenarios, constraints, APIs, and acceptance criteria. An agent receives the context and quickly writes code, tests, and infrastructure. Within a day, or even sooner, the result is almost ready. But where's the waterfall in this? If the feature is isolated, the team can safely roll it out under a flag, quickly see user feedback, and just as quickly roll back the change. Then, a large agent batch becomes an excellent experiment. Hello, Habr! My name is Marat Kinyabulatov, I'm an expert in agile practices and responsible for the efficiency of engineering teams at the core of the bank. In this article, I'll discuss when SDD truly helps agents and when it prematurely locks in a solution. I'll illustrate this with several cases and explain how to maintain a short feedback loop when code appears faster than the team can verify the results. Read on",
+    "title": "AI Agents' SDD: How We Re-invented a Very Fast Waterfall"
+  },
   "https://habr.com/ru/companies/rostelecom/articles/1077944/?utm_campaign=1077944&utm_source=habrahabr&utm_medium=rss": {
     "model": "gemini-2.5-flash-lite",
     "published": "Thu, 03 Sep 2026 10:04:20 GMT",
@@ -503,6 +559,14 @@
     "summary": "AI accelerator manufacturers continue to increase the number of tensor cores and adopt shorter data formats like FP8 and FP4. Performance seems to be growing at an impressive rate, but there's a catch. Compute units need a constant supply of model weights and intermediate data. If memory can't keep up, the expensive chip with tens of billions of transistors literally idles, waiting for the next batch of data. Samsung plans to solve this with HBM5, aiming to double performance relative to HBM4E and increase power efficiency by 20%. The bandwidth of a single stack could approach 4 TB/s with a 4096-bit bus. Let's dive into the details.",
     "title": "Tensor Cores Are No Longer Enough: Why AI Accelerators Will Hit a Memory Wall"
   },
+  "https://habr.com/ru/companies/ru_mts/articles/1079246/?utm_campaign=1079246&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Tue, 08 Sep 2026 07:10:54 GMT",
+    "slug": "1079246",
+    "source_url": "https://habr.com/ru/companies/ru_mts/articles/1079246/?utm_campaign=1079246&utm_source=habrahabr&utm_medium=rss",
+    "summary": "Those implementing AI have a new headache. The more a technology can do, the harder it is to figure out where to apply it. A chatbot just needs to answer a user's request, but an agent can already be given access to a browser, corporate documents, code, and other tools. And with this, it's no longer enough to ensure the model is smart. You also need to prove that it solves a specific task, fits into the process, and doesn't bring new risks. This was the focus of the \"AI Without Illusions\" meetup. Experts analyzed corporate AI from various angles – from finding real human benefit and early agent scenarios to internal tools and their implementation across an entire organization. Read more",
+    "title": "What Prevents AI from Becoming a Full-Fledged Work Tool: Outcomes of the \"AI Without Illusions\" Meetup"
+  },
   "https://habr.com/ru/companies/ruvds/articles/1078196/?utm_campaign=1078196&utm_source=habrahabr&utm_medium=rss": {
     "model": "gemini-2.5-flash-lite",
     "published": "Thu, 03 Sep 2026 13:00:18 GMT",
@@ -526,6 +590,14 @@
     "source_url": "https://habr.com/ru/companies/selectel/articles/1078306/?utm_campaign=1078306&utm_source=habrahabr&utm_medium=rss",
     "summary": "Imagine a sad school student who has to solve thousands of math problems. The textbook is generally good, but in about one percent of cases, it has incorrect answers printed. The student still studies from this textbook and eventually starts solving more and more new problems. Intuitively, it seems that the result should be worse than learning from a perfect textbook. And usually, that's what happens: incorrect data really harms learning. But there's a curious nuance: under certain conditions, a small number of errors in the training data can not only be harmless but even lead to better quality on new data. It sounds paradoxical: if you learn from incorrect answers, how can improvement arise? Let's talk about it. Read more",
     "title": "Why a dataset without a single error can be a bad dataset"
+  },
+  "https://habr.com/ru/companies/smartengines/articles/1079702/?utm_campaign=1079702&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Tue, 08 Sep 2026 07:32:17 GMT",
+    "slug": "1079702",
+    "source_url": "https://habr.com/ru/companies/smartengines/articles/1079702/?utm_campaign=1079702&utm_source=habrahabr&utm_medium=rss",
+    "summary": "Imagine a common situation: a forwarder accepts goods at a warehouse, signs an invoice, and photographs the document with a corporate smartphone. Within seconds, the details should appear in the accounting system – without manual data entry, an office scanner, or waiting for the paper to reach accounting. But there's a condition: the photo must not be sent to an OCR provider, a third-party processing center, or a manual verification operator. Ideally, the image never leaves the mobile device – only the extracted and verified data enters the corporate system. Is it possible to recognize a multi-page UРD (universal transfer and acceptance document) with a complex table on a smartphone, correct perspective, read small print and handwritten notes – all without connecting to external infrastructure? The short answer is yes. However, for a secure primary document recognition system, it's not enough to write \"works locally\" in a presentation. The entire document workflow must be properly structured – from the smartphone camera to 1C or ERP. Read more",
+    "title": "On-device OCR for primary documents: how to recognize documents without sending them to the cloud"
   },
   "https://habr.com/ru/companies/svoi_ru/articles/1078124/?utm_campaign=1078124&utm_source=habrahabr&utm_medium=rss": {
     "model": "gemini-2.5-flash-lite",
@@ -551,6 +623,22 @@
     "summary": "An AI assistant was implemented in the company – expensive, high-tech, with a beautiful demonstration of capabilities. A month later, it turned out that employees hardly use it. Or worse – they use it, but trust it, and it provides outdated instructions that contradict each other. Why did this happen? Read more",
     "title": "Mistakes in Working with Corporate Knowledge That Hinder the Implementation of AI Assistants"
   },
+  "https://habr.com/ru/companies/timeweb/articles/1079752/?utm_campaign=1079752&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Tue, 08 Sep 2026 08:27:36 GMT",
+    "slug": "1079752",
+    "source_url": "https://habr.com/ru/companies/timeweb/articles/1079752/?utm_campaign=1079752&utm_source=habrahabr&utm_medium=rss",
+    "summary": "We're closing out the last month of summer with a long list of releases for AI agents: documentation, MCP server, skills, abilities, file uploads in chat, and four new models in the catalog. The reason is simple: every third request to our documentation comes from agents, so we need to cater to this new audience. The second half of the digest is for those who read for themselves: three storage classes in S3, canceling database deletion, cloning apps in App Platform, domains via Gosuslugi, and updated Kubernetes. We'll break down each point below ↓ Read more",
+    "title": "August Digest — App Cloning, Agent Skills, Streamer Mode, and Documentation"
+  },
+  "https://habr.com/ru/companies/uralsib/articles/1077456/?utm_campaign=1077456&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Tue, 08 Sep 2026 05:01:41 GMT",
+    "slug": "1077456",
+    "source_url": "https://habr.com/ru/companies/uralsib/articles/1077456/?utm_campaign=1077456&utm_source=habrahabr&utm_medium=rss",
+    "summary": "I love solving unsolvable problems, making people's lives easier, testing hypotheses, and creating cool products. That's how I was invited to work at Uralsib, where I decided to create a robot secretary to help with meetings and calls. Read more",
+    "title": "I built a robot secretary, even though nobody asked for it"
+  },
   "https://habr.com/ru/companies/vk/articles/1078192/?utm_campaign=1078192&utm_source=habrahabr&utm_medium=rss": {
     "model": "gemini-2.5-flash-lite",
     "published": "Thu, 03 Sep 2026 14:00:33 GMT",
@@ -566,5 +654,13 @@
     "source_url": "https://habr.com/ru/companies/yandex/articles/1078580/?utm_campaign=1078580&utm_source=habrahabr&utm_medium=rss",
     "summary": "On Android devices, you can choose a default assistant, much like a browser. Once selected in settings, you can invoke it with a system gesture over any app. Convenient. You might think that the chosen assistant can now see everything on your phone and do whatever it wants... Not at all. When installed, Android grants an app only basic permissions. Access to advanced features requires separate user permission, and some functions are entirely unavailable to regular third-party apps. My name is Vanya, I lead the Android development team for Alice's SDK and am the tech lead for the default assistant project. Today, we'll explore these boundaries using Alice AI as an example. Read more",
     "title": "What the Default Assistant on Android Can Do - Using Alice AI as an Example"
+  },
+  "https://habr.com/ru/companies/yandex_praktikum/articles/1070034/?utm_campaign=1070034&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Tue, 08 Sep 2026 06:00:46 GMT",
+    "slug": "1070034",
+    "source_url": "https://habr.com/ru/companies/yandex_praktikum/articles/1070034/?utm_campaign=1070034&utm_source=habrahabr&utm_medium=rss",
+    "summary": "Working with Linux often scares beginners, but it's unnecessary. Linux is not a difficult system; it's just different. To work with it comfortably, it needs to be configured. My name is Valery Linkov, I am an expert in security, clouds, and networks, and a mentor for cybersecurity courses at Yandex Practicum. In this article, I will explain how to turn a basic, inconvenient Linux into a powerful system that surpasses Windows 11 in performance and style. Don't believe me? Then follow me.",
+    "title": "How to configure Arch Linux to outperform Windows 11 in performance and style"
   }
 }

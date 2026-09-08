@@ -1,0 +1,97 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>How to connect Google Calendar and Google Drive to an agent or Why is everything so complicated</title>
+  <meta name="description" content="I&#x27;m writing this article because I spent quite a bit of time figuring out how to connect Google Workspace services to Claude Code CLI and OpenClaw. And I want to make it easier for others. I&#x27;ve tried to explain what&#x27;s happening so that when you read your agent&#x27;s instructions or d">
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.65;
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 32px 20px 64px;
+      color: #1f2328;
+    }
+    header {
+      border-bottom: 1px solid #d8dee4;
+      margin-bottom: 28px;
+      padding-bottom: 20px;
+    }
+    .source {
+      color: #57606a;
+      font-size: 0.95rem;
+    }
+    img, video, iframe {
+      max-width: 100%;
+      height: auto;
+    }
+    pre {
+      overflow-x: auto;
+      padding: 16px;
+      background: #f6f8fa;
+      border-radius: 6px;
+    }
+    code {
+      font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+    }
+    blockquote {
+      border-left: 4px solid #d0d7de;
+      margin-left: 0;
+      padding-left: 16px;
+      color: #57606a;
+    }
+    footer {
+      border-top: 1px solid #d8dee4;
+      margin-top: 40px;
+      padding-top: 20px;
+      color: #57606a;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>How to connect Google Calendar and Google Drive to an agent or Why is everything so complicated</h1>
+    <p>I&#x27;m writing this article because I spent quite a bit of time figuring out how to connect Google Workspace services to Claude Code CLI and OpenClaw. And I want to make it easier for others. I&#x27;ve tried to explain what&#x27;s happening so that when you read your agent&#x27;s instructions or documentation, you understand what they want from you. The article doesn&#x27;t contain a step-by-step guide to setting up a specific client. It&#x27;s a collection of knowledge on how to set up any client (e.g., one written by your agent). Connecting an agent to calendar and mail is a useful topic. I can&#x27;t imagine scheduling meetings for many people manually anymore (though I have Vietnam flashbacks =)) Read more</p>
+    <p class="source">
+      Machine-translated from Habr.
+      <a href="https://habr.com/ru/articles/1078890/?utm_campaign=1078890&amp;utm_source=habrahabr&amp;utm_medium=rss">Read the original Russian article</a>.
+      Tue, 08 Sep 2026 07:33:52 GMT
+    </p>
+  </header>
+  <main>
+<div><p>I'm writing this article because I spent quite a bit of time figuring out how to connect Google Workspace services to Claude Code CLI and OpenClaw. And I want to make it easier for others. I've tried to explain what's happening so that when you read your agent's instructions or documentation, you understand what they want from you.</p><p>The article doesn't contain a step-by-step guide to setting up a specific client. It's a collection of knowledge on how to set up any client (e.g., one written by your agent).</p><p>Connecting an agent to calendar and mail is a useful topic. I can't imagine scheduling meetings for many people manually anymore (though I have Vietnam flashbacks =))</p><p>Also, since I'm writing, I'll mention my Telegram channel - <a href="https://t.me/big_ledovsky">Big Ledovsky</a> 🙂 I share my thoughts on AI through the lens of an AI function lead and 10 years of industry experience.</p><figure><img loading="lazy" src="https://habrastorage.org/r/w1560/getpro/habr/upload_files/b96/cd4/8a0/b96cd48a0bb4e839c837b1cd04fe2992.jpg"/></figure><h3>How to connect agents to Google Workspace</h3><p>Actually, there are quite a few ways to connect - as many as three. The first, simplest way is your provider's connector, like Claude or ChatGPT. Everything works with a connect button there.</p><p>But this method is limited. I use Claude the most, so I'll explain using its example. Claude Code can use connectors in cloud sessions and in local sessions via Claude Desktop. Claude Code CLI, which runs in the terminal, no longer sees the <a href="http://claude.ai">claude.ai</a> connectors. If you only use the UI and don't install open-source agents, then the connector is really the best option. Everything that follows is not for you.</p><figure><img alt="Connector marketplace in Claude" loading="lazy" src="https://habrastorage.org/r/w1560/getpro/habr/upload_files/626/6c4/9c1/6266c49c1a86f81c1f48d712fcfda661.png" title="Connector marketplace in Claude"/><div><figcaption>Connector marketplace in Claude</figcaption></div></figure><p>The other two methods are an MCP server or an API. At the time of writing, I concluded that the easiest way is to use the API with a custom CLI wrapper.</p><p>Google has released official MCPs, but there are nuances. There's a very small set of methods. Calendar doesn't have access to contacts (People API). And the Drive MCP didn't work for me at all. Perhaps in some time, MCPs will be perfected, but for now, we have what we have.</p><p>There are many 3rd party MCPs and CLI tools. In general, you can use them. But you know, it's not worth the effort. There might be bugs, something might be missing, and at the same time, they'll clutter your context with a bunch of unnecessary methods. I simply asked the agent to write its own client for my specific requirements. It's faster now. And then the agent calls this CLI as a regular command in the terminal, which is enough for it.</p><p>If you're interested, you can check out the <a href="https://github.com/ledovsky/gworkspace/tree/main">repository</a></p><h3>How Google Cloud authorization works</h3><p>The main thing to understand and accept is that Google Cloud is not designed for individual users. It treats everyone like a company.</p><p>Google does not support PAT (Personal Access Token). You might think: just give me a token, like most other services do, I'll grant it permissions and the agent will use it. Profit!</p><p>But Google doesn't allow that. You have to create a project, an application within it, a client within that, and so on. As if you were creating a service for thousands of people. Then, you yourself log in to your application as an external user and get permissions.</p><p>As an authorization mechanism, Google offers OAuth. What this means from a practical standpoint:</p><ul><li><p>Our MCP or CLI client needs to create a link on <a href="http://accounts.google.com">accounts.google.com</a>. We open it in a browser.</p></li><li><p>This link contains all the necessary information - for which application and what permissions we are requesting, as well as to which link to send the result.</p></li><li><p>As a user, we look at the permissions to grant and click OK in the browser.</p></li><li><p>After that, Google redirects the browser to the callback link we provided. In our case, this is a local address on the computer where our client has started a small web server and is waiting. The link doesn't provide a token, but a one-time code.</p></li><li><p>The client itself, without the browser, exchanges this code for tokens with a direct request to Google.</p></li></ul><p>If you are setting up an agent on a server, you will need to set up an SSH tunnel to localhost to handle the callback link.</p><figure><img alt="Consent Screen" loading="lazy" src="https://habrastorage.org/r/w1560/getpro/habr/upload_files/fcc/002/f3b/fcc002f3bdafe047b9328ab6efad1fbb.png" title="Consent Screen"/><div><figcaption>Consent Screen</figcaption></div></figure><p>You might also see two other types of credentials besides the OAuth client. These are API Key and Service Account. You can ignore them. An API Key does not identify a user and is used for technical requests to the project. A Service Account only gains access to personal data through an organization administrator in the corporate version (like a secretary), and doesn't work at all for personal accounts.</p><h3>Basic explanation of Google Cloud entities used</h3><ul><li><p>Project. A container for APIs, access settings, limits, etc. By default, you have one project, "My First Project".</p></li><li><p>Google Auth Platform. A set of interfaces that contains "application" settings. An application is an entity to which the user grants access. One project is one application. The application has a name and several other parameters - a link to the homepage, privacy policy, etc. Fill in anything, I put a link to my GitHub everywhere.</p></li><li><p>Client. A set of credentials associated with the platform (Desktop, iOS, etc.). This means an application can have different clients. A client has an ID, which Google uses to understand which client the user is connecting from.</p></li><li><p>Scopes. A set of specific permissions for what can be done. For example, "Allow reading email".</p></li></ul><p>Here is the JSON downloaded from the Clients page. The secret here isn't particularly secret: client_id is the identifier of your client, and client_secret confirms this ID. However, it doesn't grant access to the API on its own. Using client_id, we pass the consent screen.</p><pre><code>{ 
+  "installed": {
+    "client_id": "1234567890-abc123.apps.googleusercontent.com",
+    "project_id": "my-project-123456",
+    "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+    "token_uri": "https://oauth2.googleapis.com/token",
+    "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+    "client_secret": "GOCSPX-...",
+    "redirect_uris": ["http://localhost"]
+  }
+}
+</code><div><a href="https://sourcecraft.dev/"><img loading="lazy"/></a></div></pre><p>The structure of OAuth tokens (this is how the python-google-auth library saves them; other clients may have a different format, but the set of fields is semantically the same):</p><pre><code>{
+  "token": "ya29.a0...",
+  "refresh_token": "1//0g...",
+  "token_uri": "https://oauth2.googleapis.com/token",
+  "client_id": "1234567890-abc123.apps.googleusercontent.com",
+  "client_secret": "GOCSPX-...",
+  "scopes": [
+    "https://www.googleapis.com/auth/calendar",
+    "https://www.googleapis.com/auth/drive"
+  ],
+  "universe_domain": "googleapis.com",
+  "account": "",
+  "expiry": "2026-09-05T18:30:00Z"
+}
+</code><div><a href="https://sourcecraft.dev/"><img loading="lazy"/></a></div></pre><p>Without going into the details of the OAuth protocol, the most important thing here is the refresh token. It's issued after passing the consent screen and is actually used to gain access. The <code>token</code> is a short-lived access token; it lasts for an hour, and the client re-issues it using the refresh token. Tokens are saved by your client (CLI or MCP).</p><h3>How to configure an OAuth client</h3><p>Everything is done in the Google Cloud Console (<a href="https://console.cloud.google.com/">https://console.cloud.google.com/</a>), mostly on the Google Auth Platform pages. Let's go step by step.</p><p><em>1. Google Auth Platform -&gt; Branding</em></p><p>You need to fill in:</p><ul><li><p>App name - any name.</p></li><li><p>User support email - just your email.</p></li><li><p>App domain: home page, privacy policy, terms of service - put your GitHub link everywhere. This is okay.</p></li><li><p>Logo - not needed.</p></li><li><p>Authorized domain - <a href="http://github.com">github.com</a>.</p></li><li><p>Developer contact information - your email again.</p></li></ul><p><em>2. Google Auth Platform -&gt; Audience</em></p><ul><li><p>User type: External. Internal is only available for corporate accounts, and only accounts from your organization can log in to the app. This is inconvenient if you have personal and corporate accounts.</p></li><li><p>Publishing status: In production. Testing issues tokens that expire after 7 days. In production provides an indefinite token. More precisely, it only expires if it's not used for six months, the access is revoked manually, or the account password is changed.</p></li><li><p>Verification: we don't do this, it's difficult, it's for real applications for external users.</p></li></ul><figure><img alt="To set Is production, you must first fill out Branding" loading="lazy" src="https://habrastorage.org/r/w1560/getpro/habr/upload_files/49c/8c5/73c/49c8c573c2fe8b0f0487383653c26570.png" title="To set Is production, you must first fill out Branding"/><div><figcaption>To set Is production, you must first fill out Branding</figcaption></div></figure><p><em>3. Google Auth Platform -&gt; Clients</em></p><p>Create a Desktop client. Desktop is important because it allows redirection to localhost after passing the permissions screen. Save the JSON with client_id and client_secret.</p><div><p><em>4. APIs &amp; Services -&gt; Library</em></p></div><p>In addition to the OAuth client, you need to enable the APIs themselves in the project that the agent will access. Search by name and click Enable: Google Calendar API, Google Drive API, Gmail API, People API (this is for contacts and people search in an organization). If you don't do this, the token will have permissions, but requests will fail with a 403 error.</p><figure><img alt="I only navigate Google Cloud by search. I don't understand any other way." loading="lazy" src="https://habrastorage.org/r/w1560/getpro/habr/upload_files/21e/01d/5b1/21e01d5b10ea800e373768579244ff34.png" title="I only navigate Google Cloud by search. I don't understand any other way."/><div><figcaption>I only navigate Google Cloud by search. I don't understand any other way.</figcaption></div></figure><p><em>5. First login</em></p><p>On the first login, after selecting an account, Google will show a warning screen "Google hasn't verified this app": the app is not verified, "Back to safety", and so on. Just keep this in mind.</p><figure><img alt="We need to go to unsafe" loading="lazy" src="https://habrastorage.org/r/w1560/getpro/habr/upload_files/ad7/8ff/b5d/ad78ffb5d9ea8847ea23d76ddb8d0dfc.png" title="We need to go to unsafe"/><div><figcaption>We need to go to unsafe</figcaption></div></figure><h3>Useful links</h3><ul><li><p><a href="https://console.cloud.google.com/auth/overview">https://console.cloud.google.com/auth/overview</a> - Google Auth Platform page (Branding, Audience, Clients)</p></li><li><p><a href="https://console.cloud.google.com/apis/dashboard">https://console.cloud.google.com/apis/dashboard</a> - APIs &amp; Services page. Here you can view dashboards with request counts to various APIs, latency, and error codes. Also, in the Library section, you can enable the necessary APIs.</p></li><li><p><a href="https://myaccount.google.com/connections">https://myaccount.google.com/connections</a> - from the user's perspective: which applications have access to the account, and where access can be revoked.</p></li><li><p><a href="https://developers.google.com/workspace">https://developers.google.com/workspace</a> - API documentation and official MCPs. You can give this to your agent.</p></li></ul><h3>Conclusion</h3><p>I think you'll agree: the way agents connect to Google Workspace is sheer madness. However, it can be explained. Google Cloud makes money from corporate clients. The consumer segment should use connectors within the UI of ready-made applications.</p><p>And we, ordinary engineers, should be grateful anyway. The API exists in principle, and we can use it for free.</p></div>
+  </main>
+  <footer>
+    Translation generated with Gemini 2.5 Flash-Lite.
+    The original article remains the source of record.
+  </footer>
+</body>
+</html>

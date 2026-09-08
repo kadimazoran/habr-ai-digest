@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>A Billion Tokens a Day. Real Data on Subscription Sizes and Model Quality. AI Ambassador&#x27;s Experience — Part 2</title>
+  <meta name="description" content="I spend over a billion tokens a day (I checked the statistics for Minimax / GPT), sometimes running 7-9 agent threads for 12 hours. How do I manage not to go broke? How does what I do not fall apart, but somehow work? Previous article: https://habr.com/ru/articles/1030414/ More than 3 months have pa">
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.65;
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 32px 20px 64px;
+      color: #1f2328;
+    }
+    header {
+      border-bottom: 1px solid #d8dee4;
+      margin-bottom: 28px;
+      padding-bottom: 20px;
+    }
+    .source {
+      color: #57606a;
+      font-size: 0.95rem;
+    }
+    img, video, iframe {
+      max-width: 100%;
+      height: auto;
+    }
+    pre {
+      overflow-x: auto;
+      padding: 16px;
+      background: #f6f8fa;
+      border-radius: 6px;
+    }
+    code {
+      font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+    }
+    blockquote {
+      border-left: 4px solid #d0d7de;
+      margin-left: 0;
+      padding-left: 16px;
+      color: #57606a;
+    }
+    footer {
+      border-top: 1px solid #d8dee4;
+      margin-top: 40px;
+      padding-top: 20px;
+      color: #57606a;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>A Billion Tokens a Day. Real Data on Subscription Sizes and Model Quality. AI Ambassador&#x27;s Experience — Part 2</h1>
+    <p>I spend over a billion tokens a day (I checked the statistics for Minimax / GPT), sometimes running 7-9 agent threads for 12 hours. How do I manage not to go broke? How does what I do not fall apart, but somehow work? Previous article: https://habr.com/ru/articles/1030414/ More than 3 months have passed since May 1st. Several eras of AI agent quality and surrounding infrastructure have passed. Several paradigms have shifted. Sub-agents are no longer effective, Western frontiers have not fallen behind China, and much more. All in order. Read more</p>
+    <p class="source">
+      Machine-translated from Habr.
+      <a href="https://habr.com/ru/articles/1079690/?utm_campaign=1079690&amp;utm_source=habrahabr&amp;utm_medium=rss">Read the original Russian article</a>.
+      Tue, 08 Sep 2026 07:20:45 GMT
+    </p>
+  </header>
+  <main>
+<div><p>I spend over a billion tokens a day (I checked the statistics for Minimax / GPT), sometimes running 7–9 agent threads for 12 hours.</p><p>How do I manage not to go broke? How does what I do not fall apart, but somehow work?</p><p>Previous article: <a href="https://habr.com/ru/articles/1030414/">https://habr.com/ru/articles/1030414/</a></p><p>More than 3 months have passed since May 1st. <em>Several</em> eras of AI agent quality and surrounding infrastructure have passed. Several paradigms have shifted. Sub-agents are no longer effective, Western frontiers have not fallen behind China, and much more.</p><p>All in order.</p><p>Models have become smarter, understanding depth has improved compared to May 1, 2026.<br/>Today's good subscriptions and models within them: (as last time, I will not write about Claude and Google models due to account blocks for users, you can find out everything about them from fans of these lines)</p><ul><li><p>GPT 5.6 / 6</p></li><li><p>Kimi 3 / 2.7</p></li><li><p>Minimax M3 (without 2.7)</p></li><li><p>Qwen 3.8 Max / Flash Next</p></li><li><p>Deep Seek V4 Flash (or maybe Pro)</p></li></ul><p>Subscriptions discussed in the article: Grok, GPT, OpenCode Go, Ollama Cloud, Qwen, Minimax, Kimi</p><p><strong>GPT</strong></p><p>OpenAI acted incredibly smart by releasing three separate models for different task complexities. And they topped this cake off with the release of Astra. What did they achieve?</p><p>GPT 5.6 Luna is the junior model of the family. And its intelligence is quite high:</p><figure><img alt="This is just a guideline, not a strict scientific measurement" loading="lazy" src="https://habrastorage.org/r/w1560/getpro/habr/upload_files/8df/be0/e11/8dfbe0e110ea354509c54e1d65900ccb.png" title="This is just a guideline, not a strict scientific measurement"/><div><figcaption>This is just a guideline, not a strict scientific measurement</figcaption></div></figure><p>At the same time, Luna, like Deep Seek V4 Flash, has a very low price compared to its peers. Now we can use the GPT subscription for $20 for a long time, running 2–3 Lunas every day, entrusting it with all our main tasks. Look where Kimi 2.7 is in this list — remember, at the time of the article on May 1st, it was <em>cutting-edge</em>?</p><p>If in May we entrusted our best and most complex tasks to models like Kimi 2.7 / GPT 5.4, and said "wow", then now Luna / Deep Seek V4 Flash / Minimax M3 handle this.</p><p>GPT has an unobvious, or perhaps obvious, life hack — their web chat has a connector to Google Drive. For a local agent, you can create a skill with scripts for Google Drive (you'll need to set up an application for API access, but it's solvable).</p><p>Communicate with GPT Astra / GPT 5.6 Sol in the web chat with a $20 subscription, discussing all the most complex and subtle moments and aspects of your tasks. Ask it to export the analysis to a document on Google Drive. Send the link to the document to the local agent GPT 5.6 Luna.</p><p>You can thus use GPT Astra / GPT 5.6 Sol indefinitely, leaving routine tasks to the junior model. The transfer works in the opposite direction too — ask Luna to record your question / task context in a Google document, give the link to the web interface. I have about 20 folders with several chats in them on the GPT web interface. Everything is sorted by colors, icons, and names. I recommend that you organize your projects well by folders so as not to get confused and enjoy using the system.</p><p>So, we've covered the $20 GPT subscription. I'll add that if you have enough money and plan to buy 5 small $20 subscriptions, you can safely buy GPT Pro. This will give you 7–9 Luna threads per day and 50 requests to GPT Astra Pro in the web chat per week. This is one of the best options at the moment.</p><p><strong>Minimax M3</strong> — my loyal friend and workhorse.</p><p>It's on the edge of the leader table. It's indeed more crude than Luna / Deep Seek v4 Flash / Qwen. But it has an advantage. The limits are much higher than all other subscriptions. The only limitation is the 5-hour window.</p><p>I always keep this subscription and leave Minimax for all long routine tasks, not so much related to code as to devops, thus saving other subscriptions. Speed matters — Luna is fast, and MInimax is even faster (but Deep Seek V4 Flash is the fastest). Minimax truly excels at handling all routine tasks, taking our token consumption away from priority subscriptions.</p><p><strong>Kimi 3 / 2.7</strong></p><p>I have mixed feelings. Kimi was a leader, but they've been quiet for a long time. Their subscription starts at $40 (because the $20 one has very modest limits and isn't interesting). That is, twice as expensive as the $20 — the usual price for an entry-level subscription elsewhere. At the same time, Kimi 3 consumes subscriptions with great appetite, slower than Sol, but quite fast. And Kimi 2.7 is already lagging behind competitors. Therefore, I rank it at least 4th in purchase priority. I can't say it's a bad choice. Rather — it's essentially the same as buying Qwen and Ollama Cloud together. But there are some downsides — Kimi is frankly dry, it does and understands design and branding excellently, but I entrusted it with layout tasks (agent browser), and it spent a lot of tokens trying to move a couple of buttons. Luna would have understood quickly. Therefore, I recommend testing Kimi on your type of tasks before paying $40 upfront.</p><p><strong>Ollama Cloud / Deep Seek V4 Flash</strong></p><p>Recently, Ollama Cloud switched to a transparent subscription billing system — for $20, they simply give you $60 for tokens. Still great.</p><p>Deep Seek V4 Flash is not what it was in May. Now Deep Seek V4 Flash is cooler or the same as Deep Seek V4 Pro in May. It's an excellent model for everything, and with the Ollama Cloud subscription, you get huge token speed and slow limit consumption. One big drawback — on Ollama Cloud, the model doesn't understand images. Personally, it's inconvenient for me. I can't send a screenshot. This is often necessary.</p><p><strong>Qwen</strong></p><p>Qwen 3.8 Max also consumes the $18 subscription with great appetite. However, like all flagships, when we have a difficult task that only Sol / Kimi 3 / Qwen Max can handle, we have to be patient. (Or use the web version of GPT via Google Drive, as I described above).</p><p>But Qwen 3.8 Flash is amazing! In my experience, it's as brisk and wonderful as GPT 5.6 Luna. I ran some tasks on Luna, some on Qwen 3.8 Flash, without even thinking about which was which. The only criterion was — which subscription had less consumption at the moment — that model got the next task.</p><p>Now about the rest.</p><p><strong>Grok</strong></p><p>Alas, there are no junior models, Grok 4.6 consumes subscriptions very confidently and quickly, faster than flagships from others. It costs $30. I can't recommend it for a local agent. But Grok entered the scene as a star from another angle.</p><p>Speaking of generative models, video generation in its subscription (text on video is difficult, but Russian voiceover is excellent) — this is 400 video clips of 15 seconds each in 720p quality. For $30, no platform or provider offers such generosity. Seedance and others cost about $0.3 per clip on average. Therefore, from the perspective of finding a generative model — Grok is incredibly cost-effective for those who generate images and videos. And working in their editor with this is also great. They have a large area where videos and images are dropped, and you can organize large-scale work, similar to how layouts are organized in Sketch / Figma / Photoshop.</p><p><strong>OpenCode Go</strong></p><p>Only $10. Cost-effective from the perspective of an emergency subscription. When suddenly on the 5th–6th day of subscriptions you've run out of everything, and Minimax's 5-hour window is also exhausted. And to survive those 2–3 hours while waiting for Minimax to reset, you can use the cheapest subscription of all.</p><p>At the same time, I tried Deep Seek V4 Flash with image support there — the subscription was consumed slower. I tried Qwen 3.8 Flash — it's much better, slower. I can't say it will last long. I recommend it specifically as a critical window for when you need to wait until the limits reset.</p><p><strong>Generative Models</strong></p><p>Since I touched upon video generation, I'll make a short paragraph on generating images, sounds, and voices.</p><p>Krea — $9, 5000 tokens, generating one image with a decent model costs 1–5 tokens, meaning 1000 images per month. For very high quality, there are more expensive models on Krea itself.</p><p>Local generation with Comfy UI.</p><p>SDLX — not bad. Flux 2 Klein 4b (gives a commercial license, 9b does not) — good, better than SDLX in an unrealistic style.</p><p>Sound and music generation:</p><figure><img loading=
+  </main>
+  <footer>
+    Translation generated with Gemini 2.5 Flash-Lite.
+    The original article remains the source of record.
+  </footer>
+</body>
+</html>

@@ -1,0 +1,82 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>We Added LLM to Search, But Didn&#x27;t Replace Elasticsearch. Why?</title>
+  <meta name="description" content="At first glance, search in a service marketplace seems like a standard task. It involves a service catalog, Elasticsearch, query normalization, ranking, and caching – nothing unique. However, this is only on the surface. I&#x27;ll explain how search works at Profi.ru, why we integrated an LLM, and w">
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.65;
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 32px 20px 64px;
+      color: #1f2328;
+    }
+    header {
+      border-bottom: 1px solid #d8dee4;
+      margin-bottom: 28px;
+      padding-bottom: 20px;
+    }
+    .source {
+      color: #57606a;
+      font-size: 0.95rem;
+    }
+    img, video, iframe {
+      max-width: 100%;
+      height: auto;
+    }
+    pre {
+      overflow-x: auto;
+      padding: 16px;
+      background: #f6f8fa;
+      border-radius: 6px;
+    }
+    code {
+      font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+    }
+    blockquote {
+      border-left: 4px solid #d0d7de;
+      margin-left: 0;
+      padding-left: 16px;
+      color: #57606a;
+    }
+    footer {
+      border-top: 1px solid #d8dee4;
+      margin-top: 40px;
+      padding-top: 20px;
+      color: #57606a;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>We Added LLM to Search, But Didn&#x27;t Replace Elasticsearch. Why?</h1>
+    <p>At first glance, search in a service marketplace seems like a standard task. It involves a service catalog, Elasticsearch, query normalization, ranking, and caching – nothing unique. However, this is only on the surface. I&#x27;ll explain how search works at Profi.ru, why we integrated an LLM, and why the language model complements, rather than replaces, our classic algorithm.</p>
+    <p class="source">
+      Machine-translated from Habr.
+      <a href="https://habr.com/ru/articles/1079574/?utm_campaign=1079574&amp;utm_source=habrahabr&amp;utm_medium=rss">Read the original Russian article</a>.
+      Tue, 08 Sep 2026 07:44:57 GMT
+    </p>
+  </header>
+  <main>
+<div><figure><img loading="lazy" src="https://habrastorage.org/r/w1560/getpro/habr/upload_files/4cd/9da/c2a/4cd9dac2a8ff26fe91ed96d6c802a5fc.png"/></figure><p>Hello! My name is Dmitry, and I lead the semantics department at Profi.ru. We are responsible for ensuring the service understands what kind of service a client is looking for: whether they type "English tutor," "fix washing machine," or "need an electrician.".</p><p>At first glance, search in a service marketplace is a fairly typical task. What could be special about it? Under the hood, there's a service catalog, Elasticsearch, query normalization, ranking, and caching. Nothing that isn't found in other products. But this is only at first glance.</p><p>Now I'll tell you how search works at Profi.ru, why we added an LLM to it, and why the language model didn't replace the classic algorithm for us but became an additional layer.</p><h3>What Search Means to Us</h3><p>A little about how search works on the Profi.ru website and apps.</p><p>The user journey often begins with search, but the search service itself is needed not only for interacting with the search bar on the homepage.</p><p>It has <strong>three main modes</strong>.</p><p><strong>The first</strong>, and most common, is to identify the service. A client types a query like "English lessons," and we need to understand that it refers to the service "English language tutor." After this, other systems kick in. They know what questions to ask the client, how to formulate the task, and which specialists to show it to.</p><figure><img alt="Anime lessons are a separate conversation" loading="lazy" src="https://habrastorage.org/r/w1560/getpro/habr/upload_files/59a/dca/537/59adca5375790ad2bfb14141ba8cad99.png" title="Anime lessons are a separate conversation"/><div><figcaption><em>Anime lessons are a separate conversation</em></figcaption></div></figure><figure><img loading="lazy" src="https://habrastorage.org/r/w1560/getpro/habr/upload_files/524/533/94f/52453394fdca5fdce6fd412d2bc517dc.png"/></figure><p><strong>The second</strong> mode is searching for a specific specialist. For example, a client enters the specialist's name or surname and tries to find their profile.</p><p>We search:</p><figure><img loading="lazy" src="https://habrastorage.org/r/w1560/getpro/habr/upload_files/d86/b03/db6/d86b03db60626c7652391603df2f5a3c.png"/></figure><p>We get the specialist's page:</p><figure><img loading="lazy" src="https://habrastorage.org/r/w1560/getpro/habr/upload_files/a5c/3ea/28a/a5c3ea28a5f16c7c20483546dfc3e05b.png"/></figure><p><strong>And the third</strong> is to identify a service that Profi.ru does not provide. This isn't necessarily something illegal: we don't take on certain jobs due to documentation requirements, risks, or the specific nature of the service. For example, a nanny for children. If you start searching for a nanny, the search will recognize such a query and won't lead the user through the standard order placement scenario.</p><figure><img loading="lazy" src="https://habrastorage.org/r/w1560/getpro/habr/upload_files/e72/fd2/425/e72fd2425b05bd0b6e13f80dd4581b5a.png"/></figure><p>Additionally, search doesn't just work on the homepage. It's invoked within wizards – step-by-step task creation scenarios. While the client describes what they need, we can check the free text, suggest a more suitable service, or realize in time that the query belongs to a category the service doesn't handle.</p><p>In other words, search for us isn't a separate screen. It's a service that accompanies the client at various stages of their journey.</p><h3>How Basic Search Works</h3><p>From an architectural standpoint, everything is quite predictable. The web, mobile web, and apps send a request to the corporate data bus – the GraphQL layer. Through a gate, it reaches the search service, and then we query Elasticsearch – the primary data source for service search.</p><p>The index is updated once a day. This happens in an internal admin panel where all values can be managed, and content managers have access to it. Usually, this is sufficient for us: a new service doesn't need to appear in search instantly. However, if necessary, for example, when working with synonyms for a particular service or to verify changes, re-indexing can be triggered manually. We had such a case, but I can't say we use this capability often.</p><p>Before the query reaches Elastic, it undergoes normalization. A user can express the same need in dozens of ways: "English lessons," "English with a tutor," "need English tutor," and sometimes even switch keyboard layouts or make one or two typos.</p><p>Therefore, we:</p><ul><li><p>reduce words to their base form;</p></li><li><p>consider word order for final scoring but don't make it a strict limitation;</p></li><li><p>try to correct incorrect keyboard layouts;</p></li><li><p>ignore some typos;</p></li><li><p>use synonyms and other variations for service names;</p></li><li><p>compare the query with the wording in the catalog.</p></li></ul><p>Then comes the main part – algorithmic scoring. Each found option has an internal weight: the closer the user's text is to a service in our catalog, the higher its weight. A full match gets the maximum weight, while a partial match gets a lower one.</p><p>For example, if a user enters "tutor for English language," it's almost a perfect match. If they type just "tutor," then math, English, Spanish, exam preparation, and other subjects might appear in the results. In such cases, in addition to textual relevance, we consider the service's popularity. All else being equal, more in-demand options will rank higher. English above Spanish, math above English.</p><figure><img alt="Math is much more popular than languages" loading="lazy" src="https://habrastorage.org/r/w1560/getpro/habr/upload_files/f81/863/8db/f818638db465e29842f8d3e2d2b6216a.png" title="Math is much more popular than languages"/><div><figcaption><em>Math is much more popular than languages</em></figcaption></div></figure><blockquote><p>Our goal is simple: the client should see the desired option in the first few lines. More than 90% of selections should come from the first five results, and ideally, the first three.</p></blockquote><h3>Why Search Needs to Be Thorough and Reliable</h3><p>Search at Profi.ru isn't the most resource-intensive service in the traditional sense of loading. At its peak, it handles about 150,000 requests per hour, which is a little over 60 requests per second. At the same time, the load differs by more than tenfold between day and night.</p><p>But for our product, it's critical, even considering that a specialist can be found not only through search but also via the category browser.</p><figure><img loading="lazy" src="https://habrastorage.org/r/w1560/getpro/habr/upload_files/999/5b8/671/9995b86719a219e64905f9210657b717.png"/></figure><p>Plus, clients are accustomed to search. And if they can't physically articulate what service they need, they likely won't create a task. Therefore, we strive for stable and predictable search performance. Spoiler alert: we succeed.</p><p>Currently, basic search typically responds in about 150 ms. The threshold at which we consider something wrong with the service is 250 ms at the 95th percentile. We track errors with zero tolerance: even one error generates a warning, and ten errors trigger an alert to the team.</p><p>We monitor this through our overall infrastructure monitoring: Zabbix, Metabase, logs, and product analytics. We see response times at different percentiles, error counts, clicks on search result positions, query lengths, and user behavior in specific categories.</p><p>Our analytics show that most clients choose a service before typing ten characters: the peak is around seven or even fewer. Therefore, short queries are particularly important: they are frequent, repetitive, and well-suited for caching in Redis.</p><p>Frontend architecture also reduces load: we've well-organized debouncing and throttling. A user types character by character, but not every intermediate version is sent to the backend: we cancel incomplete requests. If a user has already started typing the next character, processing the old request often becomes pointless.</p><p>Finally, our search has many fallback scenarios. If the service can't find a suitable service, it shouldn't leave the user with an empty screen. For example, if a query doesn't resemble a service name, the system can assume the client was looking for a specialist and switch to the corresponding mode.</p><p>Search also works within a specific vertical. In the repair section, it won't suggest tutors, even if the query text potentially matches something from another category. This way, we increase the predictability of search results for the user. It's thorough, but it works.</p><h3>How AI Changed Search</h3><p>For a long time, queries that we couldn't confidently match to a service were rare. We even had an internal term for them – the "snow-white scenario": if search didn't understand what the client needed, we'd ask clarifying questions.</p><p>A few years ago, less than 1% of users fell into this scenario. It seemed like a problem, but not significant enough to change the stable search architecture. But I constantly thought about it and realized that the day wasn't far off when this number would increase, and we'd have to change something.</p><p>And so it happened. People started getting used to LLMs and smart search interfaces. They began describing tasks more often in their own words, adding context, constraints, and details that didn't fit into a short service name.</p><p>Instead of "room renovation," they wrote "I want to fix up my room at the dacha, the walls are crooked, the floor creaks, and the wiring seems to be acting up too." Instead of "English tutor," they wrote "My child needs to improve their English before an exam, but I want individual lessons." It became clear: if we want to understand such queries, we need additional logic.</p><blockquote><p>However, I must note that we did not replace Elasticsearch with a language model.</p></blockquote><p>Algorithmic search is well-optimized, works predictably, responds quickly, and can rank results according to rules we've tested for years with real user behavior. Abandoning it for a model would be strange.</p><p>Therefore, the LLM now acts as an interpreter between the client's language and the language of our catalog.</p><figure><img loading="lazy" src="https://habrastorage.org/r/w1560/getpro/habr/upload_files/0a9/928/4a0/0a99284a02af0e0bcb33ea0dc17ff85d.png"/></figure><p><br/>The model also handles the case of a non-existent service excellently</p><p>Each service in Profi.ru is described by a set of features. In a simplified form, it's an action, an object, and additional properties. For example:</p><ul><li><p>"English language tutor." Action – tutoring. Object – English language.</p></li><li><p>"Computer repair." Action – repair. Object – computer.</p></li><li><p>"Driving lessons." Action – training. Object – driving.</p></li></ul><p>When regular search doesn't find a good enough match, the LLM is engaged. It breaks down the free-form description into these features, forms a hypothesis about the required service, and sends it back to the regular algorithmic search.</p><p>Then, Elasticsearch and our scoring do what they do best: find options, calculate weights, and rank the results. The model receives these results and, if necessary, can refine the hypothesis rather than making a decision based on guesswork.</p><p>The pipeline, in simplified terms, looks like this:</p><pre><code>Client query
+    ↓
+Standard algorithmic search
+    ↓
+Is there a confident match? -- yes → show result
+    ↓ no
+LLM extracts service features and builds a hypothesis
+    ↓
+Algorithmic search verifies the hypothesis
+    ↓
+Rank results and guide the client further<div><a href="https://sourcecraft.dev/"><img loading="lazy"/></a></div></code></pre><p>Currently, we use an external, publicly available language model for this part. And although we are developing our own infrastructure and models on our own computing resources internally, the search operates in its current configuration. For now.</p><h3>What's the Result</h3><p>We are pleased that search has become better at understanding natural language formulations, which are unavoidable nowadays. And we are glad that for us, this didn't mean rewriting the entire old service or abandoning the accumulated logic for scoring, caching, monitoring, and fallback scenarios. Simply adding another layer on top was sufficient.</p><p>But we're definitely not stopping here; it's too early to relax: who knows how user behavior will change in the near future?</p></div>
+  </main>
+  <footer>
+    Translation generated with Gemini 2.5 Flash-Lite.
+    The original article remains the source of record.
+  </footer>
+</body>
+</html>

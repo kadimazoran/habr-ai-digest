@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Who Actually Broke Your AI Agent: The Model or the Harness?</title>
+  <meta name="description" content="When an agent in production makes a mistake, the team&#x27;s discussion goes in circles: &quot;the model is dumb,&quot; &quot;the prompt is flawed,&quot; &quot;the API is to blame.&quot; A recent study from Scale AI assigns blame for failures to the edge between components and the fault side. It tur">
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.65;
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 32px 20px 64px;
+      color: #1f2328;
+    }
+    header {
+      border-bottom: 1px solid #d8dee4;
+      margin-bottom: 28px;
+      padding-bottom: 20px;
+    }
+    .source {
+      color: #57606a;
+      font-size: 0.95rem;
+    }
+    img, video, iframe {
+      max-width: 100%;
+      height: auto;
+    }
+    pre {
+      overflow-x: auto;
+      padding: 16px;
+      background: #f6f8fa;
+      border-radius: 6px;
+    }
+    code {
+      font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+    }
+    blockquote {
+      border-left: 4px solid #d0d7de;
+      margin-left: 0;
+      padding-left: 16px;
+      color: #57606a;
+    }
+    footer {
+      border-top: 1px solid #d8dee4;
+      margin-top: 40px;
+      padding-top: 20px;
+      color: #57606a;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Who Actually Broke Your AI Agent: The Model or the Harness?</h1>
+    <p>When an agent in production makes a mistake, the team&#x27;s discussion goes in circles: &quot;the model is dumb,&quot; &quot;the prompt is flawed,&quot; &quot;the API is to blame.&quot; A recent study from Scale AI assigns blame for failures to the edge between components and the fault side. It turns out that &quot;the model is to blame&quot; almost never means &quot;fix it with fine-tuning&quot;: I break down a taxonomy of 41 failure modes, a catalog summary, and four of my own failures with numbers – none were resolved by changing the model. Read on.</p>
+    <p class="source">
+      Machine-translated from Habr.
+      <a href="https://habr.com/ru/articles/1079638/?utm_campaign=1079638&amp;utm_source=habrahabr&amp;utm_medium=rss">Read the original Russian article</a>.
+      Tue, 08 Sep 2026 02:56:10 GMT
+    </p>
+  </header>
+  <main>
+<div><p>When an agent in production makes a mistake, the team's discussion follows a single scenario: "the model is dumb," "the prompt is flawed," "the provider has something wrong with their API." A particularly biting version of the argument is when all the code around the model is written by you: is the model to blame, or am I? I argued the same way until I started analyzing failures one by one, with logs and numbers. It turned out the agent wasn't failing because the model was bad, but for reasons that have names.</p><p>Three episodes from practice, all with green metrics.</p><ul><li><p>When uploading a corpus of norms into the vector database, 34% of chunks were silently lost: 6861 points remained in the database out of 10,414, the upload log reported "no skips," and the golden set of questions was green – verification questions simply didn't hit the lost pieces.</p></li><li><p>Adversarial auditing found 14 defects; half were in my own evaluation tests. And all these tests were passing green.</p></li><li><p>My favorite from the same batch: the smoke test "no public PDF crashes the parser" was written using <code>any()</code> – if one out of three documents survived, the test was considered passed. An empty proof, not a check.</p></li></ul><p>In all three stories, the model remained unchanged and wasn't retrained: the fix wasn't needed for it, but for the surrounding code – the database, the pipeline, my own tests.</p><p>Next, why this isn't bad luck, but a pattern. The visible failure is always the same: "the agent made a mistake." And behind it can be four different types of repair: model post-training, harness engineering, environment redesign, or benchmark repair. Harness is all the code around the model: prompts, context, memory, tools; there's no precise short Russian word for the term, "harness" is the closest equivalent. From the observed failure, it's not clear which of the four types of repair is needed – the article calls this the repair-assignment problem. The cost of error is not abstract: spending weeks on retraining or changing the model – the failure remains in place. By default, everyone chooses this most expensive and usually incorrect path: "the model is stupid – let's change it."
+  </main>
+  <footer>
+    Translation generated with Gemini 2.5 Flash-Lite.
+    The original article remains the source of record.
+  </footer>
+</body>
+</html>

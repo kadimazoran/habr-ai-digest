@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>On-device OCR for primary documents: how to recognize documents without sending them to the cloud</title>
+  <meta name="description" content="Imagine a common situation: a forwarder accepts goods at a warehouse, signs an invoice, and photographs the document with a corporate smartphone. Within seconds, the details should appear in the accounting system – without manual data entry, an office scanner, or waiting for the paper to reach accou">
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.65;
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 32px 20px 64px;
+      color: #1f2328;
+    }
+    header {
+      border-bottom: 1px solid #d8dee4;
+      margin-bottom: 28px;
+      padding-bottom: 20px;
+    }
+    .source {
+      color: #57606a;
+      font-size: 0.95rem;
+    }
+    img, video, iframe {
+      max-width: 100%;
+      height: auto;
+    }
+    pre {
+      overflow-x: auto;
+      padding: 16px;
+      background: #f6f8fa;
+      border-radius: 6px;
+    }
+    code {
+      font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+    }
+    blockquote {
+      border-left: 4px solid #d0d7de;
+      margin-left: 0;
+      padding-left: 16px;
+      color: #57606a;
+    }
+    footer {
+      border-top: 1px solid #d8dee4;
+      margin-top: 40px;
+      padding-top: 20px;
+      color: #57606a;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>On-device OCR for primary documents: how to recognize documents without sending them to the cloud</h1>
+    <p>Imagine a common situation: a forwarder accepts goods at a warehouse, signs an invoice, and photographs the document with a corporate smartphone. Within seconds, the details should appear in the accounting system – without manual data entry, an office scanner, or waiting for the paper to reach accounting. But there&#x27;s a condition: the photo must not be sent to an OCR provider, a third-party processing center, or a manual verification operator. Ideally, the image never leaves the mobile device – only the extracted and verified data enters the corporate system. Is it possible to recognize a multi-page UРD (universal transfer and acceptance document) with a complex table on a smartphone, correct perspective, read small print and handwritten notes – all without connecting to external infrastructure? The short answer is yes. However, for a secure primary document recognition system, it&#x27;s not enough to write &quot;works locally&quot; in a presentation. The entire document workflow must be properly structured – from the smartphone camera to 1C or ERP. Read more</p>
+    <p class="source">
+      Machine-translated from Habr.
+      <a href="https://habr.com/ru/companies/smartengines/articles/1079702/?utm_campaign=1079702&amp;utm_source=habrahabr&amp;utm_medium=rss">Read the original Russian article</a>.
+      Tue, 08 Sep 2026 07:32:17 GMT
+    </p>
+  </header>
+  <main>
+<div><p>Imagine a common situation: a forwarder accepts goods at a warehouse, signs an invoice, and photographs the document with a corporate smartphone. Within seconds, the details should appear in the accounting system – without manual data entry, an office scanner, or waiting for the paper to reach accounting.</p><p>But there's a condition: the photo must not be sent to an OCR provider, a third-party processing center, or a manual verification operator. Ideally, the image <strong>never leaves the mobile device</strong> – only the extracted and verified data enters the corporate system.</p><p>Is it possible to recognize a multi-page UРD with a complex table on a smartphone, correct perspective, read small print and handwritten notes – all without connecting to external infrastructure? The short answer is yes. However, for a secure primary document recognition system, it's not enough to write "works locally" in a presentation. The entire document workflow must be properly structured – from the smartphone camera to 1C or ERP.</p><p><strong><em>Disclaimer</em></strong><em>: The legal section is provided as of August 2026 and is for informational purposes only. The regime for handling confidential information must be designed considering the specific organization's documents and processes.</em></p><h2>Primary documents went mobile, manual entry hasn't yet</h2><p>A paper document doesn't appear where the accountant's computer is located. Invoices are signed at the warehouse, acts at the site, transport documents during cargo handover, and bills are received during meetings with a counterparty. If the entry point remains an office scanner, there's a delay between the economic operation and its reflection in the accounting system.</p><p>With a large volume of documents, this delay turns into working hours. The accountant needs to accept the document, determine its type, transfer details and nomenclature, check sums and VAT, correct typos, and then return disputed items to the responsible department. A complex invoice with hundreds of lines can take from tens of minutes to several hours.</p><p>The cost of these hours grows with staffing needs. In November 2025, in Moscow alone, employers were looking for over <a href="https://www.rbc.ru/life/news/652fe1569a7947621ca7f009#:~:text=%D0%92%20%D0%BD%D0%BE%D1%8F%D0%B1%D1%80%D0%B5%202025%20%D0%B3%D0%BE%D0%B4%D0%B0%20%D0%BD%D0%B0%20%D1%81%D0%B0%D0%B9%D1%82%D0%B5%20%D0%B2%D0%B0%D0%BA%D0%B0%D0%BD%D1%81%D0%B8%D0%B9%20hh.ru%20%D0%B2%20%D0%9C%D0%BE%D1%81%D0%BA%D0%B2%D0%B5%20%D0%B8%D1%81%D0%BA%D0%B0%D0%BB%D0%B8%20%D0%B1%D0%BE%D0%BB%D0%B5%D0%B5%207%20%D1%82%D1%8B%D1%81.%20%D0%B1%D1%83%D1%85%D0%B3%D0%B0%D0%BB%D1%82%D0%B5%D1%80%D0%BE%D0%B2">7 thousand accountants</a>, and Russian recruitment agencies <a href="https://www.fa.ru/university/structure/university/uso/press-service/press-releases/professiya-bukhgaltera-zhiva-i-perspektivna">note</a> an approximate 12% increase in vacancies for accountants and auditors. In some regions, demand for administrative and managerial staff, including accountants, increased several times in early 2025 <a href="https://rg.ru/2025/02/10/v-regionah-vyrosla-potrebnost-v-ofisnyh-sotrudnikah.html">several times</a>.</p><p>Automation here is not about replacing an accountant with a neural network. Its more practical task is to stop
+  </main>
+  <footer>
+    Translation generated with Gemini 2.5 Flash-Lite.
+    The original article remains the source of record.
+  </footer>
+</body>
+</html>

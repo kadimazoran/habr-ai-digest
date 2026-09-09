@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Activating Little is Not Enough: Why AI Routers Might Need Alternative Strategies</title>
+  <meta name="description" content="If we set aside the numbers, the idea seems simple. The system has a large capacity available, but it doesn&#x27;t use it all at once for each small step. &quot;Activating little&quot; doesn&#x27;t mean &quot;the whole system fits on a small graphics card.&quot; Weights need to be stored somewhere a">
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.65;
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 32px 20px 64px;
+      color: #1f2328;
+    }
+    header {
+      border-bottom: 1px solid #d8dee4;
+      margin-bottom: 28px;
+      padding-bottom: 20px;
+    }
+    .source {
+      color: #57606a;
+      font-size: 0.95rem;
+    }
+    img, video, iframe {
+      max-width: 100%;
+      height: auto;
+    }
+    pre {
+      overflow-x: auto;
+      padding: 16px;
+      background: #f6f8fa;
+      border-radius: 6px;
+    }
+    code {
+      font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+    }
+    blockquote {
+      border-left: 4px solid #d0d7de;
+      margin-left: 0;
+      padding-left: 16px;
+      color: #57606a;
+    }
+    footer {
+      border-top: 1px solid #d8dee4;
+      margin-top: 40px;
+      padding-top: 20px;
+      color: #57606a;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Activating Little is Not Enough: Why AI Routers Might Need Alternative Strategies</h1>
+    <p>If we set aside the numbers, the idea seems simple. The system has a large capacity available, but it doesn&#x27;t use it all at once for each small step. &quot;Activating little&quot; doesn&#x27;t mean &quot;the whole system fits on a small graphics card.&quot; Weights need to be stored somewhere and delivered on time, and memory and latency also depend on context, caches, and data exchange. For my idea of small models, this is the same limitation: savings will have to be measured for the entire system. Imagine a large engineering organization. It might employ data, security, infrastructure, interface, and machine learning specialists. To discuss video stream quality, it&#x27;s not necessary to gather the entire company simultaneously. We need those whose expertise relates to the current issue. Let&#x27;s dive into the article.</p>
+    <p class="source">
+      Machine-translated from Habr.
+      <a href="https://habr.com/ru/articles/1078776/?utm_campaign=1078776&amp;utm_source=habrahabr&amp;utm_medium=rss">Read the original Russian article</a>.
+      Wed, 09 Sep 2026 05:46:27 GMT
+    </p>
+  </header>
+  <main>
+<div><p>In the <a href="https://habr.com/ru/articles/1078632/">previous article</a>, I discussed how I use generative models as opponents: asking them not to confirm the first decision, but to find conditions under which it would fail.</p><p>This practice led to a question that is no longer about organizing my work.</p><p>Why do we so often expect a single answer from the AI system itself? Why should it choose a single route as early as possible if the task allows for multiple strategies, the cost of error is unknown, and the best action is sometimes to refrain from acting?</p><p>The recent release of Qwen3.8-Flash-Next has made this question particularly clear. A large model can store a huge amount of parameters but use only a small portion of them for a specific token. This is similar to economical attention distribution—and simultaneously highlights the boundary between <strong>choosing computations</strong> and <strong>choosing strategies</strong>.</p><p>I want to discuss this boundary.</p><p>I'll preface this by saying that what follows includes known architectural approaches, my interpretation, and a research hypothesis. These are not the same thing. I will distinguish them directly in the text.</p><h3>Large Model, Small Active Circuit</h3><p>The <a href="https://arxiv.org/abs/2608.30320">technical report by the authors of Qwen3.8-Flash-Next</a> describes a sparse MoE model with 125 billion parameters and approximately 6 billion active parameters per token. Additionally, 51 billion parameters of n-gram representation tables are used, stored outside the accelerator in host memory.</p><p>If we set aside the numbers, the idea seems simple. The system has a large capacity available, but it doesn't use it all at once for each small step.</p><p>Moreover, "activating little" doesn't mean "the whole system fits on a small graphics card." Weights need to be stored somewhere and delivered on time, and memory and latency also depend on context, caches, and data exchange. For my idea of small models, this is the same limitation: savings will have to be measured for the entire system.</p><p>Imagine a large engineering organization. It might employ data, security, infrastructure, interface, and machine learning specialists. To discuss video stream quality, it's not necessary to gather the entire company simultaneously. We need those whose expertise relates to the current issue.</p><p>In MoE, this function is performed by a router. It directs the token's representation to selected experts. The experts process it, after which the results are returned to the model's general flow.</p><p>Such conditional activation is not new. In <a href="https://arxiv.org/abs/2101.03961">Switch Transformer</a>, for example, simplified routing to a single expert was used. The main idea was to increase model capacity without a proportional increase in computation for each input. Along with the advantages, the authors discussed very practical problems: training instability, communication costs, and load balancing among experts.</p><p>Qwen develops this same general line of economical computation, adding its own mechanisms for handling long contexts, residual streams, and large n-gram memory.</p><p>This looks very similar to my initial intuition: there can be a lot of knowledge, but the active area is relatively small.</p><p>But it's easy to take an extra step here.</p><h3>An Expert within MoE is Not Yet an Independent Interlocutor</h3><p>When we hear the word "expert," our imagination quickly paints a picture of a team of specialists. One suggests building a bridge, another looks for a ford, a third assesses the risk, and a fourth asks if crossing the river is even necessary.</p><p>A standard MoE doesn't have to work that way.</p><p>Its experts are parts of a single trainable model. Usually, they are computational blocks with similar structures, trained together in a common system. The router chooses which parameters to use for the current representation. But this doesn't mean the model has formed several complete plans, compared their consequences, and saved the losing options.</p><p>This is an important distinction:</p><pre><code>MoE router: which parameters to use now? Router of strategies: which action options to save, how to test them, and when not to choose any?</code><div><a href=
+  </main>
+  <footer>
+    Translation generated with Gemini 2.5 Flash-Lite.
+    The original article remains the source of record.
+  </footer>
+</body>
+</html>

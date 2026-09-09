@@ -1,0 +1,115 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>How I explained 2x + 4 = 10 to my nephew and accidentally built a visual laboratory (website)</title>
+  <meta name="description" content="Recently, I had to explain the simplest equation, 2x + 4 = 10, to my nephew. I was about to say the usual &quot;move the four to the right side with the opposite sign,&quot; but I suddenly caught myself asking: why should it change its sign? If a child perceives &#x27;=&#x27; as a portal through whi">
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.65;
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 32px 20px 64px;
+      color: #1f2328;
+    }
+    header {
+      border-bottom: 1px solid #d8dee4;
+      margin-bottom: 28px;
+      padding-bottom: 20px;
+    }
+    .source {
+      color: #57606a;
+      font-size: 0.95rem;
+    }
+    img, video, iframe {
+      max-width: 100%;
+      height: auto;
+    }
+    pre {
+      overflow-x: auto;
+      padding: 16px;
+      background: #f6f8fa;
+      border-radius: 6px;
+    }
+    code {
+      font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+    }
+    blockquote {
+      border-left: 4px solid #d0d7de;
+      margin-left: 0;
+      padding-left: 16px;
+      color: #57606a;
+    }
+    footer {
+      border-top: 1px solid #d8dee4;
+      margin-top: 40px;
+      padding-top: 20px;
+      color: #57606a;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>How I explained 2x + 4 = 10 to my nephew and accidentally built a visual laboratory (website)</h1>
+    <p>Recently, I had to explain the simplest equation, 2x + 4 = 10, to my nephew. I was about to say the usual &quot;move the four to the right side with the opposite sign,&quot; but I suddenly caught myself asking: why should it change its sign? If a child perceives &#x27;=&#x27; as a portal through which numbers pass and magically change their properties, perhaps the problem isn&#x27;t with mathematics itself, but with the way it&#x27;s explained. This question led to MathRoots – my experiment with mathematics as a dependency graph: from the answer, you can delve down to operations, properties, and fundamental concepts, find the root cause of an error, visualize formulas, and ask at each step: &quot;Why am I even allowed to do this?&quot; In this article, I&#x27;ll show what the simple equation 2x + 4 = 10 turned into, why mathematics needs a debugger, what AST has to do with it, and how it all eventually evolved into React, AI, and Docker. Read more</p>
+    <p class="source">
+      Machine-translated from Habr.
+      <a href="https://habr.com/ru/articles/1080086/?utm_campaign=1080086&amp;utm_source=habrahabr&amp;utm_medium=rss">Read the original Russian article</a>.
+      Wed, 09 Sep 2026 02:35:44 GMT
+    </p>
+  </header>
+  <main>
+<div><p>My name is Artur Valiev. Recently, I had to explain a rather daunting mathematical construct to my nephew:</p><img alt="2x + 4 = 10" loading="lazy" src="https://habrastorage.org/getpro/habr/formulas/6/62/629/6296bde806a4713ad51fc021aac79c18.svg"/><p>That is, daunting only to the extent that a linear equation can be daunting. At first, in a very adult manner, I prepared to explain: "Move the four to the right side with the opposite sign..." — and at that moment, I stopped myself.</p><p>Why?</p><p>Why does the four, upon crossing the equals sign, suddenly change its sign? What kind of portal is this? On the left, it was <code>+4</code>, it flew through <code>=</code> — and came out on the other side as <code>-4</code>.</p><p>If a child asks "why?", the answer "well, that's the rule" sounds suspicious even to someone who graduated school long ago. And if you ask "why?" again — you might suddenly discover a rather large rabbit hole.</p><p>Thus began MathRoots.</p><h3>I Never Really Understood Teachers at the Board</h3><p>Perhaps I should make a confession here. In my youth, I can hardly recall a time when a teacher explained something at the board, and I sat there thinking: "Oh! Everything is clear." Usually, the opposite happened. The teacher wrote something, the class nodded in unison, I also nodded just in case, and then I'd go home and start literal archaeological excavations.</p><p>Why is there a minus here? Where did the two come from? Why is it allowed to simplify here, but not there? Why did the fraction suddenly flip? Why did the signs change when opening parentheses? Why is it allowed to do what we are doing right now?</p><p>I had to piece together the answers: from one textbook, from another, from friends, from examples, sometimes just starting with the answer at the end of the problem book and trying to reconstruct the entire path backward.</p><p>And after many years, I realized something quite simple. Perhaps it wasn't mathematics itself that was difficult for me. Perhaps it was the <strong>format of transmitting mathematics</strong>.</p><p>The phrase "move the term across the equals sign with the opposite sign" is very concise. For someone who already understands algebra, it's a great shorthand. But a child literally hears the following:</p><img alt="+4 → | = | → -4" loading="lazy" src="https://habrastorage.org/getpro/habr/formulas/d/d6/d67/d6734c8bd1dbb53cea4fe19554f7c1fb.svg"/><p>That is, the equals sign turns into some kind of mathematical teleport that changes the signs of numbers passing through it.</p><p>And the most interesting part comes later. Today, the child remembers that <code>+4</code> can somehow become <code>-4</code>. Tomorrow, they encounter: 2x = 6</p><p>And here, suddenly, it turns out that you can't "move the two with a minus." You have to divide. Then comes:</p><img alt="\frac{x}{3} = 5" loading="lazy" src="https://habrastorage.org/getpro/habr/formulas/9/9a/9ab/9ab2ba30d3b04058fe752c74f40f75a4.svg"/><p>and for some reason, you have to multiply the three. A set of separate gestures emerges, which need to be recognized by the appearance of the problem.</p><p>I wanted to try building the explanation the other way around: not teaching gestures, but digging into the cause.</p><h3>There Is No Such Thing as "Moving"</h3><p>Let's return to our equation:</p><img alt="2x + 4 = 10" loading="lazy" src="https://habrastorage.org/getpro/habr/formulas/6/62/629/6296bde806a4713ad51fc021aac79c18.svg"/><p>Imagine a regular balance scale. On the left pan, there are two identical closed boxes of unknown mass and four more one-kilogram weights. On the right, there are ten such weights. The scale is balanced.</p><p>This, in essence, is the meaning of the <code>=</code> sign. It's not a calculation arrow or an invitation to move something from left to right. It's a statement: <strong>the left side currently has the same amount as the right side</strong>.</p><figure><img alt="Balance simulator" loading="lazy" src="https://habrastorage.org/r/w1560/getpro/habr/upload_files/59d/e16/c43/59de16c436827a9b1f9d9a657113e738.png" title="Balance simulator"/><div><figcaption>Balance simulator</figcaption></div></figure><p>We want to find the mass of one box. The four weights on the left are in the way, so we want to remove them. But if we remove four weights only from the left pan, the balance will be disturbed. Therefore, we remove the same weight from both sides:</p><img alt="(2x + 4) - 4 = 10 - 4" loading="lazy" src="https://habrastorage.org/getpro/habr/formulas/f/f2/f2b/f2b01ebdaca30ac1203e07eaf25cf9f1.svg"/><p>We get: 2x = 6</p><p>No four moved anywhere. We simply performed the same operation on two equal quantities and maintained the equality.</p><p>Now, on the left, there are two identical boxes, and on the right, there are six kilograms. We divide both sides into two equal groups:</p><img alt="\frac{2x}{2} = \frac{6}{2}" loading="lazy" src="https://habrastorage.org/getpro/habr/formulas/e/e2/e2c/e2c77e9f94dce52c474cf062ebd486dc.svg"/><p>and we get:</p><img alt="x = 3" loading="lazy" src="https://habrastorage.org/getpro/habr/formulas/4/4c/4c6/4c63f2fd29fec6c20010a36949e9752d.svg"/><p>We can immediately close the loop and check:</p><img alt="2 \cdot 3 + 4 = 10" loading="lazy" src="https://habrastorage.org/getpro/habr/formulas/5/5d/5db/5dbf7ef6fa779c711abd2030f6e35f09.svg"/><p>Everything matches.</p><p>And this is no longer just a "rule for solving one equation." The child has received a model: <strong>equality is balance; if you change one side, you must make an equivalent change to the other side</strong>.</p><p>Much later, this can be called an equivalent transformation, a property of equality, and so on. But first, there is a physical model that can be grasped mentally.</p><p>For a programmer, I would describe this using the word <strong>invariant</strong>. We can transform the system's state as much as we want, as long as the main condition is maintained: the left side remains equal to the right side.</p><p>After this, "moving across the equals sign" becomes just convenient syntactic sugar.</p><h3>And Then the Programmer in Me Completely Ruined the Lesson</h3><p>After the balance scale explanation, I thought: why should a math problem be presented as a linear list of steps?</p><p>Typically, a textbook looks like this:</p><pre><code>Step 1
+Step 2
+Step 3
+Step 4
+Answer</code><div><a href="https://sourcecraft.dev/"><img loading="lazy"/></a></div></pre><p>But in programming, we rarely perceive complex systems this way. A function has dependencies, a package has dependencies, a bug has a root cause, one abstraction is built on top of another.</p><p>Why not show mathematical knowledge in the same way?</p><p>Thus, the main idea of MathRoots emerged:</p><figure><img alt="MathRoots example: 2x + 4 = 10" loading="lazy" src="https://habrastorage.org/r/w1560/getpro/habr/upload_files/681/a3c/0bd/681a3c0bd02eea5a7f556c396d43e608.png" title="MathRoots example: 2x + 4 = 10"/><div><figcaption>MathRoots example: 2x + 4 = 10</figcaption></div></figure><blockquote><p><strong>Every complex problem has roots.</strong></p></blockquote><p>Instead of a linear instruction, I decided to represent the problem as a graph of concepts. At the bottom are the most fundamental things, higher up are the properties of operations, then algebraic constructs, intermediate states, and finally, the goal itself.</p><p>For <code>2x + 4 = 10</code>, it looks something like this:</p><pre><code>Layer 4         x = 3
+                  ▲
+Layer 3         2x = 6
+                  ▲
+Layer 2    Dividing both sides by 2
+                  ▲
+Layer 1    Subtracting 4 from both sides
+                  ▲
+Layer 0       Maintaining equality</code><div><a href="https://sourcecraft.dev/"><img loading="lazy"/></a></div></pre><p>And here came the thought that I like the most: <strong>if a person doesn't understand the top node, there's no need to explain the top node ten more times</strong>. Perhaps the problem lies three levels below.</p><h3>Mathematics as a Dependency Graph</h3><p>Let's take something very simple:</p><img alt="3x = 12" loading="lazy" src="https://habrastorage.org/getpro/habr/formulas/a/ab/aba/aba761f3837d198900fda4acb9aaf68b.svg"/><p>We say: divide by three and get <code>x = 4</code>.</p><p>The child asks: "Why divide?" — because there's a coefficient before <code>x</code>. "And what is a coefficient?" — a number by which a variable is multiplied. "And how am I supposed to know that <code>3x</code> means multiplication?"</p><p>And here we are descending lower.</p><img alt="3x = 3 \cdot x = x + x + x" loading="lazy" src="https://habrastorage.org/getpro/habr/formulas/c/ce/ce7/ce72adfc1412ef57110f85f0550a430c.svg"/><p>So, we have three identical groups. If three identical groups together make 12, one group should make:</p><img alt="\frac{12}{3} = 4" loading="lazy" src="https://habrastorage.org/getpro/habr/formulas/9/9e/9e4/9e45732d2e624caba3479b5145bc2adc.svg"/><p>This results in a chain:</p><pre><code>addition
+   ↓
+repeated addition
+   ↓
+multiplication
+   ↓
+coefficient
+   ↓
+inverse operation
+   ↓
+division
+   ↓
+linear equation</code><div><a href="https://sourcecraft.dev/"><img loading="lazy"/></a></div></pre><p>I started calling such connections in MathRoots concept bridges. Addition leads to multiplication. Multiplication — to exponentiation. Exponentiation — to logarithms. Equality — to physical balance.</p><p>For example:</p><img alt="\log_2 8 = 3" loading="lazy" src="https://habrastorage.org/getpro/habr/formulas/3/3a/3a6/3a6d2a5363114ba1bbee547c586081fa.svg"/><p>can first be explained not by the academic definition of a logarithm, but by a simple question: <strong>to what power must you raise 2 to get 8?</strong></p><img alt="2^3 = 8" loading="lazy" src="https://habrastorage.org/getpro/habr/formulas/7/7a/7a4/7a407bc684f80fa7d3f7a5ec9e5a0906.svg"/><p>And after that, the daunting <code>log</code> suddenly turns out to be the inverse question to an already familiar operation.</p><p>I generally think it's important for a formula to appear <strong>after a question arises</strong>, not the other way around. When a formula is given first, and then the student is convinced that they are very interested in its meaning, the sequence is a bit strange.</p><h3>That's Why the Interface Isn't Quite Like a Textbook</h3><p>When knowledge turns into a graph, a regular text page becomes a bit of a hindrance. Therefore, the central interface became a large interactive canvas — something like an Infinite Canvas.</p><p>You can move around it, zoom in and out of individual branches, open nodes, and see what concepts they are built upon.</p><p>Moreover, I wanted to implement not just zoom, where a card gets bigger or smaller, but <strong>semantic zoom</strong>. At a large distance, details disappear, and only the general structure of the tree remains. As you zoom in, topic names and formulas appear. Even closer — explanations, exercises, dependencies, and additional tools.</p><p>At one scale, the user sees:</p><pre><code>●────●────●
+     │
+     ●────●</code><div><a href="https://sourcecraft.dev/"><img loading="lazy"/></a></div></pre><p>At another, the same node transforms into something like this:</p><pre><code>[Maintaining equality]
+
+a = b
+↓
+a - c = b - c
+
+Why is this allowed?
+Try on the balance scale
+Mini-exercise
+Related concepts</code><div><a href="https://sourcecraft.dev/"><img loading="lazy"/></a></div></pre><p>That is, the scale changes not so much the pixel size as <strong>the amount of meaning shown</strong>.</p><p>When the trees become large, this significantly helps avoid a wall of cards.</p><h3>The "Why?" Button Turned Out to Be More Interesting Than the "Answer" Button</h3><figure><img alt="Tree tiles" loading="lazy" src="https://habrastorage.org/r/w1560/getpro/habr/upload_files/cb2/dff/c43/cb2dffc439b5ddea12f262ec6f2e5682.png" title="Tree tiles"/><div><figcaption>Tree tiles</figcaption></div></figure><p>One of my favorite ideas in MathRoots is the <strong>"Why can I do this?"</strong> button.</p><p>Most educational solutions perfectly answer the question: "What to do next?" But the question is much more interesting: <strong>"Why am I even allowed to perform this step?"</strong></p><p>Moreover, the explanation depends on the person.</p><p>Let's take the distributive law:</p><img alt="a(b+c)=ab+ac" loading="lazy" src="https://habrastorage.org/getpro/habr/formulas/0/04/04c/04c46410d6f23482e677bb6e5f946e16.svg"/><p>To a ten-year-old child, you can show it with boxes: there are two boxes, each containing a banana and three apples. So, there are two bananas and six apples in total.</p><p>To a school student, you can already talk about the distributive property of multiplication.</p><p>If you want formality — delve into the properties of algebraic structures.</p><p>And to a programmer, you can say something like this: we are transforming the AST of the expression by applying the multiplier to all child nodes, but preserving the semantic equivalence of the result.</p><p>Roughly:</p><img alt="items.map(x =&gt; multiplier * x)" loading="lazy" src="https://habrastorage.org/getpro/habr/formulas/2/24/240/240f9a2071fed4c4c12cc586eaebd912.svg"/><p>When I first formulated such an explanation, I realized that this is exactly what I would have wanted to hear myself many years ago.</p><p>It was always easier for me to understand the phrase:</p><blockquote><p>"This is a transformation of the expression tree while preserving the result"</p></blockquote><p>than:</p><blockquote><p>"Memorize the rule for opening parentheses."</p></blockquote><h3>Then a Math Debugger Appeared</h3><p>And here, the professional deformation of a programmer finally won.</p><p>If a program crashes on the fifteenth level of the call stack, we don't run the same function fifty more times hoping it will "get trained." We look for the root cause.</p><p>Why can't a mathematical error be treated the same way?</p><p>Thus, the Gap Finder / Stuck Debugger was born.</p><figure><img alt="Gap Finder" loading="lazy" src="https://habrastorage.org/r/w1560/getpro/habr/upload_files/d16/77b/4d7/d1677b4d749056457beda08dd7cd398f.png" title="Gap Finder"/><div><figcaption>Gap Finder</figcaption></div></figure><p>Suppose a student makes a mistake while solving an equation. Instead of immediately showing the correct answer, you can go down through the dependencies of the current step.</p><pre><code>Error here
+    ↓
+checking dependency
+    ↓
+everything is clear here
+    ↓
+lower down
+    ↓
+Aha</code><div><a href="https://sourcecraft.dev/"><img loading="lazy"/></a></div></pre><p>And find out, for example, that the problem isn't with linear equations at all. The person simply doesn't fully understand negative numbers.</p><p>Then, instead of twenty more equations in a row, they can be given a small check:</p><img alt="-4 + 6 = ?" loading="lazy" src="https://habrastorage.org/getpro/habr/formulas/5/52/52b/52b502f6403efb6de450d8e6cf7f4458.svg"/><p>If the gap is found precisely here, it is closed first, and then the person returns to the original problem.</p><p>For myself, I call this <strong>cognitive debt</strong>. It's very similar to technical debt. A small problem in the foundation might not cause issues for a long time. New levels of abstraction are built on top of it, then more, and one day the entire structure becomes so shaky that the person concludes: "I guess I just don't have a mathematical mind."
+  </main>
+  <footer>
+    Translation generated with Gemini 2.5 Flash-Lite.
+    The original article remains the source of record.
+  </footer>
+</body>
+</html>

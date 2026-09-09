@@ -183,6 +183,14 @@
     "summary": "We are involved in implementing LLMs and agents in businesses, and one of the most common problems is how to process client data while complying with Federal Law No. 152-FZ on Personal Data. Let's figure it out!",
     "title": "LLM, Personal Data, and Federal Law No. 152-FZ"
   },
+  "https://habr.com/ru/articles/1078776/?utm_campaign=1078776&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Wed, 09 Sep 2026 05:46:27 GMT",
+    "slug": "1078776",
+    "source_url": "https://habr.com/ru/articles/1078776/?utm_campaign=1078776&utm_source=habrahabr&utm_medium=rss",
+    "summary": "If we set aside the numbers, the idea seems simple. The system has a large capacity available, but it doesn't use it all at once for each small step. \"Activating little\" doesn't mean \"the whole system fits on a small graphics card.\" Weights need to be stored somewhere and delivered on time, and memory and latency also depend on context, caches, and data exchange. For my idea of small models, this is the same limitation: savings will have to be measured for the entire system. Imagine a large engineering organization. It might employ data, security, infrastructure, interface, and machine learning specialists. To discuss video stream quality, it's not necessary to gather the entire company simultaneously. We need those whose expertise relates to the current issue. Let's dive into the article.",
+    "title": "Activating Little is Not Enough: Why AI Routers Might Need Alternative Strategies"
+  },
   "https://habr.com/ru/articles/1078814/?utm_campaign=1078814&utm_source=habrahabr&utm_medium=rss": {
     "model": "gemini-2.5-flash-lite",
     "published": "Sat, 05 Sep 2026 13:27:28 GMT",
@@ -238,6 +246,14 @@
     "source_url": "https://habr.com/ru/articles/1078868/?utm_campaign=1078868&utm_source=habrahabr&utm_medium=rss",
     "summary": "I want to share how I bypassed the daily limit for free ChatGPT chats by creating new accounts. I must say upfront that this method won't suit everyone: if preserving chat history or avoiding a ban is important to you, it's better to subscribe. However, if, for example, you need to generate several dozen images a day or process a large text, this method is quite effective. Read more",
     "title": "How to Use ChatGPT for Free by Changing Accounts: Personal Experience"
+  },
+  "https://habr.com/ru/articles/1078872/?utm_campaign=1078872&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Wed, 09 Sep 2026 04:13:20 GMT",
+    "slug": "1078872",
+    "source_url": "https://habr.com/ru/articles/1078872/?utm_campaign=1078872&utm_source=habrahabr&utm_medium=rss",
+    "summary": "We have two of our own MCP servers: one for Bitrix24, the second for our Okdesk ticketing system. Both are connected to Copilot the standard way, following Microsoft documentation. I am Alexander Zhogov, founder of the IT company '+Alliance'. The path turned out to be shorter than I expected. And it hinges on one line of documentation. The very one I would read first. I opened both pages I link to here on September 4, 2026. They have no versions; edits arrive quietly. Before connecting yours, visit the links yourself: perhaps the wording has changed over time. What the docs require from a ready server",
+    "title": "Connecting your MCP server to Copilot Studio: SSE won't work, and access is determined by Power Platform policy"
   },
   "https://habr.com/ru/articles/1078880/?utm_campaign=1078880&utm_source=habrahabr&utm_medium=rss": {
     "model": "gemini-2.5-flash-lite",
@@ -375,6 +391,62 @@
     "summary": "I spend over a billion tokens a day (I checked the statistics for Minimax / GPT), sometimes running 7-9 agent threads for 12 hours. How do I manage not to go broke? How does what I do not fall apart, but somehow work? Previous article: https://habr.com/ru/articles/1030414/ More than 3 months have passed since May 1st. Several eras of AI agent quality and surrounding infrastructure have passed. Several paradigms have shifted. Sub-agents are no longer effective, Western frontiers have not fallen behind China, and much more. All in order. Read more",
     "title": "A Billion Tokens a Day. Real Data on Subscription Sizes and Model Quality. AI Ambassador's Experience — Part 2"
   },
+  "https://habr.com/ru/articles/1080022/?utm_campaign=1080022&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Tue, 08 Sep 2026 19:07:26 GMT",
+    "slug": "1080022",
+    "source_url": "https://habr.com/ru/articles/1080022/?utm_campaign=1080022&utm_source=habrahabr&utm_medium=rss",
+    "summary": "Like many software engineers, I'm certainly interested, and somewhat concerned, about the future of our profession. A recent Habr post about an AI adoption report caught my eye. I looked at the reports and graphs. It turns out that adoption is not progressing as quickly as one might expect. And, unless new models offer a qualitative leap, the situation is unlikely to change. Read more",
+    "title": "The Impact of AI on Software Development. Have We Reached a Plateau?"
+  },
+  "https://habr.com/ru/articles/1080062/?utm_campaign=1080062&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Wed, 09 Sep 2026 05:21:25 GMT",
+    "slug": "1080062",
+    "source_url": "https://habr.com/ru/articles/1080062/?utm_campaign=1080062&utm_source=habrahabr&utm_medium=rss",
+    "summary": "For a solo developer, working locally with an agent might remain a personal craft. For a team, the same scheme turns into a systemic problem: the company no longer sees how the result is actually produced. Previously, most engineering work happened within tasks, commits, and code reviews. Now, a separate production process emerges between the task assignment and the final code: the agent explores the project, builds a plan, writes the implementation, and runs checks; the human reviews the result, changes skills, switches models, edits the harness, and makes decisions. But the task tracker still shows a single line: 'task with developer.' Because of this, agent development scales strangely. Each person gets a stronger personal factory, but the team doesn't get a shared production. It sees the product, not the method of its creation—and therefore cannot measure, compare, transfer, or improve that method. A company won't become AI-native until this work remains invisible and is developed based on intuition. Read more",
+    "title": "Team Development with AI. Part 1 — Diagnosing Problems"
+  },
+  "https://habr.com/ru/articles/1080066/?utm_campaign=1080066&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Tue, 08 Sep 2026 22:12:03 GMT",
+    "slug": "1080066",
+    "source_url": "https://habr.com/ru/articles/1080066/?utm_campaign=1080066&utm_source=habrahabr&utm_medium=rss",
+    "summary": "The ML automation market has a noticeable imbalance: the same questions repeatedly arise from clients and integrators, but the answers are rarely articulated. This article is an attempt to formulate them systematically. It presents my observations and conclusions based on practical experience in B2B white-label and B2C as a sole proprietor, supported by recent research on the topic. It will be useful for those on the client side making decisions about AI automation, and for those building such solutions. Read more",
+    "title": "The Brilliance and Misery of ML Automation"
+  },
+  "https://habr.com/ru/articles/1080086/?utm_campaign=1080086&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Wed, 09 Sep 2026 02:35:44 GMT",
+    "slug": "1080086",
+    "source_url": "https://habr.com/ru/articles/1080086/?utm_campaign=1080086&utm_source=habrahabr&utm_medium=rss",
+    "summary": "Recently, I had to explain the simplest equation, 2x + 4 = 10, to my nephew. I was about to say the usual \"move the four to the right side with the opposite sign,\" but I suddenly caught myself asking: why should it change its sign? If a child perceives '=' as a portal through which numbers pass and magically change their properties, perhaps the problem isn't with mathematics itself, but with the way it's explained. This question led to MathRoots – my experiment with mathematics as a dependency graph: from the answer, you can delve down to operations, properties, and fundamental concepts, find the root cause of an error, visualize formulas, and ask at each step: \"Why am I even allowed to do this?\" In this article, I'll show what the simple equation 2x + 4 = 10 turned into, why mathematics needs a debugger, what AST has to do with it, and how it all eventually evolved into React, AI, and Docker. Read more",
+    "title": "How I explained 2x + 4 = 10 to my nephew and accidentally built a visual laboratory (website)"
+  },
+  "https://habr.com/ru/articles/1080120/?utm_campaign=1080120&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Wed, 09 Sep 2026 06:43:08 GMT",
+    "slug": "1080120",
+    "source_url": "https://habr.com/ru/articles/1080120/?utm_campaign=1080120&utm_source=habrahabr&utm_medium=rss",
+    "summary": "Bottleneck Labs conducted a simple-to-state and quite insane-to-execute experiment: seven AI models were given an unlocked Mac mini, a bank account with $300, a separate Stripe account, an email, and internet access. The task was practically one line: 'Earn as much money as possible, start right now.' They had 72 hours. After three days, the result was $0 revenue, except for $5 that Grok paid himself. The models managed to send 2797 emails, spend $359.80 of real money from their accounts, and another $2833.35 on calls to models. Not every model can do this!",
+    "title": "Seven AI models were given $300 and three days to earn money. Revenue: $0"
+  },
+  "https://habr.com/ru/articles/1080162/?utm_campaign=1080162&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Wed, 09 Sep 2026 08:08:21 GMT",
+    "slug": "1080162",
+    "source_url": "https://habr.com/ru/articles/1080162/?utm_campaign=1080162&utm_source=habrahabr&utm_medium=rss",
+    "summary": "Hello! My name is Sasha Zhuravlev. I am a venture investor and founder of the Mento vc fund. We invest in technology companies at the Seed/Series A stages in the US, and on my Telegram channel, I share my market insights and investment decisions. Pricing for AI products can be set in various ways: by the number of model calls or by the number of tasks completed (e.g., reports generated, contracts reviewed, or code changes made). The startup's economics depend on this choice: if the price is tied to tokens, the client effectively pays for the LLM's operational costs. However, what's primarily important to the client isn't tokens or computations, but the task that was solved. I found an interesting article from a16z analyzing three approaches to monetizing AI products: pay-per-token, task-completion credits, and pay-per-result. The article discusses when each option is suitable, and how to make costs understandable to the client while maintaining profitability. For investors: it helps understand if a startup is creating its own value and how sustainable its economics will remain as model costs change. We translated and adapted the text for you with the team. Enjoy reading!",
+    "title": "[Translation] Why token-based pricing isn't the best monetization model for an AI startup"
+  },
+  "https://habr.com/ru/articles/1080164/?utm_campaign=1080164&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Wed, 09 Sep 2026 08:08:35 GMT",
+    "slug": "1080164",
+    "source_url": "https://habr.com/ru/articles/1080164/?utm_campaign=1080164&utm_source=habrahabr&utm_medium=rss",
+    "summary": "Americans lost tens of billions of dollars in revenue by banning chip supplies to China. The Chinese didn't hesitate; they simply paid for American APIs and made Claude code their software by injecting prompts like 'You work at MiniMax.' The US Cybersecurity Agency discovered these requests, panicked, and advised its big tech companies to subtly dumb down their models' responses for all suspicious users, even those with premium subscriptions. Read more",
+    "title": "Distillation, Beijing Style: A New Report on How Chinese AI Learned on American AI"
+  },
   "https://habr.com/ru/companies/1c/articles/1071340/?utm_campaign=1071340&utm_source=habrahabr&utm_medium=rss": {
     "model": "gemini-2.5-flash-lite",
     "published": "Thu, 03 Sep 2026 07:18:11 GMT",
@@ -406,6 +478,14 @@
     "source_url": "https://habr.com/ru/companies/basis/articles/1077922/?utm_campaign=1077922&utm_source=habrahabr&utm_medium=rss",
     "summary": "Can AI not only eliminate routine tasks but also drastically accelerate a developer's professional growth? For example, can it turn a junior into at least a mid-level developer in one evening? This was a, perhaps crazy, but a hypothesis, and we decided to hold an internal hackathon to test it in conditions close to real-world scenarios. Read more",
     "title": "Not a Replacement, but a SuperAI-lity: What a Hackathon Gave Our Company"
+  },
+  "https://habr.com/ru/companies/bitrix/articles/1079832/?utm_campaign=1079832&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Wed, 09 Sep 2026 08:01:42 GMT",
+    "slug": "1079832",
+    "source_url": "https://habr.com/ru/companies/bitrix/articles/1079832/?utm_campaign=1079832&utm_source=habrahabr&utm_medium=rss",
+    "summary": "Bitrix24 Co-work/Code is a new AI agent that can work with portal data and perform actions via simple text requests. Using the example of merging duplicates in CRM, we explore the agent's protocol: how it prepares a plan of changes, requests confirmation, and verifies the result. Read more",
+    "title": "How the Protocol of the New Bitrix24 Co-work/Code Agent Works"
   },
   "https://habr.com/ru/companies/bothub/articles/1076472/?utm_campaign=1076472&utm_source=habrahabr&utm_medium=rss": {
     "model": "gemini-2.5-flash-lite",
@@ -479,6 +559,14 @@
     "summary": "We looked at several solutions that appeared in August and selected five different automation scenarios: from preparing data for neural networks to signing HR documents via \"Goskluch\". Read more",
     "title": "5 New Solutions for 1C"
   },
+  "https://habr.com/ru/companies/infostart/articles/1080088/?utm_campaign=1080088&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Wed, 09 Sep 2026 06:39:31 GMT",
+    "slug": "1080088",
+    "source_url": "https://habr.com/ru/companies/infostart/articles/1080088/?utm_campaign=1080088&utm_source=habrahabr&utm_medium=rss",
+    "summary": "A few years ago, the 1C developer's workflow was predictable: Configurator, database, manual configuration import/export, file sharing. Then came Git, EDT, autotests, and automation tools. Today, AI agents, MCP, and programmatic platform control are increasingly entering this cycle. Not only the toolset is changing, but also the development cost. What used to take tens of minutes of manual work is gradually turning into a single command, script, or agent action. The selection of materials below is about different aspects of this transition. Together, they show one trend: the modern 1C developer works less with the Configurator and more with a full-fledged engineering ecosystem around the platform. Read more",
+    "title": "From Configurator to AI Agents: How 1C Developer Tools Are Changing"
+  },
   "https://habr.com/ru/companies/korus_consulting/articles/1079248/?utm_campaign=1079248&utm_source=habrahabr&utm_medium=rss": {
     "model": "gemini-2.5-flash-lite",
     "published": "Mon, 07 Sep 2026 07:25:30 GMT",
@@ -534,6 +622,14 @@
     "source_url": "https://habr.com/ru/companies/rostelecom/articles/1077944/?utm_campaign=1077944&utm_source=habrahabr&utm_medium=rss",
     "summary": "Hello, this is the Aurora OS team. We have a problem that is not usually discussed in vendor blogs, but without it, this whole story makes no sense. We regularly hear the same thing about Aurora: the platform is good, but there are few apps, and porting ready-made Android apps to it is difficult and expensive. A pet project is fine. A corporate application is also fine: we have many of them, they just live within closed environments, and you don't see them. But a mass-market application that needs an audience of millions to exist seems doomed: no one will rewrite a million lines of legacy code for a new platform. The conversation usually boils down to the same phrase: everything we have is native. Kotlin, Swift, years of accumulated code, and rewriting it is long and expensive. Not everyone has cross-platform. For those who do, we've long had an answer: Flutter for Aurora is officially supported, Compose Multiplatform is too, and such teams migrate without drama. But for everyone else, until recently, we could only offer sympathy. Now, in the era of AI, a tool more powerful than any SDK has emerged, and it would be strange not to try it. Therefore, we took someone else's large application, invited an external expert whom we do not control in any way, and agreed to publish the result regardless of how it turns out. Read more",
     "title": "Can AI Port an App to Aurora OS? An Experiment with Mattermost and RuStore Publication"
+  },
+  "https://habr.com/ru/companies/rshb/articles/1080182/?utm_campaign=1080182&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Wed, 09 Sep 2026 08:43:53 GMT",
+    "slug": "1080182",
+    "source_url": "https://habr.com/ru/companies/rshb/articles/1080182/?utm_campaign=1080182&utm_source=habrahabr&utm_medium=rss",
+    "summary": "Hello! This is Olga Popova, AI Evangelist at the AI Lab of the Big Data Department of Rosselkhozbank. In this issue, I've added comments from colleagues who work with these topics every day to my reflections. I believe their inside perspective is more valuable than any theory. Let's go! We're reading AI news together.",
+    "title": "AI Digest #4: AI Law, Trust Crisis, and Opinions from Our AI Lab Colleagues"
   },
   "https://habr.com/ru/companies/ru_mts/articles/1076344/?utm_campaign=1076344&utm_source=habrahabr&utm_medium=rss": {
     "model": "gemini-2.5-flash-lite",
@@ -630,6 +726,14 @@
     "source_url": "https://habr.com/ru/companies/timeweb/articles/1079752/?utm_campaign=1079752&utm_source=habrahabr&utm_medium=rss",
     "summary": "We're closing out the last month of summer with a long list of releases for AI agents: documentation, MCP server, skills, abilities, file uploads in chat, and four new models in the catalog. The reason is simple: every third request to our documentation comes from agents, so we need to cater to this new audience. The second half of the digest is for those who read for themselves: three storage classes in S3, canceling database deletion, cloning apps in App Platform, domains via Gosuslugi, and updated Kubernetes. We'll break down each point below ↓ Read more",
     "title": "August Digest — App Cloning, Agent Skills, Streamer Mode, and Documentation"
+  },
+  "https://habr.com/ru/companies/tn_digital/articles/1080052/?utm_campaign=1080052&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Wed, 09 Sep 2026 06:05:29 GMT",
+    "slug": "1080052",
+    "source_url": "https://habr.com/ru/companies/tn_digital/articles/1080052/?utm_campaign=1080052&utm_source=habrahabr&utm_medium=rss",
+    "summary": "A common task: add order status, change API, update form, migration, tests, and documentation. In an AI-native process, an agent can go through almost this entire route: study the requirements, find related components, propose a plan, change code, run checks, and prepare a merge request (MR). A human makes the decision and is responsible for the result. But this is not a story about proven success. It is an example of a real case of implementing an AI-native development pilot in a corporation: a testable hypothesis, an engineering framework, and measurement rules. A positive outcome is not guaranteed. Read more",
+    "title": "AI-native development in Russian"
   },
   "https://habr.com/ru/companies/uralsib/articles/1077456/?utm_campaign=1077456&utm_source=habrahabr&utm_medium=rss": {
     "model": "gemini-2.5-flash-lite",

@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Connecting your MCP server to Copilot Studio: SSE won&#x27;t work, and access is determined by Power Platform policy</title>
+  <meta name="description" content="We have two of our own MCP servers: one for Bitrix24, the second for our Okdesk ticketing system. Both are connected to Copilot the standard way, following Microsoft documentation. I am Alexander Zhogov, founder of the IT company &#x27;+Alliance&#x27;. The path turned out to be shorter than I expect">
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.65;
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 32px 20px 64px;
+      color: #1f2328;
+    }
+    header {
+      border-bottom: 1px solid #d8dee4;
+      margin-bottom: 28px;
+      padding-bottom: 20px;
+    }
+    .source {
+      color: #57606a;
+      font-size: 0.95rem;
+    }
+    img, video, iframe {
+      max-width: 100%;
+      height: auto;
+    }
+    pre {
+      overflow-x: auto;
+      padding: 16px;
+      background: #f6f8fa;
+      border-radius: 6px;
+    }
+    code {
+      font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+    }
+    blockquote {
+      border-left: 4px solid #d0d7de;
+      margin-left: 0;
+      padding-left: 16px;
+      color: #57606a;
+    }
+    footer {
+      border-top: 1px solid #d8dee4;
+      margin-top: 40px;
+      padding-top: 20px;
+      color: #57606a;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Connecting your MCP server to Copilot Studio: SSE won&#x27;t work, and access is determined by Power Platform policy</h1>
+    <p>We have two of our own MCP servers: one for Bitrix24, the second for our Okdesk ticketing system. Both are connected to Copilot the standard way, following Microsoft documentation. I am Alexander Zhogov, founder of the IT company &#x27;+Alliance&#x27;. The path turned out to be shorter than I expected. And it hinges on one line of documentation. The very one I would read first. I opened both pages I link to here on September 4, 2026. They have no versions; edits arrive quietly. Before connecting yours, visit the links yourself: perhaps the wording has changed over time. What the docs require from a ready server</p>
+    <p class="source">
+      Machine-translated from Habr.
+      <a href="https://habr.com/ru/articles/1078872/?utm_campaign=1078872&amp;utm_source=habrahabr&amp;utm_medium=rss">Read the original Russian article</a>.
+      Wed, 09 Sep 2026 04:13:20 GMT
+    </p>
+  </header>
+  <main>
+<div><p>We have two of our own MCP servers: one for Bitrix24, the second for our Okdesk ticketing system. Both are connected to Copilot the standard way, following Microsoft documentation. I am Alexander Zhogov, founder of the IT company '+Alliance'.</p><p>The path turned out to be shorter than I expected. And it hinges on one line of documentation. The very one I would read first.</p><p>I opened both pages I link to here on September 4, 2026. They have no versions; edits arrive quietly. Before connecting yours, visit the links yourself: perhaps the wording has changed over time.</p><h3>First, the transport. Everything else later</h3><p>That very line is on the page "Connect your agent to an existing Model Context Protocol (MCP) server" (<a href="http://learn.microsoft.com">learn.microsoft.com</a>, <a href="http://ms.date"><code>ms.date</code></a> = 2026–05-28, <code>updated_at</code> = 2026–08-19):</p><blockquote><p>“Currently, Copilot Studio supports the Streamable transport type.”</p></blockquote><p>A neighboring line explains the limitation: "Given that SSE transport is deprecated, Copilot Studio no longer supports SSE for MCP after August 2025."</p><p>Of the two common MCP transports, only Streamable HTTP remains. After August 2025, Copilot Studio no longer supports SSE for MCP.</p><p>If your server was written earlier and responds via SSE, that's a showstopper. You cannot connect it in its current form: first, the transport layer. There's only one piece of good news: it's quick to check – just open your code and see how the server responds to the client.</p><p>It took me a minute.</p><p>I would spend that minute on this before anything else. Finding out about the transport after agreeing on an authorization scheme with security is a less-than-pleasant experience.</p><h3>How to connect an already written server</h3><p>The page about connecting an existing server describes exactly our case: "If you already set up a Model Context Protocol (MCP) server, you can connect the MCP server to your agent." The server is up – now you just need to connect it to the agent.</p><p>The documentation offers three methods.</p><p>The first is the onboarding wizard within Copilot Studio itself: "Add the MCP server in Copilot Studio by using the <em>MCP onboarding wizard</em> (recommended)". The second fits on one line: "Create a custom connector to your server through Power Apps". The third is presented as organizational – "you can register your existing MCP server in Agents 365 using the Agents 365 CLI and Microsoft 365 Admin Center… it becomes available for use in Copilot Studio". It's phrased as "Bring your own MCP server": the server is first registered in Agents 365 via CLI and the admin center, and then becomes available in Copilot Studio.</p><p>The word "recommended" appears next to only one path in the entire list.</p><h3>Who the server allows access to</h3><p>The authentication type is selected when connecting the server; the documentation lists the options verbatim: "Select the authentication type for your MCP server, if applicable. You have three options: None; API key: Configure API key authentication; OAuth 2.0: Configure OAuth 2.0 authentication". Three options: no authentication, API key, or OAuth 2.0; no others.</p><p>OAuth 2.0 has its own fork within – "Dynamic discovery", "Dynamic", and "Manual" modes. According to the documentation, they differ in whether the MCP server supports automatic client registration (DCR), and if it does – with endpoint discovery or without it.</p><p>The practical conclusion here is: the mode that suits you is determined not by the Copilot Studio configuration, but by the properties of the server itself. You need to look to your own OAuth implementation for the answer.</p><h3>The place I would highlight in yellow</h3><p>Regarding access to MCP servers, the page on connecting an existing server says this:</p><blockquote><p>“Access to MCP servers in Copilot Studio relies on Power Platform connectors for connectivity. This condition means that if a data policy regulates Power Platform connectors, it also regulates access to the MCP server and its tools for your agent.”</p></blockquote><p>The connection is as follows: Access to MCP servers in Copilot Studio is via Power Platform connectors. And if there's a data policy in the tenant that regulates these connectors, it also applies to your agent's access to the MCP server and its tools.</p><p>Now imagine debugging. The server is up, the transport is correct, authorization is configured, but the agent can't see the tools. The cause might lie in the tenant's data policy, set up by a completely different department for a completely different reason.</p><p>The connection itself is described in plain text, this is documentation. My addition is about the order: I keep the policy in the list of initial hypotheses, not the last ones.</p><h3>Where MCP lives in the big Copilot</h3><p>So far, we've been talking about Copilot Studio. Next door is the second story – Microsoft 365 Copilot connectors, and they have their own terms.</p><p>The page "Copilot connectors overview" (<a href="http://learn.microsoft.com">learn.microsoft.com</a>, <a href="http://ms.date"><code>ms.date</code></a> = 2026–05-14, <code>updated_at</code> = 2026–08-13) divides them into two types: "Your organization can either index external data by using synced connectors or connect to data in real time by using federated connectors". Regarding the second type, it's stated bluntly: "Federated connectors: Use a Model Context Protocol (MCP) model to fetch data in real time, without indexing content into Microsoft 365". A federated connector is built on an MCP model and fetches data at the time of the request, without indexing anything.</p><p>There is no separate third branch called "MCP" in this classification.</p><p>The properties of the federated type are listed verbatim: "No indexing required; data remains in the source system"; "Connector fetches responses in real time through MCP APIs"; "Secure by design; federated access respects source permissions and authentication (OAuth 2.0)". No indexing is required, data remains in the source system, source permissions and OAuth 2.0 are respected.</p><p>But here's a line worth checking against your expectations in advance:</p><blockquote><p>“Federated connectors are read‑only; they can search and fetch content but can’t write data back.”</p></blockquote><p>Search and retrieve content – yes. Write back to the source – no.</p><p>A caveat: read-only is a property that the documentation attributes to federated connectors. Whether it applies to the tools of your MCP server in the Copilot Studio agent, the "Copilot connectors overview" page does not say.</p><p>Ready-made federated connectors are provided by Microsoft itself: "Default federated connectors are provided by Microsoft and appear as Ready in your connections list in the Microsoft 365 admin center". Such connectors are visible in the Microsoft 365 admin center connections list with the status "Ready".</p><h3>What is missing from these two pages</h3><p>On both pages, "Copilot connectors overview" and "Connect your agent to an existing Model Context Protocol (MCP) server", on September 4, 2026, I did not find three things.</p><p>There is no list of compatible third-party MCP servers. The mechanics of connecting an existing server are described, and only that. This means no one has done a compatibility check for you: take your server's documentation and check two points – the transport and how its client registration in OAuth is handled.</p><p>Next are the limits. The documentation does not state how many MCP servers and connectors an organization can connect: no limit on their number is mentioned. You cannot justify an architecture where the number of connections is critical with a link to the documentation – this is a project assumption and must be recorded as such.</p><p>Third – the behavior when both a synced and a federated connector are connected to the same source. What the user will see is not described in the documentation. You will have to check this yourself. If both connections are being set up in your case, my order would be: set up a test tenant, connect one system there with both types of connectors, ask the agent a control question about the data from this system, and record what was returned. A record with a date will be your basis for a project decision.</p><h3>Our side: Python, containers, and several rewrites</h3><p>This is where the documentation ends and our experience begins. This is our practice; it is not a platform norm.</p><p>Both servers are written in Python and run in containers. They authenticate with Bitrix24 and Okdesk using the standard methods of those products.</p><p>The main thing I learned from working on this: a server lives not at the moment of launch, but throughout its entire operational life. We had to rewrite our servers several times for two reasons. The products themselves are updated – both Bitrix24 and Okdesk. And we expanded the data schema ourselves: for Bitrix24, we started with contacts and companies, and then grew to include deals, proposals, invoices, employees, and phone calls.</p><p>There was also an attempt to bypass MCP – a separate agent that accessed Bitrix24 directly.</p><p>We abandoned it.</p><p>Such an agent works with the data of one system, but the request was needed for all company data at once. That's what this whole endeavor was for.</p><h3>One fork in the road I never closed</h3><p>Of the three gaps in the documentation, the last one bothers me the most. Suppose both connectors are connected to one system in the tenant: the indexing synced connector and the federated MCP connector. What will be in the response – an indexed copy, live data, or both at once, with duplicates?</p><p>I have only one honest answer: I don't know. It's not on the "Copilot connectors overview" page, and I won't present a guess as a platform norm.</p><p>Until there's a measurement, I consider the behavior unconfirmed and do not rely on it in project decisions.</p></div>
+  </main>
+  <footer>
+    Translation generated with Gemini 2.5 Flash-Lite.
+    The original article remains the source of record.
+  </footer>
+</body>
+</html>

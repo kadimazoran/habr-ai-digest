@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Distillation, Beijing Style: A New Report on How Chinese AI Learned on American AI</title>
+  <meta name="description" content="Americans lost tens of billions of dollars in revenue by banning chip supplies to China. The Chinese didn&#x27;t hesitate; they simply paid for American APIs and made Claude code their software by injecting prompts like &#x27;You work at MiniMax.&#x27; The US Cybersecurity Agency discovered these re">
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.65;
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 32px 20px 64px;
+      color: #1f2328;
+    }
+    header {
+      border-bottom: 1px solid #d8dee4;
+      margin-bottom: 28px;
+      padding-bottom: 20px;
+    }
+    .source {
+      color: #57606a;
+      font-size: 0.95rem;
+    }
+    img, video, iframe {
+      max-width: 100%;
+      height: auto;
+    }
+    pre {
+      overflow-x: auto;
+      padding: 16px;
+      background: #f6f8fa;
+      border-radius: 6px;
+    }
+    code {
+      font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+    }
+    blockquote {
+      border-left: 4px solid #d0d7de;
+      margin-left: 0;
+      padding-left: 16px;
+      color: #57606a;
+    }
+    footer {
+      border-top: 1px solid #d8dee4;
+      margin-top: 40px;
+      padding-top: 20px;
+      color: #57606a;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Distillation, Beijing Style: A New Report on How Chinese AI Learned on American AI</h1>
+    <p>Americans lost tens of billions of dollars in revenue by banning chip supplies to China. The Chinese didn&#x27;t hesitate; they simply paid for American APIs and made Claude code their software by injecting prompts like &#x27;You work at MiniMax.&#x27; The US Cybersecurity Agency discovered these requests, panicked, and advised its big tech companies to subtly dumb down their models&#x27; responses for all suspicious users, even those with premium subscriptions. Read more</p>
+    <p class="source">
+      Machine-translated from Habr.
+      <a href="https://habr.com/ru/articles/1080164/?utm_campaign=1080164&amp;utm_source=habrahabr&amp;utm_medium=rss">Read the original Russian article</a>.
+      Wed, 09 Sep 2026 08:08:35 GMT
+    </p>
+  </header>
+  <main>
+<div><h3>A Very Polite Robbery</h3><p>In early September, heated discussions began in the media and on forums about a "secret" report on brazen Chinese cyberespionage. The reality turned out to be much more mundane and amusing. The discussion was about a public technical bulletin from CISA, the FBI, and the NSA, in which the authors admitted that no one had hacked into the closed circuits of American labs or exfiltrated model weights on flash drives.</p><p>Chinese big tech committed the most polite tech heist of the century, strictly following the official price list. They simply sent millions of standard HTTPS requests through the open port 443, paid for inference from others' data centers, and downloaded ready-made reasoning. While Americans were closing borders for chips and wagging fingers at all resellers, their own big tech companies were diligently training competitors at low rates.</p><figure><img alt="Distillation Diagram" loading="lazy" src="https://habrastorage.org/r/w1560/getpro/habr/upload_files/5a9/f60/337/5a9f6033705d4eec175b5b6c106248c5.png" title="Distillation Diagram"/><figcaption>Distillation Diagram</figcaption></figure><h3>The Clever Ones at MiniMax</h3><p>The most interesting example in the report is the work of the startup MiniMax. The Chinese took Anthropic's models and made them write their own software. To prevent Claude from panicking and asking unnecessary questions, its role was strictly redefined directly in the system prompt. They told it that it was actually just an internal MiniMax model and worked for the company.</p><p>In 2026, stealing model weights themselves is "so last century." The Chinese don't need foreign gigabytes of parameters at all. They were extracting the internal logic of the models and synthetic data. American LLMs themselves detailed their reasoning step-by-step when solving problems. The Chinese then trained to think according to the same patterns. As a result, expensive foreign computations are turned into a ready-made dataset for further training.</p><figure><img alt="Evolution of Distillation" loading="lazy" src="https://habrastorage.org/r/w1560/getpro/habr/upload_files/936/e1f/a3e/936e1fa3e75a60114d385b37cf579a71.png" title="Evolution of Distillation"/><figcaption>Evolution of Distillation</figcaption></figure><h3>Smart Grid</h3><p>The technical implementation of this approach received high praise on forums. Simple, crude methods wouldn't have worked. Parsing scripts would have hit regular CAPTCHAs and Cloudflare. The Chinese deployed a distributed network of tens of thousands of accounts through third-party cloud aggregators and residential proxies. Requests didn't come from data centers but looked like traffic from hundreds of thousands of independent American and European users.</p><p>Vendor security teams missed the data exfiltration due to perfect masking. The scripts randomized pauses between requests, spoofed TLS and JA4 browser fingerprints, and carefully stayed within rate limits. The models weren't just spammed with identical prompts. The traffic was diversified with synthetic code generation, syntax checking, and test debugging. To anti-fraud systems, it looked like legitimate, everyday work from hundreds of small startups that were simply paying a lot for their APIs.</p><figure><img alt="4-Layer Architecture via Port 443" loading="lazy" src="https://habrastorage.org/r/w1560/getpro/habr/upload_files/091/c33/e76/091c33e76c7b7313c95489b41ea1f49e.png" title="4-Layer Architecture via Port 443"/><figcaption>4-Layer Architecture via Port 443</figcaption></figure><h3>Big Tech in a Trap</h3><p>The hottest debates on forums concerned the countermeasures devised by the Cybersecurity Agency. The Americans realized that banning accounts was useless; ten new ones would appear for every one blocked. Therefore, the agency officially recommended a tactic of covert sabotage to vendors. If a system suspects that a user is collecting data for a competitor's training, the model should subtly switch to a "dumb" mode, sprinkle in hidden errors, and provide suboptimal code.</p><p>Imagine the dead end this puts American big tech in. The line between a Chinese parser and a real startup developer is too thin. If a vendor starts intentionally degrading generation for suspicious traffic, regular customers with expensive premium subscriptions will also be affected. Any developer will immediately notice that the model has become sluggish, complain on forums, and switch to a competitor.</p><p>In this tech war, the old tactic of protecting closed weights is a total failure. It no longer matters how securely servers are locked down if anyone can buy inference through an open port. The Chinese proved this in practice. If a model can reason aloud, its intelligence can no longer be privatized.</p><p>Source: <a href="https://www.cisa.gov/news-events/cybersecurity-advisories/aa26-251a">https://www.cisa.gov/news-events/cybersecurity-advisories/aa26-251a</a></p></div>
+  </main>
+  <footer>
+    Translation generated with Gemini 2.5 Flash-Lite.
+    The original article remains the source of record.
+  </footer>
+</body>
+</html>

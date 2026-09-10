@@ -1,0 +1,98 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Where Claude Code Actually Goes: ANTHROPIC_BASE_URL, Two Key Types, and /status</title>
+  <meta name="description" content="Claude Code isn&#x27;t tied to api.anthropic.com: it&#x27;s a regular client, and where it sends requests is determined by two variables. I&#x27;ll break down what it needs from the endpoint, three connection methods (shell, settings.json, apiKeyHelper), how to check with curl before launching, and ">
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.65;
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 32px 20px 64px;
+      color: #1f2328;
+    }
+    header {
+      border-bottom: 1px solid #d8dee4;
+      margin-bottom: 28px;
+      padding-bottom: 20px;
+    }
+    .source {
+      color: #57606a;
+      font-size: 0.95rem;
+    }
+    img, video, iframe {
+      max-width: 100%;
+      height: auto;
+    }
+    pre {
+      overflow-x: auto;
+      padding: 16px;
+      background: #f6f8fa;
+      border-radius: 6px;
+    }
+    code {
+      font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+    }
+    blockquote {
+      border-left: 4px solid #d0d7de;
+      margin-left: 0;
+      padding-left: 16px;
+      color: #57606a;
+    }
+    footer {
+      border-top: 1px solid #d8dee4;
+      margin-top: 40px;
+      padding-top: 20px;
+      color: #57606a;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Where Claude Code Actually Goes: ANTHROPIC_BASE_URL, Two Key Types, and /status</h1>
+    <p>Claude Code isn&#x27;t tied to api.anthropic.com: it&#x27;s a regular client, and where it sends requests is determined by two variables. I&#x27;ll break down what it needs from the endpoint, three connection methods (shell, settings.json, apiKeyHelper), how to check with curl before launching, and what common errors mean—401, 403 with HTML, &#x27;auth may not work as expected,&#x27; and a sudden 404 on haiku. No service names, just mechanics. Read more</p>
+    <p class="source">
+      Machine-translated from Habr.
+      <a href="https://habr.com/ru/articles/1080716/?utm_campaign=1080716&amp;utm_source=habrahabr&amp;utm_medium=rss">Read the original Russian article</a>.
+      Thu, 10 Sep 2026 08:54:55 GMT
+    </p>
+  </header>
+  <main>
+<div><p>I long thought Claude Code was hardcoded to the claude.ai account. Turns out, it's not: it's a standard client for an HTTP endpoint, and where it sends requests is configured by two variables. I needed this for a mundane reason: my workplace introduced an internal LLM gateway, and all traffic to models must go through it. While figuring this out, I stumbled over every possible pitfall. Below is what Claude Code actually needs from the endpoint, how to connect it in three ways, how to test before launching, and what the errors you'll inevitably see mean.</p><p>I won't name services or routers—that's not the point. Everything below works the same with a corporate gateway, your own proxy, or any third-party endpoint, as long as it speaks the right protocol.</p><h3>What Claude Code Asks from the Endpoint</h3><p>Claude Code communicates using the Anthropic Messages API. It needs an HTTPS address that responds to <code>POST /v1/messages</code>, and a key. That's it. If the endpoint only offers an OpenAI-compatible <code>/v1/chat/completions</code>—it won't work directly with Claude Code; that's a different protocol. Check with your gateway administrator which format they have before configuring anything.</p><p>The second question to ask the administrator is: in which header do they expect the key. There are two options, and your answer determines which variable you'll set:</p><ul><li><p><code>Authorization: Bearer &lt;key&gt;</code> — then you need the <code>ANTHROPIC_AUTH_TOKEN</code> variable</p></li><li><p><code>x-api-key: &lt;key&gt;</code> — then you need <code>ANTHROPIC_API_KEY</code></p></li></ul><p>If they don't specify, use <code>ANTHROPIC_AUTH_TOKEN</code>, and the check below will tell you if you guessed correctly. Half of all 401 errors in this topic stem from putting the key in the wrong variable, sending it to the wrong header.</p><h3>Method 1. Variables in Shell</h3><p>The quickest way, good for trying things out:</p><pre><code>export ANTHROPIC_BASE_URL=https://llm-gateway.example.com
+export ANTHROPIC_AUTH_TOKEN=sk-gateway-key
+claude
+</code></pre><p>The downside is it only lasts in that terminal session. Open a new tab, and Claude Code will go to claude.ai again.</p><h3>Method 2. settings.json</h3><p>The persistent option. The file is <code>~/.claude/settings.json</code> (on Windows, it's <code>%USERPROFILE%\.claude\settings.json</code>), under the <code>env</code> block:</p><pre><code>{
+  "env": {
+    "ANTHROPIC_BASE_URL": "https://llm-gateway.example.com",
+    "ANTHROPIC_AUTH_TOKEN": "sk-gateway-key"
+  }
+}
+</code></pre><p>Two points that aren't written in large font. First: if the same variable is set in both the shell and settings.json, settings.json wins. I spent an hour figuring out why my export wasn't working—this was the reason. Second: don't put your key in <code>.claude/settings.json</code> within a project. This file gets committed and sent to everyone who clones the repository. For projects, there's <code>.claude/settings.local.json</code>, which is in <code>.gitignore</code> by default.</p><h3>Method 3. apiKeyHelper</h3><p>If your key rotates or is stored in a secrets manager, instead of a static variable, you can specify a command that prints the key to stdout:</p><pre><code>{
+  "apiKeyHelper": "~/bin/get-gateway-key.sh"
+}
+</code></pre><p>The command must print only the key, without banners or logs, otherwise Claude Code will pick up garbage, and you'll get the cryptic "Your apiKeyHelper script is failing." The key from the helper is sent immediately in both headers, so the question of 'bearer or x-api-key' is irrelevant here.</p><h3>Check the Endpoint Before Launching Claude Code</h3><p>This is the main advice of the article. Don't launch <code>claude</code> until you've verified with curl that the endpoint is live and the key is valid:</p><pre><code>curl -X POST "$ANTHROPIC_BASE_URL/v1/messages" \
+  -H "Authorization: Bearer $ANTHROPIC_AUTH_TOKEN" \
+  -H "anthropic-version: 2023-06-01" \
+  -H "content-type: application/json" \
+  -d '{"model":"claude-sonnet-4-6","max_tokens":32,"messages":[{"role":"user","content":"ping"}]}'
+</code></pre><p>If your gateway expects an x-api-key, replace the <code>Authorization</code> header with <code>x-api-key: $ANTHROPIC_API_KEY</code>.</p><p>How to interpret the response:</p><ul><li><p>You get JSON starting with <code>{"id":"msg_</code> and containing <code>"content":[...]</code> — everything is working.</p></li><li><p>You get an error about an unknown model—that's also good: the address and key are correct, the gateway authorized you and only then denied the model. This means you need to find out how models are named on that specific gateway (see below).</p></li><li><p>401 — the key is wrong or in the wrong header. Try the other header before contacting the administrator.</p></li><li><p>403 with an HTML body like "403 Forbidden," and the gateway logs show no request—something is blocking you en route: CDN, corporate proxy, regional filter. This is not a Claude Code issue.</p></li></ul><p>Only after a successful curl should you launch <code>claude</code>, send any message, and type <code>/status</code>. In the Status tab, you should see two lines: Base URL with your address and Auth token (or API key) with the variable name. If instead, it shows Login method with a claude.ai account—the variables didn't reach the process.</p><h3>Model Names</h3><p>Internally, Claude Code uses aliases opus, sonnet, haiku, and runs background tasks on the haiku class. If your gateway uses different names for models than Anthropic, or is missing some—specify the mapping:</p><pre><code>{
+  "env": {
+    "ANTHROPIC_BASE_URL": "https://llm-gateway.example.com",
+    "ANTHROPIC_AUTH_TOKEN": "sk-gateway-key",
+    "ANTHROPIC_DEFAULT_SONNET_MODEL": "sonnet-name-on-gateway",
+    "ANTHROPIC_DEFAULT_OPUS_MODEL": "opus-name-on-gateway",
+    "ANTHROPIC_DEFAULT_HAIKU_MODEL": "haiku-name-on-gateway"
+  }
+}
+</code></pre><p>The line about haiku is particularly important: Claude Code uses this model for utility tasks, and if it's not available on the gateway, you'll get a 404 at the most unexpected moment, even if the main model is working. The <code>ANTHROPIC_MODEL</code> variable sets the default model for new sessions, and the <code>--model</code> flag overrides everything for a single session.</p><h3>What You Lose by Leaving the claude.ai Gateway</h3><p>I'll list them honestly, because you find out about them after the fact:</p><ul><li><p>The claude.ai subscription is not used while a key variable is set. Traffic is billed by tokens to whoever owns the key, and subscription limits do not apply to it.</p></li><li><p>Remote Control and voice input are unavailable—they are tied to the claude.ai account.</p></li><li><p>Anything the gateway cannot forward (new beta headers, thinking, cache) will not work for you. Claude Code updates frequently; the gateway must keep up.</p></li></ul><h3>A Word on Common Errors</h3><ul><li><p>A warning at startup about two authorization sources, "auth may not work as expected." A key from a variable and a saved claude.ai login are active simultaneously. Either remove the variable or use <code>/logout</code> so only the key remains.</p></li><li><p>401 invalid token. The key was not issued by this gateway or was sent in the wrong header. Refer to the table above.</p></li><li><p>Claude Code asks for login, even though curl works. Variables were not inherited by the process: new terminal, IDE started from a different shell. Move them to settings.json.</p></li><li><p>400 mentioning thinking or adaptive. The gateway doesn't understand Claude Code's new parameters. This is an issue for the gateway administrator.</p></li><li><p>Timeouts on long responses. By default, a request waits 10 minutes; <code>API_TIMEOUT_MS</code> is in milliseconds if you need more. If going through a proxy—check that the proxy itself isn't cutting the connection earlier.</p></li></ul><h3>A Word on Proxies</h3><p><code>HTTPS_PROXY</code> and <code>ANTHROPIC_BASE_URL</code> are for different things. The former tells where to go externally, the latter—where to send requests. They can be combined: the base URL points to the gateway, and the proxy is needed because you can't reach the gateway otherwise. <code>NO_PROXY</code> excludes hosts by comma separation. If Claude Code "doesn't work over VPN," in nine out of ten cases the problem is that the proxy is set for the shell but not for the process from which the IDE is launched.</p><h3>Instead of a Conclusion</h3><p>Claude Code is a standard client, and you can direct it anywhere as long as it speaks the Messages API. But "can direct" doesn't mean "should trust": based on the gateway's response, you can check at least two things—what was returned in the <code>model</code> field and whether <code>cache_read_input_tokens</code> appears in <code>usage</code> on repeat requests. How to do this systematically, for a list of endpoints, is a separate story; I'll cover it next time.</p></div>
+  </main>
+  <footer>
+    Translation generated with Gemini 2.5 Flash-Lite.
+    The original article remains the source of record.
+  </footer>
+</body>
+</html>

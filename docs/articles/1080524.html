@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>350 commits a week: how to contribute to a project that changes faster than you can write</title>
+  <meta name="description" content="Imagine: a night alert, the application is returning 500s, but it&#x27;s alive. It&#x27;s clear that the familiar process will begin – tabs with graphs, searches in logs, and attempts to understand who changed what. How much time does this usually take? What if an AI agent helps you investigate the ">
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.65;
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 32px 20px 64px;
+      color: #1f2328;
+    }
+    header {
+      border-bottom: 1px solid #d8dee4;
+      margin-bottom: 28px;
+      padding-bottom: 20px;
+    }
+    .source {
+      color: #57606a;
+      font-size: 0.95rem;
+    }
+    img, video, iframe {
+      max-width: 100%;
+      height: auto;
+    }
+    pre {
+      overflow-x: auto;
+      padding: 16px;
+      background: #f6f8fa;
+      border-radius: 6px;
+    }
+    code {
+      font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+    }
+    blockquote {
+      border-left: 4px solid #d0d7de;
+      margin-left: 0;
+      padding-left: 16px;
+      color: #57606a;
+    }
+    footer {
+      border-top: 1px solid #d8dee4;
+      margin-top: 40px;
+      padding-top: 20px;
+      color: #57606a;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>350 commits a week: how to contribute to a project that changes faster than you can write</h1>
+    <p>Imagine: a night alert, the application is returning 500s, but it&#x27;s alive. It&#x27;s clear that the familiar process will begin – tabs with graphs, searches in logs, and attempts to understand who changed what. How much time does this usually take? What if an AI agent helps you investigate the incident? Hi! I&#x27;m Anton Vorontsov, CRE at Yandex Cloud. At the end of July, I was browsing fresh GitHub repositories again to see what&#x27;s happening in my related disciplines: SRE, automation, and, of course, AI. Suddenly, I stumbled upon an interesting repository that was actively growing: the number of stars, commits, and interested people from different countries – all about OpenSRE. This article is about my first contribution to an external project, what was the most challenging part, and how this tool works. Read more</p>
+    <p class="source">
+      Machine-translated from Habr.
+      <a href="https://habr.com/ru/companies/yandex_cloud_and_infra/articles/1080524/?utm_campaign=1080524&amp;utm_source=habrahabr&amp;utm_medium=rss">Read the original Russian article</a>.
+      Thu, 10 Sep 2026 07:00:10 GMT
+    </p>
+  </header>
+  <main>
+<div><figure><img loading="lazy" src="https://habrastorage.org/r/w1560/getpro/habr/upload_files/a5f/47e/4a6/a5f47e4a6c440b1a1cdbc55d51a199e8.png"/></figure><p>Imagine: a night alert, the application is returning 500s, but it's alive. It's clear that the familiar process will begin – tabs with graphs, searches in logs, and attempts to understand who changed what. How much time does this usually take? What if an AI agent helps you investigate the incident?</p><p>Hi! I'm Anton Vorontsov, <abbr>CRE</abbr> at Yandex Cloud. At the end of July, I was browsing fresh GitHub repositories again to see what's happening in my related disciplines: SRE, automation, and, of course, AI. Suddenly, I stumbled upon an interesting repository that was actively growing: the number of stars, commits, and interested people from different countries – all about <a href="https://github.com/tracer-cloud/opensre">OpenSRE</a>.</p><p>OpenSRE is a tool for building AI SRE agents that investigate and resolve production incidents by operating within your infrastructure. Essentially, it's a helper-automator for SRE.</p><p>This article is about my first contribution to an external project, what was the most challenging part, and how this tool works.</p><blockquote><p>Disclaimer. OpenSRE is in public alpha. The maintainers explicitly state that they do not guarantee operational safety. We also cannot guarantee that nothing will break for you. This article is an account of an experiment, and if you decide to try it, carefully consider what exactly you are using and with what permissions you are running it. The account from which you run OpenSRE should not have modifying roles.</p></blockquote><h2>How I started contributing</h2><p>I actually wanted to create such a tool myself, but when I found an existing one, I had the idea to integrate it with Yandex Cloud.</p><p>This is because OpenSRE has three valuable modes:</p><ul><li><p><strong>Infrastructure Assistant.</strong> The agent helps understand what is deployed where, how it's connected, and where to look.</p></li><li><p><strong>Co-pilot for Incidents.</strong> You are the investigation lead, and the agent suggests hypotheses based on processed data and a list of things to check.</p></li><li><p><strong>Autonomous Triage. </strong>The agent launches automatically upon an alert and, by the time you open your laptop, it already answers initial questions: what degraded first, is it our problem or the provider's, what's the blast radius. This information reduces the time to find the cause.</p></li></ul><p>Moreover, OpenSRE already had numerous integrations with cloud providers, monitoring and alerting systems, and messengers. Initially, I considered making a full fork (the license allows it), but the race against the constantly growing upstream killed the idea. So, I decided to create an integration.</p><p>Naturally, the first thing I did was share the idea of integrating OpenSRE and Yandex Cloud with my colleagues. We work closely with various client information systems, so we are always looking for new and effective tools. In short, my colleagues gave the go-ahead, and we decided to see what would come of it.</p><p>The maintainers communicate on Discord, which is where I went. Initially, they reacted quite dryly to my proposal and suggested creating a 3rd-party integration as a separate plugin.</p><p>Okay, let's make a plugin.</p><p>I built it from scratch using public hooks. To scale the system externally, extension points were needed, which OpenSRE lacked. The first contribution to the upstream wasn't features, but
+  </main>
+  <footer>
+    Translation generated with Gemini 2.5 Flash-Lite.
+    The original article remains the source of record.
+  </footer>
+</body>
+</html>

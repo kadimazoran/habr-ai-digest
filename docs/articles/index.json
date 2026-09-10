@@ -7,6 +7,14 @@
     "summary": "The modern concept of work, rooted in the Industrial Revolution, shifted the role of creator from human to machine, redefining the worker from a master of their craft to an operator of machine labor. Machines now perform most tasks, yet humans remain bound as appendages, forced to work at machine pace and within machine constraints. This is the antithesis of free, motivated, and meaningful work that truly defines humanity. The industrial concept of the 'worker' is dehumanizing; one is either human or a worker. The solution isn't regression, but completing the industrial revolution through automation, with AI serving as the thinking appendage to mechanisms. This is precisely why AI was invented.",
     "title": "The AI Labor Revolution: From Machine-Centric to Human-Centric Division of Labor"
   },
+  "https://habr.com/ru/articles/1072750/?utm_campaign=1072750&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Wed, 09 Sep 2026 22:43:50 GMT",
+    "slug": "1072750",
+    "source_url": "https://habr.com/ru/articles/1072750/?utm_campaign=1072750&utm_source=habrahabr&utm_medium=rss",
+    "summary": "Hello everyone! My name is Andrey, I am a 4th-year student at the Faculty of Mathematics and Computer Science, and the author of the Telegram channel Andre | Data Science. We all know that machine learning is currently on a huge hype - almost from under every stone, they talk about various methods and how they can solve almost any problem. But there are catastrophically few guides that would thoroughly analyze the work of a specific method - from ordinary data loading to mathematical justification of its working principle and visualization of each step. In this article, I want to fill this gap and analyze one specific method - RBF SVM. We will look at how it is structured from a mathematical point of view, how it came to be, what its strengths and weaknesses are, and what they are related to. We will also test it on real datasets. Since the audience of the IT community is quite broad, I will try to describe each definition and each part of my narrative in great detail, so that as you read, you have as few questions as possible and the thread of understanding does not break. It will be a big plus if you are already familiar with the following mathematical disciplines: Linear algebra, Mathematical analysis, Functional analysis, Differential equations, Optimization methods, Analytical geometry.",
+    "title": "Jumping into Infinity: How RBF SVM Works Under the Hood"
+  },
   "https://habr.com/ru/articles/1074018/?utm_campaign=1074018&utm_source=habrahabr&utm_medium=rss": {
     "model": "gemini-2.5-flash-lite",
     "published": "Mon, 07 Sep 2026 04:55:45 GMT",
@@ -447,6 +455,54 @@
     "summary": "Americans lost tens of billions of dollars in revenue by banning chip supplies to China. The Chinese didn't hesitate; they simply paid for American APIs and made Claude code their software by injecting prompts like 'You work at MiniMax.' The US Cybersecurity Agency discovered these requests, panicked, and advised its big tech companies to subtly dumb down their models' responses for all suspicious users, even those with premium subscriptions. Read more",
     "title": "Distillation, Beijing Style: A New Report on How Chinese AI Learned on American AI"
   },
+  "https://habr.com/ru/articles/1080466/?utm_campaign=1080466&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Thu, 10 Sep 2026 08:00:06 GMT",
+    "slug": "1080466",
+    "source_url": "https://habr.com/ru/articles/1080466/?utm_campaign=1080466&utm_source=habrahabr&utm_medium=rss",
+    "summary": "On September 1st, OpenAI published a document titled \"Path to Astra: critical capabilities and frontier safeguards.\" I opened it casually, over tea, with about the same interest as one reads terms of service updates. Forty minutes later, my tea had gone cold, and I was sitting with the company's August publications open in adjacent tabs, trying to figure out when exactly everything had managed to change. Formally, the document states the following: Astra, OpenAI's next major model, has been recognized as reaching the Critical level for cybersecurity within the company's internal risk assessment system. It's the first model in OpenAI's history with such a classification. The release is delayed, and security measures are enhanced. And one more line, which was mentioned least often in the news: Astra became the first model to undergo formal pre-release cybersecurity review by the US government. It's this line that got me stuck. Because no one forced them to do it. And no one forced the company to call for it. Two days later, the model was released. OpenAI President Greg Brockman closed the briefing with the words \"Welcome to the AGI era,\" and almost all the press focused on that. Almost no one wrote about the pre-release review. Read more",
+    "title": "AI Industry Has Voluntarily Put Itself in Handcuffs. Let's See If They're Real"
+  },
+  "https://habr.com/ru/articles/1080518/?utm_campaign=1080518&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Wed, 09 Sep 2026 18:44:21 GMT",
+    "slug": "1080518",
+    "source_url": "https://habr.com/ru/articles/1080518/?utm_campaign=1080518&utm_source=habrahabr&utm_medium=rss",
+    "summary": "Computers are slowly beginning to understand human speech. And even write programs for themselves. Will the profession of programmer become a thing of the past? Even in the distant future, it's unlikely, because for AI to work and develop, someone must develop and maintain it. Navibkodit",
+    "title": "Computers for people or people for computers?"
+  },
+  "https://habr.com/ru/articles/1080556/?utm_campaign=1080556&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Wed, 09 Sep 2026 22:21:49 GMT",
+    "slug": "1080556",
+    "source_url": "https://habr.com/ru/articles/1080556/?utm_campaign=1080556&utm_source=habrahabr&utm_medium=rss",
+    "summary": "In the article \"AI and the Inflation of Quality,\" I wrote that the sharp decrease in the cost of intellectual labor is rapidly changing our requirements for its results. If an additional check takes a few minutes, people start doing it. If ten options can be quickly reviewed, the first one that comes to mind no longer seems sufficient. Yesterday's \"too long and expensive\" becomes today's \"why not?\", and quality begins to grow along with capabilities. This process has another aspect that is somewhat lost in the endless comparison of humans and machines. We are used to counting AI individually. Can one agent write code better than one programmer? How much more productive is one analyst with AI than an analyst without it? How many employees can a person with a good electronic assistant replace? These are reasonable questions that lead to equally reasonable labor market arithmetic: if one employee now does the work of two, the second becomes redundant. A Division of Mathematicians But then OpenAI demonstrated a different way of counting intelligence. To work on the Navier-Stokes problem, they launched about 10,000 agents that worked for 88 hours. And what's more interesting to me in this story is not another round of discussion about how smart the models have become, but the number itself. Ten thousand. If you put ten thousand good live mathematicians on one problem for 88 hours, I would also expect something interesting from them. The question is how exactly to put them to work. Ten thousand mathematicians need to be divided into groups, directions assigned, intermediate results collected, duplication noticed, dead-end branches closed, useful findings transferred between groups, and people constantly reassigned to where progress is being made. After some time, the mathematical problem begins to compete for attention with the problem of managing a division of mathematicians. Read more",
+    "title": "The Human and the Swarm"
+  },
+  "https://habr.com/ru/articles/1080564/?utm_campaign=1080564&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Wed, 09 Sep 2026 23:31:10 GMT",
+    "slug": "1080564",
+    "source_url": "https://habr.com/ru/articles/1080564/?utm_campaign=1080564&utm_source=habrahabr&utm_medium=rss",
+    "summary": "About the Mixture of Experts (MoE) architecture, everyone who follows ML has heard: Mixtral and DeepSeek have proven the effectiveness of dynamic routing. But while the industry is mastering basic MoE, its direct successor called MoVA has emerged. In this article, we will break down: how classic MoE works, what exactly MoVA changes in the attention mechanism, how it architecturally differs from MoE, and how it all looks in a specific model, with numbers, benchmarks, and the first independent reviews. Read more",
+    "title": "MoVA: a new attention architecture"
+  },
+  "https://habr.com/ru/articles/1080574/?utm_campaign=1080574&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Thu, 10 Sep 2026 02:27:15 GMT",
+    "slug": "1080574",
+    "source_url": "https://habr.com/ru/articles/1080574/?utm_campaign=1080574&utm_source=habrahabr&utm_medium=rss",
+    "summary": "The 'capability disclosure' approach to AI agent skills and a small open-source tool that reads skills for you. Read more",
+    "title": "Stop asking 'is this skill safe?' — ask 'what can it do?'"
+  },
+  "https://habr.com/ru/articles/1080716/?utm_campaign=1080716&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Thu, 10 Sep 2026 08:54:55 GMT",
+    "slug": "1080716",
+    "source_url": "https://habr.com/ru/articles/1080716/?utm_campaign=1080716&utm_source=habrahabr&utm_medium=rss",
+    "summary": "Claude Code isn't tied to api.anthropic.com: it's a regular client, and where it sends requests is determined by two variables. I'll break down what it needs from the endpoint, three connection methods (shell, settings.json, apiKeyHelper), how to check with curl before launching, and what common errors mean—401, 403 with HTML, 'auth may not work as expected,' and a sudden 404 on haiku. No service names, just mechanics. Read more",
+    "title": "Where Claude Code Actually Goes: ANTHROPIC_BASE_URL, Two Key Types, and /status"
+  },
   "https://habr.com/ru/companies/1c/articles/1071340/?utm_campaign=1071340&utm_source=habrahabr&utm_medium=rss": {
     "model": "gemini-2.5-flash-lite",
     "published": "Thu, 03 Sep 2026 07:18:11 GMT",
@@ -454,6 +510,14 @@
     "source_url": "https://habr.com/ru/companies/1c/articles/1071340/?utm_campaign=1071340&utm_source=habrahabr&utm_medium=rss",
     "summary": "The AI landscape has recently undergone a significant paradigm shift. Previously, we discussed intelligent assistants automating narrow scenarios like documentation Q&A or support bots. Now, technology has advanced to a point where complex human actions can be automated using various planning tools, multi-step task execution, and more – all of which are now termed AI agents. Many companies are releasing their own solutions, and open-source options are also available. While there's a lot of hype around the topic, with many half-working prototypes, there are also scenarios where agents prove genuinely useful and are already helping solve business problems. Read more",
     "title": "AI Agents: What They Are, How They Work, and How Our Assistant's Agent Mode is Structured"
+  },
+  "https://habr.com/ru/companies/1forma/articles/1080638/?utm_campaign=1080638&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Thu, 10 Sep 2026 07:34:03 GMT",
+    "slug": "1080638",
+    "source_url": "https://habr.com/ru/companies/1forma/articles/1080638/?utm_campaign=1080638&utm_source=habrahabr&utm_medium=rss",
+    "summary": "Imagine a common work situation. In an approval task, you need to quickly understand if a specific payment has gone through. Not 'what was the total volume of payments this month,' but specifically: has the money for this invoice arrived, what was the amount, when was it recorded in 1C, and is there a discrepancy with what's indicated in the workflow? A dashboard might not have this answer. It displays pre-selected metrics, and no one will design, approve, and maintain a new widget for a single check. You could open 1C, find the document, verify the details, and then return to your workspace. If such questions arise infrequently, this path seems tolerable—until these infrequent questions become numerous. It's precisely for these situations that we've added an AI agent to the workflow workspace, capable of accessing current 1C data and answering questions within the task's context. The agent operates in read-only mode under a separate 1C account with limited privileges and indicates the actual data it relied upon. In this article, we'll explain why the agent doesn't replace dashboards, which tasks are best suited for each tool, and what's needed to ensure AI model answers about corporate data are verifiable. Read on.",
+    "title": "Why an AI Agent When You Have Dashboards? Answering Questions About Live 1C Data"
   },
   "https://habr.com/ru/companies/astrazeneca/articles/1078636/?utm_campaign=1078636&utm_source=habrahabr&utm_medium=rss": {
     "model": "gemini-2.5-flash-lite",
@@ -599,6 +663,14 @@
     "summary": "After implementing AI agents, your development dashboard might show a rosy picture: more PRs, higher velocity, faster task completion. However, these numbers can sometimes hide new bottlenecks like overloaded reviews, increased rework, and reduced process transparency. This article outlines a practical four-week plan to attribute AI changes, segment by risk, and measure full delivery cycle metrics to assess the real impact of agents. Read the guide",
     "title": "How to Rebuild Team Metrics After Implementing AI Agents Without False Velocity Growth"
   },
+  "https://habr.com/ru/companies/otus/articles/1073506/?utm_campaign=1073506&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Thu, 10 Sep 2026 08:15:07 GMT",
+    "slug": "1073506",
+    "source_url": "https://habr.com/ru/companies/otus/articles/1073506/?utm_campaign=1073506&utm_source=habrahabr&utm_medium=rss",
+    "summary": "An AI agent might err not because of the model itself, but due to how the browser describes the interface to it. This article explores the observation contract between a browser and AI, why an agent might 'not see' page elements, and how to design reliable web interface interaction scenarios. Learn more",
+    "title": "How an AI agent sees a page. The observation contract between a browser and a model"
+  },
   "https://habr.com/ru/companies/raiffeisenbank/articles/1075704/?utm_campaign=1075704&utm_source=habrahabr&utm_medium=rss": {
     "model": "gemini-2.5-flash-lite",
     "published": "Thu, 03 Sep 2026 08:59:50 GMT",
@@ -671,6 +743,14 @@
     "summary": "This article compares leading subscription models from Anthropic, OpenAI, and Google for literary translation, editing, and verification. Specifically, we compare Google (gemini-3.7-flash, 3.8, and gemini-3.1-pro), Anthropic (claude-opus-5), and OpenAI (gpt-5.6-sol) to see who translates cleaner, edits more carefully, and can be trusted to determine if an error is by the author or the translator. All comparisons were conducted within the open-source BookTrans pipeline, previously discussed on Habr. Read more",
     "title": "Comparing Opus 5, Sol 5.6, Gemini Flash 3.7, 3.8, and Pro 3.1 in Literary Translation and Editing"
   },
+  "https://habr.com/ru/companies/ruvds/articles/1078914/?utm_campaign=1078914&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Thu, 10 Sep 2026 07:01:59 GMT",
+    "slug": "1078914",
+    "source_url": "https://habr.com/ru/companies/ruvds/articles/1078914/?utm_campaign=1078914&utm_source=habrahabr&utm_medium=rss",
+    "summary": "Two years ago, I released my debut guide on remastering classic \"Tom and Jerry\" in 2K. The article garnered hundreds of thousands of views and hundreds of upvotes, but I was rightly criticized by professionals in the comments. The picture stopped flickering and being covered in scratches, but in return, I got the \"uncanny valley\" effect and tons of AI-generated soapiness. I decided my favorite childhood cartoon deserved better. Over two years, I made five attempts; I painstakingly developed working tools only to discard thousands of hours of completed work. A new start, and finally, the final attempt. Meow meow",
+    "title": "How I Remastered \"Tom and Jerry\" in 4K Over Two Years: Take Two"
+  },
   "https://habr.com/ru/companies/sberbank/articles/1076666/?utm_campaign=1076666&utm_source=habrahabr&utm_medium=rss": {
     "model": "gemini-2.5-flash-lite",
     "published": "Fri, 04 Sep 2026 09:41:27 GMT",
@@ -679,6 +759,14 @@
     "summary": "Hello, Habr! My name is Alexey Vasiliev, and I am the team lead of the \"Recommender Systems and Personalization\" team at Sber AI Lab, Sber's Center for Practical Artificial Intelligence. We conduct research in the field of recommendations, develop new models, and, of course, compare our results with those of colleagues and other researchers. We regularly encounter situations where results claimed in a scientific paper or obtained from another team cannot be reproduced, even though the key parameters of the pipeline are identical. In this article, my colleague Anna Volodkevich and I will share our experience analyzing such discrepancies, which led us to develop the SplitLight framework. When the results of a scientific paper or the success of another team cannot be reproduced, people usually start by looking for bugs in the model implementation: they examine the architecture, loss function, and negative sampling method. While some discrepancies are indeed due to these factors, our practical experience shows that the data preparation procedure often has a greater impact on the final result of comparing recommender models. For example, the statement from a paper \"Zvuk dataset, global temporal split with a quantile of 0.9\" does not specify which filters and aggregations were applied, how events with identical timestamps and repeated interactions were handled, whether cold objects were removed, what data was fed to the model, and based on which events metrics were calculated. Therefore, two pipelines with the same dataset and the same split name might be evaluating different problem formulations. This hinders experiment reproducibility and comparison of results across works. Read more",
     "title": "Preparing a Dataset for Offline Evaluation of Recommender Models: What to Check Before Running Experiments"
   },
+  "https://habr.com/ru/companies/sberbank/articles/1080596/?utm_campaign=1080596&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Thu, 10 Sep 2026 06:05:20 GMT",
+    "slug": "1080596",
+    "source_url": "https://habr.com/ru/companies/sberbank/articles/1080596/?utm_campaign=1080596&utm_source=habrahabr&utm_medium=rss",
+    "summary": "Hello, Habr. We are releasing GigaChat 3.5 Reasoning, the first GigaChat model with full reasoning capabilities, trained using online RL technology. The main change in training: after SFT, the model underwent online RL entirely. Not just one domain or one final stage, but six separate experts (mathematics, code, agents, and others), each with its own reward, which were then combined back into a single model. In this article, we will discuss not only the numbers but also how the pipeline is structured, how the model exploited rewards, and why all this took over nine months. Read more",
+    "title": "GigaChat 3.5 Reasoning — the first Russian open model with reasoning capabilities"
+  },
   "https://habr.com/ru/companies/selectel/articles/1078306/?utm_campaign=1078306&utm_source=habrahabr&utm_medium=rss": {
     "model": "gemini-2.5-flash-lite",
     "published": "Sun, 06 Sep 2026 08:00:45 GMT",
@@ -686,6 +774,14 @@
     "source_url": "https://habr.com/ru/companies/selectel/articles/1078306/?utm_campaign=1078306&utm_source=habrahabr&utm_medium=rss",
     "summary": "Imagine a sad school student who has to solve thousands of math problems. The textbook is generally good, but in about one percent of cases, it has incorrect answers printed. The student still studies from this textbook and eventually starts solving more and more new problems. Intuitively, it seems that the result should be worse than learning from a perfect textbook. And usually, that's what happens: incorrect data really harms learning. But there's a curious nuance: under certain conditions, a small number of errors in the training data can not only be harmless but even lead to better quality on new data. It sounds paradoxical: if you learn from incorrect answers, how can improvement arise? Let's talk about it. Read more",
     "title": "Why a dataset without a single error can be a bad dataset"
+  },
+  "https://habr.com/ru/companies/selectel/articles/1080634/?utm_campaign=1080634&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Thu, 10 Sep 2026 08:00:06 GMT",
+    "slug": "1080634",
+    "source_url": "https://habr.com/ru/companies/selectel/articles/1080634/?utm_campaign=1080634&utm_source=habrahabr&utm_medium=rss",
+    "summary": "In August, we added aish to the open repository, expanded the AI model catalog, and implemented the ability to store data outside the data center. Read about these and other updates in the Selectel digest below. Read more",
+    "title": "We expanded the AI model catalog and added aish to the open repository: Selectel product updates in August"
   },
   "https://habr.com/ru/companies/smartengines/articles/1079702/?utm_campaign=1079702&utm_source=habrahabr&utm_medium=rss": {
     "model": "gemini-2.5-flash-lite",
@@ -751,6 +847,14 @@
     "summary": "Hi! I'm Stepan Malkevich, head of the VKontakte feed recommendation team (AI VK). Over the past months of 2026, feed time has increased by 11%. Behind these numbers is a series of changes, each contributing to metric growth. I'll now explain what we updated and what the results were. Read more",
     "title": "From Updated Ranker to Bresenham's Algorithm: What Led to a 11% Increase in VK Feed Time in 2026"
   },
+  "https://habr.com/ru/companies/vktech/articles/1068846/?utm_campaign=1068846&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Thu, 10 Sep 2026 07:01:59 GMT",
+    "slug": "1068846",
+    "source_url": "https://habr.com/ru/companies/vktech/articles/1068846/?utm_campaign=1068846&utm_source=habrahabr&utm_medium=rss",
+    "summary": "According to Gartner, task-specific AI agents will be embedded in 40% of enterprise applications by the end of 2026. Security is often limited to guardrails and prompt filters. However, incidents like Replit deleting a production database and user data leakage via Claude highlight the need for robust security. CNCF's recent materials suggest a multi-layered approach involving sandboxing, RBAC, and egress control. This article explores how to build a secure operational environment for AI agents using these principles, focusing on Kubernetes-native solutions.",
+    "title": "AI Agents in Production: Sandboxing, RBAC, and Egress Gateways Instead of Relying on Prompts"
+  },
   "https://habr.com/ru/companies/yandex/articles/1078580/?utm_campaign=1078580&utm_source=habrahabr&utm_medium=rss": {
     "model": "gemini-2.5-flash-lite",
     "published": "Fri, 04 Sep 2026 13:15:34 GMT",
@@ -758,6 +862,14 @@
     "source_url": "https://habr.com/ru/companies/yandex/articles/1078580/?utm_campaign=1078580&utm_source=habrahabr&utm_medium=rss",
     "summary": "On Android devices, you can choose a default assistant, much like a browser. Once selected in settings, you can invoke it with a system gesture over any app. Convenient. You might think that the chosen assistant can now see everything on your phone and do whatever it wants... Not at all. When installed, Android grants an app only basic permissions. Access to advanced features requires separate user permission, and some functions are entirely unavailable to regular third-party apps. My name is Vanya, I lead the Android development team for Alice's SDK and am the tech lead for the default assistant project. Today, we'll explore these boundaries using Alice AI as an example. Read more",
     "title": "What the Default Assistant on Android Can Do - Using Alice AI as an Example"
+  },
+  "https://habr.com/ru/companies/yandex_cloud_and_infra/articles/1080524/?utm_campaign=1080524&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Thu, 10 Sep 2026 07:00:10 GMT",
+    "slug": "1080524",
+    "source_url": "https://habr.com/ru/companies/yandex_cloud_and_infra/articles/1080524/?utm_campaign=1080524&utm_source=habrahabr&utm_medium=rss",
+    "summary": "Imagine: a night alert, the application is returning 500s, but it's alive. It's clear that the familiar process will begin – tabs with graphs, searches in logs, and attempts to understand who changed what. How much time does this usually take? What if an AI agent helps you investigate the incident? Hi! I'm Anton Vorontsov, CRE at Yandex Cloud. At the end of July, I was browsing fresh GitHub repositories again to see what's happening in my related disciplines: SRE, automation, and, of course, AI. Suddenly, I stumbled upon an interesting repository that was actively growing: the number of stars, commits, and interested people from different countries – all about OpenSRE. This article is about my first contribution to an external project, what was the most challenging part, and how this tool works. Read more",
+    "title": "350 commits a week: how to contribute to a project that changes faster than you can write"
   },
   "https://habr.com/ru/companies/yandex_praktikum/articles/1070034/?utm_campaign=1070034&utm_source=habrahabr&utm_medium=rss": {
     "model": "gemini-2.5-flash-lite",

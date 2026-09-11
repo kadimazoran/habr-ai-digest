@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>The computation race has reached mathematics</title>
+  <meta name="description" content="A major breakthrough in mathematics and AI is unfolding. While the singularity is still distant, mathematicians Tristan Buckmaster and Levent Alpöge have been working on the Euler and Navier-Stokes equations. They achieved a significant result: finite-time blowup for forced 3D Euler equations, using">
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.65;
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 32px 20px 64px;
+      color: #1f2328;
+    }
+    header {
+      border-bottom: 1px solid #d8dee4;
+      margin-bottom: 28px;
+      padding-bottom: 20px;
+    }
+    .source {
+      color: #57606a;
+      font-size: 0.95rem;
+    }
+    img, video, iframe {
+      max-width: 100%;
+      height: auto;
+    }
+    pre {
+      overflow-x: auto;
+      padding: 16px;
+      background: #f6f8fa;
+      border-radius: 6px;
+    }
+    code {
+      font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+    }
+    blockquote {
+      border-left: 4px solid #d0d7de;
+      margin-left: 0;
+      padding-left: 16px;
+      color: #57606a;
+    }
+    footer {
+      border-top: 1px solid #d8dee4;
+      margin-top: 40px;
+      padding-top: 20px;
+      color: #57606a;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>The computation race has reached mathematics</h1>
+    <p>A major breakthrough in mathematics and AI is unfolding. While the singularity is still distant, mathematicians Tristan Buckmaster and Levent Alpöge have been working on the Euler and Navier-Stokes equations. They achieved a significant result: finite-time blowup for forced 3D Euler equations, using AI tools like Claude and Codex, and formalizing proofs in Lean. This led to a viral rumor about Anthropic solving Millennium Prize Problems, which was inaccurate. OpenAI, however, leveraged this momentum, training a new model that reportedly tackled remaining Millennium Prize Problems, including Navier-Stokes. This article details the events, the controversy surrounding authorship and data usage, and the ethical implications for AI in research.</p>
+    <p class="source">
+      Machine-translated from Habr.
+      <a href="https://habr.com/ru/articles/1081030/?utm_campaign=1081030&amp;utm_source=habrahabr&amp;utm_medium=rss">Read the original Russian article</a>.
+      Thu, 10 Sep 2026 19:21:36 GMT
+    </p>
+  </header>
+  <main>
+<div><p>An incredible turn of events is happening in mathematics and AI right now. True, there are still several much less accessible Millennium Prize Problems to go before the singularity.</p><p>For about two years, two mathematicians, Tristan Buckmaster, a professor of mathematics at NYU, and Levent Alpöge, a mathematician at Anthropic, worked on problems related to the Euler and Navier-Stokes equations (hereafter NS). This was not Anthropic's work; they did it in their free time, without any institutional arrangements. According to Buckmaster, progress was slow for most of the year, and the result itself appeared on August 15.</p><p>They built upon the work of Diego Córdoba and Luis Martínez-Zoroa and achieved a very strong result: finite-time blowup for forced 3D Euler equations. In the process, they actively used AI themselves, including Claude and Codex, and formalized the proofs in the Lean system. <a href="https://terrytao.wordpress.com/2026/09/07/finite-time-blowup-with-smooth-forcing-term-for-the-incompressible-porous-medium-boussinesq-and-incompressible-euler-equations/">Terence Tao called their result an outstanding achievement</a>.</p><p>A viral post appeared on X claiming that Anthropic was allegedly close to solving two Millennium Prize Problems. The rumor was false: Buckmaster and Alpöge did not solve two Millennium Prize Problems, and it wasn't Anthropic's work at all. But OpenAI immediately seized upon it. And this is no longer an accusation against Buckmaster, but <a href="https://openai.com/index/navier-stokes-solution/">literally written by OpenAI itself</a>.</p><p>On August 28, OpenAI began training a new internal model that showed very strong results in mathematics. On September 1, they heard the rumor about the two supposedly solved problems and decided to run the new model on all remaining Millennium Prize Problems.</p><p>Initially, about 100 agents worked for approximately 50 hours on a simpler problem and obtained a result for Euler equations without external forcing. After this, OpenAI decided that NS looked like the most promising target, pulled the agents off the other problems, and directed resources there. Moreover, the agents were given the Euler solution they had obtained as input for further work. And then the scale becomes simply colossal. The group that eventually obtained the result for NS included around 10,000 simultaneously working agents.</p><p>They sent 2.7 million messages to NS and generated about 130 billion tokens. The entire campaign for mathematical problems consumed about 300 billion tokens. <a href="https://techcrunch.com/2026/09/08/openai-fought-dirty-on-career-making-math-problem-says-nyu-mathematician/">According to TechCrunch's estimate</a>, this corresponds to approximately $22.5 million at current Astra rates.</p><p>After 88 hours, on September 5, the system obtained a solution. Another 17 hours were spent on formalization and verification in Lean.</p><p>It is worth discussing separately what exactly has been proven. In <a href="https://www.claymath.org/wp-content/uploads/2022/06/navierstokes.pdf">Charles Fefferman's official formulation for the Clay Institute</a>, there are four variants. Variants A and B require proving that a fluid always moves smoothly without any external influence. Variants C and D allow applying a smooth external force to the fluid and require presenting at least one case of blowup. OpenAI addressed precisely C and D, i.e., the version with an external force. Formally, this is one of the four verifiable answers. But C is not a negation of A, so the main physical question about a fluid without any external influence remains exactly where it was.</p><p>That is, the company heard a rumor that some mathematicians were approaching a very significant result, and literally a few days later, directed enormous computational power to this area.</p><p>According to Buckmaster's version, when Sébastien Bubeck, a mathematician at OpenAI, already knew about their work, they had conversations. And Buckmaster describes a completely wild situation. According to him, he was offered two options.</p><p>First: he and Alpöge publish their result on Euler, and OpenAI publishes the NS solution the next day.</p><p>Second: after Buckmaster publishes, he, alone without Alpöge, writes a paper with the NS result and indicates that the proof was obtained by an internal OpenAI model.</p><p>Here's how <a href="https://cims.nyu.edu/~tristanb/statement.pdf">Buckmaster describes it in his public statement</a>:</p><blockquote><p>“Sebastien twice asserted that he wanted Levent removed from authorship, and said it would all be simple if only it were not the case that... Levent works at Anthropic.”</p><p>Sebastien twice asserted that he wanted Levent removed from authorship, and said it would all be simple if only it were not the case that... Levent works at Anthropic.</p></blockquote><p>Buckmaster refused both options. According to him, he warned that he would publicly disclose what happened if OpenAI released the result in the proposed manner.</p><p>The response he quotes is:</p><blockquote><p>“Why would you ruin your career?”</p><p>Why would you ruin your career?</p></blockquote><p>This was said not to a graduate student who could be intimidated by a ruined career, but to an NYU mathematics professor who has been working on this very problem for many years.</p><p><a href="https://officechai.com/ai/openais-sebastien-bubeck-calls-tristan-buckmasters-claims-of-trying-to-take-credit-for-fluid-dynamics-proofs-false-and-inflammatory/">Bubeck disputes this version</a>:</p><blockquote><p>“A series of false and inflammatory allegations against me are currently circulating on social channels. To clarify, I came into the discussion following academic norms, and I'm disappointed that it has come to this.”</p><p>A series of false and inflammatory allegations against me are currently circulating on social channels. To clarify, I came into the discussion following academic norms, and I'm disappointed that it has come to this.</p></blockquote><p>However, he did not respond to specific points: the question about Codex data, pressure regarding authorship, the remark about career, and the timeline of the work launch. But then another, in my opinion, much more fundamental question arises.</p><p>Buckmaster and Alpöge themselves used Codex while working on this unpublished mathematics. According to Buckmaster, they fed drafts of almost the entire project into it. Therefore, Buckmaster directly asked OpenAI whether their internal model was trained on these sessions or had access to them.</p><p>OpenAI claims that the model did not view user data and that neither researchers nor agents saw Buckmaster and Alpöge's work before its public release. But OpenAI's official statement includes this wording:</p><blockquote><p>“While unlikely, we cannot rule out that de‑identified data derived from their usage of our products helped improve our models.”</p><p>While unlikely, we cannot rule out that de‑identified data derived from their usage of our products helped improve our models.</p></blockquote><p>We don't know if OpenAI stole their mathematical result. Buckmaster cannot prove it either. OpenAI denies it. Moreover, the results are not mathematically identical: Buckmaster and Alpöge obtained Euler with an external force, while OpenAI claims Euler without an external force and then NS, asserting that the proofs differ significantly.</p><p>But personally, even what we know for sure seems extremely unethical and very alarming from an academic standpoint. People work for a long time on cutting-edge mathematics. Information about their yet-unpublished result reaches the world's largest AI company.</p><p>The company then directs 10,000 agents, hundreds of billions of tokens, and tens of millions of dollars in computation to a related problem, and obtains a result within days.</p><p>Then, one of the mathematicians claims that someone from the company offers a publication scheme in which his co-author, who works at a competing AI lab, disappears from the next paper.</p><p>After refusal, according to him, a question about a ruined career is heard.</p><p>And then the company itself admits that it cannot completely rule out the influence of de-identified data from these mathematicians' use of its products on the model's improvement.</p><p>From an academic perspective, this seems completely unacceptable to me. And I think the problem here is much bigger than just OpenAI. Because imagine you are a researcher in a cutting-edge lab and you use AI to work on unpublished mathematics, a new algorithm, a drug, or some material. You feed the model your hypotheses, failed attempts, intermediate proofs, guesses, and drafts. And the company that owns this model has capabilities that surpass your resources by several orders of magnitude.</p><p>Then a rather unpleasant question arises: what part of their unpublished work can a scientist safely give to the model?</p><p>Moreover, the story has another rather telling epilogue. Dheeraj Nagaraj, who now works at Google DeepMind and was an intern with Bubeck in 2020, saw Buckmaster's accusations and wrote that such behavior is "100% believable" to him, and that he is glad that "the mask is off publicly." This, of course, is not proof of Buckmaster's specific accusations. He was not a witness to these conversations.</p><p>If OpenAI's proof withstands independent verification, AI has just closed one of the four variants of a problem that has remained open for about ninety years.</p><p>So, instead of a beautiful story about how AI and humans together advance mathematics, we got a story about a race of computational power, priority, authorship, closed models, and user data. The continuation of this story will surely follow.</p><hr/><p>More useful content on my TG channel: <a href="https://t.me/airamongush">t.me/airamongush</a><br/><br/><strong>Sources</strong></p><ul><li><p><a href="https://openai.com/index/navier-stokes-solution/">On the Navier‑Stokes Millennium Prize Problem, OpenAI</a></p></li><li><p><a href="https://cims.nyu.edu/~tristanb/statement.pdf">Public Statement by Tristan Buckmaster (PDF, NYU)</a></p></li><li><p><a href="https://terrytao.wordpress.com/2026/09/07/finite-time-blowup-with-smooth-forcing-term-for-the-incompressible-porous-medium-boussinesq-and-incompressible-euler-equations/">Terence Tao, Finite time blowup with smooth forcing term</a></p></li><li><p><a href="https://www.claymath.org/wp-content/uploads/2022/06/navierstokes.pdf">Official Problem Description, C. Fefferman, Clay Mathematics Institute (PDF)</a></p></li><li><p><a href="https://techcrunch.com/2026/09/08/openai-fought-dirty-on-career-making-math-problem-says-nyu-mathematician/">OpenAI fought dirty on career‑making math problem, says NYU mathematician, TechCrunch</a></p></li><li><p><a href="https://officechai.com/ai/openais-sebastien-bubeck-calls-tristan-buckmasters-claims-of-trying-to-take-credit-for-fluid-dynamics-proofs-false-and-inflammatory/">Sébastien Bubeck calls the claims false and inflammatory, OfficeChai</a></p></li><li><p><a href="https://the-decoder.com/openai-researcher-allegedly-pressured-mathematician-to-drop-anthropic-co-author-from-math-breakthrough-paper/">OpenAI researcher allegedly pressured mathematician to drop Anthropic co‑author, The Decoder</a></p></li><li><p><a href="https://www.axios.com/2026/09/08/openai-math-solution-navier-stokes-credit">OpenAI's historic math solution overshadowed by credit controversy, Axios</a></p></li></ul></div>
+  </main>
+  <footer>
+    Translation generated with Gemini 2.5 Flash-Lite.
+    The original article remains the source of record.
+  </footer>
+</body>
+</html>

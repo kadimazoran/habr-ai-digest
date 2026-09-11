@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>VLM Hallucinations in Zero-Shot Detection: False Alarms about Smoke and a Prompt-Level Solution</title>
+  <meta name="description" content="How I tried to solve the task of fire and smoke detection without training, using zero-shot detection on VLMs. I describe how it initially worked on videos with real smoke, but on clearly smoke-free streets, the model found &quot;smoke&quot; in 70% of my data: drawing bounding boxes on cars, signs, ">
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.65;
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 32px 20px 64px;
+      color: #1f2328;
+    }
+    header {
+      border-bottom: 1px solid #d8dee4;
+      margin-bottom: 28px;
+      padding-bottom: 20px;
+    }
+    .source {
+      color: #57606a;
+      font-size: 0.95rem;
+    }
+    img, video, iframe {
+      max-width: 100%;
+      height: auto;
+    }
+    pre {
+      overflow-x: auto;
+      padding: 16px;
+      background: #f6f8fa;
+      border-radius: 6px;
+    }
+    code {
+      font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+    }
+    blockquote {
+      border-left: 4px solid #d0d7de;
+      margin-left: 0;
+      padding-left: 16px;
+      color: #57606a;
+    }
+    footer {
+      border-top: 1px solid #d8dee4;
+      margin-top: 40px;
+      padding-top: 20px;
+      color: #57606a;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>VLM Hallucinations in Zero-Shot Detection: False Alarms about Smoke and a Prompt-Level Solution</h1>
+    <p>How I tried to solve the task of fire and smoke detection without training, using zero-shot detection on VLMs. I describe how it initially worked on videos with real smoke, but on clearly smoke-free streets, the model found &quot;smoke&quot; in 70% of my data: drawing bounding boxes on cars, signs, and traffic lights, sometimes with 0% confidence and a textual explanation that there was no smoke. The article explains why the one-step bbox format provokes false detections, which standard prompt engineering techniques didn&#x27;t help, and what prompt change reduced the proportion of false alarms from 70% of frames to zero while maintaining over 80% recall. Read on.</p>
+    <p class="source">
+      Machine-translated from Habr.
+      <a href="https://habr.com/ru/articles/1081166/?utm_campaign=1081166&amp;utm_source=habrahabr&amp;utm_medium=rss">Read the original Russian article</a>.
+      Fri, 11 Sep 2026 08:15:46 GMT
+    </p>
+  </header>
+  <main>
+<div><p>Early detection of smoke and fire is a common and valuable task in urban video analytics. A camera can spot a fire earlier than people on the street or an operator. Training a separate detection model requires a dataset, labeling, and time, and fires in a frame look too different to cover all cases quickly. Therefore, when the number of detection scenarios in work projects grew, I decided to try a shortcut: ask a VLM (a language model capable of working with images) to find smoke using a text prompt in zero-shot mode, meaning without any task-specific training.</p><p>For the first model, I chose <a href="https://huggingface.co/Qwen/Qwen3.5-9B">Qwen3.5-9B</a> — a medium-sized VLM, around 9 billion parameters. The scheme is simple: input is a frame and the prompt 'find smoke, return bbox', output is JSON with coordinates. The detector is configured by a text description, which is the main advantage of this approach.</p><p>On test videos from street and panoramic cameras with real smoke, the system worked well. However, testing on clearly smoke-free videos (ordinary courtyards with parking, lawns, trees, people, shops) ended unexpectedly: <strong>false alarms in 70% of frames</strong>, up to 96% on some videos.</p><p>In the article, I analyze why this happened, which known prompt engineering techniques did not help, and how the problem was solved by changing a single prompt: the proportion of false alarms on problematic cameras decreased from 70% of frames to zero, and the FPR (false positive rate on negative frames) on an independent benchmark dropped from 10.6% to 0.6% with recall above 80%.</p><p>The main conclusion from the experiments is: <strong>the detection task consists of two decisions – 'is the object present?' and 'where is it?', and combining them into a single VLM response step and a single output format can cause false alarms when the object is not in the frame</strong>.</p><h3>Test Data</h3><p>Briefly, on what everything was measured. There are two sets:</p><ul><li><p><strong>Negative Sample</strong> — videos from real street cameras, mostly courtyards, about two thousand frames. The absence of smoke and fire in them has been verified manually, so every alarm on this set is false. It was on this set that all the "70% false alarms" and all prompt iterations were measured. Frames within the same video are highly correlated, so further on we look not only at the proportion of frames but also at the number of unique objects that triggered alarms.</p></li><li><p><strong>Labeled Benchmark</strong> — thousands of images with manual annotations, selected for our domain: positives (distant smoke and fire over forests and fields, building and car fires, street smoke) and negatives with similar scenes. Recall, precision, and FPR were calculated on it. Prompt variations were selected on the negative sample and a separate small labeled set with real smoke, not overlapping with the benchmark. The benchmark itself was used only for final evaluation. The data is not academic but oriented towards real operating conditions.</p></li></ul><p>The proportion of false alarms here and further is calculated per frame: it is the proportion of negative frames on which the model returned at least one detection. All measurements are greedy generation (temperature 0) without constrained decoding: the response format was determined solely by the text of the prompt, and the decoding scheme was not imposed.</p><h3>Initial Prompt and Its Behavior on Negative Data</h3><p>The initial prompt was typical for zero-shot detection:</p><pre><code>Detect uncontrolled outdoor fire or wildfire smoke. Ignore chimney/exhaust
+smoke, steam, fog, clouds, rain, snow, lens glare.
+...
+Output ONLY JSON in markdown code block:
+[{"bbox_2d":[x1,y1,x2,y2],"label":"smoke"|"fire","confidence":0.0-1.0}]
+If nothing matches: `[]`
+</code><div><a href="https://sourcecraft.dev/"><img loading="lazy"/></a></div></pre><p>The empty response `[]` in the prompt was <strong>formally allowed</strong>. However, on clean frames, the model almost never used this option.</p><p>What did it respond with instead? After analyzing the false alarms, I found that they all boiled down to about 50 unique, consistently present objects in the frame:</p><div><div><table><tbody><tr><th><p>Object</p></th><th><p>Proportion of all false alarms</p></th></tr><tr><td><p>cars on the road or in parking lots</p></td><td><p>~40%</p></td></tr><tr><td><p>round red and yellow signs, flyers</p></td><td><p>~10%</p></td></tr><tr><td><p>trees and grass</p></td><td><p>~10%</p></td></tr><tr><td><p>light-colored objects, blurry areas</p></td><td><p>the rest</p></td></tr></tbody></table></div></div><p>The hypothesis arose that the model wasn't "seeing smoke" but was marking anything that remotely resembled the fire and smoke examples from the prompt: vehicles that might emit smoke, bright red-yellow objects resembling flames, diffuse light spots resembling haze. An alternative explanation is language priming: the words fire, smoke, wildfire in the prompt itself increase the probability of semantically related objects in the response. Both remain hypotheses: it's impossible to determine from individual bounding boxes what specific visual features the model used.</p><figure><img loading="lazy" src="https://habrastorage.org/r/w1560/webt/d7/b8/73/d7b873d850fc167be449f1d730f99c5b.png"/></figure><p><em>A frame without smoke or fire from a street camera (open dataset <a href="https://www.kaggle.com/datasets/aalborguniversity/aau-rainsnow">AAU RainSnow</a>, CC BY 4.0; bounding boxes here and below are actual responses from the same Qwen3.5 configuration): the one-step prompt confidently marks "fire" on a red traffic light. Model response:</em> </p><pre><code>[{ "bbox_2d": [585, 256, 620, 301], "label": "fire", "confidence": 0.95 }]</code><div><a href="https://sourcecraft.dev/"><img loading="lazy"/></a></div></pre><h3>The Model Can Say "No Smoke" — But Still Draws a Box</h3><p>The most interesting part turned out to be the raw responses. In <strong>21% of false detections</strong>, the model returned a bounding box with `confidence: 0.0` and simultaneously explained in text that there was no smoke in the frame. The response contradicts itself: one part asserts "no object," while another contains object coordinates. This shows that at least some errors are not due to an inability to recognize an empty frame but to a mismatch between parts of the generated response. In our observations, after starting the object branch of the response with `[{
+  </main>
+  <footer>
+    Translation generated with Gemini 2.5 Flash-Lite.
+    The original article remains the source of record.
+  </footer>
+</body>
+</html>

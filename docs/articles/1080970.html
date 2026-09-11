@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Sizing RAM and vCPU for a Local Language Model: Calculating the Initial VM Size</title>
+  <meta name="description" content="Sizing RAM and vCPU for a local language model starts with specific weights and a request profile. Initial self-hosted LLM requirements include input and output length, concurrency, runtime, and offload scheme. Calculation based on weight size and KV cache formula provides an initial configuration, ">
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.65;
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 32px 20px 64px;
+      color: #1f2328;
+    }
+    header {
+      border-bottom: 1px solid #d8dee4;
+      margin-bottom: 28px;
+      padding-bottom: 20px;
+    }
+    .source {
+      color: #57606a;
+      font-size: 0.95rem;
+    }
+    img, video, iframe {
+      max-width: 100%;
+      height: auto;
+    }
+    pre {
+      overflow-x: auto;
+      padding: 16px;
+      background: #f6f8fa;
+      border-radius: 6px;
+    }
+    code {
+      font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+    }
+    blockquote {
+      border-left: 4px solid #d0d7de;
+      margin-left: 0;
+      padding-left: 16px;
+      color: #57606a;
+    }
+    footer {
+      border-top: 1px solid #d8dee4;
+      margin-top: 40px;
+      padding-top: 20px;
+      color: #57606a;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Sizing RAM and vCPU for a Local Language Model: Calculating the Initial VM Size</h1>
+    <p>Sizing RAM and vCPU for a local language model starts with specific weights and a request profile. Initial self-hosted LLM requirements include input and output length, concurrency, runtime, and offload scheme. Calculation based on weight size and KV cache formula provides an initial configuration, while a warm-up test reveals actual memory consumption and the point where CPU ceases to help. Read more</p>
+    <p class="source">
+      Machine-translated from Habr.
+      <a href="https://habr.com/ru/articles/1080970/?utm_campaign=1080970&amp;utm_source=habrahabr&amp;utm_medium=rss">Read the original Russian article</a>.
+      Thu, 10 Sep 2026 15:27:12 GMT
+    </p>
+  </header>
+  <main>
+<div><p>Sizing RAM and vCPU for a local language model starts with specific weights and a request profile. Initial self-hosted LLM requirements include input and output length, concurrency, runtime, and offload scheme. Calculation based on weight size and KV cache formula provides an initial configuration, while a warm-up test reveals actual memory consumption and the point where CPU ceases to help.</p><h4>How much RAM does a quantized model need?</h4><p>RAM must accommodate weights, KV cache, runtime working buffers, and an OS reserve. The quantized model's file size is the basis, with the parameter count offering only a preliminary estimate. The result is confirmed with a warm-up run: measure peak RSS/PSS and memory.current without swap at the target context, concurrency, and maximum output length.</p><h3>Fix the model, context, and concurrency</h3><p>A family name like Qwen or Llama doesn't tell you much. Instead, record the repository and revision, file hash, format, quantization, runtime version, chat template, and tokenizer. For MoE models, specify the total and active parameter counts separately. </p><p>The traffic profile includes p50, p95, and maximum input tokens, output length, number of active clients, and batch settings. Interactive mode is assessed by TTFT and inter-token latency. For batch mode, total throughput and job execution time are important.</p><p>This ties self-hosted LLM requirements to specific resources for a particular scenario. One user with a 4K context consumes KV cache and CPU differently than eight concurrent sequences of 4K. If the profile is unknown, it's better to test several defined scenarios rather than averaging them into an artificial request.</p><h3>Calculate model memory based on the actual file and loading scheme</h3><p>The initial estimate comes from the sum of shard files, whereas a formula based on parameter count and bits-per-weight doesn't account for quantization tables, metadata, embeddings, and tensors with different precision. RAM calculation for LLM starts with the size of the specific artifact.</p><p>File sizes cannot simply be added to RSS because with mmap, the same resident pages are visible in both the page cache and the process mapping. PSS distributes shared pages among processes. Without mmap, the runtime might create a separate copy of the weights. With GPU offload, some tensors and buffers are moved to VRAM. The exact distribution is visible in the backend log.</p><p>The basic measurement covers loading, warm-up, and the peak of the target request. RSS/PSS are supplemented by memory.current, swap, page faults, and log lines about CPU, GPU, KV, and compute buffers to see weight placement and potential copies.</p><h3>Estimate memory growth from context and concurrency</h3><p>A baseline estimate for the full KV cache can be written as:</p><p>KV_bytes = 2 × L × H_kv × D_head × B_cache × T × S</p><p>The multiplier 2 accounts for key and value, while the other variables define layers, KV heads, head size, bytes per element, tokens, and sequences. GQA or MQA use a reduced number of KV heads, and the cache precision may differ from weight quantization.</p><p>The formula assumes a full, separate context for each sequence, although paged cache, prefix sharing, sliding-window attention, hybrid layers, and static reservation alter allocation. The occupied KV pool metric shows the discrepancy with the calculation. The amount of vCPU needed for a language model becomes clear after calculating memory and prompt processing volume.</p><h4>When do additional vCPUs stop accelerating inference?</h4><p>Additional vCPUs stop helping when generation becomes bottlenecked by memory bandwidth or threads cross NUMA nodes. Prompt processing and generation saturate at different core counts. Therefore, a thread sweep is performed for both phases: the load at each step is kept the same, and affinity, SMT, and runtime version are recorded.</p><h3>Add runtime, OS, and a safety margin</h3><p>The RAM budget consists of resident weights, KV pool, compute buffers, runtime overhead, and OS reserve. Batching and long prompts increase the peak due to temporary tensors. Quantized model memory is measured after warm-up: some pages are allocated only on first access, and until then, RSS is underestimated.</p><p>There is no universal reserve percentage for all systems; the lower bound is set by the difference between steady-state and repeatable peak RSS. Rolling updates may temporarily hold two model versions and increase the page cache, so this scenario is accounted for in the reserve or handled in a separate window.</p><p>A control run is performed without swap, which hides RAM deficits at the cost of latency. The configuration is suitable if memory.current remains below the limit by the declared reserve, the difference in <a href="http://memory.events">memory.events</a> before and after contains no max/oom, PSI memory does not increase, and p95 and p99 meet SLOs.</p><h3>Separate parallel prompt processing and memory-bound generation</h3><p>Prompt processing computes many tokens in parallel and typically loads CPU cores better. Autoregressive generation adds one token per sequence, and with a small batch, its limit is often set by reading weights from memory. As concurrency increases, compute blocks are loaded differently, so the result for one client doesn't transfer to server mode.</p><p>In llama.cpp, the -t parameter sets generation threads, while -tb, available in llama-server and llama-cli, separately controls batch and prompt processing threads. llama-bench lacks this separation, so phases are handled in separate runs. For prompt processing, tokens/s and execution time are recorded; the client separately measures TTFT. For generation, tokens/s, p95 inter-token latency, and total throughput are needed. CPU load is only supplementary to these metrics, as a high percentage doesn't prove useful work.</p><p>During the CPU series, KV cache sizing remains unchanged. The report includes the model hash, quantization, context and output lengths, concurrency, runtime version, RSS/peak memory, cache parameters, vCPU topology, and results from both phases, so that a changed batch isn't mistaken for an increase from cores.</p><h3>Find the useful limit of physical cores</h3><p>The lscpu -e=CPU,CORE,SOCKET,NODE,ONLINE command shows the guest topology, which doesn't necessarily match the physical placement on the host. Also record %steal, CPU model, frequency policy, affinity, and pinning information if available.</p><p>During a thread sweep, the number of available cores is increased incrementally. At each step, the same build is used, and prompt processing and generation tests are repeated, alternating the order of runs between steps. For llama.cpp, a loop with</p><pre><code>llama-bench: : &gt; thread-sweep.jsonl for t in 1 2 4 8; do llama-bench -m model.gguf -p 512 -n 128 	 -t "$t" -r 5 -o jsonl 	 &gt;&gt; thread-sweep.jsonl; done</code></pre><div><a href="https://sourcecraft.dev/"><img loading="lazy"/></a></div><p>The step range is chosen for the specific VM and does not exceed the cpuset limits. Each step's results include the median and spread of tokens/s. Server metrics add CPU time, while a separate client run provides TTFT and p95/p99 latencies. The useful limit is reached when the gain from new vCPUs does not exceed the spread between repetitions or when SLOs degrade due to thread synchronization and increased steal.</p><h4>How to account for context length and concurrency?</h4><ol><li><p>For each mode, fix the p95 input and output tokens, the number of active sequences, and the batch size.</p></li><li><p>Substitute these values into the KV cache formula with architecture parameters and cache precision.</p></li><li><p>Verify the estimate with the runtime log, peak RSS, and latencies from a warm run without swap.</p></li></ol><p>This way, capacity planning for a local LLM provides a verifiable estimate for each mode. Changes in quantization, context, batch, or concurrency require a new run, as the saturation point can shift even on the same VM.</p><h3>Check bandwidth and placement of a large model</h3><p>A large CPU model constantly accesses memory, so the vCPU count is assessed along with the topology. numactl --hardware shows the guest NUMA nodes, and the output of numastat -p PID reflects the process page distribution. Actual VM placement is confirmed only on the host side or through platform data.</p><p>Comparisons require consistent affinity and memory policies. The process is first kept within one node, then inter-node placement is tested. If tokens/s drop or p99 increases, check memory accesses to foreign nodes and memory bandwidth; compute threads may not be the issue.</p><p>A separate memory test provides the actual throughput, which is compared to the generation speed. On VPS, hardware counters may be unavailable, and neighboring VMs can alter the available resources. For each series, record the time, %steal, and results of repetitions.</p><h3>Compile verifiable sizes for three modes</h3><p>The final table does not contain universal numbers; each row presents results for a specific request profile.</p><div><div><table><tbody><tr><td><p><strong>Mode</strong></p></td><td><p><strong>Profile</strong></p></td><td><p><strong>RAM Budget</strong></p></td><td><p><strong>CPU Criterion</strong></p></td></tr><tr><td><p>Single User</p></td><td><p>One sequence, p95 input/output</p></td><td><p>Peak RSS, single KV context, headroom</p></td><td><p>TTFT and generation up to plateau</p></td></tr><tr><td><p>Interactive</p></td><td><p>Working concurrency and queue</p></td><td><p>Occupied KV pool, peak RSS, SLO reserve</p></td><td><p>p95/p99 latency and total throughput</p></td></tr><tr><td><p>Batch</p></td><td><p>Fixed batch and lengths</p></td><td><p>Peak RSS for batch and update reserve</p></td><td><p>Throughput and job time</p></td></tr></tbody></table></div></div><p>For a single user, TTFT and generation speed are important. The profile for several interactive clients includes p95/p99, queue, and occupied KV pool. In batch mode, a higher job latency is acceptable if total throughput increases within the RAM budget.</p><p>More RAM is needed if the repeatable peak with reserve approaches the limit or if reclaim and swap appear. Adding new vCPUs makes sense as long as the curve for the target phase is rising. If increasing threads no longer helps, the next test is performed with faster CPU or memory, different NUMA placement, GPU offload, or a different batch and KV cache policy.</p><p>The results are accompanied by versions, input data, the table, and raw JSONL. A new profile is needed when changing the model, runtime, or concurrency. Based on this profile, resources are recalculated before purchasing a VM, and after deployment, they are confirmed with the same scenario.</p><p>The final sizing of RAM and vCPU for a local language model relies on measured consumption plus a built-in reserve. File size and the KV cache formula provide an initial estimate, while peak RSS/PSS, memory.current, and thread sweep refine it on a specific VM. The limit for cores is distinct: after saturating the target phase, new vCPUs no longer increase speed. If SLOs are not met after the CPU plateau, the cause is sought in memory, NUMA, GPU, or runtime.</p></div>
+  </main>
+  <footer>
+    Translation generated with Gemini 2.5 Flash-Lite.
+    The original article remains the source of record.
+  </footer>
+</body>
+</html>

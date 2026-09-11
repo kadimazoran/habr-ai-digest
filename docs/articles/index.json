@@ -495,6 +495,14 @@
     "summary": "The 'capability disclosure' approach to AI agent skills and a small open-source tool that reads skills for you. Read more",
     "title": "Stop asking 'is this skill safe?' — ask 'what can it do?'"
   },
+  "https://habr.com/ru/articles/1080590/?utm_campaign=1080590&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Fri, 11 Sep 2026 06:11:32 GMT",
+    "slug": "1080590",
+    "source_url": "https://habr.com/ru/articles/1080590/?utm_campaign=1080590&utm_source=habrahabr&utm_medium=rss",
+    "summary": "Not always do the best intentions of some people turn out to be a boon for others. Will AI bring good or evil to humanity? An interesting question, isn't it? The answer largely depends on the intention with which we are developing this technology today. Let's consider two extreme directions of AI development: the universal one, aimed at the development of humanity, and the individualistic one, aimed primarily at the interests and victory of its creators. Read more",
+    "title": "The Day the First AI Dies"
+  },
   "https://habr.com/ru/articles/1080716/?utm_campaign=1080716&utm_source=habrahabr&utm_medium=rss": {
     "model": "gemini-2.5-flash-lite",
     "published": "Thu, 10 Sep 2026 08:54:55 GMT",
@@ -502,6 +510,62 @@
     "source_url": "https://habr.com/ru/articles/1080716/?utm_campaign=1080716&utm_source=habrahabr&utm_medium=rss",
     "summary": "Claude Code isn't tied to api.anthropic.com: it's a regular client, and where it sends requests is determined by two variables. I'll break down what it needs from the endpoint, three connection methods (shell, settings.json, apiKeyHelper), how to check with curl before launching, and what common errors mean—401, 403 with HTML, 'auth may not work as expected,' and a sudden 404 on haiku. No service names, just mechanics. Read more",
     "title": "Where Claude Code Actually Goes: ANTHROPIC_BASE_URL, Two Key Types, and /status"
+  },
+  "https://habr.com/ru/articles/1080970/?utm_campaign=1080970&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Thu, 10 Sep 2026 15:27:12 GMT",
+    "slug": "1080970",
+    "source_url": "https://habr.com/ru/articles/1080970/?utm_campaign=1080970&utm_source=habrahabr&utm_medium=rss",
+    "summary": "Sizing RAM and vCPU for a local language model starts with specific weights and a request profile. Initial self-hosted LLM requirements include input and output length, concurrency, runtime, and offload scheme. Calculation based on weight size and KV cache formula provides an initial configuration, while a warm-up test reveals actual memory consumption and the point where CPU ceases to help. Read more",
+    "title": "Sizing RAM and vCPU for a Local Language Model: Calculating the Initial VM Size"
+  },
+  "https://habr.com/ru/articles/1081030/?utm_campaign=1081030&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Thu, 10 Sep 2026 19:21:36 GMT",
+    "slug": "1081030",
+    "source_url": "https://habr.com/ru/articles/1081030/?utm_campaign=1081030&utm_source=habrahabr&utm_medium=rss",
+    "summary": "A major breakthrough in mathematics and AI is unfolding. While the singularity is still distant, mathematicians Tristan Buckmaster and Levent Alpöge have been working on the Euler and Navier-Stokes equations. They achieved a significant result: finite-time blowup for forced 3D Euler equations, using AI tools like Claude and Codex, and formalizing proofs in Lean. This led to a viral rumor about Anthropic solving Millennium Prize Problems, which was inaccurate. OpenAI, however, leveraged this momentum, training a new model that reportedly tackled remaining Millennium Prize Problems, including Navier-Stokes. This article details the events, the controversy surrounding authorship and data usage, and the ethical implications for AI in research.",
+    "title": "The computation race has reached mathematics"
+  },
+  "https://habr.com/ru/articles/1081076/?utm_campaign=1081076&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Fri, 11 Sep 2026 08:46:03 GMT",
+    "slug": "1081076",
+    "source_url": "https://habr.com/ru/articles/1081076/?utm_campaign=1081076&utm_source=habrahabr&utm_medium=rss",
+    "summary": "Imagine hiring a confident mid-level developer for your team. But they weren't given access to the tracker, weren't shown the knowledge base, and were only told about architectural decisions once during onboarding. They are occasionally asked to Google something, sometimes assigned a small feature detached from the big picture, and then blamed for poor understanding of the task and company processes. This is roughly how I see the implementation of neural networks in development processes. Below, I'll discuss the pitfalls that arise when implementing agent-based development, regardless of team or company size, and what I've developed and observed from years of pair programming with computers. Read on →",
+    "title": "If your developers use Claude Code, you haven't automated development yet"
+  },
+  "https://habr.com/ru/articles/1081150/?utm_campaign=1081150&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Fri, 11 Sep 2026 07:50:44 GMT",
+    "slug": "1081150",
+    "source_url": "https://habr.com/ru/articles/1081150/?utm_campaign=1081150&utm_source=habrahabr&utm_medium=rss",
+    "summary": "Over the past year, I've found myself writing significantly less code manually and delegating much more to AI agents: implementation, tests, codebase exploration, option generation, and parts of analysis. This has prompted me to re-evaluate a rather simple hypothesis about the future of development. Initially, I believed that as AI capabilities grew, an engineer's value would simply shift from writing code to architecture and technical decision-making. I decided to test this idea. I reviewed studies on developer productivity with AI, engineering company career ladders, and spoke with Middle/Senior developers, Team Leads, and Engineering Managers. The picture turned out to be more complex. AI can indeed accelerate work significantly, but the effect depends on the task, experience, and context. Green tests don't guarantee a change is production-ready. And the ability to work with uncertainty doesn't, by itself, fully explain the difference between Middle and Senior levels. In this article, I explore what starts to better indicate an engineer's level in such an environment and why implementation itself is gradually becoming less convincing proof of good engineering work. Read on",
+    "title": "What Makes a Developer Valuable When AI Agents Are Getting Better at Writing Code"
+  },
+  "https://habr.com/ru/articles/1081154/?utm_campaign=1081154&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Fri, 11 Sep 2026 07:58:00 GMT",
+    "slug": "1081154",
+    "source_url": "https://habr.com/ru/articles/1081154/?utm_campaign=1081154&utm_source=habrahabr&utm_medium=rss",
+    "summary": "While companies spend billions on smarter language models, one startup went in the opposite direction. They launched a chatbot with no AI at all. No LLMs, machine learning algorithms, or automatic response generation. Users type a question into a regular chat window, wait for a response, and a human answers on the other end. Read more",
+    "title": "Natural Intelligence: The Wild Story of ChatTJB, a Chatbot Where Humans Answered Instead of LLMs"
+  },
+  "https://habr.com/ru/articles/1081166/?utm_campaign=1081166&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Fri, 11 Sep 2026 08:15:46 GMT",
+    "slug": "1081166",
+    "source_url": "https://habr.com/ru/articles/1081166/?utm_campaign=1081166&utm_source=habrahabr&utm_medium=rss",
+    "summary": "How I tried to solve the task of fire and smoke detection without training, using zero-shot detection on VLMs. I describe how it initially worked on videos with real smoke, but on clearly smoke-free streets, the model found \"smoke\" in 70% of my data: drawing bounding boxes on cars, signs, and traffic lights, sometimes with 0% confidence and a textual explanation that there was no smoke. The article explains why the one-step bbox format provokes false detections, which standard prompt engineering techniques didn't help, and what prompt change reduced the proportion of false alarms from 70% of frames to zero while maintaining over 80% recall. Read on.",
+    "title": "VLM Hallucinations in Zero-Shot Detection: False Alarms about Smoke and a Prompt-Level Solution"
+  },
+  "https://habr.com/ru/articles/1081186/?utm_campaign=1081186&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Fri, 11 Sep 2026 08:50:50 GMT",
+    "slug": "1081186",
+    "source_url": "https://habr.com/ru/articles/1081186/?utm_campaign=1081186&utm_source=habrahabr&utm_medium=rss",
+    "summary": "Nikita Mikhalkov recently spoke about artificial intelligence, stating that if AI replaces humans, art will lose its meaning because machines lack conscience, soul, compassion, fear, or love. While agreeing that AI doesn't possess these human qualities, the author questions why it should. The article argues that AI is 'artificial intelligence,' not 'artificial human being,' and that the public discourse has mistakenly anthropomorphized AI, leading to fear over its lack of human traits. It proposes a collaborative model where AI acts as a creative partner, generating novel ideas through dialogue, rather than a replacement for human creators. The author concludes that the focus should be on the creative output of human-AI collaboration, not on whether AI has a soul, emphasizing that human creativity and responsibility remain paramount.",
+    "title": "And Why Does Artificial Intelligence Need a Soul? A Philological Analysis of Nikita Mikhalkov's Manifesto"
   },
   "https://habr.com/ru/companies/1c/articles/1071340/?utm_campaign=1071340&utm_source=habrahabr&utm_medium=rss": {
     "model": "gemini-2.5-flash-lite",
@@ -518,6 +582,14 @@
     "source_url": "https://habr.com/ru/companies/1forma/articles/1080638/?utm_campaign=1080638&utm_source=habrahabr&utm_medium=rss",
     "summary": "Imagine a common work situation. In an approval task, you need to quickly understand if a specific payment has gone through. Not 'what was the total volume of payments this month,' but specifically: has the money for this invoice arrived, what was the amount, when was it recorded in 1C, and is there a discrepancy with what's indicated in the workflow? A dashboard might not have this answer. It displays pre-selected metrics, and no one will design, approve, and maintain a new widget for a single check. You could open 1C, find the document, verify the details, and then return to your workspace. If such questions arise infrequently, this path seems tolerable—until these infrequent questions become numerous. It's precisely for these situations that we've added an AI agent to the workflow workspace, capable of accessing current 1C data and answering questions within the task's context. The agent operates in read-only mode under a separate 1C account with limited privileges and indicates the actual data it relied upon. In this article, we'll explain why the agent doesn't replace dashboards, which tasks are best suited for each tool, and what's needed to ensure AI model answers about corporate data are verifiable. Read on.",
     "title": "Why an AI Agent When You Have Dashboards? Answering Questions About Live 1C Data"
+  },
+  "https://habr.com/ru/companies/alfa/articles/1080768/?utm_campaign=1080768&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Fri, 11 Sep 2026 06:26:03 GMT",
+    "slug": "1080768",
+    "source_url": "https://habr.com/ru/companies/alfa/articles/1080768/?utm_campaign=1080768&utm_source=habrahabr&utm_medium=rss",
+    "summary": "Every few years (and now even more often), developers are buried again. First, visual builders were supposed to replace us. Then no-code. Then low-code. Then auto-generation of CRUD. Then Copilot. Now, it seems, the final boss has arrived in the form of large language models, which can whip up a backend, frontend, Docker Compose, migrations, OpenAPI, Kafka, PostgreSQL, Redis, authorization, tests, README, and a compiler on the side in an evening. And if you open any social network, you'll see everywhere: 'I made a SaaS in 20 minutes,' 'the neural network wrote me an app,' 'one prompt replaced a development team'... It all looks like the profession truly belongs in a museum next to punch cards and floppy disks, as now an ordinary internet user can conjure up enterprise software, a banking mobile app, and a taxi aggregator. And all this just in the morning. But the more I work with AI tools, the less I believe in the disappearance of developers. And not because AI is stupid. Quite the opposite – AI writes code well now. But to avoid discussing the topic abstractly, I'll tell you one illustrative story. I'll deliberately take the most modest scale possible: no backend, no Kafka, and no eight services. One frontend. To be completely honest, it will be one search screen. We'll see everything there. Read more",
+    "title": "AI can already assemble microservices from a single prompt, but as a developer, I'm still needed"
   },
   "https://habr.com/ru/companies/astrazeneca/articles/1078636/?utm_campaign=1078636&utm_source=habrahabr&utm_medium=rss": {
     "model": "gemini-2.5-flash-lite",
@@ -558,6 +630,14 @@
     "source_url": "https://habr.com/ru/companies/bothub/articles/1076472/?utm_campaign=1076472&utm_source=habrahabr&utm_medium=rss",
     "summary": "In the previous article, we discussed the origins of LLM hallucinations and what can provoke them. In this one, we'll talk about the consequences and methods of combating them. Read more",
     "title": "Neural Network Hallucinations. How They Work, Where They Come From, and How to Combat Them. Part 2"
+  },
+  "https://habr.com/ru/companies/bothub/articles/1081080/?utm_campaign=1081080&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Fri, 11 Sep 2026 02:05:58 GMT",
+    "slug": "1081080",
+    "source_url": "https://habr.com/ru/companies/bothub/articles/1081080/?utm_campaign=1081080&utm_source=habrahabr&utm_medium=rss",
+    "summary": "In 2023, RAG was the only way to inject knowledge into LLMs due to small context windows and frequent hallucinations. RAG became a popular technology for natural language search over knowledge bases. However, RAG pipelines are complex and labor-intensive. Companies want chatbots for their documentation. Developers propose pipelines involving chunking, embeddings, vector databases, and re-rankers, taking months of work and ongoing maintenance for limited benefit. Today, many models support 1M+ tokens, often fitting entire documentation within their context window. But if it doesn't fit, is building a full RAG system immediately necessary? How do we know when an alternative to RAG exists? This article explores why RAG became the default choice (and why it was justified), examines quality degradation with Long Context, compares approaches, and guides on what to use and when.",
+    "title": "RAG, Search, and Long Context: Why Complex Pipelines Aren't Always Necessary"
   },
   "https://habr.com/ru/companies/cloud_ru/articles/1077298/?utm_campaign=1077298&utm_source=habrahabr&utm_medium=rss": {
     "model": "gemini-2.5-flash-lite",
@@ -606,6 +686,14 @@
     "source_url": "https://habr.com/ru/companies/globalsign/articles/1079126/?utm_campaign=1079126&utm_source=habrahabr&utm_medium=rss",
     "summary": "Traditional worms of the past, like WannaCry, exploited pre-known vulnerabilities. Their spread could be stopped by patching these vulnerabilities. According to scientists, LLM agents create a fundamentally new threat – a worm that generates individual attack strategies for each new target. An external expert cannot predict how the worm will change and what vulnerabilities it will exploit in the future. Consequently, it is harder to stop its spread. Scientists have developed such a worm and tested its operation in the isolated corporate network FakeCorp. Read more",
     "title": "Adaptive worm picks individual vulnerabilities for each PC"
+  },
+  "https://habr.com/ru/companies/gptunnel/articles/1081094/?utm_campaign=1081094&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Fri, 11 Sep 2026 05:36:46 GMT",
+    "slug": "1081094",
+    "source_url": "https://habr.com/ru/companies/gptunnel/articles/1081094/?utm_campaign=1081094&utm_source=habrahabr&utm_medium=rss",
+    "summary": "This week was so eventful, it's worthy of a TV series with an open ending. Models are being churned out faster than we can name them, leaderboards are flipping by breakfast, and somewhere in the depths of OpenAI, ten thousand autonomous agents have silently sat down to solve a problem mathematicians have been grappling with since last century (and, it seems, have solved it). What happened this week? Read on",
+    "title": "7 Days of AI News (09/05/26\n\n11/09/26): Three More Models Released While You Slept"
   },
   "https://habr.com/ru/companies/inferit/articles/1078620/?utm_campaign=1078620&utm_source=habrahabr&utm_medium=rss": {
     "model": "gemini-2.5-flash-lite",
@@ -670,6 +758,14 @@
     "source_url": "https://habr.com/ru/companies/otus/articles/1073506/?utm_campaign=1073506&utm_source=habrahabr&utm_medium=rss",
     "summary": "An AI agent might err not because of the model itself, but due to how the browser describes the interface to it. This article explores the observation contract between a browser and AI, why an agent might 'not see' page elements, and how to design reliable web interface interaction scenarios. Learn more",
     "title": "How an AI agent sees a page. The observation contract between a browser and a model"
+  },
+  "https://habr.com/ru/companies/otus/articles/1077556/?utm_campaign=1077556&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Thu, 10 Sep 2026 17:10:42 GMT",
+    "slug": "1077556",
+    "source_url": "https://habr.com/ru/companies/otus/articles/1077556/?utm_campaign=1077556&utm_source=habrahabr&utm_medium=rss",
+    "summary": "Implementing artificial intelligence into a product can easily turn into an expensive experiment with no clear business benefit. In this article, we'll break down 9 mistakes product managers make, from choosing the right problem and working with data to evaluating metrics, economics, and the quality of AI features. Let's analyze the mistakes.",
+    "title": "Implementing AI in a Product: 9 Mistakes of a Product Manager"
   },
   "https://habr.com/ru/companies/raiffeisenbank/articles/1075704/?utm_campaign=1075704&utm_source=habrahabr&utm_medium=rss": {
     "model": "gemini-2.5-flash-lite",
@@ -847,6 +943,14 @@
     "summary": "Hi! I'm Stepan Malkevich, head of the VKontakte feed recommendation team (AI VK). Over the past months of 2026, feed time has increased by 11%. Behind these numbers is a series of changes, each contributing to metric growth. I'll now explain what we updated and what the results were. Read more",
     "title": "From Updated Ranker to Bresenham's Algorithm: What Led to a 11% Increase in VK Feed Time in 2026"
   },
+  "https://habr.com/ru/companies/vk/articles/1080770/?utm_campaign=1080770&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Fri, 11 Sep 2026 07:02:38 GMT",
+    "slug": "1080770",
+    "source_url": "https://habr.com/ru/companies/vk/articles/1080770/?utm_campaign=1080770&utm_source=habrahabr&utm_medium=rss",
+    "summary": "The evolution of artificial intelligence has reached a stage where downloading neural network weights from an open repository takes a few clicks, while implementing an algorithm into a production environment turns into a months-long quest. This gap is partly explained by the fact that traditional infrastructure is not flexible or adaptive enough for conditions where every minute of downtime translates into lost profit. It was this contradiction that catalyzed the transition to fundamentally new platforms. My name is Alexander Prokhorov. I am an expert in the Developer Productivity development team at VK Cloud. In this article, I will explain why classic infrastructure hindered the development of AI projects and what approach to managing computing resources has become the answer to these challenges. Read more",
+    "title": "Kubernetes without Borders: Managed Kubernetes as a Computing Center for AI"
+  },
   "https://habr.com/ru/companies/vktech/articles/1068846/?utm_campaign=1068846&utm_source=habrahabr&utm_medium=rss": {
     "model": "gemini-2.5-flash-lite",
     "published": "Thu, 10 Sep 2026 07:01:59 GMT",
@@ -862,6 +966,14 @@
     "source_url": "https://habr.com/ru/companies/yandex/articles/1078580/?utm_campaign=1078580&utm_source=habrahabr&utm_medium=rss",
     "summary": "On Android devices, you can choose a default assistant, much like a browser. Once selected in settings, you can invoke it with a system gesture over any app. Convenient. You might think that the chosen assistant can now see everything on your phone and do whatever it wants... Not at all. When installed, Android grants an app only basic permissions. Access to advanced features requires separate user permission, and some functions are entirely unavailable to regular third-party apps. My name is Vanya, I lead the Android development team for Alice's SDK and am the tech lead for the default assistant project. Today, we'll explore these boundaries using Alice AI as an example. Read more",
     "title": "What the Default Assistant on Android Can Do - Using Alice AI as an Example"
+  },
+  "https://habr.com/ru/companies/yandex/articles/1080654/?utm_campaign=1080654&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Fri, 11 Sep 2026 06:05:13 GMT",
+    "slug": "1080654",
+    "source_url": "https://habr.com/ru/companies/yandex/articles/1080654/?utm_campaign=1080654&utm_source=habrahabr&utm_medium=rss",
+    "summary": "Alice AI's Fast Answer is Yandex's most massive generative product and the first touchpoint with Alice for Search users. Even during peak load, users must receive a concise answer in seconds. To achieve this, the Alice AI Search team adapts the entire fast answer pipeline—from custom architecture pre-training to online RL training on user behavioral signals. This article explains how generative answers work in Search and details the June release's main improvements: how answers were accelerated using short info-contexts, why Encoder-Decoder was combined with a sparse MoE architecture, and how training on real user signals impacted product quality and usage. Additionally, the trained Alice AI-T5-35B-A0.6B Base model is now publicly available, with inference accessible via Hugging Face Transformers, while optimized production inference remains internal to Yandex. Read on.",
+    "title": "Opening up Alice AI Search Pre-training: How Alice's Fast Answers Model Works in Search"
   },
   "https://habr.com/ru/companies/yandex_cloud_and_infra/articles/1080524/?utm_campaign=1080524&utm_source=habrahabr&utm_medium=rss": {
     "model": "gemini-2.5-flash-lite",

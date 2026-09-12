@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>AI is Shifting the Center of Gravity in Development</title>
+  <meta name="description" content="In the AI era, code becomes cheaper, and a quality engineering solution becomes more valuable. Therefore, it&#x27;s more important not just to be able to write code quickly, but to be able to design a system so that humans and agents equally understand: what needs to be changed, why, where the bound">
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.65;
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 32px 20px 64px;
+      color: #1f2328;
+    }
+    header {
+      border-bottom: 1px solid #d8dee4;
+      margin-bottom: 28px;
+      padding-bottom: 20px;
+    }
+    .source {
+      color: #57606a;
+      font-size: 0.95rem;
+    }
+    img, video, iframe {
+      max-width: 100%;
+      height: auto;
+    }
+    pre {
+      overflow-x: auto;
+      padding: 16px;
+      background: #f6f8fa;
+      border-radius: 6px;
+    }
+    code {
+      font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+    }
+    blockquote {
+      border-left: 4px solid #d0d7de;
+      margin-left: 0;
+      padding-left: 16px;
+      color: #57606a;
+    }
+    footer {
+      border-top: 1px solid #d8dee4;
+      margin-top: 40px;
+      padding-top: 20px;
+      color: #57606a;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>AI is Shifting the Center of Gravity in Development</h1>
+    <p>In the AI era, code becomes cheaper, and a quality engineering solution becomes more valuable. Therefore, it&#x27;s more important not just to be able to write code quickly, but to be able to design a system so that humans and agents equally understand: what needs to be changed, why, where the boundaries lie, and what the result should be. Viaduct helps transform architectural design into a structured, verifiable context accessible to AI agents – from the system model to a Change Set that can be used to safely implement the change. Read more</p>
+    <p class="source">
+      Machine-translated from Habr.
+      <a href="https://habr.com/ru/articles/1081410/?utm_campaign=1081410&amp;utm_source=habrahabr&amp;utm_medium=rss">Read the original Russian article</a>.
+      Fri, 11 Sep 2026 15:20:24 GMT
+    </p>
+  </header>
+  <main>
+<div><p>Where should a developer invest their efforts in the AI era?</p><p>In writing code? In testing? Undoubtedly, these skills remain important. But increasingly, these are the areas where AI agents can significantly accelerate a team's work.</p><p>The real bottleneck lies earlier – at the design stage.</p><p>System design is one of the most cognitively complex parts of engineering work. Before the first line of code appears, dozens of questions need to be answered:</p><ul><li><p>Where are the system boundaries?</p></li><li><p>Who are the users, external actors, and services?</p></li><li><p>What components will be needed, and what is each of them responsible for?</p></li><li><p>How do they interact: synchronously or asynchronously?</p></li><li><p>What data is transferred between them?</p></li><li><p>What APIs and event contracts need to be defined?</p></li><li><p>Where and how is data stored?</p></li><li><p>What integrations, load, fault tolerance, security, and concurrency requirements exist?</p></li><li><p>What constraints cannot be violated?</p></li><li><p>How do we know when a change is truly ready?</p></li></ul><p>The more accurately a team answers these questions before implementation, the lower the cost of errors and rework later. Good design doesn't guarantee a perfect result, but it creates the necessary foundation for it.</p><h3>From Document to Executable Plan</h3><p>The problem with traditional documentation is that it often lives separately from development: diagrams are in one tool, decisions in a wiki, contracts in another system, and the actual implementation in repositories. As a result, both engineers and AI agents have to manually piece together the context.</p><p><strong>Viaduct</strong> proposes making the architectural model the central point of work on a system: not a static diagram "for reporting," but a living representation of context, containers, components, documentation, interaction sequences, and API contracts. Within the model, you can describe C4 levels, data flows, call sequences, ER models, and attach Markdown descriptions and contracts directly to the elements they relate to. You can also integrate Figma for UI components and link each element to a specific Node.</p><figure><img alt="UI of the Context Level" loading="lazy" src="https://habrastorage.org/r/w1560/getpro/habr/upload_files/5a3/be9/e39/5a3be9e39f5b0900e999b183d7d38c89.png" title="UI of the Context Level"/><div><figcaption>UI of the Context Level</figcaption></div></figure><p>By connecting a design system, the project gets all the necessary base tokens from the UI project.</p><figure><img alt="Connected Design System from Figma" loading="lazy" src="https://habrastorage.org/r/w1560/getpro/habr/upload_files/fbe/ffd/065/fbeffd0659ba230b95f4d4ada12f2ebb.png" title="Connected Design System from Figma"/><div><figcaption>Connected Design System from Figma</figcaption></div></figure><p>Thus, documentation becomes not an appendix to the code, but a structured context through which the system can be understood and modified.</p><figure><img alt="Container Level" loading="lazy" src="https://habrastorage.org/r/w1560/getpro/habr/upload_files/beb/082/567/beb0825676732bde0829a140631a0f7b.png" title="Container Level"/><div><figcaption>Container Level</figcaption></div></figure><h3>How It Works</h3><p>A developer or architect first designs the change from start to finish:</p><ol><li><p>Describes which parts of the system are affected. All C4 layers help here, depending on the depth of system and its element elaboration.</p></li><li><p>Adds or refines services, components, connections, and data flows. A well-defined data flow in Magic Flow allows the agent to best understand specific integrations and what happens at each step.</p><figure><img alt="Example of Magic Flow for viewing weather forecast" loading="lazy" src="https://habrastorage.org/r/w1560/getpro/habr/upload_files/0d4/412/fa2/0d4412fa295fc62cc6580f46f89f2446.png" title="Example of Magic Flow for viewing weather forecast"/><div><figcaption>Example of Magic Flow for viewing weather forecast</figcaption></div></figure></li><li><p>Defines interactions between participants. For presentation between teams, you can play through the desired magic flow to ensure all agreements are correct.</p><figure><img alt="Example of playing Magic Flow" loading="lazy" src="https://habrastorage.org/r/w1560/getpro/habr/upload_files/87d/d29/f38/87dd29f38da2697d784d1fa7f62ee844.png" title="Example of playing Magic Flow"/><div><figcaption>Example of playing Magic Flow</figcaption></div></figure></li><li><p>Specifies contracts, constraints, storage, and integration requirements. You can describe any contract (Rest, GRPC), topics in Kafka, or queues in RabbitMQ.</p><figure><img alt="Description of Rest GET contract for weather forecast" loading="lazy" src="https://habrastorage.org/r/w1560/getpro/habr/upload_files/28a/5f3/a96/28a5f3a969cc9616411718d84299ebbf.png" title="Description of Rest GET contract for weather forecast"/><div><figcaption>Description of Rest GET contract for weather forecast</figcaption></div></figure></li><li><p>Formulates acceptance criteria. For a Change Set, it's best to try to describe the Acceptance Criteria well, as is typical in a development task.</p><figure><img alt="Change Set entry screen" loading="lazy" src="https://habrastorage.org/r/w1560/getpro/habr/upload_files/aa2/e04/531/aa2e045315fbd4c993b8e5bf27c50f69.png" title="Change Set entry screen"/><div><figcaption>Change Set entry screen</figcaption></div></figure></li><li><p>Creates a <strong>Change Set</strong> – a set of agreed-upon changes in the architectural model. It specifies the version within which we want to implement. We briefly describe what needs to be done, any constraints or wishes, as well as a set of Acceptance Criteria. After creation, we copy the code to be inserted for the agent with MCP connected.</p><figure><img alt="Screen of an already committed Change Set" loading="lazy" src="https://habrastorage.org/r/w1560/getpro/habr/upload_files/3c2/f0d/9b3/3c2f0d9b3e1cb49d4a181e54606c305c.png" title="Screen of an already committed Change Set"/><div><figcaption>Screen of an already committed Change Set</figcaption></div></figure></li></ol><p>After this, the Change Set becomes an understandable work plan for the AI agent: what needs to be implemented, why it needs to be done, which services are affected, which contracts must be preserved, and by what criteria the result will be accepted.</p><h3>Why This is Important</h3><p>AI performs well in implementation when the task has clear boundaries. But if you give an agent a vague instruction like "add a feature," it will have to guess:</p><ul><li><p>which part of the system to change;</p></li><li><p>which contract to consider the source of truth;</p></li><li><p>what dependencies the change will affect;</p></li><li><p>what cannot be broken;</p></li><li><p>what compromise between speed, scalability, and complexity is acceptable.</p></li></ul><p>A high-quality architectural model eliminates a significant portion of this guesswork. It transforms the team's intention into context, and context into an executable task.</p><p>This is precisely why the right investment for a developer in the AI era is not to abandon programming, but to strengthen engineering thinking: decomposition, system design, data modeling, API design, formulation of constraints, and acceptance criteria.</p><p>Demo – clickable model: <a href="https://c4.quietgridlabs.com/s/2rVXSRdTQM3dXGkg-u4o_daXkVFPVSDyVlMUE1M8-OA">Weather forecaster</a></p></div>
+  </main>
+  <footer>
+    Translation generated with Gemini 2.5 Flash-Lite.
+    The original article remains the source of record.
+  </footer>
+</body>
+</html>

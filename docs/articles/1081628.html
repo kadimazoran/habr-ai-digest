@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Screenshots burn tokens, headless isn&#x27;t logged in: giving an AI agent a real Chrome via the accessibility tree</title>
+  <meta name="description" content="About how I made a Chrome extension that allows controlling an open browser via the command line and connecting AI agents to it. Read more">
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.65;
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 32px 20px 64px;
+      color: #1f2328;
+    }
+    header {
+      border-bottom: 1px solid #d8dee4;
+      margin-bottom: 28px;
+      padding-bottom: 20px;
+    }
+    .source {
+      color: #57606a;
+      font-size: 0.95rem;
+    }
+    img, video, iframe {
+      max-width: 100%;
+      height: auto;
+    }
+    pre {
+      overflow-x: auto;
+      padding: 16px;
+      background: #f6f8fa;
+      border-radius: 6px;
+    }
+    code {
+      font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+    }
+    blockquote {
+      border-left: 4px solid #d0d7de;
+      margin-left: 0;
+      padding-left: 16px;
+      color: #57606a;
+    }
+    footer {
+      border-top: 1px solid #d8dee4;
+      margin-top: 40px;
+      padding-top: 20px;
+      color: #57606a;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Screenshots burn tokens, headless isn&#x27;t logged in: giving an AI agent a real Chrome via the accessibility tree</h1>
+    <p>About how I made a Chrome extension that allows controlling an open browser via the command line and connecting AI agents to it. Read more</p>
+    <p class="source">
+      Machine-translated from Habr.
+      <a href="https://habr.com/ru/articles/1081628/?utm_campaign=1081628&amp;utm_source=habrahabr&amp;utm_medium=rss">Read the original Russian article</a>.
+      Sat, 12 Sep 2026 20:41:35 GMT
+    </p>
+  </header>
+  <main>
+<div><p>Let's be honest: today, the ways to let an AI agent work in a browser look like this.</p><p>Playwright or Selenium: a browser that the agent launches itself, with a fresh profile. No sessions, and at the very first step – a login wall, 2FA, or a captcha. Setting up remote-debugging and connecting to a live Chrome: it works, but requires launching with a flag and kills the normal session. MCP browser servers: JSON configs, client compatibility, and often screenshots anyway.</p><p>Vendor solutions have also appeared – and they all solve the problem within their own ecosystem. Anthropic's extension drives your Chrome only from Claude: subscription, login to claude.ai, session is managed through the cloud, the model is one – Claude. OpenAI's extension is controlled by a desktop application, and in Codex CLI, the browser is not available according to OpenAI's own documentation. VS Code Copilot's built-in browser is a separate environment with its own profile, not your everyday Chrome. Desktop agents with computer use work in their own sandbox with their own logins. Each answers the question "how to give my agent a browser," and no one answers the question "how to give an agent my browser.".</p><p>At the same time, each of us already has a perfectly configured, logged-in-to-everything browser. Our own. And the agent can't reach it – for one reason: no one has created a neutral bridge between the extension and the terminal.</p><p>I've built this bridge. The project is called chrome-bridge: a tiny Chrome extension plus a Node CLI without a single npm dependency. The agent gets your real browser – open tabs, logged-in sessions, SSO. Open source, MIT.</p><h3>How it works</h3><p>The architecture fits on one line: extension (a single readable background.js) — WebSocket — local Node server — CLI. No cloud and no accounts: code and data do not leave the machine.</p><p>The CLI client is a regular shell, so any agent that can run commands works: Claude Code, Cursor, Codex, GLM, Kimi, Qwen, DeepSeek, local models. MCP is not needed, SDK is not needed, model version doesn't matter.</p><pre><code>node cli.mjs snap habr.com          # page as an accessibility tree in Russian</code></pre><p>The tree looks like this – all the text on the page with links to elements:</p><pre><code>table "Hacker News new | past | comments | ask | show | jobs | submit" @e1
+  link "Hacker News" @e5
+  link "new" @e6
+  link "submit" @e12
+  link "login" @e13</code></pre><div><a href="https://sourcecraft.dev/"><img loading="lazy"/></a></div><p>The @eN links are the main saving. Measurement on a live page: the entire tree is 2.4 KB, a screenshot of the same page with a width of 1000px is 16 KB. An order of magnitude less context for each step, and the agent doesn't "guess coordinates from an image" but clicks on a link from the tree. Links survive repeated snapshots and expire only upon navigation – after the transition, the agent takes a new snap.</p><h3>Events, Trust, and Verdicts</h3><p>Synthetic events do not have the isTrusted flag, and some applications honestly ignore them. For this, there is the --trusted mode: the click goes through DevTools Input with isTrusted=true. The cost is obvious: commands via CDP (net, shot, --trusted) mount the debugger, and the page sees it. There is no "stealth" in the project intentionally – this is a tool for your own accounts on your own machine, and it's written in the README in plain text.</p><p>The second essential part of the engineering is verdicts. After an action, the agent receives not silence, but a diagnosis: succeeded, needs_human (login wall – call a human), blocked (rate limit), or uncertain (event fired, nothing changed – check differently). On Excalidraw, it looked honest: a click on the canvas returned uncertain, a screenshot confirmed that nothing happened, but --trusted with a double-click worked and created a text element, which then appeared directly in the tree.</p><h3>Command Memory and Replay</h3><p>The server maintains a circular log: each command enters it at the moment of execution with an ok/fail status. <code>history --batch out</code> exports the log as a replayable script: the failed line is commented out with the error text, secret values (fill/type/paste) are redacted. A partially failed batch can be continued from the point of failure – with one honest caveat: replay is not idempotent, an already executed click will be executed again, the tail of the script needs to be manually completed.</p><h3>Limitations</h3><ul><li><p>The server listens on 127.0.0.1 and does not respond to requests from pages, but any local process can use it. The tool is for a machine you trust.</p></li><li><p>Canvas applications are barely visible through the tree; the agent more often works with screenshots there.</p></li><li><p>CDP commands are detected by anti-bot systems; a "stealth" stack was consciously not included in the project.</p></li><li><p>The extension requests &lt;all_urls&gt; and debugger – this is the price for functionality. The code is read entirely: one background.js and the manifest, without building.</p></li></ul><h3>Conclusion</h3><p>chrome-bridge is an attempt to solve one specific problem: the agent sits in the terminal all day next to my logged-in browser and cannot access it. Now it can: a tree instead of screenshots, clicks on links instead of coordinates, a purple banner with the history of each action, and a ⏏ button that returns control to me with a single click.</p><p>GitHub: <a href="https://github.com/siropkin/chrome-bridge">https://github.com/siropkin/chrome-bridge</a> Chrome Web Store: <a href="https://chromewebstore.google.com/detail/chrome-bridge/kmhjlnokjigmnimgjjmiahlinjbcebkg">https://chromewebstore.google.com/detail/chrome-bridge/kmhjlnokjigmnimgjjmiahlinjbcebkg</a></p><p>If the tool is useful, tell us in the comments what you are automating with it. Issues and recipes are welcome.</p></div>
+  </main>
+  <footer>
+    Translation generated with Gemini 2.5 Flash-Lite.
+    The original article remains the source of record.
+  </footer>
+</body>
+</html>

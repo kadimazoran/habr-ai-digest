@@ -311,6 +311,14 @@
     "summary": "I tested 6 AI API services with free access: VyceAI, Experiential, Dahl, APInex, ModelRouter, and TokenForge. I compared available models, starting limits, RPM, and API behavior in practice. Read more",
     "title": "6 Free AI API Gateways: Models, Limits, and Real RPM"
   },
+  "https://habr.com/ru/articles/1078900/?utm_campaign=1078900&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Sun, 13 Sep 2026 00:09:07 GMT",
+    "slug": "1078900",
+    "source_url": "https://habr.com/ru/articles/1078900/?utm_campaign=1078900&utm_source=habrahabr&utm_medium=rss",
+    "summary": "Imagine a typical day a few years from now. You've almost stopped using the internet directly. Your personal AI agent uses it for you. You don't go to online stores, open messengers, search for doctors, or correspond with insurance companies. Services haven't disappeared – they've simply become infrastructure for your agent to interact with. The agent has ordered groceries for dinner; gathered and provided documents for a dispute with insurance; rearranged your calendar so you can pick up your child; booked you a doctor's appointment during a convenient slot. You were barely involved. Your calendar has updates, some tasks have vanished, and the agent only asked for confirmation on one important action. Your smartphone has become just one way to communicate with your personal agent. The same agent is accessible on your laptop, in your car, on your watch, and in your headphones. Applications haven't disappeared. A constant intermediary, who knows your context and acts on your behalf, has simply emerged between you and the digital world. Read more",
+    "title": "The Agentic Future"
+  },
   "https://habr.com/ru/articles/1078916/?utm_campaign=1078916&utm_source=habrahabr&utm_medium=rss": {
     "model": "gemini-2.5-flash-lite",
     "published": "Sun, 06 Sep 2026 05:35:33 GMT",
@@ -374,6 +382,14 @@
     "source_url": "https://habr.com/ru/articles/1079274/?utm_campaign=1079274&utm_source=habrahabr&utm_medium=rss",
     "summary": "In this investigation, we explore the performance of Qwen3.8-27B models with different quantization levels (BF16, 8-bit, 4-bit) on a Mac Studio. Contrary to initial assumptions, increasing reasoning effort (reasoning_effort=xhigh) did not improve performance for quantized models, especially in coding tasks. Instead, a medium reasoning setting (medium, thinking_budget=2048) yielded better results for 4-bit and 8-bit models, demonstrating that more thinking doesn't always equate to better quality, particularly when specific artifacts like compilable code are required. The study suggests that for tasks demanding concrete outputs, models need to finish thinking and start producing, rather than getting lost in excessive deliberation.",
     "title": "The Case of Overthinking: Why Thinking Too Much is Harmful"
+  },
+  "https://habr.com/ru/articles/1079370/?utm_campaign=1079370&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Sun, 13 Sep 2026 08:04:18 GMT",
+    "slug": "1079370",
+    "source_url": "https://habr.com/ru/articles/1079370/?utm_campaign=1079370&utm_source=habrahabr&utm_medium=rss",
+    "summary": "At some point, I made the head of my AI office swear at his subordinates. Not for a laugh. It's just that before that, my agents could produce mediocre results very politely, very diligently, and sometimes very expensively. After such a boss appeared, the office's behavior changed noticeably. And my first thought was quite simple: well, it's clear, neural networks just need a tougher boss. As it turned out, it's not clear at all. Read more",
+    "title": "I Made the Head of the AI Office Swear at Agents. And Only Then Did I Understand What Actually Worked"
   },
   "https://habr.com/ru/articles/1079574/?utm_campaign=1079574&utm_source=habrahabr&utm_medium=rss": {
     "model": "gemini-2.5-flash-lite",
@@ -607,6 +623,14 @@
     "summary": "Manticore Search 29.9.0 adds chunked and multi-vector auto-embeddings, input limiting for embedding models, UTF-8 identifiers, default mmap access to columnar attributes, and fixes for hybrid search, KNN, bulk ingestion, and grouping. Read more",
     "title": "[Translation] Manticore Search 29.9.0: chunked auto-embeddings and mmap access to columnar attributes"
   },
+  "https://habr.com/ru/articles/1081456/?utm_campaign=1081456&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Sat, 12 Sep 2026 19:07:50 GMT",
+    "slug": "1081456",
+    "source_url": "https://habr.com/ru/articles/1081456/?utm_campaign=1081456&utm_source=habrahabr&utm_medium=rss",
+    "summary": "The author decided to follow the trends and simulate a male fruit fly on his laptop. Not to torment the poor animal, but to study its behavior in a virtual environment, and maybe even talk to it! At least, about fly things. Damn it... Good heavens...",
+    "title": "Scientists Created the \"Psycho-Killer\" from Cyberpunk 2077. The First Victim Was a Fly, Let's Look at Its Engram"
+  },
   "https://habr.com/ru/articles/1081466/?utm_campaign=1081466&utm_source=habrahabr&utm_medium=rss": {
     "model": "gemini-2.5-flash-lite",
     "published": "Fri, 11 Sep 2026 21:11:50 GMT",
@@ -622,6 +646,46 @@
     "source_url": "https://habr.com/ru/articles/1081504/?utm_campaign=1081504&utm_source=habrahabr&utm_medium=rss",
     "summary": "The phrase \"Welcome to the AGI ERA\" wasn't from Altman's tweet, but from a closed-door briefing. The press conflated two different statements into a corporate announcement that never happened. I've reconstructed the timeline, cross-referenced key figures with independent benchmark administrators, and tested the model against seven verifiable criteria: Astra passes the critic's criteria but fails the claimant's. Welcome to the breakdown.",
     "title": "Welcome to the AGI Era (According to OpenAI's Marketing Department)"
+  },
+  "https://habr.com/ru/articles/1081540/?utm_campaign=1081540&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Sat, 12 Sep 2026 10:16:15 GMT",
+    "slug": "1081540",
+    "source_url": "https://habr.com/ru/articles/1081540/?utm_campaign=1081540&utm_source=habrahabr&utm_medium=rss",
+    "summary": "I've built websites, Telegram bots, and dashboards. At first, I felt like Harry Potter learning forbidden magic, but then I cooled down. You see, I tell Codex: 'Make me a bot that collects posts and analyzes them with AI.' And it actually does it. In a day or an evening, I have a new feature that I can immediately use in my work. Useful? Fast? Economical? Obviously. Read more",
+    "title": "Why I Don't Want to Vibe-Code a Viral SaaS Project for a Million Users"
+  },
+  "https://habr.com/ru/articles/1081570/?utm_campaign=1081570&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Sat, 12 Sep 2026 13:19:16 GMT",
+    "slug": "1081570",
+    "source_url": "https://habr.com/ru/articles/1081570/?utm_campaign=1081570&utm_source=habrahabr&utm_medium=rss",
+    "summary": "Apple vs. OpenAI: A trade secret lawsuit or a shift in technological paradigms? Why a dispute over two former employees could be a dispute about what comes after the smartphone. Dmitry Poletaev - Yes, \"another article about AI\" ;-) Read more",
+    "title": "Apple vs. OpenAI: A Trade Secret Lawsuit or a Shift in Technological Paradigms?"
+  },
+  "https://habr.com/ru/articles/1081584/?utm_campaign=1081584&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Sat, 12 Sep 2026 15:25:00 GMT",
+    "slug": "1081584",
+    "source_url": "https://habr.com/ru/articles/1081584/?utm_campaign=1081584&utm_source=habrahabr&utm_medium=rss",
+    "summary": "I've attended many conferences, built a strong network, and for a long time, I've been populating my CRM with contacts, call results, correspondence, agreements, etc. At some point, it contained almost 10,000 people and the entire history of my relationships with them. However, collecting data is easier than using it to its full potential. For my CRM to be truly beneficial, I need to remember who to look for, how to find them, which filters to apply, what to do next, and how to scale it. I wanted to automate almost everything. Read more",
+    "title": "How I Automated Almost All Work in My CRM"
+  },
+  "https://habr.com/ru/articles/1081586/?utm_campaign=1081586&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Sat, 12 Sep 2026 15:59:40 GMT",
+    "slug": "1081586",
+    "source_url": "https://habr.com/ru/articles/1081586/?utm_campaign=1081586&utm_source=habrahabr&utm_medium=rss",
+    "summary": "The fourth part about the local assistant for calls: twenty-five minutes after the Stop button. The cloud revision spent a month and a half finding errors in the local model and couldn't fix them: false assignments went into tasks, a joke about the budget was listed as a solution, memory received facts before the revision refuted them. How the second pass learned to remove, why I turn off the second memory, and what the code audit by zones with two models for seventy-nine cents yielded. Read more",
+    "title": "Local assistant for Zoom calls, part 4: what happens after the Stop button — and why the second model spoke into the void"
+  },
+  "https://habr.com/ru/articles/1081628/?utm_campaign=1081628&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Sat, 12 Sep 2026 20:41:35 GMT",
+    "slug": "1081628",
+    "source_url": "https://habr.com/ru/articles/1081628/?utm_campaign=1081628&utm_source=habrahabr&utm_medium=rss",
+    "summary": "About how I made a Chrome extension that allows controlling an open browser via the command line and connecting AI agents to it. Read more",
+    "title": "Screenshots burn tokens, headless isn't logged in: giving an AI agent a real Chrome via the accessibility tree"
   },
   "https://habr.com/ru/companies/1c/articles/1071340/?utm_campaign=1071340&utm_source=habrahabr&utm_medium=rss": {
     "model": "gemini-2.5-flash-lite",
@@ -798,6 +862,14 @@
     "source_url": "https://habr.com/ru/companies/infostart/articles/1080088/?utm_campaign=1080088&utm_source=habrahabr&utm_medium=rss",
     "summary": "A few years ago, the 1C developer's workflow was predictable: Configurator, database, manual configuration import/export, file sharing. Then came Git, EDT, autotests, and automation tools. Today, AI agents, MCP, and programmatic platform control are increasingly entering this cycle. Not only the toolset is changing, but also the development cost. What used to take tens of minutes of manual work is gradually turning into a single command, script, or agent action. The selection of materials below is about different aspects of this transition. Together, they show one trend: the modern 1C developer works less with the Configurator and more with a full-fledged engineering ecosystem around the platform. Read more",
     "title": "From Configurator to AI Agents: How 1C Developer Tools Are Changing"
+  },
+  "https://habr.com/ru/companies/koda/articles/1081524/?utm_campaign=1081524&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Sat, 12 Sep 2026 09:23:44 GMT",
+    "slug": "1081524",
+    "source_url": "https://habr.com/ru/companies/koda/articles/1081524/?utm_campaign=1081524&utm_source=habrahabr&utm_medium=rss",
+    "summary": "On September 11, Cognition announced the availability of Fusion in Devin Desktop and CLI. Previously, the system worked in the cloud-based Devin. Now, the combination of a leading model and an executor can be used in the desktop application and terminal. The company recommends the Claude Fable 5.1 and SWE-2 combination. Recall that Devin is a tool where you can assign it tasks related to studying a project, changing code, and checks. Fusion, in turn, organizes the joint work of two models. One, for example, creates a plan and accepts the result, the other is responsible for implementation. It's like a regular development team, but without dailies. Read more",
+    "title": "One AI codes, the second commands: how Devin Fusion works"
   },
   "https://habr.com/ru/companies/kodik/articles/1081264/?utm_campaign=1081264&utm_source=habrahabr&utm_medium=rss": {
     "model": "gemini-2.5-flash-lite",
@@ -990,6 +1062,14 @@
     "source_url": "https://habr.com/ru/companies/smartengines/articles/1081388/?utm_campaign=1081388&utm_source=habrahabr&utm_medium=rss",
     "summary": "A Russian woman recently fell victim to fraud: about 60 microloans totaling over 2.5 million rubles were issued in her name, with only a photo of her passport being sufficient for the scammers. For over a year, she has faced calls and threats from collectors, while over twenty MFIs continue to try to recover the money from her. This incident is highly illustrative, reminding us once again how serious the threat of fraud remains and how costly it can be for an ordinary person. The scale of risk grows with the number of leaks: according to industry data, 326 databases of Russian companies' clients, containing about 1.175 billion records with user information, became publicly available in 2025 and the first half of 2026. This is twice the combined number of public leaks in Latin America, the Middle East, Africa, the Asia-Pacific region, and other CIS countries. In such conditions, it's no longer possible to assume that passport and other personal data remain known only to their owner; once in the public domain, they are highly likely to become a tool for scammers. Therefore, the question often becomes how quickly criminals will attempt to use them to obtain loans. In this context, another equally important question arises: who should bear responsibility for the consequences of such fraud? Let's explore the role of banks and MFIs in preventing such schemes and why reliable borrower identity verification must be a mandatory part of the loan issuance process. Read more",
     "title": "MFIs Issued a Loan to a Scammer: Who Should Be Responsible for the Consequences"
+  },
+  "https://habr.com/ru/companies/studyai/articles/1081576/?utm_campaign=1081576&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Sat, 12 Sep 2026 13:51:15 GMT",
+    "slug": "1081576",
+    "source_url": "https://habr.com/ru/companies/studyai/articles/1081576/?utm_campaign=1081576&utm_source=habrahabr&utm_medium=rss",
+    "summary": "Today we'll try to generate some low-poly 'characters' and convert them into 3D using AI. We'll compare generations from Nano Banana Pro, Krea 2, and Microsoft MAI-Image-2.5, and see how some of them translate into 3D. Read more",
+    "title": "Turning 2D Assets into 3D Models"
   },
   "https://habr.com/ru/companies/svoi_ru/articles/1078124/?utm_campaign=1078124&utm_source=habrahabr&utm_medium=rss": {
     "model": "gemini-2.5-flash-lite",

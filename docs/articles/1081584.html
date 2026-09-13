@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>How I Automated Almost All Work in My CRM</title>
+  <meta name="description" content="I&#x27;ve attended many conferences, built a strong network, and for a long time, I&#x27;ve been populating my CRM with contacts, call results, correspondence, agreements, etc. At some point, it contained almost 10,000 people and the entire history of my relationships with them. However, collecting ">
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.65;
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 32px 20px 64px;
+      color: #1f2328;
+    }
+    header {
+      border-bottom: 1px solid #d8dee4;
+      margin-bottom: 28px;
+      padding-bottom: 20px;
+    }
+    .source {
+      color: #57606a;
+      font-size: 0.95rem;
+    }
+    img, video, iframe {
+      max-width: 100%;
+      height: auto;
+    }
+    pre {
+      overflow-x: auto;
+      padding: 16px;
+      background: #f6f8fa;
+      border-radius: 6px;
+    }
+    code {
+      font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+    }
+    blockquote {
+      border-left: 4px solid #d0d7de;
+      margin-left: 0;
+      padding-left: 16px;
+      color: #57606a;
+    }
+    footer {
+      border-top: 1px solid #d8dee4;
+      margin-top: 40px;
+      padding-top: 20px;
+      color: #57606a;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>How I Automated Almost All Work in My CRM</h1>
+    <p>I&#x27;ve attended many conferences, built a strong network, and for a long time, I&#x27;ve been populating my CRM with contacts, call results, correspondence, agreements, etc. At some point, it contained almost 10,000 people and the entire history of my relationships with them. However, collecting data is easier than using it to its full potential. For my CRM to be truly beneficial, I need to remember who to look for, how to find them, which filters to apply, what to do next, and how to scale it. I wanted to automate almost everything. Read more</p>
+    <p class="source">
+      Machine-translated from Habr.
+      <a href="https://habr.com/ru/articles/1081584/?utm_campaign=1081584&amp;utm_source=habrahabr&amp;utm_medium=rss">Read the original Russian article</a>.
+      Sat, 12 Sep 2026 15:25:00 GMT
+    </p>
+  </header>
+  <main>
+<div><p>I've attended many conferences, built a strong network, and for a long time, I've been populating my CRM with contacts, call results, correspondence, agreements, etc.<br/>At some point, it contained almost 10,000 people and the entire history of my relationships with them.<br/>However, collecting data is easier than using it to its full potential. For my CRM to be truly beneficial, I need to remember who to look for, how to find them, which filters to apply, what to do next, and how to scale it.<br/>I wanted to automate almost everything.</p><h2>What was in the first version of my CRM</h2><p>The data sources existed independently of each other:</p><ul><li><p>Contacts I acquired after personal meetings at conferences and phone calls</p></li><li><p>Separate information about meetings and calls from 2022–2026;</p></li><li><p>Telegram archives with tens of thousands of dialogues;</p></li><li><p>People's profiles, notes, statuses, and tags;</p></li><li><p>A separate old CRM that could send messages.</p></li></ul><p>After merging and deduplication, I had 9,718 contact entities.</p><p>However, one person could be present in multiple sources: for example, they might first message on Telegram, then attend a call, and a year later appear in notes under a different name.</p><p>In short, identifying which records belong to the same person, preserving the origin of each fact, and not losing history is not always straightforward.</p><h2>Why I didn't rewrite the CRM from scratch</h2><p>Initially, I wanted to take the previously written old CRM, list its functions, and write a new version that I could make even better.</p><p>I abandoned that idea.</p><p>The old CRM already had working mechanisms for authorization, sending messages, account management, and adhering to Telegram's restrictions. Rewriting everything at once would mean replicating several years of accumulated exceptions and errors, some of which no one remembered anymore.</p><p>I divided the system into two parts.</p><p>The old CRM performs the mechanical work:</p><ul><li><p>reads and writes data;</p></li><li><p>receives events;</p></li><li><p>sends messages;</p></li><li><p>adheres to limits;</p></li><li><p>retries requests after temporary errors;</p></li><li><p>saves proof of sending.</p></li></ul><p>All decisions are passed to the agent. It decides:</p><ul><li><p>who is worth retrieving from the database right now;</p></li><li><p>why this person is important;</p></li><li><p>what has changed since the last interaction;</p></li><li><p>what the next action should be;</p></li><li><p>whether the contact is needed at all right now.</p></li></ul><p>The result wasn't a new CRM in the conventional sense. Rather, the old CRM became the hands, and the agent became the decision-making layer.</p><h2>How the system is structured now</h2><p>It has five main layers:</p><figure><img loading=
+  </main>
+  <footer>
+    Translation generated with Gemini 2.5 Flash-Lite.
+    The original article remains the source of record.
+  </footer>
+</body>
+</html>

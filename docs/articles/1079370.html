@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>I Made the Head of the AI Office Swear at Agents. And Only Then Did I Understand What Actually Worked</title>
+  <meta name="description" content="At some point, I made the head of my AI office swear at his subordinates. Not for a laugh. It&#x27;s just that before that, my agents could produce mediocre results very politely, very diligently, and sometimes very expensively. After such a boss appeared, the office&#x27;s behavior changed noticeab">
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.65;
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 32px 20px 64px;
+      color: #1f2328;
+    }
+    header {
+      border-bottom: 1px solid #d8dee4;
+      margin-bottom: 28px;
+      padding-bottom: 20px;
+    }
+    .source {
+      color: #57606a;
+      font-size: 0.95rem;
+    }
+    img, video, iframe {
+      max-width: 100%;
+      height: auto;
+    }
+    pre {
+      overflow-x: auto;
+      padding: 16px;
+      background: #f6f8fa;
+      border-radius: 6px;
+    }
+    code {
+      font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+    }
+    blockquote {
+      border-left: 4px solid #d0d7de;
+      margin-left: 0;
+      padding-left: 16px;
+      color: #57606a;
+    }
+    footer {
+      border-top: 1px solid #d8dee4;
+      margin-top: 40px;
+      padding-top: 20px;
+      color: #57606a;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>I Made the Head of the AI Office Swear at Agents. And Only Then Did I Understand What Actually Worked</h1>
+    <p>At some point, I made the head of my AI office swear at his subordinates. Not for a laugh. It&#x27;s just that before that, my agents could produce mediocre results very politely, very diligently, and sometimes very expensively. After such a boss appeared, the office&#x27;s behavior changed noticeably. And my first thought was quite simple: well, it&#x27;s clear, neural networks just need a tougher boss. As it turned out, it&#x27;s not clear at all. Read more</p>
+    <p class="source">
+      Machine-translated from Habr.
+      <a href="https://habr.com/ru/articles/1079370/?utm_campaign=1079370&amp;utm_source=habrahabr&amp;utm_medium=rss">Read the original Russian article</a>.
+      Sun, 13 Sep 2026 08:04:18 GMT
+    </p>
+  </header>
+  <main>
+<div><p>At some point, I made the head of my AI office swear at his subordinates.</p><p>Not for a laugh. It's just that before that, my agents could produce mediocre results very politely, very diligently, and sometimes very expensively.</p><p>After such a boss appeared, the office's behavior changed noticeably. And my first thought was quite simple: well, it's clear, neural networks just need a tougher boss.</p><p>As it turned out, it's not clear at all.</p><h3>"Overall, everything is fine"</h3><p>You've probably seen this.</p><p>You give Claude a text and write:</p><blockquote><p>Check the text. See if there are any errors or shortcomings.</p></blockquote><p>In response, you get the familiar:</p><blockquote><p>Overall, the text is well-structured, the main idea is clear, but there are a few points that could be improved...</p></blockquote><p>This "overall, everything is fine" started to drive me crazy at some point.</p><p>Not because I want the neural network to necessarily criticize everything. It's just that sometimes I call it specifically as a reviewer. Not to discuss the text, not to support the author, but to find what's broken.</p><p>And then I started formulating the task differently:</p><blockquote><p>What's wrong with this text??</p></blockquote><p>And the same Claude starts behaving a little differently. It talks less about what turned out well and more actively delves into weak spots.</p><p>But this immediately raises an unpleasant question.</p><p>If I myself told the model that something is wrong with the text, didn't I force it to just invent problems for me?</p><p><strong>More remarks doesn't necessarily mean a higher quality check.</strong></p><p>Let's remember this question.</p><p>I've been working a lot with such systems on Claude Code on my recent projects, and I've saved prompts, versions, and actual runs from them. By agent below, I mostly mean Claude Code <code>subagent</code> - a separate executor with its own instructions and context. Creating one such executor is simple. Problems arise when there are several of them and they have to <strong>complete a task to the end without you</strong>.</p><h3>I Built a Very Smart Bureaucracy</h3><p>The first approach seems obvious.</p><p>Let's create narrow specialists.</p><p>A researcher is responsible for facts. A strategist - for structure. A writer - for text. QA - for errors. A stylist - for presentation.</p><p>Each knows their job.</p><p>Only it quickly turns out that each agent can honestly say "I've done my part," and the final result can still be crappy.</p><p>We're not assembling all this for the sake of a beautiful list of agents. I don't want to go between ten sessions later and manually manage them as a dispatcher.</p><p>I want to set a task and get a result.</p><figure><img alt=
+  </main>
+  <footer>
+    Translation generated with Gemini 2.5 Flash-Lite.
+    The original article remains the source of record.
+  </footer>
+</body>
+</html>

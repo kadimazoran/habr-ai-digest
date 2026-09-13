@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>One AI codes, the second commands: how Devin Fusion works</title>
+  <meta name="description" content="On September 11, Cognition announced the availability of Fusion in Devin Desktop and CLI. Previously, the system worked in the cloud-based Devin. Now, the combination of a leading model and an executor can be used in the desktop application and terminal. The company recommends the Claude Fable 5.1 a">
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.65;
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 32px 20px 64px;
+      color: #1f2328;
+    }
+    header {
+      border-bottom: 1px solid #d8dee4;
+      margin-bottom: 28px;
+      padding-bottom: 20px;
+    }
+    .source {
+      color: #57606a;
+      font-size: 0.95rem;
+    }
+    img, video, iframe {
+      max-width: 100%;
+      height: auto;
+    }
+    pre {
+      overflow-x: auto;
+      padding: 16px;
+      background: #f6f8fa;
+      border-radius: 6px;
+    }
+    code {
+      font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+    }
+    blockquote {
+      border-left: 4px solid #d0d7de;
+      margin-left: 0;
+      padding-left: 16px;
+      color: #57606a;
+    }
+    footer {
+      border-top: 1px solid #d8dee4;
+      margin-top: 40px;
+      padding-top: 20px;
+      color: #57606a;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>One AI codes, the second commands: how Devin Fusion works</h1>
+    <p>On September 11, Cognition announced the availability of Fusion in Devin Desktop and CLI. Previously, the system worked in the cloud-based Devin. Now, the combination of a leading model and an executor can be used in the desktop application and terminal. The company recommends the Claude Fable 5.1 and SWE-2 combination. Recall that Devin is a tool where you can assign it tasks related to studying a project, changing code, and checks. Fusion, in turn, organizes the joint work of two models. One, for example, creates a plan and accepts the result, the other is responsible for implementation. It&#x27;s like a regular development team, but without dailies. Read more</p>
+    <p class="source">
+      Machine-translated from Habr.
+      <a href="https://habr.com/ru/companies/koda/articles/1081524/?utm_campaign=1081524&amp;utm_source=habrahabr&amp;utm_medium=rss">Read the original Russian article</a>.
+      Sat, 12 Sep 2026 09:23:44 GMT
+    </p>
+  </header>
+  <main>
+<div><p>On September 11, Cognition <a href="https://cognition.com/blog/local-fusion">announced the availability of Fusion in Devin Desktop and CLI</a>. Previously, the system worked in the cloud-based Devin. Now, the combination of a leading model and an executor can be used in the desktop application and terminal. The company recommends the Claude Fable 5.1 and SWE-2 combination.</p><p>Recall that Devin is a tool where you can assign it tasks related to studying a project, changing code, and checks. Fusion, in turn, organizes the joint work of two models. One, for example, creates a plan and accepts the result, the other is responsible for implementation. It's like a regular development team, but without dailies.</p><figure><img alt="Cognition Diagram. Translation and design — KodaCode." loading="lazy" src="https://habrastorage.org/r/w1560/getpro/habr/upload_files/560/8d2/b1b/5608d2b1b1cfa6c6e9f383ea804be2e5.png" title="Cognition Diagram. Translation and design — KodaCode."/><div><figcaption><em>Cognition Diagram. Translation and design — KodaCode.</em></figcaption></div></figure><p>The lead agent communicates with the user, clarifies ambiguous requirements, and determines what work to delegate. The executor studies files, writes code and tests, fixes bugs, and returns the result for review. Both have their own tools and separate context, which is preserved throughout the session. Cognition <a href="https://cognition.com/blog/devin-fusion">described this approach in the initial announcement of Fusion</a>.</p><p>According to Cognition, simple routing based on the initial request is often insufficient, as the real complexity of the task is revealed only after studying the repository. Switching models may also require re-processing the context. In Fusion, each agent maintains its own cacheable context, and the lead agent decides which actions to perform itself and which to delegate to the assistant. The company discusses these limitations in more detail in <a href="https://cognition.com/blog/devin-fusion">an architectural breakdown</a>.</p><figure><img alt="Artificial Analysis Coding Agent Index v1.5 from Cognition publication. Translation and design — KodaCode." loading="lazy" src="https://habrastorage.org/r/w1560/getpro/habr/upload_files/28c/70d/0f5/28c70d0f53e4896dbb27847b66f20b94.png" title="Artificial Analysis Coding Agent Index v1.5 from Cognition publication. Translation and design — KodaCode."/><div><figcaption><em>Artificial Analysis Coding Agent Index v1.5 from Cognition publication. Translation and design — KodaCode.</em></figcaption></div></figure><p>In the graph shown, the Fable 5.1 + SWE-2 combination scores 61.7 points compared to 62.2 for Claude Code with Fable 5.1, with a 36% cost reduction. For Astra + SWE-2, 58.9 points are indicated compared to 61.6 for Codex with Astra, and a 39% cost reduction.</p><p>In <a href="https://cognition.com/blog/local-fusion">a table of individual benchmarks</a>, Cognition provides the following results for Fable 5.1 and Fusion with Fable 5.1 + SWE-2:</p><div><div><table><tbody><tr><th><p>Benchmark</p></th><th><p>Result: Fable → Fusion</p></th><th><p>Cost: Fable → Fusion</p></th><th><p>Cost Reduction</p></th></tr><tr><td><p>DeepSWE 1.1</p></td><td><p>64.3 → 63.1</p></td><td><p>$14.63 → $7.88</p></td><td><p>46%</p></td></tr><tr><td><p>Terminal‑Bench 4</p></td><td><p>57.6 → 56.1</p></td><td><p>$17.46 → $13.37</p></td><td><p>23%</p></td></tr><tr><td><p>FrontierCode 1.1 Extended</p></td><td><p>63.6 → 63.5</p></td><td><p>$2.68 → $1.67</p></td><td><p>38%</p></td></tr></tbody></table></div></div><p>The savings are accompanied by various quality changes. For example, for Astra on Terminal‑Bench 4, the cost decreases by 40%, but the result drops from 55.6 to 50.0. These figures relate to specific tests and configurations from the Cognition report; results cannot be mapped to any project.</p><p>The company also has an observation about the cost of the models themselves. In a <a href="https://cognition.com/blog/making-fable-cheaper-than-opus">July experiment</a>, Fable 5 was twice as expensive as Opus 4.8 per token, but with the same assistant, it turned out to be cheaper in terms of work results: $1.86 versus $2.04 on average per run. At the same time, the result was higher — 60.7 versus 54.6.</p><p>Cognition attributes this to the behavior of the lead agent. Fable delegated work earlier and repeated the executor's actions less. On average, it required 11.5 lead agent steps compared to 26.5 for Opus. In this experiment, the more expensive model compensated for the price with fewer requests and less processed context.</p><p>In the new announcement, the company also emphasizes that the harness needs to be <a href="https://cognition.com/blog/local-fusion">configured for a specific pair of models</a>: choosing the level of detail in the task, the permissibility of executor objections, and the scope of delegated code research.</p><p>At KodaCode, we also pay attention to the harness. Our agent roles, skills, and task delegation help organize the model's work. These features are described in <a href="https://docs.kodacode.ru/">Koda documentation</a> and the <a href="https://github.com/XCode-NLP/KodaSkills">skills catalog</a>. We are currently conducting many measurements of our harness with different models. We will release details later.</p><figure><img loading="lazy" src="https://habrastorage.org/r/w1560/getpro/habr/upload_files/878/865/0dc/8788650dc119374542e0536f20652a8f.png"/></figure><p>Try Kodacode on your project: <a href="https://download.kodacode.ru/?utm_source=habr&amp;utm_medium=referral&amp;utm_campaign=article_footer&amp;utm_content=banner_caption">download for IDE, CLI, and Desktop</a>. Announcements of updates, practical analyses, and product news in our <a href="https://t.me/+CgJ9OXzZlgk1NzIy">Telegram channel</a>.</p></div>
+  </main>
+  <footer>
+    Translation generated with Gemini 2.5 Flash-Lite.
+    The original article remains the source of record.
+  </footer>
+</body>
+</html>

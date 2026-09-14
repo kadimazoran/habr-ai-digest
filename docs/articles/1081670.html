@@ -1,0 +1,115 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Three models with 95% accuracy. Why can their chain only give 85%?</title>
+  <meta name="description" content="For example, one participant chooses the cat branch, another the dog. The system can save both branches, request a higher quality image, or pass it to a human. To do this, the architecture needs pre-existing access to the source object, the ability to revise the route, and a limit on the number of a">
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.65;
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 32px 20px 64px;
+      color: #1f2328;
+    }
+    header {
+      border-bottom: 1px solid #d8dee4;
+      margin-bottom: 28px;
+      padding-bottom: 20px;
+    }
+    .source {
+      color: #57606a;
+      font-size: 0.95rem;
+    }
+    img, video, iframe {
+      max-width: 100%;
+      height: auto;
+    }
+    pre {
+      overflow-x: auto;
+      padding: 16px;
+      background: #f6f8fa;
+      border-radius: 6px;
+    }
+    code {
+      font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+    }
+    blockquote {
+      border-left: 4px solid #d0d7de;
+      margin-left: 0;
+      padding-left: 16px;
+      color: #57606a;
+    }
+    footer {
+      border-top: 1px solid #d8dee4;
+      margin-top: 40px;
+      padding-top: 20px;
+      color: #57606a;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Three models with 95% accuracy. Why can their chain only give 85%?</h1>
+    <p>For example, one participant chooses the cat branch, another the dog. The system can save both branches, request a higher quality image, or pass it to a human. To do this, the architecture needs pre-existing access to the source object, the ability to revise the route, and a limit on the number of additional attempts. If there is no such possibility, the detected disagreement will remain a beautiful entry in the log. Agreement also does not guarantee anything. All participants can confidently repeat the same mistake. Therefore, it is necessary to check a specific question: does disagreement help to identify errors better than a cheaper signal from one model, with a comparable budget? Works on deep ensembles provide grounds for exploring ensembles as a way to assess uncertainty. But in them, useful diversity arises even when training networks of the same architecture. Separately, the authors of Rethinking Mixture-of-Agents show that combining the answers of different LLMs does not always win against combining several answers from one strong model. Read more</p>
+    <p class="source">
+      Machine-translated from Habr.
+      <a href="https://habr.com/ru/articles/1081670/?utm_campaign=1081670&amp;utm_source=habrahabr&amp;utm_medium=rss">Read the original Russian article</a>.
+      Mon, 14 Sep 2026 07:25:27 GMT
+    </p>
+  </header>
+  <main>
+<div><p>In my idea "System of small specialized models," there was an assumption that seemed obvious: if different architectures are used at different stages, they will make mistakes differently. This means that there will be fewer errors in the final solution.</p><p>It seems convincing. Until you draw how exactly these models are connected.</p><p>In the <a href="https://habr.com/ru/articles/1078632/">first article</a>, I talked about how I use generative models for critical analysis of engineering solutions. In the second, "Activating Little is Not Enough: Why an AI Router Might Need Alternative Strategies," I moved on to the issue of routing and saving multiple action options.</p><p>Now it's time to apply the same critical approach to my own hypothesis.</p><p>I'll start with a small example that doesn't require a graphics card, API, or training. It has precise calculations and short code. There are no experiments with trained models in this article yet: I want to first understand what exactly it should test.</p><h3>Where the help of the next expert ends</h3><p>Let's imagine a conditional recognition system. The first node determines if the image belongs to animals. The next selects a group. The last refines the class.</p><p>If the first node sends a cat to the transport branch, the ideal cat specialist further down the tree will not help: the image will not reach it. For this example, let's agree on strict conditions. At each level, only one route is selected. There is no going back. An erroneous route cannot accidentally lead to the correct final class. Success requires three correct decisions in a row. This is similar to a sequence of checks, each of which can stop the process. <strong>It is not enough for the majority of participants to be right here</strong>.</p><p>A parallel ensemble works differently. Several models see one object and answer one question, after which their answers are combined. There, two correct answers can sometimes override one incorrect one.</p><p>The word "several" is present in both descriptions. The error correction mechanism is only in the second one, if the combination method actually allows it to be corrected.</p><h3>Three times 95% is not the answer yet</h3><p>Let's take 1000 conditional objects. Each of the three nodes makes a mistake on exactly 50 of them. Each has an accuracy of 95%.</p><p>For comparability, let's mentally check each node on its correct input for each object, even if the real chain would not have reached this node. This way, we get three sets of errors on a common sample. This is a diagnostic check with the correct route, not three quality reports on different subsets of data.</p><p>Now let's arrange the errors in three ways.</p><p><strong>First: the nodes make mistakes on the same 50 objects.</strong> These objects are lost, the remaining 950 go through the entire route. The chain accuracy is 95%.</p><p><strong>Second: errors are independent.</strong> The probability of passing three stages is <code>0.95 × 0.95 × 0.95 = 0.857375</code>. We get 85.7375%. This is the probability in the given model, not a promise of exactly this number of successes in a random sample of 1000 objects.</p><p><strong>Third: errors do not overlap.</strong> The first node loses its 50 objects, the second loses another 50, the third loses another 50. 850 objects reach the result. The chain accuracy is 85%.</p><div><div><table><tbody><tr><th><p>Error distribution</p></th><th><p>Accuracy of each node</p></th><th><p>Accuracy of the entire chain</p></th></tr><tr><td><p>Completely coincide</p></td><td><p>95%</p></td><td><p>95%</p></td></tr><tr><td><p>Independent</p></td><td><p>95%</p></td><td><p>85.7375%</p></td></tr><tr><td><p>Do not overlap</p></td><td><p>95%</p></td><td><p>85%</p></td></tr></tbody></table></div></div><p>These are specially constructed cases. They show why three identical numbers in component reports do not determine the quality of the system.</p><p>If we denote the set of node errors by <code>E</code>, then the chain errs on the union <code>E1 ∪ E2 ∪ E3</code>. With fixed sizes of these sets, the size of their union is important. Coinciding errors leave more objects that pass all checks; non-overlapping ones discard different objects.</p><p>This is not a recommendation to train models to err identically. In a real project, both the errors themselves and their frequency change. Here, we deliberately fixed the individual accuracy to observe one effect.</p><p>There is also a subtlety with the usual multiplication of probabilities. If the accuracy of the second node is measured <strong>only among objects that successfully passed the first</strong>, and the third – among those that passed the first two, the product of such conditional probabilities is correct even without independence. But substituting three separate accuracies on a common sample into it without additional assumptions is not possible.</p><h3>Now let's combine the same errors differently</h3><p>Let's move on to another toy problem: three classifiers answer one binary question, and the result is chosen by majority vote. There are only two correct classes, so an erroneous answer is unambiguous.</p><p>If they all err together, the vote corrects nothing: 95% remains.</p><p>With independent errors, the majority will err when exactly two or all three err:</p><pre><code>P(majority error) = 3 × 0.05² × 0.95 + 0.05³ = 0.00725
+Majority accuracy = 99.275%
+</code><div><a href="https://sourcecraft.dev/"><img loading="lazy"/></a></div></pre><p>If the error sets do not overlap, no more than one participant errs on each object. The other two outweigh it. In this artificial construct, it results in 100%.</p><div><div><table><tbody><tr><th><p>Same error structure</p></th><th><p>Sequential chain</p></th><th><p>Binary majority vote</p></th></tr><tr><td><p>Full coincidence</p></td><td><p>95%</p></td><td><p>95%</p></td></tr><tr><td><p>Independence</p></td><td><p>85.7375%</p></td><td><p>99.275%</p></td></tr><tr><td><p>Non-overlapping errors</p></td><td><p>85%</p></td><td><p>100%</p></td></tr></tbody></table></div></div><p>The hundred percent here came from the design of the example. We ourselves forbade two participants from making mistakes simultaneously. This guarantee does not apply to real neural networks.</p><p>For free text, it's even more complicated: two answers can express the same erroneous thought in different words, and the evaluator may prefer a convincing explanation to a correct one. The result of a binary vote cannot be automatically transferred to the advice of language models.</p><h3>A calculation that can be repeated</h3><p>Below is a complete example in Python without third-party libraries. One means a participant's error, zero means a correct answer. We iterate through eight possible combinations of three errors and assign them probabilities. Therefore, there is no random generator error here, and no seed is needed.</p><pre><code>from fractions import Fraction as F
+from itertools import product
+
+p = F(1, 20)  # 5% errors for each participant
+states = list(product((0, 1), repeat=3))
+
+distributions = {
+    "shared": {(0, 0, 0): 1 - p, (1, 1, 1): p},
+    "independent": {
+        s: p ** sum(s) * (1 - p) ** (3 - sum(s))
+        for s in states
+    },
+    "disjoint": {
+        (0, 0, 0): 1 - 3 * p,
+        (1, 0, 0): p,
+        (0, 1, 0): p,
+        (0, 0, 1): p,
+    },
+}
+
+expected = {
+    "shared": (F(19, 20), F(19, 20)),
+    "independent": (F(6859, 8000), F(7942, 8000)),
+    "disjoint": (F(17, 20), F(1)),
+}
+
+for name, distribution in distributions.items():
+    assert sum(distribution.values()) == 1
+    assert all(weight >= 0 for weight in distribution.values())
+    for i in range(3):
+        assert sum(w for s, w in distribution.items() if s[i]) == p
+
+    chain = sum(w for s, w in distribution.items() if sum(s) == 0)
+    vote = sum(w for s, w in distribution.items() if sum(s) <= 1)
+    assert (chain, vote) == expected[name]
+    print(f"{name:11} chain={float(chain):.6%} vote={float(vote):.6%}")
+</code><div><a href="https://sourcecraft.dev/"><img loading="lazy"/></a></div></pre><p>Result:</p><pre><code>shared      chain=95.000000% vote=95.000000%
+independent chain=85.737500% vote=99.275000%
+disjoint    chain=85.000000% vote=100.000000%
+</code><div><a href="https://sourcecraft.dev/"><img loading="lazy"/></a></div></pre><p>The calculation verifies the logical consequence of the given conditions. It does not verify which architectures will produce such an error distribution after training. The difference is fundamental: I have shown a counterexample to the general promise that "diversity always helps," but I have not yet obtained a recipe for a useful system.</p><h3>How my hypothesis sounds now</h3><p>Instead of requiring all nodes to be different, I want to test a narrower construct: several models evaluate one route choice, and their disagreement is used as a signal for additional verification.</p><p>For example, one participant chooses the cat branch, another the dog. The system can save both branches, request a higher quality image, or pass it to a human. To do this, the architecture needs pre-existing access to the source object, the ability to revise the route, and a limit on the number of additional attempts.</p><p>If there is no such possibility, the detected disagreement will remain a beautiful entry in the log.</p><p>Agreement also does not guarantee anything. All participants can confidently repeat the same mistake. Therefore, it is necessary to check a specific question: <strong>does disagreement help to identify errors better than a cheaper signal from one model, with a comparable budget?</strong></p><p>Works on <a href="https://arxiv.org/abs/1612.01474">deep ensembles</a> provide grounds for exploring ensembles as a way to assess uncertainty. But in them, useful diversity arises even when training networks of the same architecture. Separately, the authors of <a href="https://arxiv.org/abs/2502.00674">Rethinking Mixture-of-Agents</a> show that combining the answers of different LLMs does not always win against combining several answers from one strong model.</p><p>Therefore, different architectures are one of the experimental options. It is not yet known if it will be the best.</p><h3>How I propose to test this on models</h3><p>I would limit the first full-scale experiment to hierarchical image classification. It's easier here to fix the correct class and see at which transition it was lost. Such an experiment will test the routing mechanism; conclusions about the quality of language model reasoning will require separate research.</p><p>An open dataset with documented labels and a pre-selected hierarchy is needed. Training, tuning, and final verification should use different parts of the data. Almost identical images of the same object should not fall on different sides of the split. Before the main run, the model composition, tuning budget, metrics, and stopping rules must be fixed.</p><p>I would compare the following options:</p><div><div><table><tbody><tr><th><p>Option</p></th><th><p>How it is structured</p></th><th><p>What question does it answer</p></th></tr><tr><td><p>One model</p></td><td><p>Predicts the final class immediately</p></td><td><p>Is the complication justified at all?</p></td></tr><tr><td><p>Chain of one architecture</p></td><td><p>Separately trained nodes, one route</p></td><td><p>What does the hierarchy itself provide?</p></td></tr><tr><td><p>Chain of different architectures</p></td><td><p>Same hierarchy and routing policy</p></td><td><p>What changes when architectures are replaced?</p></td></tr><tr><td><p>Ensemble of one architecture at a node</p></td><td><p>Multiple initializations, common aggregation policy</p></td><td><p>Is training diversity sufficient?</p></td></tr><tr><td><p>Ensemble of different architectures at a node</p></td><td><p>Same aggregation policy</p></td><td><p>Does architectural difference provide additional benefit?</p></td></tr><tr><td><p>Adaptive verification</p></td><td><p>Additional branches are launched selectively</p></td><td><p>Can the benefit be preserved at a lower cost?</p></td></tr></tbody></table></div></div><p>In the main comparison series, one cannot simultaneously replace architectures, training data, and the response selection rule, and then attribute the entire gain to the architecture. Where the quality of individual nodes differs, this must be shown alongside the result. It will not be possible to honestly "subtract" these differences with one elegant phrase.</p><p>For the adaptive version, it is also necessary to compare several ways to determine a complex case: the confidence of a single model, the entropy of its distribution, and the disagreement of the ensemble. The threshold is chosen on the tuning set. The final test should not help in selecting it.</p><p>The calculation of disagreement itself requires calling the participants. If three models are launched each time, and then it is announced that the expensive check is needed only occasionally, part of the cost is already hidden. I want to account for the entire path: router, participants, evaluator, additional branches, and transfer for verification.</p><h3>What to consider a useful result</h3><p>The first metric is the proportion of objects for which the final class is correctly determined. Alongside this, the errors at each level and the proportion of cases where the correct branch was preserved among the candidates should be shown. This will show whether the search for options or the selection from them failed us.</p><p>Separately, I would measure errors after abandoning automatic decision-making. Two numbers are important here:</p><pre><code>Coverage = automatically completed tasks / all tasks
+Risk = erroneous automatic decisions / automatically completed tasks
+</code><div><a href="https://sourcecraft.dev/"><img loading="lazy"/></a></div></pre><p>If the system transfers everything to a human, there are indeed no automatic errors left. But with zero coverage, the risk by this formula is undefined, and automation did nothing. Therefore, options should be compared at the same coverage, or the entire "risk-coverage" curve should be shown. This approach is used in <a href="https://arxiv.org/abs/1705.08500">selective classification</a>.</p><p>Next come the resources: average and high latency, for example, the 95th percentile, peak memory, and the cost of processing the entire set. Several small models can work sequentially, but loading them also takes time. The word "small" does not exempt from measurements.</p><p>For comparison, the hardware and execution mode must be fixed. An equal number of calls does not mean equal computations. It is more useful to show quality at several time or cost budgets, including all auxiliary components. In routing tasks between LLMs, RouteLLM considers a similar formulation of quality for cost trade-off.</p><p>Finally, one successful run can be easily overestimated. Repeated training with different initializations and estimation of the uncertainty of the difference on one test set are needed. A small pilot will help assess the spread and plan the scope of the main experiment. It does not justify the promise of detecting any arbitrarily small gain.</p><h3>What will make me abandon this version of the idea</h3><p>If an ensemble of different architectures is no better than an ensemble of one architecture at comparable costs, mandatory heterogeneity is not justified under the tested conditions.</p><p>If disagreement does not highlight errors better than the cheap signal of a single model, there is no point in building an additional mechanism around it.</p><p>If the gain is only due to mass transfer of tasks to humans, the benefit must be recalculated considering this work. And if a regular model wins in quality, time, and memory, it becomes the reasonable option for the chosen task.</p><p>An unconvincing difference will leave the question open. It will not prove either the uselessness of the approach in general or its hidden potential.</p><p>For me, this is the result of the first three articles: the initial idea has become more precise. Now I can name the system's structure, the conditions for refusal, and a comparison that can change my mind.</p><p>Based on the results of the series, I will collect substantive questions, objections, and reader-proposed alternatives. If there is enough material for independent analysis, it will be published separately. If not, I will respond in the comments and make necessary clarifications to the articles.</p><p>What comparison would you add to this experiment to most likely reveal the weak spot of my hypothesis?</p></div>
+  </main>
+  <footer>
+    Translation generated with Gemini 2.5 Flash-Lite.
+    The original article remains the source of record.
+  </footer>
+</body>
+</html>

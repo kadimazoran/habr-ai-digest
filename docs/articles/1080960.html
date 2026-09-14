@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Copilot went online for an answer. You won&#x27;t see it in Word, but an administrator in Purview will.</title>
+  <meta name="description" content="Web search in Microsoft Copilot and Copilot Chat is available to users unless an administrator disables it with one of two policies. No separate &quot;allow assistant internet access&quot; setting is required. The assistant generates its own search query, which is visible in three different places: ">
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.65;
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 32px 20px 64px;
+      color: #1f2328;
+    }
+    header {
+      border-bottom: 1px solid #d8dee4;
+      margin-bottom: 28px;
+      padding-bottom: 20px;
+    }
+    .source {
+      color: #57606a;
+      font-size: 0.95rem;
+    }
+    img, video, iframe {
+      max-width: 100%;
+      height: auto;
+    }
+    pre {
+      overflow-x: auto;
+      padding: 16px;
+      background: #f6f8fa;
+      border-radius: 6px;
+    }
+    code {
+      font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+    }
+    blockquote {
+      border-left: 4px solid #d0d7de;
+      margin-left: 0;
+      padding-left: 16px;
+      color: #57606a;
+    }
+    footer {
+      border-top: 1px solid #d8dee4;
+      margin-top: 40px;
+      padding-top: 20px;
+      color: #57606a;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Copilot went online for an answer. You won&#x27;t see it in Word, but an administrator in Purview will.</h1>
+    <p>Web search in Microsoft Copilot and Copilot Chat is available to users unless an administrator disables it with one of two policies. No separate &quot;allow assistant internet access&quot; setting is required. The assistant generates its own search query, which is visible in three different places: in Copilot Chat, citations are available for 24 hours; in the assistant pane within Microsoft 365 apps (like Word or PowerPoint), they are not visible at all; and administrators can view the same search terms alongside the prompt and response via the activity explorer in Purview DSPM for AI. The analysis is based on two learn.microsoft.com pages: citations from the web search page were verified on September 6, 2026, and the second page was re-verified on the same day. Inside, there are two diagrams and a table of &quot;prompt - generated query&quot; examples that you can replicate on your own tenant. Who sees this query and for how long.</p>
+    <p class="source">
+      Machine-translated from Habr.
+      <a href="https://habr.com/ru/articles/1080960/?utm_campaign=1080960&amp;utm_source=habrahabr&amp;utm_medium=rss">Read the original Russian article</a>.
+      Mon, 14 Sep 2026 06:11:20 GMT
+    </p>
+  </header>
+  <main>
+<div><p>I am the founder of the IT company "+Alliance". I've written about Microsoft's assistant before, but I only got around to web search recently. When responding to an employee, the assistant can go to Bing on its own, and this single action is visible in three different places on the platform in different ways. Citations from the web search page were verified on September 6, 2026.</p><h3>Disclaimer at the outset: web search is not Copilot Search</h3><p>The page "Data, privacy, and security for web search in Microsoft Copilot and Microsoft Copilot Chat" begins with a distinction: "This article concerns the web search functionality in Microsoft Copilot and Microsoft Copilot Chat. Microsoft Copilot Search is an additional, universal search experience…" The URL is <a href="https://learn.microsoft.com/en-us/microsoft-365/copilot/manage-public-web-access">https://learn.microsoft.com/en-us/microsoft-365/copilot/manage-public-web-access</a>, the <code>ms.date</code> field on the verification date is 2026-08-18. From here on, we are only talking about accessing Bing.</p><p>The scope is also mentioned there: "The information about web search in this article also applies to Researcher, Analyst, and Cowork in Microsoft Copilot… Researcher has a Web search toggle accessible in the input box. Analyst and Cowork don’t have a Web search toggle for users."</p><h3>The assistant sends its own query to search, not the employee's prompt</h3><p>The web search page describes the mechanism as follows: "When web search is enabled, Microsoft Copilot and Microsoft Copilot Chat parse the user’s prompt and identifies terms where information from the web would improve the quality of the response… Copilot generates a search query that it sends to the Bing search service asking for more information." Regarding the query itself, it states separately: "it consists of a few words informed by the user’s prompt."</p><figure><img alt="Diagram: what goes to Bing and what is not included in the query" loading="lazy" src="https://habrastorage.org/r/w1560/webt/51/0c/d7/510cd7baed7871cf032fd074bca28044.png"/><div><figcaption>Diagram: what goes to Bing and what is not included in the query</figcaption></div></figure><p><em>How a query to Bing is formed from a prompt and what is not included in that query – drawn from the web search page, verified on September 6, 2026. At the bottom of the diagram, there is a separate disclaimer about Microsoft 365 documents.</em></p><p>All four exceptions are listed in the diagram; the page also discusses the last one from the sending perspective: "Generated search queries are sent to the Bing search service with user and tenant identifiers removed."</p><p>The rule "the entire document is not included in the query" does not mean that the document does not influence the query: "When using Microsoft Copilot, the generated search query doesn’t include the entirety of Microsoft 365 documents associated with the prompt. However, it may also be informed by data within a Microsoft 365 document under the following conditions: When a user enters a prompt into Copilot inside a Microsoft 365 application… When the user explicitly references a specific document in their prompt."</p><h3>A table of examples that can be replicated on your own tenant</h3><p>Also on the web search page, there is a table of examples: prompt, generated query, and how the response is constructed. The first three rows out of five, the first two columns verbatim:</p><div><div><table><tbody><tr><th><p>User prompt</p></th><th><p>Generated Bing query</p></th></tr><tr><td><p>“I’m looking for a document authored last week by [coworker].”</p></td><td><p>“None”</p></td></tr><tr><td><p>“We’re considering a possible acquisition of Fabrikam. Summarize financial information…”</p></td><td><p>“Fabrikam strategy” / “Fabrikam financials”</p></td></tr><tr><td><p>“Summarize [internal strategy document about clean energy] and tell me if Fabrikam has publicly announced a similar approach.”</p></td><td><p>“Fabrikam clean energy policy announcements”</p></td></tr></tbody></table></div></div><p>The third column of the source explains: in the row with "None", no query is generated to the web, and the response is built solely on Microsoft 365 data. In the row about clean energy, the document is explicitly named in the prompt: the topic from it was included in the query, but the document itself is not sent to Bing. You can ask your Copilot a similar prompt and verify the logic manually. </p><h3>Three places where the same query is visible</h3><p>In the response citation section, according to Microsoft's documentation, the search queries themselves are shown: "The section shows the exact web search queries (derived from the user’s prompt) that were sent to the Bing search service."</p><p>The documentation states the limitation for applications verbatim: "Web search query citations are available only in Microsoft Copilot Chat. Citations aren’t available in the Copilot pane within a Microsoft 365 app, such as Word or PowerPoint." The time limitation is stated in the next sentence: "Also, the web search queries are only available in the chat thread for 24 hours." This should be read literally: 24 hours for the query's visibility in the chat thread. The page does not describe server-side storage or log retention periods, nor what the user sees after the 25th hour.</p><p>Auditing for administrators is described separately: "Web search query logging is available so that admins can perform search, audit, and eDiscovery on the exact web search queries Copilot derived from the user’s prompt. Admins can already perform these actions for prompts and responses and are able to use their familiar tools to extend those actions to search queries." Prompt and response auditing existed before, and search queries have been added to this audit. I would investigate who can retrieve specifically web search queries before it becomes necessary.</p><p>The documentation directly names the viewing tool: "Administrators can also view the actual web search terms Copilot used, right alongside the original prompt, the response, and any supporting resources by using activity explorer in Microsoft Purview Data Security Posture Management (DSPM) for AI." The page does not specify an upper retention limit, so I will not state "indefinitely". The page does not explain how the interface and access rights for the activity explorer differ from Content Search – only that both paths exist.</p><figure><img alt="Diagram: three places where web queries are visible" loading="lazy" src="https://habrastorage.org/r/w1560/webt/b6/59/6e/b6596e3c26496f161dc95309d17cca07.png"/><div><figcaption>Diagram: three places where web queries are visible</figcaption></div></figure><p><em>Three places from this section in one image: 24 hours in chat, no citations in the application pane, and administrator viewing alongside the prompt and response. The diagram is ours, the facts are from the web search page, verified on September 6, 2026.</em></p><p>What is most important to me in this picture is the middle card. An employee writing a document in Word will not see the search query, even though web data might have influenced the response.</p><h3>Web search is enabled unless it's disabled</h3><p>According to Microsoft's documentation, web search is available to users even if no policy has been configured: "If the IT admin doesn’t configure the Allow web search in Copilot policy, web search will be available to users in both Microsoft Copilot and Microsoft Copilot Chat, unless the IT admin has set the Allow the use of additional optional connected experiences in Office policy to Disabled." The condition at the end is crucial: web search can be disabled by one of two policies. The user toggle is also related: "If the IT admin enables web search, the Web content toggle is turned on by default."</p><p>The "Allow web search in Copilot" policy is available, according to the page's wording, only in the Cloud Policy service for Microsoft 365. There are three modes: "Enabled in Microsoft Copilot and Microsoft Copilot Chat"; "Disabled in Microsoft Copilot and Microsoft Copilot Chat"; "Disabled in Microsoft Copilot Work mode; Enabled in Microsoft Copilot Web mode and Microsoft Copilot Chat". The third mode has a specific consequence: "web search in Researcher and Cowork in Microsoft Copilot will be disabled."</p><p>The documentation refers to the user toggle by two names. In the management section, it is "Web content", and in the interface instructions on the same page, it is "Expand Advanced, and turn off the Web search toggle". I cannot confirm how it is labeled on the screen based on the documentation; the page does not explain the reason for the discrepancy.</p><h3>Basic licenses rely on public web data</h3><p>The comparison table on the "What is Microsoft Copilot?" page (<code>ms.date</code> = 2026-08-27, verified September 4, 2026, and re-verified September 6) describes the "Copilot Chat (Basic)" and "Microsoft 365 Copilot (Basic)" levels identically: "Securely interact with Copilot Chat using web data only" (<a href="https://learn.microsoft.com/en-us/microsoft-365/copilot/microsoft-365-copilot-overview">https://learn.microsoft.com/en-us/microsoft-365/copilot/microsoft-365-copilot-overview</a>). These levels do not use organizational data through Microsoft Graph in the chat. Work content enters the response differently: the employee either uploads a file with the prompt or works with open content in Teams and Outlook. Another option mentioned by the page is a separately paid agent that has access to organizational data.</p><h3>An objection I raised myself</h3><p>It sounds like this: there is no blind spot, there is a documented role separation. Citations are needed where a person is having a conversation – in chat. Search queries are only a hindrance to someone writing a document in Word, and the company loses nothing: the query is in the logs, and anyone who needs it can look it up. This is a strong objection, and I cannot refute it with measurements: my article is entirely based on someone else's documentation, and I have no personal measurements of web search.</p><p>However, I still hold a different view, and this is my position, not a requirement from the page. The person who puts their signature under a document checks the sources. Such an author is not shown search queries in the application pane, they are shown for 24 hours in chat, and the administrator goes to the logs when a reason arises. Therefore, this week I am checking in the Cloud Policy service whether the "Allow web search in Copilot" policy is explicitly configured, and I will ask one prompt twice – in chat and in the application pane.</p></div>
+  </main>
+  <footer>
+    Translation generated with Gemini 2.5 Flash-Lite.
+    The original article remains the source of record.
+  </footer>
+</body>
+</html>

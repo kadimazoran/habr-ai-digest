@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>We need a system where a technical specification is assembled from requirements, not written as a structured document</title>
+  <meta name="description" content="In a large financial company where I worked as a system analyst, technical specifications are not created in Confluence or Word... Discover the secret">
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.65;
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 32px 20px 64px;
+      color: #1f2328;
+    }
+    header {
+      border-bottom: 1px solid #d8dee4;
+      margin-bottom: 28px;
+      padding-bottom: 20px;
+    }
+    .source {
+      color: #57606a;
+      font-size: 0.95rem;
+    }
+    img, video, iframe {
+      max-width: 100%;
+      height: auto;
+    }
+    pre {
+      overflow-x: auto;
+      padding: 16px;
+      background: #f6f8fa;
+      border-radius: 6px;
+    }
+    code {
+      font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+    }
+    blockquote {
+      border-left: 4px solid #d0d7de;
+      margin-left: 0;
+      padding-left: 16px;
+      color: #57606a;
+    }
+    footer {
+      border-top: 1px solid #d8dee4;
+      margin-top: 40px;
+      padding-top: 20px;
+      color: #57606a;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>We need a system where a technical specification is assembled from requirements, not written as a structured document</h1>
+    <p>In a large financial company where I worked as a system analyst, technical specifications are not created in Confluence or Word... Discover the secret</p>
+    <p class="source">
+      Machine-translated from Habr.
+      <a href="https://habr.com/ru/articles/1081788/?utm_campaign=1081788&amp;utm_source=habrahabr&amp;utm_medium=rss">Read the original Russian article</a>.
+      Sun, 13 Sep 2026 18:11:27 GMT
+    </p>
+  </header>
+  <main>
+<div><figure><img loading="lazy" src="https://habrastorage.org/r/w1560/getpro/habr/upload_files/d53/86d/5a6/d5386d5a6cc846b6791fbd45654bc41a.png"/></figure><p>In a large financial company where I worked as a system analyst, technical specifications are not created in Confluence or Word, but as linked tasks in Jira. This is very convenient, as it eliminates the need to record and update the same requirements in two places (Confluence/Word and Jira) and saves time on writing cumbersome and often outdated structured technical specifications based on old templates. Confluence in this company is used as a knowledge base primarily for storing local standards.</p><p>However, Jira still lacks versioning of tasks, history of requirements obtained from correspondence, history of edits and approvals, and history of attached files.</p><p>Jira also lacks integration with communication channels. A system analyst receives requirements from everywhere: email, messengers, task comments, files, links. There is no single place where all this would be gathered into a coherent picture.</p><p>Modifying Jira to account for all of this would mean rewriting it entirely.</p><p>Therefore, a specialized information system is needed where a technical specification is assembled from requirements, not written as a structured document. It should integrate with various channels for receiving documents. Documents of different types should be linked to each other within the system, have a link to the source, and a history of discussion and approval. A technical specification should not be a file or a page, but an always up-to-date selection of linked documents.</p><p>The principle of linked notes is not new. Obsidian and similar tools have long shown that links between notes work better than folders. But these are tools for a single person. They lack approvals, versioning, and integration with corporate channels. As soon as a team, approvals, and external sources enter the process, a personal wiki ceases to be sufficient.</p><p>With the system described here, an analyst will stop doing the work of a technical writer because they will no longer need to transfer requirements from correspondence to the technical specification, as the system will fetch them from the channels and link them. The developer will always have an up-to-date task with a traceable history, and the business will have confidence that their requirements have not been lost. Decisions made will immediately appear in the technical specification.</p><p>However, this model has a downside. The technical specification ceases to be a document that can be read from top to bottom and turns into a set of linked cards, from which a person has to assemble a coherent picture themselves. This requires artificial intelligence that traverses the links and shows the complete picture, answering questions about it. And to connect it to the system, a standard protocol is needed, such as MCP.</p></div>
+  </main>
+  <footer>
+    Translation generated with Gemini 2.5 Flash-Lite.
+    The original article remains the source of record.
+  </footer>
+</body>
+</html>

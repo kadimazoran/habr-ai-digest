@@ -535,6 +535,14 @@
     "summary": "Claude Code isn't tied to api.anthropic.com: it's a regular client, and where it sends requests is determined by two variables. I'll break down what it needs from the endpoint, three connection methods (shell, settings.json, apiKeyHelper), how to check with curl before launching, and what common errors mean—401, 403 with HTML, 'auth may not work as expected,' and a sudden 404 on haiku. No service names, just mechanics. Read more",
     "title": "Where Claude Code Actually Goes: ANTHROPIC_BASE_URL, Two Key Types, and /status"
   },
+  "https://habr.com/ru/articles/1080960/?utm_campaign=1080960&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Mon, 14 Sep 2026 06:11:20 GMT",
+    "slug": "1080960",
+    "source_url": "https://habr.com/ru/articles/1080960/?utm_campaign=1080960&utm_source=habrahabr&utm_medium=rss",
+    "summary": "Web search in Microsoft Copilot and Copilot Chat is available to users unless an administrator disables it with one of two policies. No separate \"allow assistant internet access\" setting is required. The assistant generates its own search query, which is visible in three different places: in Copilot Chat, citations are available for 24 hours; in the assistant pane within Microsoft 365 apps (like Word or PowerPoint), they are not visible at all; and administrators can view the same search terms alongside the prompt and response via the activity explorer in Purview DSPM for AI. The analysis is based on two learn.microsoft.com pages: citations from the web search page were verified on September 6, 2026, and the second page was re-verified on the same day. Inside, there are two diagrams and a table of \"prompt - generated query\" examples that you can replicate on your own tenant. Who sees this query and for how long.",
+    "title": "Copilot went online for an answer. You won't see it in Word, but an administrator in Purview will."
+  },
   "https://habr.com/ru/articles/1080970/?utm_campaign=1080970&utm_source=habrahabr&utm_medium=rss": {
     "model": "gemini-2.5-flash-lite",
     "published": "Thu, 10 Sep 2026 15:27:12 GMT",
@@ -606,6 +614,14 @@
     "source_url": "https://habr.com/ru/articles/1081324/?utm_campaign=1081324&utm_source=habrahabr&utm_medium=rss",
     "summary": "When I was once asked what inference is and what local model deployment looks like, I answered correctly but too generally. A few days later, I had to go through this entire process: setting up two LLMs on NVIDIA DGX Spark, a separate ASR model on AMD GPU, and connecting everything to a multi-agent platform. The article provides an engineering breakdown of why model files are not yet a service, how long context competes with KV cache and parallelism, why tokens/sec doesn't describe user latency, and why sometimes a faster model is rolled back due to quality. Read more",
     "title": "What it means to deploy an LLM locally: two days with vLLM, DGX Spark, and real limitations"
+  },
+  "https://habr.com/ru/articles/1081382/?utm_campaign=1081382&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Sun, 13 Sep 2026 16:00:26 GMT",
+    "slug": "1081382",
+    "source_url": "https://habr.com/ru/articles/1081382/?utm_campaign=1081382&utm_source=habrahabr&utm_medium=rss",
+    "summary": "At night, around 2 AM Moscow time, the server wakes up and starts a pipeline. First, the service goes to Telegram and downloads new messages from chats that the user has marked. An hour later, a second worker starts and turns these messages into memory: it chunks them, processes them through DeepSeek, organizes them into tables, and exports them to markdown files. By morning, the user has additional information in the second memory service. The second memory service is not just a chat history. Six months later, you can ask, 'What budget did we agree on for the trip then?' and get an answer with a link to a specific message in a specific chat. Strangely enough, almost all my work on creating the service was not in working with LLMs. So what was it?",
+    "title": "How I Create AI Memory from Telegram Chats: Tens of Thousands of Messages, Thousands of Facts, Hundreds of People"
   },
   "https://habr.com/ru/articles/1081410/?utm_campaign=1081410&utm_source=habrahabr&utm_medium=rss": {
     "model": "gemini-2.5-flash-lite",
@@ -687,6 +703,62 @@
     "summary": "About how I made a Chrome extension that allows controlling an open browser via the command line and connecting AI agents to it. Read more",
     "title": "Screenshots burn tokens, headless isn't logged in: giving an AI agent a real Chrome via the accessibility tree"
   },
+  "https://habr.com/ru/articles/1081670/?utm_campaign=1081670&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Mon, 14 Sep 2026 07:25:27 GMT",
+    "slug": "1081670",
+    "source_url": "https://habr.com/ru/articles/1081670/?utm_campaign=1081670&utm_source=habrahabr&utm_medium=rss",
+    "summary": "For example, one participant chooses the cat branch, another the dog. The system can save both branches, request a higher quality image, or pass it to a human. To do this, the architecture needs pre-existing access to the source object, the ability to revise the route, and a limit on the number of additional attempts. If there is no such possibility, the detected disagreement will remain a beautiful entry in the log. Agreement also does not guarantee anything. All participants can confidently repeat the same mistake. Therefore, it is necessary to check a specific question: does disagreement help to identify errors better than a cheaper signal from one model, with a comparable budget? Works on deep ensembles provide grounds for exploring ensembles as a way to assess uncertainty. But in them, useful diversity arises even when training networks of the same architecture. Separately, the authors of Rethinking Mixture-of-Agents show that combining the answers of different LLMs does not always win against combining several answers from one strong model. Read more",
+    "title": "Three models with 95% accuracy. Why can their chain only give 85%?"
+  },
+  "https://habr.com/ru/articles/1081764/?utm_campaign=1081764&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Sun, 13 Sep 2026 16:08:02 GMT",
+    "slug": "1081764",
+    "source_url": "https://habr.com/ru/articles/1081764/?utm_campaign=1081764&utm_source=habrahabr&utm_medium=rss",
+    "summary": "The physical characteristics of biological systems allow us to draw conclusions about the prospects of artificial intelligence. Read more",
+    "title": "The Limits of Artificial Intelligence Complexity and the Physical Foundations of Life"
+  },
+  "https://habr.com/ru/articles/1081768/?utm_campaign=1081768&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Sun, 13 Sep 2026 16:50:58 GMT",
+    "slug": "1081768",
+    "source_url": "https://habr.com/ru/articles/1081768/?utm_campaign=1081768&utm_source=habrahabr&utm_medium=rss",
+    "summary": "In a store, \"that very\" song was playing – but it wasn't it: the same composition, replayed anew and two and a half tones lower. Copyright protects expression, not ideas – but rebuilding doesn't negate rights to the work itself. I analyze what this means for authors in the age of AI. Read more",
+    "title": "Re-singing a Song and Rebuilding Code: Why It's Legal and What Authors Should Do in the Age of AI"
+  },
+  "https://habr.com/ru/articles/1081788/?utm_campaign=1081788&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Sun, 13 Sep 2026 18:11:27 GMT",
+    "slug": "1081788",
+    "source_url": "https://habr.com/ru/articles/1081788/?utm_campaign=1081788&utm_source=habrahabr&utm_medium=rss",
+    "summary": "In a large financial company where I worked as a system analyst, technical specifications are not created in Confluence or Word... Discover the secret",
+    "title": "We need a system where a technical specification is assembled from requirements, not written as a structured document"
+  },
+  "https://habr.com/ru/articles/1081820/?utm_campaign=1081820&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Mon, 14 Sep 2026 07:30:32 GMT",
+    "slug": "1081820",
+    "source_url": "https://habr.com/ru/articles/1081820/?utm_campaign=1081820&utm_source=habrahabr&utm_medium=rss",
+    "summary": "I gathered 6 services with free or starter access to LLM APIs and tested them. Which models actually work, what you get after registration, how much balance is used, and what limits you encounter – all based on real requests. Read more",
+    "title": "Free API for LLMs: Testing 6 Services, Models, and Real Limits"
+  },
+  "https://habr.com/ru/articles/1081840/?utm_campaign=1081840&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Mon, 14 Sep 2026 08:04:56 GMT",
+    "slug": "1081840",
+    "source_url": "https://habr.com/ru/articles/1081840/?utm_campaign=1081840&utm_source=habrahabr&utm_medium=rss",
+    "summary": "I've always wanted conversations with a neural network about movies to go beyond just titles in a chat or suggestions to buy tickets yourself. It's a strange outcome: a person asks an assistant to do the work for them, and the assistant, in response, gives them, for example, a guess about where to buy tickets for that movie, instead of a precise result. In my movie service, I've created MCP. It can be connected to an AI agent as an external data source: MCP gives the neural network not just general internet search, but actual actions within a specific user's movie database, as well as a general movie database. For example, the agent can look at movies the user hasn't watched yet (for movies to watch in the future, there's a \"Unwatched\" section), use past ratings to find a movie the user would be interested in, compile a selection, find a link to buy tickets for a specific movie, and much more. The service is absolutely free! In this article, I'd like to talk about possible scenarios and the ones I use myself. I'll show it using Grok as an example, but it can be connected to any AI agent like Claude, Codex, Cursor, etc. If there are any movie lovers here, I'd be happy to receive feedback on MCP! Read about neural networks and movies",
+    "title": "MCP, so that the neural network can recommend movies without guessing"
+  },
+  "https://habr.com/ru/articles/1081846/?utm_campaign=1081846&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Sun, 13 Sep 2026 23:35:15 GMT",
+    "slug": "1081846",
+    "source_url": "https://habr.com/ru/articles/1081846/?utm_campaign=1081846&utm_source=habrahabr&utm_medium=rss",
+    "summary": "Three months ago, Habr introduced a ban on AI-generated articles. However, no automated checks were implemented. I see AI-generated content on Habr daily, in articles, comments, and posts. Read on.",
+    "title": "Habr lost the war with AI-generated content"
+  },
   "https://habr.com/ru/companies/1c/articles/1071340/?utm_campaign=1071340&utm_source=habrahabr&utm_medium=rss": {
     "model": "gemini-2.5-flash-lite",
     "published": "Thu, 03 Sep 2026 07:18:11 GMT",
@@ -742,6 +814,14 @@
     "source_url": "https://habr.com/ru/companies/basis/articles/1077922/?utm_campaign=1077922&utm_source=habrahabr&utm_medium=rss",
     "summary": "Can AI not only eliminate routine tasks but also drastically accelerate a developer's professional growth? For example, can it turn a junior into at least a mid-level developer in one evening? This was a, perhaps crazy, but a hypothesis, and we decided to hold an internal hackathon to test it in conditions close to real-world scenarios. Read more",
     "title": "Not a Replacement, but a SuperAI-lity: What a Hackathon Gave Our Company"
+  },
+  "https://habr.com/ru/companies/beeline_cloud/articles/1081756/?utm_campaign=1081756&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Sun, 13 Sep 2026 15:49:52 GMT",
+    "slug": "1081756",
+    "source_url": "https://habr.com/ru/companies/beeline_cloud/articles/1081756/?utm_campaign=1081756&utm_source=habrahabr&utm_medium=rss",
+    "summary": "Interviews are increasingly becoming a vector for cyberattacks. Attackers use deepfakes to impersonate real candidates and recruiters, or spread malware disguised as test assignments – sending \"harmless\" code or a dependency package that, when run on the victim's device, installs malicious software. Today, we at Beeline Cloud decided to discuss the methods used by fake applicants and recruiters, how to recognize an attacker \"on the other side of the resume,\" and what AI has to do with it. Read more",
+    "title": "Identify me if you can! How deepfakes are changing IT hiring (and not only)"
   },
   "https://habr.com/ru/companies/bitrix/articles/1079832/?utm_campaign=1079832&utm_source=habrahabr&utm_medium=rss": {
     "model": "gemini-2.5-flash-lite",
@@ -1047,6 +1127,14 @@
     "summary": "In August, we added aish to the open repository, expanded the AI model catalog, and implemented the ability to store data outside the data center. Read about these and other updates in the Selectel digest below. Read more",
     "title": "We expanded the AI model catalog and added aish to the open repository: Selectel product updates in August"
   },
+  "https://habr.com/ru/companies/selectel/articles/1081146/?utm_campaign=1081146&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Mon, 14 Sep 2026 08:00:30 GMT",
+    "slug": "1081146",
+    "source_url": "https://habr.com/ru/companies/selectel/articles/1081146/?utm_campaign=1081146&utm_source=habrahabr&utm_medium=rss",
+    "summary": "Keyword search is no longer sufficient. To enable neural networks to provide accurate answers based on your corporate knowledge bases, they need to 'understand' the meaning of text, which is more complex than simple exact matches. This article explores how vector databases work, why they are essential for modern RAG, how they differ from traditional relational databases, and how to choose the right tool for your project.",
+    "title": "Why Vector Databases Are Needed in the Era of LLMs"
+  },
   "https://habr.com/ru/companies/smartengines/articles/1079702/?utm_campaign=1079702&utm_source=habrahabr&utm_medium=rss": {
     "model": "gemini-2.5-flash-lite",
     "published": "Tue, 08 Sep 2026 07:32:17 GMT",
@@ -1095,6 +1183,14 @@
     "summary": "An AI assistant was implemented in the company – expensive, high-tech, with a beautiful demonstration of capabilities. A month later, it turned out that employees hardly use it. Or worse – they use it, but trust it, and it provides outdated instructions that contradict each other. Why did this happen? Read more",
     "title": "Mistakes in Working with Corporate Knowledge That Hinder the Implementation of AI Assistants"
   },
+  "https://habr.com/ru/companies/teamly/articles/1081230/?utm_campaign=1081230&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Mon, 14 Sep 2026 07:23:27 GMT",
+    "slug": "1081230",
+    "source_url": "https://habr.com/ru/companies/teamly/articles/1081230/?utm_campaign=1081230&utm_source=habrahabr&utm_medium=rss",
+    "summary": "A cashier trainee on their first solo shift is lost at the checkout: a customer asks how to apply a promo code from a newsletter, but it's not in the instructions. A mentor in the back room is checking inventory – there's no one to ask. And the customer's dissatisfaction is growing louder. Read more",
+    "title": "AI Agents in Staff Training: How Retailers Can Accelerate Onboarding"
+  },
   "https://habr.com/ru/companies/timeweb/articles/1079752/?utm_campaign=1079752&utm_source=habrahabr&utm_medium=rss": {
     "model": "gemini-2.5-flash-lite",
     "published": "Tue, 08 Sep 2026 08:27:36 GMT",
@@ -1118,6 +1214,14 @@
     "source_url": "https://habr.com/ru/companies/uralsib/articles/1077456/?utm_campaign=1077456&utm_source=habrahabr&utm_medium=rss",
     "summary": "I love solving unsolvable problems, making people's lives easier, testing hypotheses, and creating cool products. That's how I was invited to work at Uralsib, where I decided to create a robot secretary to help with meetings and calls. Read more",
     "title": "I built a robot secretary, even though nobody asked for it"
+  },
+  "https://habr.com/ru/companies/vasexperts/articles/1078212/?utm_campaign=1078212&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Sun, 13 Sep 2026 15:01:29 GMT",
+    "slug": "1078212",
+    "source_url": "https://habr.com/ru/companies/vasexperts/articles/1078212/?utm_campaign=1078212&utm_source=habrahabr&utm_medium=rss",
+    "summary": "Attitudes towards AI in customer support are, to put it mildly, mixed. Companies are actively using voice assistants, even though customers are often not thrilled with such 'helpers.' Let's discuss why you should give a chance to the robot on the other end of the line and in which tasks AI voice systems can excel, including thanks to new frameworks for developing intelligent telephony systems. We also share a selection of open-source tools for creating multimodal voice agents. Read more",
+    "title": "Hello, is this a robot? Why voice systems in telephony might be better than they seem at first glance"
   },
   "https://habr.com/ru/companies/vk/articles/1078192/?utm_campaign=1078192&utm_source=habrahabr&utm_medium=rss": {
     "model": "gemini-2.5-flash-lite",
@@ -1150,6 +1254,14 @@
     "source_url": "https://habr.com/ru/companies/yandex/articles/1078580/?utm_campaign=1078580&utm_source=habrahabr&utm_medium=rss",
     "summary": "On Android devices, you can choose a default assistant, much like a browser. Once selected in settings, you can invoke it with a system gesture over any app. Convenient. You might think that the chosen assistant can now see everything on your phone and do whatever it wants... Not at all. When installed, Android grants an app only basic permissions. Access to advanced features requires separate user permission, and some functions are entirely unavailable to regular third-party apps. My name is Vanya, I lead the Android development team for Alice's SDK and am the tech lead for the default assistant project. Today, we'll explore these boundaries using Alice AI as an example. Read more",
     "title": "What the Default Assistant on Android Can Do - Using Alice AI as an Example"
+  },
+  "https://habr.com/ru/companies/yandex/articles/1079290/?utm_campaign=1079290&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Mon, 14 Sep 2026 08:01:22 GMT",
+    "slug": "1079290",
+    "source_url": "https://habr.com/ru/companies/yandex/articles/1079290/?utm_campaign=1079290&utm_source=habrahabr&utm_medium=rss",
+    "summary": "My name is Prokhor, and I lead the 'Explore' agent team – a deep research mode in Alice AI chat. Deep Research is a special mode that creates a unique plan to solve user tasks, performs hundreds of searches, can visit websites (even with dynamic JavaScript), write and execute Python code, work with downloaded files, and more. All this is to provide the best answer to complex queries like 'Plan a two-week trip to Dagestan by car with children.' Over a year, the agent evolved from its first prototype to production, improving response quality, speed, and GPU consumption. Ruslan Iliev, the product manager, was responsible for the product side, defining goals, tools, and validation sets, and overseeing the launch. I'll explain how we got here – through a discarded prototype, dozens of wrapper layers, and a couple of painful lessons. Welcome!",
+    "title": "Not Touching Model Weights: How We Built Alice AI's Research Agent and Drastically Reduced GPU Consumption"
   },
   "https://habr.com/ru/companies/yandex/articles/1080654/?utm_campaign=1080654&utm_source=habrahabr&utm_medium=rss": {
     "model": "gemini-2.5-flash-lite",

@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>How I Create AI Memory from Telegram Chats: Tens of Thousands of Messages, Thousands of Facts, Hundreds of People</title>
+  <meta name="description" content="At night, around 2 AM Moscow time, the server wakes up and starts a pipeline. First, the service goes to Telegram and downloads new messages from chats that the user has marked. An hour later, a second worker starts and turns these messages into memory: it chunks them, processes them through DeepSee">
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.65;
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 32px 20px 64px;
+      color: #1f2328;
+    }
+    header {
+      border-bottom: 1px solid #d8dee4;
+      margin-bottom: 28px;
+      padding-bottom: 20px;
+    }
+    .source {
+      color: #57606a;
+      font-size: 0.95rem;
+    }
+    img, video, iframe {
+      max-width: 100%;
+      height: auto;
+    }
+    pre {
+      overflow-x: auto;
+      padding: 16px;
+      background: #f6f8fa;
+      border-radius: 6px;
+    }
+    code {
+      font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+    }
+    blockquote {
+      border-left: 4px solid #d0d7de;
+      margin-left: 0;
+      padding-left: 16px;
+      color: #57606a;
+    }
+    footer {
+      border-top: 1px solid #d8dee4;
+      margin-top: 40px;
+      padding-top: 20px;
+      color: #57606a;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>How I Create AI Memory from Telegram Chats: Tens of Thousands of Messages, Thousands of Facts, Hundreds of People</h1>
+    <p>At night, around 2 AM Moscow time, the server wakes up and starts a pipeline. First, the service goes to Telegram and downloads new messages from chats that the user has marked. An hour later, a second worker starts and turns these messages into memory: it chunks them, processes them through DeepSeek, organizes them into tables, and exports them to markdown files. By morning, the user has additional information in the second memory service. The second memory service is not just a chat history. Six months later, you can ask, &#x27;What budget did we agree on for the trip then?&#x27; and get an answer with a link to a specific message in a specific chat. Strangely enough, almost all my work on creating the service was not in working with LLMs. So what was it?</p>
+    <p class="source">
+      Machine-translated from Habr.
+      <a href="https://habr.com/ru/articles/1081382/?utm_campaign=1081382&amp;utm_source=habrahabr&amp;utm_medium=rss">Read the original Russian article</a>.
+      Sun, 13 Sep 2026 16:00:26 GMT
+    </p>
+  </header>
+  <main>
+<div><p>At night, around 2 AM Moscow time, the server wakes up and starts a pipeline. First, the service goes to Telegram and downloads new messages from chats that the user has marked. An hour later, a second worker starts and turns these messages into memory: it chunks them, processes them through DeepSeek, organizes them into tables, and exports them to markdown files. By morning, the user has additional information in the second memory service.</p><p>The second memory service is not just a chat history. Six months later, you can ask, 'What budget did we agree on for the trip then?' and get an answer with a link to a specific message in a specific chat.</p><p>Strangely enough, almost all my work on creating the service was not in working with LLMs.</p><h3>Why I Didn't Create a Vector Database</h3><p>The standard approach for such a task is to load the chat history into a vector database and perform RAG. I consciously avoided this path.</p><p>Chat history is poorly divisible into fragments (chunks). A single fact can be assembled from a dozen replies across different chats, and chunking by 500 tokens breaks the history into pieces. A person might be called Sasha in one chat, Alexander in another, and have an obscure nickname in a third, leading the search to return five nearly identical fragments instead of a single piece of knowledge. The recency issue is even worse: an agreement made in March might be superseded by a change in June, and both versions remain in the index with equal weight. </p><p>I needed not fragments, but cards: people, projects, topics, facts, tasks, and the connections between them. And a mandatory link: from each fact back to the message from which it was extracted. A vector database doesn't provide this out of the box.</p><h3>What I Ended Up With</h3><figure><img alt="Pipeline Diagram" loading="lazy" src="https://habrastorage.org/r/w1560/getpro/habr/upload_files/f67/0a2/1ba/f670a21bab90cfc2a2ad515bd979880a.png"/><div><figcaption>Pipeline Diagram</figcaption></div></figure><p>The diagram turned out like this. Telethon fetches messages from selected sources (you can connect an entire folder or a specific chat). Each raw message gets an entry in the state table (pending, processing, processed, error). The scheduler picks up only those that are not yet in this table for the next run. This way, I don't pay twice for processing the same message.</p><p>I group messages by the key 'source:chat', sort them by date, and chunk them into groups of 100. Each chunk contains messages from only one chat, so the model sees a coherent dialogue. From a chunk, I assemble a transcript in the format <code>[date] Sender: text</code>, truncated to 30,000 characters.</p><p>Each chunk triggers one call to DeepSeek, which must return a strict JSON:</p><pre><code>{<br/>  "daily_note": { "title": "...", "summary": "..." },<br/>  "topics":   [{ "name": "...", "summary": "...", "facts": ["..."] }],<br/>  "people":   [{ "name": "...", "summary": "...", "action_items": ["..."] }],<br/>  "projects": [{ "name": "...", "summary": "...", "action_items": ["..."] }],<br/>  "links":    [{ "from": "...", "to": "...", "type": "related_to" }]<br/>}</code><div><a href="https://sourcecraft.dev/"><img loading="lazy"/></a></div></pre><p>In the prompt, I include a list of the user's already known entities and ask the model to reuse their names. Without this, the same project would be named differently in each run, and the database would quickly turn into a mess.</p><p>When all chunks for a task are ready, the merge process starts. I look for entities using the key <code>(user, type, canonical name)</code>. Repeated mentions don't create duplicates but update the summary. Facts and tasks are linked to entities, relationships go into a separate table, and each entry references the IDs of the original messages. This is the connection I need.</p><p>The final step is exporting to regular markdown files: <code>Daily</code>, <code>Knowledge</code>, <code>People</code>, <code>Projects</code>. I formatted the links between notes as <code>[[wiki-links]]</code>, so the vault opens in Obsidian. The export is idempotent: before writing a block, I calculate its sha256, and if such a block has already been exported, it's skipped.</p><p>A finished card looks something like this:</p><pre><code># Trip to Antalya<br/><br/>## Update<br/><br/>We were planning a trip to Antalya in September, with a budget of around 350,000 ₽ for two.<br/>[[Anya]] suggested the dates, [[Sasha]] clarified the details about the hotel and flights.<br/><br/>- Hotel: around 180,000 ₽<br/>- Flights: around 70,000 ₽<br/>- [ ] Clarify dates with Anya<br/></code><div><a href="https://sourcecraft.dev/"><img loading="lazy"/></a></div></pre><p>The relationship isn't written to the file; it lives in the database. Each fact and task has links to specific messages. This keeps the files clean, and if needed, the source can always be retrieved.</p><h3>Numbers</h3><p>Currently, there are a few users. On average, each user has about 7 sources (3 folders and 4 individual chats). Even these, over a couple of months of testing, have generated tens of thousands of messages across 34 chats.</p><p>This resulted in 281 entities: 147 topics, 108 people, and 26 projects. Plus, 1815 facts, 184 tasks, and 133 daily notes.</p><p>In terms of tokens, it's currently 10.05 million: 3028 thousand input and 7027 thousand output. The responses are more than twice as expensive as the input because the JSON with the schema takes up a lot of space. At DeepSeek's rates, this is less than ten dollars for all messages. It's nice that personal memory costs pennies for small volumes.</p><p>One task (processing all new messages for a single user per run) takes an average of 205 seconds. The longest took almost 12 minutes. But since everything runs at night, 12 minutes is quite acceptable.</p><h3>What Broke</h3><h4>Some Tasks Were Canceled Mid-Execution</h4><p>The database contained the text <code>cancelled - model changed to v4-flash</code>. I changed the model on the fly while a task was executing. It turned out funny: some chunks were processed by one model, and others by a different one. The data wasn't corrupted, but it's better not to repeat this.</p><h4>The Agent Responded "Nothing Found" Even Though Files Were Present</h4><p>This was the most unpleasant bug because it looked like "memory is empty." It turned out that OpenClaw has a bug: the <code>memory_search</code> tool returns false null results while the internal search engine is working correctly. The cause is a cached memory manager. A forced re-indexing helps:</p><pre><code>openclaw memory index --force</code><div><a href="https://sourcecraft.dev/"><img loading="lazy"/></a></div></pre><p>After this, I hardcoded the image version and forbade myself from updating it to 'latest': major versions change both the configuration schema and the internal database schema. I've been burned by this once before.</p><h4>Telegram Sessions Don't Last Forever</h4><p>A Telethon session can disconnect, requiring the user to re-authenticate. I created a separate flow with a code from Telegram and a message to the bot to "reconnect the account." In the dashboard, upon re-authentication, the chat list is rebuilt; otherwise, dead links to chats that are no longer accessible remain.</p><h4>Telegram Itself Is Inaccessible from Russia</h4><p>This is a separate headache. Initially, I set up WARP via sing-box, but the setup turned out to be fragile: either the tunnel would drop, or the speed would be terrible. Eventually, I switched to an MTProto proxy via Cloudflare Worker. I use the open-source <a href="https://github.com/Flowseal/tg-ws-proxy">Flowseal/tg-ws-proxy</a>, which can wrap MTProto in WebSocket via a worker.</p><p>A separate story is how to monitor this. The first version of the check simply made a TCP connection and said "everything is fine," until users started complaining that messages weren't arriving. It turned out that the MTProto proxy doesn't respond to a plain obfuscated init: it waits for the client to send the first frame. I had to write a healthcheck that manually constructs the init according to the MTProxy protocol (SHA256 of random bytes and a secret, AES-CTR), sends <code>req_pq_multi</code> to the data center, and waits for <code>resPQ</code> back. It checks the entire path: listener, proxy, worker tunnel, data center. If any link fails, I receive a notification.</p><h3>What I Would Do Differently</h3><p>I wouldn't set 100 messages per fragment as a "universal" size. In practice, the night run includes about 20 messages per chat, and the limit is rarely hit. However, when a user first connects an old folder, it can receive up to two thousand messages at once, and then a hundred per chunk is just right. This means the parameter should be chosen based on the scenario, not "in general."</p><p>I would have introduced a metric "how many messages are still not converted into memory" for each user much earlier. Before that, I manually delved into Postgres and calculated the difference. Now, this number immediately shows who has problems.</p><p>And I wouldn't skimp on the connections. Initially, it seemed that links to messages could be added later. But it turned out that without them, it's impossible to debug or show the user where the memory came from. In the end, the connection turned out to be more necessary than I thought.</p><h3>Instead of a Conclusion</h3><p>The second memory for an assistant is not just about attaching a vector database. Boring things are important here: processing state, deduplication, idempotency, connections. The beautiful part (calling the LLM) takes about five percent of the work; the rest goes into infrastructure.</p><p>The project is alive, there are currently five users, and I honestly don't know what will break next. But that's precisely why I'm writing: if you have experience with personal memory, long-term context storage, or accessing Telegram from Russia, I'm interested in comparing our pitfalls. My project is called <a href="http://memory.tg">memory.tg</a>, it's personal memory for Telegram.</p></div>
+  </main>
+  <footer>
+    Translation generated with Gemini 2.5 Flash-Lite.
+    The original article remains the source of record.
+  </footer>
+</body>
+</html>

@@ -1,0 +1,145 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Free API for LLMs: Testing 6 Services, Models, and Real Limits</title>
+  <meta name="description" content="I gathered 6 services with free or starter access to LLM APIs and tested them. Which models actually work, what you get after registration, how much balance is used, and what limits you encounter – all based on real requests. Read more">
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.65;
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 32px 20px 64px;
+      color: #1f2328;
+    }
+    header {
+      border-bottom: 1px solid #d8dee4;
+      margin-bottom: 28px;
+      padding-bottom: 20px;
+    }
+    .source {
+      color: #57606a;
+      font-size: 0.95rem;
+    }
+    img, video, iframe {
+      max-width: 100%;
+      height: auto;
+    }
+    pre {
+      overflow-x: auto;
+      padding: 16px;
+      background: #f6f8fa;
+      border-radius: 6px;
+    }
+    code {
+      font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+    }
+    blockquote {
+      border-left: 4px solid #d0d7de;
+      margin-left: 0;
+      padding-left: 16px;
+      color: #57606a;
+    }
+    footer {
+      border-top: 1px solid #d8dee4;
+      margin-top: 40px;
+      padding-top: 20px;
+      color: #57606a;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Free API for LLMs: Testing 6 Services, Models, and Real Limits</h1>
+    <p>I gathered 6 services with free or starter access to LLM APIs and tested them. Which models actually work, what you get after registration, how much balance is used, and what limits you encounter – all based on real requests. Read more</p>
+    <p class="source">
+      Machine-translated from Habr.
+      <a href="https://habr.com/ru/articles/1081820/?utm_campaign=1081820&amp;utm_source=habrahabr&amp;utm_medium=rss">Read the original Russian article</a>.
+      Mon, 14 Sep 2026 07:30:32 GMT
+    </p>
+  </header>
+  <main>
+<div><p>For each service, I looked at what exactly is provided after registration, which models actually respond via API, how much balance is consumed, and what RPM/RPD limitations can be confirmed. Where official limits are not specified, I conducted my own short load tests.</p><hr/><h2>What I Found</h2><h3>Token Harbor</h3><p><strong>Website:</strong> <a href="https://tokenharbor.ai/">https://tokenharbor.ai/</a><br/><strong>Documentation:</strong> <a href="https://tokenharbor.ai/docs">https://tokenharbor.ai/docs<br/></a><strong>API:</strong> <a href="https://tokenharbor.ai/v1"><code>https://tokenharbor.ai/v1</code></a></p><p>Token Harbor has a full free tier for <code>$0</code>. There's no need to top up the balance for free models – the test account balance remained <code>$0.00</code>.</p><p>Currently, three models are available for free:</p><ul><li><p><code>deepseek-v4.1-flash:free</code></p></li><li><p><code>deepseek-v4-flash:free</code></p></li><li><p><code>mimo-v2.5:free</code></p></li></ul><figure><img alt="Free Token Harbor models: DeepSeek V4.1 Flash, DeepSeek V4 Flash, and MiMo V2.5." loading="lazy" src="https://habrastorage.org/r/w1560/getpro/habr/upload_files/111/b4b/691/111b4b6913ff017073b74607f2748ac7.png" title="Free Token Harbor models: DeepSeek V4.1 Flash, DeepSeek V4 Flash, and MiMo V2.5."/><div><figcaption><em>Free Token Harbor models: DeepSeek V4.1 Flash, DeepSeek V4 Flash, and MiMo V2.5.</em></figcaption></div></figure><p>The API is compatible with OpenAI. Free models need to be enabled in your personal account first.</p><p>I tested all three models via <code>POST /v1/chat/completions</code> with a zero balance:</p><pre><code>deepseek-v4.1-flash:free — HTTP 200, ~2.1 s
+deepseek-v4-flash:free   — HTTP 200, ~6.2 s
+mimo-v2.5:free           — HTTP 200, ~51.3 s</code><div><a href="https://sourcecraft.dev/"><img loading="lazy"/></a></div></pre><p>Additionally, I repeated the requests with caching disabled. All three responded again with <code>HTTP 200</code>.</p><h4>Request Limit</h4><p>The official RPM is not specified. In the test, <strong>20 requests per minute passed 20/20 without errors</strong>.</p><p>At 60 requests per minute, within the allotted 120 seconds, 31 out of 60 requests managed to complete. However, there were no <code>HTTP 429</code> errors – instead of a hard block, requests start to take noticeably longer to process.</p><p>The free tier quota resets every <strong>7 days</strong>. The countdown starts from the first request to a free model: in my test, the <code>X-Th-Free-Resets</code> header showed the next reset date exactly one week later.</p><p>The service does not specify the exact size of the free quota in tokens or money. Even after a series of tests, the API continued to show <code>X-Th-Free-Used-Pct: 0</code>, so its volume could not be determined with short requests.</p><p>There's another nuance: when enabling free models, the service warns that requests and their responses may be stored. A different data storage policy applies to paid models.</p><hr/><h3>WoAiToken</h3><p><strong>Website:</strong> <a href="https://new.woaitoken.com/">https://new.woaitoken.com/</a><br/><strong>Documentation:</strong> <a href="https://woaitoken.com/docs-category/newapi-zh/">https://woaitoken.com/docs-category/newapi-zh/</a><br/><strong>API:</strong> <a href="https://new.woaitoken.com/v1"><code>https://new.woaitoken.com/v1</code></a></p><p>After registration, WoAiToken credited a <strong>$5 starter balance</strong>. There's also a daily login bonus: in my case, $0.0699 was added for the first day, so the balance increased to <code>$5.07</code>.</p><figure><img alt="After registration, the balance was $5, and the first daily login added another $0.0699." loading="lazy" src="https://habrastorage.org/r/w1560/getpro/habr/upload_files/219/e56/274/219e562743f7cc80189741d90435f619.png" title="After registration, the balance was $5, and the first daily login added another $0.0699."/><div><figcaption><em>After registration, the balance was $5, and the first daily login added another $0.0699.</em></figcaption></div></figure><p>The API is compatible with OpenAI. When creating a key, you can select a separate model group. There are paid groups with different debiting coefficients, as well as a separate free group <code>free</code> with a <code>0x</code> coefficient.</p><p>Three routes are available in the free group:</p><pre><code>free-chat
+free-code
+free-fast</code><div><a href="https://sourcecraft.dev/"><img loading="lazy"/></a></div></pre><p>These are not fixed models but pools: the actual model is selected automatically and can change from request to request.</p><p>In the tests, I encountered, for example:</p><pre><code>free-chat:
+Llama 3.3 70B
+Nemotron 3 Ultra 550B
+Command A
+Nex N2.5 Mini
+
+free-code:
+Qwen3 Coder 480B
+Qwen2.5 Coder 32B
+
+free-fast:
+GPT-OSS 20B
+Llama 3.1 8B
+Command R7B
+GLM-4 Flash</code><div><a href="https://sourcecraft.dev/"><img loading="lazy"/></a></div></pre><p>I made 10 requests for each free route:</p><pre><code>free-chat — 8/10 successful
+free-code — 8/10 successful
+free-fast — 10/10 successful</code><div><a href="https://sourcecraft.dev/"><img loading="lazy"/></a></div></pre><p>For <code>free-chat</code>, two requests resulted in <code>HTTP 402</code>, and for <code>free-code</code>, one request returned an unavailable model with <code>HTTP 404</code>, and another time a model that was already decommissioned with <code>HTTP 410</code>. <code>free-fast</code> was the most stable — 10 out of 10 requests were successful.</p><p>Most importantly, the free routes <strong>do not consume the main balance</strong>.</p><p>In addition to the free pool, the starter <code>$5</code> can be spent on regular models. In the <code>gpt</code> group, I had access to:</p><pre><code>gpt-5.6
+gpt-5.6-luna
+gpt-5.6-sol
+gpt-5.6-terra</code><div><a href="https://sourcecraft.dev/"><img loading="lazy"/></a></div></pre><p>I tested all four models via API – each returned <code>HTTP 200</code>.</p><p>The <code>gpt-per-message</code> group also works:</p><pre><code>gpt-5.6-luna-pm
+gpt-5.6-sol-pm
+gpt-5.6-terra-pm</code><div><a href="https://sourcecraft.dev/"><img loading="lazy"/></a></div></pre><p>All three routes responded successfully.</p><p>From Claude, at the time of testing, the following were working:</p><pre><code>claude-opus-5
+claude-sonnet-5
+claude-haiku-4-5-20251001</code><div><a href="https://sourcecraft.dev/"><img loading="lazy"/></a></div></pre><p><code>claude-fable-5</code> returned <code>HTTP 503</code>, and the <code>claude-kiro</code> and <code>claude-per-message</code> groups responded with <code>No available accounts</code> at the time of checking, so I am not including them in the list of working models.</p><p>After all paid tests, the balance decreased from <code>$5.07</code> to <code>$3.20</code>, and the profile showed a total usage of <code>$1.87</code>.</p><hr/><h3>Unikey</h3><p><strong>Website:</strong> <a href="https://www.getunikey.ai/">https://www.getunikey.ai/</a><br/><strong>Documentation:</strong> <a href="https://docs.getunikey.ai/">https://docs.getunikey.ai/</a><br/><strong>API:</strong> <a href="https://www.getunikey.ai/v1"><code>https://www.getunikey.ai/v1</code></a></p><p>After registration, Unikey credited <strong>5,000 credits</strong>. The key is created immediately in the personal account, and the API is compatible with OpenAI.</p><p>Via <code>GET /v1/models</code>, the service returned a rather large list of models, including GPT, Claude, Gemini, DeepSeek, Kimi, MiniMax, and Qwen.</p><p>Among the most interesting, I tested the following:</p><pre><code>gpt-6-astra       — HTTP 200, ~3.0 s
+claude-opus-4-8   — HTTP 200, ~3.3 s
+gemini-3.5-flash  — HTTP 200, ~1.8 s
+deepseek-v4-pro   — HTTP 200, ~5.3 s
+kimi-k3           — HTTP 200, ~4.5 s
+MiniMax-M3        — HTTP 200, ~4.3 s
+qwen3.7-max       — HTTP 200, ~23.2 s</code><div><a href="https://sourcecraft.dev/"><img loading="lazy"/></a></div></pre><p><code>gpt-6-astra</code> returned <code>HTTP 503</code> on the first try due to an upstream service limitation, but a repeated request was successful with <code>HTTP 200</code>.</p><p>Some models are present in <code>/v1/models</code> but did not have a working route at the time of testing:</p><pre><code>gpt-5.6-sol   — HTTP 503
+gpt-5.6-terra — HTTP 503
+gpt-5.5       — HTTP 503</code><div><a href="https://sourcecraft.dev/"><img loading="lazy"/></a></div></pre><p><code>gpt-5.6-luna</code> also had an <code>HTTP 503</code>, but the message indicated a temporary limitation of the upstream service, so the situation may change.</p><figure><img alt="After eight successful API requests, 4,944.76 out of the initial 5,000 credits remained. 55.24 credits were used for testing." loading="lazy" src="https://habrastorage.org/r/w1560/getpro/habr/upload_files/5af/22d/3d7/5af22d3d7302ee3d3b772cc6b908de63.png" title="After eight successful API requests, 4,944.76 out of the initial 5,000 credits remained. 55.24 credits were used for testing."/><div><figcaption> <em>After eight successful API requests, 4,944.76 out of the initial 5,000 credits remained. 55.24 credits were used for testing. </em></figcaption></div></figure><p>Among the tested models, <code>gemini-3.5-flash</code> responded the fastest – in about 1.8 seconds. The slowest was <code>qwen3.7-max</code> – around 23 seconds.</p><h4>Limits</h4><p><strong>RPM:</strong> official limit not specified. In the test, the service withstood 60 requests per minute – <strong>60/60 successful, without HTTP 429</strong>. In a separate run at 20 RPM, two requests received <code>HTTP 524</code>, so gateway errors are sometimes encountered.<br/> <strong>RPD:</strong> official daily limit not specified.</p><h4>How long will 5,000 credits last?</h4><p>In my load test, 80 short requests to <code>MiniMax-M3</code> consumed about <strong>116 credits</strong>. If the consumption remains roughly the same, the initial 5,000 credits will last for about <strong>3,000–3,500 short requests</strong> to this model.</p><p>On more expensive models and with long responses, consumption will be higher, so don't consider 5,000 credits as a large amount – it's more than enough for testing and occasional use.</p><hr/><h3>God Router</h3><p>Website: <a href="https://godrouter.cyou/">https://godrouter.cyou/</a><br/>Documentation: <a href="https://godrouter.cyou/docs">https://godrouter.cyou/docs</a><br/>API: <a href="https://godrouter.cyou/v1"><code>https://godrouter.cyou/v1</code></a></p><p>After registration, my profile immediately showed <strong>$80</strong>. The API is OpenAI-compatible, so to start, I simply requested <code>/models</code>.</p><p>The catalog turned out to be small – only 11 items:</p><pre><code>auto
+claude-4.6-sonnet
+glm-4.5-air
+glm-5.3-flash
+gpt-5.6-sol
+Qwen3.6-35B-A3B
+Qwen3.6-35B-A3B-FP8
+Qwen3-Embedding-8B
+spark-x2.5
+step-router-v1
+z-ai/glm-5.3-free</code><div><a href="https://sourcecraft.dev/"><img loading="lazy"/></a></div></pre><p>Next, I ran them with real requests.</p><p>Responded stably:</p><pre><code>auto
+glm-4.5-air
+Qwen3.6-35B-A3B
+Qwen3.6-35B-A3B-FP8
+z-ai/glm-5.3-free</code><div><a href="https://sourcecraft.dev/"><img loading="lazy"/></a></div></pre><p>For <code>auto</code>, the router actually returned a model:</p><pre><code>agnes-3.0-flash</code><div><a href="https://sourcecraft.dev/"><img loading="lazy"/></a></div></pre><h4>Limits</h4><p>For <code>z-ai/glm-5.3-free</code>, I separately checked the RPM.</p><p>I launched 60 requests, approximately one per second. The result:</p><pre><code>HTTP 200 — 9
+HTTP 429 — 50
+HTTP 500 — 1</code><div><a href="https://sourcecraft.dev/"><img loading="lazy"/></a></div></pre><p>The most useful information here is that the server directly stated the limit:</p><pre><code>Maximum 8 requests within 1 minutes</code><div><a href="https://sourcecraft.dev/"><img loading="lazy"/></a></div></pre><p>This means for <code>z-ai/glm-5.3-free</code>, we can confidently set <strong>8 RPM</strong>. Moreover, the message explicitly states that failed requests may also count towards the limit.</p><p>I could not find RPD in the open documentation, so I am not setting a separate daily limit.</p><p>After all tests, the profile showed:</p><pre><code>Current balance: $80
+Total usage:     $0.0041
+API requests:    22</code><div><a href="https://sourcecraft.dev/"><img loading="lazy"/></a></div></pre><p>The balance itself visually remained <code>$80</code>, as the consumption was very small.</p><p>However, there's a strangeness: for GPT and Claude APIs, it still responded that <code>0.00 credits</code> were available. Therefore, I would not consider the displayed <code>$80</code> as a universal balance for all models.</p><figure><img alt="After tests, God Router showed $80 remaining, $0.0041 total usage, and 22 API requests counted." loading="lazy" src="https://habrastorage.org/r/w1560/getpro/habr/upload_files/ded/698/acf/ded698acf244378e451d56e09dac9fa9.png" title="After tests, God Router showed $80 remaining, $0.0041 total usage, and 22 API requests counted."/><div><figcaption><em>After tests, God Router showed $80 remaining, $0.0041 total usage, and 22 API requests counted.</em></figcaption></div></figure><hr/><h3>ABCRelay</h3><p><strong>Website:</strong> <a href="https://www.abcrelay.com/">https://www.abcrelay.com/</a><br/><strong>Documentation:</strong> <a href="https://www.abcrelay.com/docs/index">https://www.abcrelay.com/docs/index</a><br/><strong>API:</strong> <a href="https://www.abcrelay.com/v1"><code>https://www.abcrelay.com/v1</code></a></p><p>After registration, ABCRelay immediately credited <strong>$2 starter balance</strong>. Topping up the account was not required for initial API testing.</p><p>The API is compatible with OpenAI. When creating a key, you can select a separate model group. In my account, the following were available:</p><pre><code>GPT          — coefficient 0.5x
+Claude       — coefficient 0.7x
+default      — coefficient 1x
+Claude/CCMax — coefficient 2x
+GROK         — coefficient 2x</code><div><a href="https://sourcecraft.dev/"><img loading="lazy"/></a></div></pre><p>Via <code>GET /v1/models</code>, the <code>default</code> group returned GPT, Claude, and Grok. A separate <code>GPT</code> group contained the current GPT lineup, including:</p><pre><code>gpt-5.5
+gpt-5.6-luna
+gpt-5.6-sol
+gpt-5.6-terra
+gpt-6-astra</code><div><a href="https://sourcecraft.dev/"><img loading="lazy"/></a></div></pre><p>I tested all five text GPT models with real requests through the <code>GPT 0.5x</code> group:</p><pre><code>gpt-6-astra   — HTTP 200
+gpt-5.6-sol   — HTTP 200
+gpt-5.6-luna  — HTTP 200
+gpt-5.6-terra — HTTP 200
+gpt-5.5       — HTTP 200</code><div><a href="https://sourcecraft.dev/"><img loading="lazy"/></a></div></pre><p><code>gpt-6-astra</code> also responded successfully through the regular <code>default</code> group.</p><p>The situation with Claude was worse. Models were present in <code>/v1/models</code>, but <code>claude-opus-5</code>, <code>claude-sonnet-5</code>, and <code>claude-opus-4-8</code> returned a working provider error at the time of testing. The <code>Claude/CCMax</code> group separately stated that it is intended only for Claude Code clients.</p><p>Grok was also present in the <code>default</code> catalog, but test requests received <code>HTTP 429</code> from the upstream service. A separate key for the <code>GROK</code> group did not provide a working route at the time of checking. Therefore, I am only including GPT in the list of confirmed working models.</p><h4>Request Limit</h4><p>I did not find a specific RPM in the documentation, so I tested it myself.</p><p>First, I sent <strong>20 requests per minute</strong> to <code>gpt-5.6-sol</code>:</p><pre><code>20 requests
+20 × HTTP 200
+0 × HTTP 429
+average response time: ~1.71 s
+maximum: ~2.98 s</code><div><a href="https://sourcecraft.dev/"><img loading="lazy"/></a></div></pre><p>Then, I repeated the test with <strong>60 requests per minute</strong>:</p><pre><code>60 requests
+60 × HTTP 200
+0 × HTTP 429
+0 other errors</code><div><a href="https://sourcecraft.dev/"><img loading="lazy"/></a></div></pre><p>Thus, at least <strong>60 RPM</strong> is practically confirmed. This does not mean 60 is the maximum limit: I simply did not stress the service further.</p><p>A separate daily request limit is not specified in the documentation.</p><p>After all checks, the counter in the panel reached <strong>86 successful API requests</strong>. The total consumption was only <strong>$0.0072</strong>, and out of the initial <code>$2</code>, the balance still showed <strong>$1.99</strong>.</p><figure><img alt="After 86 successful API requests, the total consumption was $0.0072, and about $1.99 remained from the initial $2." loading="lazy" src="https://habrastorage.org/r/w1560/getpro/habr/upload_files/35d/041/7a1/35d0417a161189855e48bbc2a1b518ad.png" title="After 86 successful API requests, the total consumption was $0.0072, and about $1.99 remained from the initial $2."/><div><figcaption><em>After 86 successful API requests, the total consumption was $0.0072, and about $1.99 remained from the initial $2.</em></figcaption></div></figure><hr/><h4>Z.ai</h4><p>Website: <a href="https://z.ai/">https://z.ai/</a><br/>Documentation: <a href="https://docs.z.ai/">https://docs.z.ai/</a><br/>API Keys: <a href="https://z.ai/manage-apikey/apikey-list">https://z.ai/manage-apikey/apikey-list</a><br/>API: <a href="https://api.z.ai/api/paas/v4"><code>https://api.z.ai/api/paas/v4</code></a></p><p>Z.ai is the official international platform of Zhipu AI. In addition to paid GLM models, the service has free Flash models that can be used via the regular API without topping up the balance.</p><p>Among those tested, the following worked stably for me:</p><pre><code>glm-4.5-flash
+glm-4.7-flash</code><div><a href="https://sourcecraft.dev/"><img loading="lazy"/></a></div></pre><p>Both are called via an OpenAI-compatible endpoint:</p><pre><code>POST https://api.z.ai/api/paas/v4/chat/completions</code><div><a href="https://sourcecraft.dev/"><img loading="lazy"/></a></div></pre><p>An interesting point: <code>GET /models</code> did not show the free Flash models at all for me. The list included <code>glm-4.5</code>, <code>glm-4.5-air</code>, <code>glm-4.6</code>, <code>glm-4.7</code>, <code>glm-5</code>, <code>glm-5.3-flash</code>, and other models; however, <code>glm-4.5-flash</code> and <code>glm-4.7-flash</code> work successfully if accessed directly by ID.</p><figure><img alt="Free glm-4.5-flash and glm-4.7-flash are not displayed in the API catalog." loading="lazy" src="https://habrastorage.org/r/w1560/getpro/habr/upload_files/f9e/e09/e1c/f9ee09e1ccf8657703544f6147dfc1a2.png" title="Free glm-4.5-flash and glm-4.7-flash are not displayed in the API catalog."/><div><figcaption><em>Free glm-4.5-flash and glm-4.7-flash are not displayed in the API catalog.</em></figcaption></div></figure><p>In the first test, both models returned <code>HTTP 200</code>. GLM by default can enable reasoning, so with a small <code>max_tokens</code>, the entire limit can sometimes go into <code>reasoning_content</code>, leaving the final response field empty. After disabling thinking, both models returned a response normally.</p><p>Result:</p><figure><img alt="Both free text models work without account top-up." loading="lazy" src="https://habrastorage.org/r/w1560/getpro/habr/upload_files/ac0/e05/27f/ac0e0527f23fbc6a285becf283eb96e5.png" title="Both free text models work without account top-up."/><div><figcaption><em>Both free text models work without account top-up.</em></figcaption></div></figure><p>I also tested <code>glm-4.6v-flash</code>. The first request succeeded with <code>HTTP 200</code>, but subsequent attempts returned <code>HTTP 429</code>.</p><h4>Limits</h4><p>I could not find a fixed official RPM for the free Flash models, so I tested it practically on <code>glm-4.5-flash</code>.</p><p>First, the model withstood 20 consecutive requests without a single error. Then, I launched <strong>60 requests in approximately 60 seconds</strong>, but did not increase it further.</p><p>RPD is not specified in the open documentation, so I am not setting a daily limit.</p><hr/><h2>Conclusion</h2><p>If you specifically need an API that can be used <strong>without an initial top-up</strong>, out of everything tested, I liked <strong>Z.ai and Token Harbor</strong> the most. Both have actually working free models, not just a starter bonus for a few requests.</p><p><strong>God Router</strong> also turned out to be an interesting option. It has several routes that work without top-up, including <code>z-ai/glm-5.3-free</code> with a clearly stated limit of <strong>8 RPM</strong>.</p><p><strong>WoAiToken</strong> is interesting for its combination of free routes and starter $5, but the free pools there are less predictable: the actual model can change from request to request, and sometimes upstream provider errors occur.</p><p>I would consider <strong>Unikey and ABCRelay</strong> more as an opportunity to try paid APIs for free. They provide a starter balance that lasts a long time with small requests, but it's still not permanent free access.</p><p>If you know of other services with free APIs that are worth testing in the same way, drop their names in the comments.</p><p>If the topic of free AI access is interesting to you, I have a Telegram channel <strong>AI Ungated</strong> – there I publish temporary promotions, trials, free limits, and other finds related to neural services: <a href="https://t.me/AIUngated">https://t.me/AIUngated</a></p></div>
+  </main>
+  <footer>
+    Translation generated with Gemini 2.5 Flash-Lite.
+    The original article remains the source of record.
+  </footer>
+</body>
+</html>

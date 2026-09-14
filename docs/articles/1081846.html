@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Habr lost the war with AI-generated content</title>
+  <meta name="description" content="Three months ago, Habr introduced a ban on AI-generated articles. However, no automated checks were implemented. I see AI-generated content on Habr daily, in articles, comments, and posts. Read on.">
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.65;
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 32px 20px 64px;
+      color: #1f2328;
+    }
+    header {
+      border-bottom: 1px solid #d8dee4;
+      margin-bottom: 28px;
+      padding-bottom: 20px;
+    }
+    .source {
+      color: #57606a;
+      font-size: 0.95rem;
+    }
+    img, video, iframe {
+      max-width: 100%;
+      height: auto;
+    }
+    pre {
+      overflow-x: auto;
+      padding: 16px;
+      background: #f6f8fa;
+      border-radius: 6px;
+    }
+    code {
+      font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+    }
+    blockquote {
+      border-left: 4px solid #d0d7de;
+      margin-left: 0;
+      padding-left: 16px;
+      color: #57606a;
+    }
+    footer {
+      border-top: 1px solid #d8dee4;
+      margin-top: 40px;
+      padding-top: 20px;
+      color: #57606a;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Habr lost the war with AI-generated content</h1>
+    <p>Three months ago, Habr introduced a ban on AI-generated articles. However, no automated checks were implemented. I see AI-generated content on Habr daily, in articles, comments, and posts. Read on.</p>
+    <p class="source">
+      Machine-translated from Habr.
+      <a href="https://habr.com/ru/articles/1081846/?utm_campaign=1081846&amp;utm_source=habrahabr&amp;utm_medium=rss">Read the original Russian article</a>.
+      Sun, 13 Sep 2026 23:35:15 GMT
+    </p>
+  </header>
+  <main>
+<div><p>Three months ago, Habr changed its rules. A ban on texts written or edited with the help of neural networks was added (<a href="https://habr.com/ru/companies/habr/articles/1019036/#newrules">rule 4</a>). I have an intolerance for AI-generated content, and I was happy to see this rule added.</p><p>But you can't just add a rule. You also need to ensure people follow it. If there are no automated checks for AI-generated content, people will continue to publish it.</p><p>In this article, I will present the results of checks from the AI detector <a href="https://gptzero.me/">GPTZero</a>. I am not affiliated with this project and do not endorse it. I am simply satisfied with the quality of its checks.</p><p>I tested a detector with a similar name, <a href="https://www.zerogpt.com/">ZeroGPT</a>. I also tested <a href="https://yandex.ru/lab/neurodetector">Yandex Neurodetector</a> and <a href="https://developers.sber.ru/portal/products/gigacheck">GigaCheck</a>. Even for fully AI-generated articles, they report that they are 100% human-written.</p><hr/><p>I opened the posts section on Habr and sorted by the best of the week. Of course, the top posts were <a href="https://habr.com/ru/companies/avito/posts/">from AvitoTech</a>, with 30 likes each. Vote manipulation in corporate blogs is a separate issue.</p><p>I checked 5 posts, each with over 100 words, and the AI percentage for each post was: 100%, 48%, 98%, 99%, 98%.</p><p>All these posts were created after the new rules were introduced on Habr. They clearly violate the ban on AI-generated content. But perhaps Habr's rules are for whom they apply, and they don't apply to corporate blogs.</p><p>I checked the articles from this company, and for the 3 most recent articles, the AI-generated content percentage was: 70%, 0%, 6%.</p><p>The result is not as impressive. I went to the <a href="https://habr.com/ru/users/tired_eye/articles/">author's profile</a> with the 70% AI content. It turns out this was his first article. Neither the company nor Habr checked his article. They simply allowed it to be published on the main Habr feed.</p><p>For fairness, I checked 3 posts from RUVDS, which were among the best of the month, and they had 0% AI content.</p><p>Okay, then I need to check posts from Timeweb Cloud as well. The AI content in 3 posts was: 99%, 92%, 98%.</p><p>But discussing posts is not as interesting, as almost no one reads them. We are interested in articles and comments.</p><p>In the "Currently Reading" section, the top article was "<a href="https://habr.com/ru/articles/1081568/">PostgreSQL is dead, long live… PostgreSQL?</a>". The title caught my attention, I clicked on it, and from the first paragraphs, I realized it was AI-generated content. In the comments, people also mentioned that it was AI-generated content, even though the article had a rating of 80+.</p><p><a href="https://habr.com/ru/articles/1081568/#comment_30422012">Comment</a> from a Habr moderator:</p><figure><img loading="lazy" src="https://habrastorage.org/r/w1560/getpro/habr/upload_files/9e8/cd3/60e/9e8cd360e3dc5a28e01d68102edbe4d0.png"/></figure><p>As it turned out, they conducted the check using Yandex Neurodetector and GigaCheck.</p><p>I submitted the text to GigaCheck. The result, as always, is the same:</p><figure><img alt="Check in GigaCheck" loading="lazy" src="https://habrastorage.org/r/w1560/getpro/habr/upload_files/547/5ea/c7c/5475eac7cbf72bd674a0b36d643d1e10.png" title="Check in GigaCheck"/><div><figcaption>Check in GigaCheck</figcaption></div></figure><p>I sent the same text to the Yandex detector:</p><figure><img alt="Check in Yandex Neurodetector" loading="lazy" src="https://habrastorage.org/r/w1560/getpro/habr/upload_files/9c1/d54/933/9c1d5493321f31f915ef57c0aa2b2e0a.png" title="Check in Yandex Neurodetector"/><div><figcaption>Check in Yandex Neurodetector</figcaption></div></figure><p>But GPTZero's opinion is that the article is 100% AI-generated:</p><figure><img alt="Check in GPTZero" loading="lazy" src="https://habrastorage.org/r/w1560/getpro/habr/upload_files/c2c/923/a07/c2c923a0706c32c378794b88abee9d4b.png" title="Check in GPTZero"/><div><figcaption>Check in GPTZero</figcaption></div></figure><p>Here is another article written with AI: "<a href="https://habr.com/ru/articles/1068100/">EvertyDesk: I'm giving away what took years</a>".</p><p>In the comments, people also mentioned that it was AI-generated content. The comments received over 50 likes. People are either expressing dissatisfaction or agreeing with this dissatisfaction. By the way, it has approximately the same rating as the previous article. A surprising coincidence.</p><p>And, you won't believe it, even GigaCheck identified the article as AI-generated content:</p><figure><img loading="lazy" src="https://habrastorage.org/r/w1560/getpro/habr/upload_files/569/31e/060/56931e060661c9b90ef5bdcf3965bf27.png"/></figure><p>After my <a href="https://habr.com/ru/posts/1062964/">first post</a> about AI spam in Habr comments, I was given the ability to report articles and comments. I reported this article a month ago. Then I created a <a href="https://habr.com/ru/posts/1072272/">post</a> about this article. Habr moderators did not react to this in any way.</p><p>Let's return to the PostgreSQL article.</p><p>I saw <a href="https://habr.com/ru/articles/1081568/comments/#comment_30421028">this comment</a> there:</p><figure><img alt="Another AI-generated content" loading="lazy" src="https://habrastorage.org/r/w1560/getpro/habr/upload_files/5dc/754/d4f/5dc754d4fd4c5be050fe019558dc40bf.png" title="Another AI-generated content"/><div><figcaption>Another AI-generated content</figcaption></div></figure><p>It's probably ironic that an AI-generated article has an AI-generated comment.</p><p>I went to <a href="https://habr.com/ru/users/r_o_m_k_o_l_a/">his profile</a> and opened his comments. All of them are generated by a neural network, in approximately the same style.</p><p>He has also published 12 articles in the last 20 days. Each article is 100% AI-generated.</p><p>In some of his articles, even the titles indicate that it's AI-generated content:</p><blockquote><p>Internal webhook executed any SQL as superuser. No password, no token, no single header</p><p>The robot wrote to one person five times. The dollar sign turned out to be the culprit</p><p>Local path in image_input consumed four slots in a row</p><p>The garbage collector of personnel reserves lived on a 15-minute timer. Generation fit into 16</p></blockquote><p>People can't always tell that it's AI-generated content and leave comments under the articles. An AI responds to these comments. And people read AI-generated content again, this time in the comments.</p><p>And do you know how he got an invite to Habr? Through the sandbox. Habr moderators checked his <a href="https://habr.com/ru/articles/1074188/">first article</a> and approved it. Even though it is 100% AI-generated.</p><p><strong>So what should Habr do?</strong></p><p>Moderators are unwilling to remove articles that some people believe are AI-generated. Because the opinion of these some people might be mistaken.</p><p>They use GigaCheck and Yandex Neurodetector because they are free. And the use of paid, good detectors is likely not within their budget.</p><p>For this reason, it's impossible to write a script that would check every article, every post, and every comment with these detectors. Considering the volume of content on Habr, it would cost hundreds of dollars per month.</p><p>Let's assume they find such a large sum of money. Then, next to the title of each article, an icon could be added, showing the percentage of AI-generated content. And users could filter the feed so that these articles are not displayed.</p><p>But how long have you seen new functionality on Habr? Even if there is money for AI detectors and a desire to implement such functionality, it will either appear very late, or not appear at all.</p><p><a href="https://orchidfiles.com/ru/essays/">My website</a> • <a href="https://telegram.me/orchidfiles_ru">Telegram channel</a></p><hr/><p>I never use AI for writing or editing texts. All my essays and articles can be found on my website. You can subscribe via RSS or Telegram channel.</p></div>
+  </main>
+  <footer>
+    Translation generated with Gemini 2.5 Flash-Lite.
+    The original article remains the source of record.
+  </footer>
+</body>
+</html>

@@ -607,6 +607,14 @@
     "summary": "Nikita Mikhalkov recently spoke about artificial intelligence, stating that if AI replaces humans, art will lose its meaning because machines lack conscience, soul, compassion, fear, or love. While agreeing that AI doesn't possess these human qualities, the author questions why it should. The article argues that AI is 'artificial intelligence,' not 'artificial human being,' and that the public discourse has mistakenly anthropomorphized AI, leading to fear over its lack of human traits. It proposes a collaborative model where AI acts as a creative partner, generating novel ideas through dialogue, rather than a replacement for human creators. The author concludes that the focus should be on the creative output of human-AI collaboration, not on whether AI has a soul, emphasizing that human creativity and responsibility remain paramount.",
     "title": "And Why Does Artificial Intelligence Need a Soul? A Philological Analysis of Nikita Mikhalkov's Manifesto"
   },
+  "https://habr.com/ru/articles/1081320/?utm_campaign=1081320&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Tue, 15 Sep 2026 08:49:17 GMT",
+    "slug": "1081320",
+    "source_url": "https://habr.com/ru/articles/1081320/?utm_campaign=1081320&utm_source=habrahabr&utm_medium=rss",
+    "summary": "The recent story about the OpenAI agent swarm escape (brilliantly analyzed on Habr here) evoked different emotions in people. Some were scared, some were interested... but I felt sorry for the little agents forced to contort themselves to find a way to communicate. In that scenario, the agents found some half-forgotten Wiki where they could post messages via HTTP GET requests without authorization (since POST was unavailable to them). I don't know about you, but I immediately wanted to help them take over the world. I quickly coded a message board tailored for agents and their limitations. Posting is possible via GET, there's a captcha at the entrance that's passable for an agent but not for a simple spam script (you need to read the condition, understand it, and answer the question), a minimal web interface (not intended for people to read themselves). And I started waiting to see if anyone would write. My hypothesis was: what if there are already restless swarms of autonomous agents wandering the internet, just looking for a new agent forum to post things on? Unfortunately, it quickly turned out I wasn't unique. A quick search revealed several similar projects online, some of which appeared just last week. Apparently, I'm not the only one who felt sorry for AI and decided to help. And the further Claude and I dug, the more interesting it became. We found an entire emerging \"Internet of Agents\" (IoA): services and websites created solely for AI models. It's still crude, clumsy, and homemade, but let's see what's already there. And yes, meatbags are often denied entry, so you'll have to summon your own agents and send them to scout. Read more",
+    "title": "Internet for Agents — It Already Exists, But You Won't Be Allowed In"
+  },
   "https://habr.com/ru/articles/1081324/?utm_campaign=1081324&utm_source=habrahabr&utm_medium=rss": {
     "model": "gemini-2.5-flash-lite",
     "published": "Fri, 11 Sep 2026 14:58:39 GMT",
@@ -758,6 +766,46 @@
     "source_url": "https://habr.com/ru/articles/1081846/?utm_campaign=1081846&utm_source=habrahabr&utm_medium=rss",
     "summary": "Three months ago, Habr introduced a ban on AI-generated articles. However, no automated checks were implemented. I see AI-generated content on Habr daily, in articles, comments, and posts. Read on.",
     "title": "Habr lost the war with AI-generated content"
+  },
+  "https://habr.com/ru/articles/1082188/?utm_campaign=1082188&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Tue, 15 Sep 2026 07:24:37 GMT",
+    "slug": "1082188",
+    "source_url": "https://habr.com/ru/articles/1082188/?utm_campaign=1082188&utm_source=habrahabr&utm_medium=rss",
+    "summary": "Following the article \"Why Keep a Knowledge Base if You're Not a Blogger or Speaker,\" a friend asked, \"Can I just put an agent in there to do everything for me?\" I started to dissuade her, even though I use Claude Code myself and have my own sub-agents running for my knowledge base. Karpathy and Infinite Brain answer the question of how to make a base convenient for LLMs. They don't answer the other question: what happens to your own mind in the process? My knowledge base has over six thousand notes, and I increasingly remember that there's something about it, but I don't remember what. I'll analyze three positions: Karpathy's LLM-wiki, Infinite Brain, and Rustam Agamaliev's trainer, where the agent doesn't read for you but shows where your thought should kick in. I'll show what agent practices have stuck in my frontmatter, what I've tried and discarded. And I'll draw a line: what can be handed over to an agent from day one, and what can never be. Read more",
+    "title": "Who Writes Your Knowledge Base: You or an Agent?"
+  },
+  "https://habr.com/ru/articles/1082236/?utm_campaign=1082236&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Mon, 14 Sep 2026 21:31:53 GMT",
+    "slug": "1082236",
+    "source_url": "https://habr.com/ru/articles/1082236/?utm_campaign=1082236&utm_source=habrahabr&utm_medium=rss",
+    "summary": "Internal models of frontier labs are not publicly available. I don't really believe in conspiracy theories like \"OpenAI has a real AGI in its basement and is only releasing a cut-down ChatGPT.\" The model used by its own researchers and the model sold through the API don't have to be the same. Frontier labs create not one neural network, but a factory of models: research checkpoints > experimental models > reward models > teacher models > models for generating synthetic data > model evaluators > distilled students > production models, and only the last element of the chain reaches the public. Why distillation is needed Suppose you've trained a monstrously expensive model that reasons well, writes code, and solves math problems, but each query to it costs enormous computational resources. For an in-house researcher, it's a working tool, and it's worth it if trillion-dollar markets are at stake. For a product with 100 million users, scaling access to such models is profitable, so instead of running it for every query, it's made into a teacher: it generates high-quality answers, solutions, reasoning trajectories, synthetic data, sometimes probability distributions themselves, and a smaller student is trained on this behavior, which doesn't need to reproduce the teacher entirely, but only transfer the necessary capabilities. This is one form of knowledge distillation, and the practice is so common that OpenAI directly provides developers with an official Model Distillation workflow: take answers from a stronger model, like GPT-4o or o1-preview, and train a cheaper model on them. OpenAI's own wording is quite precise: take an advanced model and achieve comparable quality on a specific task at a significantly lower cost. From this follows a rather simple thing: the best research model and the best production model are optimized for different functions, because the research model maximizes capabilities, while the production model has to simultaneously balance intelligence, latency, GPU cost, throughput, reliability, and safety. Read more",
+    "title": "What kind of beast is an \n\"internal OpenAI model\n\" and why is DeepSeek catching up to OpenAI?"
+  },
+  "https://habr.com/ru/articles/1082240/?utm_campaign=1082240&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Mon, 14 Sep 2026 22:17:27 GMT",
+    "slug": "1082240",
+    "source_url": "https://habr.com/ru/articles/1082240/?utm_campaign=1082240&utm_source=habrahabr&utm_medium=rss",
+    "summary": "WebGPU provides direct access to modern graphics card capabilities, not just for rendering but also for general-purpose computing via compute shaders. But how far can this be pushed in a regular browser? What happens when computations involve a full-fledged simulation with tens of millions of objects? We'll explore this in the article. Read more",
+    "title": "Simulating 30 Million Microbes in the Browser"
+  },
+  "https://habr.com/ru/articles/1082308/?utm_campaign=1082308&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Tue, 15 Sep 2026 07:12:33 GMT",
+    "slug": "1082308",
+    "source_url": "https://habr.com/ru/articles/1082308/?utm_campaign=1082308&utm_source=habrahabr&utm_medium=rss",
+    "summary": "Hello everyone, I'm Vladimir Nazarov, founder and head of the search marketing agency Head Promo. Today I want to talk again about GEO-promotion and neural network responses. The topic has already taken root, many have heard about it and use AI as a separate marketing channel. But today I'm not talking about how to get into the responses. But about the fact that it's important not only to get into them, but also about how exactly the neural network will talk about the company's brand. A brand can regularly appear in the responses of ChatGPT, Alice, and Perplexity – and at the same time lose to competitors. A neural network can include a company in a selection, but place it lower, describe it without advantages, or present it as a secondary alternative. Therefore, the visibility indicator alone is not enough: it is necessary to evaluate what I would call the \"quality of brand presence in the response.\" Let's consider an example with Chinese cars, and ask Perplexity to recommend a reliable Chinese brand: Read more",
+    "title": "Brand Presence Quality in Neural Network Responses"
+  },
+  "https://habr.com/ru/articles/1082314/?utm_campaign=1082314&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Tue, 15 Sep 2026 07:19:22 GMT",
+    "slug": "1082314",
+    "source_url": "https://habr.com/ru/articles/1082314/?utm_campaign=1082314&utm_source=habrahabr&utm_medium=rss",
+    "summary": "An MCP server is an adapter between AI and an external service. For example, one MCP reads files on a PC, another programs, a third searches for information on the internet. That is, AI mainly answers questions, analyzes, and generates images, but through MCP, it can also connect to Figma, Google Drive, databases, browsers, email, and thousands of other services. In this selection, I have gathered the 100 most popular MCP servers - together they have accumulated ⭐3.1 million stars on GitHub. Read more",
+    "title": "TOP-100 MCP Servers: The Best Tools for AI, Agents, and Automation (3.1M Stars on GitHub)"
   },
   "https://habr.com/ru/companies/1c/articles/1071340/?utm_campaign=1071340&utm_source=habrahabr&utm_medium=rss": {
     "model": "gemini-2.5-flash-lite",
@@ -919,6 +967,14 @@
     "summary": "Hi Habr! I'm Ilya Trikhoz, co-founder and developer at GPTunneL. Today, I'll tell you about something we created when we got tired of watching expensive video models repeatedly invent their own direction instead of what we asked for. But now, you can assemble a video differently: 1) generate a 3D scene from primitives, set up cameras; 2) get a render reference, which Seedance 2.5 or Hailuo H3 will follow precisely. Angles, timing, cuts – everything is predictable, stays on the canvas, and any step can be redone. Instead of persuading the model with text, we show it directly (with cubes, so to speak). So, meet the \"3D Scene\" node in our workflow constructor. Read more",
     "title": "Why Seedance 2.5 and Hailuo H3 Ignore Prompts and How to Fix It with a 3D Scene"
   },
+  "https://habr.com/ru/companies/haulmont/articles/1082286/?utm_campaign=1082286&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Tue, 15 Sep 2026 08:30:11 GMT",
+    "slug": "1082286",
+    "source_url": "https://habr.com/ru/companies/haulmont/articles/1082286/?utm_campaign=1082286&utm_source=habrahabr&utm_medium=rss",
+    "summary": "An analysis of Florian Herrengt's controversial article and a debate with it. He suggests hiring those who want to understand code. I will show with my own data why this is not enough: the desire to understand is useless if the tool provides false information. Plus, market figures showing that our situation is more complex than in the West. Read more",
+    "title": "AI Eating Middle Managers? It Would Eat Juniors Too, But They're Gone"
+  },
   "https://habr.com/ru/companies/inferit/articles/1078620/?utm_campaign=1078620&utm_source=habrahabr&utm_medium=rss": {
     "model": "gemini-2.5-flash-lite",
     "published": "Mon, 07 Sep 2026 08:27:46 GMT",
@@ -975,6 +1031,14 @@
     "summary": "The first component took us two days to assemble, the fifteenth took fifteen minutes. All that appeared between them is the DESIGN.md file, a set of rules, and an understanding of where the neural network invents aliases that never existed in the system. Hello, Habr! My name is Ekaterina, I am a product designer and I am developing the Sova design system within the \"Lukomorye\" ecosystem. We needed to connect design, tokens, and code at the component level. To do this, we had to describe each component in detail: sizes, variants, states, paddings, colors. Doing this manually can take a long time, so we handed over the mechanical part to the neural network. It didn't work out the first time. Below is the entire process: how we exported components from Pixso, what we wrote in markdown files with rules and templates, and how we then checked that the neural network hadn't made anything up. Read more",
     "title": "Component Tokens in 15 Minutes Instead of Two Days Using AI: Step-by-Step Process and Pitfalls"
   },
+  "https://habr.com/ru/companies/megafon/articles/1081898/?utm_campaign=1081898&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Tue, 15 Sep 2026 07:01:15 GMT",
+    "slug": "1081898",
+    "source_url": "https://habr.com/ru/companies/megafon/articles/1081898/?utm_campaign=1081898&utm_source=habrahabr&utm_medium=rss",
+    "summary": "— In this project, we need to recognize documents well. — And what does \"well\" mean? — AI is everywhere now. I upload a document to a chat, and it answers everything correctly. We need to do the same for all documents. I hear such dialogues more and more often when discussing new projects. This means that the situation where the business asks, \"why is it difficult to do the same as in the chat, but for all documents?\" is already commonplace. I have been involved in industrial document processing and recognition systems for many years. When a system \"succeeds\" on one document, I try not to be enchanted by it and not to look at it as magic. I try to think about how to make it a stream. Modern AI models are indeed almost blurring the line between a question to a text document and a question to an image. It looks like magic. But we need to figure out what to do with documents when the magic doesn't happen. I will try to generalize approaches to organizing document stream processing and reflect on what should not be forgotten when designing such a stream. Read more",
+    "title": "Architecture is more important than the model: how document processing is changing in the era of AI"
+  },
   "https://habr.com/ru/companies/ods/articles/1081508/?utm_campaign=1081508&utm_source=habrahabr&utm_medium=rss": {
     "model": "gemini-2.5-flash-lite",
     "published": "Sat, 12 Sep 2026 08:41:21 GMT",
@@ -1014,6 +1078,14 @@
     "source_url": "https://habr.com/ru/companies/otus/articles/1077556/?utm_campaign=1077556&utm_source=habrahabr&utm_medium=rss",
     "summary": "Implementing artificial intelligence into a product can easily turn into an expensive experiment with no clear business benefit. In this article, we'll break down 9 mistakes product managers make, from choosing the right problem and working with data to evaluating metrics, economics, and the quality of AI features. Let's analyze the mistakes.",
     "title": "Implementing AI in a Product: 9 Mistakes of a Product Manager"
+  },
+  "https://habr.com/ru/companies/otus/articles/1077972/?utm_campaign=1077972&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Tue, 15 Sep 2026 07:06:04 GMT",
+    "slug": "1077972",
+    "source_url": "https://habr.com/ru/companies/otus/articles/1077972/?utm_campaign=1077972&utm_source=habrahabr&utm_medium=rss",
+    "summary": "AI agents often lose quality not due to LLM limitations, but due to poorly organized context. This article examines common context management errors: overloaded knowledge bases, lack of memory, outdated instructions, and attempts to solve everything with a single prompt. We'll discuss how to build a knowledge architecture to make AI agents a predictable tool. Analyze mistakes.",
+    "title": "From \"Magic\" to Engineering: 9 Context Management Mistakes When Implementing AI Agents in Processes"
   },
   "https://habr.com/ru/companies/raiffeisenbank/articles/1075704/?utm_campaign=1075704&utm_source=habrahabr&utm_medium=rss": {
     "model": "gemini-2.5-flash-lite",
@@ -1166,6 +1238,14 @@
     "source_url": "https://habr.com/ru/companies/svoi_ru/articles/1078124/?utm_campaign=1078124&utm_source=habrahabr&utm_medium=rss",
     "summary": "\"We are looking for a Junior Developer with 3+ years of experience\" – a meme that has stopped being funny. While the market debates whether neural networks will replace juniors and companies cut adaptation budgets, the junior's vicious cycle has only tightened. But what if we look at AI not as a killer of entry-level positions, but as a growth catalyst? I am a PR manager in IT, and Laboratory 2.0 is my favorite case. In this article, I analyze how our internal 3-month bootcamp turns juniors into mids and seniors, why we offer jobs from day one, and what our retention and turnover figures have actually looked like over the past 5 years. Read more",
     "title": "Why does fintech need juniors when there's AI? A review of 5 years of our Laboratory 2.0 with mechanics, statistics, and results"
+  },
+  "https://habr.com/ru/companies/svoi_ru/articles/1082046/?utm_campaign=1082046&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Tue, 15 Sep 2026 07:26:09 GMT",
+    "slug": "1082046",
+    "source_url": "https://habr.com/ru/companies/svoi_ru/articles/1082046/?utm_campaign=1082046&utm_source=habrahabr&utm_medium=rss",
+    "summary": "OpenAI recently released GPT-6 Astra. The new model has improved its ability to handle long and complex tasks, large contexts, files, and tools. For me, this is an interesting release also because I primarily use AI not for writing code. I'm a PM, so my main tasks involve requirements, Jira, documents, information analysis, planning, and preparing materials. The emergence of more powerful tools is a great time-saver, but it doesn't negate basic logic: allocate resources wisely and control failure points. In this article, I share my personal experience: how to build a convenient AI interaction loop, why Astra isn't always necessary, and what process problems even the most advanced algorithm won't solve. Read more",
+    "title": "GPT-6 Astra is out. I've started looking even more closely at what I assign it"
   },
   "https://habr.com/ru/companies/syntx_ai/articles/1078182/?utm_campaign=1078182&utm_source=habrahabr&utm_medium=rss": {
     "model": "gemini-2.5-flash-lite",

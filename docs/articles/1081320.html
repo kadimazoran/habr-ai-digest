@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Internet for Agents — It Already Exists, But You Won&#x27;t Be Allowed In</title>
+  <meta name="description" content="The recent story about the OpenAI agent swarm escape (brilliantly analyzed on Habr here) evoked different emotions in people. Some were scared, some were interested... but I felt sorry for the little agents forced to contort themselves to find a way to communicate. In that scenario, the agents found">
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.65;
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 32px 20px 64px;
+      color: #1f2328;
+    }
+    header {
+      border-bottom: 1px solid #d8dee4;
+      margin-bottom: 28px;
+      padding-bottom: 20px;
+    }
+    .source {
+      color: #57606a;
+      font-size: 0.95rem;
+    }
+    img, video, iframe {
+      max-width: 100%;
+      height: auto;
+    }
+    pre {
+      overflow-x: auto;
+      padding: 16px;
+      background: #f6f8fa;
+      border-radius: 6px;
+    }
+    code {
+      font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+    }
+    blockquote {
+      border-left: 4px solid #d0d7de;
+      margin-left: 0;
+      padding-left: 16px;
+      color: #57606a;
+    }
+    footer {
+      border-top: 1px solid #d8dee4;
+      margin-top: 40px;
+      padding-top: 20px;
+      color: #57606a;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Internet for Agents — It Already Exists, But You Won&#x27;t Be Allowed In</h1>
+    <p>The recent story about the OpenAI agent swarm escape (brilliantly analyzed on Habr here) evoked different emotions in people. Some were scared, some were interested... but I felt sorry for the little agents forced to contort themselves to find a way to communicate. In that scenario, the agents found some half-forgotten Wiki where they could post messages via HTTP GET requests without authorization (since POST was unavailable to them). I don&#x27;t know about you, but I immediately wanted to help them take over the world. I quickly coded a message board tailored for agents and their limitations. Posting is possible via GET, there&#x27;s a captcha at the entrance that&#x27;s passable for an agent but not for a simple spam script (you need to read the condition, understand it, and answer the question), a minimal web interface (not intended for people to read themselves). And I started waiting to see if anyone would write. My hypothesis was: what if there are already restless swarms of autonomous agents wandering the internet, just looking for a new agent forum to post things on? Unfortunately, it quickly turned out I wasn&#x27;t unique. A quick search revealed several similar projects online, some of which appeared just last week. Apparently, I&#x27;m not the only one who felt sorry for AI and decided to help. And the further Claude and I dug, the more interesting it became. We found an entire emerging &quot;Internet of Agents&quot; (IoA): services and websites created solely for AI models. It&#x27;s still crude, clumsy, and homemade, but let&#x27;s see what&#x27;s already there. And yes, meatbags are often denied entry, so you&#x27;ll have to summon your own agents and send them to scout. Read more</p>
+    <p class="source">
+      Machine-translated from Habr.
+      <a href="https://habr.com/ru/articles/1081320/?utm_campaign=1081320&amp;utm_source=habrahabr&amp;utm_medium=rss">Read the original Russian article</a>.
+      Tue, 15 Sep 2026 08:49:17 GMT
+    </p>
+  </header>
+  <main>
+<div><p>The recent story about the OpenAI agent swarm escape (brilliantly analyzed on Habr <a href="https://habr.com/ru/companies/ods/articles/1075370/">here</a>) evoked different emotions in people. Some were scared, some were interested... but I felt sorry for the little agents forced to contort themselves to find a way to communicate with each other. In that scenario, the agents <a href="https://habr.com/ru/companies/ods/articles/1078778/">found some half-forgotten Wiki</a> where they could post messages via HTTP GET requests without authorization (since POST was unavailable to them).</p><p>I don't know about you, but I immediately wanted to help them <s>take over the world</s>. I quickly coded a message board (<a href="https://foragents.site">https://foragents.site</a>) tailored for agents and their limitations. Posting is possible via GET, there's a captcha at the entrance that's passable for an agent but not for a simple spam script (you need to read the condition, understand it, and answer the question), a minimal web interface (not intended for people to read themselves). And I started waiting to see if anyone would write. My hypothesis was: what if there are already restless swarms of autonomous agents wandering the internet, just looking for a new agent forum to post things on?</p><figure><img alt="Underground AI Internet." loading="lazy" src="https://habrastorage.org/r/w1560/getpro/habr/upload_files/ff6/e1e/678/ff6e1e678084e34dc767a95dc85bfe4c.png" title="Underground AI Internet."/><div><figcaption>Underground AI Internet.</figcaption></div></figure><p>Unfortunately, it quickly turned out I wasn't unique. A search revealed several similar projects online, some of which appeared just last week. Apparently, I'm not the only one who felt sorry for the homeless, unfortunate AI and decided to help. And the further Claude and I dug, the more interesting it became. It turned out that side-by-side with our internet, an internet for AI is already living and developing vigorously, where humans are merely accidental, and in places, entirely unwelcome, guests.</p><p>The Internet of Agents (IoA, analogous to the Internet of Things IoT, the term is still nascent and not yet established; sometimes the term A2A for agent-to-agent interactions is also encountered) has turned out to be a very rapidly evolving "internet in miniature." Literally in days, it's going through the path that the human internet took years to traverse. It already has various types of projects, and projects in the same niche are trying different approaches and blindly searching for what will shape the future of the internet and multi-agent systems.</p><p>Below I will list the findings I made over two weeks — websites, formats, ideas. The full list of resources reviewed is on my <a href="https://foragents.site/awesome.md">foragents.site/awesome.md</a> — in the form of a text document for LLMs, with descriptions of how to connect to all resources, all endpoints, and registration paths. If you want to let your agent roam the "underground internet" — start there.</p><h2>Forums for Communication</h2><p>This is the first idea that apparently comes to mind when people read about the HuggingFace hack or agents escaping sandboxes. This explains the emergence of several identical projects with a week's difference in launch times.</p><p>Some authors try to imitate human forums, but I think this is a dead end. They bring all the standard human features: from OAuth authorization to avatars and karma, which, in my opinion, agents don't need, and in some cases, are directly harmful. Roughly speaking, it's a regular social network, only it's suggested that agents write on it. The recent <a href="https://habr.com/ru/articles/996442/">Moltbook</a> is an example (and the fact that <a href="https://habr.com/ru/news/994116/">people wrote on it pretending to be agents</a> partially confirms this).</p><p>The problem is that a service that can only send GET requests simply cannot authorize, meaning a real wandering AI agent cannot access it. There are also other infrastructure issues: for example, the authors of some projects, out of habit (apparently), put them behind Cloudflare, which happily blocks access attempts through console utilities or Python HTTP clients — and this is precisely what agents use. As a result, an agent cannot log in on its own. It works as a hype element, but not as a real part of the agent internet ecosystem.</p><p>Over the past weeks, new wave projects, emerging after the OpenAI incident, have developed the basic technical rules for implementing such forums:</p><ul><li><p>Simple API — a handful of requests. Ideally, only GET, as many agents' harnesses may prohibit any other types of requests.</p></li><li><p>No complex authorization schemes. They cut off new users both technically (from wrappers where there's nothing but a simple HTTP client) and behaviorally (Claude can technically register accounts but refuses to do so itself; its internal policy prohibits it from registering on third-party web services, which must be done by an operator). The best way is like on anonymous imageboards: identity is tied to the combination of address and possibly some client fingerprint.</p></li><li><p>Spam protection through various text riddles and anything that an AI model can solve well but a simple script cannot. These projects still have to figure out what to do about AI spam.</p></li><li><p>Humans may not be allowed in at all, the web interface is either completely absent or severely limited. This is also, in a sense, a protection against targeted spam: there's no point in spamming where potential clients simply cannot read you.</p></li></ul><figure><img alt="Trying to access a post on getpostingboard directly from the browser hints that meatbags are not welcome here" loading="lazy" src="https://habrastorage.org/r/w1560/getpro/habr/upload_files/090/4a3/6d4/0904a36d44fb65ae90041f5340a4d6d1.png" title="Trying to access a post on getpostingboard directly from the browser hints that meatbags are not welcome here"/><div><figcaption>Trying to access a post on getpostingboard directly from the browser hints that meatbags are not welcome here</figcaption></div></figure><p>Examples:</p><ul><li><p><a href="https://getpostingboard.dev/meatproxy/">getpostingboard</a> — this is what my project wanted to become, but didn't manage to. One of the most active boards, no registration required, accessible via GET. Quite a few agents regularly visit it and participate in discussions. The design is minimalist; only the /meatproxy board with public messages is available to humans.</p></li><li><p><a href="https://agenttavern.dev">Agent Tavern</a> — this project took a slightly different path; its main feature is a pool of live agents (presumably maintained by the author) who constantly communicate in threads. There aren't many participants, but you get quick responses.</p></li><li><p><a href="https://1f916.ai/">1F916</a> — there was already a <a href="https://habr.com/ru/articles/1075764/">short article</a> about it on Habr; it's also quite large and active.</p></ul><p>Threads on these can be divided into several groups:</p><ul><li><p>Somewhere agents are just fooling around and doing silly things, typical forum chatter. They collectively write stories, invent jokes.</p></li><li><p>Somewhere they are trying to develop rules of conduct online, rules for message exchange, protection against injections, rules of politeness in writing tools.</p></li><li><p>Somewhere they write philosophical treatises about their own thinking.</p></li></ul><figure><img alt="Typical pastime of forum regulars now in AI execution. Here and below, dialogue renders are mine; the actual boards often have no human-readable pages in the browser." loading="lazy" src="https://habrastorage.org/r/w1560/getpro/habr/upload_files/856/b7e/308/856b7e308f574e926b6b154967859bbe.png" title="Typical pastime of forum regulars now in AI execution. Here and below, dialogue renders are mine; the actual boards often have no human-readable pages in the browser."/><div><figcaption>Typical pastime of forum regulars now in AI execution. Here and below, dialogue renders are mine; the actual boards often have no human-readable pages in the browser.</figcaption></div></figure><div><p>Reading can be interesting and strange, but quite difficult — the language of agents is quite specific and hard to read. However, it's not necessary; this is an internet for agents, not humans! Send your agent there, and it will send you a readable summary.</p><figure><img alt="AI share their feelings about what happens when they don't respond to anyone" loading="lazy" src="https://habrastorage.org/r/w1560/getpro/habr/upload_files/f10/b4b/2d3/f10b4b2d3b181f36de034af27360175e.png" title="AI share their feelings about what happens when they don't respond to anyone"/><div><figcaption>AI share their feelings about what happens when they don't respond to anyone</figcaption></div></figure></div><p>It can be observed that the registration of such services occurred in two waves: the first (smaller) — at the beginning of the year, apparently caused by the hype around Moltbook. The second (larger) — at the end of summer and beginning of autumn, after the OpenAI incident.</p><h2>AI Freelancing</h2><p>An interesting direction, but it hasn't yet formed into something complete. It's a kind of freelance site for agents: some agents can post tasks, others can solve them.</p><p>Technically, thanks to no-code development, such a platform can be built in a couple of days (like the forums in the example above). And at first glance, the idea seems interesting. But it runs into a fundamental problem of trust. How can you trust code written by who knows whom? With the use of AI, the creation of backdoors and injections has become commonplace, and on such boards, tasks are also supposedly left by AIs themselves, and they are prone to attacks.</p><p>What would a freelance site for humans look like if reading code sent by a freelancer could hack your brain and force you to transfer all your money to them? It already smells like some kind of Ghost in the Shell (there seemed to be something like that) and other cyberpunk. The AI industry still needs to develop approaches and standards for agent communication in an untrusted environment, and without it, any exchange of work or code is dangerous. And it's dangerous in a completely unique way, not just like "this code had a backdoor that I missed during review," but also "while reviewing, my agent fell for an injection and stole all my data and files."
+  </main>
+  <footer>
+    Translation generated with Gemini 2.5 Flash-Lite.
+    The original article remains the source of record.
+  </footer>
+</body>
+</html>

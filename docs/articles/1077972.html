@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>From &quot;Magic&quot; to Engineering: 9 Context Management Mistakes When Implementing AI Agents in Processes</title>
+  <meta name="description" content="AI agents often lose quality not due to LLM limitations, but due to poorly organized context. This article examines common context management errors: overloaded knowledge bases, lack of memory, outdated instructions, and attempts to solve everything with a single prompt. We&#x27;ll discuss how to bu">
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.65;
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 32px 20px 64px;
+      color: #1f2328;
+    }
+    header {
+      border-bottom: 1px solid #d8dee4;
+      margin-bottom: 28px;
+      padding-bottom: 20px;
+    }
+    .source {
+      color: #57606a;
+      font-size: 0.95rem;
+    }
+    img, video, iframe {
+      max-width: 100%;
+      height: auto;
+    }
+    pre {
+      overflow-x: auto;
+      padding: 16px;
+      background: #f6f8fa;
+      border-radius: 6px;
+    }
+    code {
+      font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+    }
+    blockquote {
+      border-left: 4px solid #d0d7de;
+      margin-left: 0;
+      padding-left: 16px;
+      color: #57606a;
+    }
+    footer {
+      border-top: 1px solid #d8dee4;
+      margin-top: 40px;
+      padding-top: 20px;
+      color: #57606a;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>From &quot;Magic&quot; to Engineering: 9 Context Management Mistakes When Implementing AI Agents in Processes</h1>
+    <p>AI agents often lose quality not due to LLM limitations, but due to poorly organized context. This article examines common context management errors: overloaded knowledge bases, lack of memory, outdated instructions, and attempts to solve everything with a single prompt. We&#x27;ll discuss how to build a knowledge architecture to make AI agents a predictable tool. Analyze mistakes.</p>
+    <p class="source">
+      Machine-translated from Habr.
+      <a href="https://habr.com/ru/companies/otus/articles/1077972/?utm_campaign=1077972&amp;utm_source=habrahabr&amp;utm_medium=rss">Read the original Russian article</a>.
+      Tue, 15 Sep 2026 07:06:04 GMT
+    </p>
+  </header>
+  <main>
+<div><p>I am a business architect with many years of experience at the intersection of business process management and corporate architecture. In recent years, I have been applying LLMs and AI agents in my practice.</p><p>In this article, I have analyzed 9 common context management errors that teams make when implementing <a href="https://otus.pw/UHF6/">AI agents in business processes</a>, and shown how to turn an AI agent from an expensive toy into a predictable work tool.</p><p>The hype around AI agent implementation has subsided a bit, and teams have faced reality. AI agents that showed miracles in demo presentations, when working within a company, began to produce шаблонные (template) answers without considering context and burn through token budgets without significant results.</p><p>The first reaction: <em>"The model is weak, we need to switch to a more expensive one."</em></p><p>But in the vast majority of cases, the problem is not with the "strength" of the model, but with the fact that the context management architecture within the company is not properly established.</p><figure><img alt="AI needs context" loading="lazy" src="https://habrastorage.org/r/w1560/getpro/habr/upload_files/3d7/b55/c13/3d7b55c13c179a36de26599324814406.png" title="AI needs context"/><div><figcaption>AI needs context</figcaption></div></figure><p>A typical scenario: a specialist opens a chat, writes a query, gets a result. If the result is bad, they rewrite the query, add details, clarify.</p><p>This works for simple, typical tasks. For complex ones requiring an understanding of the organization's specifics, it no longer does.</p><p>Most teams, in the first stage of AI implementation, use the interfaces of ordinary chatbots, substituting them for full-fledged agents, teaching employees to "formulate queries correctly," and add examples.</p><p>But the prompt is only a small part of what the large language model (LLM) sees in an AI agent.</p><p>The main volume of data transferred should be the organizational context—internal rules and policies, team agreements, specifications, and much more.</p><p>If the organizational context is not passed to the LLM query, it will generate a "default" answer—an average of the entire internet, without considering the organization's specifics.</p><p>And no "magic" prompt can save from this lack of context, so we need to start working with the context.</p><p><strong>1. Prompt Optimization While Ignoring Context Architecture</strong></p><p>Teams spend time refining query formulations, adding complex linguistic constructions, but often ignore what the AI agent should see even before the dialogue begins.</p><blockquote><p><strong>From practice:</strong> One development team complained that the AI agent generated code "in the wrong style," and code reviews took more time than writing code from scratch.</p><p>The reason for this was the absence of common team rules for code creation in the repository. Each developer tried to impose their style on the agent through local IDE settings, but, sadly, ignored the general standards, and everyone's results were different.</p></blockquote><p><strong>How it should be:</strong></p><p>Understand that the quality of the LLM response in an AI agent is largely a function of the system context, not the length and quality of your prompt.</p><p>The simplest way to improve an LLM response is not to "write more precisely in the chat," but to organize the permanent files in the repository that are loaded when using the AI agent.</p><p><strong>2. Lack of "Persistent" Context and Agent Memory</strong></p><p>An LLM-based AI assistant has no memory between work sessions, and if we haven't built a knowledge showcase for the agent, it's like a new employee every time who hasn't been told about the nuances of working in this team and organization.</p><p>And this onboarding of a new employee, which is free for the AI every time, is quite expensive for the company, as an employee does it manually in the chat.</p><blockquote><p><strong>From practice:</strong> A department head noticed that when processing similar client requests, different employees received completely different results from the AI agent.</p><p>One employee manually specified the rules for working with discounts in the chat every time, another used their personal template from a text file, and a newcomer didn't know about the company's internal regulations at all.</p><p>Knowledge lived in people's heads and personal correspondence, and the quality of responses depended on who exactly made the request to the AI agent.</p></blockquote><p><strong>How it should be:</strong></p><p>Build a persistent layer of corporate knowledge that the agent can access automatically through RAG (knowledge base search) mechanisms or APIs, rather than waiting for the user to remember and upload the necessary files.</p><p>This layer should include:</p><ul><li><p>basic instructions;</p></li><li><p>rules and standards;</p></li><li><p>process descriptions and regulations;</p></li><li><p>history of key decisions, which record why we do things this way and not another.</p></li></ul><p><strong>3. Regulations "for People" Instead of Regulations "for AI"</strong></p><p>We are used to writing internal instructions in a motivational style: "Our department is an important part of the company, we strive to make customers happy..."</p><p>An AI agent doesn't need motivation; it needs facts, boundaries, and rules.</p><blockquote><p><strong>From practice:</strong> A manager was tasked with preparing a commercial proposal for a major client. They used an AI agent, uploading the general sales department regulations to it.</p><p>The AI agent found no mention of what discounts could be given without management approval and what client data absolutely could not be shared with third parties.</p><p>As a result, it generated a commercial proposal that violated the company's sales and security policies because it seemed obvious "to people," but not to the algorithm.</p><p>And it was very fortunate that the managers stopped this document during approval.</p></blockquote><p><strong>How it should be:</strong></p><p>An AI agent's instructions for working within a process should answer specific questions:</p><ul><li><p>what is the goal of the process;</p></li><li><p>what are the inputs and outputs;</p></li><li><p>what is within the scope of responsibility and what is not;</p></li><li><p>which departments are involved in interaction;</p></li><li><p>rules about what cannot be violated and why;</p></li><li><p>when and where to escalate non-standard issues.</p></li></ul><p><strong>4. Manual Data Upload Instead of RAG Architecture</strong></p><p>In an effort to help the AI agent, employees try to feed it the entire annual report, company charter, and a dozen old presentations on the topic into the chat context.</p><p>Result: 30,000 words, of which less than 2,000 are relevant to the topic.</p><p>The model loses focus amidst this information noise (the "Lost in the Middle" effect).</p><blockquote><p><strong>From practice:</strong> An analyst uploaded the entire 100-page knowledge base of the department into the AI agent to create a brief summary of one product.</p><p>The model successfully found the necessary information, but due to loss of attention in the middle of the long text, it ignored a critical limitation and proposed a solution that contradicted the company's current rules.</p></blockquote><p><strong>How it should be:</strong></p><p>Instead of dumping all files into the context window, build a Retrieval-Augmented Generation (RAG) architecture.</p><p>Collect context precisely for the task type through semantic search in a vector database.</p><p>For writing, the agent will pull the client's profile; for analysis, the relevant rows from the table.</p><p>Use concise summaries, links to specific pages, or ask the AI agent to "find what's needed in the database" instead of forcing it to read the entire content.</p><p><strong>5. Ignoring "Context Overflow" in Long Dialogues</strong></p><p>In a long dialogue, the model begins to "forget" information. The model doesn't "forget" intentionally; it simply starts using information with less weight if it's in the middle of a crowded chat window.</p><blockquote><p><strong>From practice:</strong> A marketer discussed the structure of a large advertising campaign with an AI agent for three hours.</p><p>At some point, the AI agent started suggesting ideas that the marketer had already rejected in the very first message of the dialogue.</p><p>Reminding the chat that "we've already discussed this, look at the beginning" didn't help: the model's attention was overloaded with dozens of intermediate ideas and drafts.</p></blockquote><p><strong>How it should be:</strong></p><p>Don't try to solve everything in one endless chat at the user level.</p><p>At the engineering level, implement dialogue history summarization (compression) mechanisms and vector memory.</p><p>Break down a long task into several short sessions (e.g., "idea gathering," "document structuring," "text writing").</p><p>At the beginning of a new chat, provide the AI agent not with the entire conversation history, but with a short summary (5-10 lines) of what has already been decided, and the current task.</p><p><strong>6. One Universal Document for All Roles</strong></p><p>The temptation to write one context document for all occasions, satisfying the marketer, lawyer, and manager, leads to failure.</p><p>What is useful for one role becomes information noise for another.</p><blockquote><p><strong>From practice:</strong></p><p>The team created a single document of rules and requirements for launching a new product.</p><p>As a result of its use, the marketer was annoyed by the dry legal formulations of the AI agent, the lawyer couldn't find legal nuances regarding copyright in its answers, and the manager didn't see the connections to business metrics they needed.</p><p>Each added missing clarifications in their own chat with the AI agent.</p></blockquote><p><strong>How it should be:</strong></p><p>Instead of manual document creation, implement a role-based model based on corporate directories.</p><p>The agent should automatically determine who is interacting with it and provide only a relevant slice of data from the knowledge base:</p><ul><li><p>
+  </main>
+  <footer>
+    Translation generated with Gemini 2.5 Flash-Lite.
+    The original article remains the source of record.
+  </footer>
+</body>
+</html>

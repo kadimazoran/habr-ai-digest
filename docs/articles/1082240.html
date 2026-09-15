@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Simulating 30 Million Microbes in the Browser</title>
+  <meta name="description" content="WebGPU provides direct access to modern graphics card capabilities, not just for rendering but also for general-purpose computing via compute shaders. But how far can this be pushed in a regular browser? What happens when computations involve a full-fledged simulation with tens of millions of object">
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.65;
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 32px 20px 64px;
+      color: #1f2328;
+    }
+    header {
+      border-bottom: 1px solid #d8dee4;
+      margin-bottom: 28px;
+      padding-bottom: 20px;
+    }
+    .source {
+      color: #57606a;
+      font-size: 0.95rem;
+    }
+    img, video, iframe {
+      max-width: 100%;
+      height: auto;
+    }
+    pre {
+      overflow-x: auto;
+      padding: 16px;
+      background: #f6f8fa;
+      border-radius: 6px;
+    }
+    code {
+      font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+    }
+    blockquote {
+      border-left: 4px solid #d0d7de;
+      margin-left: 0;
+      padding-left: 16px;
+      color: #57606a;
+    }
+    footer {
+      border-top: 1px solid #d8dee4;
+      margin-top: 40px;
+      padding-top: 20px;
+      color: #57606a;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Simulating 30 Million Microbes in the Browser</h1>
+    <p>WebGPU provides direct access to modern graphics card capabilities, not just for rendering but also for general-purpose computing via compute shaders. But how far can this be pushed in a regular browser? What happens when computations involve a full-fledged simulation with tens of millions of objects? We&#x27;ll explore this in the article. Read more</p>
+    <p class="source">
+      Machine-translated from Habr.
+      <a href="https://habr.com/ru/articles/1082240/?utm_campaign=1082240&amp;utm_source=habrahabr&amp;utm_medium=rss">Read the original Russian article</a>.
+      Mon, 14 Sep 2026 22:17:27 GMT
+    </p>
+  </header>
+  <main>
+<div><figure><img loading="lazy" src="https://habrastorage.org/r/w1560/getpro/habr/upload_files/b8c/178/a59/b8c178a59ea643a0dd22e59e36fd4115.png"/></figure><p>WebGPU provides direct access to modern graphics card capabilities, not just for rendering but also for general-purpose computing via compute shaders.</p><p>But how far can this be pushed in a regular browser? What happens when computations involve a full-fledged simulation with tens of millions of objects? We'll explore this in the article.</p><h2>Background</h2><p>For this experiment, we'll try to revive an evolution simulator written many years ago and rewrite its logic from CPU to GPU. I discussed this project in more detail in <a href="https://habr.com/ru/articles/327792">another article</a>, but reading it is not mandatory – I'll retell the important points.</p><p>My cellular simulator was written in C# and structured quite naturally: a two-dimensional matrix of objects, a separate list of living cells, and a <code>foreach</code> loop that called their logic on each tick. A cell would look around, choose an action, and immediately change the overall world. This was enough to see populations emerge on the screen, competing and evolving.</p><p>The web version of that simulator allowed creating worlds up to <code>200 × 200</code>. Let's try to raise the bar to <code>8192 × 4096</code>. That's about 33 million cells, each of which can potentially be occupied by a living cell.</p><h2>Let's Tackle Memory First</h2><p>If we allocate just one 32-bit number for each of the 33 million positions, that's already <code>128 MiB</code>. And one number isn't enough: we need to store the cell's age, species, energy, individual traits, and intermediate data required for calculating the world's next state.</p><p>On the CPU, it's convenient to group all this into a single object of type <code>Cell</code>. But at this scale, the familiar OOP approach becomes quite expensive. Add another 4-byte field to each position – potentially another <code>128 MiB</code>.</p><p>In the GPU version, I divided the state into several arrays. One stores the primary information about the cell's content, while energy, individual traits, and species genomes are stored separately. Temporary data for a single tick also resides in its own arrays.</p><figure><img alt="Memory Organization" loading="lazy" src="https://habrastorage.org/r/w1560/getpro/habr/upload_files/8c3/b2d/129/8c3b2d1295923357c4e642738e75d74d.png" title="Memory Organization"/><div><figcaption>Memory Organization</figcaption></div></figure><p>This division proved useful not only for memory savings. Different computational passes require different data: a shader that changes energy doesn't necessarily need to see the entire cell state, and a renderer doesn't need temporary requests for cell movement at all. As a result, the memory structure depends on how this data will flow through the GPU.</p><h2>From Sequential Tick to Parallel</h2><p>In the old version, the game simply took a list of living cells and called their logic one by one. A cell would look at its neighbors, choose an action, and immediately modify the overall world. The next cell would then see the result of the previous move.</p><p>This means the order of traversal subtly became part of the simulation's rules.</p><p>This approach cannot be directly transferred to the GPU. Thousands of cells can be processed simultaneously, and you cannot assume that one will necessarily finish before another. For example, two cells might simultaneously spot an empty position and both decide to move there.</p><p>Therefore, a single tick is now broken down into several sequential stages.</p><p>First, cells only make decisions and record their <code>Intent</code> – what exactly they want to do. The world's state itself does not change yet.</p><p>Then, <code>Claim</code>s appear – requests for what the cells are competing for. If multiple cells claim the same position, the conflict is resolved separately according to a predefined rule.</p><p>Only after conflict resolution does the <code>Apply</code> stage begin, which actually modifies the world's state.</p><figure><img alt="Computation Order" loading="lazy" src="https://habrastorage.org/r/w1560/getpro/habr/upload_files/260/2cc/741/2602cc741b5006cf4e63307a597c0280.png" title="Computation Order"/><div><figcaption>Computation Order</figcaption></div></figure><p>This requires more intermediate memory and several computational passes, but the result of a tick no longer depends on the random execution order of thousands of parallel threads.</p><h2>How to Display 33 Million Cells</h2><p>By this point, the world is alive and changing on the GPU. And here arises a rather natural question: why return it to the CPU at all, just for an image?</p><p>One could copy the state back to JavaScript after each tick and draw from there. But at such sizes, data exchange itself would quickly become a separate problem.</p><p>For this reason, there is no full CPU copy of the world in the new version. Rendering reads the necessary data directly from the GPU buffers, and JavaScript primarily handles the interface, camera, and command sending.</p><figure><img alt="Large-Scale Simulation" loading="lazy" src="https://habrastorage.org/r/w1560/getpro/habr/upload_files/973/1b7/480/9731b7480c8ef463306f411058d3ba7a.png" title="Large-Scale Simulation"/><div><figcaption>Large-Scale Simulation</figcaption></div></figure><p>When zooming out significantly, another problem arises: an individual cell becomes smaller than a pixel. Drawing it as an independent object is no longer meaningful.</p><p>Therefore, the distant view is constructed from aggregated world sections. The further the camera, the less important a specific cell becomes, and the more important the overall picture is: population density, resources, and species distribution.</p><h2>What We Got</h2><p>To test, I tried to maximally load the simulation and fill the entire available world with cells.</p><p>Even in this mode, on my computer, the simulation calculates approximately <code>5–10</code> full ticks per second.</p><p>Of course, <code>5–10 ticks/s</code> is not a universal characteristic of WebGPU. The speed depends on the graphics card, browser, simulation settings, and the number of living cells. But for me, the principle is more important: a simulation with tens of millions of active objects is quite feasible right in a regular browser tab.</p><h2>Conclusions</h2><p>When I started this remake, my main interest was to understand how large a living world could be simulated directly in a browser tab.</p><p>Judging by the result, tens of millions of objects is a perfectly workable scale. But to achieve this, it's not enough to simply port the old code to the GPU; you have to rebuild the data and computation logic itself for its operational model.</p><p>The simulator <a href="https://gigafloppa.itch.io/the-strongest-survives"><strong>The Strongest Survives on itch.io</strong></a> – if you want to see the simulation live.</p></div>
+  </main>
+  <footer>
+    Translation generated with Gemini 2.5 Flash-Lite.
+    The original article remains the source of record.
+  </footer>
+</body>
+</html>

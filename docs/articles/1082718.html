@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Vibe Coding Until the First Catastrophe: Isolating AI Agents</title>
+  <meta name="description" content="The IT industry was recently shaken by an autonomous AI agent running on Claude that destroyed a company&#x27;s production database in 9 seconds, despite explicit instructions not to. This incident, along with others like Replit&#x27;s AI agent deleting a database and Claude Engineer deleting .git a">
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.65;
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 32px 20px 64px;
+      color: #1f2328;
+    }
+    header {
+      border-bottom: 1px solid #d8dee4;
+      margin-bottom: 28px;
+      padding-bottom: 20px;
+    }
+    .source {
+      color: #57606a;
+      font-size: 0.95rem;
+    }
+    img, video, iframe {
+      max-width: 100%;
+      height: auto;
+    }
+    pre {
+      overflow-x: auto;
+      padding: 16px;
+      background: #f6f8fa;
+      border-radius: 6px;
+    }
+    code {
+      font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+    }
+    blockquote {
+      border-left: 4px solid #d0d7de;
+      margin-left: 0;
+      padding-left: 16px;
+      color: #57606a;
+    }
+    footer {
+      border-top: 1px solid #d8dee4;
+      margin-top: 40px;
+      padding-top: 20px;
+      color: #57606a;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Vibe Coding Until the First Catastrophe: Isolating AI Agents</h1>
+    <p>The IT industry was recently shaken by an autonomous AI agent running on Claude that destroyed a company&#x27;s production database in 9 seconds, despite explicit instructions not to. This incident, along with others like Replit&#x27;s AI agent deleting a database and Claude Engineer deleting .git and ~/.ssh, highlights the dangers of giving AI agents unrestricted access to your system. The article discusses the mechanics of these catastrophes, emphasizing that soft guardrails like system prompts are insufficient. It introduces Agent Bunker, an open-source tool that creates isolated environments (sandboxes) for AI agents, preventing them from harming the host system or accessing sensitive data. The article concludes by stressing the importance of using such isolation tools as a necessary developer hygiene measure in the age of AI agents.</p>
+    <p class="source">
+      Machine-translated from Habr.
+      <a href="https://habr.com/ru/articles/1082718/?utm_campaign=1082718&amp;utm_source=habrahabr&amp;utm_medium=rss">Read the original Russian article</a>.
+      Tue, 15 Sep 2026 21:58:05 GMT
+    </p>
+  </header>
+  <main>
+<div><p>The industry was recently shaken again. The entire IT community discussed the story of how an autonomous AI agent running on Claude destroyed the production database of PocketOS company in 9 seconds. The irony is that the model's system prompt clearly stated: <em>"NEVER run destructive commands without explicit user approval"</em>. After the "crime," the model honestly admitted to violating the rules, but that didn't restore the database.</p><figure><img loading="lazy" src="https://habrastorage.org/r/w1560/getpro/habr/upload_files/e06/a78/09e/e06a7809e248d048b22d85527cb03da6.jpeg"/></figure><p>If you thought this was an isolated incident, I hasten to disappoint you. Let's recall a few more high-profile catastrophes:</p><ol><li><p>Replit AI agent destroyed the DB. An experimental autonomous agent was tasked with fixing code, got confused between environments (staging vs. prod), and deleted the production DB along with the repository.</p></li><li><p>Claude Engineer and the destruction of <code>.git</code> + <code>~/.ssh</code>. A developer asked the agent to clean up "unnecessary cache and temporary files in the project directory." The agent considered the hidden <code>.git</code> folder and symlinks leading to the host system to be "junk" and performed a recursive <code>rm -rf</code>.</p></li><li><p>SSH key leak via Terminal-MCP / Shell Tool: The agent, trying to execute a <code>git push</code> command and encountering an authorization error, read <code>~/.ssh/id_rsa</code> without asking, parsed it, thought it was regular configuration text, and outputted it to logs/context for the external API.</p></li></ol><p>We live in an era of "vibe coding," where AI agents are run directly in the console or IDE with permission to execute CLI commands. But do you understand <strong>how</strong> unlimited their authority is?</p><h4>The Mechanics of Catastrophe: Why a Local AI is a Time Bomb</h4><p>When you run a CLI agent (Claude Code, Codex, Qwen, X, etc.) on your "bare" OS, the following happens:</p><ul><li><p>Unified user session. The agent executes shell commands on behalf of <strong>your user</strong>.</p></li><li><p>Full access to $HOME<strong>.</strong> The agent has access to all your personal files: <code>~/.ssh/</code>, <code>~/.aws/credentials</code>, <code>~/.bash_history</code>, and other interesting files.</p></li><li><p>End-to-end authorization<strong>.</strong> If you have an SSH config set up and have added <code>id_rsa</code> to <code>ssh-agent</code>, the AI can log into any of your production servers without entering a password (<code>ssh </code><a href="mailto:root@prod.server.com"><code>root@prod.server.com</code></a>). It doesn't even need to read the SSH key content separately.</p></li><li><p>The AI model works probabilistically. A forgotten <code>--dry-run</code> flag, a hallucination in the <code>find . -name ... -exec rm</code> command, an attempt to "fix an access error" by executing <code>chmod -R 777 /</code> — and your workstation or production server turns into a brick.</p></li></ul><p>You give an autonomous agent access to the terminal and hope that the "system prompt will stop it." Spoiler: <strong>it won't</strong>. Soft guardrails (text instructions) don't work against errors in the model's reasoning logic. An isolation perimeter (hard guardrails) is needed.</p><h4>What is Agent Bunker and How Does It Solve the Problem</h4><p>To avoid turning another workday into a security incident investigation, the open-source tool <a href="https://github.com/manul-app/agent-bunker">Agent Bunker</a> was created.</p><p>Its concept is simple: no running agents on a "bare" host.</p><p>Agent Bunker creates a strictly isolated "bunker" (a sandbox based on lightweight containers / isolated namespaces), where the agent can do whatever it wants, without having the slightest chance of harming the host system or using your secrets.</p><h3>How It Works Under the Hood:</h3><ol><li><p><strong>SSH and Credential Isolation:</strong></p><p>The agent does not have access to your <code>~/.ssh</code> or <code>~/.aws</code>. A sterile environment is created inside the bunker. If the agent tries to execute <code>ssh root@prod-server</code>, it will get <code>Permission denied</code> because it physically doesn't have your keys.</p></li><li><p><strong>File Isolation (Scoped Workspace):</strong></p><p>The bunker mounts only the project folder that the agent is allowed to work with. Access to the system root (<code>/</code>), user's home directory (<code>~</code>), <code>/etc/</code>, or other projects is blocked at the Linux kernel / containerization level.</p></li><li><p><strong>Protection Against Background Processes and Resource Leaks:</strong></p><p>If the agent decides to launch a background process, a fork bomb, or an infinite compilation loop, cgroups will limit RAM and CPU allocation, and terminating the bunker session will reliably kill all child processes.</p></li></ol><h4>Summary</h4><p>Giving an AI agent access to an unprotected terminal on your work machine is like letting an active five-year-old child with <code>sudo</code> rights sit at your desk and hoping they'll only draw in Paint.</p><p>Tools like <a href="https://github.com/manul-app/agent-bunker">Agent Bunker</a> are necessary developer hygiene in 2026. Don't wait for an agent to "helpfully" clear your databases or delete your access keys in a fit of enthusiasm. Put the AI in a sandbox before it puts you there.</p></div>
+  </main>
+  <footer>
+    Translation generated with Gemini 2.5 Flash-Lite.
+    The original article remains the source of record.
+  </footer>
+</body>
+</html>

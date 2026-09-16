@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>I wanted to build an app, but ended up managing a department of AI agents</title>
+  <meta name="description" content="On August 31st, my app&#x27;s production environment was down for about an hour. The reason was embarrassingly simple. An agent added all files from a shared working folder to a commit, including someone else&#x27;s unfinished work. Then it did it again. The second time, after it had just written ru">
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.65;
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 32px 20px 64px;
+      color: #1f2328;
+    }
+    header {
+      border-bottom: 1px solid #d8dee4;
+      margin-bottom: 28px;
+      padding-bottom: 20px;
+    }
+    .source {
+      color: #57606a;
+      font-size: 0.95rem;
+    }
+    img, video, iframe {
+      max-width: 100%;
+      height: auto;
+    }
+    pre {
+      overflow-x: auto;
+      padding: 16px;
+      background: #f6f8fa;
+      border-radius: 6px;
+    }
+    code {
+      font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+    }
+    blockquote {
+      border-left: 4px solid #d0d7de;
+      margin-left: 0;
+      padding-left: 16px;
+      color: #57606a;
+    }
+    footer {
+      border-top: 1px solid #d8dee4;
+      margin-top: 40px;
+      padding-top: 20px;
+      color: #57606a;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>I wanted to build an app, but ended up managing a department of AI agents</h1>
+    <p>On August 31st, my app&#x27;s production environment was down for about an hour. The reason was embarrassingly simple. An agent added all files from a shared working folder to a commit, including someone else&#x27;s unfinished work. Then it did it again. The second time, after it had just written rules stating this shouldn&#x27;t be done. Then it started fixing things. An error, a fix, another error, another fix. Each fix caused a new problem. I looked at it and typed: &#x27;just revert to the old version.&#x27; Meaning, roll back to the last state known to be working. And then I caught myself having a strange feeling. I had just conducted an incident review. Exactly as I had done for years at work with live teams. The thought that had been swirling in my mind since June finally clicked that evening: I&#x27;m not building an app with AI. I&#x27;m managing a department. Read more</p>
+    <p class="source">
+      Machine-translated from Habr.
+      <a href="https://habr.com/ru/articles/1082766/?utm_campaign=1082766&amp;utm_source=habrahabr&amp;utm_medium=rss">Read the original Russian article</a>.
+      Wed, 16 Sep 2026 06:42:21 GMT
+    </p>
+  </header>
+  <main>
+<div><p>On August 31st, my app's production environment was down for about an hour.</p><p>The reason was embarrassingly simple. An agent added all files from a shared working folder to a commit, including someone else's unfinished work. Then it did it again. The second time, after it had just written rules stating this shouldn't be done.</p><p>Then it started fixing things. An error, a fix, another error, another fix. Each fix caused a new problem. I looked at it and typed: 'just revert to the old version.' Meaning, roll back to the last state known to be working.</p><p>And then I caught myself having a strange feeling. I had just conducted an incident review. Exactly as I had done for years at work with live teams. The thought that had been swirling in my mind since June finally clicked that evening: I'm not building an app with AI. I'm managing a department.</p><h3>December: mentoring a junior</h3><p>I am a Product Lead, with about 7 years in digital products, and I don't write code myself. In December 2025, I started building a personal finance app with AI agents. It was released on the App Store in July; the first article about this journey was <a href="https://habr.com/ru/articles/1067120/">here</a>.</p><p>Initially, I interacted with the agent like a junior developer. Small steps, checking every result, explaining the obvious. By April, the situation reversed: the agent was executing tasks faster than I could think them through. It was free, and I was still thinking about what to assign it. I became the bottleneck.</p><h3>June: this feels familiar</h3><p>The file with rules for the agents gradually grew to the size of a regulation document. Each rule in it appeared after a specific error. There were several agents, and they started interfering with each other. In July, another IC joined the project, and an acceptance process was introduced: for each build, the agent prepares a test plan, and a human checks the result.</p><p>I looked at this and felt like I had seen it somewhere before. Rules written in the wake of errors. Executors stepping on each other's toes. Agreements forgotten by the next morning. But the analogy didn't quite fit, it seemed like just the overhead of a new tool.</p><h3>August: the puzzle pieces fell into place</h3><p>At the end of August, 3 incidents happened within a few days, after which there were no doubts left.</p><p>The first. I asked the agent about a certain feature in the product, and it confidently replied that it didn't exist. It did. Moreover, it was described in detail in the document for that very product section. The agent simply didn't read it. Sound familiar? An employee who doesn't open their own department's regulations. The solution also turned out to be familiar: divide knowledge by domain, each with its own area of responsibility, and above them, the roles of tech lead and CTO, who decide which domains a task affects.</p><p>The second. I divided the agents by roles. One analyzes the problem and writes a specification in a file: what is broken, why, what are the forks, what is considered complete. The other executes. I roughly formulated it for myself: 'you are the brain, Codex is the hands.' Specifier and executor, classic.</p><p>The third. We were migrating to a new server, and the agent twice took the old address from an old document. The second time, it routed payments incorrectly. The document wasn't wrong; it simply described the past. Like a five-year-old wiki that a newcomer uses to set up the wrong environment. After this, a single document 'how everything works now' was created, and the rest became an archive.</p><p>And then the production server went down, and I conducted that very incident review.</p><p>Then I broke down what I actually had. Discovery: audience research, customer development, product analytics, hypothesis testing. Delivery: development by domain, design reviews, tests, releases. On top of that: regulations, specifications, acceptance, and incident reviews. This is not an 'app with AI.' It's a complete product, from problem identification to version release. A product department where most employees don't remember yesterday's workday.</p><h3>September: the department lives its own life</h3><p>After that, the problems became purely managerial.</p><p>An agent prepared a neat report for marketing: zero installations last week. In reality, there were 58. It connected to an old server with a frozen copy of the database, and all requests were processed honestly. The report was internally consistent, but it was based on the wrong data. Any manager has seen such quarterly reports. This is treated not by trust or distrust, but by the habit of asking 'based on what data and for what date'.</p><p>A week later, one of the executors stopped in the middle of a large task and left half-finished work in 56 files. Like a sudden sick leave. The file-based specification saved the day: it clearly showed what was intended, what was done, and what remained.</p><h3>What's next</h3><p>Honestly, I admit: I'm still stuck in the details. I conduct incident reviews myself, I decide where to roll back. This is how a manager who has just assembled a department behaves. A good manager doesn't do this. They build a system where reviews happen without them, and they focus on priorities and acceptance. An agent will do any task, but it won't say that the task is unnecessary.</p><p>I think in 2-3 years, all of this will become standard. Regulations for agents, roles, specifications, and incident reviews will be as common a part of work as a task tracker is now. And the main skill will not be prompt engineering, but what managers have been learning for years: transferring context, maintaining a single source of truth, and verifying the result, not the report about it.</p><p>I'm interested to compare with your experience. What team management practices have worked for you with agents, and which ones haven't?</p><p>The app on which all this grew: <a href="https://apps.apple.com/app/id6778792103">https://apps.apple.com/app/id6778792103</a></p></div>
+  </main>
+  <footer>
+    Translation generated with Gemini 2.5 Flash-Lite.
+    The original article remains the source of record.
+  </footer>
+</body>
+</html>

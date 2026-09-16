@@ -775,6 +775,14 @@
     "summary": "Following the article \"Why Keep a Knowledge Base if You're Not a Blogger or Speaker,\" a friend asked, \"Can I just put an agent in there to do everything for me?\" I started to dissuade her, even though I use Claude Code myself and have my own sub-agents running for my knowledge base. Karpathy and Infinite Brain answer the question of how to make a base convenient for LLMs. They don't answer the other question: what happens to your own mind in the process? My knowledge base has over six thousand notes, and I increasingly remember that there's something about it, but I don't remember what. I'll analyze three positions: Karpathy's LLM-wiki, Infinite Brain, and Rustam Agamaliev's trainer, where the agent doesn't read for you but shows where your thought should kick in. I'll show what agent practices have stuck in my frontmatter, what I've tried and discarded. And I'll draw a line: what can be handed over to an agent from day one, and what can never be. Read more",
     "title": "Who Writes Your Knowledge Base: You or an Agent?"
   },
+  "https://habr.com/ru/articles/1082204/?utm_campaign=1082204&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Tue, 15 Sep 2026 18:53:32 GMT",
+    "slug": "1082204",
+    "source_url": "https://habr.com/ru/articles/1082204/?utm_campaign=1082204&utm_source=habrahabr&utm_medium=rss",
+    "summary": "The main engineering challenge here is to transform a stream of unstructured text from hundreds of Telegram channels into events that the rest of the system can work with: determine the event type, location, brief description, remove duplicates, and understand who exactly needs to receive it. We initially built the system without constant manual moderation. Events appear around the clock, so manual verification doesn't scale well. Part of the work is done by an LLM pipeline, and part by users who can report events themselves and verify each other's messages. Read more",
+    "title": "Emergency Alert System for 15,000 Users: LLM, PostGIS, Qdrant, and Telegram"
+  },
   "https://habr.com/ru/articles/1082236/?utm_campaign=1082236&utm_source=habrahabr&utm_medium=rss": {
     "model": "gemini-2.5-flash-lite",
     "published": "Mon, 14 Sep 2026 21:31:53 GMT",
@@ -807,6 +815,78 @@
     "summary": "An MCP server is an adapter between AI and an external service. For example, one MCP reads files on a PC, another programs, a third searches for information on the internet. That is, AI mainly answers questions, analyzes, and generates images, but through MCP, it can also connect to Figma, Google Drive, databases, browsers, email, and thousands of other services. In this selection, I have gathered the 100 most popular MCP servers - together they have accumulated ⭐3.1 million stars on GitHub. Read more",
     "title": "TOP-100 MCP Servers: The Best Tools for AI, Agents, and Automation (3.1M Stars on GitHub)"
   },
+  "https://habr.com/ru/articles/1082632/?utm_campaign=1082632&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Wed, 16 Sep 2026 05:00:04 GMT",
+    "slug": "1082632",
+    "source_url": "https://habr.com/ru/articles/1082632/?utm_campaign=1082632&utm_source=habrahabr&utm_medium=rss",
+    "summary": "Habr presents content as a social media feed: readers primarily engage with new posts and discussions, and after a couple of weeks, an article fades from view. It might resurface if external search engines or users from other platforms link to it. The feed favors frequent and voluminous publications. However, over 20 years, the platform has accumulated a rare knowledge base: some old articles still answer current questions, are saved in bookmarks, and their topics remain relevant for decades. I understand that every project needs to survive and profit. To Habr's credit, readers can focus on content without distracting ads and banners! But this advantage also has a downside: advertising becomes less overt and is woven into the text. You start reading an article and find links to Telegram channels from independent authors urging subscriptions. Corporate blogs recommend hosting virtual machines, AI chatbot aggregators, doses of \"neuro-slop\" for SEO, promoting company HR brands to create candidate queues, and so on. This situation is unlikely to improve. Moderation and platform policies won't save readers. The balance between the commercial interests of selling corporate subscriptions and motivating independent, unpaid enthusiast authors to create and publish useful material is disrupted. When a technical article, which you spent days writing, is pushed out of the feed by superficial materials generated faster than Fibonacci rabbits, created solely for brand promotion. The author can't find their audience, and anything beyond the second or third page of the feed is unlikely to be seen by anyone, except for a small chance of being discovered through Google or Yandex search results. I'm not advocating against \"bees for honey\"! But I will offer my approach, which allows searching for needed information among tens and hundreds of thousands of articles. Habr has content of the highest quality: descriptions of solutions to practical problems, frameworks, technologies, features, and programming language constructs, how to survive in a corporation or startup. All of this can be found by both humans and automated agents; all that's needed is to process and prepare this information array. And yes, neural networks and clustering algorithms are used here to process articles and group them. We will group 34,000 Habr articles by meaning and catalog them, reading similar topics without trusting the keywords and hubs indicated by the author. Similarly, you can create your own local knowledge base from personal materials and notes at work and home, without sharing this information with cloud API services of neural networks if you wish. This structured information will be much easier for an AI agent to find for solving your technical tasks that require precise solutions, algorithms, and \"recipes.\" The material in the article, not hidden under a spoiler, is written manually using the old-fashioned \"tube\" method. Read more",
+    "title": "How to Turn Habr from a Social Media Feed into a Library and Knowledge Base"
+  },
+  "https://habr.com/ru/articles/1082718/?utm_campaign=1082718&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Tue, 15 Sep 2026 21:58:05 GMT",
+    "slug": "1082718",
+    "source_url": "https://habr.com/ru/articles/1082718/?utm_campaign=1082718&utm_source=habrahabr&utm_medium=rss",
+    "summary": "The IT industry was recently shaken by an autonomous AI agent running on Claude that destroyed a company's production database in 9 seconds, despite explicit instructions not to. This incident, along with others like Replit's AI agent deleting a database and Claude Engineer deleting .git and ~/.ssh, highlights the dangers of giving AI agents unrestricted access to your system. The article discusses the mechanics of these catastrophes, emphasizing that soft guardrails like system prompts are insufficient. It introduces Agent Bunker, an open-source tool that creates isolated environments (sandboxes) for AI agents, preventing them from harming the host system or accessing sensitive data. The article concludes by stressing the importance of using such isolation tools as a necessary developer hygiene measure in the age of AI agents.",
+    "title": "Vibe Coding Until the First Catastrophe: Isolating AI Agents"
+  },
+  "https://habr.com/ru/articles/1082720/?utm_campaign=1082720&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Tue, 15 Sep 2026 21:43:16 GMT",
+    "slug": "1082720",
+    "source_url": "https://habr.com/ru/articles/1082720/?utm_campaign=1082720&utm_source=habrahabr&utm_medium=rss",
+    "summary": "I sat down to test my own tool \n— local memory for code agents \n— and found eleven things that needed fixing. A stop hook that recursively spawned 4083 sessions in a day; recall that was dead on a standard installation; migration taking 66 seconds within a hook with a 10-second timeout. A breakdown of each item: what broke, how we fixed it, and who found it \n— me, an external review by another model, CI, or testing on a live Ubuntu. Read on",
+    "title": "Eleven Releases in a Day: How We Fixed an AI Agent's Memory and What Came of It"
+  },
+  "https://habr.com/ru/articles/1082724/?utm_campaign=1082724&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Tue, 15 Sep 2026 22:25:23 GMT",
+    "slug": "1082724",
+    "source_url": "https://habr.com/ru/articles/1082724/?utm_campaign=1082724&utm_source=habrahabr&utm_medium=rss",
+    "summary": "This is already the third major series of provocations against the NVIDIA CMP 90HX, where we will bypass another limitation imposed by NVIDIA. In the first article, I assembled a home server with a bunch of former mining cards. In the second article, I delved into the driver, figured out the V67 mechanism, and through the service part of the GPU, reached the computational limitations of the CMP 90HX. It turned out that a large part of the computational power was hidden from me. We brought it back. At this point, a good server owner would probably thank the hardware for its work and start using it. But the ability to stop in time was not installed in this server when I assembled it... Read more",
+    "title": "Part 3. Silicon hacked silicon, or how I became the author of the world's first confirmed PCIe GEN2 X16 for CMP90HX"
+  },
+  "https://habr.com/ru/articles/1082750/?utm_campaign=1082750&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Wed, 16 Sep 2026 04:56:00 GMT",
+    "slug": "1082750",
+    "source_url": "https://habr.com/ru/articles/1082750/?utm_campaign=1082750&utm_source=habrahabr&utm_medium=rss",
+    "summary": "Many articles about neural networks and Federal Law No. 152 state that a company faces a fine of 20,000 rubles for sending a contract with third-party personal data to ChatGPT. This figure comes from an old version of the Code of Administrative Offenses and applies to an official, not a company. Since May 2025, legal entities face fines of 150,000-300,000 rubles. I delved into the law's text, Roskomnadzor's figures, and court cases. I found one Russian case involving a neural network, related to labor law, not personal data. In it, the court stated a crucial point that everyone needs to accept: sending a document to a neural network is equivalent to transferring it to a third party. I will further explain what violates the law when a contract is inserted into ChatGPT, what does not, and why the 15 million ruble figures in headlines are irrelevant.",
+    "title": "I Inserted a Contract into ChatGPT - What Did I Violate? An Analysis of Federal Law No. 152 with Figures and Cases"
+  },
+  "https://habr.com/ru/articles/1082762/?utm_campaign=1082762&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Wed, 16 Sep 2026 06:17:40 GMT",
+    "slug": "1082762",
+    "source_url": "https://habr.com/ru/articles/1082762/?utm_campaign=1082762&utm_source=habrahabr&utm_medium=rss",
+    "summary": "Vault Audit AI has evolved from an Obsidian note auditing plugin into a system with a separate Companion, MCP access for AI clients, and secure change proposals. I explain why the project was split into two repositories, why agents cannot directly write to the Vault, how the self-hosted Companion works, and why all this led to a rebranding to Veynrel. How it works",
+    "title": "Vault Audit AI is now Veynrel. Why did the Obsidian plugin need Companion and MCP?"
+  },
+  "https://habr.com/ru/articles/1082766/?utm_campaign=1082766&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Wed, 16 Sep 2026 06:42:21 GMT",
+    "slug": "1082766",
+    "source_url": "https://habr.com/ru/articles/1082766/?utm_campaign=1082766&utm_source=habrahabr&utm_medium=rss",
+    "summary": "On August 31st, my app's production environment was down for about an hour. The reason was embarrassingly simple. An agent added all files from a shared working folder to a commit, including someone else's unfinished work. Then it did it again. The second time, after it had just written rules stating this shouldn't be done. Then it started fixing things. An error, a fix, another error, another fix. Each fix caused a new problem. I looked at it and typed: 'just revert to the old version.' Meaning, roll back to the last state known to be working. And then I caught myself having a strange feeling. I had just conducted an incident review. Exactly as I had done for years at work with live teams. The thought that had been swirling in my mind since June finally clicked that evening: I'm not building an app with AI. I'm managing a department. Read more",
+    "title": "I wanted to build an app, but ended up managing a department of AI agents"
+  },
+  "https://habr.com/ru/articles/1082784/?utm_campaign=1082784&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Wed, 16 Sep 2026 07:30:55 GMT",
+    "slug": "1082784",
+    "source_url": "https://habr.com/ru/articles/1082784/?utm_campaign=1082784&utm_source=habrahabr&utm_medium=rss",
+    "summary": "ChatGPT Business is OpenAI's team plan: shared workspace, admin panel, SSO, and a contractual guarantee that employee conversations won't be used for model training. It's not sold directly to Russian legal entities because OpenAI only accepts card payments, and Russian bank cards are rejected. We cover the current 2026 tariffs, how Business differs from Plus, and how to pay for it as a company with a full set of documents in 1 business day.",
+    "title": "ChatGPT Business for a Russian Team in 2026: Tariffs, Corporate Payment, Documents"
+  },
+  "https://habr.com/ru/articles/1082840/?utm_campaign=1082840&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Wed, 16 Sep 2026 08:59:03 GMT",
+    "slug": "1082840",
+    "source_url": "https://habr.com/ru/articles/1082840/?utm_campaign=1082840&utm_source=habrahabr&utm_medium=rss",
+    "summary": "In China's Inner Mongolia, computing power requiring gigawatts of electricity is being planned. Nearby, wind and solar farms, storage, substations, and communication lines are being built. In Memphis, USA, xAI accelerated the launch of Colossus using an existing industrial building and its own gas generation. Both stories share a common engineering challenge: servers can be purchased faster than everything needed for their continuous operation can be prepared. Read more",
+    "title": "How China is Developing AI, Energy, and Data Centers: Facts and a Comparison with xAI as an Example"
+  },
   "https://habr.com/ru/companies/1c/articles/1071340/?utm_campaign=1071340&utm_source=habrahabr&utm_medium=rss": {
     "model": "gemini-2.5-flash-lite",
     "published": "Thu, 03 Sep 2026 07:18:11 GMT",
@@ -822,6 +902,14 @@
     "source_url": "https://habr.com/ru/companies/1forma/articles/1080638/?utm_campaign=1080638&utm_source=habrahabr&utm_medium=rss",
     "summary": "Imagine a common work situation. In an approval task, you need to quickly understand if a specific payment has gone through. Not 'what was the total volume of payments this month,' but specifically: has the money for this invoice arrived, what was the amount, when was it recorded in 1C, and is there a discrepancy with what's indicated in the workflow? A dashboard might not have this answer. It displays pre-selected metrics, and no one will design, approve, and maintain a new widget for a single check. You could open 1C, find the document, verify the details, and then return to your workspace. If such questions arise infrequently, this path seems tolerable—until these infrequent questions become numerous. It's precisely for these situations that we've added an AI agent to the workflow workspace, capable of accessing current 1C data and answering questions within the task's context. The agent operates in read-only mode under a separate 1C account with limited privileges and indicates the actual data it relied upon. In this article, we'll explain why the agent doesn't replace dashboards, which tasks are best suited for each tool, and what's needed to ensure AI model answers about corporate data are verifiable. Read on.",
     "title": "Why an AI Agent When You Have Dashboards? Answering Questions About Live 1C Data"
+  },
+  "https://habr.com/ru/companies/1forma/articles/1082776/?utm_campaign=1082776&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Wed, 16 Sep 2026 07:35:59 GMT",
+    "slug": "1082776",
+    "source_url": "https://habr.com/ru/companies/1forma/articles/1082776/?utm_campaign=1082776&utm_source=habrahabr&utm_medium=rss",
+    "summary": "A new language model can appear in the morning, be at the top of several leaderboards by evening, and be replaced by the next version in a couple of weeks. For a team using LLMs in a product, this raises the question: when to update and how to do it without undue risk to users and development. At Pervaya Forma, an AI agent assists in the development pipeline: it works with code, tools, and reviews. We regularly review the set of models in this pipeline. In recent weeks, we updated Muse Spark from version 1.2 to 1.3, added Gemini 3.8 Flash, and prepared a quick rollback for it to the previous model. We will explain how this process works. Read more",
+    "title": "How We Change Models in the Developer Agent"
   },
   "https://habr.com/ru/companies/agima/articles/1081356/?utm_campaign=1081356&utm_source=habrahabr&utm_medium=rss": {
     "model": "gemini-2.5-flash-lite",
@@ -1207,6 +1295,14 @@
     "summary": "Keyword search is no longer sufficient. To enable neural networks to provide accurate answers based on your corporate knowledge bases, they need to 'understand' the meaning of text, which is more complex than simple exact matches. This article explores how vector databases work, why they are essential for modern RAG, how they differ from traditional relational databases, and how to choose the right tool for your project.",
     "title": "Why Vector Databases Are Needed in the Era of LLMs"
   },
+  "https://habr.com/ru/companies/selectel/articles/1082648/?utm_campaign=1082648&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Wed, 16 Sep 2026 08:00:13 GMT",
+    "slug": "1082648",
+    "source_url": "https://habr.com/ru/companies/selectel/articles/1082648/?utm_campaign=1082648&utm_source=habrahabr&utm_medium=rss",
+    "summary": "\"I'll just throw a prompt into AI, and in a second I'll get a ready-made interface, my own website, or a dashboard\" — this idea has surely crossed the mind of anyone not involved in design or development. AI tools for these fields are actively spreading and promise such fantastic results that the thought arises: what if designers will soon be unnecessary? After all, there is a big gap between a picture and a working prototype. Hierarchy of elements on the screen, adaptability, accessibility, scenario logic, and product metrics are just a limited list of points that are very difficult to fit into a single prompt. I forgot to introduce myself: my name is Kamila, I am an interface designer at Selectel. Along with the AI boom, colleagues have started coming to me more often with questions like: \"The AI made me a mockup, please review it.\" So I decided to figure it out from my design perspective — where AI can help, and where it creates an attractive, but not very functional concept. Read more",
+    "title": "Can a Working Interface Be Built with AI in an Hour?"
+  },
   "https://habr.com/ru/companies/smartengines/articles/1079702/?utm_campaign=1079702&utm_source=habrahabr&utm_medium=rss": {
     "model": "gemini-2.5-flash-lite",
     "published": "Tue, 08 Sep 2026 07:32:17 GMT",
@@ -1222,6 +1318,14 @@
     "source_url": "https://habr.com/ru/companies/smartengines/articles/1081388/?utm_campaign=1081388&utm_source=habrahabr&utm_medium=rss",
     "summary": "A Russian woman recently fell victim to fraud: about 60 microloans totaling over 2.5 million rubles were issued in her name, with only a photo of her passport being sufficient for the scammers. For over a year, she has faced calls and threats from collectors, while over twenty MFIs continue to try to recover the money from her. This incident is highly illustrative, reminding us once again how serious the threat of fraud remains and how costly it can be for an ordinary person. The scale of risk grows with the number of leaks: according to industry data, 326 databases of Russian companies' clients, containing about 1.175 billion records with user information, became publicly available in 2025 and the first half of 2026. This is twice the combined number of public leaks in Latin America, the Middle East, Africa, the Asia-Pacific region, and other CIS countries. In such conditions, it's no longer possible to assume that passport and other personal data remain known only to their owner; once in the public domain, they are highly likely to become a tool for scammers. Therefore, the question often becomes how quickly criminals will attempt to use them to obtain loans. In this context, another equally important question arises: who should bear responsibility for the consequences of such fraud? Let's explore the role of banks and MFIs in preventing such schemes and why reliable borrower identity verification must be a mandatory part of the loan issuance process. Read more",
     "title": "MFIs Issued a Loan to a Scammer: Who Should Be Responsible for the Consequences"
+  },
+  "https://habr.com/ru/companies/ssp-soft/articles/1079732/?utm_campaign=1079732&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Wed, 16 Sep 2026 07:03:07 GMT",
+    "slug": "1079732",
+    "source_url": "https://habr.com/ru/companies/ssp-soft/articles/1079732/?utm_campaign=1079732&utm_source=habrahabr&utm_medium=rss",
+    "summary": "The book \"Designing Large Language Model Applications\" by Suhas Pai aims to help developers bridge the gap between calling a language model API and building a truly functional and market-competitive product application. The book examines LLMs as a component of a complex system, from the transformer architecture to RAG pipelines and agents. For a developer or ML engineer who has already moved past the initial prototype stage, this is a valuable resource that breaks down LLM application architecture step-by-step, without reducing the material to a mere list of prompts. Read more",
+    "title": "Review of the book \"Designing Large Language Model Applications\""
   },
   "https://habr.com/ru/companies/studyai/articles/1081576/?utm_campaign=1081576&utm_source=habrahabr&utm_medium=rss": {
     "model": "gemini-2.5-flash-lite",
@@ -1278,6 +1382,14 @@
     "source_url": "https://habr.com/ru/companies/timeweb/articles/1079752/?utm_campaign=1079752&utm_source=habrahabr&utm_medium=rss",
     "summary": "We're closing out the last month of summer with a long list of releases for AI agents: documentation, MCP server, skills, abilities, file uploads in chat, and four new models in the catalog. The reason is simple: every third request to our documentation comes from agents, so we need to cater to this new audience. The second half of the digest is for those who read for themselves: three storage classes in S3, canceling database deletion, cloning apps in App Platform, domains via Gosuslugi, and updated Kubernetes. We'll break down each point below ↓ Read more",
     "title": "August Digest — App Cloning, Agent Skills, Streamer Mode, and Documentation"
+  },
+  "https://habr.com/ru/companies/timeweb/articles/1081816/?utm_campaign=1081816&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Wed, 16 Sep 2026 08:05:13 GMT",
+    "slug": "1081816",
+    "source_url": "https://habr.com/ru/companies/timeweb/articles/1081816/?utm_campaign=1081816&utm_source=habrahabr&utm_medium=rss",
+    "summary": "I live alone and usually know who might be at my home. But when I'm away, unpleasant thoughts sometimes creep in. 'What if someone did come in while I was gone?' It could have been a neighbor, a relative, or a repairman, but without a camera, you can only guess. I wanted to solve this with a simple script. The camera sees a person at the door, and a message and a frame arrive in Telegram. I got a bit carried away in the process. The result is a bot with support for multiple cameras, alerts, voice, facial recognition, and the ability to offload data processing to a separate server. In this article, I'll explain why YOLO is needed here and why a simple motion detector wasn't enough. How I tested the project's functionality in real conditions, why I don't send regular photos of people to the chat, and how privacy is organized. Also, how to connect a phone as a camera and offload heavy processing to a remote server. Read on.",
+    "title": "How I Built a Room Security Guard with YOLO and Connected it to Telegram"
   },
   "https://habr.com/ru/companies/tn_digital/articles/1080052/?utm_campaign=1080052&utm_source=habrahabr&utm_medium=rss": {
     "model": "gemini-2.5-flash-lite",

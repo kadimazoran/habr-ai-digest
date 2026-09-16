@@ -1,0 +1,117 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Eleven Releases in a Day: How We Fixed an AI Agent&#x27;s Memory and What Came of It</title>
+  <meta name="description" content="I sat down to test my own tool 
+— local memory for code agents 
+— and found eleven things that needed fixing. A stop hook that recursively spawned 4083 sessions in a day; recall that was dead on a standard installation; migration taking 66 seconds within a hook with a 10-second timeout. A breakdown ">
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.65;
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 32px 20px 64px;
+      color: #1f2328;
+    }
+    header {
+      border-bottom: 1px solid #d8dee4;
+      margin-bottom: 28px;
+      padding-bottom: 20px;
+    }
+    .source {
+      color: #57606a;
+      font-size: 0.95rem;
+    }
+    img, video, iframe {
+      max-width: 100%;
+      height: auto;
+    }
+    pre {
+      overflow-x: auto;
+      padding: 16px;
+      background: #f6f8fa;
+      border-radius: 6px;
+    }
+    code {
+      font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+    }
+    blockquote {
+      border-left: 4px solid #d0d7de;
+      margin-left: 0;
+      padding-left: 16px;
+      color: #57606a;
+    }
+    footer {
+      border-top: 1px solid #d8dee4;
+      margin-top: 40px;
+      padding-top: 20px;
+      color: #57606a;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Eleven Releases in a Day: How We Fixed an AI Agent&#x27;s Memory and What Came of It</h1>
+    <p>I sat down to test my own tool 
+— local memory for code agents 
+— and found eleven things that needed fixing. A stop hook that recursively spawned 4083 sessions in a day; recall that was dead on a standard installation; migration taking 66 seconds within a hook with a 10-second timeout. A breakdown of each item: what broke, how we fixed it, and who found it 
+— me, an external review by another model, CI, or testing on a live Ubuntu. Read on</p>
+    <p class="source">
+      Machine-translated from Habr.
+      <a href="https://habr.com/ru/articles/1082720/?utm_campaign=1082720&amp;utm_source=habrahabr&amp;utm_medium=rss">Read the original Russian article</a>.
+      Tue, 15 Sep 2026 21:43:16 GMT
+    </p>
+  </header>
+  <main>
+<div><p>A week ago, I released <a href="https://github.com/liza-studio/skillmem">skillmem</a> 
+— local procedure memory for code agents. In the past day, there have been <strong>eleven releases</strong>: from 0.9.3 to 0.10.5. Not because I had nothing better to do, but because I sat down to test my own product and found eleven things that needed fixing. This post is about what exactly 
+— almost every point applies to any tool that lives within an agent's loop.</p><h3>The Beginning: 4083 Sessions in a Day</h3><p>It started with a harmless question: is everything working? I looked into the hook logs and saw that the Stop hook had triggered <strong>4083 times</strong> in a day, whereas the day before it had triggered six times.</p><p>The mechanism: a hook on Stop asks the model to summarize the session using <code>claude -p</code>. The child process is a <strong>full Claude Code session</strong>, and on its Stop, it triggers the same hook. There's no bottom. In a day: 3901 phantom sessions, gigabytes of transcripts on disk, ~286 million cache tokens subscribed, and garbage summaries like "session is empty, please provide text" kept appearing in my context on the next start.</p><p>The most annoying part: <strong>we've had this bug before</strong> 
+— on 09.09, and it was closed with three safeguards. When the project was renamed, the hooks module was moved, and <strong>all three</strong> were lost: the env flag in the child process, the slot semaphore, and <code>--strict-mcp-config</code>. I brought back one first, then, after understanding it, all of them.</p><p>A lesson worth hanging over the desk: <strong>any hook that launches an agent must mute itself in the child process.</strong> And if you're rewriting a module where safeguards existed, transfer all of them, not just the ones you remember.</p><h3>Next 
+— On the List</h3><p><strong>0.9.3</strong> 
+— anti-recursion (<code>env</code> with a refusal flag for the child process) plus a test to ensure the flag actually reaches it. The old test only checked "if the flag is set externally 
+— stay silent," so the regression passed the green tests.</p><p><strong>0.9.4</strong> 
+— frequency limit. It turned out that Stop in Claude Code triggers <strong>after every response</strong>, not when the session closes: on a normal workday, this means calling the model on every turn and a lot of nearly identical notes. Plus: the mark is set on an <strong>attempt</strong>, not success (otherwise, a failing model buys a new call on every turn), the return code is checked (otherwise, the error text "usage limit reached" longer than 100 characters was saved as memory and overwrote a good summary), and the slot semaphore was returned.</p><p>Also there 
+— a small but pleasant find: the child <code>claude -p</code> now launches with <code>--no-session-persistence</code>, and phantom transcripts don't appear at all. Gigabytes of garbage are no longer reproduced.</p><p><strong>0.9.5</strong> 
+— four silent defects found by external review:</p><ul><li><p>recall for NotebookEdit was <strong>dead</strong>: the hook read <code>file_path</code>, but Claude Code for notebooks sends <code>notebook_path</code>;</p></li><li><p><strong>7793 notes out of 7793</strong> were without session binding 
+— the writer puts <code>source_session</code> in frontmatter, but the importer only knew <code>originSessionId</code>;</p></li><li><p>the MCP guard lied with numbers: it counted all servers, not the intersection with the standard, and could say "12 out of 10 connected";</p></li><li><p>the ledger of shown records lived in the shared <code>/tmp</code>, where a machine neighbor could create a file in advance and mute someone else's recall.</p></li></ul><p><strong>0.9.6</strong> 
+— races for the final summary. Slow Stop and SessionEnd overlapped, and the old result overwrote the final one. A note now stores the transcript volume it was made for, and whoever read less doesn't overwrite. Plus an honest budget: Claude Code raises the SessionEnd budget to the hook's timeout, but <strong>no more than 60 seconds</strong> 
+— meaning the final call should ask the model for less.</p><p><strong>0.9.7</strong> 
+— trust boundary (more on this below), plus <code>skillmem recap</code> and <code>skillmem hooks-status</code>. The latter appeared from a simple observation: <strong>hooks are designed to mute their errors</strong> to avoid breaking the session 
+— which means a hook that quietly died looks exactly like a hook that has nothing to do. Now there's a command that shows launches, skips, failures, and the last line of each.</p><p><strong>0.9.8</strong> 
+— a missed turn no longer reads the transcript. The limit check was placed <strong>after</strong> counting file lines, meaning on each missed turn, we read the entire transcript in vain. On my machine, this means files up to 59 MB and 840 MB in total.</p><p><strong>0.9.9</strong> 
+— publishing a summary became compare-and-swap: checking freshness and replacing the file were two steps, and a Stop that passed the check before SessionEnd wrote the final overwrote it afterward. The base is re-read within a short lock 
+— milliseconds, not a model call.</p><p><strong>0.10.0</strong> 
+— trust boundary, the biggest piece. There's a <a href="https://github.com/liza-studio/skillmem/blob/main/CHANGELOG.md">separate post</a> about this, in short: each record has an origin (<code>owner</code>/<code>agent</code>/<code>imported</code>/<code>derived</code>), trust is granted <strong>only by the owner</strong> with the <code>skillmem trust</code> command, editing an approved record's text removes approval, and anything unapproved is mixed into the agent's context within a marked "data, not instructions" frame. The transcript summarizer runs <strong>without any tools</strong> (<code>--tools ""</code> + <code>--strict-mcp-config</code>), and if the CLI doesn't know these flags, the summary isn't made at all. It closes the path "external README 
+→ agent memory 
+→ user rule.".</p><p><strong>0.10.1</strong> 
+— it turned out that three manifests (including <code>server.json</code> for the official MCP Registry) still advertised version 0.9.2 
+— meaning anyone who installed us through the registry would get a version <strong>with that very recursion</strong>.</p><p><strong>0.10.2 and 0.10.3</strong> 
+— two ends of one defect, and it wasn't me who found it, but CI. The test failed on all OS, and the test was right: FTS queries were cut by spaces, so <code>/work/analysis.ipynb</code> turned into a single phrase token and <strong>found nothing</strong>. And the <code>tool-recall</code> hook passes the file path to the query. On a standard installation <code>pip install skillmem</code> (without semantics), recall for Edit/Write/NotebookEdit was completely dead 
+— locally, this was hidden by the embedder. Digging deeper: the index itself discarded tokens shorter than three characters, so <code>db</code>, <code>py</code>, <code>js</code>, <code>ci</code> were absent from all records.</p><p>Second lesson for the wall: <strong>keep a run without optional dependencies in CI.</strong> We had one, and only because of it did the defect surface.</p><p>Also there, I caught my own mistake in migration: rebuilding the index on a live database (8917 records) takes <strong>66 seconds</strong>, and <code>init_schema</code> is called <strong>by every hook</strong> with a 10-second timeout. Migration now only sets a flag; the heavy work is done by a nightly job or <code>skillmem reindex-lexical</code>.</p><p><strong>0.10.4</strong> 
+— found during testing a real installation on Ubuntu: a clean database reported that it needed re-indexing. On a fresh install, <code>doctor</code> would scare people for no reason.</p><p><strong>0.10.5</strong> 
+— Dockerfile in the repository and honest <code>serverInfo</code>. MCP directories collect the container to evaluate the server, and <strong>if their AI build fails, the server doesn't appear in the directory search</strong>. Our own build is more reliable than guesswork: the image is 297 MB, <code>initialize</code> responds with the actual version, <code>tools/list</code> returns all 9 tools via stdio. Before this, the server presented itself with SDK version <code>1.30.0</code> 
+— a version the package never had.</p><h3>Who Found It All</h3><p>The count is fair, and it's not in my favor:</p><div><div><table><tbody><tr><th><p>Who</p></th><th><p>What Was Found</p></th></tr><tr><td><p>Myself</p></td><td><p>recursion, lost safeguards, <code>recall_skills</code> without trust field, 66-second migration in a hook</p></td></tr><tr><td><p>External Review (Codex/GPT-6, read the entire code)</p></td><td><p>a gap in the requirements before coding, three P1s in implementation, two residual blockers</p></td></tr><tr><td><p>CI</p></td><td><p>dead lexical-recall by file path 
+— on all OS at once</p></td></tr><tr><td><p>Ubuntu Test</p></td><td><p>false re-indexing flag on a clean database</p></td></tr></tbody></table></div></div><p>The loop that justified itself: <strong>Requirements 
+→ review by another model 
+→ implementation 
+→ review 
+→ deploy.</strong> Moreover, each reviewer's assertion was checked by the team on a live system, not taken at face value: one out of six checked turned out to be incorrect (the bug had already been fixed during development).</p><h3>The Result</h3><p>214 tests, and each safeguard is verified by reverting the fix 
+— I break the fix, the test turns red, otherwise the test doesn't count. Cross-platform compatibility is verified not by declaration, but by installation: macOS and Ubuntu from PyPI, Windows in CI.</p><pre><code>pip install -U skillmem
+skillmem init            # Claude Code: hooks on five events + 9 MCP tools
+skillmem init --codex    # same memory for Codex CLI
+skillmem hooks-status    # what hooks actually did: launches, skips, failures
+</code><div><a href="https://sourcecraft.dev/"><img loading="lazy"/></a></div></pre><p><strong>If you are on 0.9.0
+–0.9.2 
+— update.</strong> There's recursion there, and it's costing you quota.</p><ul><li><p>Releases with details: <a href="https://github.com/liza-studio/skillmem/releases">https://github.com/liza-studio/skillmem/releases</a></p></li><li><p>In the official MCP Registry: <code>io.github.liza-studio/skillmem</code></p></li><li><p>Website: <a href="https://skillmem.dev">https://skillmem.dev</a></p></li></ul><p>And a question to the audience, for which I don't have a good answer: how to strictly verify that the reader of untrusted text is indeed deprived of rights? I have a canary (a file with a unique string that the summarizer shouldn't be able to read), but it lacks positive control 
+— an authorization error would give the same green result. If you have a better idea, please write in the issues.</p></div>
+  </main>
+  <footer>
+    Translation generated with Gemini 2.5 Flash-Lite.
+    The original article remains the source of record.
+  </footer>
+</body>
+</html>

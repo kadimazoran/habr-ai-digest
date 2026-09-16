@@ -1,0 +1,187 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Vault Audit AI is now Veynrel. Why did the Obsidian plugin need Companion and MCP?</title>
+  <meta name="description" content="Vault Audit AI has evolved from an Obsidian note auditing plugin into a system with a separate Companion, MCP access for AI clients, and secure change proposals. I explain why the project was split into two repositories, why agents cannot directly write to the Vault, how the self-hosted Companion wo">
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.65;
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 32px 20px 64px;
+      color: #1f2328;
+    }
+    header {
+      border-bottom: 1px solid #d8dee4;
+      margin-bottom: 28px;
+      padding-bottom: 20px;
+    }
+    .source {
+      color: #57606a;
+      font-size: 0.95rem;
+    }
+    img, video, iframe {
+      max-width: 100%;
+      height: auto;
+    }
+    pre {
+      overflow-x: auto;
+      padding: 16px;
+      background: #f6f8fa;
+      border-radius: 6px;
+    }
+    code {
+      font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+    }
+    blockquote {
+      border-left: 4px solid #d0d7de;
+      margin-left: 0;
+      padding-left: 16px;
+      color: #57606a;
+    }
+    footer {
+      border-top: 1px solid #d8dee4;
+      margin-top: 40px;
+      padding-top: 20px;
+      color: #57606a;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Vault Audit AI is now Veynrel. Why did the Obsidian plugin need Companion and MCP?</h1>
+    <p>Vault Audit AI has evolved from an Obsidian note auditing plugin into a system with a separate Companion, MCP access for AI clients, and secure change proposals. I explain why the project was split into two repositories, why agents cannot directly write to the Vault, how the self-hosted Companion works, and why all this led to a rebranding to Veynrel. How it works</p>
+    <p class="source">
+      Machine-translated from Habr.
+      <a href="https://habr.com/ru/articles/1082762/?utm_campaign=1082762&amp;utm_source=habrahabr&amp;utm_medium=rss">Read the original Russian article</a>.
+      Wed, 16 Sep 2026 06:17:40 GMT
+    </p>
+  </header>
+  <main>
+<div><p>In the previous article, I ended by saying that the next part of the series would likely go beyond the Obsidian plugin itself, into Companion and MCP.</p><p>It did.</p><p>During this time, Vault Audit AI has acquired a separate server, an MCP interface for AI clients, a change proposal mechanism, and a second repository.</p><p>Then it became clear that the old name no longer adequately explained what was going on.</p><p>So, the project is now called <strong>Veynrel</strong>.</p><p>The plugin itself was not rewritten from scratch. Existing users don't need to reinstall anything, re-enter API keys, or rebuild the semantic index. I specifically tried to make the most technically boring rebranding possible.</p><p>However, things around the plugin have become noticeably more interesting.</p><p>Now, in a simplified form, it looks like this:</p><pre><code>Obsidian
+   |
+   v
+Veynrel
+   |
+   | semantic index
+   | Similar Notes
+   | semantic duplicates
+   | Ask your Vault
+   | AI workflows
+   |
+   v
+Veynrel Companion
+   |
+   | persistent semantic mirror
+   | SQLite
+   | optional Qdrant
+   | change proposals
+   |
+   v
+MCP
+   |
+   +---- Codex
+   +---- Claude Code
+   +---- other MCP clients
+</code></pre><div><a href="https://sourcecraft.dev/"><img loading="lazy"/></a></div><p>In this article, I'll explain why I decided to build a separate Companion, why another layer was added between the agent and Markdown, why the MCP server can't directly rewrite notes, and how all this ultimately led to a full rebranding.</p><p>Also, closer to the end, there will be a rare innovation for my articles: I've finally added a button to the project that doesn't start another index but allows you to support development financially.</p><h3>Why Vault Audit AI stopped being Vault Audit AI</h3><p>When I started the project, the name was quite accurate.</p><p>There's Vault. There's Audit. AI is somewhere nearby.</p><p>The plugin gets notes, processes them through a model, and helps manage the vault.</p><p>Then MapReduce for large Vaults appeared.</p><p>Then automation for working with notes.</p><p>Then the semantic index, Similar Notes, semantic duplicate search, and Ask your Vault.</p><p>At some point, auditing became just one of the functions, but the name continued to pretend that it was the sole purpose of the project.</p><p>Continuing to call the project Vault Audit AI would be like naming an IDE "main.ts editor". It's not technically false, but the description is slightly behind reality.</p><p>Thus, the name <strong>Veynrel</strong> was born.</p><p>The most important thing here was not to change the text in the README, but to avoid turning the name change into a user migration.</p><p>Therefore, old technical identifiers are still encountered within the project.</p><p>For example, the plugin ID remains:</p><pre><code>ai-knowledge-hub
+</code></pre><div><a href="https://sourcecraft.dev/"><img loading="lazy"/></a></div><p>Some of Companion's environment variables also haven't changed:</p><pre><code>VAULT_AUDIT_COMPANION_DIR
+VAULT_AUDIT_MCP_TOKEN
+</code></pre><div><a href="https://sourcecraft.dev/"><img loading="lazy"/></a></div><p>Sometimes <code>vault_audit</code> is also found.</p><p>This isn't a forgotten <code>Ctrl+Shift+H</code>.</p><p>If a string is already used in a user's config, storage key, or protocol, renaming it just for aesthetics is quite pointless.</p><p>It would result in a clean diff and less clean broken installations.</p><p>So, Veynrel became the new user-facing name, while old identifiers remain where they are already part of compatibility.</p><p>An existing user simply updates.</p><p>Settings remain in place. The semantic index remains in place. Hotkeys too. Companion continues to understand the same protocol.</p><p>In my opinion, a good rebranding should look exactly like this. Most of the complexity should remain the author's problem, not the user's.</p><h3>Why was Companion needed at all?</h3><p>As long as Veynrel lives only within Obsidian, everything is quite convenient.</p><p>The plugin sees the Vault, monitors changes, and maintains a local semantic index.</p><p>But this approach has an obvious limitation.</p><p>To ask something of the Vault, you need to open Obsidian and call a function within the plugin.</p><p>But I wanted a different scenario.</p><p>For example, I'm working in Codex and type:</p><pre><code>Find everything in my Vault that I've written about MCP,
+and show unresolved architectural issues.
+</code></pre><div><a href="https://sourcecraft.dev/"><img loading="lazy"/></a></div><p>Or:</p><pre><code>Look at my project notes and find
+where I've already described a similar idea.
+</code></pre><div><a href="https://sourcecraft.dev/"><img loading="lazy"/></a></div><p>Or even:</p><pre><code>Suggest an update to README based on my notes.
+</code></pre><div><a href="https://sourcecraft.dev/"><img loading="lazy"/></a></div><p>Copying Markdown manually into a chat quickly becomes tedious.</p><p>It's especially funny after spending months writing semantic search, only to then manually search for the right note to paste into an AI client.</p><p>A layer was needed that could live separately from the Obsidian interface.</p><p>Thus, <strong>Veynrel Companion</strong> was born.</p><p>It's a separate Node.js service that maintains a persistent mirror of the relevant semantic state.</p><p>And here, the word "mirror" is crucial.</p><p>Companion does not open the Vault directory and does not directly access Markdown files.</p><p>It does not become a second owner of the notes.</p><p>And most importantly, it cannot simply overwrite a file while Obsidian is looking elsewhere.</p><figure><img loading="lazy" src="https://habrastorage.org/r/w1560/getpro/habr/upload_files/f02/96a/1cf/f0296a1cf5502bc3b9d329e6334c20a2.png"/></figure><h3>Why I specifically prohibited Companion from writing to the Vault</h3><p>At first glance, it could have been made much simpler.</p><p>Give the server the path:</p><pre><code>/home/me/Vault
+</code></pre><div><a href="https://sourcecraft.dev/"><img loading="lazy"/></a></div><p>and then the usual:</p><pre><code>readFile()
+writeFile()
+</code></pre><div><a href="https://sourcecraft.dev/"><img loading="lazy"/></a></div><p>Done.</p><p>The agent reads notes, the agent writes notes, the demo looks nice.</p><p>And a future post is ready:</p><blockquote><p>How I taught AI to work with Obsidian in one evening and spent the next evening restoring the Vault from Git.</p></blockquote><p>The problem isn't just that the model might do something strange.</p><p>Obsidian itself has a state.</p><p>The plugin monitors files. AutoSync is working. The semantic index changes along with the notes. Some operations read the current file version, think for a while, and then try to apply the result.</p><p>If another independent process that writes Markdown whenever it wants is added on top of this, a second writer emerges.</p><p>And two writers to one knowledge base without a common concurrency control model look fun right up until the first race condition.</p><p>Therefore, the rule became quite strict:</p><pre><code>Only Obsidian writes the Vault.
+</code></pre><div><a href="https://sourcecraft.dev/"><img loading="lazy"/></a></div><p>Companion receives the state from the plugin and stores it locally.</p><p>AI can read this state via MCP.</p><p>AI can even propose a change.</p><p>But Veynrel within Obsidian still applies it.</p><h3>`propose_change` instead of `write_note`</h3><p>This is one of the parts of the architecture I like most right now.</p><p>The most obvious MCP API would look something like this:</p><pre><code>read_note
+search_notes
+write_note
+delete_note
+</code></pre><div><a href="https://sourcecraft.dev/"><img loading="lazy"/></a></div><p>But if you give the model `write_note`, the previous section can be almost thrown away.</p><p>So, instead of a "change file" command, a different scenario emerged:</p><pre><code>AI
+ |
+ | propose_change
+ v
+Companion
+ |
+ | stores proposal
+ v
+Obsidian
+ |
+ | user reviews diff
+ v
+Approve / Reject
+</code></pre><div><a href="https://sourcecraft.dev/"><img loading="lazy"/></a></div><p>The agent creates a proposal.</p><p>For example:</p><pre><code>operation: replace
+path: Projects/Veynrel.md
+summary: Update Companion architecture section
+</code></pre><div><a href="https://sourcecraft.dev/"><img loading="lazy"/></a></div><p>Companion saves the proposal.</p><p>After that, Veynrel shows it to the user.</p><p>You can view the diff, reject the proposal, or approve it.</p><p>Only after approval does the plugin check that the note hasn't changed unexpectedly since the proposal was created and applies the operation.</p><p>This means MCP can participate in changing the Vault, but it doesn't own the Vault itself.</p><p>I like this option much more than simple CRUD.</p><p>AI gets the ability to do useful work, but the write boundary remains explicit.</p><figure><img alt="A real proposal created by Codex via MCP. The change has not yet been applied: Veynrel shows the diff and waits for explicit Approve or Reject." loading="lazy" src="https://habrastorage.org/r/w1560/getpro/habr/upload_files/cdb/d03/ad3/cdbd03ad3a93bc8403f3e9904bc4d2c7.png"/><div><figcaption>A real proposal created by Codex via MCP. The change has not yet been applied: Veynrel shows the diff and waits for explicit Approve or Reject.</figcaption></div></figure><h3>What exactly does an MCP client see?</h3><p>Companion currently provides seven tools:</p><pre><code>vault_status
+list_notes
+get_note
+get_chunks
+search_vault
+propose_change
+get_proposal
+</code></pre><div><a href="https://sourcecraft.dev/"><img loading="lazy"/></a></div><p>The set is intentionally small.</p><p>I didn't want to turn the MCP description into a phone book of fifty almost identical functions.</p><p><code>vault_status</code> allows you to understand if the mirror exists, how many notes and chunks it contains, and which generation is current.</p><p><code>list_notes</code> returns known paths and metadata.</p><p><code>get_note</code> reads the Markdown of a specific note. Large files can be retrieved in chunks.</p><p><code>get_chunks</code> works with note segments from the semantic index.</p><p><code>search_vault</code> does what this whole thing was initiated for.</p><p>The client sends plain text:</p><pre><code>how I wanted to organize shared memory between agents
+</code></pre><div><a href="https://sourcecraft.dev/"><img loading="lazy"/></a></div><p>Companion builds an embedding of the query and searches for similar chunks.</p><p>The saved note texts are not sent for embedding again. The index already exists.</p><p><code>propose_change</code> creates a change proposal, and <code>get_proposal</code> allows checking its status.</p><p>There is no <code>approve_proposal</code> in MCP.</p><p>This is also intentional.</p><p>Approval remains within Obsidian.</p><h3>Where does Companion get its semantic search from?</h3><p>This turned out to be another amusing twist.</p><p>When I wrote the semantic search for the plugin itself, I deliberately avoided a separate vector database.</p><p>For a typical Obsidian plugin, setting up Qdrant for a few thousand notes seemed a bit excessive.</p><p>So, Veynrel uses its own local <code>LocalVectorStore</code>.</p><p>And this solution hasn't disappeared.</p><p>But Companion is already a server.</p><p>It has Node.js, SQLite, and a completely different set of constraints.</p><p>As a result, SQLite became the persistent source of state, and on top of it, Qdrant can be enabled as a search accelerator if desired.</p><p>The key point is that Qdrant does not become the primary storage.</p><p>If it's turned off or lost, the canonical data remains in SQLite.</p><pre><code>Veynrel
+   |
+   | sync
+   v
+Companion
+   |
+   +---- SQLite  &lt;-- permanent state
+   |
+   +---- Qdrant  &lt;-- optional derived index
+</code></pre><div><a href="https://sourcecraft.dev/"><img loading="lazy"/></a></div><p>For a small Vault, you can live without Qdrant at all.</p><p>If the mirror becomes large enough and linear search becomes annoying, an accelerator is available to connect.</p><p>I prefer this approach over a scheme where the disappearance of an auxiliary service suddenly means the loss of the main database.</p><h3>And where is MCP in all this?</h3><p>If we simplify greatly, MCP solves a rather mundane problem.</p><p>It gives AI clients a standard way to know:</p><blockquote><p>what actions are available here and how to call them.</p></blockquote><p>Without it, Codex would require one adapter.</p><p>Claude Code would need another.</p><p>Then another client would appear, and the developer would suddenly have a new hobby.</p><p>With MCP, Companion exposes one interface.</p><p>Then the client receives the tools and calls them as needed.</p><p>For example:</p><pre><code>Codex
+  |
+  | search_vault("MCP security model")
+  v
+Veynrel Companion
+  |
+  | embedding query
+  | vector search
+  v
+matching chunks
+</code></pre><div><a href="https://sourcecraft.dev/"><img loading="lazy"/></a></div><p>If the result is insufficient, the agent can request the full note via <code>get_note</code>.</p><p>If, after analysis, something needs to be changed, it creates a <code>propose_change</code>.</p><p>This means the model doesn't get a huge dump of the Vault into its context window, but rather the ability to gradually retrieve the necessary information.</p><p>This seems much more natural for a knowledge base.</p><h3>Two tokens instead of one</h3><p>Since the server can both synchronize state and serve data to AI clients, the next question quickly arose.</p><p>Why should an MCP client have the same rights as Obsidian itself?</p><p>It shouldn't.</p><p>Therefore, Companion has different credentials.</p><p><code>COMPANION_TOKEN</code> is used by the trusted plugin for synchronization.</p><p><code>MCP_TOKEN</code> is used by the MCP client.</p><p>If someone obtains an MCP token, it should not automatically grant them the ability to impersonate Veynrel and upload a new mirror state.</p><p>Companion does not accept equal token values on startup at all.</p><p>This might seem like paranoia on a local machine.</p><p>On a VPS, it's less so.</p><h3>One Companion for both local and VPS</h3><p>There is no separate "server version" of Companion.</p><p>The same code is run.</p><p>Locally, it might be:</p><pre><code>127.0.0.1:27124
+</code></pre><div><a href="https://sourcecraft.dev/"><img loading="lazy"/></a></div><p>The plugin synchronizes to the same address.</p><p>Codex connects to:</p><pre><code>http://127.0.0.1:27124/mcp
+</code></pre><div><a href="https://sourcecraft.dev/"><img loading="lazy"/></a></div><p>If you want to host the mirror on a VPS, you can install Companion there and hide it behind a reverse proxy:</p><pre><code>Internet
+   |
+ HTTPS
+   |
+Caddy / Nginx
+   |
+127.0.0.1:27124
+   |
+Veynrel Companion
+</code></pre><div><a href="https://sourcecraft.dev/"><img loading="lazy"/></a></div><p>Companion itself does not terminate TLS.</p><p>I would not use plaintext HTTP for remote connections. It still holds a mirror of a personal knowledge base, and a bearer token doesn't become less secret just because it's in a nice JSON.</p><figure><img loading="lazy" src="https://habrastorage.org/r/w1560/getpro/habr/upload_files/7ef/39a/dfa/7ef39adfa723ff78b70e02c60bfb33ff.png"/></figure><h3>Why Companion had to be moved to a separate repository</h3><p>Initially, the server lived directly within the plugin's repository.</p><p>It looked convenient:</p><pre><code>veynrel/
+├── plugin code
+├── semantic/
+├── companionSync/
+└── companion/
+</code></pre><div><a href="https://sourcecraft.dev/"><img loading="lazy"/></a></div><p>One project, everything together.</p><p>Then the Obsidian Community Plugin review began.</p><p>The scanner saw Companion's Node.js code and, quite logically from its perspective, started explaining to me that `node:http` and `node:sqlite` are unavailable on mobile Obsidian.</p><p>It was right.</p><p>Except for one small detail.</p><p>This code was never supposed to end up in Obsidian at all.</p><p>The server and the plugin were simply in the same Git repository.</p><p>You could endlessly explain to the tooling where the mobile plugin ends and the standalone Node service begins.</p><p>Or you could establish a proper architectural boundary.</p><p>Now there are two repositories:</p><pre><code>github.com/zinverno/veynrel
+
+github.com/zinverno/veynrel-companion
+</code></pre><div><a href="https://sourcecraft.dev/"><img loading="lazy"/></a></div><p>The main repository retains `companionSync`, which is indeed part of the plugin.</p><p>The server itself lives separately.</p><p>After this, not only did the extraneous scanner warnings disappear.</p><p>The project's structure itself became simpler.</p><p>Companion now has its own dependencies, its own CI, its own tests, and its own lifecycle.</p><p>And, unexpectedly pleasantly, it can now be developed as a standalone service without pretending to be just a large subfolder of the Obsidian plugin.</p><figure><img loading="lazy" src="https://habrastorage.org/r/w1560/getpro/habr/upload_files/6fd/63e/8ef/6fd63e8efdd7ae7ea745a037e3b1a7c8.png"/></figure><h3>The rebranding also turned out to be a backward compatibility test</h3><p>Renaming a project sounds like a task of the level:</p><pre><code>Find: Vault Audit AI
+Replace: Veynrel
+</code></pre><div><a href="https://sourcecraft.dev/"><img loading="lazy"/></a></div><p>I quickly discovered why such operations sometimes end with a separate migration guide.</p><p>The old name appeared not only in the README.</p><p>It had made its way into package names, environment variables, storage keys, MCP identifiers, Qdrant prefixes, hash inputs, and historical fixtures.</p><p>Some could be renamed.</p><p>Some could not.</p><p>Some could be, but it offered no benefit other than risk.</p><p>As a result, each such identifier had to be classified before replacement.</p><p>For example, Companion's private npm package could easily be transformed from:</p><pre><code>vault-audit-ai-companion
+</code></pre><div><a href="https://sourcecraft.dev/"><img loading="lazy"/></a></div><p>to:</p><pre><code>veynrel-companion
+</code></pre><div><a href="https://sourcecraft.dev/"><img loading="lazy"/></a></div><p>But:</p><pre><code>VAULT_AUDIT_COMPANION_DIR
+</code></pre><div><a href="https://sourcecraft.dev/"><img loading="lazy"/></a></div><p>remained.</p><p>Because it's already a user environment variable.</p><p>The same applies to some storage keys and protocol identifiers.</p><p>The principle turned out to be quite simple:</p><blockquote><p>The brand can be changed aggressively. Compatibility should only be changed when there's a reason beyond a new logo.</p></blockquote><p>As a result, Veynrel 1.8.0 updates over Vault Audit AI 1.7.0 without migrating user data.</p><h3>There are suspiciously many tests again</h3><p>In the previous article, I wrote about 698 tests.</p><p>Now, the main plugin has <strong>849</strong> tests.</p><p>Companion lives separately and has another <strong>218</strong>.</p><p>And I stopped perceiving the number of tests as a competition with myself long ago.</p><p>It's just that almost every new boundary of the project creates a new class of unpleasant scenarios.</p><p>What if the note changed between proposal creation and approval?</p><p>What if the embedding provider returned <code>NaN</code>?</p><p>What if two requests simultaneously try to process the same note?</p><p>What if the semantic descriptor changed right during the search?</p><p>Most of these things never happen in a demo.</p><p>In a real main Vault, these are precisely the things that tend to happen.</p><p>The project's tradition continues.</p><h3>What resulted in the end</h3><p>After all this restructuring, Veynrel no longer looks like a single large Obsidian plugin to me.</p><p>It's more like two layers.</p><p>The first is located directly next to the notes:</p><pre><code>Veynrel
+</code></pre><div><a href="https://sourcecraft.dev/"><img loading="lazy"/></a></div><p>It owns the interaction with the Vault.</p><p>It indexes, displays the interface, and applies approved changes.</p><p>The second:</p><pre><code>Veynrel Companion
+</code></pre><div><a href="https://sourcecraft.dev/"><img loading="lazy"/></a></div><p>can live separately, maintain a persistent mirror, and provide controlled access to external AI clients.</p><p>MCP connects this layer to agents.</p><p>The most important thing for me here is that the boundaries have become sufficiently explicit:</p><pre><code>Agent can read
+Agent can search
+Agent can propose
+
+Agent cannot silently write Markdown
+</code></pre><div><a href="https://sourcecraft.dev/"><img loading="lazy"/></a></div><p>This limits some of the fancy demos.</p><p>However, it significantly increases the chance that I myself will agree to connect all this to my actual Vault.</p><p>And this test for the project still remains the main one.</p><h3>The project now has support via Boosty</h3><p>And one more change, not architectural at all.</p><p>Until now, Veynrel was just an open-source project to which I systematically dedicated my free time.</p><p>It remains that way.</p><p>The code is open under MIT.</p><p>Features will not be hidden behind a subscription.</p><p>Companion and MCP are also not turning into a paid tier.</p><p>But the project has long ceased to be a small weekend experiment.</p><p>There's a Community Plugin, a separate Companion, documentation, CI, tests, version compatibility, and periodic battles with problems I didn't even suspect existed yesterday.</p><p>Therefore, I've finally added the option to voluntarily support development.</p><p><strong>Boosty: </strong><a href="https://boosty.to/veynrel"><strong>https://boosty.to/veynrel</strong></a></p><p>There's a simple support level for the project there now.</p><p>No Veynrel Ultimate Enterprise Plus.</p><p>No "semantic search available with Pro plan".</p><p>If the project is useful to you and you want to help me continue developing it, this option is now simply available.</p><p>If not, nothing changes in your use of Veynrel.</p><h3>What's next</h3><p>In the previous article, I wrote that the next part of the series would likely go beyond Obsidian.</p><p>This has now happened.</p><p>But Companion and MCP are interesting to me for another reason.</p><p>When several AI clients start working with the same data, the next question quickly arises.</p><p>Why should each of them build its own memory, integrations, and context retrieval method around itself?</p><p>For now, Veynrel solves this problem only for one specific domain, Obsidian Vault.</p><p>But architecturally, more general ideas are starting to emerge here.</p><p>Storage is separate.</p><p>Agent is separate.</p><p>A controlled access layer between them is separate.</p><p>Where this will ultimately lead, I'd better not promise yet.</p><p>This project already has a bad habit of turning the phrase "I'll add a small feature" into a new repository.</p><h3>Try it out</h3><p>If you read the previous part, this new article essentially continues its last chapter:</p><p><a href="https://habr.com/ru/articles/1078328/">I just wanted to organize my Obsidian. In the end, I wrote two indexes, semantic search, and RAG</a></p><p>Veynrel:</p><p><a href="https://github.com/zinverno/veynrel">https://github.com/zinverno/veynrel</a></p><p>Veynrel Companion:</p><p><a href="https://github.com/zinverno/veynrel-companion">https://github.com/zinverno/veynrel-companion</a></p><p>Veynrel itself is available as a Community Plugin for Obsidian.</p><p>If you were already using Vault Audit AI, you don't need to reinstall anything. Veynrel 1.8.0 continues to use the same plugin ID, settings, and existing semantic index.</p><p>I'm particularly interested in how people will use MCP not in a test Vault with ten files, but with their actual knowledge bases.</p><p>Because previous stages of the project have already shown one pattern quite well.</p><p>The most interesting architectural solutions begin about five minutes after a neat demo first encounters real data.</p></div>
+  </main>
+  <footer>
+    Translation generated with Gemini 2.5 Flash-Lite.
+    The original article remains the source of record.
+  </footer>
+</body>
+</html>

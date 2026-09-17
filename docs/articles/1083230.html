@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Forty rounds of review on code that had already been reviewed: what two AI reviewers found in each other</title>
+  <meta name="description" content="Skillmem code underwent two independent reviews, and I thought it was clean. Then two models, Claude and GPT, read it hostilely for forty consecutive rounds, tasked with reproducing every finding as a team. Six P1s and about twenty-five P2s in code that &quot;had already been reviewed,&quot; and the">
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.65;
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 32px 20px 64px;
+      color: #1f2328;
+    }
+    header {
+      border-bottom: 1px solid #d8dee4;
+      margin-bottom: 28px;
+      padding-bottom: 20px;
+    }
+    .source {
+      color: #57606a;
+      font-size: 0.95rem;
+    }
+    img, video, iframe {
+      max-width: 100%;
+      height: auto;
+    }
+    pre {
+      overflow-x: auto;
+      padding: 16px;
+      background: #f6f8fa;
+      border-radius: 6px;
+    }
+    code {
+      font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+    }
+    blockquote {
+      border-left: 4px solid #d0d7de;
+      margin-left: 0;
+      padding-left: 16px;
+      color: #57606a;
+    }
+    footer {
+      border-top: 1px solid #d8dee4;
+      margin-top: 40px;
+      padding-top: 20px;
+      color: #57606a;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Forty rounds of review on code that had already been reviewed: what two AI reviewers found in each other</h1>
+    <p>Skillmem code underwent two independent reviews, and I thought it was clean. Then two models, Claude and GPT, read it hostilely for forty consecutive rounds, tasked with reproducing every finding as a team. Six P1s and about twenty-five P2s in code that &quot;had already been reviewed,&quot; and the main lesson: every second fix created a regression that only the next round caught. Read more</p>
+    <p class="source">
+      Machine-translated from Habr.
+      <a href="https://habr.com/ru/articles/1083230/?utm_campaign=1083230&amp;utm_source=habrahabr&amp;utm_medium=rss">Read the original Russian article</a>.
+      Thu, 17 Sep 2026 07:28:27 GMT
+    </p>
+  </header>
+  <main>
+<div><p>In the previous article about <a href="https://github.com/liza-studio/skillmem">skillmem</a> — local memory for code agents — I talked about how someone else's README could become a user rule, and how we fixed it in 0.10. At the time, the code had passed two independent reviews, and I thought the vulnerability was singular and closed.</p><p>Yesterday, 0.11.0 was released. In between: <strong>forty rounds</strong> of review by two models from different sides (one on the Claude side, the other on the GPT side), each reading the code hostilely and tasked with reproducing findings as a team, not through reasoning. Below is what came of it and why I no longer trust any "clean" review until it's backed by another.</p><h3>Stop Rule</h3><p>"Review until there are no errors" is non-terminating: fresh eyes will always find something in any module. We agreed on this: <strong>stop when neither of the two reviewers reproduces any P1/P2</strong> (data loss, incorrect answer, trust boundary violation, crash on real input) for two consecutive rounds. P3s accumulate in the issue for the next release.</p><p>The rule was met in rounds 39-40. We didn't get there directly.</p><h3>Three Waves of Findings</h3><p><strong>Wave 1 (Rounds 1-18): Initial Audit.</strong> Six P1s, all outside the Stop hook everyone was looking at. HTTP-<code>/write</code> intercepted someone else's entry, <code>/learn</code> wrote public skills without permission, body files were shared across different databases, <code>trust</code> could be granted by any process, <code>kind</code> was a path traversal in export. Fixed, then three rounds spent fixing what the fixes broke.</p><p><strong>Wave 2 (Rounds 19-23): Release Rehearsal.</strong> I wrote the release requirements and gave them to the same reviewers. A rehearsal of <code>init</code> on a config copy found that moving the venv <strong>doubled all hooks</strong> — recap would run twice per session. Then a chain reaction: config backups named by the second overwrote each other; they were created with 0644 permissions next to the file containing the OAuth account; the Codex backup was not byte-for-byte. Eleven P2s in the installation code that "worked."</p><p><strong>Wave 3 (Rounds 24-40): Fresh Eyes on the Core.</strong> The most interesting part. Every time a reviewer received a module that no one had re-read from scratch, they found 1-3 old P2s inherited from main:</p><ul><li><p>HTTP server with multiple agents: <strong>409 on conflict quoted headers of someone else's private entries</strong>. Backlinks of a public entry returned the slug of someone else's private one. <code>/search</code>, <code>/list</code>, <code>/recall</code> paginated results *before* the visibility filter — 110 of someone else's entries, and your own entry returned as an empty 200, even though <code>/get</code> found it.</p></li><li><p><code>import-vault</code> followed symlinks like <code>*.md</code> outwards and put the target text into the database — <code>~/.zshrc</code>, for example. Attachments and packs had already rejected this case; notes had not.</p></li><li><p><code>skills rm &lt;pack&gt;</code> deleted all project entries for the pack, including the owner's author note.</p></li><li><p>The Windows scheduler did not carry environment variables, which launchd/cron/systemd did.</p></li><li><p>And my favorite: <code>scrub</code> — a function that hides secrets before writing — <strong>was not idempotent</strong>. An already substituted <code>[secret redacted]</code> would match again on each rewrite and grow into <code>[secret redacted] redacted]</code>. The hash changed, owner approval was removed. Restoring a dump over the same database silently removed approvals.</p></li></ul><h3>Every Second Fix Introduced a Regression</h3><p>This is the main thing I learned. The fix for search displacement went through four iterations, and each was caught by the next round:</p><ol><li><p>Candidate window 5 → filter after limit: five hidden rows displace their own.</p></li><li><p>Window 100: one hundred hidden rows — same issue.</p></li><li><p>No limit, cursor up to N visible: without <code>LIMIT</code>, SQLite sorts all matches before the first row, and a wide SELECT pulled all bodies through sorting — <strong>20 seconds per request</strong> on a database of 9 thousand rows.</p></li><li><p>Narrow pass + bodies only for selected: 52 ms without filter, 73–87 ms with filter. Done? No: the predicate was given to both the master and the HTTP master, which started ranking on an unlimited pool — a different top-5 than in the CLI, for five out of six requests.</p></li></ol><p>The fifth iteration — the master follows an unfiltered path, and the test "HTTP master == <code>S.search</code>", which failed on the previous commit. Only then did the round become clean.</p><p>If there had been no review after the first fix, we would have shipped a 20-second <code>/search</code> with the confidence that we had closed the leak.</p><h3>What's Worth Repeating</h3><ul><li><p><strong>Two reviewers from different sides</strong>, not one. Models err differently; the overlap in their findings over 40 rounds was noticeably less than the union.</p></li><li><p><strong>Strict report format</strong>: <code>P1|P2|P3 · file:line · what · evidence (command + output)</code>. "Seems like a race condition here" is a P3, not a gate.</p></li><li><p><strong>Reviewer does not write code.</strong> Twice during the review cycle, a reviewer violated read-only mode (editing <code>pyproject.toml</code>, a file next to the working clone) — check <code>git status</code> after each round.</p></li><li><p><strong>Each fix is a new round</strong>, even a one-liner. Especially a one-liner.</p></li><li><p><strong>Define the stop rule in advance</strong>, otherwise the cycle will either not end, or end when everyone is tired.</p></li></ul><p>Cost: a day of machine time and ~350 tests instead of 221. Result for 0.11.0: the trust boundary is closed equally on HTTP, MCP, CLI, and hooks, and every line of the release notes was verified by the team before being written. What remains P3 is in <a href="https://github.com/liza-studio/skillmem/issues/5">issue 0.11.1</a>.</p><p><code>pip install skillmem</code> · <a href="https://github.com/liza-studio/skillmem">GitHub</a> · <a href="https://github.com/liza-studio/skillmem/releases/tag/v0.11.0">Release notes 0.11.0</a></p><p>English version on dev.to: <a href="https://dev.to/sergey_petrukovich_c94a17/forty-review-rounds-on-code-that-had-already-been-reviewed-46mn">https://dev.to/sergey_petrukovich_c94a17/forty-review-rounds-on-code-that-had-already-been-reviewed-46mn</a></p></div>
+  </main>
+  <footer>
+    Translation generated with Gemini 2.5 Flash-Lite.
+    The original article remains the source of record.
+  </footer>
+</body>
+</html>

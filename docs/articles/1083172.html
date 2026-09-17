@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>AI Algorithmic Trading: Noise Analysis</title>
+  <meta name="description" content="The thought of making money with AI has been on my mind for three years. When &quot;agent-based&quot; was only heard in Sergey Brin&#x27;s interviews, and open-source models were only good for adult bots, I created my first agent using nerve-cli. This utility runs model queries in a loop with access">
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.65;
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 32px 20px 64px;
+      color: #1f2328;
+    }
+    header {
+      border-bottom: 1px solid #d8dee4;
+      margin-bottom: 28px;
+      padding-bottom: 20px;
+    }
+    .source {
+      color: #57606a;
+      font-size: 0.95rem;
+    }
+    img, video, iframe {
+      max-width: 100%;
+      height: auto;
+    }
+    pre {
+      overflow-x: auto;
+      padding: 16px;
+      background: #f6f8fa;
+      border-radius: 6px;
+    }
+    code {
+      font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+    }
+    blockquote {
+      border-left: 4px solid #d0d7de;
+      margin-left: 0;
+      padding-left: 16px;
+      color: #57606a;
+    }
+    footer {
+      border-top: 1px solid #d8dee4;
+      margin-top: 40px;
+      padding-top: 20px;
+      color: #57606a;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>AI Algorithmic Trading: Noise Analysis</h1>
+    <p>The thought of making money with AI has been on my mind for three years. When &quot;agent-based&quot; was only heard in Sergey Brin&#x27;s interviews, and open-source models were only good for adult bots, I created my first agent using nerve-cli. This utility runs model queries in a loop with access to tools and a target prompt. The agent itself wrote a news scraper, performed sentiment analysis, and provided investment recommendations. Essentially, it was a prototype of News Sentiment Trading. This system produced a final result once out of 10 times, and I only acted on one out of 10 final results. But in 2025, something happened to the market. News analysis stopped yielding the desired results. Armed with neural networks (Claude, DeepSeek, Qwen, and free ones from Opencode), I started looking for a working approach. Did I find it?</p>
+    <p class="source">
+      Machine-translated from Habr.
+      <a href="https://habr.com/ru/articles/1083172/?utm_campaign=1083172&amp;utm_source=habrahabr&amp;utm_medium=rss">Read the original Russian article</a>.
+      Thu, 17 Sep 2026 01:18:54 GMT
+    </p>
+  </header>
+  <main>
+<div><p>Hello, my name is Oleg. 11+ years of experience in architecture and development management.</p><p>I am like a blacksmith – I cannot help but forge, and now, in between jobs, I am working on my own projects. Among them are an <a href="https://alterfo.github.io/piano">interactive piano training app</a>, an <a href="https://alterfo.github.io/journal">encrypted personal diary</a>, <a href="https://alterfo.github.io/vacuum-rogues/">a game based on the "Space Rangers" series - Vacuum Rogues</a>, and about 6 more, including a <a href="https://github.com/alterfo/kb">knowledge base engine for code, chats, docs, and tasks</a> and an <a href="https://alterfo.github.io/idef0">IDEF0 editor</a>.</p><p>Currently, the focus is on an AI trading project.</p><p>The thought of making money with AI has been on my mind for three years. When the word "agent-based" could only be heard in Sergey Brin's interviews, and open-source models were only suitable for adult bots, I created my first agent using nerve-cli. This is a utility that runs model queries in a loop with access to utilities and a target prompt.</p><p>The agent itself wrote a tool for collecting news on a given topic, performed sentiment analysis, and provided investment recommendations. Essentially, it was a prototype of News Sentiment Trading. This was back in 2023. This system produced a final result once out of 10 times, and I only acted on one out of 10 final results. Under the hood was the first open-source gemma.</p><p>The system generated significant profit for me, which I spent on a two-week vacation in a five-star hotel in Hainan. But happiness did not last long. Where else but in China could I realize the impermanent nature of existence.</p><h3>Sentiment That Stopped Working.</h3><p>In 2025, something happened to the market. News analysis stopped yielding the desired results. Armed with neural networks (Claude, DeepSeek, Qwen, and free ones from Opencode), I started looking for a working approach.</p><p>I was inspired by the release of qwen3.8 27b, which I can run on my home setup with an RTX4090, and a job posting for an AI Architect in a bank's trading system that caught my eye. So, there is hope.</p><p>The first thing I did was start looking for correlations between news and stock prices. Every day, the system collected news, calculated sentiment, and wrote a calibration report. Over a month, dozens of such reports accumulated – I honestly tried to tweak source weights, filter out noise, categorize, add trust to verified publications, and penalize sensationalism.</p><p>A rudimentary backtest emerged – analyzing the impact of news on quotes over a 1/3/5/10 day horizon. All attempts to calibrate (not just sentiment) and find correlations only revealed noise and a 50/50 outcome. Interestingly, it turned out that PR/marketing news led to growth over a 5-day horizon with 80% probability, while even negative news, like Ozon being removed from the store, was followed by stock growth. I gained several useful insights for long-term bets and forecasts.</p><p>At this time, Google open-sourced an advanced model for time series analysis – TimesFM 3. It was trained on seasonal data and could find correlations between different data points. It found a correlation between Polyus (gold mining) and MTS, and between MTS and Sber with a 3-day lag over the last 90 days, but this was not confirmed by analyzing other timeframes, so I discarded this idea. It's a very good model for seasonal forecasting, but it wasn't suitable for my needs.</p><h3>Engine</h3><p>After experimenting with the idea in Python, I am rewriting it in Go. Simply fewer problems with modifications. And this time, I didn't want to reassemble the peculiarities of the Python environment again, so I created a modular Go monolith that:</p><ul><li><p>fetches quotes and order book for MOEX IIS every 5 minutes,</p></li><li><p>trades in a sandbox environment,</p></li><li><p>pulls news from sources verified in the previous stage,</p></li><li><p>calculates <code>FeatureContext</code> (momentum, RSI, deviation from moving average, realized volatility, volume z-score, order book imbalance, news sentiment),</p></li><li><p>checks orders against a set of rules (will commission eat profit, are there too many orders, are there news blockers, etc.),</p></li><li><p>implements a simple availability cluster – if the MacBook suddenly turns off, the application running on the ai-box switches to trader mode, and when the MacBook comes back online, it becomes the primary system,</p></li><li><p>sends executed orders to a Telegram bot and an audit log,</p></li><li><p>upon startup, performs a backtest on fresh data, and if it shows a loss, it does not launch.</p></li></ul><p>I excluded LLMs from the system; I needed determinism and fast backtesting, as the model could respond differently to the same input data, and backtesting took 8 hours.</p><p>Next, I went through a selection of models, trading settings, and data. I combined logistic regression into an ensemble with LightGBM and XGBoost (via inference in Go) – three models vote, the final signal is averaged. For news analysis, I trained my own bag-of-words classifier in pure Go, which categorizes headlines into eight event types (dividends, buybacks, sanctions, etc.) instead of vague "sentiment." This was a continuation of the correlation-finding activities.</p><p>To ensure my own classifier showed honest results, I trained it on old news and data, up to the backtest timeframe (90 days).</p><h3>Results</h3><p>Final backtest results on fresh MOEX data (2026-06-19 — 2026-09-16). 18 tickers, deposit 1,000,000 ₽, commission 0.05%, kill-switch enabled:</p><div><div><table><tbody><tr><th><p>Variant</p></th><th><p>Trades</p></th><th><p>Net P&amp;L</p></th><th><p>Hit rate</p></th><th><p>Drawdown</p></th><th><p>Sharpe</p></th></tr><tr><td><p><code>rule</code> (threshold rule)</p></td><td><p>599</p></td><td><p>−3,458 ₽</p></td><td><p>45.9 %</p></td><td><p>0.39 %</p></td><td><p>−2.13</p></td></tr><tr><td><p><code>model</code> (logistic regression, 1 lot)</p></td><td><p>3</p></td><td><p>+2,668 ₽</p></td><td><p>100 %</p></td><td><p>0.27 %</p></td><td><p>1.44</p></td></tr><tr><td><p><code>ensemble</code>, 1 lot</p></td><td><p>45</p></td><td><p>+5,583 ₽</p></td><td><p>84.4 %</p></td><td><p>0.07 %</p></td><td><p>5.70</p></td></tr><tr><td><p><code>ensemble</code>, notional 3,000 ₽</p></td><td><p>91</p></td><td><p>+14,890 ₽</p></td><td><p>72.5 %</p></td><td><p>0.20 %</p></td><td><p>6.10</p></td></tr><tr><td><p><code>ensemble</code>, notional 10,000 ₽</p></td><td><p>114</p></td><td><p>+48,932 ₽</p></td><td><p>68.4 %</p></td><td><p>0.57 %</p></td><td><p>6.29</p></td></tr><tr><td><p><code><strong>ensemble</strong></code><strong>, notional 15,000 ₽ (live recipe)</strong></p></td><td><p>136</p></td><td><p><strong>+75,029 ₽</strong></p></td><td><p>64.0 %</p></td><td><p><strong>0.84 %</strong></p></td><td><p>6.38</p></td></tr><tr><td><p><code>ensemble</code>, notional 20,000 ₽</p></td><td><p>143</p></td><td><p>+99,016 ₽</p></td><td><p>61.5 %</p></td><td><p>1.10 %</p></td><td><p>6.38</p></td></tr></tbody></table></div></div><p>You might ask why the live variant isn't the last one? Because over a 6-quarter window (18 months), it had a larger drawdown that didn't pass the kill-switch (it triggers when the portfolio drawdown reaches 3%).</p><p><em>For me, this is an engineering task. All figures are the result of testing on historical MOEX data and the same protection as in the live system. This is not investment advice or a promise of returns.</em></p><h3>Conclusions</h3><p>Despite market volatility in recent years, an ensemble of three neural networks, two specialized (LightGBM and XGBoost), and one self-trained model has shown the potential for profit.</p><p>I propose to move the classifier training process, backtests, and other implementation details to the comments to avoid overloading the article.</p></div>
+  </main>
+  <footer>
+    Translation generated with Gemini 2.5 Flash-Lite.
+    The original article remains the source of record.
+  </footer>
+</body>
+</html>

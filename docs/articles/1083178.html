@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>How I Made a Desk Lamp in Blender Using Codex and GPT-6 Astra</title>
+  <meta name="description" content="Last year, I bought a 3D printer and decided to print an organizer for small items. I couldn&#x27;t find a suitable ready-made model, so I opened Blender to create my own. That&#x27;s where I got stuck: I was lost among the panels, buttons, and settings and put modeling aside. Recently, I saw exampl">
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.65;
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 32px 20px 64px;
+      color: #1f2328;
+    }
+    header {
+      border-bottom: 1px solid #d8dee4;
+      margin-bottom: 28px;
+      padding-bottom: 20px;
+    }
+    .source {
+      color: #57606a;
+      font-size: 0.95rem;
+    }
+    img, video, iframe {
+      max-width: 100%;
+      height: auto;
+    }
+    pre {
+      overflow-x: auto;
+      padding: 16px;
+      background: #f6f8fa;
+      border-radius: 6px;
+    }
+    code {
+      font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+    }
+    blockquote {
+      border-left: 4px solid #d0d7de;
+      margin-left: 0;
+      padding-left: 16px;
+      color: #57606a;
+    }
+    footer {
+      border-top: 1px solid #d8dee4;
+      margin-top: 40px;
+      padding-top: 20px;
+      color: #57606a;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>How I Made a Desk Lamp in Blender Using Codex and GPT-6 Astra</h1>
+    <p>Last year, I bought a 3D printer and decided to print an organizer for small items. I couldn&#x27;t find a suitable ready-made model, so I opened Blender to create my own. That&#x27;s where I got stuck: I was lost among the panels, buttons, and settings and put modeling aside. Recently, I saw examples of working with Blender through Codex and GPT-6 Astra in the community and decided to try again. For my first exercise, I chose a desk lamp: base, stem, arm, and shade. After modeling, I set up materials and lighting, then created a five-second camera orbit. Read more</p>
+    <p class="source">
+      Machine-translated from Habr.
+      <a href="https://habr.com/ru/articles/1083178/?utm_campaign=1083178&amp;utm_source=habrahabr&amp;utm_medium=rss">Read the original Russian article</a>.
+      Thu, 17 Sep 2026 04:03:25 GMT
+    </p>
+  </header>
+  <main>
+<div><p>Last year, I bought a 3D printer and around July decided to print an organizer for small items. I couldn't find a suitable ready-made model, so I opened Blender to create my own. That's where it stopped: I got lost among the panels, buttons, and settings and put modeling aside.</p><p>Recently, I saw examples of working with Blender through Codex and GPT-6 Astra in the community and decided to try again. For my first exercise, I chose a desk lamp: base, stem, arm, and shade. After modeling, I set up materials and lighting, then created a five-second camera orbit.</p><figure><img loading="lazy" src="https://habrastorage.org/r/w1560/getpro/habr/upload_files/40c/a94/6b5/40ca946b5947fb73c4004bbec1d8d4ab.png"/></figure><p>I was working on macOS in the ChatGPT application version <code>26.908.40834</code>, with Blender <code>5.2.1 LTS</code> and the GPT-6 Astra High model. I described the task in Codex, and Blender and rendering were run on my computer. During the process, the agent controlled the interface, executed Python scripts in Blender, and ran the program in the background.</p><h3>1. Connecting the Model</h3><p>First, I installed the application from <a href="https://chatgpt.com/download/">the official ChatGPT download page</a> and switched to Codex. There are two options to access the model.</p><h4>Option 1. Official Subscription</h4><p>Log in with a subscription that grants access to Codex and GPT-6 Astra. Then, select GPT-6 Astra next to the prompt input field. If the model is not in the list, check its availability for your account.</p><h4>Option 2. API Key via BetterToken</h4><p>For API access, you can connect a <a href="https://bettertoken.ai/ru/">BetterToken</a> key and select the <code>gpt-6-astra</code> model. Requests are charged based on actual usage. The setup is described in <a href="https://docs.bettertoken.ai/ai-tools/codex">the Codex connection guide</a>.</p><h3>2. Project Folder and First Blender File</h3><p>In Documents, I created a folder named <code>astra-blender</code> and added it to Codex via the "+" next to Projects. Inside the project, I opened a task and sent: "Answer with one word: done." After receiving the answer, I proceeded to set up Blender; I checked its window control in the next step.</p><p>I downloaded Blender from <a href="https://www.blender.org/download/">the official website</a>. After launching, I kept the default scene with <code>Cube</code>, <code>Camera</code>, and <code>Light</code> objects. Via <strong>File → Save As</strong>, I saved it in the project folder as <code>desk-lamp.blend</code>. Images and videos were saved in this folder subsequently.</p><h3>3. Checking Computer Use</h3><p>In the Plugins section, I found OpenAI's Computer Use and clicked <strong>Install plugin</strong>. In the card, I enabled <strong>MCP server</strong> and <strong>Skill</strong>. On macOS, I granted the application <strong>Screen Recording</strong> and <strong>Accessibility</strong> permissions so it could see the window and control the mouse and keyboard.</p><p>In the application settings, also check <strong>Settings → Computer use</strong>: if your version has an <strong>Any App</strong> toggle, enable it and allow access to Blender when prompted. The location of these settings is shown in <a href="https://learn.chatgpt.com/docs/computer-use">OpenAI's documentation</a>. If the plugin tools don't appear in the task after installation, open a new task in the same project.</p><figure><img loading="lazy" src="https://habrastorage.org/r/w1560/getpro/habr/upload_files/d15/f0f/259/d15f0f2598918b2ce639102326f10425.png"/></figure><figure><img loading="lazy" src="https://habrastorage.org/r/w1560/getpro/habr/upload_files/304/ac3/0bc/304ac30bcc2256a96ac5a0ff95770610.png"/></figure><figure><img loading="lazy" src="https://habrastorage.org/r/w1560/getpro/habr/upload_files/c69/9f4/969/c699f49696599814e5210024f4445e9f.png"/></figure><p>The first check was renaming the cube. To replicate, you can send this prompt:</p><pre><code>Inspect the open Blender window via Computer Use. Name the current file and the objects in the scene list. Rename Cube to Connection_Test through the interface. Change only the name of this object, show the updated list, and stop.</code><div><a href="https://sourcecraft.dev/"><img loading="lazy"/></a></div></pre><p>The object list showed the name <code>Connection_Test</code>, and the cube itself remained in place. It was now clear that Codex could read the scene state and perform an action in the correct window. After this check, I moved on to the lamp.</p><figure><img loading="lazy" src="https://habrastorage.org/r/w1560/getpro/habr/upload_files/2fa/1b1/269/2fa1b1269daa8aaaa4abe5c2da25095f.png"/></figure><h3>4. Creating the Lamp</h3><p>I started with the geometry. For a lamp, it's easy to check if the base is on the floor, if the parts connect, and if a bulb fits inside the shade. In the prompt, I specified the model's composition and asked to keep the parts as separate objects so they could be revisited later.</p><p>I left the choice of tool to Codex. Computer Use allows interaction with the Blender window, and <code>bpy</code> enables creating and modifying objects using built-in Python. Running Blender in the background proved useful when interaction via the console in the window started to glitch.</p><p>Prompt for creating the model:</p><pre><code>Create a desk lamp in the current project desk-lamp.blend. Use Computer Use, Python Blender (bpy), or background Blender execution depending on the task. Replace Connection_Test with the lamp model. Create separate objects: Lamp_Base — a round base with its bottom surface at Z=0; Lamp_Stem — a vertical stem; Lamp_Arm — a short, angled arm; Lamp_Shade — a conical shade with wall thickness; Lamp_Bulb — a bulb inside the shade; Ground — a floor plane. Check the proportions and connections of the parts. Adjust the camera so the lamp fits entirely within the frame. Save desk-lamp.blend to the project folder, show the front and perspective views, and stop for review.</code><div><a href="https://sourcecraft.dev/"><img loading="lazy"/></a></div></pre><p>Initially, Codex prepared a script and executed it in Blender's built-in Python console. Then, input into the console began to work unstably. The agent switched to background Blender execution and finished connecting the <code>Lamp_Arm</code> to the <code>Lamp_Shade</code>.</p><figure><img loading="lazy" src="https://habrastorage.org/r/w1560/getpro/habr/upload_files/2d0/5b8/99e/2d05b899e10d04d67c18ed0f04b490ce.png"/></figure><p>After background processing, Codex opened the saved <code>desk-lamp.blend</code> in the regular Blender window and checked the result via Computer Use. The scene with the latest changes was then displayed in the window. The base was at <code>Z=0</code>, the shade had wall thickness, and the bulb was inside. All six objects retained their specified names.</p><p>When reviewing, it's helpful to look at the connection points of the parts and the bottom surface of the base. An error in proportions or a gap between the stem and the shade is easier to spot from multiple angles. Front and perspective views help check different sides of the model before setting up materials.</p><figure><img loading="lazy" src="https://habrastorage.org/r/w1560/getpro/habr/upload_files/cd6/32a/9b5/cd632a9b58aa138bd51aab309da5c79b.png"/></figure><h3>5. Materials, Lighting, and First Render</h3><p>Once I was satisfied with the shape, I moved on to materials and lighting. I chose dark green enamel for the base and shade, and brushed brass for the stem and arm. The bulb was supposed to emit warm light, and I asked for the scene to be lit from three sides, like in a studio shoot.</p><p>These requirements can be conveyed in a single prompt:</p><pre><code>Assign materials to objects in desk-lamp.blend: Lamp_Base and Lamp_Shade — dark green glossy enamel; Lamp_Stem and Lamp_Arm — brushed brass; Lamp_Bulb — warm glow; Ground — neutral material. Set up studio lighting with three sources and create a preview in Cycles. Check part connections, lamp position relative to the floor, framing, and reflections. Save the image and desk-lamp.blend.</code><div><a href="https://sourcecraft.dev/"><img loading="lazy"/></a></div></pre><p>The result of this stage is shown at the beginning of the article. The render shows the metallic stem, the green shade, and the light inside it. Before animating, it's worth checking that the lamp fits entirely within the frame and that the highlights allow its form to be seen.</p><h3>6. Camera Orbit and Video Assembly</h3><p>After the static render, I wanted a five-second video with a full 360° camera rotation around the lamp. At 24 frames per second, this requires 120 frames. I asked for the starting keyframe at frame 1 and the 360° position at frame 121; the video should include frames 1 through 120.</p><p>Frame 121 sets the camera position at the beginning of the next circle. With this render range, the end of the video doesn't include a repeat of the first frame. For constant speed, the animation prompt should explicitly specify uniform camera movement.</p><p>Prompt for replication:</p><pre><code>Create a uniform 360° camera orbit around the lamp in desk-lamp.blend. The lamp remains stationary. Duration is 5 seconds, 24 frames per second. Set the 0° key at frame 1 and the 360° key at frame 121. Render range is frames 1–120. Use Cycles, resolution 1280×720, and 32 samples. First, render frames 1, 41, and 81 and show them for angle review. After review, save all 120 frames as PNGs in the renders/ folder. Assemble them into an H.264 video in an MP4 container named desk-lamp-orbit.mp4. Save the scene in desk-lamp.blend.</code><div><a href="https://sourcecraft.dev/"><img loading="lazy"/></a></div></pre><p>Codex first rendered three test frames, then rendered the entire sequence. With uniform movement, frames 1, 41, and 81 show the lamp at approximately every 120° of rotation. This allows viewing several sides of the model before starting the full render.</p><h4>Error During MP4 Assembly</h4><p>During video assembly, the system's FFmpeg failed to launch: it was missing the <code>libvpx.11.dylib</code> library. By this point, 120 PNGs were already ready. Codex verified that all files existed and had non-zero sizes, and used Blender's built-in H.264 encoder to create the MP4.</p><p>This resulted in the file <code>desk-lamp-orbit.mp4</code>. The separately saved frames were useful in case of failure: work could be continued from video assembly. To replicate this method, your Blender build must support H.264 export.</p><figure><img loading="lazy" src="https://habrastorage.org/r/w1560/getpro/habr/upload_files/685/79b/0a4/68579b0a406992e592c52ea5e053b25f.png"/></figure><h3>Saving and Continuing Work</h3><p>I recommend saving the <code>.blend</code> file after each completed stage: geometry, materials, lighting, and animation. Before continuing, open the saved file and check the object list. This is especially useful after background Blender execution or an interrupted task.</p><p>When working via Computer Use, monitor access to the required window. On Windows, keep Blender visible on the active desktop and the computer unlocked. On macOS, if you encounter control issues, check screen recording and accessibility permissions, as well as permission for the application to work with Blender.</p><p>If Codex describes actions but nothing happens in the window, give it a small, specific task. For example: "Using Computer Use, select <code>Lamp_Shade</code> in the object list and show a screenshot of the result." Changes in the window will indicate whether the action was successful.</p></div>
+  </main>
+  <footer>
+    Translation generated with Gemini 2.5 Flash-Lite.
+    The original article remains the source of record.
+  </footer>
+</body>
+</html>

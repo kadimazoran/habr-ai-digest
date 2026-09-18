@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Who will stop AGI: laws or megawatts?</title>
+  <meta name="description" content="In recent months, calls to slow down the development of the most powerful AI systems have intensified again. And now they are coming not only from politicians and external experts. The heads of the largest AI companies themselves are discussing the need to slow down the race, introduce independent c">
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.65;
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 32px 20px 64px;
+      color: #1f2328;
+    }
+    header {
+      border-bottom: 1px solid #d8dee4;
+      margin-bottom: 28px;
+      padding-bottom: 20px;
+    }
+    .source {
+      color: #57606a;
+      font-size: 0.95rem;
+    }
+    img, video, iframe {
+      max-width: 100%;
+      height: auto;
+    }
+    pre {
+      overflow-x: auto;
+      padding: 16px;
+      background: #f6f8fa;
+      border-radius: 6px;
+    }
+    code {
+      font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+    }
+    blockquote {
+      border-left: 4px solid #d0d7de;
+      margin-left: 0;
+      padding-left: 16px;
+      color: #57606a;
+    }
+    footer {
+      border-top: 1px solid #d8dee4;
+      margin-top: 40px;
+      padding-top: 20px;
+      color: #57606a;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Who will stop AGI: laws or megawatts?</h1>
+    <p>In recent months, calls to slow down the development of the most powerful AI systems have intensified again. And now they are coming not only from politicians and external experts. The heads of the largest AI companies themselves are discussing the need to slow down the race, introduce independent control, and agree on rules that would allow stopping if further development becomes too dangerous. The debate is mainly about who and how should hit the brakes: the developers themselves, the state, or international regulators. But there is another possible limiter that needs neither laws nor international agreements – physical infrastructure. Read more</p>
+    <p class="source">
+      Machine-translated from Habr.
+      <a href="https://habr.com/ru/articles/1083538/?utm_campaign=1083538&amp;utm_source=habrahabr&amp;utm_medium=rss">Read the original Russian article</a>.
+      Thu, 17 Sep 2026 15:53:03 GMT
+    </p>
+  </header>
+  <main>
+<div><p>In recent months, calls to slow down the development of the most powerful AI systems have intensified again. And now they are coming not only from politicians and external experts. The heads of the largest AI companies themselves are discussing the need to slow down the race, introduce independent control, and agree on rules that would allow stopping if further development becomes too dangerous.</p><p>The debate is mainly about who and how should hit the brakes: the developers themselves, the state, or international regulators. But there is another possible limiter that needs neither laws nor international agreements – physical infrastructure.</p><p>Software can be scaled cheaply and almost infinitely. It's different with hardware. The larger AI becomes, the more GPUs, data centers, electricity, cooling systems, water, and network infrastructure are required. And it seems that it is precisely here that limitations are beginning to become quite real already.</p><p>Tagesschau has published an interesting article on this very topic.</p><p>According to the estimate provided there, electricity consumption in Germany could approximately double by 2045. The reason, of course, is not only AI: the number of electric cars and heat pumps is growing, and industry is being electrified. But at the same time, the demand of data centers for computing power is increasing very rapidly.</p><p>This is particularly evident in the example of Hesse. More than a third of German data centers are concentrated in the Frankfurt area, and new ones continue to be built there. As a result, electricity consumption in the state could triple.</p><p>If this energy is to be generated without additional growth in CO₂ emissions, significantly more solar and wind generation will be needed. Then this electricity must be delivered to consumers, meaning that power grids will also have to be expanded and rebuilt in parallel.</p><p>Therefore, more and more attention is now being paid not only to AI performance but also to how much energy is required to achieve it.</p><p>The article provides an interesting project by DFKI (German Research Center for Artificial Intelligence). At the Stahl-Holding-Saar plant, AI is used to recognize and sort scrap metal. Drones with cameras must distinguish between types of scrap metal, but for a drone, energy consumption is particularly critical: the more calculations, the faster the battery drains.</p><p>The researchers proceeded from the fact that there are thousands of image analysis models. Therefore, instead of simply taking the most powerful model, they first determined which parameters most strongly influence energy consumption, and then selected a model that was sufficient for this specific task.</p><p>As a result, with the same performance, electricity consumption was reduced by almost 90%.</p><p>Now, DFKI, together with T-Systems, is trying to transfer this approach to large data centers – up to systems with 10,000 GPUs. That is, the question is no longer just "how to build a more powerful cluster," but also how to achieve the same result with significantly lower computational costs.</p><p>A similar process is underway in the architecture of AI models themselves. According to research lead Wolfgang Maass, when ChatGPT appeared a few years ago, the entire model was effectively activated when processing a request. Now, computations are becoming more selective: only the necessary part of the model is used for a specific task.</p><p>Separately, the article provides an example of DeepSeek R1. A large model is broken down into many specialized "experts," and only a subset of them is engaged for a specific request. This significantly reduces the amount of computation and, consequently, energy consumption.</p><p>Maass compares this to the functioning of the human brain: to recognize what we see on the street, the brain does not need to use all its resources. By his very rough estimate, it's about five percent. Modern AI architectures are gradually moving in the same direction.</p><p>But this raises another problem. Increased efficiency does not necessarily lead to a decrease in overall energy consumption.</p><p>If computations become significantly cheaper, they are simply performed more. New data centers are built, more models are launched, and the number of requests increases. As a result, an increase in the total volume of computations can eat up all the savings achieved through more efficient algorithms.</p><p>Besides electricity, there is another very physical limitation – water. It is needed, among other things, for cooling data centers. And this is no longer a problem of the distant future.</p><p>This summer, restrictions on water use were already introduced in several regions of Germany. For example, due to drought and high consumption, watering, filling swimming pools, washing cars, and drawing water from rivers and lakes were restricted.</p><p>For instance, on July 14, 2026, Munich, due to prolonged drought and sharply increased water consumption, banned watering lawns, filling private pools, washing cars outside of car washes, and drawing water from rivers, lakes, and streams.</p><p>Consumption by that time had exceeded 360 million liters per day, compared to the usual level of about 300 million. Fines of up to 50,000 euros were imposed for violating the ban.</p><p>An even more striking example is the Siegen-Wittgenstein district in North Rhine-Westphalia.</p><p>After dry weeks, the two main reservoirs, Obernau and Breitenbach, were only 47.6% and 58.4% full. In June and July, residents used more drinking water than in the same period of any of the previous 15 years. In August, watering flowers, filling swimming pools, and washing cars were prohibited, among other things; the restrictions affected about 280,000 people.</p><p>This means that during hot and dry periods, water is already becoming a limited resource even for ordinary domestic consumption. If the number of data centers requiring water for cooling increases simultaneously, the issue of its availability ceases to be secondary.</p><p>It is clearly visible how quickly such physical limitations turn into economic ones.</p><p>In the summer of 2026, the low level of the Rhine already severely impacted logistics. According to Tagesschau, shipping rates from the Upper Rhine towards Rotterdam increased fourfold in about a week: due to the shallow depth, ships could only travel with significantly reduced loads. At a water level below 20 cm near Kaub, there was a risk of a de facto cessation of some transport, and some companies had already announced possible production cutbacks.</p><p>Replacing river transport with road transport quickly is also impossible: transporting the same volume instead of one ship might require about a hundred trucks. As a result, low water levels are beginning to directly affect not only logistics but also the prices of fuel, building materials, and industrial raw materials.</p><p>This is a good example of how a shortage of a completely ordinary physical resource – water – quickly becomes a limitation for logistics, industry, and the economy as a whole.</p><p>Here, in my opinion, lies the problem with scenarios of rapid and almost unlimited AGI growth.</p><p>Software can be scaled cheaply and almost infinitely. It's different with hardware. To increase computing power, additional data centers are needed, and with them – electricity, cooling systems, water, and appropriate network infrastructure.</p><p>Moreover, AI does not exist in a vacuum. Industry, transport, heating of homes, and other consumers compete for the same resources.</p><p>Therefore, even if it becomes programmatically possible to create more and more autonomous agents or larger and larger models, their actual scaling will be limited by quite material infrastructure.</p><p>As a result, the scenario in which computing power begins to grow almost infinitely following the capabilities of AI itself looks much less obvious when considering energy, water, and infrastructure.</p><p>Most likely, the main question in the coming years will not be how to infinitely increase computing power, but how to get more useful computations out of every watt.</p><p>And judging by what is already happening: choosing more suitable models for a specific task, using parts of a model, and optimizing data center operations – this is the path the industry is gradually moving along.</p></div>
+  </main>
+  <footer>
+    Translation generated with Gemini 2.5 Flash-Lite.
+    The original article remains the source of record.
+  </footer>
+</body>
+</html>

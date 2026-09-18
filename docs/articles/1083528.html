@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>How I Taught an AI to Work with 1C and Other Corporate Systems</title>
+  <meta name="description" content="The user attached a skill to the AI agent and wrote a work note. The skill was supposed to add a comment to a report in a corporate project management system. However, the model didn&#x27;t even call the tool. The tool&#x27;s description had a condition: use it only when the user explicitly asks to ">
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.65;
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 32px 20px 64px;
+      color: #1f2328;
+    }
+    header {
+      border-bottom: 1px solid #d8dee4;
+      margin-bottom: 28px;
+      padding-bottom: 20px;
+    }
+    .source {
+      color: #57606a;
+      font-size: 0.95rem;
+    }
+    img, video, iframe {
+      max-width: 100%;
+      height: auto;
+    }
+    pre {
+      overflow-x: auto;
+      padding: 16px;
+      background: #f6f8fa;
+      border-radius: 6px;
+    }
+    code {
+      font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+    }
+    blockquote {
+      border-left: 4px solid #d0d7de;
+      margin-left: 0;
+      padding-left: 16px;
+      color: #57606a;
+    }
+    footer {
+      border-top: 1px solid #d8dee4;
+      margin-top: 40px;
+      padding-top: 20px;
+      color: #57606a;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>How I Taught an AI to Work with 1C and Other Corporate Systems</h1>
+    <p>The user attached a skill to the AI agent and wrote a work note. The skill was supposed to add a comment to a report in a corporate project management system. However, the model didn&#x27;t even call the tool. The tool&#x27;s description had a condition: use it only when the user explicitly asks to add a comment to the system. The person had already selected the skill and started writing the note, but for the model, this was not enough. I am developing IskraBot, a Russian AI agent. I recently created a skill for a designer&#x27;s corporate system and fixed a VPN connection to 1C in another integration. I will discuss the problems I encountered, but first, let&#x27;s talk about what a skill is. Read more</p>
+    <p class="source">
+      Machine-translated from Habr.
+      <a href="https://habr.com/ru/articles/1083528/?utm_campaign=1083528&amp;utm_source=habrahabr&amp;utm_medium=rss">Read the original Russian article</a>.
+      Fri, 18 Sep 2026 07:50:28 GMT
+    </p>
+  </header>
+  <main>
+<div><p>The user attached a skill to the AI agent and wrote a work note. The skill was supposed to add a comment to a report in a corporate project management system. However, the model didn't even call the tool.</p><p>The tool's description had a condition: use it only when the user explicitly asks to add a comment to the system. The person had already selected the skill and started writing the note, but for the model, this was not enough.</p><p>I am developing IskraBot, a Russian AI agent. I recently created a skill for a designer's corporate system and fixed a VPN connection to 1C in another integration. I will discuss the problems I encountered, but first, let's talk about what a skill is.</p><h3>What We Call a Skill</h3><p>IskraBot has text-based and programmatic skills. A text-based skill provides instructions for the model: what to clarify with the user, in what order to perform the task, and how to format the result. For example, the 'Presentations' skill describes the process of preparing slides and checking a finished presentation.</p><p>A programmatic skill contains code for specific operations. With these skills, IskraBot can find a document on Google Drive, show the latest emails in Gmail, or retrieve deal information from amoCRM or Bitrix24. Integrations with 1C and the UniSender mailing service also fall into this category.</p><p>The model selects the appropriate action and processes the request. The programmatic part makes the call, and the platform handles the connection, permissions, and user interaction.</p><p>From here on, I will focus on two skills that I created and refined myself.</p><figure><img alt=
+  </main>
+  <footer>
+    Translation generated with Gemini 2.5 Flash-Lite.
+    The original article remains the source of record.
+  </footer>
+</body>
+</html>

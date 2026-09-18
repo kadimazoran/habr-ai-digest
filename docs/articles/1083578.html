@@ -1,0 +1,126 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Not by benchmark alone: the stealth model union-alpha on a real task - a day from release to battle</title>
+  <meta name="description" content="Prologue: live meeting, backlog, and a free model. Hello everyone! A little introduction: the client&#x27;s AI agent has been working in production for four months: night requests in NEIZYAGRAM Direct, dialogues, questionnaires, deals in amoCRM. In the previous article - a breakdown of Reasoning Loc">
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.65;
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 32px 20px 64px;
+      color: #1f2328;
+    }
+    header {
+      border-bottom: 1px solid #d8dee4;
+      margin-bottom: 28px;
+      padding-bottom: 20px;
+    }
+    .source {
+      color: #57606a;
+      font-size: 0.95rem;
+    }
+    img, video, iframe {
+      max-width: 100%;
+      height: auto;
+    }
+    pre {
+      overflow-x: auto;
+      padding: 16px;
+      background: #f6f8fa;
+      border-radius: 6px;
+    }
+    code {
+      font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+    }
+    blockquote {
+      border-left: 4px solid #d0d7de;
+      margin-left: 0;
+      padding-left: 16px;
+      color: #57606a;
+    }
+    footer {
+      border-top: 1px solid #d8dee4;
+      margin-top: 40px;
+      padding-top: 20px;
+      color: #57606a;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Not by benchmark alone: the stealth model union-alpha on a real task - a day from release to battle</h1>
+    <p>Prologue: live meeting, backlog, and a free model. Hello everyone! A little introduction: the client&#x27;s AI agent has been working in production for four months: night requests in NEIZYAGRAM Direct, dialogues, questionnaires, deals in amoCRM. In the previous article - a breakdown of Reasoning Lock and announcements of sequels. One of the agreements with the client is a branch for processing comments under posts: a person writes &quot;+&quot; or &quot;how much does it cost?&quot; under a publication = the agent replies to them with a private message in Direct. The promise hung in the backlog and waited for its hour. The hour came by itself. On the evening of September 16, a new stealth model was released on OpenRouter: stealth/union-alpha. The provider is anonymous, the release stamp on the page is September 16, meaning the stealth model is a day old by the time this article is published. Facts about this llm: multimodality, tool calling, GPQA Diamond 90.9%, and most importantly - the price is exactly zero (for now). Read more</p>
+    <p class="source">
+      Machine-translated from Habr.
+      <a href="https://habr.com/ru/articles/1083578/?utm_campaign=1083578&amp;utm_source=habrahabr&amp;utm_medium=rss">Read the original Russian article</a>.
+      Thu, 17 Sep 2026 18:36:17 GMT
+    </p>
+  </header>
+  <main>
+<div><blockquote><p><em>Disclaimer: the article mentions Meta - an organization recognized as extremist and banned in the Russian Federation. The article is not a warm-up or an advertisement. All logs, numbers, and screenshots are from real runs on a test account.</em></p><p><em>All keys, phone numbers, and names in the examples have been changed; the code, schema, logic, and screenshots are from the client's working project, and strictly with their permission! The article is not an advertisement/self-promotion or similar.</em> </p></blockquote><h3>Prologue: live meeting, backlog, and a free model</h3><p>Hello everyone! A little introduction: the client's AI agent has been working in production for four months: night requests in NEIZYAGRAM Direct, dialogues, questionnaires, deals in amoCRM. <a href="https://habr.com/ru/articles/1081780/">In the previous article</a> - a breakdown of Reasoning Lock and announcements of sequels. One of the agreements with the client is a <strong>branch for processing comments</strong> under posts: a person writes "+" or "how much does it cost?" under a publication = the agent replies to them with a private message in Direct. The promise hung in the backlog and waited for its hour.</p><p>The hour came by itself. On the evening of <strong>September 16</strong>, a new stealth model was released on OpenRouter: <strong>stealth/union-alpha</strong>. The provider is anonymous, the release stamp on the page is September 16, meaning the stealth model is a day old by the time this article is published. Facts about this llm: multimodality, tool calling, GPQA Diamond 90.9%, and most importantly - <strong>the price is exactly zero (for now)</strong>.</p><figure><img loading="lazy" src="https://habrastorage.org/r/w1560/getpro/habr/upload_files/4d7/83b/6a8/4d783b6a83237db22dde9b6f0791f899.png"/></figure><p>There was also a figure that scared me: <strong>context of 262K</strong>. Four times less than the previous stealth model, which I fed 60 million tokens - more details in the article <a href="https://habr.com/ru/articles/1076084/">https://habr.com/ru/articles/1076084/</a>. The previous task - the experiment will not handle it... but the assignment, and already a real backlog for implementing one circuit, will probably cope.</p><p><strong>This morning</strong> I went to the client's office - a live meeting on the strategy for further project development. I returned with an approved backlog, sat down to work, and decided to continue the method tested on the previous stealth model: <strong>benchmarks don't show the main thing, a real task does</strong>. Not "run the model through tests," but "let it implement a real feature from a live project." </p><p>The difference from last time, as I said earlier, is in scale and stakes. Work for the model = <strong>one comment branch</strong>, not the entire workflow. But the project's working folder is quite full: live workflow export, tools, patches, diaries, documents. I open Visual Studio Code with Cline - and let's go.</p><p>And one more decision, which I consider necessary and correct: <strong>do not touch the client's account and workflow</strong>. The real workflow remains untouched in production, and the experiment moves to the test environment = my own test Instagram account.</p><p><em>Spoiler</em>: <em>it was this decision that threw a "spanner in the works" that I didn't account for. But more on that later.)</em></p><p>Technical Specification Request: 28,200 tokens for input only - role, backlogs, and live workflow export.</p><figure><img alt="start)" loading="lazy" src="https://habrastorage.org/r/w1560/getpro/habr/upload_files/628/a09/fee/628a09fee8b66a9c7514e81a40e6a99b.png" title="start)"/><div><figcaption>start)</figcaption></div></figure><h3>What the model produced in one go</h3><p>The llm output = <strong>seven files</strong>, and this is a build system:</p><p><code>logic.cjs</code>: contains pure functions: event routing, admission calculation, response formatting, API validation. They are extracted from n8n nodes specifically for testing without n8n;</p><p><code>build.cjs</code> - this is the builder itself: it reads the live workflow export, embeds functions into codenodes, adds 15 new ones, writes the finished JSON, and keeps a backup of the source (and refuses to overwrite it if it differs = protection against overwriting);</p><p><code>test.cjs</code>: contains <strong>16 tests</strong> on a real webhook payload;</p><p><code>README.md</code>: this is a file <strong>"ANALYSIS OF THE COMMENT BRANCH" of 38 KB</strong>, where the model itself identified its shortcomings.</p><p>Final JSON: <strong>all original nodes without changes + 15 new ones</strong>. Imported inactive, webhook paths preserved.</p><p>An interesting feature, for which I am willing to forgive the model a lot = the first section of its self-analysis is called <em>"Main points and admission of shortcomings"</em>.</p><figure><img alt=" assembly audit in progress" loading="lazy" src="https://habrastorage.org/r/w1560/getpro/habr/upload_files/63b/81e/e2a/63b81ee2a862ed86967675b5c6582ee5.png" title=" assembly audit in progress"/><div><figcaption>assembly audit in progress</figcaption></div></figure><blockquote><p><em>"....You are right about the prompt. Currently, it's a copy of the general Direct prompt with an addition for comments. I haven't created a full-fledged separate scenario for "+", price, and date of birth..."</em> - admission by the LLM itself</p></blockquote><p>A stealth model that writes its own list of flaws before you "audit" it is quite compelling, in my opinion. It remains to check if it's lying in the other six files!</p><p><strong>Architecture in 60 seconds</strong></p><pre><code>```json
+Webhook (Direct and Comments come into the same Meta stream)
+  └─ IG: Route Events (Code)     — distributes igEventKind: direct / comment
+      ├─ direct → old Direct branch (untouched)
+      └─ comment → One At A Time (loop, batch of 1)
+            → Prepare (admission: on/off, test-gate, blacklist, 7-day window)
+            → Eligible? → Claim (Redis INCR — atomic comment_id acquisition)
+            → First Claim? → Record Pending (log in Redis)
+            → AI Agent (models and tools common with Direct, separate memory per node)
+            → Prepare Reply (tag cleaning, fallback, 900 character limit)
+            → Send Private Reply → Validate API Result → Record Accepted
+            → back to the loop for the next comment
+```</code><div><a href="https://sourcecraft.dev/"><img loading="lazy"/></a></div></pre><p>I want to explain three decisions separately, which in my opinion are the strongest in this build:</p><p><strong>1. Private Reply is addressed by comment, not by user.</strong> Request body:</p><pre><code>```json
+{
+  "recipient": { "comment_id": "18120835172314431" },
+  "message": { "text": "Reply to client" }
+}
+```</code><div><a href="https://sourcecraft.dev/"><img loading="lazy"/></a></div></pre><p>One comment = one private reply, 7-day window, no public reply under the post. Continuation of the conversation - only when the person writes in direct, and this is already a separate execution of the old branch, not a tricky transition between agents.</p><p><strong>2. Deduplication via Redis INCR, not GET-SET.</strong> If two executions hit the same comment simultaneously, both will see "key not found" and both will send a reply. INCR is atomic: <code>1</code> - mine, <code>2+</code> - already taken.</p><p><strong>3. The philosophy of "we won't send twice" is more important than "we will definitely send."</strong> An error after capturing a comment blocks auto-repeat: the key remains in Redis - meaning the agent won't write a second time, you'll have to sort it out manually. A conscious exchange of delivery guarantee for absence of duplicates, so to speak = for an atelier agent, this is the right exchange.</p><p>By the way, a pleasant bonus confirmed by a live run: <strong>the comment author ID and the Direct sender ID are the same))</strong>. This means the memory key <code>XXX_ig:{userId}</code> is common to both branches: comment - private reply - person writes in direct - agent remembers what the comment was about. More on this in <strong><em>test run 1.1</em></strong>, where I almost buried this beautiful scheme with my own output.</p><h3>Audit: where the hidden "flaws" were hiding</h3><p>I didn't believe any green checkmark - skepticism or distrust, and simply fear :-) I reviewed the rebuild from sources (matched the output JSON byte for byte, except for random IDs), 16 tests, syntax of all Code nodes, and most importantly, ran the function directly from the JSON simulating n8n inputs. Results: the build is honest, all original nodes are untouched. But there were findings:</p><div><table><tbody><tr><td><p>Finding (number)</p></td><td><p>What's the "catch"</p></td></tr><tr><td><p>1</p></td><td><p>The branch prompt = a copy of the Direct prompt of 12,000 characters with VERDICT/TASK/STAGE tags. A separate scenario for "+"/price/date of birth is in the ANALYSIS (!), but not included in the JSON; the agent would reply to the comment "as in direct," including technical tags.</p></td></tr><tr><td><p>2</p></td><td><p>With test mode disabled, users from the Direct blacklist would receive replies under posts because the "Blacklist" node is not executed on the new route... meaning a client banned in direct would receive care in comments.</p></td></tr><tr><td><p>3</p></td><td><p>Response cleaning catches <code>[TASK:NONE]</code> but misses <code>[END_DIALOG]</code> (tag without a colon). Technical garbage will reach the client's private message.</p></td></tr><tr><td><p>4</p></td><td><p>Private Reply is set to Graph API v25.0, while in the client's workflow, direct nodes run on the proven v22.0 (a minor thing, but still).</p></td></tr><tr><td><p>5</p></td><td><p><strong>The hardcoded business account ID was taken from the test data and did not match the real one from the live webhook</strong> = with this constant, 100% of real comments would be silently discarded.</p></td></tr><tr><td><p>6</p></td><td><p>The allowlist was compiled from the Direct "Test Account" node ID, but the real test user was not included; in the fixture, the model concatenated the <code>username</code> with someone else's ID, and as a result, it would be like this: the agent silently ignores the comment = and not a single checkmark would turn red.</p></td></tr></tbody></table></div><p>Separate honesty about myself: after <strong>run 1</strong>, I put forward one hypothesis: the commenter ID and the direct ID live in different spaces, shared memory will not work. <strong>Run 1.1</strong> killed it in five minutes: I wrote in direct and in comments from the same account, and as a result: <strong>the IDs matched to the last digit</strong>. Hypothesis withdrawn. Moral of the story: <strong>constants from fixtures and beautiful theories are verified only by live runs</strong>, and this is true for both the model and the auditor.</p><p><strong>Code: what ultimately went into "battle"</strong></p><p><strong>Event Router</strong> - this is the very first node after the webhook. Compact version of the production version:</p><pre><code>```js
+const accountId = String(entry.id);
+const chatId = String(v.from?.id || '');
+const commentId = String(v.id || '');
+
+// Only our business account — REAL ID from live webhook, not from fixture
+if (accountId !== '17841479739340657') continue;
+// Echo loop (don't reply to ourselves) and empty author
+if (!chatId || chatId === accountId) continue;
+// IDs — only digit strings: JSON number &gt; 2^53 is silently rounded
+if (!/^\\d+$/.test(chatId) || !/^\\d+$/.test(commentId)) continue;
+
+// Live text, FEED/REELS posts, not a nested reply, not a deletion
+if (typeof v.text !== 'string' || !v.text.trim()) continue;
+if (!v.media || !['FEED', 'REELS'].includes(v.media.media_product_type)) continue;
+if (v.parent_id || v.verb === 'remove' || v.verb === 'delete') continue;
+```</code><div><a href="https://sourcecraft.dev/"><img loading="lazy"/></a></div></pre><p><strong>Admission (Prepare, production version)</strong> - a config that closed findings 1, 2, 6 in one move:</p><pre><code>```js
+const config = {
+  commentsEnabled: true,
+  testMode: false,                     // production mode: reply to everyone
+  allowedUserIds: ['936850522443774', '826426153486930'],      // test gate for the future
+  blacklistedUserIds: ['1344359104565035', '1686784379107626'], // blacklist from Direct
+  activePrompt: SHORT_BRANCH_PROMPT  // ~1.3K characters instead of a copy of ~12K
+};
+```</code><div><a href="https://sourcecraft.dev/"><img loading="lazy"/></a></div></pre><p>And inside <code>prepare</code>, three lines that are worth the entire admission system:</p><pre><code>```js
+const allowed = config.commentsEnabled === true &&
+  (!config.testMode || config.allowedUserIds.includes(j.chatId)) &&
+  !(config.blacklistedUserIds || []).includes(j.chatId);
+```</code><div><a href="https://sourcecraft.dev/"><img loading="lazy"/></a></div></pre><p><strong>Response cleaning before sending</strong> = the model knows markdown, and NEIZYAGRAM knows plain text:</p><pre><code>```js
+text = text.replace(/```[\s\S]*?```/g, '')                    // code blocks
+  .replace(/\b([^\]]+)\)((https?:\/\/[^)]+))\)/g, '$1: $2')   // [text](url) → text: url
+  .replace(/\b[A-Z_]{2,}(?::[^\\\]]*)?\b/gi, '')                // [TASK:NONE] and [END_DIALOG]
+  .replace(/\*\*(.*?)\*\*/g, '$1').trim();
+if (!text || Array.from(text).length &gt; 900) text = FALLBACK_TEXT;  // Instagram limit
+```</code><div><a href="https://sourcecraft.dev/"><img loading="lazy"/></a></div></pre><p>Yes, by the way, the last line is the very protection that fired in <strong>run 2</strong>: the agent crashed, but I still received a polite placeholder in direct instead of silence or raw technical garbage. The protection did exactly what it was written for.</p><p><strong>Three runs</strong></p><p><strong>Run 1. Everything is green... BUT... zero result</strong></p><figure><img alt="it stopped at these nodes" loading="lazy" src="https://habrastorage.org/r/w1560/getpro/habr/upload_files/a49/7ae/d65/a497aed65d4bbebe5c0c4986fa00ad87.png" title="it stopped at these nodes"/><div><figcaption>it stopped at these nodes</figcaption></div></figure><p>I imported it, left a comment under a reel on the test account. The execution is green, nodes have checkmarks, but it ended at <code>Comments: Eligible?</code>. No reply in my private message.</p><p>Well, that happens in n8n: <strong>execution didn't crash = it honestly fulfilled the design, which didn't match the intention</strong>. I read the input of <code>Eligible?</code>, and there's a ready verdict: <code>skipReason: DISABLED_OR_NOT_ALLOWLISTED</code>. The model's test gate was built from the Direct "Test Account" node ID = my real test user was not on this list (finding number 6 in the table above). At the same time, finding 5 from the table surfaced: the hardcoded account ID from the fixture does not equal the real one from the webhook = the guard with that constant would have dropped everything.</p><p>It's fixed not by debugging, but by reading one line of skipReason and editing the config (Prepare v2 above). About half an hour)</p><p><strong>Run 1.1. Five minutes that killed my hypothesis</strong></p><p>I write in direct and in comments from the same account. I look at the router's output: <code>sender.id</code> in Direct = <code>1385828923330271</code>, <code>chatId</code> of the comment = <code>1385828923330271</code>. <strong>Perfect match.</strong> The hypothesis about "different ID spaces" is dead, shared memory is legitimate, the model's architecture turned out to be more accurate than its "auditor's" output. Super).</p><p><strong>Run 2. Bad request - and the "bomb" I planted myself</strong></p><p>I write the second comment. Gate passed, keys acquired, agent processed, sending... and... damn:</p><pre><code>```text
+Failed to send private reply to comment 18120835172314431
+for account 17841479739340657: Bad request - please check your parameters
+```</code><div><a href="https://sourcecraft.dev/"><img loading="lazy"/></a></div></pre><p>Two failures in one execution.</p><p><strong>First, the AI agent itself.</strong> The fallback model mode was enabled in the branch code, but the second model itself was not created and therefore the sub-node was not connected. The agent crashed, and the protection kicked in: in Prepare Reply, an empty and non-standard response is replaced with a placeholder. I received a polite <em>"Hello!✨ Thank you for your comment..."</em> in direct - instead of emptiness or raw JSON. The protection did exactly what it was designed for.</p><p><strong>Second - the sending.</strong> Meta rejected the request itself. The Community node swallows the raw Graph API response, showing only "Bad request" - there's nothing to diagnose, I'll use curl. And the reason turned out to be funnier than any bug: <strong>the client's credit card was in the node, and I was testing on my own test account</strong>. The client's token physically cannot respond to my account's comments = Meta saw a "stranger" and politely sent me away with a <code>400</code>.</p><figure><img alt='everything is visible on the "canvas"' loading="lazy" src="https://habrastorage.org/r/w1560/getpro/habr/upload_files/a7d/ba0/3bc/a7dba03bc3e9d04326ee9586e788e893.png" title='everything is visible on the "canvas"'/><div><figcaption>everything is visible on the "canvas"</figcaption></div></figure><p>Here it is, the very "safe sandbox" I chose at the beginning, so as not to break anything for the client. The decision was correct, but its execution was not: <strong>by moving the build into isolation, I forgot to move the context - the credential should have moved with it</strong>. The first "bomb" that I didn't account for was laid by my own hands. The AI has nothing to do with it.</p><p><strong>Run 3. Victory)</strong></p><p>Correct credential in the node, fallback model connected - and the chain went through: admission - acquisition - log - agent - sending - validation - result recording. The private reply arrived in direct.</p><figure><img alt=
+  </main>
+  <footer>
+    Translation generated with Gemini 2.5 Flash-Lite.
+    The original article remains the source of record.
+  </footer>
+</body>
+</html>

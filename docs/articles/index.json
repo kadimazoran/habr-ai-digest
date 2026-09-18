@@ -903,6 +903,14 @@
     "summary": "Reflections on a project. Architecture: router + pipelines (AWS, Claude). We'll consider a relatively simple example familiar to almost everyone who has built an LLM agent for natural language queries to data – whether it's text2sql, an analytical assistant, or a database chatbot. Typically, the agent is tasked with handling everything itself – determining the query type, formulating it, choosing the output format, and deciding whether to issue a disclaimer. This is the essence of an agent and the purpose of the system prompt. The system works flawlessly for a dozen test questions. But problems arise later when questions start coming in different formulations. For example, the same question phrased differently is processed differently – the model interprets the phrase differently, and structurally identical results take on different forms (string, table, graph) without explanation. Or, for the same question phrasing, a disclaimer is sometimes provided and sometimes comes back empty. The first thing usually changed in such cases is adding another rule to the prompt. This helps a few times. Then the new rule contradicts the old ones, and the prompt becomes a collection of patches for specific situations. The instability doesn't disappear; it just hides in the order in which the model applies conflicting instructions. This is where both the problem and its solution lie. The problem is that in the described scenario, no one explicitly decided what part of the system is handled by code and what by the model. It evolved organically during prompt generation. If you ask why the model chooses the output format instead of a developer writing ten lines of ordinary code, there's usually no clear answer. Hence the solution: the boundary between what the code does and what the model does is not an implementation detail but a separate architectural object. If this decision isn't made explicitly, it will still be made by default, and most often not in favor of system stability. Read more",
     "title": "The Code | Model Boundary as an Architectural Object"
   },
+  "https://habr.com/ru/articles/1083156/?utm_campaign=1083156&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Thu, 17 Sep 2026 21:22:26 GMT",
+    "slug": "1083156",
+    "source_url": "https://habr.com/ru/articles/1083156/?utm_campaign=1083156&utm_source=habrahabr&utm_medium=rss",
+    "summary": "An analyst at a webinar asked about hierarchical indexes for regulatory documents: a tree of 'document → article → clause', where the model descends from the root and selects a branch, like a person browsing a table of contents. Then, about costs: indexing involves processing the entire corpus. I compared such an index to a B-tree. Then I sat down to calculate, and the comparison held up. In a B-tree on disk, a node is fitted to a block to reduce head movements. Here, the block is the effective window of a small model, and head movement is a call to it. Let's estimate. Six acts of ~200 pages — depth 2. 2M tokens — depth 3. The navigator reads 8–12 thousand tokens instead of the entire corpus. And the tree itself already exists in the laws: chapters, articles, parts, clauses. It's built with regexps based on numbering, without a model. Costs are one-time, only for a brief description of internal nodes. The navigator only needs to choose one of fifty branches based on a short description. This is closer to classification than reasoning. Someone in the audience asked if a 1.5–3 billion parameter model could handle this. Intriguing. In this article, we'll explore ways to get accurate answers from legally significant documentation. Read more",
+    "title": "So, How Do We Search Regulatory Documents with Agents?"
+  },
   "https://habr.com/ru/articles/1083166/?utm_campaign=1083166&utm_source=habrahabr&utm_medium=rss": {
     "model": "gemini-2.5-flash-lite",
     "published": "Wed, 16 Sep 2026 22:00:44 GMT",
@@ -975,6 +983,78 @@
     "summary": "AI helps write code and test ideas faster, but accelerating development doesn't mean accelerating the entire system. What happens to testing, reviews, metrics, and engineer growth. Read more",
     "title": "AI Has Partially Accelerated Development. What About Everything Else?"
   },
+  "https://habr.com/ru/articles/1083528/?utm_campaign=1083528&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Fri, 18 Sep 2026 07:50:28 GMT",
+    "slug": "1083528",
+    "source_url": "https://habr.com/ru/articles/1083528/?utm_campaign=1083528&utm_source=habrahabr&utm_medium=rss",
+    "summary": "The user attached a skill to the AI agent and wrote a work note. The skill was supposed to add a comment to a report in a corporate project management system. However, the model didn't even call the tool. The tool's description had a condition: use it only when the user explicitly asks to add a comment to the system. The person had already selected the skill and started writing the note, but for the model, this was not enough. I am developing IskraBot, a Russian AI agent. I recently created a skill for a designer's corporate system and fixed a VPN connection to 1C in another integration. I will discuss the problems I encountered, but first, let's talk about what a skill is. Read more",
+    "title": "How I Taught an AI to Work with 1C and Other Corporate Systems"
+  },
+  "https://habr.com/ru/articles/1083536/?utm_campaign=1083536&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Thu, 17 Sep 2026 15:51:42 GMT",
+    "slug": "1083536",
+    "source_url": "https://habr.com/ru/articles/1083536/?utm_campaign=1083536&utm_source=habrahabr&utm_medium=rss",
+    "summary": "For the past few days, I've been watching what's happening around OpenAI, and there's one little thing that's bothering me a bit. It's not because another powerful model has been released. We're used to that. It's because the people who have been accelerating this race in recent years have suddenly started saying that it would be good to slow down. On September 3rd, OpenAI released GPT-6 Astra. The model is powerful, there are many benchmarks, everything is as usual. But I was more struck by one line from OpenAI's own materials. Astra became the company's first model to be assigned a Critical level for cybersecurity capabilities within the Preparedness Framework. If we remove the complex wording, the meaning is roughly this: with the right tools and access, the model is already capable of finding unknown vulnerabilities and developing ways to exploit them. Moreover, a human doesn't need to hold its hand and tell it what to do at each next step; it's enough to indicate the starting direction. OpenAI writes that because of this, they even slowed down certain development stages while strengthening defenses. A little over a week passes, and the heads of the largest AI companies begin to discuss not how to make the next model faster, but how to slow down this race a bit. Dario Amodei says that model capabilities are growing faster than security systems. Musk supports the idea of restrictions. Altman also talks about the need for coordination between labs. In parallel, OpenAI postpones its IPO, and talks about slowing down the AI race have already managed to shake the stocks of AI-related companies. Read more",
+    "title": "OpenAI Hit the Gas and Almost Immediately Talked About Brakes"
+  },
+  "https://habr.com/ru/articles/1083538/?utm_campaign=1083538&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Thu, 17 Sep 2026 15:53:03 GMT",
+    "slug": "1083538",
+    "source_url": "https://habr.com/ru/articles/1083538/?utm_campaign=1083538&utm_source=habrahabr&utm_medium=rss",
+    "summary": "In recent months, calls to slow down the development of the most powerful AI systems have intensified again. And now they are coming not only from politicians and external experts. The heads of the largest AI companies themselves are discussing the need to slow down the race, introduce independent control, and agree on rules that would allow stopping if further development becomes too dangerous. The debate is mainly about who and how should hit the brakes: the developers themselves, the state, or international regulators. But there is another possible limiter that needs neither laws nor international agreements – physical infrastructure. Read more",
+    "title": "Who will stop AGI: laws or megawatts?"
+  },
+  "https://habr.com/ru/articles/1083542/?utm_campaign=1083542&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Thu, 17 Sep 2026 15:57:19 GMT",
+    "slug": "1083542",
+    "source_url": "https://habr.com/ru/articles/1083542/?utm_campaign=1083542&utm_source=habrahabr&utm_medium=rss",
+    "summary": "Project files were on disk, but the AI agent received an empty working copy. The cause was found in Git: the sources hadn't been committed yet, and worktree was created from HEAD. Using VECTA as an example, I'll break down what needs to be built around a coding agent: snapshots of current files, restoring events after disconnections, access rights, and result verification. I'll explain how to manage a task from another device, why worktree doesn't replace a sandbox, and what not to promise regarding cost limits. Read on.",
+    "title": "AI Agent Didn't See My Code: Worktree, Task State, and Access Control in VECTA"
+  },
+  "https://habr.com/ru/articles/1083558/?utm_campaign=1083558&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Thu, 17 Sep 2026 16:41:53 GMT",
+    "slug": "1083558",
+    "source_url": "https://habr.com/ru/articles/1083558/?utm_campaign=1083558&utm_source=habrahabr&utm_medium=rss",
+    "summary": "In one of the tests of my humanizer-ru, the \"machineness\" score of the response dropped from 0.95 to 0.10. The response itself did not change by a single letter: \"The capital of Australia is Canberra.\" Lines around it, including the chatbot's name, were removed from the file. In another pair, the texts differed only by a line break at the end of the file. The scores still diverged: 0.9 and 0.3. These pairs are in the project's open data. I used to draw conclusions about editing quality from the overall table, but now this interpretation is withdrawn. I'll break down what exactly I measured and how to check it yourself. What I actually measured",
+    "title": "One text — two evaluations: how I made a mistake checking humanizer-ru"
+  },
+  "https://habr.com/ru/articles/1083574/?utm_campaign=1083574&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Fri, 18 Sep 2026 05:26:44 GMT",
+    "slug": "1083574",
+    "source_url": "https://habr.com/ru/articles/1083574/?utm_campaign=1083574&utm_source=habrahabr&utm_medium=rss",
+    "summary": "A year of working with an AI agent in production has cured me of the phrase \"the model got stupid.\" Almost everything that looks like stupidity or hallucinations breaks down into three instruction defects: the rule is written in prose, the rule is written in the form of \"how not to do it,\" and the rule lacks verification. I want to share techniques for how this is treated, and talk about a loop where the agent rewrites the instruction for itself. There will be no measurements, but instead a list of things that have stopped happening. Everything I refer to is in a public repository; links are in the text. Read more",
+    "title": "\"The Agent is Stupіd\" is a Diagnosis of the Instruction, Not the Model"
+  },
+  "https://habr.com/ru/articles/1083578/?utm_campaign=1083578&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Thu, 17 Sep 2026 18:36:17 GMT",
+    "slug": "1083578",
+    "source_url": "https://habr.com/ru/articles/1083578/?utm_campaign=1083578&utm_source=habrahabr&utm_medium=rss",
+    "summary": "Prologue: live meeting, backlog, and a free model. Hello everyone! A little introduction: the client's AI agent has been working in production for four months: night requests in NEIZYAGRAM Direct, dialogues, questionnaires, deals in amoCRM. In the previous article - a breakdown of Reasoning Lock and announcements of sequels. One of the agreements with the client is a branch for processing comments under posts: a person writes \"+\" or \"how much does it cost?\" under a publication = the agent replies to them with a private message in Direct. The promise hung in the backlog and waited for its hour. The hour came by itself. On the evening of September 16, a new stealth model was released on OpenRouter: stealth/union-alpha. The provider is anonymous, the release stamp on the page is September 16, meaning the stealth model is a day old by the time this article is published. Facts about this llm: multimodality, tool calling, GPQA Diamond 90.9%, and most importantly - the price is exactly zero (for now). Read more",
+    "title": "Not by benchmark alone: the stealth model union-alpha on a real task - a day from release to battle"
+  },
+  "https://habr.com/ru/articles/1083648/?utm_campaign=1083648&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Fri, 18 Sep 2026 04:11:15 GMT",
+    "slug": "1083648",
+    "source_url": "https://habr.com/ru/articles/1083648/?utm_campaign=1083648&utm_source=habrahabr&utm_medium=rss",
+    "summary": "It's too early to say whether AI will kill us or save us. Right now, it's more important to figure out how not to go crazy before this bright or terrible future arrives. That's why I've gathered seven traps that my brain and I have already fallen into, looked at what science knows about them, and tried to answer the main question: what do we do about it? Read more",
+    "title": "Working with AI can drive you crazy: 7 productivity traps that start with 'I'll be able to do more now'"
+  },
+  "https://habr.com/ru/articles/1083664/?utm_campaign=1083664&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Fri, 18 Sep 2026 07:48:57 GMT",
+    "slug": "1083664",
+    "source_url": "https://habr.com/ru/articles/1083664/?utm_campaign=1083664&utm_source=habrahabr&utm_medium=rss",
+    "summary": "Hello everyone! I promised to write this article and I've finally finished the tests and am ready to share the results with you. I spent a LOT of time running these benchmarks. A lot of time on setups, a lot of time waiting for tests. All together it took about two weeks of work - models crashed, sometimes I had to patch them to respond, sometimes I just had to wait a few days for the test to complete (even with multithreading). Finally, I got the answers that interest me - and, I hope, will be interesting to you, and to the creators of Alice and GigaChat. Why they don't run such benchmarks themselves, I can guess, but if I were in charge of these projects, I would, on the contrary, put running benchmarks on a cycle. Because only then can you understand where your model is, and where the world leaders are. Let's read about the experiment results!",
+    "title": "Comparison of Alice (Yandex) and GigaChat (Sber) on 5 Benchmarks: τ³, PRAKT-120, MultiChallenge, WildBench, and Arena-Hard"
+  },
   "https://habr.com/ru/companies/1c/articles/1071340/?utm_campaign=1071340&utm_source=habrahabr&utm_medium=rss": {
     "model": "gemini-2.5-flash-lite",
     "published": "Thu, 03 Sep 2026 07:18:11 GMT",
@@ -1006,6 +1086,14 @@
     "source_url": "https://habr.com/ru/companies/agima/articles/1081356/?utm_campaign=1081356&utm_source=habrahabr&utm_medium=rss",
     "summary": "What happens to corporate search when employee names need to be hidden from an external LLM? Simple replacement of surnames with random markers protects data but breaks the connection between the query, found documents, and the model's response. In this article, we explore how to balance privacy and utility: where to store the mapping, why entity resolution is needed, how the policy engine makes decisions, and why it's crucial to check not only the input prompt but also the model's response. Read more",
     "title": "DLP for LLMs: How to Anonymize Requests Without Breaking Employee Search"
+  },
+  "https://habr.com/ru/companies/agima/articles/1083514/?utm_campaign=1083514&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Thu, 17 Sep 2026 15:14:23 GMT",
+    "slug": "1083514",
+    "source_url": "https://habr.com/ru/companies/agima/articles/1083514/?utm_campaign=1083514&utm_source=habrahabr&utm_medium=rss",
+    "summary": "On September 22nd at 16:00 MSK, an open online podcast will be held on implementing GenAI in insurance. Registration. Read more",
+    "title": "GenAI in Insurance: How to Move from Pilots to Results"
   },
   "https://habr.com/ru/companies/alfa/articles/1080768/?utm_campaign=1080768&utm_source=habrahabr&utm_medium=rss": {
     "model": "gemini-2.5-flash-lite",
@@ -1190,6 +1278,14 @@
     "source_url": "https://habr.com/ru/companies/koda/articles/1081524/?utm_campaign=1081524&utm_source=habrahabr&utm_medium=rss",
     "summary": "On September 11, Cognition announced the availability of Fusion in Devin Desktop and CLI. Previously, the system worked in the cloud-based Devin. Now, the combination of a leading model and an executor can be used in the desktop application and terminal. The company recommends the Claude Fable 5.1 and SWE-2 combination. Recall that Devin is a tool where you can assign it tasks related to studying a project, changing code, and checks. Fusion, in turn, organizes the joint work of two models. One, for example, creates a plan and accepts the result, the other is responsible for implementation. It's like a regular development team, but without dailies. Read more",
     "title": "One AI codes, the second commands: how Devin Fusion works"
+  },
+  "https://habr.com/ru/companies/koda/articles/1083546/?utm_campaign=1083546&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Thu, 17 Sep 2026 16:18:02 GMT",
+    "slug": "1083546",
+    "source_url": "https://habr.com/ru/companies/koda/articles/1083546/?utm_campaign=1083546&utm_source=habrahabr&utm_medium=rss",
+    "summary": "We launched DeepSeek V4 Flash in four popular harnesses. In our measurements, Koda scored 52.2% and outperformed Kilocode, Claude Code, and OpenCode. In the article, we explain how we set up the experiment, why the same model shows different results, and what exactly helps the agent solve more real-world tasks. Read more",
+    "title": "Kodacode: The Best Harness for DeepSeek v4 Flash!? We Measured Various Harnesses and Models"
   },
   "https://habr.com/ru/companies/kodik/articles/1081264/?utm_campaign=1081264&utm_source=habrahabr&utm_medium=rss": {
     "model": "gemini-2.5-flash-lite",

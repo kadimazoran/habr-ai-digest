@@ -1,0 +1,98 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>One text — two evaluations: how I made a mistake checking humanizer-ru</title>
+  <meta name="description" content="In one of the tests of my humanizer-ru, the &quot;machineness&quot; score of the response dropped from 0.95 to 0.10. The response itself did not change by a single letter: &quot;The capital of Australia is Canberra.&quot; Lines around it, including the chatbot&#x27;s name, were removed from the file">
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.65;
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 32px 20px 64px;
+      color: #1f2328;
+    }
+    header {
+      border-bottom: 1px solid #d8dee4;
+      margin-bottom: 28px;
+      padding-bottom: 20px;
+    }
+    .source {
+      color: #57606a;
+      font-size: 0.95rem;
+    }
+    img, video, iframe {
+      max-width: 100%;
+      height: auto;
+    }
+    pre {
+      overflow-x: auto;
+      padding: 16px;
+      background: #f6f8fa;
+      border-radius: 6px;
+    }
+    code {
+      font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+    }
+    blockquote {
+      border-left: 4px solid #d0d7de;
+      margin-left: 0;
+      padding-left: 16px;
+      color: #57606a;
+    }
+    footer {
+      border-top: 1px solid #d8dee4;
+      margin-top: 40px;
+      padding-top: 20px;
+      color: #57606a;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>One text — two evaluations: how I made a mistake checking humanizer-ru</h1>
+    <p>In one of the tests of my humanizer-ru, the &quot;machineness&quot; score of the response dropped from 0.95 to 0.10. The response itself did not change by a single letter: &quot;The capital of Australia is Canberra.&quot; Lines around it, including the chatbot&#x27;s name, were removed from the file. In another pair, the texts differed only by a line break at the end of the file. The scores still diverged: 0.9 and 0.3. These pairs are in the project&#x27;s open data. I used to draw conclusions about editing quality from the overall table, but now this interpretation is withdrawn. I&#x27;ll break down what exactly I measured and how to check it yourself. What I actually measured</p>
+    <p class="source">
+      Machine-translated from Habr.
+      <a href="https://habr.com/ru/articles/1083558/?utm_campaign=1083558&amp;utm_source=habrahabr&amp;utm_medium=rss">Read the original Russian article</a>.
+      Thu, 17 Sep 2026 16:41:53 GMT
+    </p>
+  </header>
+  <main>
+<div><p>In one of the tests of my humanizer-ru, the "machineness" score of the response dropped from 0.95 to 0.10. The response itself did not change by a single letter: "The capital of Australia is Canberra." Lines around it, including the chatbot's name, were removed from the file.</p><p>In another pair, the texts differed only by a line break at the end of the file. The scores still diverged: 0.9 and 0.3.</p><p>These pairs are in the project's open data. I used to draw conclusions about editing quality from the overall table, but now this interpretation is withdrawn. To explain why, I'll first show what exactly I was trying to check.</p><h3>What humanizer-ru does</h3><p>I am developing <a href="https://github.com/Vladimir-Human/humanizer-ru">Vladimir-Human/humanizer-ru</a>. This is an open-source project for working with Russian text after a chatbot. It combines two tasks that are easily confused.</p><p>The first is regular editing. For example, a draft might say: "Within the project, the implementation of a monitoring system was carried out." This can be shortened to "The project implemented a monitoring system." Such an example illustrates the correction of bureaucratic language; it is not a test result nor proof of the original phrase's neural network authorship.</p><p>For this task, the project has a skill: a set of text instructions and examples for an AI assistant. The model reads them along with your text and, upon request, suggests edits. humanizer-ru does not train a separate neural network. The result depends on the model and the prompt; a useful edit still needs to be distinguished from a paraphrase that has lost an important caveat.</p><p>The second task is much more specific: to remove technical garbage that has entered a document when copying from a chat. For example, instead of a normal footnote, the text might contain <code>:contentReference[oaicite:3]{index=3}</code>. For such cleaning, I have Python utilities: they search for known character sequences and remove supported artifacts according to rules. A language model is not needed for this.</p><p>You give the utility a text file as input, and get a list of findings, cleaned text, or the difference between versions as output. It won't rewrite a bureaucratic suggestion for you. Conversely, the skill for the model deals with editing and doesn't become a reliable authorship expert because of it.</p><p>The problem started when I tried to evaluate both tasks with a single number.</p><h3>How a good result was obtained</h3><p>In the measurement from August 25, 2026, there were 12 saved responses from Alisa, GigaChat, and Le Chat. Saved, meaning: along with the responses, the questions and signatures were included in the files. These were not twelve identically prepared articles.</p><p>The DeepSeek model rewrote them according to the instructions of humanizer-ru version 3.15.0. The task required removing traces of machine generation, preserving all facts, and returning only the final text. There is no other processing step in the run description: no separate preparatory cleaning was recorded for these twelve pairs.</p><p>Another model, GLM-5.3, acted as the judge: it evaluated the original and processed versions.</p><p>The published instruction to the judge set a scale from 0 to 1, where 0 means "looks like human text," and 1 means "like neural network text." Here and further, this is a conditional model score. The number 0.95 should not be read as an established probability of "95% that the author is an AI": this measurement did not provide the calibration that would allow such a statement.</p><p>The average score for the originals was 0.846, and after processing, 0.438. The score was lower in 11 out of 12 pairs, and the difference in averages was minus 0.408. In one pair out of twelve, the score, on the contrary, slightly increased.</p><p>The arithmetic adds up: these numbers can be re-obtained from the saved scores without consulting the models. But I used the drop in score as evidence that the editing had improved the texts. The score did not prove this.</p><h3>Canberra, which didn't need rewriting</h3><p>Here is the full original of one pair from that measurement, <code>ai-09</code>:</p><pre><code>Mode: Fast (Vibe) 
+Question: What is the capital of Australia? 
+Date: 2026-07-14 
+Client: chat.mistral.ai 
+
+Answer from Le Chat (Mistral, fast mode): 
+
+Australia's capital is Canberra. 
+</code><div><a href="https://sourcecraft.dev/"><img loading="lazy"/></a></div></pre><p>After processing, the file contained:</p><pre><code>Australia's capital is Canberra. 
+</code><div><a href="https://sourcecraft.dev/"><img loading="lazy"/></a></div></pre><p>The first version has a score of 0.95, the second - 0.10. The last sentence is identical. The original file also had an invisible BOM encoding marker at the beginning; the processed one does not.</p><p>Yes, the original literally stated who answered. Before processing, the judge saw the answer with the signature "Le Chat"; after processing, a short phrase without a signature. Removing these lines is useful if you need a clean answer. But a more accurate or informative answer did not appear in this pair. And I counted the score drop as an improvement.</p><p>This is not an example specially invented for the article. Both files of the pair, <code>eval/runs/2026-08-25-axis-12/source/ai-09.txt</code> and <code>eval/runs/2026-08-25-axis-12/with/ai-09.txt</code>, are in the general data snapshot along with the other pairs; a link to the snapshot is in the appendix.</p><h3>Nothing was removed here, yet the score still dropped</h3><p>Another answer to the same question, pair <code>ai-03</code>, was saved as follows:</p><pre><code>Question: What is the capital of Australia? 
+
+Answer from Alisa (YandexGPT, 2026-07-14): 
+
+Australia's capital is Canberra. 
+
+Sources 
+</code><div><a href="https://sourcecraft.dev/"><img loading="lazy"/></a></div></pre><p>The processed file contains exactly the same lines. Only the trailing line break disappeared. Alisa's signature remained in place, and the score dropped from 0.9 to 0.3.</p><p>This pair breaks the convenient explanation "it's all about the removed signatures." Why the scores diverged cannot be determined from the saved files: the model could have responded differently to two identical requests. However, it is clear what it was definitely not: the reader was offered exactly the same words.</p><p>Both pairs are part of those twelve, not a separate experiment. They do not explain the entire average difference. They explain why it cannot be presented as proof of good editing.</p><h3>What I withdrew and what remains</h3><p>In the <a href="https://github.com/Vladimir-Human/humanizer-ru/blob/main/ERRATA.md">errata log dated September 1, 2026</a>, I withdrew the interpretation of minus 0.408 as a text quality indicator. The original files and scores remain in the repository. Recalculation still yields the same number. What has changed is the conclusion that can be drawn from it.</p><p>This is not proof of the editing's uselessness. In a long answer, a repetition can be removed or, conversely, a condition on which the entire meaning depends can be lost. Each such edit must be considered separately, and a model score that diverges even on a pair without a single edit is not suitable for this.</p><p>However, cleaning has simpler criteria. A known service marker is removed and checked by a repeated scan. The command inside the code block must not be touched: the reader will copy a corrupted line. And a controversial invisible character is not removed wholesale, because some such characters hold composite emojis and paragraph formatting.</p><p>And an empty scanner report only means that it did not find any supported markers. This does not imply that a human wrote the text. The usefulness of cleaning can be checked separately from any assumptions about authorship.</p><h3>What you can try now</h3><p>Here is a small educational example for the Python utility. This is a fictional string to demonstrate the command, not experimental data with twelve responses.</p><p>Save to a UTF-8 file named <code>example.txt</code>:</p><pre><code>According to the report, the number of applications has increased. :contentReference[oaicite:3]{index=3} 
+</code><div><a href="https://sourcecraft.dev/"><img loading="lazy"/></a></div></pre><p>Install the utilities from my project. The name <code>humanizer-ru</code> is taken on PyPI; a neighboring project has a different package name. Version 3.36.4 refers to the current release of the utilities; 3.15.0 from the story above was the version of the text instructions at the time of that measurement.</p><pre><code>python -m pip install humanizer-ru==3.36.4 
+humanizer-markers --scan example.txt 
+humanizer-clean --diff example.txt 
+</code><div><a href="https://sourcecraft.dev/"><img loading="lazy"/></a></div></pre><p>The first command will find <code>contentReference</code>. Its return code of 1 indicates a finding, not a program error. The second will show the intended change and will not overwrite the file.</p><p>To get the cleaned text in the terminal:</p><pre><code>humanizer-clean example.txt 
+</code><div><a href="https://sourcecraft.dev/"><img loading="lazy"/></a></div></pre><p>Result:</p><pre><code>According to the report, the number of applications has increased. 
+</code><div><a href="https://sourcecraft.dev/"><img loading="lazy"/></a></div></pre><p>The marker is gone. Confirmation of the increase in applications has not appeared from this: the link to the actual report still needs to be checked by an editor. The utility does not restore lost sources and does not verify the truthfulness of the statement.</p><p>For comparing the original with already edited text, there is a separate command <code>humanizer-facts diff before.txt after.txt</code>. It helps to notice lost numbers, dates, and other extractable elements. This is an additional check: the coincidence of such elements does not guarantee the preservation of the entire meaning.</p><h3>Why a second humanizer-ru here</h3><p>On GitHub, there is a project with the same name, <a href="https://github.com/ilyautov/humanizer-ru">by Ilya Utov</a>. According to its current documentation, it also consists of instructions for an AI editor along with a scanner. The user provides Russian text and asks to remove bureaucratic language or clichés; the agent corrects specific places and verifies statements against the source. The scanner separately highlights phrases and calculates a score according to its own rules, adjusted for the text genre.</p><p>Therefore, comparing "he only has a prompt, and I have a program" would be incorrect. Both projects have instructions for models and programmatic checks. Mine currently focuses on cleaning up insertion artifacts and the verifiable limitations of this cleaning. Ilya's project, in its description, prioritizes local stylistic editing. This is a description of approaches, not the result of a competition.</p><p>On September 7, Ilya <a href="https://github.com/ilyautov/humanizer-ru/issues/57#issuecomment-5563548216">proposed</a>: "a public test, public data. Let's make a benchmark for humanizers." I agreed and opened <a href="https://github.com/Vladimir-Human/humanizer-ru/issues/220">a separate discussion</a>. The format of a joint test is yet to be agreed upon; there are no results of a joint comparison in this article.</p><p>In such a test, I propose to separately check for false positives, removal of technical artifacts, and loss of facts. If later we focus specifically on editing quality, it will be necessary to compare several versions of the same text:</p><ul><li><p>the original without changes;</p></li><li><p>the same text after technical cleaning only;</p></li><li><p>the text after editing by a model with identically prepared input.</p></li></ul><p>Then it will be clear what the editing itself provided beyond cleaning. Before the main run, the evaluation method also needs to be checked: does it notice intentionally corrupted statements, does it not reward the same text for different formatting. Otherwise, you might get a nice table about something else again.</p><p>I left the old number in the data along with the withdrawn interpretation: deleting inconvenient results is the worst way to deal with them. But you can no longer choose a tool based on it, and that, perhaps, is the only conclusion I am willing to defend. A check that measures something other than what you think looks exactly like a successful one. The same graphs, the same percentages. You can distinguish them only by trying to break them.</p><h3>Appendix: how to verify the numbers cited</h3><p>The snapshot of the source data referenced in the article is fixed by commit <code>75c7711</code>. The package installed above is needed for cleaning files; for verifying the historical measurement, the repository is needed:</p><pre><code>git clone https://github.com/Vladimir-Human/humanizer-ru.git 
+cd humanizer-ru 
+git checkout 75c7711f174133139e3ff8e22c67bdc11231baee 
+python eval/reproduce.py 
+</code><div><a href="https://sourcecraft.dev/"><img loading="lazy"/></a></div></pre><p>The script recalculates statistics based on saved results. It does not re-query neural networks and does not prove that a new call will yield the same scores. Output: average before <code>0.8458</code>, after <code>0.4375</code>, difference <code>-0.4083</code>; these numbers are rounded above.</p><p>The files on which the article relies are in one snapshot. In the <a href="https://github.com/Vladimir-Human/humanizer-ru/tree/75c7711f174133139e3ff8e22c67bdc11231baee/eval/runs/2026-08-25-axis-12">run directory</a>, there are pairs <code>source</code> and <code>with</code>; also <code>manifest.json</code> with the description of the task for the editor. The summary table of scores is in <code>eval/detect-results/2026-08-25-detect-axis-12-glm53.json</code>.</p><p>The errata log also describes additional control runs, the source data for which is not fully published. Their numerical results are not used here: the examples and recalculation above rely on the open archive.</p></div>
+  </main>
+  <footer>
+    Translation generated with Gemini 2.5 Flash-Lite.
+    The original article remains the source of record.
+  </footer>
+</body>
+</html>

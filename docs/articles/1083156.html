@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>So, How Do We Search Regulatory Documents with Agents?</title>
+  <meta name="description" content="An analyst at a webinar asked about hierarchical indexes for regulatory documents: a tree of &#x27;document → article → clause&#x27;, where the model descends from the root and selects a branch, like a person browsing a table of contents. Then, about costs: indexing involves processing the entire co">
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.65;
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 32px 20px 64px;
+      color: #1f2328;
+    }
+    header {
+      border-bottom: 1px solid #d8dee4;
+      margin-bottom: 28px;
+      padding-bottom: 20px;
+    }
+    .source {
+      color: #57606a;
+      font-size: 0.95rem;
+    }
+    img, video, iframe {
+      max-width: 100%;
+      height: auto;
+    }
+    pre {
+      overflow-x: auto;
+      padding: 16px;
+      background: #f6f8fa;
+      border-radius: 6px;
+    }
+    code {
+      font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+    }
+    blockquote {
+      border-left: 4px solid #d0d7de;
+      margin-left: 0;
+      padding-left: 16px;
+      color: #57606a;
+    }
+    footer {
+      border-top: 1px solid #d8dee4;
+      margin-top: 40px;
+      padding-top: 20px;
+      color: #57606a;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>So, How Do We Search Regulatory Documents with Agents?</h1>
+    <p>An analyst at a webinar asked about hierarchical indexes for regulatory documents: a tree of &#x27;document → article → clause&#x27;, where the model descends from the root and selects a branch, like a person browsing a table of contents. Then, about costs: indexing involves processing the entire corpus. I compared such an index to a B-tree. Then I sat down to calculate, and the comparison held up. In a B-tree on disk, a node is fitted to a block to reduce head movements. Here, the block is the effective window of a small model, and head movement is a call to it. Let&#x27;s estimate. Six acts of ~200 pages — depth 2. 2M tokens — depth 3. The navigator reads 8–12 thousand tokens instead of the entire corpus. And the tree itself already exists in the laws: chapters, articles, parts, clauses. It&#x27;s built with regexps based on numbering, without a model. Costs are one-time, only for a brief description of internal nodes. The navigator only needs to choose one of fifty branches based on a short description. This is closer to classification than reasoning. Someone in the audience asked if a 1.5–3 billion parameter model could handle this. Intriguing. In this article, we&#x27;ll explore ways to get accurate answers from legally significant documentation. Read more</p>
+    <p class="source">
+      Machine-translated from Habr.
+      <a href="https://habr.com/ru/articles/1083156/?utm_campaign=1083156&amp;utm_source=habrahabr&amp;utm_medium=rss">Read the original Russian article</a>.
+      Thu, 17 Sep 2026 21:22:26 GMT
+    </p>
+  </header>
+  <main>
+<div><p>On September 1st, I hosted a webinar on how to teach an agent to read documentation for an internal framework. The demo was about code: a niche Java framework, a library without source code, <code>AGENTS.md</code> next to the project.</p><p>But the first question from the audience wasn't about code. A system analyst is building a system that answers based on a corpus of internal security orders, GOST standards, and specifications. He needs an answer with a reference to a specific clause. The document structure cannot be altered: the document is legally significant.</p><p>Objections were raised in the chat. By the end of the broadcast, a discussion had developed.</p><p>In code, the agent has an arbiter – the compiler. Invent a method, and the build fails. Not everything is caught: at the same webinar, a participant's build passed, but the screen crashed at runtime. But there is an arbiter.</p><p>Regulatory documents have no arbiter. A retelling of a non-existent clause looks the same as a correct answer. How can one build such an arbiter and a search for it?</p><hr/><h3>How Regulatory Documents Differ from Code Documentation</h3><div><div><table><tbody><tr><th><p>Requirement</p></th><th><p>Why</p></th><th><p>What This Means for Search</p></th></tr><tr><td><p>Original without changes</p></td><td><p>legal significance</p></td><td><p>the agent receives the original text, not a summary</p></td></tr><tr><td><p>Details: document, edition, article, part, clause</p></td><td><p>the reference leads to a specific point</p></td><td><p>details are associated with each fragment; the model does not reconstruct them</p></td></tr><tr><td><p>Editions</p></td><td><p>the act changes, but the model's weights and the old index retain the previous edition</p></td><td><p>the edition date resides within the node itself</p></td></tr><tr><td><p>Russian Morphology</p></td><td><p>“personal data operator” and “operator” are different strings</p></td><td><p>the search understands word forms</p></td></tr><tr><td><p>Tables and Appendices</p></td><td><p>measures are often presented as a "measure × level" matrix</p></td><td><p>tables cannot be cut like text</p></td></tr><tr><td><p>Cross-references</p></td><td><p>"in accordance with part 3 of article 19..."</p></td><td><p>the answer requires two documents simultaneously</p></td></tr><tr><td><p>Refusal</p></td><td><p>the answer may not be in the corpus</p></td><td><p>"not found" is also a correct answer</p></td></tr><tr><td><p>Closed loop and audit</p></td><td><p>the corpus and queries are themselves information security data</p></td><td><p>search is local, queries are logged</p></td></tr><tr><td><p>Costs</p></td><td><p>indexing and answering cost tokens</p></td><td><p>preparation is one-time, answering is cheap</p></td></tr></tbody></table></div></div><p><strong>Example about editions.</strong> State information systems were protected for many years under FSTEC Order No. 17. From March 1, 2026, it was replaced by FSTEC of Russia Order No. 117 dated April 11, 2025, registered by the Ministry of Justice on June 16, 2025, under No. 82619 — <a href="http://publication.pravo.gov.ru/document/0001202506170011">official publication</a>. It repealed five items: Orders No. 17, No. 27, No. 106, No. 61, and clause 1 of the amendments from Order No. 159. Certificates issued before March 1, 2026, "remain valid" — as stated in clause 3. From September 1, 2026, the Requirements are in effect under the edition of Order No. 137 dated May 8, 2026. The chain of editions does not end. The index must track it.</p><p>Now about retellings. There are common misconceptions circulating in reviews: a certificate is valid "until its expiration date" and "provided the configuration remains unchanged." These are not in the text of the order; they come from secondary sources. The real limitation lies in another document: FSTEC Information Message No. 240/22/1492 dated March 12, 2026, requires additional certification tests after system modernization.</p><p>A model trained on texts up to 2025 would answer "according to Order No. 17." Factually correct, but the document is outdated.</p><p>This article will be about that.</p><hr/><h3>Three Solution Variants from the Webinar</h3><p><strong>Mine.</strong> Static documentation consists of files. The agent searches with grep and reads them itself. MCP for a static corpus is an unnecessary gear, another call in the chain. For a weak model, the corpus should be pre-processed into an index for its window. </p><p><strong>Participant in the chat.</strong> grep is old-fashioned. A local search index is needed, like Windows Search, and it should be given to the agent via MCP. He clarified RAG: the first stages of the pipeline return documents, and only the last, generative one, retells them. Remove it, and the originals remain.</p><p><strong>Analyst from the audience.</strong> RAG is heavy: database, vector storage, data preparation. The main issue is that during preparation, the model might rephrase a clause, and the original gets lost. He compared it to undefined behavior in C++: something was optimized under the hood, but what is unknown. He is interested in a hierarchical index: navigation through a tree with links to clauses. Costs: indexing requires processing the entire corpus.</p><p>What is clear:</p><ul><li><p>The generative final step will have to be disabled or covered by quote verification.</p></li><li><p>MCP does not affect search quality: it's a transport mechanism.</p></li></ul><p>Everything else is open. We will measure whether it is cheaper to preserve the original than to reconstruct it from a retelling. And how complex the search itself should be, if a model will read everything anyway — here, the chat participant and I did not agree.</p><hr/><h3>What's Already Available</h3><p>When writing the article, I looked for ready-made solutions.</p><p><strong>Legal Databases with AI.</strong> ConsultantPlus has an <a href="https://consultant-plus.ru/programma-konsultant-plyus/ii-pomoshhnik-konsultant-plyus/">AI assistant</a>, and from July 2026, an experimental <a href="https://www.cnews.ru/news/line/2026-07-23_novyj_servis_proverka_ssylok">"Link Checker."</a> It verifies if the acts cited by the neural network are still in effect. It's unclear from the description whether it compares the quote with the text of the clause. Garant has the assistant <a href="https://iskra.garant.ru/">ISKRA</a> and the <a href="https://www.garant.ru/mobileonline/api/documentation/">Garant Connect</a> API; Yandex's <a href="https://habr.com/ru/companies/yandex/articles/990288/">NeuroJurist</a> runs on Garant's platform. Kodeks launched <a href="https://cntd.ru/kodeks-ai">KodeksNeuro</a>: answers on GOST standards and other technical regulations with references to clauses.</p><p>The strong point of all these is the handling of editions. They have been managed for decades, and there's no need to repeat this work in your own system: it's easier to get the current text via API. NeuroJurist also accepts custom documents, and its business tariffs include <a href="https://neurolegal.ya.ru/c/about">"operation within the company's environment."</a> However, the answer is always generated by a model. This is variant D below, but the analyst needs the original.</p><p>Lexis+ AI and Westlaw AI are also built on RAG with generation and were marketed as "hallucination-free." In 2024, <a href="https://reglab.stanford.edu/publications/hallucination-free-assessing-the-reliability-of-leading-ai-legal-research-tools/">Stanford tested them</a>: hallucinations were found in 17–33% of answers.</p><p><strong>MCP Servers for Russian Law.</strong> <a href="https://github.com/semenboss95-design/garant-mcp">garant-mcp</a> provides the verbatim text of an article and its edition for a given date, but it accesses Garant through a browser session with your subscription. <a href="https://www.npmjs.com/package/@ansvar/russian-law-mcp">russian-law-mcp</a> keeps federal laws in a local SQLite database with full-text search. Both are under Apache 2.0.</p><p>Search, original retrieval, and quote verification will have to be assembled within your own system. The question is how to do it with minimal components.</p><hr/><h3>Five Approaches</h3><h4>A. Files and grep</h4><p>The corpus is stored in markdown files in a repository, and the agent searches using ripgrep and reads the found content. Preparation: preserve clause numbering during conversion. The agent receives the original, without intermediate steps.</p><p>We run into morphology issues. The string "personal data operator" does not contain the string "operator of personal data." Part of this can be fixed with stemming directly in the regex:</p><pre><code>rg -i 'оператор\\\w*\\s+персональн\\w*' corpus/</code><div><a href=
+  </main>
+  <footer>
+    Translation generated with Gemini 2.5 Flash-Lite.
+    The original article remains the source of record.
+  </footer>
+</body>
+</html>

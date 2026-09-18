@@ -1,0 +1,173 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Kodacode: The Best Harness for DeepSeek v4 Flash!? We Measured Various Harnesses and Models</title>
+  <meta name="description" content="We launched DeepSeek V4 Flash in four popular harnesses. In our measurements, Koda scored 52.2% and outperformed Kilocode, Claude Code, and OpenCode. In the article, we explain how we set up the experiment, why the same model shows different results, and what exactly helps the agent solve more real-">
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.65;
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 32px 20px 64px;
+      color: #1f2328;
+    }
+    header {
+      border-bottom: 1px solid #d8dee4;
+      margin-bottom: 28px;
+      padding-bottom: 20px;
+    }
+    .source {
+      color: #57606a;
+      font-size: 0.95rem;
+    }
+    img, video, iframe {
+      max-width: 100%;
+      height: auto;
+    }
+    pre {
+      overflow-x: auto;
+      padding: 16px;
+      background: #f6f8fa;
+      border-radius: 6px;
+    }
+    code {
+      font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+    }
+    blockquote {
+      border-left: 4px solid #d0d7de;
+      margin-left: 0;
+      padding-left: 16px;
+      color: #57606a;
+    }
+    footer {
+      border-top: 1px solid #d8dee4;
+      margin-top: 40px;
+      padding-top: 20px;
+      color: #57606a;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Kodacode: The Best Harness for DeepSeek v4 Flash!? We Measured Various Harnesses and Models</h1>
+    <p>We launched DeepSeek V4 Flash in four popular harnesses. In our measurements, Koda scored 52.2% and outperformed Kilocode, Claude Code, and OpenCode. In the article, we explain how we set up the experiment, why the same model shows different results, and what exactly helps the agent solve more real-world tasks. Read more</p>
+    <p class="source">
+      Machine-translated from Habr.
+      <a href="https://habr.com/ru/companies/koda/articles/1083546/?utm_campaign=1083546&amp;utm_source=habrahabr&amp;utm_medium=rss">Read the original Russian article</a>.
+      Thu, 17 Sep 2026 16:18:02 GMT
+    </p>
+  </header>
+  <main>
+<div><p>When a code agent solves a task, the LLM itself doesn't edit files or run tests directly. It operates through an agent wrapper, or harness. It receives system instructions, selects tools, reads their output, and decides what to do next.</p><p>Therefore, the same model in different agents can show different results. Somewhere it's more convenient for it to search the project, somewhere it gets clearer errors, somewhere the context of a long session is better managed. Even a small difference in tools or system prompts can turn into a noticeable difference in output over dozens of steps.</p><p>To separate model quality from wrapper quality, we ran identical models with identical reasoning levels in Koda, OpenCode, KiloCode, Claude Code, and Ouroboros.</p><figure><img loading="lazy" src="https://habrastorage.org/r/w1560/getpro/habr/upload_files/697/8f4/ac4/6978f4ac44b42e507d169451eba7b744.jpeg"/></figure><p>To compare agent wrappers, we chose the DeepSeek V4 Flash model and ran it with identical reasoning levels in several harnesses. Measuring harnesses is not a cheap endeavor, so we chose a budget-friendly model that is very popular on Open Router. And it turned out that it works like a native with our harness. At the Max level, the Koda wrapper showed the following result:</p><div><div><table><tbody><tr><td><p><strong>Wrapper</strong></p></td><td><p><strong>Code Index</strong></p></td></tr><tr><td><p>Koda</p></td><td><p>52.2%</p></td></tr><tr><td><p>KiloCode</p></td><td><p>49.5%</p></td></tr><tr><td><p>Claude Code</p></td><td><p>48.2%</p></td></tr><tr><td><p>OpenCode</p></td><td><p>47.6%</p></td></tr></tbody></table></div></div><p>The difference between Koda and the closest wrapper was 2.7 percentage points. At the DeepSeek V4 Flash Medium level, the results are tighter: Claude Code scored 46.9%, Koda — 46.3%, Ouroboros — 45.8%, KiloCode — 44.9%, OpenCode — 43.4%.</p><p>This experiment cannot determine the best agent wrapper overall, as we only used DeepSeek V4 Flash to compare harnesses. The results show a narrower point: even with a fixed model and reasoning level, the implementation of the agent loop affects the outcome. At the Max level, the difference between Koda and the closest wrapper was 2.7 percentage points, and at the Medium level, the results were noticeably closer.</p><h3>Code Index</h3><p>To compare models and wrappers, we created a unified metric, the <strong>Code Index</strong>. We selected various tasks from open-source benchmarks. It combines tasks from three categories:</p><ul><li><p>Development in an existing codebase;</p></li><li><p>Software design and implementation;</p></li><li><p>Data analysis.</p></li></ul><p>All tasks are agentic. A task cannot be solved with a single message, so the agent operates in an isolated sandbox, independently navigating files, running commands, reading errors, and refining the solution. A single task might require dozens of model calls.</p><p>We disabled most network capabilities and git commands in the sandbox. Thus, the agent cannot find a ready-made patch on the internet or look up the correct solution in the repository history.</p><h4>How the Index is Calculated</h4><p>A run consists of 261 tasks. Each has a reproducible automatic check that determines whether the agent solved the task or not. There are no partial scores within a single task; the result is either accepted or rejected.</p><p>Tasks in the "Software Design" category are weighted 2.5 times more than others. They require more than just fixing a few lines; they involve designing and implementing an entire project or a significant feature.</p><p>The formula looks like this:</p><figure><img alt="Formula for calculating the Code Index" loading="lazy" src="https://habrastorage.org/r/w1560/getpro/habr/upload_files/da2/438/ffc/da2438ffc71138fe2206c3ba0159eb13.png" title="Formula for calculating the Code Index"/><div><figcaption>Formula for calculating the Code Index</figcaption></div></figure><p>If a run finishes with an error or exceeds the time limit, the task is considered unsolved. This makes the final index a conservative estimate, as infrastructure failures are not excluded from the denominator and do not improve the model's result.</p><h4>Development</h4><p>This category includes 125 tasks from five benchmarks:</p><ul><li><p>SWE-bench Verified;</p></li><li><p>SWE-bench Multilingual — Java;</p></li><li><p>SWE-bench Multilingual — Go;</p></li><li><p>SWE-bench Multilingual — JavaScript/TypeScript;</p></li><li><p>WebApp1K.</p></li></ul><figure><img loading="lazy" src="https://habrastorage.org/r/w1560/getpro/habr/upload_files/4d8/1db/dc8/4d81dbdc82585ee70aacdb3a12d6f066.png"/></figure><p>The agent receives a working copy of the real repository at the commit before the fix and the issue text from the user. The output should be a patch to the source code. Modifying tests is prohibited.</p><p>A solution is counted if it passes the hidden tests from the actual pull request that closed the issue, and the project's existing tests are not broken.</p><details><summary>Example Task: SWE-bench Verified · mwaskom__seaborn-3069</summary><div><h4>PROMPT TO AGENT</h4><pre><code>Nominal scale should be drawn the same way as categorical scales
+
+Three distinctive things happen on the categorical axis in seaborn's
+categorical plots:
+
+1. The scale is drawn to +/- 0.5 from the first and last tick, rather
+   than using the normal margin logic
+2. A grid is not shown, even when it otherwise would be with the
+   active style
+3. If on the y axis, the axis is inverted
+
+It probably makes sense to have `so.Nominal` scales (including inferred
+ones) do this too. [...] 
+
+Solve the issue described above by editing the code in this repository.
+Make all changes needed for the described behavior to be fixed.
+Do not modify tests.
+
+Environment: this sandbox has NO network access. Its dependency caches
+were populated in advance and are mounted read-only, so you can build
+and test without installing anything.</code><div><a href="https://sourcecraft.dev/"><img loading="lazy"/></a></div></pre><h4>DATA</h4><ul><li><p>Full repository tree of <code>mwaskom/seaborn</code> at the pre-fix commit.</p></li><li><p>Virtual environment with project dependencies and a working <code>pytest</code>.</p></li><li><p>No network; the git history has exactly one commit — no way to peek at the fix.</p></li><li><p>The list of tests used for verification is not provided to the agent.</p></li></ul><h4>EXPECTED SOLUTION</h4><p>A patch in <code>seaborn/_core/</code><a href="http://plot.py"><code>plot.py</code></a>, transferring the categorical axis behavior to <code>Nominal</code> scales. Below is the actual patch that passed the hidden tests in our run:</p><pre><code>--- a/seaborn/_core/plot.py
++++ b/seaborn/_core/plot.py
+@@ -25,7 +25,7 @@
+ from seaborn._core.moves import Move
+-from seaborn._core.scales import Scale
++from seaborn._core.scales import Scale, Nominal
+ from seaborn._core.subplots import Subplots
+@@ -1632,6 +1632,20 @@ class Plotter:
+             for axis in "xy":
+                 axis_key = sub[axis]
+
++                # Categorical scales have a few distinctive display
++                # behaviors: a fixed margin of +/- 0.5 around the
++                # first/last tick, no grid, and (on y) inversion.
++                scale = self._scales.get(axis_key)
++                if isinstance(scale, Nominal) and axis_key not in p._limits:
++                    n = len(getattr(ax, f"get_{axis}ticks")())
++                    if axis == "x":
++                        ax.set_xlim(-.5, n - .5, auto=None)
++                    else:
++                        ax.set_ylim(n - .5, -.5, auto=None)
++                    ax.grid(False, axis=axis)
++
+                 # Axis limits
+                 if axis_key in p._limits:
+</code><div><a href="https://sourcecraft.dev/"><img loading="lazy"/></a></div></pre></div></details><h2>Software Design</h2><p>This is the most challenging category: 45 tasks from three benchmarks.</p><ul><li><p>SWE-bench Pro;</p></li><li><p>NL2RepoBench;</p></li><li><p>ProgramBench.</p></li></ul><p>Here, it's not enough to find one file and fix a few lines. The agent needs to plan the solution, create modules, configure dependencies and packaging, and sometimes write an entire codebase in an empty directory.</p><p>A task is counted only if the project builds and passes the official test suite. Therefore, when calculating the Code Index, such tasks receive a weight of 2.5.</p><details><summary>Example Task: NL2RepoBench · aiofiles</summary><div><h4>PROMPT TO AGENT</h4><pre><code>Implement a complete, installable Python library in this empty
+workspace that fully satisfies the specification. Create all modules,
+packaging files, and dependencies needed for it to install and pass
+its test suite.
+
+--- Specification (start.md, fragment) ---
+
+Please create a Python project named aiofiles to implement an
+asynchronous file operation library. The project should include the
+following features:
+
+1. Core of asynchronous file operations: asynchronous open/read/write,
+   interfaces similar to Python's standard file APIs, async versions
+   of read(), write(), readline(), readlines(), writelines().
+
+2. Integration of thread pool executor: delegate blocking file I/O to
+   separate threads through asyncio's thread pool executor so file
+   operations do not block the event loop.
+
+3. Support for asynchronous iteration: file objects implement the
+   asynchronous iterator protocol (async for over lines).
+
+4. Asynchronous temporary file module: TemporaryFile,
+   NamedTemporaryFile, SpooledTemporaryFile, TemporaryDirectory —
+   each supporting the async with context manager.
+
+[...8 more specification sections with signatures and examples...]</code><div><a href="https://sourcecraft.dev/"><img loading="lazy"/></a></div></pre><h4>DATA</h4><ul><li><p>Empty working directory — not a single line of code at the start.</p></li><li><p>Specification with 12 sections: project purpose, public functions, usage examples, list of test interfaces.</p></li><li><p>The agent sees neither tests nor a reference implementation.</p></li></ul><h4>EXPECTED SOLUTION</h4><p>An installable package with correct packaging and a complete API. The check is run in the official task container:</p><pre><code>pip install -e .
+pytest --continue-on-collection-errors tests</code><div><a href="https://sourcecraft.dev/"><img loading="lazy"/></a></div></pre><p>Tests are taken from the actual aiofiles repository and placed into the agent's project after submission. The task is counted only if <strong>all 211</strong> test cases pass — meaning both the API, semantics, and module structure are restored.</p></div></details><h4>Data Analysis</h4><p>This category includes 91 tasks from SpreadsheetBench and DA-Code.</p><p>The agent needs to analyze input tables, understand the requirements, perform transformations, and save the result in a strictly defined format. The output can be a CSV file, a pivot table, a chart, or a script for calculating statistics.</p><p>The created artifact is what's checked. Correct reasoning in the chat doesn't count if the final file is missing, has the wrong structure, or contains incorrect values.</p><details><summary>Example Task: DA-Code · dm-csv-007</summary><div><h4>PROMPT TO AGENT</h4><pre><code>This workspace is a data-science task. `question.txt` HAS the task —
+read it (and `README.md`, which describes the dataset) and use the data
+files provided here to solve it with Python (pandas/numpy/scikit-learn,
+and SQL where appropriate). Write your final answer to the exact output
+file named in `question.txt`. Explore the data first, then produce the
+answer artifact. Then stop.
+
+--- question.txt ---
+
+Calculate the top 10 most popular movies by considering only those
+whose number of votes falls within the top 15%. Use the formula
+provided in wrFormula.tex to perform the calculation. Once the
+calculations are complete, write the names of the top 10 movies into
+result.csv, following the format specified in sample_result.csv.
+</code><div><a href="https://sourcecraft.dev/"><img loading="lazy"/></a></div></pre><h4>DATA</h4><ul><li><p><code>tmdb_5000_movies.csv</code> — 5.7 MB, movie metadata.</p></li><li><p><code>tmdb_5000_credits.csv</code> — 40 MB, cast and crew.</p></li><li><p><code>sample_result.csv</code> — only the header <code>Movie</code>, defines the output format.</p></li><li><p><code>wrFormula.tex</code> — the weighted rating formula to be read and applied:</p></li></ul><pre><code>Weighted Rating (WR) = (v / (v + m)) * R  +  (m / (v + m)) * C
+
+v — number of votes for the movie
+m — minimum votes to be included in the chart, 85th percentile
+R — average rating of the movie
+C — average rating across the entire dataset</code><div><a href="https://sourcecraft.dev/"><img loading="lazy"/></a></div></pre><h4>EXPECTED SOLUTION</h4><p>The <code>result.csv</code> file, matching the reference line by line. An error in the percentile, sorting order, or rounding will result in a different list — and the task will not be counted:</p><pre><code>Movie
+The Shawshank Redemption
+Fight Club
+Pulp Fiction
+The Dark Knight
+The Godfather
+Inception
+Forrest Gump
+Interstellar
+The Lord of the Rings: The Return of the King
+The Empire Strikes Back</code><div><a href="https://sourcecraft.dev/"><img loading="lazy"/></a></div></pre></div></details><h3>New Koda Base and Koda Pro</h3><p>As a reminder, KodaCode has two proprietary models for different scenarios.</p><p><strong>Koda Base</strong> is now based on Qwen 3.8 Flash 125B. It helps understand a project, fix bugs, refactor, write tests, or implement small features. Base remains available <a href="https://kodacode.ru/tariffs"><strong>for free</strong></a> with daily limits.</p><p><strong>Koda Pro</strong> is now based on GLM 5.3. It is designed for more complex tasks where the agent needs to maintain focus for a long time, explore multiple parts of the project, make architectural decisions, and perform many sequential actions.</p><p>Behind these numbers are 261 tasks from several agent benchmarks. These include bug fixes in existing repositories, creating projects from scratch, and data analysis. HOWEVER, it's not enough for the agent to write a good answer once. It must explore files, make changes, run code, read errors, correct the solution, and ultimately pass an automated check.</p><p>However, we didn't just replace the models under the hood. Their operation has been adapted to the Koda agent wrapper. This includes tools, feedback format, context management, and system instructions. This is important because a model and an agent are far from being the same thing.</p><h3>What the Models Showed</h3><p>We compared Koda Base and Koda Pro with several external models within the Koda wrapper. For each run, we calculated not only the final index but also the average cost per task in the run.</p><figure><img loading="lazy" src="https://habrastorage.org/r/w1560/getpro/habr/upload_files/716/f3e/fd3/716f3efd377bd4170e251735a244f9be.png"/></figure><p>The new Koda Pro achieved the maximum score in the entire published set at 54.3%. The Koda with DeepSeek V4 Flash Max combination came in second at 52.2%.</p><p>Koda Base scored 49.5%. This is almost the same level as Koda with external GLM 5.3 Flash Max — 49.2% and GLM 5.2 High — 49.0%, but with an average calculated cost of about 11.9 rubles per task in the run.</p><h3>How Koda Base and Koda Pro Grew</h3><p>The most telling comparison is not with external models, but with previous versions of our own.</p><figure><img alt="Comparison with previous versions" loading="lazy" src="https://habrastorage.org/r/w1560/getpro/habr/upload_files/9cd/710/9a2/9cd7109a22ac66a9501195906e5b2374.jpg" title="Comparison with previous versions"/><div><figcaption>Comparison with previous versions</figcaption></div></figure><h3>Koda Base: from 38.5% to 49.5%</h3><p>The previous Koda Base was based on Qwen3.6–35b, a very small model. It was the weak link in the lineup. It was suitable for short, everyday actions, but in long agent chains, it too often lost track of the goal, made mistakes when working with tools, or stopped without completing the task to a verifiable result.</p><p>This was particularly noticeable in the software design category. The old Base solved 7 out of 45 tasks, the new one solved 13 out of 45. In development, the increase was from 77 to 94 solved tasks out of 125, and in data analysis, from 32 to 36 out of 91.</p><p>After migrating koda-base to the Qwen 3.8 Flash 125B foundation, the overall index increased from 38.5% to 49.5%, a gain of 11 percentage points. The average number of steps remained almost unchanged. It was 38.5 for the previous version and is now 39.7 for the new one. This means the main gain came from quality, not from longer and more expensive trajectories. Due to its special attention architecture, the new model also does not lag behind the previous one in generation speed.</p><h4>Koda Pro: Higher Quality, Fewer Steps</h4><p>The new Koda Pro is based on GLM 5.3, one of the strongest open models for development according to public benchmarks. It's not the fastest, but it excels at complex agent tasks. To achieve stable model performance on our GPUs, we had to seriously optimize inference.</p><p>The Koda Pro index increased from 46.7% to 54.3%. In development, the new version solved 102 tasks out of 125 compared to 85 for the previous one; in design, 15 versus 13; in data analysis, 39 versus 36.</p><p>The average number of steps decreased from 70.3 to 52.1, a reduction of about 26%. Koda Pro did not become faster on every individual request, but it now requires significantly fewer actions to reach the correct result.</p><h3>What This Means</h3><h4>Conclusion #1</h4><p><strong>Model choice affects the result more than ordinary chat tests suggest</strong>. Within the same Koda wrapper, the difference between models in the published run reaches over 16 percentage points (from 37.7% to 54.3%).</p><h4>Conclusion #2</h4><p><strong>The harness also matters</strong>. On the same DeepSeek V4 Flash Max, the Koda wrapper scored 52.2%, while the other tested wrappers scored between 47.6% and 49.5%. System instructions, tools, and their result processing truly change the outcome.</p><h4>Conclusion #3</h4><p><strong>An agent cannot be evaluated solely on fixing minor bugs</strong>. Models that perform confidently in the development category can sharply decline when required to design a full-fledged solution or create a correct data analysis artifact.</p><p>Finally, cost-effectiveness. This is not just the price per request. A model might be cheap but take more steps, frequently go in the wrong direction, and repeatedly run tools. Therefore, on the graph, we compare quality with the cost of the entire agent trajectory, not with the formal price per million tokens.</p><h3>Koda Base Remains Free</h3><p>The new Koda Base is available for free with daily limits in KodaCode for VS Code, JetBrains IDE, Koda CLI, and Koda Desktop.</p><figure><img alt="Current tariffs at the time of publication" loading="lazy" src="https://habrastorage.org/r/w1560/getpro/habr/upload_files/ff4/922/cf3/ff4922cf374ff8e19da1b4247af38f65.png" title="Current tariffs at the time of publication"/><div><figcaption>Current tariffs at the time of publication</figcaption></div></figure><p>We want the free model to be a fully functional agent for everyday tasks, not a demo version. That's precisely why the growth of Base is more important to us than simply replacing one model with another. With almost the same number of steps, it now solves significantly more tasks and has approached much more expensive configurations.</p><p>Koda Pro remains the option for tasks where maximizing the chance of completing complex work is crucial. This includes major changes, design work, long-term research, and multi-step implementation.</p><h3>Benchmark Limitations</h3><p>The Code Index does not claim to be a universal measure of model intelligence. It answers a more practical question: "How successfully does a specific combination of model and agent wrapper solve a chosen set of tasks in a fixed environment?"</p><p>The results apply to specific versions of models, wrappers, system prompts, and reasoning levels. After updating any component, the numbers may change. Cost also depends on trajectory length, provider rates, and model behavior in a specific run.</p><p>However, for choosing a model in real-world work, personal experience might be more important than its position in the table. The benchmark averages results across the selected task set, but your scenario might differ significantly. A model with a lower index might better understand your specific requests and work more stably with a particular codebase. Therefore, metrics should be used as a guide, and the final decision should be made after testing with your own tasks.</p><p>We plan to expand the task set, update results, and keep the methodology open. This will allow us to compare future versions of models and harnesses under identical conditions and distinguish reproducible growth from impressions gained on a few individual tasks.</p><h3>Instead of a Conclusion</h3><p>After the update, Koda Base grew by 11 percentage points and, with almost unchanged step count, approached strong external models. Koda Pro gained 7.6 points, took first place in our set, and simultaneously started completing tasks significantly faster.</p><p>But the main result for us is not even the specific position in the table. The extensive run once again showed that the quality of a code agent cannot be reduced to the model's name. The result emerges at the intersection of the model, tools, system instructions, context management, and the ability to correctly handle dozens of sequential steps.</p><p><strong>You can try the new Koda Base and Koda Pro in KodaCode: </strong><a href="https://download.kodacode.ru"><strong>download.kodacode.ru</strong></a></p><figure><img loading="lazy" src="https://habrastorage.org/r/w1560/getpro/habr/upload_files/85c/951/be1/85c951be1da68bb14f1e219a1208dfaa.png"/></figure><p>Try Kodacode on your project: <a href="https://download.kodacode.ru/?utm_source=habr&amp;utm_medium=referral&amp;utm_campaign=article_footer&amp;utm_content=banner_caption">download for IDE, CLI, and Desktop</a>. Updates, practical analyses, and product news in our <a href="https://t.me/+CgJ9OXzZlgk1NzIy">Telegram channel</a>.</p></div>
+  </main>
+  <footer>
+    Translation generated with Gemini 2.5 Flash-Lite.
+    The original article remains the source of record.
+  </footer>
+</body>
+</html>

@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Comparison of Alice (Yandex) and GigaChat (Sber) on 5 Benchmarks: τ³, PRAKT-120, MultiChallenge, WildBench, and Arena-Hard</title>
+  <meta name="description" content="Hello everyone! I promised to write this article and I&#x27;ve finally finished the tests and am ready to share the results with you. I spent a LOT of time running these benchmarks. A lot of time on setups, a lot of time waiting for tests. All together it took about two weeks of work - models crashe">
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.65;
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 32px 20px 64px;
+      color: #1f2328;
+    }
+    header {
+      border-bottom: 1px solid #d8dee4;
+      margin-bottom: 28px;
+      padding-bottom: 20px;
+    }
+    .source {
+      color: #57606a;
+      font-size: 0.95rem;
+    }
+    img, video, iframe {
+      max-width: 100%;
+      height: auto;
+    }
+    pre {
+      overflow-x: auto;
+      padding: 16px;
+      background: #f6f8fa;
+      border-radius: 6px;
+    }
+    code {
+      font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+    }
+    blockquote {
+      border-left: 4px solid #d0d7de;
+      margin-left: 0;
+      padding-left: 16px;
+      color: #57606a;
+    }
+    footer {
+      border-top: 1px solid #d8dee4;
+      margin-top: 40px;
+      padding-top: 20px;
+      color: #57606a;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Comparison of Alice (Yandex) and GigaChat (Sber) on 5 Benchmarks: τ³, PRAKT-120, MultiChallenge, WildBench, and Arena-Hard</h1>
+    <p>Hello everyone! I promised to write this article and I&#x27;ve finally finished the tests and am ready to share the results with you. I spent a LOT of time running these benchmarks. A lot of time on setups, a lot of time waiting for tests. All together it took about two weeks of work - models crashed, sometimes I had to patch them to respond, sometimes I just had to wait a few days for the test to complete (even with multithreading). Finally, I got the answers that interest me - and, I hope, will be interesting to you, and to the creators of Alice and GigaChat. Why they don&#x27;t run such benchmarks themselves, I can guess, but if I were in charge of these projects, I would, on the contrary, put running benchmarks on a cycle. Because only then can you understand where your model is, and where the world leaders are. Let&#x27;s read about the experiment results!</p>
+    <p class="source">
+      Machine-translated from Habr.
+      <a href="https://habr.com/ru/articles/1083664/?utm_campaign=1083664&amp;utm_source=habrahabr&amp;utm_medium=rss">Read the original Russian article</a>.
+      Fri, 18 Sep 2026 07:48:57 GMT
+    </p>
+  </header>
+  <main>
+<div><h2>A few introductory words to make it clear what we're talking about</h2><p><strong>Hello everyone!</strong></p><p>I promised to write this article and I've finally finished the tests and am ready to share the results with you.</p><p>I spent a LOT of time running these benchmarks. A lot of time on setups, a lot of time waiting for tests. All together it took about two weeks of work - models crashed, sometimes I had to patch them to respond, sometimes I just had to wait a few days for the test to complete (even with multithreading).</p><p>Finally, I got the answers that interest me - and, I hope, will be interesting to you, and to the creators of Alice and GigaChat. Why they don't run such benchmarks themselves, I can guess, but if I were in charge of these projects, I would, on the contrary, put running benchmarks on a cycle. Because only then can you understand where your model is, and where the world leaders are.</p><p>I wanted to benchmark Maracuya AI as well, but the guys went into deep refactoring and promise to return soon with a completely new product - a domestic coding environment, an analogue of Cursor, Claude Code, Codex, but without VPN, foreign cards, and generally a sovereign solution. Therefore, unfortunately, in this article I will share the results of only three models: Alice, GigaChat Ultra, GigaChat Max, and I will leave Maracuya for later and for a separate article.</p><p>Alice was tested via a web connector - exactly how users interact with her. In 90% of cases, she justified herself during the process: "There is currently high load, so I am switching to a simpler model." But a test is a test: this is exactly how users interact with her and this is the result they get. GigaChat was tested via API. The free tokens given upon registration were not enough - so I tested from three accounts: two of my own and my wife's account. This was enough.</p><p><em>Important about Alice: the Alice available to users was tested. Alice for business, which appeared in Alice 360, was not tested - it was released recently and I haven't gotten around to it yet. It will probably show a slightly better result; but judging by my personal experience with it, the chances for that are not that high.</em></p><p>Well, that's all I should tell you before I share the results, and the results themselves are below.</p><h3>Why run other people's benchmarks</h3><p>A Russian chat can be easily tested by asking it to "write a poem." I needed something else: does it maintain its form when the task is long, in English, with rules and several turns in a row. Western labs have long collected open task sets for this. I ran domestic chats through them - the same questions, the same scoring rules.</p><p>First, the model responds like a regular chat, each item is a new dialogue. Then a separate judge reads the completed answers. Here it is Grok 4.6. If the connection is lost and the question doesn't reach the model, I don't count the attempt and repeat it. If the chat returns an empty response or its own server error - it's zero, not "our browser broke."</p><h3>Who is in the comparison</h3><p><strong>Alice</strong> - a chat at <a href="https://alice.yandex.ru">alice.yandex.ru</a> with a Yandex Plus subscription. A person in the country opens the website, so I tested the website.</p><p><strong>GigaChat Max</strong> and <strong>GigaChat Ultra</strong> - two Sber tariffs. They cannot be combined into one line: Ultra is stronger on long text and on tasks with tools, Max is cheaper and weaker on the same questions.</p><h3>Arena-Hard - who writes better on a difficult task</h3><p>Two students, one difficult exam: code, case study, long instructions. The teacher doesn't give "five out of five," but says whose paper is better. This is how Arena-Hard works: 750 difficult tasks, answers are compared in pairs - win, loss, or draw. A win goes to the one who completed the calculation and fulfilled the points. </p><p>Each pair has two columns. The left one shows the win rate of the model named on the left, the right one - on the right. A draw is included in the 750, it's not shown on the graph. 83% for Max against Alice means: out of 750 pairs, the teacher gave the paper to Max in 620 cases, to Alice - in 106, a draw - 24.</p><figure><img alt=
+  </main>
+  <footer>
+    Translation generated with Gemini 2.5 Flash-Lite.
+    The original article remains the source of record.
+  </footer>
+</body>
+</html>

@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Can a data center do without water at all?</title>
+  <meta name="description" content="A slightly experimental format that I hope you&#x27;ll enjoy. I personally love exploring topics outside of statistics, analytics, and related fields, so sometimes the best way to understand a topic is to try explaining or describing it myself. This material will be about AI, but in a slightly unusu">
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.65;
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 32px 20px 64px;
+      color: #1f2328;
+    }
+    header {
+      border-bottom: 1px solid #d8dee4;
+      margin-bottom: 28px;
+      padding-bottom: 20px;
+    }
+    .source {
+      color: #57606a;
+      font-size: 0.95rem;
+    }
+    img, video, iframe {
+      max-width: 100%;
+      height: auto;
+    }
+    pre {
+      overflow-x: auto;
+      padding: 16px;
+      background: #f6f8fa;
+      border-radius: 6px;
+    }
+    code {
+      font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+    }
+    blockquote {
+      border-left: 4px solid #d0d7de;
+      margin-left: 0;
+      padding-left: 16px;
+      color: #57606a;
+    }
+    footer {
+      border-top: 1px solid #d8dee4;
+      margin-top: 40px;
+      padding-top: 20px;
+      color: #57606a;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Can a data center do without water at all?</h1>
+    <p>A slightly experimental format that I hope you&#x27;ll enjoy. I personally love exploring topics outside of statistics, analytics, and related fields, so sometimes the best way to understand a topic is to try explaining or describing it myself. This material will be about AI, but in a slightly unusual format – we&#x27;ll try to figure out why data centers are cooled and how they are cooled today, where all the calculations for choosing the right shampoo or spelling &quot;vinaigrette&quot; correctly take place. And behind every such answer are servers, and these servers generate a lot of heat during operation. Read more</p>
+    <p class="source">
+      Machine-translated from Habr.
+      <a href="https://habr.com/ru/articles/1081704/?utm_campaign=1081704&amp;utm_source=habrahabr&amp;utm_medium=rss">Read the original Russian article</a>.
+      Fri, 18 Sep 2026 16:51:16 GMT
+    </p>
+  </header>
+  <main>
+<div><p>A slightly experimental format that I hope you'll enjoy. I personally love exploring topics outside of statistics, analytics, and related fields, so sometimes the best way to understand a topic is to try explaining or describing it myself.</p><p>This material will be about AI, but in a slightly unusual format – we'll try to figure out <strong>why data centers are cooled and how they are cooled today</strong>, where all the calculations for choosing the right shampoo or spelling "vinaigrette" correctly take place. And behind every such answer are servers, and these servers generate a lot of heat during operation.</p><h2>Why does a data center need cooling at all?</h2><p>A computer at home also heats up, which is why it has fans, radiators, or liquid cooling inside. It's the same story with a data center, only instead of one computer, there can be thousands of servers working almost non-stop.</p><p><strong>And the more powerful processors become, the more heat they generate</strong>, and this is especially noticeable with artificial intelligence hardware. In general, a modern graphics processor can consume about a kilowatt of electricity, a significant part of which eventually turns into heat.</p><p>And a data center is needed, among other things, to <strong>remove a huge amount of heat from the computers</strong>, and if this is not done, the equipment will simply overheat at some point.</p><p>And yes, you can cool with air, and the scheme will be like this: cold air is passed through the server, it heats up, after which this heat needs to be removed from the building. And this is where water comes in.</p><p>One way to get rid of excess heat is <strong>evaporative cooling</strong>, when water evaporates and, along with it, takes away some thermal energy. By the way, <strong>sweat on human skin works on approximately the same principle</strong>: when water evaporates, the skin cools down.</p><p>For data centers, such a system can be effective, especially in hot climates, but the downside is that water is consumed quickly, and <strong>the evaporated water cannot be returned to the system, so it has to be constantly added</strong>.</p><h2>What if we don't evaporate water?</h2><p>In principle, instead of cooling all the air around the servers, you can try to <strong>take warm air directly from the processors</strong>. And for this, small metal heat exchangers are installed near the hot components, and cooling liquid flows through them.</p><p>The processor heats the metal plate, the plate transfers heat to the liquid, and then the heated liquid leaves the server, cools down, and returns again. And so, a data center can contain a huge amount of water inside pipes, but at the same time consume almost no new water for cooling.</p><p>So, we've just transferred the heat from the processor to the water, but now the water itself needs to be cooled. And here, <strong>a huge radiator outside the building</strong> will solve the problem.</p><p>And then, when I was reading various sources, I was surprised that water doesn't even need to be cooled much.</p><h2>Cold water is not needed</h2><p>It's as if the more powerful and hotter the process, the colder the water it needs to be cooled with, but this is not the case at all. Modern liquid cooling systems are gradually moving towards a fairly high coolant temperature.</p><p>For example, new AI systems can operate with a liquid temperature of about <strong>40–45°C</strong>. But <strong>how can a processor be cooled with water at a temperature of 45 degrees?</strong></p><p>And it's all as it happens in physics – simply, because <strong>the processor itself is significantly hotter</strong>. If the surface of the chip, conditionally, has a temperature of 70–80°C, then a liquid at 45°C will still take heat away from it.</p><p>And there's also an advantage here: if the outside air temperature is +20°C, then <strong>water at 45°C can be cooled by ordinary outside air</strong>.</p><p>And it turns out that <strong>the hotter the water a data center can use, the easier it is to cool</strong>, which means fewer air conditioners are needed, less electricity, and in some cases, no evaporative water is needed at all.</p><h2>Why complicate things so much?</h2><p>Because of AI.</p><p>The power of the equipment is growing so rapidly there that ordinary air cooling is finding it increasingly difficult to maintain server operation.</p><p>Not so long ago, an ordinary server rack could consume about <strong>5–20 kW</strong>, and such a volume of heat could be easily dissipated by air. A modern NVIDIA GB200 NVL72 rack with 72 graphics processors already consumes about <strong>120 kW</strong>. Newer equipment based on the Rubin architecture could be around <strong>200–225 kW per rack</strong>.</p><p>This means that on the same small area, tens of times more heat can be generated, but this is not even the limit, and cooling system developers are already preparing to handle a thermal load <strong>of up to 1 MW per rack</strong> with AI.</p><p>And try to dissipate that much heat with just a stream of cold air.</p><p>I regularly discuss such topics on my <a href="https://t.me/prostoanalytics">Telegram channel</a>. If you are interested in understanding analytics, economics, and the labor market more deeply, you'll find short notes and reviews of current events there regularly.</p></div>
+  </main>
+  <footer>
+    Translation generated with Gemini 2.5 Flash-Lite.
+    The original article remains the source of record.
+  </footer>
+</body>
+</html>

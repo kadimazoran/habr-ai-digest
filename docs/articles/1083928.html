@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Extracting the Style Genome in Chat GPT: From Reference to Ready Skill</title>
+  <meta name="description" content="Creating a single image from a reference is easy. It&#x27;s much harder to create a series of images with changing objects and plots while maintaining a consistent visual style. In this article, we explore how to make image generation more predictable in style. Learn more about style genome.">
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.65;
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 32px 20px 64px;
+      color: #1f2328;
+    }
+    header {
+      border-bottom: 1px solid #d8dee4;
+      margin-bottom: 28px;
+      padding-bottom: 20px;
+    }
+    .source {
+      color: #57606a;
+      font-size: 0.95rem;
+    }
+    img, video, iframe {
+      max-width: 100%;
+      height: auto;
+    }
+    pre {
+      overflow-x: auto;
+      padding: 16px;
+      background: #f6f8fa;
+      border-radius: 6px;
+    }
+    code {
+      font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+    }
+    blockquote {
+      border-left: 4px solid #d0d7de;
+      margin-left: 0;
+      padding-left: 16px;
+      color: #57606a;
+    }
+    footer {
+      border-top: 1px solid #d8dee4;
+      margin-top: 40px;
+      padding-top: 20px;
+      color: #57606a;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Extracting the Style Genome in Chat GPT: From Reference to Ready Skill</h1>
+    <p>Creating a single image from a reference is easy. It&#x27;s much harder to create a series of images with changing objects and plots while maintaining a consistent visual style. In this article, we explore how to make image generation more predictable in style. Learn more about style genome.</p>
+    <p class="source">
+      Machine-translated from Habr.
+      <a href="https://habr.com/ru/articles/1083928/?utm_campaign=1083928&amp;utm_source=habrahabr&amp;utm_medium=rss">Read the original Russian article</a>.
+      Fri, 18 Sep 2026 13:55:24 GMT
+    </p>
+  </header>
+  <main>
+<div><p>Creating a single image from a reference is not difficult. It is much more challenging to create a series of images where objects and plots change, but a single visual style is maintained.</p><p>The difficulty usually lies in trying to replicate the entire reference: along with the object, composition, lighting, and plot. As long as the new picture resembles the original, everything works. But problems arise when we try to replace an object with a person or create a series of different images within a given concept. The model begins to gradually revert to its basic image generation habits, and the visual style becomes distorted and changes over time.</p><p>Therefore, I use a different approach. First, I ask for a detailed description of the reference, then I separate the style from the content, find its core, assemble a master prompt, test it on different objects, and finally, I turn the entire method into a skill so it can be applied in subsequent image generations.</p><p>I call this the style genome.</p><p>A little terminology.<br/>Genome — a complete description of the visual language without a specific plot.<br/>Core — mandatory features without which the style loses its recognizability.</p><p>Skill — within the framework of this method, a saved instruction based on a ready-made master prompt that allows reproducing the found visual style when changing objects and actions.</p><h3>Step One. Detailed Image Description</h3><p>First, I upload the reference and ask for a detailed description as a prompt.</p><p><strong>For example:<br/></strong><em>Describe the image as a detailed prompt: object, composition, shapes, colors, lighting, materials, textures, mood, atmosphere, and rendering method.</em></p><figure><img loading="lazy" src="https://habrastorage.org/r/w1560/getpro/habr/upload_files/dcd/a9d/422/dcda9d4221526badeffe2fc158da9ab7.png"/></figure><p>At this stage, it is very important not to omit anything. We need to analyze the image in maximum detail and understand what it consists of. It is best to avoid generalizing words like "vintage," "cinematic," or "atmospheric." Such words describe an impression but do not explain what creates it.</p><p>Instead of "vintage illustration," it is more useful to get a specific set of features: a limited palette, a warm paper surface, noticeable grain, flat shadows, absence of gradients, slight displacement of print layers.</p><p>That is, we describe not the impression itself, but highlight all the stylistic features that form it.</p><h2>Step Two. Pure Style</h2><p>In the next step, I ask to remove everything related to the specific plot and object from the description.</p><p><strong>For example:<br/></strong><em>Remove specific objects and plot. Leave only the visual style, composition, palette, lighting, materials, textures, mood, and rendering method.</em></p><figure><img loading="lazy" src="https://habrastorage.org/r/w1560/getpro/habr/upload_files/b96/4fe/7eb/b964fe7ebecc5882b26d04f3f878266d.png"/></figure><p>Suppose the original image is a night gas station. We don't need the gas station itself, nor the neon sign on it.</p><p>Night might only relate to this specific plot.</p><p>But if the light is depicted as separate color spots without soft glow, and shadows are formed as flat spots without gradients — these are already properties of the visual language.</p><p>The result should be a description not of what is depicted, but of how it is depicted.</p><h2>Step Three. Core</h2><p>And since the description can still be quite long after cleaning, I ask Chat GPT to highlight the mandatory features.</p><p><strong>For example:<br/></strong><em>Identify the features without which this visual style will cease to be recognizably reproduced. Separate them from characteristics that can be changed.</em></p><figure><img loading="lazy" src="https://habrastorage.org/r/w1560/getpro/habr/upload_files/17e/9a7/e9b/17e9a7e9b45c8b0c2bda1e73373f6518.png"/></figure><p>Thus, two groups emerge: the core, which must always be preserved, and variables — what can be changed without destroying the visual language.</p><p>For example, a limited palette, absence of outlines, characteristic shadows, and grain can be the core. While the angle, composition density, or the amount of print layer displacement can be variables. This is important because we need the style itself, not the same image template.</p><h2>Step Four. Master Prompt</h2><p>After this, I ask Chat GPT to assemble a master prompt based on the result obtained.</p><p><strong>For example:<br/></strong><em>Create a universal master prompt. Denote the changeable subject as [Subject], and add [Action] if necessary. Keep all mandatory visual style features constant.</em></p><figure><img loading="lazy" src="https://habrastorage.org/r/w1560/getpro/habr/upload_files/9d7/31e/d2b/9d731ed2bd12669931e9712fd9308fa9.png"/></figure><p>As a result, the specific object disappears from the permanent part of the prompt. The structure remains approximately: [Subject], [Action]. And then — constant rules for color, light, shape, texture, materials, and rendering.</p><p>Now, you can substitute a person or a bird in [Subject], and specify the action for this object in [Action] if necessary. If the genome is found correctly, the visual language should be preserved.</p><h2>Step Five. Protection Against Drift</h2><p>This step is needed to prevent the model from gradually reverting to its usual generation solutions.</p><p><strong>For example:<br/></strong><em>Identify what should be avoided during image generation so that the result does not go beyond this visual language.</em></p><figure><img loading="lazy" src="https://habrastorage.org/r/w1560/getpro/habr/upload_files/979/414/4d0/9794144d0cf97de43b9f3d65167c437b.png"/></figure><p>If the style is built on flat shapes, volumetric gradients and realistic lighting can become a problem. If the style has no outlines, the model should not add them independently. If our genome has a rule of four colors, then there should not suddenly be more or fewer.</p><p>Thus, we have an additional safeguard against style drift.</p><h2>Step Six. Genome Verification</h2><p>At this stage, we need to test the master prompt on the most diverse objects. For greater accuracy, do not test a car on another car or an orange on a lemon. Such objects are too similar and belong to the same category.</p><p><strong>For example:<br/></strong><em>Test the master prompt on several maximally different objects. Compare the results with the original reference and with each other. If the visual style begins to drift, refine the master prompt by strengthening the mandatory core features. After testing, provide the corrected version.</em></p><figure><img loading="lazy" src="https://habrastorage.org/r/w1560/getpro/habr/upload_files/089/d23/ea3/089d23ea31dd2c59914c86c851a6339c.png"/></figure><p>Each new subject tries to reintroduce its usual rules corresponding to its type and properties. If the core is preserved after testing, the genome works. If any feature is lost or works unstably, its formulation needs to be clarified, and the test should be repeated.</p><p>Only after this check can the master prompt be considered functional.</p><h2>Step Seven. Skill Creation</h2><p>And here begins the final part of the method. Up to this point, we have manually gone through the entire chain and obtained a working master prompt. But inserting it anew each time and repeating all the style rules is not very convenient. Therefore, the ready-made master prompt can be saved as a skill and used in subsequent generations.</p><p><strong>For example:<br/></strong><em>Create and install a skill based on the ready-made master prompt. Save the style core, variables, and drift protection rules. When generating, I should be able to change the object and, if necessary, the action, while maintaining the constant part of the visual style. Do not add solutions that contradict the genome.</em></p><figure><img loading="lazy" src="https://habrastorage.org/r/w1560/getpro/habr/upload_files/e7e/bca/3c0/e7ebca3c0cdad78f4fc6de228483a9f4.png"/></figure><h2>Why Turn This Into a Skill at All?</h2><p>A master prompt solves one task: it allows reproducing a specific found style. A skill solves a task at a higher level: it saves this master prompt as a ready-made instruction that can be reused to generate different objects. This is an important distinction.</p><p>Master prompt — is the result of work.<br/>Skill — is a tool that allows convenient use of this result.</p><p>Therefore, the ultimate goal of the method is not to describe one style well once. The goal is to build a convenient, repeatable process that can be launched again and again, saving effort and time on preparing each new generation. The method is saved and ready for reuse.</p><h2>Where Text is Insufficient</h2><p>Not every visual style can be fully described in words.</p><p>For example, color and light are usually conveyed quite well. But a peculiar line or form plasticity can sometimes be difficult to express solely through text.</p><p>In such cases, the genome remains the textual basis, but you can additionally use the visual reference itself and other methods of image linking.</p><p>It is also important to remember that the same prompt can yield different results in different neural networks. For example, you created and tested your style in ChatGPT, and then decided to use the same prompt in another neural network. Even if the wording remains the same, the result may differ slightly.</p><p>Therefore, it is better to separately check how your style works in each tool and, if necessary, save your version of the prompt for it. This way, you won't have to set everything up from scratch each time.</p><h2>In Conclusion</h2><p>When I started this experiment, I wanted to understand if it was possible not just to replicate a favorite reference, but to preserve its visual language when generating completely different objects.</p><p>In the process, it became clear that a single detailed prompt is not always enough for this. I had to return to the results, compare images, notice which features were preserved and which gradually disappeared, and refine the wording. It was from these observations that the method described above was formed.</p><p>In practice, I managed to get a series of images where different objects retain a common visual language. This does not mean that the genome guarantees the same result with every generation. But it provides a clear basis to work with, instead of starting style setup from scratch every time.</p><p>Perhaps this approach will be useful to you too, if you work with image series and want more control over their visual language. And if you try to apply it to your references, I would be glad to know what results you achieved and what limitations you encountered.</p></div>
+  </main>
+  <footer>
+    Translation generated with Gemini 2.5 Flash-Lite.
+    The original article remains the source of record.
+  </footer>
+</body>
+</html>

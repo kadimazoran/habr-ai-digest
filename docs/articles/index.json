@@ -407,6 +407,14 @@
     "summary": "The webinar summary below is part of a closed intensive course I put together around a series of webinars from the Maven platform about AI cases in American big tech. First, we watch a live stream with practitioners from Cursor, Meta, Netflix, and similar companies, and the next day, we discuss it in a small group. We don't watch adapted educational English, but the live speech of people who are currently building products on agents, and we extract vocabulary and life hacks from it. The webinar from which I made the article was conducted by Lauren Tan from Cursor. The webinar topic is trust in AI agents in development: how to reach the point where agents merge PRs without your involvement (about a built verification system). Below is a summary for those who want to understand the case in Russian. Enjoy :-) Read more",
     "title": "[Translation] Cursor Case Study: 800+ PRs a Month, or How to Build Trust in AI Agents for Development"
   },
+  "https://habr.com/ru/articles/1079622/?utm_campaign=1079622&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Fri, 18 Sep 2026 21:37:45 GMT",
+    "slug": "1079622",
+    "source_url": "https://habr.com/ru/articles/1079622/?utm_campaign=1079622&utm_source=habrahabr&utm_medium=rss",
+    "summary": "In this not-so-serious post, I'll try to tackle a very serious question: what makes the ideal laptop for an ML developer? Read on",
+    "title": "Finding the Perfect ML Laptop: From MacBook to x86+Linux"
+  },
   "https://habr.com/ru/articles/1079638/?utm_campaign=1079638&utm_source=habrahabr&utm_medium=rss": {
     "model": "gemini-2.5-flash-lite",
     "published": "Tue, 08 Sep 2026 02:56:10 GMT",
@@ -718,6 +726,14 @@
     "source_url": "https://habr.com/ru/articles/1081670/?utm_campaign=1081670&utm_source=habrahabr&utm_medium=rss",
     "summary": "For example, one participant chooses the cat branch, another the dog. The system can save both branches, request a higher quality image, or pass it to a human. To do this, the architecture needs pre-existing access to the source object, the ability to revise the route, and a limit on the number of additional attempts. If there is no such possibility, the detected disagreement will remain a beautiful entry in the log. Agreement also does not guarantee anything. All participants can confidently repeat the same mistake. Therefore, it is necessary to check a specific question: does disagreement help to identify errors better than a cheaper signal from one model, with a comparable budget? Works on deep ensembles provide grounds for exploring ensembles as a way to assess uncertainty. But in them, useful diversity arises even when training networks of the same architecture. Separately, the authors of Rethinking Mixture-of-Agents show that combining the answers of different LLMs does not always win against combining several answers from one strong model. Read more",
     "title": "Three models with 95% accuracy. Why can their chain only give 85%?"
+  },
+  "https://habr.com/ru/articles/1081704/?utm_campaign=1081704&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Fri, 18 Sep 2026 16:51:16 GMT",
+    "slug": "1081704",
+    "source_url": "https://habr.com/ru/articles/1081704/?utm_campaign=1081704&utm_source=habrahabr&utm_medium=rss",
+    "summary": "A slightly experimental format that I hope you'll enjoy. I personally love exploring topics outside of statistics, analytics, and related fields, so sometimes the best way to understand a topic is to try explaining or describing it myself. This material will be about AI, but in a slightly unusual format – we'll try to figure out why data centers are cooled and how they are cooled today, where all the calculations for choosing the right shampoo or spelling \"vinaigrette\" correctly take place. And behind every such answer are servers, and these servers generate a lot of heat during operation. Read more",
+    "title": "Can a data center do without water at all?"
   },
   "https://habr.com/ru/articles/1081764/?utm_campaign=1081764&utm_source=habrahabr&utm_medium=rss": {
     "model": "gemini-2.5-flash-lite",
@@ -1055,6 +1071,70 @@
     "summary": "Hello everyone! I promised to write this article and I've finally finished the tests and am ready to share the results with you. I spent a LOT of time running these benchmarks. A lot of time on setups, a lot of time waiting for tests. All together it took about two weeks of work - models crashed, sometimes I had to patch them to respond, sometimes I just had to wait a few days for the test to complete (even with multithreading). Finally, I got the answers that interest me - and, I hope, will be interesting to you, and to the creators of Alice and GigaChat. Why they don't run such benchmarks themselves, I can guess, but if I were in charge of these projects, I would, on the contrary, put running benchmarks on a cycle. Because only then can you understand where your model is, and where the world leaders are. Let's read about the experiment results!",
     "title": "Comparison of Alice (Yandex) and GigaChat (Sber) on 5 Benchmarks: τ³, PRAKT-120, MultiChallenge, WildBench, and Arena-Hard"
   },
+  "https://habr.com/ru/articles/1083928/?utm_campaign=1083928&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Fri, 18 Sep 2026 13:55:24 GMT",
+    "slug": "1083928",
+    "source_url": "https://habr.com/ru/articles/1083928/?utm_campaign=1083928&utm_source=habrahabr&utm_medium=rss",
+    "summary": "Creating a single image from a reference is easy. It's much harder to create a series of images with changing objects and plots while maintaining a consistent visual style. In this article, we explore how to make image generation more predictable in style. Learn more about style genome.",
+    "title": "Extracting the Style Genome in Chat GPT: From Reference to Ready Skill"
+  },
+  "https://habr.com/ru/articles/1083940/?utm_campaign=1083940&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Fri, 18 Sep 2026 14:21:00 GMT",
+    "slug": "1083940",
+    "source_url": "https://habr.com/ru/articles/1083940/?utm_campaign=1083940&utm_source=habrahabr&utm_medium=rss",
+    "summary": "Suppose tomorrow a company announces it has created AGI and solved the alignment problem: the system understands developers' intentions, adheres to constraints, and acts exactly as expected. Now, the company proposes allowing this system to independently apply force. Are you ready to give it a shotgun? Three questions help test the transition from 'the system works as intended' to 'it can be trusted with real power over other people'. Read more",
+    "title": "If Your AI Is So Cool, Are You Ready to Give It a Shotgun?"
+  },
+  "https://habr.com/ru/articles/1084026/?utm_campaign=1084026&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Fri, 18 Sep 2026 19:00:06 GMT",
+    "slug": "1084026",
+    "source_url": "https://habr.com/ru/articles/1084026/?utm_campaign=1084026&utm_source=habrahabr&utm_medium=rss",
+    "summary": "This article continues the discussion on ERP implementation, focusing on the transition from the Project-DR development environment to the Enterprise-DR operational model. It defines key terms like Project-DR (Project Digital Replica), Enterprise-DR (Enterprise Digital Replica), and their respective components. The article details how project knowledge is accumulated, how Enterprise-DR is derived from the accepted Project-DR state, what is physically delivered to the client, and how this model is operated post-launch. It emphasizes that Project-DR is an internal technology for building the enterprise model, while Enterprise-DR is the operational, machine-readable replica delivered to the client. The process involves specialized Project Cores, a Unified Project Store, a baseline definition, compilation, and a delivery scrub to ensure only the operational model is transferred, not the underlying technology. The article also touches upon the role of PostgreSQL, Enterprise-DR API, and local LLMs in the operational environment, highlighting the importance of a controlled interface and the distinction between operational history and fundamental model changes that require returning to Project-DR.",
+    "title": "ERP Implemented. What's Next? Part III. From Project-DR to Enterprise-DR"
+  },
+  "https://habr.com/ru/articles/1084028/?utm_campaign=1084028&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Fri, 18 Sep 2026 19:04:38 GMT",
+    "slug": "1084028",
+    "source_url": "https://habr.com/ru/articles/1084028/?utm_campaign=1084028&utm_source=habrahabr&utm_medium=rss",
+    "summary": "Over the past year, the number of tools for agent development has exploded, making it easy to get lost. Some promise to maintain context between sessions, others to \"understand\" the entire codebase, and yet others offer memory, planning, and autonomy in one package. Every week, GitHub repositories appear with impressive (and not always honestly earned) star counts, promising everything at once, only to turn out to be README projects. Others work honestly on demo repositories and crash with OOM at the first encounter with a real enterprise project – and so on, the list can go on. Last fall, I used a combination of Claude + RooCode + semantic search on Ollama, and it was my primary work tool – right up until the combination stopped working (more on that below). I decided to switch entirely to Claude Code and started looking for a replacement for the semantic index, but never found one: alternatives simply didn't work for me – on a 3.5M+ line monolith, they either indexed for hours, required sending code to the cloud (and paying a hefty sum for embeddings!!!), or supported Ruby, to put it mildly, nominally. As a result, I made a difficult decision for myself to create my own tool – starting with a fork of a simple semantic search engine on Ollama + Qdrant – and, characteristically, I succeeded: completely local, so that neither the code nor its derivatives (index, embeddings, call graph) go anywhere. To date, it has taken more than six months (and, I confess, more than a few hundred cups of tea). Read more",
+    "title": "Codebase Intelligence for Agents: Building the \"Dev Tool of the Future\" and Testing it on a 3.5M+ Line Rails Monolith"
+  },
+  "https://habr.com/ru/articles/1084030/?utm_campaign=1084030&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Sat, 19 Sep 2026 09:01:19 GMT",
+    "slug": "1084030",
+    "source_url": "https://habr.com/ru/articles/1084030/?utm_campaign=1084030&utm_source=habrahabr&utm_medium=rss",
+    "summary": "In three days, a small ecosystem has grown around Jev: a browser agent found flight tickets in seven seconds, developers built a trading bot, content filters, and even a Tesla FSD. But Jev doesn't write text. Its API selects an answer from a space pre-defined by the application. I've analyzed the TypeSafe documentation, the jev-ultrafast code, a published trace of a seven-second run, and a hundred primary or near-primary sources. This article covers the Noul, Choice, and Score contract, API calls, pricing, the browser agent's architecture, and 15 early cases with their proof limits. The main question is simple: where does the narrow decision layer truly outperform a standard LLM, and where does a valid answer still turn out to be the wrong answer? Read on",
+    "title": "Jev: How its decision API works and what's already being built on it"
+  },
+  "https://habr.com/ru/articles/1084068/?utm_campaign=1084068&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Sat, 19 Sep 2026 05:47:05 GMT",
+    "slug": "1084068",
+    "source_url": "https://habr.com/ru/articles/1084068/?utm_campaign=1084068&utm_source=habrahabr&utm_medium=rss",
+    "summary": "Overnight and during the workday, repetitions, clarifications, and individual messages accumulate in dozens of Telegram channels, making them easy to miss. I created a local Windows tool using Telethon and SQLite that collects posts from a desired period, stores them locally, allows searching the archive, and prepares structured data for an AI digest. I explain why it was necessary to separate data collection from AI analysis and what the result was. Read more",
+    "title": "How I stopped rereading dozens of Telegram channels: a local archive with Telethon, SQLite FTS5, and AI digests"
+  },
+  "https://habr.com/ru/articles/1084082/?utm_campaign=1084082&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Sat, 19 Sep 2026 07:36:18 GMT",
+    "slug": "1084082",
+    "source_url": "https://habr.com/ru/articles/1084082/?utm_campaign=1084082&utm_source=habrahabr&utm_medium=rss",
+    "summary": "GPU House of Cards: Neocloud debts are secured by chips that depreciate faster than repayment schedules, and the entire structure rests on two clients—OpenAI and Anthropic. Sam Altman called it \"sillier than silly,\" but his market built it. Inside: CoreWeave's debt machine, NVIDIA's backstops, a money loop, and three possible endings. Dive into the analysis.",
+    "title": "GPU House of Cards: The Architecture of the Neocloud Bubble"
+  },
+  "https://habr.com/ru/articles/1084092/?utm_campaign=1084092&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Sat, 19 Sep 2026 08:51:40 GMT",
+    "slug": "1084092",
+    "source_url": "https://habr.com/ru/articles/1084092/?utm_campaign=1084092&utm_source=habrahabr&utm_medium=rss",
+    "summary": "I have a MacBook Pro 16 2019: six-core Intel Core i7, 16 GB RAM, and Radeon Pro 5300M with 4 GB VRAM. It already had Ollama, gemma3:4b, and gemma2:2b installed. The idea seemed obvious: why spend cloud Codex on parsing a short traceback, summarizing a log, or a commit message? Let Codex offload such tasks to a local model, get the finished result, and only handle complex tasks. I created an MCP server, connected it to Codex, ran identical tasks, and checked the exact token consumption. The integration worked. Savings - no. On one simple task, the route through the local model used about twice as much cloud input as a direct Codex response. Below is not an instruction on 'how to run a neural network in five minutes,' but an analysis of the experiment: what I built, where I erred in my initial hypothesis, and for what tasks a small local model was still useful. Read on.",
+    "title": "I connected local Gemma to Codex to save on limits. On a simple task, consumption doubled"
+  },
   "https://habr.com/ru/companies/1c/articles/1071340/?utm_campaign=1071340&utm_source=habrahabr&utm_medium=rss": {
     "model": "gemini-2.5-flash-lite",
     "published": "Thu, 03 Sep 2026 07:18:11 GMT",
@@ -1270,6 +1350,14 @@
     "source_url": "https://habr.com/ru/companies/infostart/articles/1080088/?utm_campaign=1080088&utm_source=habrahabr&utm_medium=rss",
     "summary": "A few years ago, the 1C developer's workflow was predictable: Configurator, database, manual configuration import/export, file sharing. Then came Git, EDT, autotests, and automation tools. Today, AI agents, MCP, and programmatic platform control are increasingly entering this cycle. Not only the toolset is changing, but also the development cost. What used to take tens of minutes of manual work is gradually turning into a single command, script, or agent action. The selection of materials below is about different aspects of this transition. Together, they show one trend: the modern 1C developer works less with the Configurator and more with a full-fledged engineering ecosystem around the platform. Read more",
     "title": "From Configurator to AI Agents: How 1C Developer Tools Are Changing"
+  },
+  "https://habr.com/ru/companies/infowatch/articles/1083954/?utm_campaign=1083954&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Fri, 18 Sep 2026 14:32:05 GMT",
+    "slug": "1083954",
+    "source_url": "https://habr.com/ru/companies/infowatch/articles/1083954/?utm_campaign=1083954&utm_source=habrahabr&utm_medium=rss",
+    "summary": "Christopher Duff, 40, Sydney, is accused of hacking the NSW court system. Prosecutors allege he used ChatGPT to write a program for downloading sensitive documents. The case involves nearly 9,000 court documents Duff accessed in 2025. He denies the charges, and the court seeks to use his chat logs as evidence, marking a first in Australian justice. Details and arguments from both sides follow.",
+    "title": "Australian Man on Trial for Leaking Court Documents Using AI"
   },
   "https://habr.com/ru/companies/koda/articles/1081524/?utm_campaign=1081524&utm_source=habrahabr&utm_medium=rss": {
     "model": "gemini-2.5-flash-lite",
@@ -1503,6 +1591,14 @@
     "summary": "Keyword search is no longer sufficient. To enable neural networks to provide accurate answers based on your corporate knowledge bases, they need to 'understand' the meaning of text, which is more complex than simple exact matches. This article explores how vector databases work, why they are essential for modern RAG, how they differ from traditional relational databases, and how to choose the right tool for your project.",
     "title": "Why Vector Databases Are Needed in the Era of LLMs"
   },
+  "https://habr.com/ru/companies/selectel/articles/1082542/?utm_campaign=1082542&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Fri, 18 Sep 2026 12:00:53 GMT",
+    "slug": "1082542",
+    "source_url": "https://habr.com/ru/companies/selectel/articles/1082542/?utm_campaign=1082542&utm_source=habrahabr&utm_medium=rss",
+    "summary": "August 2026 was rich in novelties. Hot Chips 2026 and Flash Memory Summit brought a wave of hardware announcements: from record-breaking SSDs to processors with gigabytes of cache, and also everything that used to be considered memory is now becoming storage, and vice versa. We've gathered the most interesting things that appeared on the market in August in the traditional Selectel digest. Read more",
+    "title": "From RISC-V Architecture in Data Centers to 256-Core Diamond Rapids Chips: Server Hardware Novelties for August 2026"
+  },
   "https://habr.com/ru/companies/selectel/articles/1082648/?utm_campaign=1082648&utm_source=habrahabr&utm_medium=rss": {
     "model": "gemini-2.5-flash-lite",
     "published": "Wed, 16 Sep 2026 08:00:13 GMT",
@@ -1527,6 +1623,14 @@
     "summary": "A Russian woman recently fell victim to fraud: about 60 microloans totaling over 2.5 million rubles were issued in her name, with only a photo of her passport being sufficient for the scammers. For over a year, she has faced calls and threats from collectors, while over twenty MFIs continue to try to recover the money from her. This incident is highly illustrative, reminding us once again how serious the threat of fraud remains and how costly it can be for an ordinary person. The scale of risk grows with the number of leaks: according to industry data, 326 databases of Russian companies' clients, containing about 1.175 billion records with user information, became publicly available in 2025 and the first half of 2026. This is twice the combined number of public leaks in Latin America, the Middle East, Africa, the Asia-Pacific region, and other CIS countries. In such conditions, it's no longer possible to assume that passport and other personal data remain known only to their owner; once in the public domain, they are highly likely to become a tool for scammers. Therefore, the question often becomes how quickly criminals will attempt to use them to obtain loans. In this context, another equally important question arises: who should bear responsibility for the consequences of such fraud? Let's explore the role of banks and MFIs in preventing such schemes and why reliable borrower identity verification must be a mandatory part of the loan issuance process. Read more",
     "title": "MFIs Issued a Loan to a Scammer: Who Should Be Responsible for the Consequences"
   },
+  "https://habr.com/ru/companies/sminex_developer/articles/1083860/?utm_campaign=1083860&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Fri, 18 Sep 2026 12:08:45 GMT",
+    "slug": "1083860",
+    "source_url": "https://habr.com/ru/companies/sminex_developer/articles/1083860/?utm_campaign=1083860&utm_source=habrahabr&utm_medium=rss",
+    "summary": "It's strange to talk about a modern tech stack and simultaneously ask new employees to manually enter passport data into an HR form. By automating the onboarding process, we went beyond standard OCR. Based on an LLM VL model, we developed the Sminex Start digital product to manage the onboarding process. Manual labor has been minimized, data stays within the internal network, and new employees understand from day one that they've joined a tech-savvy company. We explain how we achieved this and the benefits we're already seeing in numbers and feedback in this article. LLM vs OCR",
+    "title": "How We Taught an AI Model to Understand Documents and Now Onboard New Employees 2x Faster"
+  },
   "https://habr.com/ru/companies/ssp-soft/articles/1079732/?utm_campaign=1079732&utm_source=habrahabr&utm_medium=rss": {
     "model": "gemini-2.5-flash-lite",
     "published": "Wed, 16 Sep 2026 07:03:07 GMT",
@@ -1542,6 +1646,14 @@
     "source_url": "https://habr.com/ru/companies/studyai/articles/1081576/?utm_campaign=1081576&utm_source=habrahabr&utm_medium=rss",
     "summary": "Today we'll try to generate some low-poly 'characters' and convert them into 3D using AI. We'll compare generations from Nano Banana Pro, Krea 2, and Microsoft MAI-Image-2.5, and see how some of them translate into 3D. Read more",
     "title": "Turning 2D Assets into 3D Models"
+  },
+  "https://habr.com/ru/companies/studyai/articles/1083760/?utm_campaign=1083760&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Sat, 19 Sep 2026 07:01:11 GMT",
+    "slug": "1083760",
+    "source_url": "https://habr.com/ru/companies/studyai/articles/1083760/?utm_campaign=1083760&utm_source=habrahabr&utm_medium=rss",
+    "summary": "Last time, we didn't have enough tokens for models from Krea 2. Let's correct this injustice and see how they look in three dimensions. We'll use Meshy and Neural 4D again. Read more",
+    "title": "Turning 2D Assets into 3D Models, Part 2"
   },
   "https://habr.com/ru/companies/svoi_ru/articles/1078124/?utm_campaign=1078124&utm_source=habrahabr&utm_medium=rss": {
     "model": "gemini-2.5-flash-lite",

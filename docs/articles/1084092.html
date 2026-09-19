@@ -1,0 +1,97 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>I connected local Gemma to Codex to save on limits. On a simple task, consumption doubled</title>
+  <meta name="description" content="I have a MacBook Pro 16 2019: six-core Intel Core i7, 16 GB RAM, and Radeon Pro 5300M with 4 GB VRAM. It already had Ollama, gemma3:4b, and gemma2:2b installed. The idea seemed obvious: why spend cloud Codex on parsing a short traceback, summarizing a log, or a commit message? Let Codex offload such">
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.65;
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 32px 20px 64px;
+      color: #1f2328;
+    }
+    header {
+      border-bottom: 1px solid #d8dee4;
+      margin-bottom: 28px;
+      padding-bottom: 20px;
+    }
+    .source {
+      color: #57606a;
+      font-size: 0.95rem;
+    }
+    img, video, iframe {
+      max-width: 100%;
+      height: auto;
+    }
+    pre {
+      overflow-x: auto;
+      padding: 16px;
+      background: #f6f8fa;
+      border-radius: 6px;
+    }
+    code {
+      font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+    }
+    blockquote {
+      border-left: 4px solid #d0d7de;
+      margin-left: 0;
+      padding-left: 16px;
+      color: #57606a;
+    }
+    footer {
+      border-top: 1px solid #d8dee4;
+      margin-top: 40px;
+      padding-top: 20px;
+      color: #57606a;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>I connected local Gemma to Codex to save on limits. On a simple task, consumption doubled</h1>
+    <p>I have a MacBook Pro 16 2019: six-core Intel Core i7, 16 GB RAM, and Radeon Pro 5300M with 4 GB VRAM. It already had Ollama, gemma3:4b, and gemma2:2b installed. The idea seemed obvious: why spend cloud Codex on parsing a short traceback, summarizing a log, or a commit message? Let Codex offload such tasks to a local model, get the finished result, and only handle complex tasks. I created an MCP server, connected it to Codex, ran identical tasks, and checked the exact token consumption. The integration worked. Savings - no. On one simple task, the route through the local model used about twice as much cloud input as a direct Codex response. Below is not an instruction on &#x27;how to run a neural network in five minutes,&#x27; but an analysis of the experiment: what I built, where I erred in my initial hypothesis, and for what tasks a small local model was still useful. Read on.</p>
+    <p class="source">
+      Machine-translated from Habr.
+      <a href="https://habr.com/ru/articles/1084092/?utm_campaign=1084092&amp;utm_source=habrahabr&amp;utm_medium=rss">Read the original Russian article</a>.
+      Sat, 19 Sep 2026 08:51:40 GMT
+    </p>
+  </header>
+  <main>
+<div><figure><img alt="Consumption doubled" loading="lazy" src="https://habrastorage.org/r/w1560/getpro/habr/upload_files/d51/315/a9b/d51315a9b460a0044f65be7f3902c997.png" title="Consumption doubled"/><div><figcaption>Consumption doubled</figcaption></div></figure><h2></h2><p>I have a MacBook Pro 16 2019: six-core Intel Core i7, 16 GB RAM, and Radeon Pro 5300M with 4 GB VRAM. It already had Ollama, <code>gemma3:4b</code>, and <code>gemma2:2b</code> installed.</p><p>The idea seemed obvious: why spend cloud Codex on parsing a short traceback, summarizing a log, or a commit message? Let Codex offload such tasks to a local model, get the finished result, and only handle complex tasks.</p><p>I created an MCP server, connected it to Codex, ran identical tasks, and checked the exact token consumption. The integration worked. Savings - no.</p><p>On one simple task, the route through the local model used about twice as much cloud input as a direct Codex response.</p><p>Below is not an instruction on 'how to run a neural network in five minutes,' but an analysis of the experiment: what I built, where I erred in my initial hypothesis, and for what tasks a small local model was still useful.</p><h3>What exactly I wanted to achieve</h3><p>Not a second chat alongside Codex, but a local executor within the workflow:</p><ol><li><p>I assign a task to Codex.</p></li><li><p>Codex understands the task is simple.</p></li><li><p>It passes it to Gemma via a local tool.</p></li><li><p>It verifies the response.</p></li><li><p>It doesn't spend expensive cloud inference on the routine itself.</p></li></ol><p>For delegation, I chose MCP. <a href="https://developers.openai.com/docs/extend/mcp">Codex supports local STDIO MCP servers</a>: a process runs on the computer, reads JSON-RPC from stdin, and returns the result via stdout. Configuration is stored in <code>~/.codex/config.toml</code>.</p><p>The server turned out to be small and without external Python dependencies. It has one tool - <code>local_llm</code>.</p><pre><code>{ 
+  "prompt": "What does this error mean?", 
+  "context": "SMTPAuthenticationError: 535 authentication failed", 
+  "mode": "classify", 
+  "max_tokens": 160, 
+  "temperature": 0 
+}</code><div><a href="https://sourcecraft.dev/"><img loading="lazy"/></a></div></pre><p>The response includes not only the model's words but also measurements:</p><pre><code>{ 
+  "answer": "Incorrect username or password for the email server", 
+  "model": "gemma3:4b", 
+  "wall_time_ms": 6098, 
+  "prompt_tokens": 71, 
+  "output_tokens": 44, 
+  "tokens_per_second": 9.52 
+}</code><div><a href="https://sourcecraft.dev/"><img loading="lazy"/></a></div></pre><p>I don't log prompts and source code. Only the SHA-256 of the prompt, context length, model, time, and token count are saved. Otherwise, the 'local and private assistant' would imperceptibly turn into another source code repository.</p><h3>First launch failed</h3><p>Codex saw the server and tried to call the tool, but <code>codex exec</code> responded:</p><pre><code>MCP tool call requires approval, but approval policy is never</code><div><a href="https://sourcecraft.dev/"><img loading="lazy"/></a></div></pre><p>The behavior is correct. An non-interactive process cannot show a confirmation dialog, so a new tool cannot be executed silently.</p><p>For a specific read-only tool, I explicitly allowed calls:</p><pre><code>[mcp_servers.ollama-worker] 
+command = "codex-ollama-worker" 
+default_tools_approval_mode = "approve" 
+
+[mcp_servers.ollama-worker.tools.local_llm] 
+approval_mode = "approve" 
+output_token_limit = 1200</code><div><a href="https://sourcecraft.dev/"><img loading="lazy"/></a></div></pre><p>After this, the chain worked: Codex selected <code>local_llm</code>, Gemma responded, and Codex read the structured result and returned the summary.</p><h3>What 2B and 4B are capable of</h3><p>I created eight small tasks. They are based on errors I encountered in a regular project:</p><ul><li><p>hostname mismatch in TLS certificate;</p></li><li><p>SMTP <code>535</code>;</p></li><li><p>extracting ports from Docker Compose;</p></li><li><p>path traversal when uploading a file;</p></li><li><p>an old entry permanently blocking a new one;</p></li><li><p>protecting a mailing list from duplicate submissions;</p></li><li><p>adding <code>UNIQUE</code> to a table with existing duplicates;</p></li><li><p>commit message.</p></li></ul><p>Identical prompts were run with <code>temperature=0</code>.</p><figure><img alt="Local model results" loading="lazy" src="https://habrastorage.org/r/w1560/getpro/habr/upload_files/9ff/722/4f2/9ff7224f25a13191e9bdeb129c2c389c.png"/><div><figcaption>Local model results</figcaption></div></figure><div><div><table><tbody><tr><th><p>Model</p></th><th><p>Time for eight tasks</p></th><th><p>Median</p></th><th><p>Average speed</p></th><th><p>Generated</p></th></tr><tr><td><p><code>gemma3:4b</code></p></td><td><p>147.1 s</p></td><td><p>9.4 s</p></td><td><p>9.40 tokens/s</p></td><td><p>1202 tokens</p></td></tr><tr><td><p><code>gemma2:2b</code></p></td><td><p>109.1 s</p></td><td><p>13.8 s</p></td><td><p>14.19 tokens/s</p></td><td><p>1328 tokens</p></td></tr></tbody></table></div></div><p>Both models ran on CPU. Despite having a discrete Radeon with 4 GB VRAM, Ollama showed <code>100% CPU</code>.</p><p>For simple transformations, everything was fine. Both models extracted external and internal ports, identified Redis as a dependency, understood SMTP <code>535</code>, and wrote an acceptable commit message.</p><p>However, with a short security review, things got interesting.</p><p>I gave <code>gemma3:4b</code> this snippet:</p><pre><code>target = Path('/srv/uploads') / upload.filename 
+with target.open('wb') as output: 
+    output.write(await upload.read())</code><div><a href="https://sourcecraft.dev/"><img loading="lazy"/></a></div></pre><p>The model mentioned directory traversal but primarily suggested replacing binary mode <code>wb</code> with text mode <code>w</code>.</p><p>This means the dangerous filename remained dangerous, and uploading binary files was additionally broken.</p><p><code>gemma2:2b</code> performed slightly better: it correctly pointed out the user-provided <code>upload.filename</code> but then advised using <code>Path.joinpath()</code> or <code>os.path.join()</code>. These functions combine paths but do not sanitize <code>../../etc/passwd</code>.</p><p>The models also failed on the logic of entries:</p><pre><code>existing = await db.execute( 
+    select(Enrollment).where(Enrollment.user_id == user.id) 
+) 
+if existing.scalars().first(): 
+    raise HTTPException(400, 'Already enrolled')</code><div><a href="https://sourcecraft.dev/"><img loading="lazy"/></a></div></pre><p>The real problem: the query considers any existing entry. After the first enrollment, the user might permanently lose the ability to enroll further.</p><p>The 4B model, instead, suggested translating the Russian error message into English. The 2B model noticed that any enrollment is checked but explained it so confusingly that a ready-made fix could not be obtained from the response.</p><p>The conclusion on quality was simple: small models are suitable for mechanical text processing, but not for final security reviews and domain logic.</p><h3>Where the savings disappeared</h3><p>After the call worked, I repeated the same simple task in three ways: directly via Ollama, directly via Codex, and via the Codex → MCP → Ollama → Codex chain.</p><p>The task was the same everywhere: explain SMTP <code>535 authentication failed</code> and name the first check.</p><figure><img alt="Token consumption diagram" loading="lazy" src="https://habrastorage.org/r/w1560/getpro/habr/upload_files/a1d/128/67f/a1d12867f6420212032f823054a2b99a.png"/><div><figcaption>Token consumption diagram</figcaption></div></figure><div><div><table><tbody><tr><th><p>Route</p></th><th><p>Time</p></th><th><p>Cloud input</p></th><th><p>Cloud output</p></th><th><p>Local tokens</p></th></tr><tr><td><p>Ollama directly</p></td><td><p>6.1 s</p></td><td><p>0</p></td><td><p>0</p></td><td><p>71 + 44</p></td></tr><tr><td><p>Codex directly</p></td><td><p>8.8 s</p></td><td><p>14,309</p></td><td><p>49</p></td><td><p>0</p></td></tr><tr><td><p>Codex → MCP → Ollama → Codex</p></td><td><p>21.4 s</p></td><td><p>29,301</p></td><td><p>384</p></td><td><p>71 + 44</p></td></tr></tbody></table></div></div><p>Why was the MCP route more expensive?</p><p>Because the local model does not replace the cloud pass. First, Codex must read the request and decide which tool to call. After the tool executes, Codex again receives the context along with the result and forms the final answer.</p><p>For a short task, this results in two cloud passes instead of one. The local model performs useful work in between, but its own work hardly subtracts anything from the Codex context.</p><p>Important: the numbers are taken from <code>turn.completed</code> events, not from interface percentages. Percentages are too coarse, and the server development itself was ongoing in parallel.</p><h3>Can I run the entire Codex locally?</h3><p>There is an OSS mode in the CLI:</p><pre><code>codex exec --oss --local-provider ollama -m gemma3:4b</code><div><a href="https://sourcecraft.dev/"><img loading="lazy"/></a></div></pre><p>I tried that too. First, the launch failed because Codex requested thinking, and <code>gemma3:4b</code> does not support it. I disabled reasoning but got the following error:</p><pre><code>registry.ollama.ai/library/gemma3:4b does not support tools</code><div><a href="https://sourcecraft.dev/"><img loading="lazy"/></a></div></pre><p>Even when the user request says 'do not call tools,' Codex acts as an agent and provides the model with available tool schemas. The installed Gemma 3 4B does not support this mode.</p><p>This means that on this machine, I got a working local MCP executor, but not a fully local Codex agent.</p><h3>What makes sense in the end</h3><p>My initial scheme was backward.</p><p>If cloud Codex has already started a turn, calling a small local model is not guaranteed to save limits. For a minor task, it might cost more due to the second cloud pass.</p><p>Savings only appear when a simple task is completed entirely locally – before contacting Codex.</p><p>A working division for my hardware looks like this:</p><p>Locally:</p><ul><li><p>extract facts from logs;</p></li><li><p>compress long command output;</p></li><li><p>convert JSON or a table;</p></li><li><p>write a draft commit message;</p></li><li><p>classify a known error.</p></li></ul><p>In Codex:</p><ul><li><p>change code;</p></li><li><p>search for the cause of an incident across multiple layers;</p></li><li><p>work with migrations;</p></li><li><p>perform security checks;</p></li><li><p>make architectural decisions;</p></li><li><p>re-verify a questionable local response.</p></li></ul><p>I kept the MCP server anyway. As a local tool, it works, returns measurable results, and can be useful for private preliminary processing. It would simply be untrue to call it a 'limit saving' after this experiment.</p><p>The next step is to create a local-first wrapper: the task first goes to Ollama, and only goes to Codex upon explicit escalation. This is the scheme that can be honestly tested for weekly limit savings.</p></div>
+  </main>
+  <footer>
+    Translation generated with Gemini 2.5 Flash-Lite.
+    The original article remains the source of record.
+  </footer>
+</body>
+</html>

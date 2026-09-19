@@ -1,0 +1,86 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>How I stopped rereading dozens of Telegram channels: a local archive with Telethon, SQLite FTS5, and AI digests</title>
+  <meta name="description" content="Overnight and during the workday, repetitions, clarifications, and individual messages accumulate in dozens of Telegram channels, making them easy to miss. I created a local Windows tool using Telethon and SQLite that collects posts from a desired period, stores them locally, allows searching the ar">
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.65;
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 32px 20px 64px;
+      color: #1f2328;
+    }
+    header {
+      border-bottom: 1px solid #d8dee4;
+      margin-bottom: 28px;
+      padding-bottom: 20px;
+    }
+    .source {
+      color: #57606a;
+      font-size: 0.95rem;
+    }
+    img, video, iframe {
+      max-width: 100%;
+      height: auto;
+    }
+    pre {
+      overflow-x: auto;
+      padding: 16px;
+      background: #f6f8fa;
+      border-radius: 6px;
+    }
+    code {
+      font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+    }
+    blockquote {
+      border-left: 4px solid #d0d7de;
+      margin-left: 0;
+      padding-left: 16px;
+      color: #57606a;
+    }
+    footer {
+      border-top: 1px solid #d8dee4;
+      margin-top: 40px;
+      padding-top: 20px;
+      color: #57606a;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>How I stopped rereading dozens of Telegram channels: a local archive with Telethon, SQLite FTS5, and AI digests</h1>
+    <p>Overnight and during the workday, repetitions, clarifications, and individual messages accumulate in dozens of Telegram channels, making them easy to miss. I created a local Windows tool using Telethon and SQLite that collects posts from a desired period, stores them locally, allows searching the archive, and prepares structured data for an AI digest. I explain why it was necessary to separate data collection from AI analysis and what the result was. Read more</p>
+    <p class="source">
+      Machine-translated from Habr.
+      <a href="https://habr.com/ru/articles/1084068/?utm_campaign=1084068&amp;utm_source=habrahabr&amp;utm_medium=rss">Read the original Russian article</a>.
+      Sat, 19 Sep 2026 05:47:05 GMT
+    </p>
+  </header>
+  <main>
+<div><p>I go to bed late and wake up closer to midday. Overnight and in the morning, a significant backlog of messages accumulates in Telegram: some news is repeated in five to ten channels almost identically, some appears only in one place, and something important can be easily missed simply because it got lost in the feed. At the same time, I didn't want to subscribe to dozens more channels just for rare thematic collections. Today I might be interested in AI, tomorrow sports, the day after tomorrow cinema or dramas, and I didn't want to inflate the subscription list for a one-time search.</p><p>This everyday task led to the creation of TelegramNewsAI. Currently, I have about 25 channels that I am subscribed to under constant monitoring, and about 10 more public channels that the program reads without a subscription. The idea was not to create another "Telegram summarizer," but to collect messages from a desired period without manually scrolling through the feed, preserve the original sources, and prepare the material in such a way that one could quickly get a clear picture of events from it.</p><h3>What I wanted to achieve</h3><p>I formulated the main requirement for the final digest simply: <strong>more facts, less analysis, predictions, and conclusions</strong>. If ten channels wrote about the same event, I don't need ten almost identical paragraphs. But if a new figure, clarification, comment from a party, or an important detail appeared in one of the messages, it should not be lost. The same applies to contradictions: it's better to show two versions and leave the option to go to the source than to pretend that one of them is automatically "correct."</p><p>Simple summarization of a batch of messages does not fully solve this task. I don't need brevity for its own sake, but compiled and structured information, and if necessary, a thematic selection on a specific issue. For example, over a few hours, 200 messages were published: 60 of them repeat five major storylines, 30 are minor news, and the rest are comments, clarifications, and continuations of ongoing stories. Reducing all this to twenty paragraphs is not enough: you first need to understand which messages relate to the same event, what appeared first, what was clarified later, and where the sources diverge.</p><p>Therefore, I divided the task into two parts:</p><pre><code>Telegram → local archive → structured JSON → AI → final digest</code><div><a href="https://sourcecraft.dev/"><img loading="lazy"/></a></div></pre><p>TelegramNewsAI is responsible for collecting, storing, searching, and preparing the source material. The AI now works not with a chaotic feed, but with prepared data and formatting rules that I set myself.</p><h3>Why Telethon</h3><p>I needed access to public Telegram channels as a regular account, including those I am not subscribed to, which is why Telethon is used at its core. On the first launch, the user enters their Telegram API ID and API Hash, phone number, and confirmation code. After that, the program works directly with Telegram; installing Telegram Desktop on your computer is not required.</p><p>Public channels can be added by <code>@username</code>, a regular <code>t.me</code> link, or a link to a specific post, and multiple channels can be added in one line separated by commas. This is important for my scenario: if interest arises in a particular topic, I can quickly get a list of suitable public channels through AI, add them to TelegramNewsAI, and collect a thematic selection without turning my main Telegram into a dump of subscriptions.</p><figure><img alt="Initial setup of TelegramNewsAI" loading="lazy" src="https://habrastorage.org/r/w1560/getpro/habr//post_images/a48/a8b/ed4/a48a8bed438855c7131476d44ced8c09.png"/><div><figcaption>Initial setup of TelegramNewsAI</figcaption></div></figure><h3>Local archive instead of a constant service</h3><p>One of the project's principles is locality. I didn't want a separate server, a mandatory paid API, a constant background service, or a dependency on one specific AI model. The program runs on Windows 10/11 and stores history locally in SQLite. It doesn't need to be kept running constantly: you can close the program, and the next time you launch it, it will download missed publications within the available history.</p><p>For a personal tool, SQLite turned out to be a sufficient and convenient option: a single database file, indexes, transactions, simple backup, and no separate database service. Full-text search uses SQLite FTS5. The search works on the already collected history, so if I'm interested in a specific topic or fact, I can skip building a general digest and create a separate search selection and send it to the AI.</p><p>For example:</p><pre><code>general monitoring → digest for the last 8 hours
+
+or
+
+local search → only topic X → separate JSON → thematic digest</code><div><a href="https://sourcecraft.dev/"><img loading="lazy"/></a></div></pre><p>The thematic mode turned out to be no less useful for me than the regular daily digest.</p><h3>What turned out to be the most difficult</h3><p>The most difficult part was not getting messages from Telegram, but achieving a normal final digest. The first problem is repetitions: one piece of news can be published in a dozen channels with different wording, and if everything is left as is, the result becomes bloated and useless. The second is not to overdo the analysis. AI readily explains, makes predictions, and adds conclusions, while I more often need answers to more down-to-earth questions: what happened, what's new, what are the important figures and details, where is the information from, what is confirmed, and what is not yet, and where do the sources diverge.</p><p>Therefore, the digest rules gradually shifted towards facts and structure. I also had to pay attention to not losing the original source: if a detail raises doubts or you simply want to read the message in full, there should be an option to return to the original publication. Therefore, links to specific Telegram posts are preserved in the prepared data whenever possible.</p><h3>How it looks in real life</h3><p>My main scenario is very simple: I wake up, launch TelegramNewsAI, and select a period of about the last eight hours. While drinking my morning coffee, I no longer read a feed of hundreds of messages, but a ready-made digest of what I missed. The second typical launch is in the evening, after work and training.</p><p>If a specific topic that interested me emerged during the day, I use the program differently. Through AI, I get a list of channels on the required topic, add suitable public channels to TelegramNewsAI, collect messages, form a separate selection, and ask the AI to create a final digest specifically on this issue. If necessary, I specify what to pay special attention to. The topics can be completely different — news, sports, cinema, AI, series, dramas: the program is not tied to any specific topic.</p><figure><img alt="Selecting a period and creating a digest" loading="lazy" src="https://habrastorage.org/r/w1560/getpro/habr//post_images/fbb/f57/6cf/fbbf576cf855e9341e2d5449d8db591f.png"/><div><figcaption>Selecting a period and creating a digest</figcaption></div></figure><p>After processing, the program creates a JSON file and opens it in File Explorer. Usually, I then simply attach the file to ChatGPT and write:</p><pre><code>Prepare a digest</code><div><a href="https://sourcecraft.dev/"><img loading="lazy"/></a></div></pre><p>The main instructions for analysis are already inside the exported file, so there's no need to compose a long prompt every time.</p><figure><img alt="Ready JSON after synchronization" loading="lazy" src="https://habrastorage.org/r/w1560/getpro/habr//post_images/bf9/3b3/f9b/bf93b3f9b5cb0bb974bfd7d78bd0835c.png"/><div><figcaption>Ready JSON after synchronization</figcaption></div></figure><h3>Why sources are stored separately from AI</h3><p>This is fundamental for me: AI can make mistakes in interpretation, choose an unfortunate wording, or draw too bold a conclusion, but the original messages should remain untouched. If the result is unsatisfactory, the same data set can be sent to another model, asked to create a shorter version, remove analysis, focus on one topic, or separately analyze contradictions between sources.</p><p>The archive itself does not depend on a specific model. Today it might be ChatGPT, tomorrow another service or a local model. AI remains a replaceable final link, while the collected messages and history are stored separately.</p><h3>Security</h3><p>Since TelegramNewsAI operates under the user's Telegram account, the API Hash and session file are sensitive data. Credentials are saved locally, and <code>credentials.bin</code> is protected by Windows DPAPI. The database, Telegram session, settings, selected channels, logs, and the digests themselves also remain on the user's computer.</p><p>The project has a separate <code>SECURITY.md</code>, and the CI checks that local data like <code>credentials.bin</code>, <code>*.session</code>, <code>news.db</code>, and configuration files do not accidentally end up in Git. For such a project, this was more important than building a complex server architecture. If necessary, the program can simply be deleted along with its folder and shortcut — there is no separate server component with user data.</p><h3>What already works and what's next</h3><p>At the current stage, the program already works as I initially intended: it collects publications for the selected period, downloads missed history, reads public channels without mandatory subscription, searches the local archive, generates a general or thematic JSON, saves links to sources, and connects AI only at the final analysis stage.</p><p>Now I'm thinking less about a complete rewrite of the project and more about the next directions — an Android version and an English version of the interface and documentation. At the same time, I want to keep the main principle the same: the local archive should remain simple, reliable, and independent of a specific AI.</p><h3>Conclusion</h3><p>TelegramNewsAI was not created as an attempt to build a large news analysis system. I simply wanted to stop wasting time manually scrolling through the accumulated feed, not lose important details and original sources, and, if necessary, analyze public channels that I am not subscribed to.</p><p>For me, the working scheme now looks like this:</p><pre><code>35 channels
+    ↓
+local archive
+    ↓
+selected period or topic
+    ↓
+structured data
+    ↓
+AI
+    ↓
+clear digest over a cup of coffee</code><div><a href="https://sourcecraft.dev/"><img loading="lazy"/></a></div></pre><p>If you are solving a similar problem differently, I would be particularly interested in comparing approaches to deduplication, thematic search, and the separation of "data collection / AI interpretation."</p><p>The source code, Windows release, and installation instructions can be found in the <a href="https://github.com/ccuriu/TelegramNewsAI">TelegramNewsAI repository</a>.</p></div>
+  </main>
+  <footer>
+    Translation generated with Gemini 2.5 Flash-Lite.
+    The original article remains the source of record.
+  </footer>
+</body>
+</html>

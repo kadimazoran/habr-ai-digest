@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Completion Does Not Prove AI Agent Result Quality</title>
+  <meta name="description" content="An agent has completed its run, returned the correct format, and passed automated checks. Why is this still not enough for acceptance, and what separate gates are needed between completion and human review. Read more">
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.65;
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 32px 20px 64px;
+      color: #1f2328;
+    }
+    header {
+      border-bottom: 1px solid #d8dee4;
+      margin-bottom: 28px;
+      padding-bottom: 20px;
+    }
+    .source {
+      color: #57606a;
+      font-size: 0.95rem;
+    }
+    img, video, iframe {
+      max-width: 100%;
+      height: auto;
+    }
+    pre {
+      overflow-x: auto;
+      padding: 16px;
+      background: #f6f8fa;
+      border-radius: 6px;
+    }
+    code {
+      font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+    }
+    blockquote {
+      border-left: 4px solid #d0d7de;
+      margin-left: 0;
+      padding-left: 16px;
+      color: #57606a;
+    }
+    footer {
+      border-top: 1px solid #d8dee4;
+      margin-top: 40px;
+      padding-top: 20px;
+      color: #57606a;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Completion Does Not Prove AI Agent Result Quality</h1>
+    <p>An agent has completed its run, returned the correct format, and passed automated checks. Why is this still not enough for acceptance, and what separate gates are needed between completion and human review. Read more</p>
+    <p class="source">
+      Machine-translated from Habr.
+      <a href="https://habr.com/ru/articles/1084146/?utm_campaign=1084146&amp;utm_source=habrahabr&amp;utm_medium=rss">Read the original Russian article</a>.
+      Sat, 19 Sep 2026 13:16:00 GMT
+    </p>
+  </header>
+  <main>
+<div><p>An AI agent can complete a run, return correct JSON, and pass automated checks. However, the team might still not have a usable result.</p><p>This is not a paradox, but a confusion of different states. "Request completed" refers to the environment's operation. "Artifact exists" indicates the presence of material. "Result accepted" means a responsible person has confirmed compliance with the original task. Separate checks are needed between these states.</p><h3>Format Does Not Equal Content</h3><p>Let's imagine a task where the agent must prepare a map of sources, a system description, a list of contradictions, and a development task. The response contract requires four fields. The agent returns them, and the JSON parses successfully.</p><p>But inside the fields, there might be paths to files that no one has created:</p><ul><li><p><code>source_map: output/source_map.md</code>;</p></li><li><p><code>system_context: output/system_context.md</code>;</p></li><li><p><code>findings: output/findings.md</code>;</p></li><li><p><code>task_pack: output/task_pack.md</code>.</p></li></ul><p>The schema is validated, but the documents are missing. Another run might return headers and phrases like "material will be added later." The text is not empty, but the artifact is absent. Yet another run might terminate after preparing part of the package due to environment limitations.</p><p>If all three cases are recorded as the same <code>fail</code>, the report won't indicate what needs fixing. Did the environment, format, result completeness, or requirement quality break?</p><h3>Completion Gate Should Come Before Quality Assessment</h3><p>Before assessing content, I use a separate completion gate, which is a check for artifact completeness. Its purpose is not to decide if a document is good. It should determine if there is anything to evaluate.</p><p>Checks proceed sequentially:</p><ol><li><p>The request completed without a timeout or process crash.</p></li><li><p>The response contains content.</p></li><li><p>The structure can be parsed.</p></li><li><p>Mandatory fields comply with the contract.</p></li><li><p>Returned values or links lead to existing, non-empty artifacts.</p></li><li><p>These artifacts are not placeholders and do not consist of empty sections.</p></li></ol><p>Only after this do requirement checks begin: assertion sources, mandatory sections, known contradictions, security constraints, and compliance with the user scenario.</p><p>This way, a technical failure is not masked as a poor understanding of the task, and a correct format is not accepted as a finished result.</p><h3>A Green Test Only Checks Its Own Question</h3><p>Automated checks are useful, but their limitations must be visible. A checker might confirm the presence of four headers and overlook empty text. It might require an exact word and reject an equivalent phrasing. It might repeat the same erroneous interpretation from which the agent assembled the response.</p><p>There is an even earlier risk: tests might be written based on an outdated specification. In the project, there's a new contract, an old wiki page, a prototype, and a support email lying around. The agent chose the old version, and the tests meticulously checked precisely that.</p><p>Therefore, the chain must preserve provenance:</p><p><code>source or decision → rule → user scenario → test or manual check → proof of implementation → user acceptance testing (UAT)</code>.</p><p>If the source or decision changes, related rules, scenarios, and tests become obsolete. An old green result cannot be automatically carried over to a new version of the context.</p><h3>Independence is More Important Than the Number of Agents</h3><p>Multiple agents retelling the same set of information do not create an independent check. They might simply arrive at a common misconception faster.</p><p>It is more reliable to maintain a log of evidence coverage: which facts are already presented, which are repeated, which sources conflict, and what evidence is missing. The discussion ends not after a fixed number of replies, but when mandatory facts are covered, and unresolved conflicts are escalated to the solution owner.</p><p>This is not a vote for truth. In case of conflicting sources, the system should preserve both versions, show the area of divergence, and stop where human authority is required.</p><h3>Textual Retelling Does Not Replace the Original Artifact</h3><p>A requirement might originate from a screenshot, a recording of a conversation, a video, or an interface state. A transcription is useful for searching but remains a derivative representation.</p><p>For verification, you need:</p><ul><li><p>the original artifact;</p></li><li><p>an exact pointer to the fragment;</p></li><li><p>a derivative description;</p></li><li><p>a transformation method;</p></li><li><p>known losses.</p></li></ul><p>If the requirement is "the user sees a save confirmation," an API test alone is insufficient. The observable interface state must be checked. If the solution is extracted from a video, the final check must lead back to the time fragment of the original.</p><h3>The Author Should Not Solely Accept the Result</h3><p>An agent can prepare a solution, change the format, and explain why a test passed. But it should not simultaneously be the sole author of the result, the author of the criteria, and the release authority.</p><p>Before acceptance, a human checks:</p><ul><li><p>the criterion appeared before implementation;</p></li><li><p>the test relates to the original scenario;</p></li><li><p>fixes and deviations are visible;</p></li><li><p>the limitations are understood by the person who will use the result;</p></li><li><p>the residual risk has been accepted by a named owner.</p></li></ul><p>This is not a rejection of automation. The executor, deterministic checks, and human acceptance answer different questions.</p><h3>What to Store in the Report</h3><p>Instead of a single success percentage, it is useful to break down the reasons:</p><ul><li><p>the environment did not complete the request;</p></li><li><p>the response could not be parsed;</p></li><li><p>the format was restored by external code;</p></li><li><p>the complete artifact did not pass the criteria;</p></li><li><p>the result was rejected by a human;</p></li><li><p>the result was accepted within agreed boundaries.</p></li></ul><p>This way, the team sees where the next step lies: in the environment, contract, model, check, or specification.</p><p>A completion gate does not make a model smarter or evaluate content quality. It prevents mistaking the absence of a whole verifiable artifact for a poor result, and a formally correct object for completed work. First, the system must produce a whole artifact. Then, external code checks the agreed-upon properties. After that, a human decides if the result can be used.</p></div>
+  </main>
+  <footer>
+    Translation generated with Gemini 2.5 Flash-Lite.
+    The original article remains the source of record.
+  </footer>
+</body>
+</html>

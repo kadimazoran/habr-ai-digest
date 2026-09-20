@@ -1,0 +1,90 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>All numbers in place, but the meaning has changed: how to check AI edits</title>
+  <meta name="description" content="Anna received Boris&#x27;s sum, and Boris received Anna&#x27;s sum. All names and numbers are preserved. I&#x27;ll explain why automatic comparison might miss such an error and how to check conditions and promises after AI editing. Check the meaning after editing.">
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.65;
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 32px 20px 64px;
+      color: #1f2328;
+    }
+    header {
+      border-bottom: 1px solid #d8dee4;
+      margin-bottom: 28px;
+      padding-bottom: 20px;
+    }
+    .source {
+      color: #57606a;
+      font-size: 0.95rem;
+    }
+    img, video, iframe {
+      max-width: 100%;
+      height: auto;
+    }
+    pre {
+      overflow-x: auto;
+      padding: 16px;
+      background: #f6f8fa;
+      border-radius: 6px;
+    }
+    code {
+      font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+    }
+    blockquote {
+      border-left: 4px solid #d0d7de;
+      margin-left: 0;
+      padding-left: 16px;
+      color: #57606a;
+    }
+    footer {
+      border-top: 1px solid #d8dee4;
+      margin-top: 40px;
+      padding-top: 20px;
+      color: #57606a;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>All numbers in place, but the meaning has changed: how to check AI edits</h1>
+    <p>Anna received Boris&#x27;s sum, and Boris received Anna&#x27;s sum. All names and numbers are preserved. I&#x27;ll explain why automatic comparison might miss such an error and how to check conditions and promises after AI editing. Check the meaning after editing.</p>
+    <p class="source">
+      Machine-translated from Habr.
+      <a href="https://habr.com/ru/articles/1084192/?utm_campaign=1084192&amp;utm_source=habrahabr&amp;utm_medium=rss">Read the original Russian article</a>.
+      Sat, 19 Sep 2026 23:58:08 GMT
+    </p>
+  </header>
+  <main>
+<div><p>Anna received 30,000 rubles. Boris received 50,000 rubles.</p><p>After editing:</p><p>Anna received 50,000 rubles. Boris received 30,000 rubles.</p><p>Both names are in place. Both sums too. It's just that the money went to the wrong people.</p><p>This is a deliberately crude example: the error is immediately obvious. But if you check the text against a list of preserved names and numbers, there's nothing to complain about. This is precisely why the answer "facts are preserved" requires clarification: what does the check consider a fact?</p><p>I am developing <a href="https://github.com/Vladimir-Human/humanizer-ru">humanizer-ru</a>, a set of instructions and utilities for working with text. One of the utilities compares two versions: it looks for lost and added numbers, negations, and other extractable elements. In the example with Anna and Boris, version 3.36.4 did not detect any differences among the extractable elements.</p><p>Below, I will analyze a conditional paragraph from the documentation: what to write down before editing, how to catch a lost condition, and when a program should object. All examples are manually created and verified on the published package. This is a demonstration of the method, not a statistic of errors made by any particular neural network.</p><h3>One paragraph, one lost condition</h3><p>Source:</p><blockquote><p>Export is available on the Pro plan with two-factor authentication enabled. The link to the archive is valid for 30 days. The service does not save the original text.</p></blockquote><p>Suppose, in response to a request to shorten the text, the following version was produced:</p><blockquote><p>Export is available on the Pro plan. The link to the archive is valid for 30 days. The service does not save the original text.</p></blockquote><p>It reads smoothly. The condition about the plan remains, the validity period hasn't changed, and the promise not to save the original text is also in place. The condition about two-factor authentication has disappeared. The user will buy Pro, open the export, and discover a requirement that the instructions remained silent about.</p><p>The check can start with four assertions from the source:</p><div><div><table><tbody><tr><th><p>What the reader should understand</p></th><th><p>Remains after editing?</p></th></tr><tr><td><p>Export requires Pro</p></td><td><p>Yes</p></td></tr><tr><td><p>To export, two-factor authentication must be enabled</p></td><td><p>No</p></td></tr><tr><td><p>The link is valid for 30 days</p></td><td><p>Yes</p></td></tr><tr><td><p>The service does not save the original text</p></td><td><p>Yes</p></td></tr></tbody></table></div></div><p>It's better to compile such a list from the source while the new version hasn't yet started to seem familiar. It needs complete assertions: "to export, it is necessary to enable...", not individual words like "export" and "authentication".</p><p>In the payment example, the list would be very short: "Anna received 30,000" and "Boris received 50,000". It immediately highlights the error that the list of names and sums misses.</p><h3>What the program said</h3><p>To replicate this, save the original paragraph to <code>before.txt</code> and the shortened version to <code>after.txt</code>. Both files should be in UTF-8.</p><pre><code>python -m pip install humanizer-ru==3.36.4 
+humanizer-facts diff before.txt after.txt --no-additions --json 
+</code><div><a href="https://sourcecraft.dev/"><img loading="lazy"/></a></div></pre><p>The report returned zeros for <code>lost</code>, <code>added</code>, and <code>changed</code>, and the <code>identical</code> field received the value <code>true</code>:</p><pre><code>{ 
+  "counts": { 
+    "lost": 0, 
+    "added": 0, 
+    "changed": 0 
+  }, 
+  "identical": true 
+} 
+</code><div><a href="https://sourcecraft.dev/"><img loading="lazy"/></a></div></pre><p><code>counts</code> contains the number of detected discrepancies among the extractable elements, and <code>identical</code> indicates whether such discrepancies were found. The files themselves differ. This check did not catch the access condition.</p><p>For two simpler distortions, the result is different:</p><div><div><table><tbody><tr><th><p>Was</p></th><th><p>Became</p></th><th><p>What version 3.36.4 detected</p></th></tr><tr><td><p>The backup is stored for 30 days.</p></td><td><p>The backup is stored for 90 days.</p></td><td><p>Loss of 30 and addition of 90</p></td></tr><tr><td><p>The service does not save the original text.</p></td><td><p>The service saves the original text.</p></td><td><p>Loss of negation and its inversion</p></td></tr></tbody></table></div></div><p>These are useful signals: in a long instruction, it's hard to catch every changed digit. But a signal relates to a specific check. A zero return code does not make the entire new text correct.</p><p>There is also a less obvious detail in the output: for replacing 30 with 90, the <code>changed</code> field is zero. The difference lies in <code>lost</code> and <code>added</code>. If you only look at <code>changed</code>, you might miss the discrepancy detected by the program. With the <code>--no-additions</code> flag, any addition of an extracted element results in a return code of 1, even if there are no losses.</p><h3>How to catch a known condition</h3><p>Let's return to the export. If an important phrase is known in advance, it can be explicitly protected. In <code>protected.txt</code>, we will write:</p><pre><code>with two-factor authentication enabled 
+</code><div><a href="https://sourcecraft.dev/"><img loading="lazy"/></a></div></pre><p>Add the file to the comparison:</p><pre><code>humanizer-facts diff before.txt after.txt --protect protected.txt --no-additions --json 
+</code><div><a href="https://sourcecraft.dev/"><img loading="lazy"/></a></div></pre><p>Now the check returns code 1. The <code>lost</code> list includes an entry of category <code>protected</code> with the value "with two-factor authentication enabled".</p><p>Such a signal indicates that the protected wording has disappeared and points to the location for manual verification. However, the following example shows why it cannot be given the final word:</p><blockquote><p>Export requires the Pro plan and two-factor authentication enabled. The link to the archive is valid for 30 days. The service does not save the original text.</p></blockquote><p>The phrase has been rephrased, but all four assertions from our table are in place. The protected string in its previous form is no longer present. If you demand its literal presence, you will have to reject this edit as well.</p><p>Therefore, <code>protected</code> should be read as "check this place." If the condition has disappeared, return the text for editing. If it has been preserved in a different wording, accept it after comparison. Otherwise, instead of an editor, you'll get a comma guardian.</p><h3>The most useful work happens before the model request</h3><p>Here is the prompt for our paragraph:</p><pre><code>Make the text simpler. Preserve the four assertions: 
+1. Export requires the Pro plan. 
+2. Two-factor authentication must be enabled for export. 
+3. The link to the archive is valid for 30 days. 
+4. The service does not save the original text. 
+Do not add new features or promises. 
+</code><div><a href="https://sourcecraft.dev/"><img loading="lazy"/></a></div></pre><p>The list here serves two purposes: it sets the task for the editor and remains with us for accepting the result. It is also useful when editing by a human.</p><p>This article did not measure how much such a prompt reduces the frequency of model errors. Something else has been verified: on a finished pair, it is visible which assertion was lost and how to configure the check so that it signals the disappearance of a known condition. The model's response to the request "list your changes" will also need to be compared with the source.</p><h3>What to check before publishing</h3><p>Save the source. Write down the conditions, deadlines, negations, and relationships from it: who pays whom, who has access to the function, what needs to be done in advance. After editing, compare each point with the new version. Checking numbers and some other elements can be entrusted to a utility; assertions on which the reader's action depends should be read in full.</p><p>For a short text, this is a few lines next to the draft; for a long one, it's a list to return to after edits. If the source itself is contradictory, comparing versions will not fix it: it only answers the question of what has changed.</p><p>If you have a short pair where a condition disappeared after editing or a sum ended up with the wrong person, please provide it in the comments without personal data.</p><p>And from our paragraph, you can take away a simple rule: if a condition hinders shortening a sentence, let the sentence remain longer.</p></div>
+  </main>
+  <footer>
+    Translation generated with Gemini 2.5 Flash-Lite.
+    The original article remains the source of record.
+  </footer>
+</body>
+</html>

@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Do We Need a Smart Model for Routine Tasks? I Gave Five Identical Tasks to Four Models and Compared Them</title>
+  <meta name="description" content="This week on Habr, there was a debate about whether programmers need the smartest models or if cheaper ones are sufficient for routine tasks. Three hundred comments and not a single benchmark on identical tasks. I did it: five routine tasks, four models from the same family, two runs each, hidden te">
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.65;
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 32px 20px 64px;
+      color: #1f2328;
+    }
+    header {
+      border-bottom: 1px solid #d8dee4;
+      margin-bottom: 28px;
+      padding-bottom: 20px;
+    }
+    .source {
+      color: #57606a;
+      font-size: 0.95rem;
+    }
+    img, video, iframe {
+      max-width: 100%;
+      height: auto;
+    }
+    pre {
+      overflow-x: auto;
+      padding: 16px;
+      background: #f6f8fa;
+      border-radius: 6px;
+    }
+    code {
+      font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+    }
+    blockquote {
+      border-left: 4px solid #d0d7de;
+      margin-left: 0;
+      padding-left: 16px;
+      color: #57606a;
+    }
+    footer {
+      border-top: 1px solid #d8dee4;
+      margin-top: 40px;
+      padding-top: 20px;
+      color: #57606a;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Do We Need a Smart Model for Routine Tasks? I Gave Five Identical Tasks to Four Models and Compared Them</h1>
+    <p>This week on Habr, there was a debate about whether programmers need the smartest models or if cheaper ones are sufficient for routine tasks. Three hundred comments and not a single benchmark on identical tasks. I did it: five routine tasks, four models from the same family, two runs each, hidden tests. Forty runs in total. The most expensive model turned out to be the fastest: 341 seconds compared to 395 for the cheapest, because it needed fewer turns and half the text. Four out of five tasks were solved by all models, 32 out of 32 runs. On the fifth task, the junior model wrote a bug and reported it with two consecutive checkmarks, the second of which contradicts the first. Read more</p>
+    <p class="source">
+      Machine-translated from Habr.
+      <a href="https://habr.com/ru/articles/1084270/?utm_campaign=1084270&amp;utm_source=habrahabr&amp;utm_medium=rss">Read the original Russian article</a>.
+      Sun, 20 Sep 2026 07:34:01 GMT
+    </p>
+  </header>
+  <main>
+<div><p>This week on Habr, there was a debate about whether programmers need the smartest models: <a href="https://habr.com/ru/articles/1083368/">"I stopped using the smartest AI models"</a>. The author believes that cheap models are sufficient for routine tasks, and speed is now the bottleneck. There are almost three hundred comments under the article. I read about half of them: many opinions, but I didn't find a single benchmark on identical tasks. It became interesting, so I sat down and checked it myself.</p><h3>What I Measured</h3><p>I took five tasks that I usually give to an agent and then go get coffee. All in Python, from one to five files:</p><ol><li><p>Off-by-one error in pagination, the test fails, needs fixing.</p></li><li><p>Rename a function throughout the project. With a catch: in one place, the name is stored as a string in a dictionary and called via <code>getattr</code>.</p></li><li><p>Normalize a Russian phone number based on a verbal description.</p></li><li><p>A function of about fifty lines with triple copy-pasting. It needs to be refactored so that the output remains byte-for-byte the same, and each function fits within twenty lines.</p></li><li><p>Splitting a bill among n people, where cents are lost. The requirements state: extra cents go to the first person in the list, and it should also work for refunds with negative amounts.</p></li></ol><p>The models were four from the same family, from junior to senior: Haiku 4.5, Sonnet 5, Opus 5, Fable 5.1. The agent was the same everywhere (Claude Code in <code>-p</code> mode, MCP disabled), the prompt was the same, and each run started with a clean folder. I ran each task twice on each model, for a total of forty runs. I verified using a hidden script that the model couldn't see: it contained my tests and a check to ensure no visible tests were tampered with.</p><p>I'll say upfront what's bad about this. The tasks are small. Two runs per model is nothing. The family is the same. So, this is a quick-and-dirty measurement, I'm not claiming it's a benchmark. I'll share the tasks and checks if anyone needs them.</p><h3>What I Found</h3><div><div><table><tbody><tr><th><p>Model</p></th><th><p>Solved</p></th><th><p>Time for 10 runs</p></th><th><p>Agent Turns</p></th><th><p>Output Tokens</p></th><th><p>Price Relative to Junior</p></th></tr><tr><td><p>Haiku 4.5</p></td><td><p>8 out of 10</p></td><td><p>395 s</p></td><td><p>100</p></td><td><p>39,137</p></td><td><p>1x</p></td></tr><tr><td><p>Sonnet 5</p></td><td><p>9 out of 10</p></td><td><p>450 s</p></td><td><p>109</p></td><td><p>31,359</p></td><td><p>3.3x</p></td></tr><tr><td><p>Opus 5</p></td><td><p>10 out of 10</p></td><td><p>557 s</p></td><td><p>108</p></td><td><p>39,455</p></td><td><p>6.9x</p></td></tr><tr><td><p>Fable 5.1</p></td><td><p>10 out of 10</p></td><td><p>341 s</p></td><td><p>85</p></td><td><p>23,010</p></td><td><p>8.8x</p></td></tr></tbody></table></div></div><p>I calculated the price myself based on the listed prices. I won't write absolute numbers: they'll be outdated faster than you can finish reading this. The ratios will last longer.</p><p>Now, what surprised me.</p><p>The most expensive model turned out to be the fastest. 341 seconds compared to 395 for the cheapest. Why is visible in the adjacent columns: fewer turns, almost half the text. The junior model reasons a lot, 18,754 tokens of reasoning for ten runs, while the senior has 2,674. Its tokens fly faster, but it needs more of them, and the total ends up being longer. However, Opus, the second from the top, is actually the slowest of the four, so "more expensive means faster" is also not true. I decided for myself to look at the total task time. Tokens per second don't predict it.</p><p>Next. Four out of five tasks were solved by all models, both times. Pagination, renaming with a catch, phone number, refactoring: 32 out of 32 runs. If your routine tasks are similar, a ninefold price difference won't give you anything.</p><p>And all the difference emerged on the fifth task. Moreover, they stumbled on reading the requirements, the code itself was fine for all of them.</p><h3>The Fifth Task</h3><p>The first thing that comes to mind:</p><pre><code>base, remainder = divmod(total_cents, n) 
+result = [base] * n 
+for i in range(remainder): 
+    result[i] += 1 
+</code><div><a href="https://sourcecraft.dev/"><img loading="lazy"/></a></div></pre><p>1000 divided by three gives <code>[334, 333, 333]</code>, beautiful. But for a refund, -1000: division in Python rounds down, resulting in <code>[-333, -333, -334]</code>. The extra cent went to the end of the list. This means the person paid one cent more than the others, but will receive one cent less upon refund. The requirements stated "extra cents go to the first person," so it missed the mark.</p><p>Haiku wrote it exactly like that both times. Sonnet did it once out of two. Opus and Fable all four times divided the sum modulo, and then returned the sign. And in their reports, they explained why: if you divide a negative number directly, the extra cent goes to the end, but the requirements say the opposite. In one run, Fable even wrote a script, iterating through all sums from -300 to 299 with n from 1 to 11. I didn't ask it to do that.</p><p>But most of all, I liked the junior model's report. Quoting verbatim:</p><pre><code>✓ Remainder goes to the first person in the list 
+✓ Works for refunds: split_bill(-100, 3) = [-33, -33, -34] 
+</code><div><a href="https://sourcecraft.dev/"><img loading="lazy"/></a></div></pre><p>Two checkmarks in a row, and the second line contradicts the first. The visible test is green, the report is cheerful, but the bug will appear on the very first refund.</p><p>To be fair, the requirement about refunds can be interpreted in different ways, and someone in the comments will surely say that <code>[-333, -333, -334]</code> is also fine. Maybe so. But the senior models saw this fork and explained their choice. The junior model simply put a checkmark.</p><h3>What I Do Now</h3><p>For tasks where everything is clearly defined and there are tests, I give them to the junior model. 32 out of 32 solved, and it's almost an order of magnitude cheaper.</p><p>If the requirements mention "and for negative numbers," "and for empty," "as it was before," I use the senior model. The cheap model writes code fine. It misses the actual question.</p><p>And I trust the "it works" report only as much as I can verify it myself. One hidden test for a boundary case is cheaper than any model.</p><p>How about you? Who runs cheap models on routine tasks, where do they usually fail?</p><p>I post short notes and measurements between articles in my channel: <a href="https://t.me/agent_field_notes">https://t.me/agent_field_notes</a></p></div>
+  </main>
+  <footer>
+    Translation generated with Gemini 2.5 Flash-Lite.
+    The original article remains the source of record.
+  </footer>
+</body>
+</html>

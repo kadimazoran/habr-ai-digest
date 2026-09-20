@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Local assistant for Zoom, part 6: half an hour of silence that wasn&#x27;t in the protocol</title>
+  <meta name="description" content="The sixth part about a local assistant for calls. Meeting on September 15: the interlocutor channel died four times, the transcript has 33 minutes of gaps out of 65, and the protocol has six sections with no mention of this. Why silence from a lost channel is indistinguishable for the model from agr">
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.65;
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 32px 20px 64px;
+      color: #1f2328;
+    }
+    header {
+      border-bottom: 1px solid #d8dee4;
+      margin-bottom: 28px;
+      padding-bottom: 20px;
+    }
+    .source {
+      color: #57606a;
+      font-size: 0.95rem;
+    }
+    img, video, iframe {
+      max-width: 100%;
+      height: auto;
+    }
+    pre {
+      overflow-x: auto;
+      padding: 16px;
+      background: #f6f8fa;
+      border-radius: 6px;
+    }
+    code {
+      font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+    }
+    blockquote {
+      border-left: 4px solid #d0d7de;
+      margin-left: 0;
+      padding-left: 16px;
+      color: #57606a;
+    }
+    footer {
+      border-top: 1px solid #d8dee4;
+      margin-top: 40px;
+      padding-top: 20px;
+      color: #57606a;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Local assistant for Zoom, part 6: half an hour of silence that wasn&#x27;t in the protocol</h1>
+    <p>The sixth part about a local assistant for calls. Meeting on September 15: the interlocutor channel died four times, the transcript has 33 minutes of gaps out of 65, and the protocol has six sections with no mention of this. Why silence from a lost channel is indistinguishable for the model from agreement, what is a recording fact versus speech, where the line about incomplete recording disappeared on the way to the model, how the derivative&#x27;s passport learns about an omission, and why two external reviewers found the same defect that two thousand tests missed. Read more</p>
+    <p class="source">
+      Machine-translated from Habr.
+      <a href="https://habr.com/ru/articles/1084114/?utm_campaign=1084114&amp;utm_source=habrahabr&amp;utm_medium=rss">Read the original Russian article</a>.
+      Sat, 19 Sep 2026 10:30:33 GMT
+    </p>
+  </header>
+  <main>
+<div><p>Meeting on September 15, 65 minutes. The interlocutor channel died four times, the watchdog restarted it. The transcript has seven gaps of two minutes or more with no remarks, totaling 33 minutes out of 65. The largest gap is from 15:46 to 16:01. The protocol ended up with six sections, including decisions and assignments, and not a word about half the meeting being missing. I will refer to this protocol as minutes from now on, as it is called in the code.</p><h3>What Happened</h3><p>System audio on Mac goes through ScreenCaptureKit. The stream stops sending frames, the watchdog restarts it after half a minute, by the sixtieth second the restart hangs, a second attempt, and the log shows <em>device unplugged</em>. Then the channel returns on its own, and after ten minutes, it repeats. The demon's cries occurred at 15:18, 15:27, 15:35, 15:45, and each is adjacent to a gap in the transcript.</p><p>The status line in the window indicated this. The notification did too. Both were active while the meeting was ongoing.</p><p>And then the documents live on. Minutes: topics, decisions, assignments, open questions, risks, items removed by revision. Meeting analysis performed by the local model. Cloud revision that reads the entire transcript. None of the three noted that the transcript had half-hour gaps.</p><p>The model did not err here. The rule for minutes: take only what was spoken. Nothing was spoken, nothing to take, the protocol is short and clean. The silence of a lost channel is indistinguishable for the model from the silence of people who listened and did not object.</p><h3>Measurement</h3><p>In five days, from September 14 to 18, there were 36 recording starts. 12 of them experienced system audio loss. The number of loss lines per recording ranged from 2 to 42: the channel dies, the watchdog restarts it, the channel dies again, up to 21 cycles per meeting. There were zero return lines in the logs because the return was not logged.</p><p>Some of the losses were due to ending the call with recording still active: the call window closed, the stream closed with it, but the recording was still running. However, on September 15, two consecutive meetings, at 14:01 and 15:07, lost the channel mid-conversation: five and four double cries, resulting in 10 and 33 minutes of gaps. I opened all twelve protocols. Not a word in any of them.</p><h3>Trace in Documents</h3><p>The first layer, the trace in documents, appeared on September 18, three days after that meeting. The hub, the common audio node between capture and all consumers, has a single point where the channel state transition becomes an event: lost, returned, gap after a quiet restart, not returned by the end. The boundary of the event is considered the last frame of the channel. The demon's cry lags behind the watchdog's threshold and restart attempts, from 66 to 96 seconds, and the boundary is not set based on it. The reason for the event is machine-generated, from a fixed list.</p><p>The event is placed in the meeting's sidecar, a service JSON next to the transcript, under a separate key, merged, each immediately. As a line at the end of the transcript, where the model's theses during the meeting reside. As a line in the meeting thread, a feed on the screen. The limit is six episodes per channel; only the summary upon stopping is sent to the documents. For that meeting, it would look like this:</p><p><em>📋 incomplete recording: without interlocutors 15:18–15:20, 15:27–15:31, 15:35–15:37, 15:46–16:01 (4 episodes, 23 min total)</em></p><p>This was enough for me to distinguish a gap from a pause in conversation the next day. It was not enough for the models. The summary was written by the demon on stop. The demon was killed by the watchdog, the line is gone, but the events in the sidecar are all there. And even when the line was present, it did not make it into the minutes prompt.</p><h3>Where the Line Disappeared</h3><p>There are four writers for the minutes. A draft during the meeting every 150 seconds. The Protocol button. A rebuild after stop based on the final transcript. And a tool for an external agent. Meeting analysis and retro-processing of old meetings also read the transcript but do not write minutes.</p><p>Each prepared the model input differently. The long transcript is condensed into part summaries because 8192 context tokens are about 20,000 characters, and an hour-long meeting is longer. The draft, for transcripts longer than 18,000 characters, takes the first 3,000 and the last 14,000. The analysis takes the head and tail. The tool read the entire file.</p><p>The line about the recording was at the end of the file. Three writers trimmed the tail as model notes. The fourth fed it to the model as speech, and the channel trace was read as someone's remark. Within the transcript, the line either went into the part summary or was discarded with the middle section.</p><h3>Speech and Recording Fact</h3><p>Two external reviewers read the specification before the first line of code, and both agreed on one thing: the file as input does not exist. There is what the owner provided as speech, and what they also marked as a recording fact. These are two different inputs.</p><p>Now, any derivative document assembled from the transcript has one source. Speech: without a header and without a tail. It is cut by summaries and windows, and quotes are verified against it. Recording omission: the same summary line, assembled from sidecar events. It goes into the prompt as a separate block, outside the transcript tag and after all trimming, in Russian, English, and Chinese, with one rule: this is a recording fact, not participant speech, do not quote it as said, do not interpret silence from a lost channel as agreement or lack of objection.</p><p>The line enters the document without model intervention. There is no way to verify if the model noted an omission in the risks or distorted the minutes. The line is appended by code, at the end of the document, once. Even if the model paraphrased the omission in its own words with the same 📋 icon, the canonical line will still appear alongside it.</p><h3>Passport</h3><p>Each derivative now has a passport in the sidecar: a hash of the bytes of the latest machine version of the document and a hash of the source. The passport determines whether to call the model again or if the file was edited manually and cannot be touched.</p><p>The source is now hashed along with the omission. If an omission appeared, the passport would not match, the minutes would become outdated once and be reassembled with it. This only affects meetings recorded after the release where the channel was lost: old meeting events only exist in the capture log, they are not transferred to the sidecar, and old protocols will not receive the omission. The cost of one minutes reassembly is about 13 seconds per 10,000 characters by the local model; the analysis is reassembled separately.</p><p>I rejected the alternative: hashing only the speech and appending the line without regeneration. The omission changes what can be trusted in the document: decisions from such a protocol do not describe the entire meeting, and the model must assemble it knowing this.</p><h3>Reassembly Restores Trace</h3><p>If the demon was killed by the watchdog, there is no summary at the end. Reassembly reads events from the sidecar, renders the same line with the same code, and appends it to the end with the same code that writes the tail. If the section doesn't exist, it will be created. A second pass does not create a duplicate. Extracting graph nodes, topic maps, and people from past meetings yields content without trace lines. The recording fact does not go into the graph: it is not a meeting topic.</p><h3>Three Rounds, One Defect in the First</h3><p>The fix was reviewed by two external reviewers, DeepSeek and GLM, each on a clean clone. First round: one had a Critical issue, the other had two, and one was common.</p><p>Retro-processing of old meetings read the sidecar by the second-level timestamp of the recording. After the topic file is applied, the meeting file is renamed, the sidecar moves with it, and it's not available under the old name. Retro saw an empty file and calculated the hash without the omission. The live path calculated it with the omission. One passport key, two values, and the named meeting with audio losses would be reassembled on every run.</p><p>Tests were green, two thousand one hundred and ten of them. In all fixtures for this fix, meetings were named with a timestamp without a topic, where the old and new sidecar names matched. Reproduction took eight lines: a file with a topic, events in the sidecar, two calls, different hashes.</p><p>Second round after fixes. DeepSeek found that minutes were appended to the extraction prompt after the filter that was supposed to remove the summary line, and it returned to the graph as a meeting topic. Corrected by a helper: minutes go through it to both prompts, without trace lines and with a limit. Third round without Critical issues: two Important issues regarding the analysis prompt budget and an overly broad trace line classifier, both included in the same PR. Totaling 32 tests for the mechanism and 2132 in the repository.</p><h3>Rejected</h3><p>Hashing the event JSON instead of the string, so that a change in wording wouldn't invalidate the passports: the passport indicates which text the document was assembled from, and I don't intend to change the wording. I also rejected the source passport for minutes created via the Protocol button: they are assembled from a live transcript with anonymous labels, and reassembly must collect them anew from the final version.</p><p>What remains. The status line in the window is still classified by substrings; that's the next card. An incomplete recording flag for the meeting node in the graph, boolean, not text: I'm thinking about it. A voiceprint of the owner remains in the queue.</p><p>The protocol for the September 15 meeting will remain without the line: there are no events in its sidecar, and the capture log is not transferred to the sidecar. The next meeting with a dying channel will receive it first.</p><p>Code and releases: <a href="https://github.com/charoiteai/Charoite_audio">github.com/charoiteai/Charoite_audio</a>, Apache 2.0. Devlog in English: <a href="https://charoiteai.github.io/Charoite_audio/">charoiteai.github.io/Charoite_audio</a>. First part — <a href="https://habr.com/ru/articles/1061864/">about the device and recording</a>, second — <a href="https://habr.com/ru/articles/1078828/">about the meeting graph as memory</a>, third — <a href="https://habr.com/ru/articles/1080942/">about diarization and three false diagnoses</a>, fourth — <a href="https://habr.com/ru/articles/1081586/">about revision after the Stop button</a>, fifth — <a href="https://habr.com/ru/articles/1083382/">about the cloud and what goes out</a>.</p></div>
+  </main>
+  <footer>
+    Translation generated with Gemini 2.5 Flash-Lite.
+    The original article remains the source of record.
+  </footer>
+</body>
+</html>

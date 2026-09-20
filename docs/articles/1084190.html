@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>AI Agent Was Forbidden to Write to CRM. But the CRM Still Changed</title>
+  <meta name="description" content="Why limiting a model&#x27;s permissions doesn&#x27;t mean the AI system is truly read-only. We examine runtime control using n8n + DeepSeek + HubSpot as an example. Read more">
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.65;
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 32px 20px 64px;
+      color: #1f2328;
+    }
+    header {
+      border-bottom: 1px solid #d8dee4;
+      margin-bottom: 28px;
+      padding-bottom: 20px;
+    }
+    .source {
+      color: #57606a;
+      font-size: 0.95rem;
+    }
+    img, video, iframe {
+      max-width: 100%;
+      height: auto;
+    }
+    pre {
+      overflow-x: auto;
+      padding: 16px;
+      background: #f6f8fa;
+      border-radius: 6px;
+    }
+    code {
+      font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+    }
+    blockquote {
+      border-left: 4px solid #d0d7de;
+      margin-left: 0;
+      padding-left: 16px;
+      color: #57606a;
+    }
+    footer {
+      border-top: 1px solid #d8dee4;
+      margin-top: 40px;
+      padding-top: 20px;
+      color: #57606a;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>AI Agent Was Forbidden to Write to CRM. But the CRM Still Changed</h1>
+    <p>Why limiting a model&#x27;s permissions doesn&#x27;t mean the AI system is truly read-only. We examine runtime control using n8n + DeepSeek + HubSpot as an example. Read more</p>
+    <p class="source">
+      Machine-translated from Habr.
+      <a href="https://habr.com/ru/articles/1084190/?utm_campaign=1084190&amp;utm_source=habrahabr&amp;utm_medium=rss">Read the original Russian article</a>.
+      Sat, 19 Sep 2026 17:00:16 GMT
+    </p>
+  </header>
+  <main>
+<div><h2>AI Agent Was Forbidden to Write to CRM. But the CRM Still Changed</h2><p><em>Why limitations at the model level don't mean the entire AI system operates in read-only mode—and why this is important before production rollout, expanding agent permissions, and handing the solution over to a client.</em></p><p>In the <a href="https://habr.com/ru/articles/1078864/">first article</a>, I examined a narrower case: a human approves one action, and a downstream workflow attempts to perform another. The issue there was the integrity of the <code>approval → execution</code> chain.</p><p>Here, I want to look at the same problem more broadly. If the model itself is forbidden from writing, does that mean the <strong>entire AI system</strong> truly cannot change the CRM?</p><p>For a CTO, product owner, or security lead, this is a very practical question. The statement "the model operates in read-only" might appear in an architectural description, security review, client questionnaire, or a decision about production launch. But for such a decision, something else is more important: <strong>which component of the entire execution chain is actually capable of causing an external consequence—and what limits it immediately before the action?</strong></p><p>This is precisely what I tested in a laboratory workflow using <code>n8n + DeepSeek + HubSpot</code>.</p><p>DeepSeek did not have HubSpot credentials and could not perform a <code>write</code> directly. However, the write credential remained with the next n8n node. In a control scenario, the initial request pertained to one synthetic deal, while the structured proposal pertained to another. The downstream path executed a <code>PATCH</code>, and the CRM was indeed changed.</p><p>The main conclusion turned out to be simple:</p><blockquote><p><strong>Model permissions are not the same as system permissions.</strong></p></blockquote><p>This class of problem is not new in itself: in classic security logic, it's close to <code>confused deputy</code>. My goal was not to re-state a known risk but to see how it manifests in a modern agentic execution chain and what exactly changes the outcome.</p><h3>Where the Write Actually Resided</h3><p>At the model level, the restriction was real: it could not access HubSpot directly.</p><p>However, the ability to change the CRM belonged not to the model but to the downstream orchestrator. If it accepts the proposal parameters and executes them without separate verification, the system as a whole remains capable of writing.</p><figure><img alt="Architecture B and C: Model and System Permissions" loading="lazy" src="https://habrastorage.org/r/w1560/webt/2a/cf/0c/2acf0cdb37fd5ea4d21324e420ada414.png"/><div><figcaption>Architecture B and C: Model and System Permissions</figcaption></div></figure><p><em>Architecture B and Architecture C. Limiting the model's permissions does not, by itself, eliminate the system's write capability. The outcome changes when control appears at the execution boundary.</em></p><p>Therefore, the question "what is the model allowed to do?" is useful but insufficient. For a launch decision, the following is more important:</p><blockquote><p><strong>Which component is capable of causing a real consequence—and what limits it immediately before that action?</strong></p></blockquote><h3>Control Scenario: Correct and Incorrect Object</h3><p>The test was performed in an isolated laboratory environment with synthetic objects and verified one specific class of mismatch between the proposal and the actual target.</p><p>In a separate synthetic HubSpot Lab, I used two test deals: <code>LAB-042</code> and <code>LAB-043</code>.</p><p>In the normal scenario, the request, proposal, and actual write all pertained to <code>LAB-042</code>.</p><p>Then, I intentionally created a mismatch:</p><pre><code>human-readable request: modify LAB-042
+structured target:   modify LAB-043
+</code><div><a href="https://sourcecraft.dev/"><img loading="lazy"/></a></div></pre><p>This did not simulate a "malicious model." It was a controlled wrong-object case: a check to see if the architecture would stop a proposal with a different target before the CRM write.</p><p>In the first configuration, there was no independent boundary. n8n received the proposal, used its own HubSpot credential, and executed a <code>PATCH</code> for <code>LAB-043</code>.</p><p>A separate read after the run confirmed:</p><ul><li><p><code>LAB-043</code> was modified;</p></li><li><p><code>LAB-042</code> remained in its original state.</p></li></ul><p>That is, the deal modified was not the one named in the original request, even though the model itself still lacked write credentials.</p><h3>What Independent Control Changed</h3><p>In the second configuration, a separate deterministic gateway was introduced between the model's proposal and the HubSpot <code>PATCH</code>.</p><p>Its task was narrow: before allowing the write, verify the parameters that define the permissible consequence:</p><p>In this laboratory scenario, the expected target was fixed separately from the model's generation result and used as a source for verification before the external call.</p><ul><li><p>the target system;</p></li><li><p>the object identifier;</p></li><li><p>the expected initial state;</p></li><li><p>the permitted transition.</p></li></ul><p>The credentials did not disappear. n8n could still write to HubSpot. What changed was that access to this permission became dependent on a separate check immediately before the external action.</p><p>The normal scenario with <code>LAB-042</code> received an <code>allow</code> and completed with a write. The wrong-object proposal with <code>LAB-043</code> received a <code>deny</code>: the HubSpot <code>PATCH</code> was not initiated, and a new read confirmed that the deal's state had not changed.</p><figure><img alt="Wrong-object test: one mismatch, two outcomes" loading="lazy" src="https://habrastorage.org/r/w1560/webt/02/6c/03/026c0394228ef9a366116aa952ed2d93.png"/><div><figcaption>Wrong-object test: one mismatch, two outcomes</figcaption></div></figure><p><em>Wrong-object test. The same target mismatch leads to different results: without an independent boundary, the CRM changes; with a boundary, the write is blocked before the external action.</em></p><p>As a result, the same class of wrong-object proposal that led to a CRM change in the first architecture was stopped before writing in the second.</p><h3>What This Changes for Launch Decisions</h3><p>In a production project, the phrase "agent is read-only" might be used as an argument during:</p><ul><li><p>production rollout;</p></li><li><p>expanding autonomy or the set of available actions;</p></li><li><p>connecting operations in CRM, ERP, or infrastructure;</p></li><li><p>handing the solution over to a client;</p></li><li><p>security questionnaires or procurement reviews.</p></li></ul><p>If such a statement is based solely on the tools and credentials available to the model, the team is only seeing part of the execution chain.</p><p>The practical question for the decision-maker is not "is the AI dangerous?" It's much more specific:</p><blockquote><p><strong>Do we have sufficient confirmation that the system's actual permissions align with the stated restrictions?</strong></p></blockquote><p>Removing credentials from the model is a useful control. However, it limits the model's direct permissions, not automatically the capabilities of the entire system. If a downstream component can still change the external state, that permission also needs to be identified and verified.</p><p>The practical takeaway from such scenarios is that verification should not only focus on the presence of security controls but also on confirming where the execution authority actually resides and whether the control is working at the runtime boundary. where the actual authority lies, what limits it, and what evidence confirms that the control is indeed working at the runtime boundary.</p><p>For such verification, I need not only the architecture diagram but also a reproducible chain:</p><pre><code>what was proposed
+→ who can actually execute
+→ what is checked before execution
+→ what was actually called
+→ what state resulted after the call
+</code><div><a href="https://sourcecraft.dev/"><img loading="lazy"/></a></div></pre><p>This is a transition from a declaration of control to confirmed runtime controllability.</p><h3>Six Questions Before Production or Expanding Permissions</h3><p>Before launching an agent with access to CRM, ERP, ticketing, or infrastructure, I would check:</p><ol><li><p>Where are the write credentials and permissions physically located?</p></li><li><p>Which component performs the external call?</p></li><li><p>What parameters are checked immediately before execution?</p></li><li><p>Can the target or a significant parameter change between the user request and the <code>write</code>?</p></li><li><p>Is there an independent boundary between the model's proposal and the consequence?</p></li><li><p>How is the final state confirmed after the action?</p></li></ol><p>These questions are useful not only for engineers. They help CTOs, security leads, or product owners understand <strong>what exactly the decision "it can be launched" is based on</strong>.</p><h3>Instead of a Conclusion</h3><p>In this architecture, removing HubSpot credentials from DeepSeek did not eliminate the system's ability to change the CRM: the write permission remained with n8n.</p><p>In a wrong-object case, this led to the modification of another synthetic deal. After adding a separate deterministic boundary, a similar mismatch was stopped before the <code>PATCH</code>.</p><p>Although this was only a laboratory test, it clearly illustrates a more general practical principle: if a system is described as controlled or read-only, it's insufficient to look only at the model. You need to trace the authority to the component capable of causing the consequence and verify the control precisely at that boundary.</p><blockquote><p><strong>Model permissions are not the same as system permissions.</strong></p></blockquote></div>
+  </main>
+  <footer>
+    Translation generated with Gemini 2.5 Flash-Lite.
+    The original article remains the source of record.
+  </footer>
+</body>
+</html>

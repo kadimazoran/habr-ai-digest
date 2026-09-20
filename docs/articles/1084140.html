@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>How to get into Perplexity AI&#x27;s answers and why this AI model doesn&#x27;t take the entire text from cited pages</title>
+  <meta name="description" content="I ran 20 prompts through the Perplexity API three times each, collected 60 answers, and for each citation [N] in the text, I linked the answer sentence to the source page it points to. Then came the most labor-intensive part: for each such pair—answer sentence and source page—I searched the HTML for">
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.65;
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 32px 20px 64px;
+      color: #1f2328;
+    }
+    header {
+      border-bottom: 1px solid #d8dee4;
+      margin-bottom: 28px;
+      padding-bottom: 20px;
+    }
+    .source {
+      color: #57606a;
+      font-size: 0.95rem;
+    }
+    img, video, iframe {
+      max-width: 100%;
+      height: auto;
+    }
+    pre {
+      overflow-x: auto;
+      padding: 16px;
+      background: #f6f8fa;
+      border-radius: 6px;
+    }
+    code {
+      font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+    }
+    blockquote {
+      border-left: 4px solid #d0d7de;
+      margin-left: 0;
+      padding-left: 16px;
+      color: #57606a;
+    }
+    footer {
+      border-top: 1px solid #d8dee4;
+      margin-top: 40px;
+      padding-top: 20px;
+      color: #57606a;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>How to get into Perplexity AI&#x27;s answers and why this AI model doesn&#x27;t take the entire text from cited pages</h1>
+    <p>I ran 20 prompts through the Perplexity API three times each, collected 60 answers, and for each citation [N] in the text, I linked the answer sentence to the source page it points to. Then came the most labor-intensive part: for each such pair—answer sentence and source page—I searched the HTML for a text snippet that most closely matched the statement in the answer. Out of 1355 citations, 948 led to pages that were still accessible, and on 448 of them, I found a passage—a paragraph, list item, or table cell—covering at least a third of the words in the statement. The main takeaway for those who create web pages rather than run tests: on a successful page, a median of two passages out of 85 are used, each about 49 words long. In terms of the number of snippets, this is 2%, but in terms of words, it&#x27;s more—a median of 6.4% of the page&#x27;s text with an average of 11.6%: the successful snippet is longer than typical. It makes sense to plan not for reading the entire page, but for what one self-contained paragraph will extract from it; I&#x27;ve elaborated on what this means for specific texts in the section on working with Perplexity—it&#x27;s in the middle, before the analysis of my code errors. The boundaries beyond which these numbers stop working are in a separate section—there you&#x27;ll also find out how to check the same for your niche. The question that started it all: the measurement log shows which URLs Perplexity uses as sources, but it doesn&#x27;t show what exactly from the page went into the answer—the entire text, a paragraph, or a single list item. Read more</p>
+    <p class="source">
+      Machine-translated from Habr.
+      <a href="https://habr.com/ru/articles/1084140/?utm_campaign=1084140&amp;utm_source=habrahabr&amp;utm_medium=rss">Read the original Russian article</a>.
+      Sat, 19 Sep 2026 19:53:30 GMT
+    </p>
+  </header>
+  <main>
+<div><p>I ran 20 prompts through the Perplexity API three times each, collected 60 answers, and for each citation in the text, I linked the answer sentence to the source page it points to. Then came the most labor-intensive part: for each such pair—answer sentence and source page—I searched the HTML for a text snippet that most closely matched the statement in the answer. Out of 1355 citations, 948 led to pages that were still accessible, and on 448 of them, I found a passage—a paragraph, list item, or table cell—covering at least a third of the words in the statement.</p><p>The main takeaway for those who create web pages: on a successful page, a median of two text snippets out of 85 are used, each about 49 words long. In terms of the number of snippets, this is 2%, but in terms of words, it's more—a median of 6.4% of the page's text with an average of 11.6%: the successful snippet is longer than typical. It makes sense to plan not for reading the entire page, but for what one self-contained paragraph will extract from it.</p><p>It all started with the fact that my measurement logs show which URLs Perplexity uses as sources, but not what exactly from the page went into the answer—the entire text, a paragraph, or a single list item.</p><h3>Perplexity shows which pages it used as sources, but not what text from them</h3><p>For each source in the Search API response, there are five fields: <code>title</code>, <code>url</code>, <code>date</code>, <code>last_updated</code>, and <code>snippet</code>—'a short excerpt from the article related to the query'. There are no fields with the full page text that went into the model in the response. A separate note on naming: <code>sources_cited</code>, which appears later in the text, is a field in my log where I normalize the answer sources; in the Perplexity API itself, they come as <code>search_results</code> and <code>citations</code>. Confusing a convenient name from your own code with the schema of someone else's response is a good way to spend half an hour later searching for a non-existent field in the documentation.</p><p>Manually correlating two facts—that a source was cited and what exactly was taken from it—is unrealistic: 60 answers yield over a thousand numbered references.</p><p>Dataset: 60 Perplexity answers (20 prompts with 3 repetitions each), <code>sonar-pro</code> model, search enabled for all. They contain 583 lines in <code>sources_cited</code>, corresponding to 220 unique URLs, and 1407 numbered citations [N] in the answer texts. After filtering out short fragments like "see also" without a meaningful sentence nearby, 1355 citations were included in the analysis. </p><h3>Perplexity API has a text limit per page, but how it's cut is not described</h3><p>Working with a fragment of a page, not its full text, is directly built into the <a href="https://docs.perplexity.ai/">Perplexity Search API</a> interface: the client has a setting for how many tokens to take from each found page. The <code>search_context_size</code> parameter with values <code>low</code> / <code>medium</code> / <code>high</code> controls the extraction depth. The <code>max_tokens_per_page</code> has a straightforward description in the documentation—maximum content tokens extracted from each result page—and next to it is <code>max_tokens</code>, the same limit for all results combined. </p><p>The documentation does not reveal how these settings relate to what actually reaches the answer: it doesn't describe how the snippet is selected, what size the page is cut into, or the cutting rule itself. I observed everything else externally by directly comparing the answer text with the source text.</p><h3>How I divided the page into paragraphs and compared them with the answer: Python code</h3><p>I split the source page not by line breaks, but by closing tags <code>&lt;/p&gt;</code>, <code>&lt;/li&gt;</code>, <code>&lt;/h1&gt;</code>—<code>&lt;/h6&gt;</code>, <code>&lt;/td&gt;</code>, <code>&lt;/blockquote&gt;</code>. A line break in the markup means nothing, but a closed tag for a paragraph, list item, or cell is a boundary of a meaningful unit. The rule is entirely contained in one constant, and the number of passages on the page directly depends on it:</p><pre><code># Passage boundaries — only tags that represent a unit of meaning: paragraph, list item, heading, cell, quote. `&lt;/div&gt;` is intentionally excluded: the markup wraps both the wrapper and its content in a div, causing the same text to be selected twice and inflating the passage count. </code><code>TAG_SPLIT = re.compile(r
+  </main>
+  <footer>
+    Translation generated with Gemini 2.5 Flash-Lite.
+    The original article remains the source of record.
+  </footer>
+</body>
+</html>

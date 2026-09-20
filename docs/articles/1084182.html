@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>AI-Disrupt PDLC in Practice: Where AI Actually Accelerates and Where It Creates an Illusion of Productivity (Personal Project Experience)</title>
+  <meta name="description" content="Hello, Habr! Over the last few months, I&#x27;ve been studying modern AI tools and testing them on my own projects. It was important for me not just to generate code, but to rethink the entire development cycle: from task formulation to testing, review, and security checks. Planning is the clearest ">
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.65;
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 32px 20px 64px;
+      color: #1f2328;
+    }
+    header {
+      border-bottom: 1px solid #d8dee4;
+      margin-bottom: 28px;
+      padding-bottom: 20px;
+    }
+    .source {
+      color: #57606a;
+      font-size: 0.95rem;
+    }
+    img, video, iframe {
+      max-width: 100%;
+      height: auto;
+    }
+    pre {
+      overflow-x: auto;
+      padding: 16px;
+      background: #f6f8fa;
+      border-radius: 6px;
+    }
+    code {
+      font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+    }
+    blockquote {
+      border-left: 4px solid #d0d7de;
+      margin-left: 0;
+      padding-left: 16px;
+      color: #57606a;
+    }
+    footer {
+      border-top: 1px solid #d8dee4;
+      margin-top: 40px;
+      padding-top: 20px;
+      color: #57606a;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>AI-Disrupt PDLC in Practice: Where AI Actually Accelerates and Where It Creates an Illusion of Productivity (Personal Project Experience)</h1>
+    <p>Hello, Habr! Over the last few months, I&#x27;ve been studying modern AI tools and testing them on my own projects. It was important for me not just to generate code, but to rethink the entire development cycle: from task formulation to testing, review, and security checks. Planning is the clearest win. I used to often start coding &quot;off the cuff.&quot; Now, I first formulate my intention: goal, constraints, edge cases, and security requirements. Then, an agent helps prepare the specification, acceptance criteria, decomposition, draft architecture, and a list of risks. After manual review, such a plan takes 30-60 minutes instead of one or two evenings. Here, the acceleration has been stable: agents are good at finding contradictions and overlooked scenarios. Read more</p>
+    <p class="source">
+      Machine-translated from Habr.
+      <a href="https://habr.com/ru/companies/reksoft/articles/1084182/?utm_campaign=1084182&amp;utm_source=habrahabr&amp;utm_medium=rss">Read the original Russian article</a>.
+      Sat, 19 Sep 2026 16:23:02 GMT
+    </p>
+  </header>
+  <main>
+<div><p>Hello, Habr!</p><p>Over the last few months, I've been studying modern AI tools and testing them on my own projects. It was important for me not just to generate code, but to rethink the entire development cycle: from task formulation to testing, review, and security checks.</p><h4>Planning — The Clearest Win</h4><p>I used to often start coding "off the cuff." Now, I first formulate my intention: goal, constraints, edge cases, and security requirements. Then, an agent helps prepare the specification, acceptance criteria, decomposition, draft architecture, and a list of risks.</p><p>After manual review, such a plan takes 30–60 minutes instead of one or two evenings. Here, the acceleration has been stable: agents are good at finding contradictions and overlooked scenarios.</p><h4>Code Generation: Fast, But Not Free</h4><p>In my work, I used Cursor with Claude, GPT-4o, and GigaCode, local Qwen2.5-Coder and DeepSeek-Coder via Ollama, as well as LangGraph and OpenHands for more autonomous tasks.</p><p>For typical tasks — CRUD, API integrations, migrations, tests, and refactoring — the acceleration was approximately 2.5–4 times. For new business logic and architectural decisions — 1.3–1.8 times. Sometimes AI even slowed down the work.</p><p>The main illusion is the feeling that the agent wrote 70–80% of the ready code. After review, corrections, integration, and quality checks, a significant portion of the time was still spent understanding the result. I was simply checking and correcting instead of typing characters.</p><p>Most often encountered:</p><ul><li><p>non-existent methods and APIs;</p></li><li><p>code that doesn't fit well into the project architecture;</p></li><li><p>missed checks and vulnerabilities;</p></li><li><p>overly confident but erroneous explanations.</p></li></ul><h4>Review and Testing</h4><p>In solo development, there's no full code review, so I used a separate AI reviewer with project rules, static analysis, autotests, and property-based testing.</p><p>Agents write unit tests reasonably well, but complex scenarios and e2e tests require significant human involvement. Critical areas — security, architecture, and complex business logic — I always review manually.</p><h4>Security Became the Main Bottleneck</h4><p>Even in pet projects, agents regularly suggested insecure solutions: SQL injections, XSS, hard-coded secrets, and incorrect data handling. New specific risks also emerged: prompt injection through input data, leaks through agent logs, and supply-chain risks from tools and dependencies.</p><p>I added a security checklist to the agents' skills, introduced a separate security review, and started describing security requirements at the specification stage. For sensitive code, I use local models.</p><p>This reduced the number of obvious errors but did not eliminate manual checks. The speed of code generation easily outpaces the speed of its verification.</p><h4>What Worked and What Was an Illusion</h4><p>Worked:</p><ul><li><p>preparing specifications and planning;</p></li><li><p>typical code and unit tests;</p></li><li><p>exploring implementation options;</p></li><li><p>analyzing and documenting existing code.</p></li></ul><p>Illusion:</p><ul><li><p>a several-fold increase in speed without accounting for review;</p></li><li><p>almost error-free agent performance;</p></li><li><p>no need to worry about security in personal projects.</p></li></ul><p>AI is indeed changing the role of the tester and developer: I write less code manually and act more as an orchestrator of agents, a quality and security owner.</p><p>The metric should not be generation speed, but time to a working, maintainable, and secure result. The best effect comes not from individual prompts, but from the process: intention → specification → implementation → testing → review.</p><p>Open-source models already cover a significant portion of daily tasks, especially with good context and tools. However, for complex tasks, closed models often still win in quality.</p><p>The most important skill now is not the ability to get code from an agent, but the ability to set the task correctly and rigorously verify the result.</p></div>
+  </main>
+  <footer>
+    Translation generated with Gemini 2.5 Flash-Lite.
+    The original article remains the source of record.
+  </footer>
+</body>
+</html>

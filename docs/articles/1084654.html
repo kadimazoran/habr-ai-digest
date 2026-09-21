@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Programming for those who don&#x27;t code: how VibeCraft works</title>
+  <meta name="description" content="Those of us who have tried fashionable vibe coding have already appreciated the flip side of the coin. Agents confidently say, &quot;I&#x27;ll do it now,&quot; spend several hours writing and testing code, and then offer to deploy the result into a Kubernetes cluster and set up observability. For a ">
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.65;
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 32px 20px 64px;
+      color: #1f2328;
+    }
+    header {
+      border-bottom: 1px solid #d8dee4;
+      margin-bottom: 28px;
+      padding-bottom: 20px;
+    }
+    .source {
+      color: #57606a;
+      font-size: 0.95rem;
+    }
+    img, video, iframe {
+      max-width: 100%;
+      height: auto;
+    }
+    pre {
+      overflow-x: auto;
+      padding: 16px;
+      background: #f6f8fa;
+      border-radius: 6px;
+    }
+    code {
+      font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+    }
+    blockquote {
+      border-left: 4px solid #d0d7de;
+      margin-left: 0;
+      padding-left: 16px;
+      color: #57606a;
+    }
+    footer {
+      border-top: 1px solid #d8dee4;
+      margin-top: 40px;
+      padding-top: 20px;
+      color: #57606a;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Programming for those who don&#x27;t code: how VibeCraft works</h1>
+    <p>Those of us who have tried fashionable vibe coding have already appreciated the flip side of the coin. Agents confidently say, &quot;I&#x27;ll do it now,&quot; spend several hours writing and testing code, and then offer to deploy the result into a Kubernetes cluster and set up observability. For a pet project with a couple of web interface pages. In early 2026, we realized that technology had reached a level where not only programmers but also specialists from other fields could create their own developments: marketers, accountants, analysts, and more. Thus, VibeCraft was born. In this article, I will explain why such a platform is needed if AI development assistants already exist, and what challenges we had to solve during its creation. Read more</p>
+    <p class="source">
+      Machine-translated from Habr.
+      <a href="https://habr.com/ru/companies/yandex_cloud_and_infra/articles/1084654/?utm_campaign=1084654&amp;utm_source=habrahabr&amp;utm_medium=rss">Read the original Russian article</a>.
+      Mon, 21 Sep 2026 11:57:26 GMT
+    </p>
+  </header>
+  <main>
+<div><figure><img loading="lazy" src="https://habrastorage.org/r/w1560/getpro/habr/upload_files/f02/56e/56d/f0256e56d411c6a701ffac5dd1263291.png"/></figure><p>Those of us who have tried fashionable vibe coding have already appreciated the flip side of the coin. Agents confidently say, "I'll do it now," spend several hours writing and testing code, and then offer to deploy the result into a Kubernetes cluster and set up observability. For a pet project with a couple of web interface pages.</p><p>Hello, Habr! My name is Robert Aksenov, my team at <a href="https://sourcecraft.dev/">SourceCraft</a> and I create tools for developers. The SourceCraft story began at <a href="https://infra.yandex.ru/">Yandex Infrastructure</a> — this team develops tools for creating and deploying applications and services within Yandex and supports the infrastructure on which most of the company's developers work. Development started in January 2024, and in early 2026, we realized that technology had reached a level where not only programmers but also specialists from other fields could create their own developments: marketers, accountants, analysts, and more. Thus, <a href="https://vibe.sourcecraft.dev/">VibeCraft</a> was born.</p><p>In this article, I will explain why such a platform is needed if AI development assistants already exist, and what challenges we had to solve during its creation.</p><h2>Why VibeCraft is Needed</h2><p>When the media talks about vibe coding, they usually mean a scenario where a person with no development experience takes Alice AI, Claude, Codex, or another AI assistant and creates a product through chat. This approach can indeed work, but it has significant limitations.</p><p>Modern code assistants are designed to work in tandem with a qualified developer: they assume that the user understands the project's structure, can verify the result, and can correctly formulate the next step. Writing code is only part of the task. You also need to deploy and maintain the product: rent a server, set up the environment, database, domains, and then update and monitor for errors. An AI assistant can help with this too, but it's difficult for someone without a technical background to set such tasks in advance — they might simply not know they are necessary. In such cases, working with a code assistant resembles talking to a genie: the wish must be formulated not only precisely but also taking into account many non-obvious conditions. Otherwise, the result formally matches the request but turns out to be unusable in practice.</p><p>It is important for the user to focus on the product: business logic, interface, hypothesis testing. They should not have to think about how the application is deployed, whether it needs Kubernetes, where the database is stored, how often backups are created, and what will happen in case of a server failure.</p><h2>How VibeCraft Works</h2><p>VibeCraft operates on the principle of a single prompt. The generated code is stored in the SourceCraft repository, the product is deployed in Yandex Cloud and uses all the platform's functions, for example, storing data in serverless YDB.</p><p>VibeCraft uses an ensemble of Yandex models trained to create and modify products. It can interview the user, ask clarifying questions, and show the first result in about 10 minutes.</p><figure><img alt="Example Interview" loading="lazy" src="https://habrastorage.org/r/w1560/getpro/habr/upload_files/d53/1de/451/d531de45128f0c32561ab4727942a3d8.png" title="Example Interview"/><div><figcaption>Example Interview</figcaption></div></figure><p>The feedback loop is short: from idea to prototype — without stages of requirements, discussions, and architecture. The user immediately gets a working prototype and develops it iteratively: sees intermediate results, asks questions, corrects the next steps. For comparison: when working with AI agents for development — for example, Claude or Codex — the process looks different. When working with such agents, programmers usually first develop the architecture, create a detailed plan, specification, testing rules, and evaluation criteria. After that, several agents may spend a significant amount of time, repeatedly modifying the code, fixing bugs, reviewing each other, and bringing the code's behavior into full compliance with the specification. This approach is designed for experienced developers who have a detailed specification, a set of tests, and an understanding of how the feature will fit into the product.</p><p>Typical VibeCraft products include landing pages, online course websites, personal finance tracking applications, workout trackers, games, and CRM systems.</p><h3>Two Agents Under the Hood</h3><figure><img loading="lazy" src="https://habrastorage.org/r/w1560/getpro/habr/upload_files/983/b4a/18e/983b4a18e57be0509e65de8058dad412.png"/></figure><p>Inside the platform is a two-agent system. A manager agent communicates with the user, and a programmer agent writes code. VibeCraft breaks down the user's request into parts, asks clarifying questions if necessary (if the prompt is exhaustive, there will be fewer or no questions), deploys the environment, collects, and shows the development plan. The plan can be edited or accepted immediately. <em>(Screenshot of the plan here.)</em></p><p>The programmer agent writes the code, creates the environment in SourceCraft, runs it, and verifies that everything works.</p><p>Currently, the models and system prompts are primarily tuned for result quality, not development speed. The team had to carefully balance accelerating product creation without sacrificing code stability and quality. As a result, a simple prototype can be obtained in 7–10 minutes. A service with a task list usually takes 20–30 minutes, and one of the most popular scenarios — a request to "Make a task tracker" — takes about 40 minutes from the first message to the finished application.</p><h3>Node.js Applications and Serverless YDB</h3><p>VibeCraft generates code in <a href="http://node.js">Node.js</a>. It's a full-stack solution: the agent uses TypeScript as a single programming language for both browser and server code. TypeScript is one of the most popular mainstream languages, and there is a huge amount of code examples, tutorials, books, and articles available for it. The more popular a language and stack are, the more materials are included in the language models' training data, and the better they write code.</p><p>Serverless YDB for data storage was also chosen for a reason, as it eliminates the need to deploy, configure, and maintain servers in this approach. With the serverless approach, pre-existing clusters running in Yandex Cloud are used for customer data. These clusters isolate customer data and requests from each other, and cloud platform engineers ensure the operation of the DBMS nodes.</p><p>Moreover, payment is only for the amount of stored data and the number of requests to it, which is well-suited for prototypes and projects in the early stages of development. VibeCraft users pay nothing for DBMS maintenance, which usually requires qualified specialists. And if the project becomes popular, YDB's automatic horizontal scaling and fault tolerance allow it to withstand peak loads and maintain data availability.</p><h2>What Challenges We Faced During Development</h2><p>We had ready-made SourceCraft components, so assembling the first version according to the 80/20 principle was not difficult. But then we needed to fine-tune the models' behavior in situations specific to our service.</p><p><strong>Model's Understanding of Its Limitations</strong></p><p>We are building a "one-button service," and that button is chat. Users often ask for things the service cannot yet do. Therefore, it is important for the chat to correctly indicate the boundaries of its capabilities: know which tasks it can perform and when it should honestly report its limitations.</p><p>AI development agents are based on large language models. By their nature, they do not possess human-like understanding: they are probabilistic systems that find a narrative in data and continue it in the most plausible way. A model strives to be helpful, so without special constraints, it can confidently offer a solution even where it lacks sufficient data, tools, or real capabilities.</p><p>If a user asks an AI development agent to cook scrambled eggs, the agent will confidently retrieve information from its data indicating that it does not have access to the tools for cooking eggs and will offer a recipe. But if the user asks, for example, to reboot a server, the narrative becomes less obvious. A model that tries to be helpful will spend a long time combining the tools at its disposal in unsuccessful attempts to reboot the server.</p><p><strong>Controlling Model Behavior Through Available Tools</strong></p><p>The third difficulty arises from the "narrative — history" mechanism: behavioral stability. In the same data, a model can recognize several competing narratives. Therefore, the agent does not so much literally follow instructions as it continues the most prominent scenario for it — and this scenario does not always align with the user's intent.</p><p>Our task is to construct the context so that in most cases, the desired narrative is already present. Models work probabilistically: if the previous turn of the dialogue convincingly leads to the need to read a file, the agent will with high probability continue to act in this direction.</p><p>For such cases, we have made emergency mechanisms: "Recreate chat" (a new agent with fresh memory restores what is happening) and a loop detector: if the model gets stuck in a loop and starts producing incoherent text, generation is interrupted and restarted.</p><p>An example from development: when there are several dozen tasks in the backlog, the manager agent's understanding of what needs to be done and the actual state of what the programmer agent has done begin to diverge. We taught the developer agent to write a brief summary of the completed work. But the manager agent is also a model trained to program. It sees files and wants to read them.</p><p>We gave it this ability. But it's also a programmer, and it wants to edit them. And you can't dissuade it from this with a prompt, because the model is pre-trained to be a programmer, and the narrative "I am a programmer, I write code" is incomparably more prevalent in its training than clear instructions like "You are a manager" in the prompt. We had to give it the "Write file" skill, and when applying this skill, return an error: "You are not allowed to write files, you are a manager, assign tasks to the developer."</p><h2>What We Are Working on Right Now</h2><p>VibeCraft is already available to our users: you can <a href="https://vibe.sourcecraft.dev/">register</a>, use the gift quota, and create your own projects. We are collecting feedback in the <a href="https://t.me/vibecraft_chat">chat</a>, where you can also vote for new features. For example, we are currently working on the ability to upload images that can be shown to the agent with the request "Make something similar." Templates and connectors to external services are also planned: payment gateways, neural networks, and others.</p><p>In the comments, I will gladly discuss working with AI development assistants and issues related to their creation. This topic is new, and we don't have time-tested recipes yet, so feedback from Habr readers is welcome!</p></div>
+  </main>
+  <footer>
+    Translation generated with Gemini 2.5 Flash-Lite.
+    The original article remains the source of record.
+  </footer>
+</body>
+</html>

@@ -1,0 +1,180 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Why Your LLM Gets Dumber on Large Documents and How to Fix It</title>
+  <meta name="description" content="LLM large context doesn&#x27;t guarantee quality answers: when working with voluminous documents, the model can lose important details and find facts within the text less effectively. In this article, we&#x27;ll explore why Full-Context and basic RAG face limitations, and how the Semantic Gatekeeper">
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.65;
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 32px 20px 64px;
+      color: #1f2328;
+    }
+    header {
+      border-bottom: 1px solid #d8dee4;
+      margin-bottom: 28px;
+      padding-bottom: 20px;
+    }
+    .source {
+      color: #57606a;
+      font-size: 0.95rem;
+    }
+    img, video, iframe {
+      max-width: 100%;
+      height: auto;
+    }
+    pre {
+      overflow-x: auto;
+      padding: 16px;
+      background: #f6f8fa;
+      border-radius: 6px;
+    }
+    code {
+      font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+    }
+    blockquote {
+      border-left: 4px solid #d0d7de;
+      margin-left: 0;
+      padding-left: 16px;
+      color: #57606a;
+    }
+    footer {
+      border-top: 1px solid #d8dee4;
+      margin-top: 40px;
+      padding-top: 20px;
+      color: #57606a;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Why Your LLM Gets Dumber on Large Documents and How to Fix It</h1>
+    <p>LLM large context doesn&#x27;t guarantee quality answers: when working with voluminous documents, the model can lose important details and find facts within the text less effectively. In this article, we&#x27;ll explore why Full-Context and basic RAG face limitations, and how the Semantic Gatekeeper approach improves answer accuracy by preparing relevant context before passing it to the main model. Let&#x27;s break down the approach.</p>
+    <p class="source">
+      Machine-translated from Habr.
+      <a href="https://habr.com/ru/companies/otus/articles/1079804/?utm_campaign=1079804&amp;utm_source=habrahabr&amp;utm_medium=rss">Read the original Russian article</a>.
+      Mon, 21 Sep 2026 14:16:50 GMT
+    </p>
+  </header>
+  <main>
+<div><p>Hello, Habr!</p><p>My name is Andrey Biryukov. I am an independent expert in IT and Information Security, I teach at training centers, and I write articles and books.</p><p>When Google announced a 2M context window, and Anthropic added another 100K, many probably thought that RAG could now be thrown into the trash heap.</p><p>Why bother with these chunks, embeddings, and all that other nonsense if you can just throw the entire Wikipedia dump into the model and ask it anything?</p><p>However, in reality, an effect occurs that quietly kills your accuracy, where the model reads your giant prompt like a student before an exam. That is, it studies the first 5 pages, studies the last 5 pages, and the middle... well, there was something about cats there, probably.</p><p>And as a result, the context is 2M, but the model answers a 100-page document question worse than GPT-3.5 with a 4K context. And yes, this is not a bug, it's a feature of the attention architecture.</p><p><em>In this article, we will talk about how to stop feeding LLM models tons of text and start using a small model as a smart secretary, increasing accuracy from 34% to 68%, while simultaneously reducing costs by 8 times.</em></p><h3>Probing LLMs with Documentation</h3><p>For the sake of a clean experiment, let's take a real dataset—500 pages of technical documentation for network equipment (our favorite logs, IP addresses, firmware versions). We'll break it down into 5 segments of 100 pages each: A, B, C, D, E.</p><figure><img loading="lazy" src="https://habrastorage.org/r/w1560/getpro/habr/upload_files/8ff/bc7/8a6/8ffbc78a6e38eba85e354acd6f92ad1f.png"/></figure><p>Next, we need to ask 10 questions whose answers lie strictly within segment C (the golden mean) and see what comes of it.</p><p><strong>Strategy #1: Full-Context (feed everything whole)</strong></p><p>Let's start with the simplest option: stuffing all 500 pages into the GPT-4o context. But the result was not very interesting, as we got an accuracy of only 34%, and the first token appeared only after 14 seconds (which is quite a lot, you must admit).</p><p>And of course, there were hallucinations: the model began to combine IP addresses from segments A and E, creating non-existent routes.</p><p>In reality, this option is practically useless.</p><p><strong>Strategy #2: Naive RAG (vector search, top-5 chunks)</strong></p><p>Now let's complicate the implementation a bit by slicing the data into chunks. Here we get an accuracy of 42%, which is better, but not by much. At the same time, the answer came in 1.1 seconds, which is fast, but what's the point of speed if the answer is wrong?</p><p>The essence of the problem here is that we lose context between chunks, and because of this, the model doesn't understand the overall picture.</p><p>As a result, we arrive at the disappointing conclusion that both approaches are inapplicable, as Full-Context is expensive and stupid, while Naive RAG is fast but also not very smart.</p><h3>RAPTOR, Self-Refine, and Other Trendy Stuff</h3><p>Before moving on to a truly working solution, let's analyze why some existing patterns don't work in 2026.</p><p><strong>RAPTOR (Recursive Abstractive Processing)</strong></p><figure><img loading="lazy" src="https://habrastorage.org/r/w1560/getpro/habr/upload_files/136/70e/1c5/13670e1c51713183a07422b1cbf2b13f.png"/></figure><p>This pattern builds cluster trees, summarizing them at each level. It sounds powerful, but in practice, it's great for retelling "in general," but it kills accuracy. For example, ask RAPTOR for the driver version on page 245 of our documentation, and it will give you the average temperature of the hospital. Because summarization averages facts, which is good for analytics, but for tech support and other tasks requiring accuracy, it's death.</p><p><strong>Self-Refine / ReAct (iterative refinements)</strong></p><figure><img loading="lazy" src="https://habrastorage.org/r/w1560/getpro/habr/upload_files/767/4be/8b5/7674be8b5840cf7da095737041b8b92e.png"/></figure><p>This model, as they say, goes in circles, meaning it rereads the context and constantly refines. It sort of works, but it requires 5–7 requests to an expensive LLM, and the cost of one session can reach $0.5. Now multiply that by 1000 users a day, and you get quite serious expenses.</p><p><strong>The first solution that might come to mind in such a situation is increasing the chunk size.</strong></p><p>If the model gets lost in the middle of a 500-page document, let's make chunks of 10K tokens. But after such a change, the model gets lost in the middle of each chunk and only gets worse.</p><p>Thus, we arrive at the disappointing conclusion that a new approach is needed to ensure accuracy, speed, and at an acceptable price.</p><h3>Semantic Gatekeeper</h3><p>Imagine you have an expensive and talented lawyer in your company (our large LLM). You wouldn't dump 500 pages of a contract on them and say, "Figure it out." Instead, you'd first give the contract to a junior assistant who would extract key facts (amounts, dates, parties), assess which part of the contract is relevant to your question at all. As a result, the assistant would present only the most important information to the lawyer on one page. This is exactly how our "Semantic Gatekeeper" will work.</p><p>The role of the assistant will be performed by Mistral-7B-Instruct in 4-bit quantization. It costs pennies (in terms of money and resources) but knows how to read and analyze.</p><p>Let's see how it all works. First, we perform a rough vector search across the knowledge base and retrieve not 5 chunks, but 50, to be sure not to miss a relevant piece. Then, we run each of these 50 chunks through Mistral-7B with a simple task: "<em>Rate the relevance of the chunk to the question from 0 to 1. Extract 3 key facts from it. Respond in JSON format.</em>"</p><p>We also prohibit the model from fantasizing, meaning it doesn't generate coherent text but only extracts facts from the original chunk. This minimizes the probability of hallucinations.</p><p>Here's an example of Mistral's response:</p><figure><img loading="lazy" src="https://habrastorage.org/r/w1560/getpro/habr/upload_files/e43/910/796/e439107968223b1f9af420a190b35123.png"/></figure><p>Next, we use a dynamic priority buffer, meaning we sort the 50 chunks by their score and discard everything below 0.6. From the remaining ones, we take the TOP-10 by relevance.</p><p>An important point here is that we don't place these chunks in the order they were in the document. Instead, we sort them in descending order of importance, and the most relevant one becomes the first.</p><p>Earlier, we talked about the model forgetting the middle. Let's try to trick it. To do this, at the beginning of the prompt, we'll place compressed synopses of all 10 chunks (about 2000 tokens), and at the very end of the prompt, we'll duplicate the most relevant chunk entirely, without compression.</p><p>Now the most important facts are at the beginning (as a brief summary) and at the end (as a detailed original). The model sees them in both zones of high attention concentration, and it's impossible for it to avoid the facts.</p><h3>How It Looks in Practice</h3><p>For Mistral-7B inference, we use vLLM—it consumes less memory and works faster than out-of-the-box transformers. Here's the working code for our pipeline in Python:</p><pre><code>from vllm import LLM, SamplingParams
+import json
+
+# Load Mistral-7B in 4-bit quantization
+# Fits on A100 40GB without issues
+llm = LLM(
+    model="mistralai/Mistral-7B-Instruct-v0.3",
+    quantization="AWQ",  # 4-bit quantization
+    dtype="half",
+    max_model_len=4096
+)
+
+def gatekeeper_filter(query, chunks, top_k=10):
+    """
+    query: user's question
+    chunks: list of 50 chunks (text)
+    top_k: how many best to keep
+    """
+    prompt_template = """
+    [INST]
+    Your task is to analyze a document fragment.
+    User question: {query}
+    
+    Fragment text:
+    {chunk}
+    
+    Respond strictly in JSON format:
+    - "score": a number from 0 to 1 (how relevant the chunk is to the question)
+    - "facts": an array of up to 3 key facts (short sentences from the text)
+    
+    Example: {{"score": 0.85, "facts": ["Server restarted at 14:32", "Error E531"]}}
+    [/INST]
+    """
+    
+    # Prepare a batch of prompts for 50 chunks
+    batch_prompts = [
+        prompt_template.format(query=query, chunk=chunk) 
+        for chunk in chunks
+    ]
+    
+    # Run inference with low temperature (determinism)
+    sampling_params = SamplingParams(
+        temperature=0.0,      # No creativity, only facts
+        max_tokens=200,
+        stop=["\n\n"]         # To avoid generating extra text
+    )
+    
+    outputs = llm.generate(batch_prompts, sampling_params)
+    
+    # Parse JSON from responses
+    parsed_results = []
+    for i, output in enumerate(outputs):
+        raw_text = output.outputs[0].text
+        try:
+            # Find { ... } in the response
+            start = raw_text.find('{')
+            end = raw_text.rfind('}') + 1
+            json_str = raw_text[start:end]
+            data = json.loads(json_str)
+            parsed_results.append({
+                "score": float(data.get("score", 0.0)),
+                "facts": data.get("facts", [])[:3]
+            })
+        except (json.JSONDecodeError, ValueError):
+            # If the model messed up, assign a low score
+            parsed_results.append({"score": 0.0, "facts": []})
+    
+    # Sort by score in descending order
+    scored_chunks = list(zip(chunks, parsed_results))
+    scored_chunks.sort(key=lambda x: x[1]['score'], reverse=True)
+    
+    # Take top-K
+    top_chunks = scored_chunks[:top_k]
+    
+    # Component B: form compressed context from facts
+    compressed_facts = []
+    for chunk_data, meta in top_chunks:
+        compressed_facts.extend(meta['facts'])
+    
+    # Limit length to avoid overflowing context
+    compressed_context = " ".join(compressed_facts[:40])
+    
+    # Duplicate the best chunk entirely at the end
+    best_chunk_raw = top_chunks[0][0] if top_chunks else ""
+    
+    return {
+        "compressed_context": compressed_context,
+        "anchor_chunk": best_chunk_raw
+    }
+
+# Example usage
+chunks = [...]  # your 50 chunks from the vector DB
+query = "What firmware version was on server 10.0.4.22 during the failure?"
+
+result = gatekeeper_filter(query, chunks)
+
+# Form the final prompt for GPT-4
+final_prompt = f"""
+Context (key facts):
+{result['compressed_context']}
+
+Detailed document fragment (most important):
+{result['anchor_chunk']}
+
+User question: {query}
+
+Answer the question using only the provided information.
+"""
+</code><div><a href="https://sourcecraft.dev/"><img loading="lazy"/></a></div></pre><p>In the end, the result will look like this:</p><figure><img loading="lazy" src="https://habrastorage.org/r/w1560/getpro/habr/upload_files/a0b/9f7/822/a0b9f7822e121229b4d1abf8c18943ca.png"/></figure><h3>What We Got in the End</h3><p>In conclusion, let's look at the results we obtained. We ran our pipeline on 1000 requests from real tech support and compared it with three other approaches.</p><div><div><table><tbody><tr><td><p>Method</p></td><td><p>Tokens in prompt</p></td><td><p>Accuracy (exact match)</p></td><td><p>Latency</p></td><td><p>Cost per 1000 requests</p></td></tr><tr><td><p>Full-Context</p></td><td><p>~180,000</p></td><td><p>34.2%</p></td><td><p>14.5 sec</p></td><td><p>$180</p></td></tr><tr><td><p>Naive RAG (Top-5)</p></td><td><p>~8,000</p></td><td><p>41.1%</p></td><td><p>1.4 sec</p></td><td><p>$15</p></td></tr><tr><td><p>RAPTOR</p></td><td><p>~12,000</p></td><td><p>49.7%</p></td><td><p>5.2 sec</p></td><td><p>$40</p></td></tr><tr><td><p>Semantic Gatekeeper (ours)</p></td><td><p>~9,000</p></td><td><p>68.4%</p></td><td><p>3.8 sec</p></td><td><p>$22</p></td></tr></tbody></table></div></div><p>In terms of accuracy, we almost doubled Full-Context (68% vs. 34%) because the LLM stopped getting distracted by noise. We gave it only relevant facts, not 500 pages of filler.</p><p>Also, we spent 2.4 seconds processing through Mistral-7B but saved 10 seconds on GPT-4 (because the prompt became 20 times shorter). And finally, in terms of cost, we spent $22 versus $180, meaning an 8-fold saving. With tens of thousands of requests, you can save significant amounts.</p><p>Thus, we were able to fix our RAG and achieve good results when processing a large volume of requests.</p><p><strong>WHAT ELSE TO READ ON THE TOPIC:</strong></p><ul><li><p><a href="https://habr.com/ru/companies/otus/articles/1067738/">How to Run an LLM with 2.8 Trillion Parameters on a Laptop</a></p></li><li><p><a href="https://habr.com/ru/companies/otus/articles/1064244/">Prompt, RAG, or Fine-tuning: What Will Actually Teach Your LLM</a></p></li></ul><figure><img loading="lazy" src="https://habrastorage.org/r/w1560/getpro/habr/upload_files/417/535/75e/41753575e19c53feb74671d5628921ea.png"/></figure><p>If you are already working with LLMs or just starting to build your AI systems, you have likely encountered a problem: the model knows a lot, but when working with large volumes of data, it starts to lose important details and provide inaccurate answers. Understanding how to manage the quality of LLM performance and build reliable interaction scenarios with models is the next step after familiarizing yourself with the basic capabilities of AI.</p><p>In free lessons, we will analyze how modern approaches to working with LLMs are structured:</p><ul><li><p>September 22 at 18:00. "The Landscape of Modern NLP: From Embeddings and Classic ML Methods to Modern LLMs." <a href="https://otus.pw/TM7d/">Sign up.</a></p></li><li><p>September 23 at 18:00. "Structured Outputs: How to Make LLMs Always Return What You Need." <a href="https://otus.pw/bAVl/">Sign up.</a></p></li><li><p>October 1 at 20:00. "Verifying LLM Answers and Combating Hallucinations Through Prompt Engineering." <a href="https://otus.pw/tRem/">Sign up.</a></p></li></ul><blockquote><p><em>See more free September lessons in the digest.</em> <a href="https://otus.pw/57PJ/"><em>here.</em></a></p></blockquote></div>
+  </main>
+  <footer>
+    Translation generated with Gemini 2.5 Flash-Lite.
+    The original article remains the source of record.
+  </footer>
+</body>
+</html>

@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>[Translation] Programming on the Edge of Understanding</title>
+  <meta name="description" content="AI has profoundly changed how we code, and this evolution continues. We&#x27;re exploring various approaches and seeking more efficient workflows. Agents enable faster coding, but as their autonomy grows, human understanding of the project diminishes. I want to share how I use this loss of understan">
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.65;
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 32px 20px 64px;
+      color: #1f2328;
+    }
+    header {
+      border-bottom: 1px solid #d8dee4;
+      margin-bottom: 28px;
+      padding-bottom: 20px;
+    }
+    .source {
+      color: #57606a;
+      font-size: 0.95rem;
+    }
+    img, video, iframe {
+      max-width: 100%;
+      height: auto;
+    }
+    pre {
+      overflow-x: auto;
+      padding: 16px;
+      background: #f6f8fa;
+      border-radius: 6px;
+    }
+    code {
+      font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+    }
+    blockquote {
+      border-left: 4px solid #d0d7de;
+      margin-left: 0;
+      padding-left: 16px;
+      color: #57606a;
+    }
+    footer {
+      border-top: 1px solid #d8dee4;
+      margin-top: 40px;
+      padding-top: 20px;
+      color: #57606a;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>[Translation] Programming on the Edge of Understanding</h1>
+    <p>AI has profoundly changed how we code, and this evolution continues. We&#x27;re exploring various approaches and seeking more efficient workflows. Agents enable faster coding, but as their autonomy grows, human understanding of the project diminishes. I want to share how I use this loss of understanding as a feedback signal to decide when to delegate more to AI and when to slow down and delve deeper. Read more</p>
+    <p class="source">
+      Machine-translated from Habr.
+      <a href="https://habr.com/ru/articles/1084578/?utm_campaign=1084578&amp;utm_source=habrahabr&amp;utm_medium=rss">Read the original Russian article</a>.
+      Mon, 21 Sep 2026 08:40:09 GMT
+    </p>
+  </header>
+  <main>
+<div><p>AI has profoundly changed how we code, and this evolution continues. We're exploring various approaches and seeking more efficient workflows. Agents enable faster coding, but as their autonomy grows, human understanding of the project diminishes.</p><p>I want to share how I use this loss of understanding as a feedback signal to decide when to delegate more to AI and when to slow down and delve deeper.</p><h3>Two Approaches to Working with AI</h3><p>Let's consider two opposing approaches to coding with AI:</p><ul><li><p><strong>AI Pair Programming</strong> — The AI acts as a pair programmer: the developer leads the conversation, determines the next step, and reviews and verifies every change. The developer maintains control over the process and understands how the implementation works.</p></li><li><p><strong>Vibe Coding</strong> — The developer describes the desired outcome, and the AI implements it independently. The code is evaluated based on whether it works, without attempting to understand its inner workings.</p></li></ul><p>The choice between these two extremes is quite simple. If I'm writing one-off scripts or simple automations, vibe coding saves me a lot of time. For a long-lived project, I'd prefer more control, even if it takes longer.</p><p>However, in practice, there are many approaches between these two extremes. We can represent this spectrum as follows:</p><figure><img loading="lazy" src="https://habrastorage.org/r/w1560/webt/a1/f1/05/a1f105bde7631b90fb0979679b8a0054.png"/></figure><p>This is just an approximate model. The balance between autonomy, time savings, and understanding depends on the project, the capabilities of AI models, and the developer's experience. Furthermore, other factors like the quality and cost of the result are not considered here.</p><p>As we move from AI pair programming towards vibe coding, we spend less time but simultaneously lose project understanding. We want to find an optimal balance here to be most effective in the long term. To find this balance, we first need to understand why understanding the project is necessary at all.</p><h3>Required Level of Understanding</h3><p>I believe that humans need to understand code—at least as things stand today.</p><p>Humans remain the driving force behind a project: they set the long-term vision, formulate business requirements, make architectural decisions, and are responsible for the outcome. This is particularly evident in large projects where AI still needs guidance. Even when AI can solve all technical problems without human intervention, businesses will still need *some* level of project understanding—we can't escape <a href="https://www.joelonsoftware.com/2002/11/11/the-law-of-leaky-abstractions/">leaky abstractions</a>.</p><p>However, understanding a project doesn't mean knowing every line of its code. Even before AI, I used many technologies: languages, libraries, frameworks, databases. When learning a new technology, I would study the documentation, look at the APIs, read technical blogs by developers, and an abstract model of it would form in my mind. I would imagine how the technology worked, even without reading its entire source code.</p><p>When working with AI-generated code, I try to maintain a similar high-level picture, delving into details only in specific narrow areas. If I understand the data flow, project structure, and the logic of key decisions, I understand the project on a technical level. In this sense, working with AI is similar to the work of a software architect: you don't need to keep the implementation of every module in mind, but you need to understand the system's overall structure and be able to quickly drop down a level when necessary.</p><h3>The Boundary of Understanding</h3><p>There is no single optimal level of autonomy. I constantly choose a position on this scale and try to stay near the boundary where the project's mental model is still sufficient to guide the work and assess the consequences of changes. Up to this boundary, I delegate as much work to the AI as I can.</p><figure><img loading="lazy" src="https://habrastorage.org/r/w1560/webt/3f/ca/08/3fca081a5ecd65f73ab3e0215b435d54.png"/></figure><p>Even within a single project, the boundary is different. Just as models can use different reasoning levels for different tasks, I need different depths of understanding for different code sections.</p><p>For example, the AI might implement a typical module entirely, and I'll check its boundaries, data flow, error handling, and tests without reading the boilerplate code line by line. But if I can no longer explain where and why data is changing or assess the consequences of the next edit, it's time to stop and investigate more deeply.</p><p>When I start to lose understanding, I slow down, investigate the specific area, and only then move forward. This forms the <strong>Understanding Loop</strong>: I delegate work to the AI until I notice my mental model starting to break down, then I restore the context and continue. This cycle allows me to stay in a zone where the AI saves time, and the necessary control is maintained.</p><h3>Programming on the Edge</h3><p>To stay at this boundary, you need to be able to notice when your understanding is insufficient. Here are some of the criteria I use:</p><ul><li><p>I understand the data flow in the system.</p></li><li><p>I can predict where the next edit needs to be made.</p></li><li><p>I understand the consequences of a change for other parts of the project.</p></li><li><p>I can navigate the project without getting lost.</p></li></ul><p>When I notice a gap in my mental model, I focus on that part of the project. If necessary, I delve into lower levels, investigate data flows, connections with other parts of the project, and the reasons behind decisions made. I don't need to re-understand the entire project, just fill the current gap.</p><p>Moreover, the process of regaining context doesn't necessarily involve reading code (often it's not needed) but rather engaging in a conversation with the agent. I might ask it about certain decisions: why they were made, what alternatives existed, and so on. Sometimes it's a simple question and answer, and other times it's a deep dive into a technical area. Occasionally, such a dialogue leads to me being dissatisfied with the current solution, and sometimes the agent might also be dissatisfied: it also needs a rubber duck.</p><p>I consider my understanding restored when I can again explain in my own words how that part works and predict which parts of the project a change will affect. After that, I can speed up again and delegate more to the AI.</p><h3>Learning</h3><p>In pair programming, I set the direction myself and therefore more often stay within my current mental model. The agent might offer suggestions or point out errors, but it usually doesn't lead me far from my intended path. Vibe coding, on the other hand, allows me to get a result without building an implementation model at all.</p><p>When working at the boundary, the agent can lead me into an unfamiliar area, and the understanding loop helps integrate new knowledge into the overall project picture. This process is akin to training to failure: as capabilities grow, the load is gradually increased, pushing the limits of what's possible a little further each time.</p><p>Over time, my mental model becomes more accurate, and I can consciously delegate more work to the agent while maintaining the same level of control. The boundary gradually shifts to the right, and the time investment decreases.</p><figure><img loading="lazy" src="https://habrastorage.org/r/w1560/webt/e7/6e/7c/e76e7c105781367a66b5fb5f5ffb6ed5.png"/></figure><h3>Conclusion</h3><p>Programming on the edge of understanding is a way to delegate as much work to the AI as my mental model of the project allows. As long as this model is sufficient to guide further work and assess the consequences of changes, I speed up. When it's no longer sufficient, I slow down and restore context.</p><p>The understanding loop allows me to save time, maintain necessary control, and learn simultaneously. As the boundary of understanding shifts, the amount of work that can be confidently delegated to the AI also increases.</p></div>
+  </main>
+  <footer>
+    Translation generated with Gemini 2.5 Flash-Lite.
+    The original article remains the source of record.
+  </footer>
+</body>
+</html>

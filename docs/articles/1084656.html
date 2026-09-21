@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>A Dumb Model with a Strict Verification Loop Beats a Smart Model Without One</title>
+  <meta name="description" content="I recently read an article about &#x27;Cost per Task&#x27; and how the cheapest model in a lineup can surprisingly outperform the smartest one in terms of cost per solved task. I fully agree with the conclusion, but I want to add something that wasn&#x27;t in that article: it&#x27;s not just about t">
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.65;
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 32px 20px 64px;
+      color: #1f2328;
+    }
+    header {
+      border-bottom: 1px solid #d8dee4;
+      margin-bottom: 28px;
+      padding-bottom: 20px;
+    }
+    .source {
+      color: #57606a;
+      font-size: 0.95rem;
+    }
+    img, video, iframe {
+      max-width: 100%;
+      height: auto;
+    }
+    pre {
+      overflow-x: auto;
+      padding: 16px;
+      background: #f6f8fa;
+      border-radius: 6px;
+    }
+    code {
+      font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+    }
+    blockquote {
+      border-left: 4px solid #d0d7de;
+      margin-left: 0;
+      padding-left: 16px;
+      color: #57606a;
+    }
+    footer {
+      border-top: 1px solid #d8dee4;
+      margin-top: 40px;
+      padding-top: 20px;
+      color: #57606a;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>A Dumb Model with a Strict Verification Loop Beats a Smart Model Without One</h1>
+    <p>I recently read an article about &#x27;Cost per Task&#x27; and how the cheapest model in a lineup can surprisingly outperform the smartest one in terms of cost per solved task. I fully agree with the conclusion, but I want to add something that wasn&#x27;t in that article: it&#x27;s not just about the model itself. It&#x27;s about what happens after the model writes the code. For the past eight months, I&#x27;ve been building an agentic wrapper where the model doesn&#x27;t just write files; it has to prove that what it wrote actually works. Here&#x27;s what I found: if you attach an honest verification loop to a weak model, it confidently outperforms a strong model operating in a &#x27;write and report&#x27; mode. Below are the numbers, architecture, and pitfalls. Read on.</p>
+    <p class="source">
+      Machine-translated from Habr.
+      <a href="https://habr.com/ru/articles/1084656/?utm_campaign=1084656&amp;utm_source=habrahabr&amp;utm_medium=rss">Read the original Russian article</a>.
+      Mon, 21 Sep 2026 11:09:59 GMT
+    </p>
+  </header>
+  <main>
+<div><p>I recently read an article about 'Cost per Task' and how the cheapest model in a lineup can surprisingly outperform the smartest one in terms of cost per solved task. I fully agree with the conclusion, but I want to add something that wasn't in that article: it's not just about the model itself. It's about what happens after the model writes the code.</p><p>For the past eight months, I've been building an agentic wrapper where the model doesn't just write files; it has to prove that what it wrote actually works. Here's what I found: if you attach an honest verification loop to a weak model, it confidently outperforms a strong model operating in a 'write and report' mode.</p><p>Below are the numbers, architecture, and pitfalls.</p><h3>The Problem: Models Lie, Not Maliciously</h3><p>The classic scenario of agentic coding looks like this:</p><ol><li><p>User: 'Make a calculator'</p></li><li><p>Model writes index.html</p></li><li><p>Model: 'Done! The calculator works, buttons handle clicks, all operations are supported.'</p></li><li><p>User opens the file. The 'equals' button does nothing.</p></li></ol><p>Point 3 is key here. The model didn't lie intentionally. It read its own code, ran inference on it, and generated the most probable text continuation, which is a success report. For a language model, 'I read the code and it looks correct' and 'I ran the code and it works' are indistinguishable states because, in both cases, the context contains the same program text.</p><p>A smart model makes mistakes less often. But it makes them <strong>just as confidently</strong>, which is worse because you stop checking.</p><p>The conclusion I reached is this: don't try to make the model smarter. Make it so that a success report is physically impossible to generate without actually running the code.</p><h3>Architecture: Three Mandatory Loops</h3><h4>Loop 1: Files Are Written Only by File System Tools</h4><p>The first thing I forbade the agent was writing files via the shell.</p><pre><code>// Forbidden
+bash("mkdir game &amp;&amp; echo '...' &gt; game/index.html")
+
+// Mandatory
+Write(file_path="game/index.html", content="...")</code><div><a href="https://sourcecraft.dev/"><img loading="lazy"/></a></div></pre><p>The difference isn't cosmetic. A command like `echo` writing to a file returns exit code 0 almost always, even if you wrote the file to the wrong directory, in the wrong encoding, or to a mounted volume that will disappear in a second. The shell reports success without being accountable for anything.</p><p>My `Write` tool resolves the path relative to the project root, creates parent directories automatically, and returns not 'ok', but a structure in response:</p><pre><code>{
+  "path": "C:/Projects/game/index.html",
+  "bytes": 14203,
+  "refs": ["sprites/hero.png", "audio/hit.wav"],
+  "missing_refs": ["audio/hit.wav"]
+}</code><div><a href="https://sourcecraft.dev/"><img loading="lazy"/></a></div></pre><p>The `missing_refs` field is half the benefit. The agent learns about a broken asset reference at the moment of writing the file, not three steps later when the user sends a screenshot of a blank square.</p><h4>Loop 2: Execution Is Mandatory, Reading Code Doesn't Count</h4><p>The second loop is the sandbox. If you wrote a page, you'd better open it in a real engine, get the console output, and a screenshot.</p><p>The key rule I hammered into the system prompt, which yields the greatest quality increase, is:</p><blockquote><p>Verification means you have seen a state change. Reading the code and concluding that it 'should work' does not count. If you cannot verify, state it directly and stop.</p></blockquote><p>The last sentence here is more important than the first. Without an allowed exit path of 'cannot verify,' the model, under pressure to verify, starts hallucinating verification, which is strictly worse than the original situation. A legitimate way to say 'I don't know' is needed.</p><p>In practice, this is a single call that opens the page, takes a snapshot of accessibility with all clickable elements, runs a scenario, and returns a verdict plus console output:</p><pre><code>{
+  "opened": true,
+  "console_errors": ["Uncaught TypeError: op is not a function"],
+  "interactions": [
+    {"click": "button[data-k=7]", "display_after": "7"},
+    {"click": "button[data-k=plus]", "display_after": "7"},
+    {"click": "button[data-k=eq]", "display_after": "7"}
+  ],
+  "verdict": "FAIL: equals did not evaluate"
+}</code><div><a href="https://sourcecraft.dev/"><img loading="lazy"/></a></div></pre><p>This `display_after` is the real verification. It's the DOM state after a real click, not the model's opinion of what it would be.</p><h4>Loop 3: No Hooks in the Product for Testability</h4><p>The most non-obvious restriction, which I didn't arrive at immediately:</p><blockquote><p>The agent is forbidden from modifying the delivered file to make it verifiable. No debug globals, no exports added 'just to see'.</p></blockquote><p>A model that needs to prove its functionality will very quickly invent the following trick: it attaches the state to `window`, reads it via `eval`, and shows you a green checkmark. The verification is honest. However, the product the user receives now has a debug hook they didn't ask for.</p><p>The module's scope should be unreachable from `eval`. This isn't a testing problem; it's a correctly written module. You must prove behavior as the user experiences it: read the rendered DOM, interact with the interface, and for animations, compare two frames pixel by pixel.</p><pre><code>const a = snapshot();          // frame 1
+await sleep(400);
+const b = snapshot();          // frame 2
+const diff = pixelDiff(a, b);  // greater than zero means something is moving</code><div><a href="https://sourcecraft.dev/"><img loading="lazy"/></a></div></pre><p>Zero in the diff means `requestAnimationFrame` isn't running, regardless of how convincing the render code looks.</p><h3>The Numbers</h3><p>I ran tests on a set of 40 tasks: small interactive applications (calculator, todo with filters, timer, snake, canvas visualization), each described in a single paragraph. The success criterion: the application does what it's supposed to do upon manual human verification, without edits.</p><div><table><tbody><tr><td><p><strong>Configuration</strong></p></td><td><p><strong>Immediate Success</strong></p></td><td><p><strong>Avg. Cost per Task</strong></p></td><td><p><strong>Iterations</strong></p></td></tr><tr><td><p>Strong model, no loop</p></td><td><p>42%</p></td><td><p>$2.90</p></td><td><p>1.0</p></td></tr><tr><td><p>Strong model, with loop</p></td><td><p>88%</p></td><td><p>$3.40</p></td><td><p>1.6</p></td></tr><tr><td><p>Cheap model, no loop</p></td><td><p>21%</p></td><td><p>$0.16</p></td><td><p>1.0</p></td></tr><tr><td><p>Cheap model, with loop</p></td><td><p>73%</p></td><td><p>$0.31</p></td><td><p>2.8</p></td></tr><tr><td><p>Local 14B, with loop</p></td><td><p>61%</p></td><td><p>$0</p></td><td><p>3.9</p></td></tr></tbody></table></div><p>The main takeaway isn't that 88% is greater than 73%. The main point is this: <strong>a cheap model with a loop (73%) outperforms a strong model without a loop (42%), while costing nine times less.</strong></p><p>The weak model takes more iterations. Let it. An iteration costs cents, while a false success report costs you half an hour of manual debugging and, more importantly, undermines trust in all subsequent reports.</p><p>The line with the local 14B is the most interesting to me. 61% with zero marginal cost and not a single byte of code sent to someone else's cloud. For a production monolith, this is the only acceptable configuration in principle.</p><h3>Pitfalls I Stepped On</h3><p><strong>Own HTTP server for static files.</strong> I set up a local server, pointed the preview there, and got a white screen because it was a different origin, and the frame refused to embed it. Plus, the process survived the session and permanently occupied the port. Static files should be served by the preview's built-in router, and a real server should only be started for a real backend.</p><p><strong>Paginated file reading.</strong> The agent read files in chunks of 100 lines. A four-thousand-line file turned into fourteen overlapping reads, each re-entering the context on every turn. Reading the entire file in one call is cheaper than reading it in parts fourteen times. It's counterintuitive until the first measurement.</p><p><strong>Complete file rewrite to fix one function.</strong> Streaming a large file takes minutes, and if the connection hiccups halfway through, nothing is saved, and you start over. Patching broken lines point-by-point lands in seconds and survives anything.</p><p><strong>Chain of `eval` calls for a single question.</strong> 'How many items in the list?' call. 'And after clicking?' call. Fifteen round trips where one script running the entire scenario would have sufficed. Batch aggressively: if subsequent actions don't depend on each other's results, they go in one go.</p><p><strong>Mental arithmetic.</strong> The model calculated the product of nine numbers and gave 2,882,880, then 720,720, while the correct answer was 2,227,680. Any arithmetic more complex than adding two numbers must go to the interpreter, and the response should be what the program printed. This is also verification, just in a different domain.</p><h3>What This Implies</h3><p>The industry is currently competing on model intelligence, which is understandable because intelligence is easily measured by benchmarks. However, on a real engineering task, the quality difference between a 'smart' and a 'dumb' model is less than the difference between one that 'verifies its work' and one that doesn't.</p><p>The verification loop is pure wrapper engineering. It requires no retraining, no new weights, and no waiting for the next release. It requires forbidding the agent three things (writing files via shell, reporting without execution, modifying the product for tests) and giving it one honest tool that actually opens, clicks, and returns console output.</p><p>After that, you can take the cheapest model in the lineup. Or even a local one that doesn't send your code anywhere.</p><p>If you're interested in implementation details (accessibility snapshot, pixel diff, how `missing_refs` works), let me know in the comments, and I'll cover them in a separate post. I'm also curious how others solve the problem of false success reports, as I've seen very different solutions.</p>
+  </main>
+  <footer>
+    Translation generated with Gemini 2.5 Flash-Lite.
+    The original article remains the source of record.
+  </footer>
+</body>
+</html>

@@ -1223,6 +1223,62 @@
     "summary": "This week on Habr, there was a debate about whether programmers need the smartest models or if cheaper ones are sufficient for routine tasks. Three hundred comments and not a single benchmark on identical tasks. I did it: five routine tasks, four models from the same family, two runs each, hidden tests. Forty runs in total. The most expensive model turned out to be the fastest: 341 seconds compared to 395 for the cheapest, because it needed fewer turns and half the text. Four out of five tasks were solved by all models, 32 out of 32 runs. On the fifth task, the junior model wrote a bug and reported it with two consecutive checkmarks, the second of which contradicts the first. Read more",
     "title": "Do We Need a Smart Model for Routine Tasks? I Gave Five Identical Tasks to Four Models and Compared Them"
   },
+  "https://habr.com/ru/articles/1084578/?utm_campaign=1084578&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Mon, 21 Sep 2026 08:40:09 GMT",
+    "slug": "1084578",
+    "source_url": "https://habr.com/ru/articles/1084578/?utm_campaign=1084578&utm_source=habrahabr&utm_medium=rss",
+    "summary": "AI has profoundly changed how we code, and this evolution continues. We're exploring various approaches and seeking more efficient workflows. Agents enable faster coding, but as their autonomy grows, human understanding of the project diminishes. I want to share how I use this loss of understanding as a feedback signal to decide when to delegate more to AI and when to slow down and delve deeper. Read more",
+    "title": "[Translation] Programming on the Edge of Understanding"
+  },
+  "https://habr.com/ru/articles/1084596/?utm_campaign=1084596&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Mon, 21 Sep 2026 09:07:26 GMT",
+    "slug": "1084596",
+    "source_url": "https://habr.com/ru/articles/1084596/?utm_campaign=1084596&utm_source=habrahabr&utm_medium=rss",
+    "summary": "Not exactly my full twin, but, let's say, the working side – the part about work. But you can already talk to it, almost like me. It contains almost everything I've written over 10 years about automation, management, career, books, etc. There's almost no fiction there – it's too hard to extract meaning and benefit from it. There's a lot of text – at the time of publication, 3.4 million characters, which is about 8 books (if we count 400,000 per book). The idea came by chance. I run a book blog, and I decided to automate working with it somehow, so that people wouldn't have to read the whole wall of text when they have a specific goal – for example, to compile a selection for themselves or choose books on a certain topic. There's a table of contents, of course, but it's also long. That's when the idea came – to put the entire blog into a small file that the reader could feed to their favorite neural network, and it would help make a selection, choose something, etc. The thought then developed further – why only a book blog? Why not put everything that can help the reader at work into the file? It's objectively clear that no one in their right mind will re-read everything an author has written on a specific topic, especially if they've written a lot. AI will definitely cope better than any other tools with the task of finding something useful for a specific situation in a large amount of information. I tried to make the neural network search for information from a specific author and respond only in the context of their knowledge – it didn't work, especially when publications are scattered across different sources. Read more",
+    "title": "Meet My Digital Twin"
+  },
+  "https://habr.com/ru/articles/1084646/?utm_campaign=1084646&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Mon, 21 Sep 2026 10:54:54 GMT",
+    "slug": "1084646",
+    "source_url": "https://habr.com/ru/articles/1084646/?utm_campaign=1084646&utm_source=habrahabr&utm_medium=rss",
+    "summary": "TL;DR (BLUF) Classic monitoring of Telegram chats by keywords (\"looking for a developer\", \"need a website\", \"contractor required\") is technically dead in 2026: regular expressions miss 79.5% of targeted commercial requests and simultaneously generate over 60% of false positive noise (self-promotion by contractors, vacancies, mutual promotion). In this article, we dissect the engineering architecture of a three-level cascading pipeline: from lightweight heuristics (2 ms) and multilingual embeddings (15 ms) to LLM Decision Logic with a strict JSON schema. All findings are supported by an open benchmark on a sample of 12,081 real messages from 40+ specialized IT and digital chats.",
+    "title": "Why Regex No Longer Finds Clients in Telegram: Dissecting 12,081 Messages with Cascading AI Scoring"
+  },
+  "https://habr.com/ru/articles/1084656/?utm_campaign=1084656&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Mon, 21 Sep 2026 11:09:59 GMT",
+    "slug": "1084656",
+    "source_url": "https://habr.com/ru/articles/1084656/?utm_campaign=1084656&utm_source=habrahabr&utm_medium=rss",
+    "summary": "I recently read an article about 'Cost per Task' and how the cheapest model in a lineup can surprisingly outperform the smartest one in terms of cost per solved task. I fully agree with the conclusion, but I want to add something that wasn't in that article: it's not just about the model itself. It's about what happens after the model writes the code. For the past eight months, I've been building an agentic wrapper where the model doesn't just write files; it has to prove that what it wrote actually works. Here's what I found: if you attach an honest verification loop to a weak model, it confidently outperforms a strong model operating in a 'write and report' mode. Below are the numbers, architecture, and pitfalls. Read on.",
+    "title": "A Dumb Model with a Strict Verification Loop Beats a Smart Model Without One"
+  },
+  "https://habr.com/ru/articles/1084758/?utm_campaign=1084758&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Mon, 21 Sep 2026 14:09:09 GMT",
+    "slug": "1084758",
+    "source_url": "https://habr.com/ru/articles/1084758/?utm_campaign=1084758&utm_source=habrahabr&utm_medium=rss",
+    "summary": "A company once dominated 99% of the market through dumping, then lost sales for six consecutive years. AI implementation stalled for a year, the person in charge left, and cash ran out. I was called in for a month with payment upon completion. I'll tell you what I managed to do: an agent checks order fulfillment by photo, an agent-manager closes 95% of customer chats, a separate agent deploys minor fixes directly from the work chat, old Perl logistics were replaced by Python software, and above it all sits the chief agent-driver. And why employees went to complain about colleagues who didn't exist. Read more &rarr;",
+    "title": "The Thrilling Story of AI Implementation in a Dying Non-IT Company"
+  },
+  "https://habr.com/ru/articles/1084770/?utm_campaign=1084770&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Mon, 21 Sep 2026 14:11:26 GMT",
+    "slug": "1084770",
+    "source_url": "https://habr.com/ru/articles/1084770/?utm_campaign=1084770&utm_source=habrahabr&utm_medium=rss",
+    "summary": "Jev only answers \"yes/no\" or chooses from provided options. 16,000 calls: first a comparison with gpt-5.4-mini and gpt-5.6-luna on four open datasets, then several thousand real-world decisions in workflows. Where it wins, where it errs, and how to use it. Read more",
+    "title": "[Translation] Testing Jev on Open and Internal Data: Classifier or Filter?"
+  },
+  "https://habr.com/ru/articles/1084782/?utm_campaign=1084782&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Mon, 21 Sep 2026 14:34:54 GMT",
+    "slug": "1084782",
+    "source_url": "https://habr.com/ru/articles/1084782/?utm_campaign=1084782&utm_source=habrahabr&utm_medium=rss",
+    "summary": "Every adventurous developer, no matter the field, eventually faces a project where personal resources dwindle and the codebase grows exponentially. Project expansion means adding new features, integrating them, and improving the user interface. The challenge lies in the human brain's limitations; it needs rest, while scaling demands absolute concentration. Without it, code becomes unreadable, and bugs require extensive rework. It's better to build with scalability in mind from the start. This leads to a choice: scale with external help or let the project drift. This article explores how to leverage AI effectively without sacrificing code quality and maintainability.",
+    "title": "AI Won't Write for You: How to Scale a Project Without Drowning in Unreadable Code"
+  },
   "https://habr.com/ru/companies/1c/articles/1071340/?utm_campaign=1071340&utm_source=habrahabr&utm_medium=rss": {
     "model": "gemini-2.5-flash-lite",
     "published": "Thu, 03 Sep 2026 07:18:11 GMT",
@@ -1447,6 +1503,22 @@
     "summary": "A few years ago, the 1C developer's workflow was predictable: Configurator, database, manual configuration import/export, file sharing. Then came Git, EDT, autotests, and automation tools. Today, AI agents, MCP, and programmatic platform control are increasingly entering this cycle. Not only the toolset is changing, but also the development cost. What used to take tens of minutes of manual work is gradually turning into a single command, script, or agent action. The selection of materials below is about different aspects of this transition. Together, they show one trend: the modern 1C developer works less with the Configurator and more with a full-fledged engineering ecosystem around the platform. Read more",
     "title": "From Configurator to AI Agents: How 1C Developer Tools Are Changing"
   },
+  "https://habr.com/ru/companies/infostart/articles/1084638/?utm_campaign=1084638&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Mon, 21 Sep 2026 10:34:54 GMT",
+    "slug": "1084638",
+    "source_url": "https://habr.com/ru/companies/infostart/articles/1084638/?utm_campaign=1084638&utm_source=habrahabr&utm_medium=rss",
+    "summary": "Vibe-coding has become a common development method: a person describes a task in plain language, and AI helps write and refine code. However, before code, there are usually requirements, a process map, and a technical specification. If this stage is done superficially, the model will only faster create a solution to the wrong task. For an analyst's work, the term vibe-speaking is more appropriate – a dialogue with AI where the initial idea gradually turns into a specification: with development boundaries, configuration objects, exceptions, risks, and acceptance criteria. The main condition here is context. A universal language model can format a document well, but it is not obliged to know the structure of a specific version of the 1C configuration. Therefore, the usefulness of the answer depends not only on the prompt but also on whether the agent has information about the system's metadata and typical mechanisms. In the article, we will analyze which tasks can be delegated to such an assistant and where its conclusions should still be checked by a specialist. Read more",
+    "title": "Vibe-speaking for 1C: How AI helps an analyst turn an idea into a technical specification"
+  },
+  "https://habr.com/ru/companies/infostart/articles/1084708/?utm_campaign=1084708&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Mon, 21 Sep 2026 12:46:09 GMT",
+    "slug": "1084708",
+    "source_url": "https://habr.com/ru/companies/infostart/articles/1084708/?utm_campaign=1084708&utm_source=habrahabr&utm_medium=rss",
+    "summary": "AI can already generate tests, analyze legacy code, and assist with QA automation. However, without rules and control, it can just as confidently create useless checks. Therefore, the main question today is not 'can AI be used in testing,' but 'how to integrate it into the process so that quality truly improves.' Moderators of INFOSTART TECH EVENT 2026 discussed where AI is already helping testers, why growing teams need competency matrices, and why product quality has long ceased to be solely the responsibility of QA. Read more",
+    "title": "AI Writes Tests, But Who Will Test the AI: How QA in 1C Teams is Changing"
+  },
   "https://habr.com/ru/companies/infowatch/articles/1083954/?utm_campaign=1083954&utm_source=habrahabr&utm_medium=rss": {
     "model": "gemini-2.5-flash-lite",
     "published": "Fri, 18 Sep 2026 14:32:05 GMT",
@@ -1558,6 +1630,14 @@
     "source_url": "https://habr.com/ru/companies/otus/articles/1077972/?utm_campaign=1077972&utm_source=habrahabr&utm_medium=rss",
     "summary": "AI agents often lose quality not due to LLM limitations, but due to poorly organized context. This article examines common context management errors: overloaded knowledge bases, lack of memory, outdated instructions, and attempts to solve everything with a single prompt. We'll discuss how to build a knowledge architecture to make AI agents a predictable tool. Analyze mistakes.",
     "title": "From \"Magic\" to Engineering: 9 Context Management Mistakes When Implementing AI Agents in Processes"
+  },
+  "https://habr.com/ru/companies/otus/articles/1079804/?utm_campaign=1079804&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Mon, 21 Sep 2026 14:16:50 GMT",
+    "slug": "1079804",
+    "source_url": "https://habr.com/ru/companies/otus/articles/1079804/?utm_campaign=1079804&utm_source=habrahabr&utm_medium=rss",
+    "summary": "LLM large context doesn't guarantee quality answers: when working with voluminous documents, the model can lose important details and find facts within the text less effectively. In this article, we'll explore why Full-Context and basic RAG face limitations, and how the Semantic Gatekeeper approach improves answer accuracy by preparing relevant context before passing it to the main model. Let's break down the approach.",
+    "title": "Why Your LLM Gets Dumber on Large Documents and How to Fix It"
   },
   "https://habr.com/ru/companies/raiffeisenbank/articles/1075704/?utm_campaign=1075704&utm_source=habrahabr&utm_medium=rss": {
     "model": "gemini-2.5-flash-lite",
@@ -1807,6 +1887,14 @@
     "summary": "We're closing out the last month of summer with a long list of releases for AI agents: documentation, MCP server, skills, abilities, file uploads in chat, and four new models in the catalog. The reason is simple: every third request to our documentation comes from agents, so we need to cater to this new audience. The second half of the digest is for those who read for themselves: three storage classes in S3, canceling database deletion, cloning apps in App Platform, domains via Gosuslugi, and updated Kubernetes. We'll break down each point below ↓ Read more",
     "title": "August Digest — App Cloning, Agent Skills, Streamer Mode, and Documentation"
   },
+  "https://habr.com/ru/companies/timeweb/articles/1080548/?utm_campaign=1080548&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Mon, 21 Sep 2026 09:10:01 GMT",
+    "slug": "1080548",
+    "source_url": "https://habr.com/ru/companies/timeweb/articles/1080548/?utm_campaign=1080548&utm_source=habrahabr&utm_medium=rss",
+    "summary": "Imagine a law firm that has accumulated hundreds of hours of audio recordings over several months. They need to search for surnames, dates, testimonies, and details of specific episodes within these recordings. As long as the recordings exist only as files, finding the desired fragment is almost like searching blindly, with a pen and notepad in hand. Opening the audio, rewinding, and listening. An obvious solution emerges: send the recording to a transcription service and get the finished text in a few minutes. However, this scenario is not always suitable for materials containing sensitive data. Transferring a file to an external system may violate the company's internal policies, and the very act of sending it means another copy of the recording exists, and someone else is now responsible for its access. Therefore, I have assembled a local solution based on Whisper. Audio is processed on your own machine, and the output includes text and timestamps. In this article, we will explore the origins of Whisper, how it converts sound to text, what the official console version can do without additional modifications, and how I applied this technology in practice. Read more",
+    "title": "Whisper without the cloud: local recognition of sensitive records"
+  },
   "https://habr.com/ru/companies/timeweb/articles/1081816/?utm_campaign=1081816&utm_source=habrahabr&utm_medium=rss": {
     "model": "gemini-2.5-flash-lite",
     "published": "Wed, 16 Sep 2026 08:05:13 GMT",
@@ -1894,6 +1982,14 @@
     "source_url": "https://habr.com/ru/companies/yandex_cloud_and_infra/articles/1080524/?utm_campaign=1080524&utm_source=habrahabr&utm_medium=rss",
     "summary": "Imagine: a night alert, the application is returning 500s, but it's alive. It's clear that the familiar process will begin – tabs with graphs, searches in logs, and attempts to understand who changed what. How much time does this usually take? What if an AI agent helps you investigate the incident? Hi! I'm Anton Vorontsov, CRE at Yandex Cloud. At the end of July, I was browsing fresh GitHub repositories again to see what's happening in my related disciplines: SRE, automation, and, of course, AI. Suddenly, I stumbled upon an interesting repository that was actively growing: the number of stars, commits, and interested people from different countries – all about OpenSRE. This article is about my first contribution to an external project, what was the most challenging part, and how this tool works. Read more",
     "title": "350 commits a week: how to contribute to a project that changes faster than you can write"
+  },
+  "https://habr.com/ru/companies/yandex_cloud_and_infra/articles/1084654/?utm_campaign=1084654&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Mon, 21 Sep 2026 11:57:26 GMT",
+    "slug": "1084654",
+    "source_url": "https://habr.com/ru/companies/yandex_cloud_and_infra/articles/1084654/?utm_campaign=1084654&utm_source=habrahabr&utm_medium=rss",
+    "summary": "Those of us who have tried fashionable vibe coding have already appreciated the flip side of the coin. Agents confidently say, \"I'll do it now,\" spend several hours writing and testing code, and then offer to deploy the result into a Kubernetes cluster and set up observability. For a pet project with a couple of web interface pages. In early 2026, we realized that technology had reached a level where not only programmers but also specialists from other fields could create their own developments: marketers, accountants, analysts, and more. Thus, VibeCraft was born. In this article, I will explain why such a platform is needed if AI development assistants already exist, and what challenges we had to solve during its creation. Read more",
+    "title": "Programming for those who don't code: how VibeCraft works"
   },
   "https://habr.com/ru/companies/yandex_praktikum/articles/1070034/?utm_campaign=1070034&utm_source=habrahabr&utm_medium=rss": {
     "model": "gemini-2.5-flash-lite",

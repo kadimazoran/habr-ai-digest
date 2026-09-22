@@ -431,6 +431,14 @@
     "summary": "I spend over a billion tokens a day (I checked the statistics for Minimax / GPT), sometimes running 7-9 agent threads for 12 hours. How do I manage not to go broke? How does what I do not fall apart, but somehow work? Previous article: https://habr.com/ru/articles/1030414/ More than 3 months have passed since May 1st. Several eras of AI agent quality and surrounding infrastructure have passed. Several paradigms have shifted. Sub-agents are no longer effective, Western frontiers have not fallen behind China, and much more. All in order. Read more",
     "title": "A Billion Tokens a Day. Real Data on Subscription Sizes and Model Quality. AI Ambassador's Experience — Part 2"
   },
+  "https://habr.com/ru/articles/1079816/?utm_campaign=1079816&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Tue, 22 Sep 2026 13:10:58 GMT",
+    "slug": "1079816",
+    "source_url": "https://habr.com/ru/articles/1079816/?utm_campaign=1079816&utm_source=habrahabr&utm_medium=rss",
+    "summary": "In the first part, we built an interactive NPC prototype based on MetaHuman in Unreal Engine. The NPC \"heard\" the player (STT), processed the recognized text using an LLM (local model inference via llama.cpp), and voiced the response (TTS + lipsync). However, a \"talking head\" is not yet a character. Such an NPC's understanding of the world is static (hardcoded in the system prompt), it responds emotionlessly and politely to any query, and doesn't affect what's happening in the game. These are precisely the problems we tried to solve. Spoiler: we succeeded. Read more",
+    "title": "Interactive NPC in Unreal Engine. Part 2: RAG, Emotions, and Function Calling"
+  },
   "https://habr.com/ru/articles/1080018/?utm_campaign=1080018&utm_source=habrahabr&utm_medium=rss": {
     "model": "gemini-2.5-flash-lite",
     "published": "Sun, 20 Sep 2026 05:01:35 GMT",
@@ -774,6 +782,14 @@
     "source_url": "https://habr.com/ru/articles/1081820/?utm_campaign=1081820&utm_source=habrahabr&utm_medium=rss",
     "summary": "I gathered 6 services with free or starter access to LLM APIs and tested them. Which models actually work, what you get after registration, how much balance is used, and what limits you encounter – all based on real requests. Read more",
     "title": "Free API for LLMs: Testing 6 Services, Models, and Real Limits"
+  },
+  "https://habr.com/ru/articles/1081826/?utm_campaign=1081826&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Tue, 22 Sep 2026 09:09:00 GMT",
+    "slug": "1081826",
+    "source_url": "https://habr.com/ru/articles/1081826/?utm_campaign=1081826&utm_source=habrahabr&utm_medium=rss",
+    "summary": "A small model quickly drafts a few next tokens, and a large one verifies the whole batch in one pass. Matching tokens are kept, and at the first divergence, the large model rewrites the continuation itself, so the acceleration doesn't change the response distribution. In speculative decoding, the large model literally tells the draft model: \"Let's try again, Misha.\" At first glance, it seems that acceleration here is necessarily bought at the cost of quality. But no: this is precisely the case where generation can be accelerated without such a compromise. Next, we will analyze the entire cycle: how the draft model works, by what rule tokens are accepted, what the size of the draft should be, why the same tokenizer is important, and how to integrate it all into Transformers and vLLM. We will also look at approaches where the second model is not needed at all: EAGLE, Medusa, LayerSkip, and DFlash. Read more",
+    "title": "Let's try again, Misha: speculative decoding from draft to verification"
   },
   "https://habr.com/ru/articles/1081840/?utm_campaign=1081840&utm_source=habrahabr&utm_medium=rss": {
     "model": "gemini-2.5-flash-lite",
@@ -1279,6 +1295,46 @@
     "summary": "Every adventurous developer, no matter the field, eventually faces a project where personal resources dwindle and the codebase grows exponentially. Project expansion means adding new features, integrating them, and improving the user interface. The challenge lies in the human brain's limitations; it needs rest, while scaling demands absolute concentration. Without it, code becomes unreadable, and bugs require extensive rework. It's better to build with scalability in mind from the start. This leads to a choice: scale with external help or let the project drift. This article explores how to leverage AI effectively without sacrificing code quality and maintainability.",
     "title": "AI Won't Write for You: How to Scale a Project Without Drowning in Unreadable Code"
   },
+  "https://habr.com/ru/articles/1085032/?utm_campaign=1085032&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Tue, 22 Sep 2026 08:44:59 GMT",
+    "slug": "1085032",
+    "source_url": "https://habr.com/ru/articles/1085032/?utm_campaign=1085032&utm_source=habrahabr&utm_medium=rss",
+    "summary": "Below is a translation of the article \"Friends Don’t Let Friends Use Ollama\", published on Sleeping Robots in April 2026. Since Ollama has changed significantly in the intervening months, I have added several comments to the translation and a note at the end of the article, where I have updated key technical details as of September 2026. Ollama became popular because it was the first to offer a simple interface on top of llama.cpp. And then for years it tried not to remind people what it actually worked on, misled users, and finally turned towards the cloud – all on venture money raised around someone else's engine. Here is the full story – and why alternatives look better today. Ollama is the most popular way to run large language models locally. And perhaps it shouldn't be. Its position is primarily due to the fact that it was first: the first tool that made llama.cpp accessible to people who didn't want to compile C++ or write server configurations themselves. At the time, this was indeed a useful contribution. But then the project systematically obscured the origin of the technology it worked on for years, misled users about what exactly they were running, and moved further and further away from the \"local first\" principle that initially earned it trust. And all this – in parallel with attracting venture capital investments. This is not an attempt to find \"truth somewhere in the middle.\" I used Ollama. Then I stopped. Below is why, in my opinion, you should do the same. Read about Ollama and its history",
+    "title": "[Translation] Friends Don’t Let Friends Use Ollama"
+  },
+  "https://habr.com/ru/articles/1085044/?utm_campaign=1085044&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Tue, 22 Sep 2026 09:05:13 GMT",
+    "slug": "1085044",
+    "source_url": "https://habr.com/ru/articles/1085044/?utm_campaign=1085044&utm_source=habrahabr&utm_medium=rss",
+    "summary": "A method for visualizing n-dimensional embeddings in three-dimensional space. Typically, when discussing embedding visualization (or, as we now know, n-dimensional vectors), it refers to mapping a set of these vectors into a two- or three-dimensional space with dimensionality reduction. However, for human analysis of vectors, it can also be useful to visualize an individual vector. In this case, it's possible to compare the 'shape' of objects representing vectors and infer the proximity of compared vectors based on the similarity of these shapes. It would also be interesting to visualize a vector during neural network training iterations and observe changes in the vector's 'shape' as the model trains. This approach avoids the data loss drawback of commonly used dimensionality reduction methods for vector mapping. Read more",
+    "title": "A Method for Visualizing N-Dimensional Embeddings in Three-Dimensional Space"
+  },
+  "https://habr.com/ru/articles/1085128/?utm_campaign=1085128&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Tue, 22 Sep 2026 11:09:44 GMT",
+    "slug": "1085128",
+    "source_url": "https://habr.com/ru/articles/1085128/?utm_campaign=1085128&utm_source=habrahabr&utm_medium=rss",
+    "summary": "Everyone is discussing whether AI will take IT jobs. I have no doubt we are only at the beginning of this difficult path. And finding a new job was already a quest with a star. Seeing how \"automation\" decimates entire departments, I created an app that acts as a navigator to a safety net and goals. It provides peace of mind through a money management system and autopilot, rather than another calculator and analytics of where money went. Read more",
+    "title": "AI isn't cutting routine, but costs. That's why a safety net is now the baseline minimum"
+  },
+  "https://habr.com/ru/articles/1085146/?utm_campaign=1085146&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Tue, 22 Sep 2026 11:20:47 GMT",
+    "slug": "1085146",
+    "source_url": "https://habr.com/ru/articles/1085146/?utm_campaign=1085146&utm_source=habrahabr&utm_medium=rss",
+    "summary": "45 runs across ChatGPT, Perplexity, and Alice AI showed that the same final question, asked after different conversation histories, can lead to different sets of brands. I'm investigating what this means for measuring AI Visibility with independent prompts. Read more",
+    "title": "How AI Visibility Changes in a New Chat vs. Within a Dialogue for the Same Final Prompt"
+  },
+  "https://habr.com/ru/articles/1085166/?utm_campaign=1085166&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Tue, 22 Sep 2026 11:59:37 GMT",
+    "slug": "1085166",
+    "source_url": "https://habr.com/ru/articles/1085166/?utm_campaign=1085166&utm_source=habrahabr&utm_medium=rss",
+    "summary": "We explore why AGIMA needs an AI Gateway – a unified, manageable access point to language models. We'll cover how to control the transmission of personal and corporate data, manage permissions and costs, switch between providers, and maintain compatibility with familiar tools. Read more",
+    "title": "AI Gateway as a Unified Entry Point to LLMs: How to Give Employees AI and Maintain Control"
+  },
   "https://habr.com/ru/companies/1c/articles/1071340/?utm_campaign=1071340&utm_source=habrahabr&utm_medium=rss": {
     "model": "gemini-2.5-flash-lite",
     "published": "Thu, 03 Sep 2026 07:18:11 GMT",
@@ -1439,6 +1495,14 @@
     "summary": "Two millennials who sold the world $850 billion worth of neural networks disguised as \"AI\" are looking at you from the cover of Time magazine. They try to look friendly, but honestly, it's the uncanny valley effect. The caption \"TRUST US\" in huge letters looks like a mockery, but no, they are serious. In the article under the cover, Altman and Brockman AGAIN promise to create \"real AI\" (what was there before?) - this time by the end of 2026. Do we believe them? In this article, I will explain why the loud news that \"AI agents\" \"hacked\" someone on their own initiative is simply the biggest PR campaign in history - and how it is supposed to cover up the biggest financial pyramid in history, based on a deliberately false interpretation of the concept of \"artificial intelligence.\" And also under the cut - why Richard Dawkins, who recognized the presence of consciousness in \"AI,\" did not go mad in his old age, but fell into the trap of his own scientism (and the influence of Daniel Dennett). Make yourselves comfortable. Read more",
     "title": "Skynet or Scamnet? How Corporations Sold Us a Fantasy of \"Artificial Intelligence\" for Billions"
   },
+  "https://habr.com/ru/companies/first/articles/1084590/?utm_campaign=1084590&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Tue, 22 Sep 2026 09:28:20 GMT",
+    "slug": "1084590",
+    "source_url": "https://habr.com/ru/companies/first/articles/1084590/?utm_campaign=1084590&utm_source=habrahabr&utm_medium=rss",
+    "summary": "Imagine a typical online store. A user opens the catalog, types 'headphones' into search, applies the 'in stock' filter, sets a price up to 10,000 rubles, opens the product card, and adds the item to the cart. Six perfectly understandable actions. If a human performs them, everything is fine. If an AI agent takes over, a small quest begins: read the page, find the field, guess the purpose of the toggle, click the button, check the result, and don't accidentally buy a coffee maker instead of headphones. What if the site itself told the agent: 'I can search for products, show product cards, and add items to the cart. Here are the function names, here are the parameters, here are the limitations'? This is the task solved by WebMCP — an experimental browser API that allows a page to declare tools for AI agents directly from JavaScript or an HTML form. The draft and discussion of the standard are open in the Web Machine Learning Community Group repository. My name is Denis Smirnov, I am a lead .NET developer with over five years of experience. This is not a news retelling. I will build a small electronics store using React, add three tools, run checks, and show four pitfalls I encountered. The pitfalls turned out to be more interesting than the working example. Read on",
+    "title": "Publish tools, not pixels: building a WebMCP store with React and counting the pitfalls"
+  },
   "https://habr.com/ru/companies/globalsign/articles/1079126/?utm_campaign=1079126&utm_source=habrahabr&utm_medium=rss": {
     "model": "gemini-2.5-flash-lite",
     "published": "Sun, 06 Sep 2026 17:58:29 GMT",
@@ -1527,6 +1591,14 @@
     "summary": "Christopher Duff, 40, Sydney, is accused of hacking the NSW court system. Prosecutors allege he used ChatGPT to write a program for downloading sensitive documents. The case involves nearly 9,000 court documents Duff accessed in 2025. He denies the charges, and the court seeks to use his chat logs as evidence, marking a first in Australian justice. Details and arguments from both sides follow.",
     "title": "Australian Man on Trial for Leaking Court Documents Using AI"
   },
+  "https://habr.com/ru/companies/just_ai/articles/1084804/?utm_campaign=1084804&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Tue, 22 Sep 2026 10:01:01 GMT",
+    "slug": "1084804",
+    "source_url": "https://habr.com/ru/companies/just_ai/articles/1084804/?utm_campaign=1084804&utm_source=habrahabr&utm_medium=rss",
+    "summary": "Hello Habr! The R&D team at Just AI is here. We research NLP and GenAI to ensure the company's products maintain SOTA status in the market. Specifically, we are responsible for guard models and benchmarks for the Jay Guard product, which this article will discuss. Over the past two years, researchers and hackers have discovered numerous ways to steal data through AI assistants. In one case, data from Microsoft 365 tenants was accessed; in another, the contents of private Slack channels. This didn't require an exploit in the traditional sense. Techniques used by social engineers for half a century were employed: gain trust, impersonate authority, ask for a small favor. Only now, instead of a human, the model became the victim. At Just AI, we build guardrails for LLM applications and agents. Our main product in this area is Jay Guard. It's an AI-Security layer between the application and the model, performing checks for attacks, content, and personal data. This article will examine Jay Guard's text detectors and the data they are trained on. We'll discuss why off-the-shelf models produced too many false positives on Russian-language traffic, what changed after data refinement, and what limitations remain. Training the model turned out to be just the beginning; the main work involves continuously maintaining quality against evolving attacks and real user traffic. Read more",
+    "title": "How we trained a jailbreak detector for Russian-speaking AI agents"
+  },
   "https://habr.com/ru/companies/koda/articles/1081524/?utm_campaign=1081524&utm_source=habrahabr&utm_medium=rss": {
     "model": "gemini-2.5-flash-lite",
     "published": "Sat, 12 Sep 2026 09:23:44 GMT",
@@ -1542,6 +1614,14 @@
     "source_url": "https://habr.com/ru/companies/koda/articles/1083546/?utm_campaign=1083546&utm_source=habrahabr&utm_medium=rss",
     "summary": "We launched DeepSeek V4 Flash in four popular harnesses. In our measurements, Koda scored 52.2% and outperformed Kilocode, Claude Code, and OpenCode. In the article, we explain how we set up the experiment, why the same model shows different results, and what exactly helps the agent solve more real-world tasks. Read more",
     "title": "Kodacode: The Best Harness for DeepSeek v4 Flash!? We Measured Various Harnesses and Models"
+  },
+  "https://habr.com/ru/companies/koda/articles/1084448/?utm_campaign=1084448&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Tue, 22 Sep 2026 12:00:40 GMT",
+    "slug": "1084448",
+    "source_url": "https://habr.com/ru/companies/koda/articles/1084448/?utm_campaign=1084448&utm_source=habrahabr&utm_medium=rss",
+    "summary": "Researchers from UC Berkeley and Arena compared seven models within Claude Code, Codex CLI, and the minimalist Pi. On two benchmarks, the choice of harness barely changed the average success rate but increased the cost of the same model by up to five times. The result explains why comparing coding agents by model name alone is already meaningless. Read more",
+    "title": "Why the Same Model Can Cost Five Times More"
   },
   "https://habr.com/ru/companies/kodik/articles/1081264/?utm_campaign=1081264&utm_source=habrahabr&utm_medium=rss": {
     "model": "gemini-2.5-flash-lite",
@@ -1639,6 +1719,14 @@
     "summary": "LLM large context doesn't guarantee quality answers: when working with voluminous documents, the model can lose important details and find facts within the text less effectively. In this article, we'll explore why Full-Context and basic RAG face limitations, and how the Semantic Gatekeeper approach improves answer accuracy by preparing relevant context before passing it to the main model. Let's break down the approach.",
     "title": "Why Your LLM Gets Dumber on Large Documents and How to Fix It"
   },
+  "https://habr.com/ru/companies/psm_unlim/articles/1083150/?utm_campaign=1083150&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Tue, 22 Sep 2026 09:00:09 GMT",
+    "slug": "1083150",
+    "source_url": "https://habr.com/ru/companies/psm_unlim/articles/1083150/?utm_campaign=1083150&utm_source=habrahabr&utm_medium=rss",
+    "summary": "I saw figures from an AIANA study – new analytics on the Russian AI market. The volume is estimated at 316.1 billion rubles (as of the end of 2025). The main customer, logically, is business: 71.9% of revenue comes from B2B. 98.4 billion rubles are for AI hardware and physical infrastructure. This is 31.1% of the market – the largest segment by revenue. For me, this is the main point: digital confirmation that the AI market is supported not only by models, applications, and prompts, but by \"hardware.\" But then things get interesting. The largest segment of hardware is computing \"hardware.\" The first question that arose for me as someone from the energy sector was: was electricity forgotten in this segment? As it turned out a couple of scrolls down, it wasn't forgotten. It's just that in business logic, energy is currently consciously left outside the AI market. Let's figure out why and what the risks are. How accurately does the picture without energy convey the real possibilities of launching new AI projects? Read more",
+    "title": "AI Forgot About Energy? The Paradox of AI Market Research in Russia"
+  },
   "https://habr.com/ru/companies/raiffeisenbank/articles/1075704/?utm_campaign=1075704&utm_source=habrahabr&utm_medium=rss": {
     "model": "gemini-2.5-flash-lite",
     "published": "Thu, 03 Sep 2026 08:59:50 GMT",
@@ -1719,6 +1807,14 @@
     "summary": "In 1959, entomologist Pierre-Paul Grassé studied how termites build their nests, which can reach several meters in height. Each insect carried clay and placed it in a specific location chosen by the swarm leader. Thanks to their collective effort, the termite mounds were intricately designed with ventilation shafts and basements. This phenomenon was termed 'stigmergy'—the coordination of beings through environmental modification. Decades later, researchers at MIT recreated this mechanism in a digital world. Instead of termites, they used AI agents, and instead of termite mounds, they built a technological civilization. This article discusses the results of this 'mini-terminator' experiment and what we humans can learn from LLMs.",
     "title": "The Empire of Terminators: How Two Hundred Agents Built a Civilization"
   },
+  "https://habr.com/ru/companies/ru_mts/articles/1085048/?utm_campaign=1085048&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Tue, 22 Sep 2026 09:18:40 GMT",
+    "slug": "1085048",
+    "source_url": "https://habr.com/ru/companies/ru_mts/articles/1085048/?utm_campaign=1085048&utm_source=habrahabr&utm_medium=rss",
+    "summary": "Researchers tested whether large language models could accurately analyze real-world fitness tracker data. Surprisingly, models performed worse at simple calculations on the numbers themselves than at clinical interpretations of the same data. GPT-4o, for instance, correctly identified trends and anomalies only a quarter of the time but was twice as confident in its health risk assessments based on the same data. This suggests a systemic issue where LLMs struggle with direct data analysis compared to applying general knowledge, a problem highlighted by the WearableQA benchmark across 14 models. This article explores the implications for trusting AI with personal health data.",
+    "title": "Why You Can't Just Upload Fitness Tracker History to an LLM and Ask It to Assess Your Health"
+  },
   "https://habr.com/ru/companies/ruvds/articles/1078196/?utm_campaign=1078196&utm_source=habrahabr&utm_medium=rss": {
     "model": "gemini-2.5-flash-lite",
     "published": "Thu, 03 Sep 2026 13:00:18 GMT",
@@ -1790,6 +1886,14 @@
     "source_url": "https://habr.com/ru/companies/selectel/articles/1082648/?utm_campaign=1082648&utm_source=habrahabr&utm_medium=rss",
     "summary": "\"I'll just throw a prompt into AI, and in a second I'll get a ready-made interface, my own website, or a dashboard\" — this idea has surely crossed the mind of anyone not involved in design or development. AI tools for these fields are actively spreading and promise such fantastic results that the thought arises: what if designers will soon be unnecessary? After all, there is a big gap between a picture and a working prototype. Hierarchy of elements on the screen, adaptability, accessibility, scenario logic, and product metrics are just a limited list of points that are very difficult to fit into a single prompt. I forgot to introduce myself: my name is Kamila, I am an interface designer at Selectel. Along with the AI boom, colleagues have started coming to me more often with questions like: \"The AI made me a mockup, please review it.\" So I decided to figure it out from my design perspective — where AI can help, and where it creates an attractive, but not very functional concept. Read more",
     "title": "Can a Working Interface Be Built with AI in an Hour?"
+  },
+  "https://habr.com/ru/companies/simpleone/articles/1085172/?utm_campaign=1085172&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Tue, 22 Sep 2026 12:09:40 GMT",
+    "slug": "1085172",
+    "source_url": "https://habr.com/ru/companies/simpleone/articles/1085172/?utm_campaign=1085172&utm_source=habrahabr&utm_medium=rss",
+    "summary": "AI has already taken over ticket routing, standard responses, and half of the first-line work. Where a person used to manually sort out who to send a request about a broken printer to and who to send a request about CRM access to, an algorithm now handles it, one that doesn't get tired by Friday evening and doesn't confuse priorities. A logical question arises: if AI has taken over routine tasks, why is ITSM still needed? The Service Desk's area of responsibility is being redistributed. Let's discuss who is responsible for AI services and what happens if they are left to run on their own. Read more",
+    "title": "Artificial intelligence should be owned by natural intelligence: who is responsible for AI errors"
   },
   "https://habr.com/ru/companies/smartengines/articles/1079702/?utm_campaign=1079702&utm_source=habrahabr&utm_medium=rss": {
     "model": "gemini-2.5-flash-lite",

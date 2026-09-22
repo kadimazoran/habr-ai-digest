@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>[Translation] Friends Don’t Let Friends Use Ollama</title>
+  <meta name="description" content="Below is a translation of the article &quot;Friends Don’t Let Friends Use Ollama&quot;, published on Sleeping Robots in April 2026. Since Ollama has changed significantly in the intervening months, I have added several comments to the translation and a note at the end of the article, where I have up">
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.65;
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 32px 20px 64px;
+      color: #1f2328;
+    }
+    header {
+      border-bottom: 1px solid #d8dee4;
+      margin-bottom: 28px;
+      padding-bottom: 20px;
+    }
+    .source {
+      color: #57606a;
+      font-size: 0.95rem;
+    }
+    img, video, iframe {
+      max-width: 100%;
+      height: auto;
+    }
+    pre {
+      overflow-x: auto;
+      padding: 16px;
+      background: #f6f8fa;
+      border-radius: 6px;
+    }
+    code {
+      font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+    }
+    blockquote {
+      border-left: 4px solid #d0d7de;
+      margin-left: 0;
+      padding-left: 16px;
+      color: #57606a;
+    }
+    footer {
+      border-top: 1px solid #d8dee4;
+      margin-top: 40px;
+      padding-top: 20px;
+      color: #57606a;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>[Translation] Friends Don’t Let Friends Use Ollama</h1>
+    <p>Below is a translation of the article &quot;Friends Don’t Let Friends Use Ollama&quot;, published on Sleeping Robots in April 2026. Since Ollama has changed significantly in the intervening months, I have added several comments to the translation and a note at the end of the article, where I have updated key technical details as of September 2026. Ollama became popular because it was the first to offer a simple interface on top of llama.cpp. And then for years it tried not to remind people what it actually worked on, misled users, and finally turned towards the cloud – all on venture money raised around someone else&#x27;s engine. Here is the full story – and why alternatives look better today. Ollama is the most popular way to run large language models locally. And perhaps it shouldn&#x27;t be. Its position is primarily due to the fact that it was first: the first tool that made llama.cpp accessible to people who didn&#x27;t want to compile C++ or write server configurations themselves. At the time, this was indeed a useful contribution. But then the project systematically obscured the origin of the technology it worked on for years, misled users about what exactly they were running, and moved further and further away from the &quot;local first&quot; principle that initially earned it trust. And all this – in parallel with attracting venture capital investments. This is not an attempt to find &quot;truth somewhere in the middle.&quot; I used Ollama. Then I stopped. Below is why, in my opinion, you should do the same. Read about Ollama and its history</p>
+    <p class="source">
+      Machine-translated from Habr.
+      <a href="https://habr.com/ru/articles/1085032/?utm_campaign=1085032&amp;utm_source=habrahabr&amp;utm_medium=rss">Read the original Russian article</a>.
+      Tue, 22 Sep 2026 08:44:59 GMT
+    </p>
+  </header>
+  <main>
+<div><figure><img loading="lazy" src="https://habrastorage.org/r/w1560/getpro/habr/upload_files/625/cb1/b4a/625cb1b4a997051c0ca7ca27ca706f65.png"/></figure><p><em>Below is a translation of the article "Friends Don’t Let Friends Use Ollama", published on Sleeping Robots in April 2026. Since Ollama has changed significantly in the intervening months, I have added several comments to the translation and a note at the end of the article, where I have updated key technical details as of September 2026.</em></p><p>Ollama became popular because it was the first to offer a simple interface on top of llama.cpp. And then for years it tried not to remind people what it actually worked on, misled users, and finally turned towards the cloud – all on venture money raised around someone else's engine.</p><p>Here is the full story – and why alternatives look better today.</p><p>Ollama is the most popular way to run large language models locally. And perhaps it shouldn't be.</p><p>Its position is primarily due to the fact that it was first: the first tool that made <code>llama.cpp</code> accessible to people who didn't want to compile C++ or write server configurations themselves. At the time, this was indeed a useful contribution.</p><p>But then the project systematically obscured the origin of the technology it worked on for years, misled users about what exactly they were running, and moved further and further away from the "local first" principle that initially earned it trust. And all this – in parallel with attracting venture capital investments.</p><p>This is not an attempt to find "truth somewhere in the middle." I used Ollama. Then I stopped. Below is why, in my opinion, you should do the same.</p><h3>A llama.cpp Wrapper Suffering from Amnesia</h3><p>All of Ollama's inference capabilities were originally provided by <a href="https://github.com/ggml-org/llama.cpp">llama.cpp</a> – a C++ engine created by Georgi Gerganov in March 2023. It was Gerganov's project that made it possible to run LLaMA models on ordinary user laptops. He assembled the first version <a href="https://github.com/ggml-org/llama.cpp/blob/775328064e69db1eb/README.md">in one evening</a>, kickstarting the entire local large language model movement.</p><p>Today, llama.cpp has over 100,000 stars on GitHub, over 450 contributors, and it forms the basis of almost the entire ecosystem of tools working with GGUF.</p><p>Ollama was founded in 2021 by Jeffrey Morgan and Michael Chiang, who previously worked on <a href="https://github.com/docker/kitematic">Kitematic</a> – a graphical interface for Docker, which was later acquired by Docker Inc. They went through the Y Combinator Winter 2021 batch, raised pre-seed funding, and publicly launched the product in 2023.</p><p>From the very beginning, the idea was presented as "Docker for large language models": a convenient wrapper that allows downloading and running a model with a single command. Under the hood, llama.cpp did all the main work.</p><p>For over a year, Ollama's README <a href="https://github.com/ollama/ollama/issues/3697">did not mention llama.cpp at all</a>. Neither the README, nor the website, nor marketing materials. The project's binary builds <a href="https://github.com/ollama/ollama/issues/3185">also lacked the mandatory MIT license notice</a> for the llama.cpp code distributed with them.</p><p>And this is not just a matter of good manners in the open-source world. The MIT license has, essentially, one main condition: to retain the copyright notice. Ollama did not comply.</p><p>The community noticed. In early 2024, <a href="https://github.com/ollama/ollama/issues/3185">issue #3185</a> appeared, demanding that the distribution comply with the license terms. It <strong>remained unanswered by the project maintainers for over 400 days</strong>.</p><p>When <a href="https://github.com/ollama/ollama/issues/3697">issue #3697</a> was opened in April 2024 with a direct request to acknowledge the use of llama.cpp, a community-prepared <a href="https://github.com/ollama/ollama/pull/3700">pull request #3700</a> appeared just a few hours later. Eventually, Ollama co-founder Michael Chiang <a href="https://github.com/ollama/ollama/commit/9755cf9173152047030b6d080c29c829bb050a15">added a single line</a> at the very bottom of the README:</p><p>"The llama.cpp project was founded by Georgi Gerganov."</p><p>The Ollama team's response to the request was even more telling. The developers wrote: "We spend a significant amount of time on fixes and improvements to ensure a seamless experience for Ollama users… Over time, we will transition to more systemically designed engines."
+  </main>
+  <footer>
+    Translation generated with Gemini 2.5 Flash-Lite.
+    The original article remains the source of record.
+  </footer>
+</body>
+</html>

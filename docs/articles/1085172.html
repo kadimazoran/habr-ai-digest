@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Artificial intelligence should be owned by natural intelligence: who is responsible for AI errors</title>
+  <meta name="description" content="AI has already taken over ticket routing, standard responses, and half of the first-line work. Where a person used to manually sort out who to send a request about a broken printer to and who to send a request about CRM access to, an algorithm now handles it, one that doesn&#x27;t get tired by Frida">
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.65;
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 32px 20px 64px;
+      color: #1f2328;
+    }
+    header {
+      border-bottom: 1px solid #d8dee4;
+      margin-bottom: 28px;
+      padding-bottom: 20px;
+    }
+    .source {
+      color: #57606a;
+      font-size: 0.95rem;
+    }
+    img, video, iframe {
+      max-width: 100%;
+      height: auto;
+    }
+    pre {
+      overflow-x: auto;
+      padding: 16px;
+      background: #f6f8fa;
+      border-radius: 6px;
+    }
+    code {
+      font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+    }
+    blockquote {
+      border-left: 4px solid #d0d7de;
+      margin-left: 0;
+      padding-left: 16px;
+      color: #57606a;
+    }
+    footer {
+      border-top: 1px solid #d8dee4;
+      margin-top: 40px;
+      padding-top: 20px;
+      color: #57606a;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Artificial intelligence should be owned by natural intelligence: who is responsible for AI errors</h1>
+    <p>AI has already taken over ticket routing, standard responses, and half of the first-line work. Where a person used to manually sort out who to send a request about a broken printer to and who to send a request about CRM access to, an algorithm now handles it, one that doesn&#x27;t get tired by Friday evening and doesn&#x27;t confuse priorities. A logical question arises: if AI has taken over routine tasks, why is ITSM still needed? The Service Desk&#x27;s area of responsibility is being redistributed. Let&#x27;s discuss who is responsible for AI services and what happens if they are left to run on their own. Read more</p>
+    <p class="source">
+      Machine-translated from Habr.
+      <a href="https://habr.com/ru/companies/simpleone/articles/1085172/?utm_campaign=1085172&amp;utm_source=habrahabr&amp;utm_medium=rss">Read the original Russian article</a>.
+      Tue, 22 Sep 2026 12:09:40 GMT
+    </p>
+  </header>
+  <main>
+<div><p>AI has already taken over ticket routing, standard responses, and half of the first-line work. Where a person used to manually sort out who to send a request about a broken printer to and who to send a request about CRM access to, an algorithm now handles it, one that doesn't get tired by Friday evening and doesn't confuse priorities. A logical question arises: if AI has taken over routine tasks, why is ITSM still needed?</p><p>The Service Desk's area of responsibility is being redistributed. Let's discuss who is responsible for AI services and what happens if they are left to run on their own.</p><figure><img alt="The owner of the AI service presents it to the world" loading="lazy" src="https://habrastorage.org/r/w1560/getpro/habr/upload_files/a84/7a2/ef6/a847a2ef6a797c86ddd26f9b1c3617eb.png" title="The owner of the AI service presents it to the world"/><div><figcaption>The owner of the AI service presents it to the world</figcaption></div></figure><h3>An AI service must have an owner</h3><p>If previously the service owner was responsible for portal availability, agent response speed, and the completeness of the knowledge base, now the AI assistant is added to this list – and with it, issues that previously didn't even need to be addressed. Who ensures that the knowledge base on which the assistant is trained is up-to-date? Who decides what data the AI has access to and what it doesn't? Who defines the scenarios in which a request should be escalated to a human specialist, rather than getting stuck in a dialogue with a bot that politely asks "Could you please clarify your question?" for the third time?</p><p>In an ideal scenario, the AI service already <a href="https://habr.com/ru/companies/simpleone/articles/1054790/">has everything it needs to provide accurate answers</a> – data, interaction history, ready-made scenarios. What's missing is someone to ensure this data doesn't become outdated. Without a responsible person, decisions are made haphazardly: today one team adjusts the prompt, tomorrow another updates the knowledge base, and a month later, no one can explain why the assistant suddenly started advising users to disable their firewall "for diagnostics." An owner, however, could prevent these problems by, for example, checking the escalation rate weekly and identifying which questions the bot is suddenly handling worse than a month ago.</p><p>Moreover, AI is no longer just chatting; AI agents interact with other systems, close tickets, modify CMDB records, and initiate changes without human intervention. The owner is the one who authorized the assistant to access the production system and under what conditions.</p><p>Another point that is easily overlooked is feedback. Can a user dispute a bot's answer, or does the complaint get lost somewhere in the logs without reaching the owner? System errors are often discovered post-factum, just like a support agent would discover them, from an angry user.</p><h3>Why an owner is needed, not just uptime monitoring</h3><p>The technical correctness of AI and the quality of its responses are, of course, different things, but it's too easy to confuse them: an assistant can respond in 200 milliseconds, be available 24/7, meet all response time SLAs, and yet confidently, calmly, and without a single hitch, provide the user with incorrect information.</p><p>Uptime monitoring will never catch such an error because, from an infrastructure perspective, everything is working as expected: the server is responding, the database is up, the latency is normal – the response is simply incorrect, and it's not the on-call engineer who should be dealing with this, but someone who understands the context of the request and can evaluate the content, not just its availability. Technically correct AI that confidently makes mistakes is scarier than broken AI – at least people don't trust broken AI. Therefore, we should look not at response time SLAs, but at the percentage of correctly resolved requests and the percentage of dialogues that are escalated.</p><p>And the scale here is different. An agent who gives incorrect advice spoils one person's day. An assistant with an outdated knowledge base replicates the same error across thousands of dialogues simultaneously, and it will only be discovered when someone finally notices a pattern, not an isolated case.</p><p>But what will be the level of service satisfaction if, formally, everything works, but in reality, users receive confidently delivered misinformation? You can't build a quality service on this.</p><h3>What happens if no owner is appointed</h3><p>If an <a href="https://habr.com/ru/companies/simpleone/articles/1082602/">AI assistant</a> operates on its own, without a designated owner, users will still call support – they will simply start calling to double-check what the bot has already told them. "Can I really trust this chat?" they ask a human agent, holding a phone with an open dialogue with the assistant in the other hand. No self-service will be achieved in this scenario.</p><p>However, if the AI service has an owner who regularly checks the quality of responses, updates the knowledge base, and configures escalation scenarios as carefully as ticket routing between agents was previously configured, then trust in the assistant will grow or at least remain at a normal level.</p><p>At SimpleOne, we use an AI assistant in <a href="https://simpleone.ru/itsm">ITSM</a>; it can find the necessary service for the user, help fill out request or incident forms, show workarounds, warn about planned maintenance, and answer questions from the knowledge base. It works with RAG and considers the corporate context.</p><figure><img alt="AI guide-assistant warns about service unavailability" loading="lazy" src="https://habrastorage.org/r/w1560/getpro/habr/upload_files/8bb/ecf/851/8bbecf85137d30f3b299bf292430a080.png" title="AI guide-assistant warns about service unavailability"/><div><figcaption>AI guide-assistant warns about service unavailability</figcaption></div></figure><p>The service team owns and is responsible for the accuracy of the responses. In the future, such an assistant will be able to answer not only IT-related questions but also topics from HR, administrative services, accounting, and other service departments.</p><hr/><p>The profession of an agent, like many other positions in the era of AI, is changing. Now you can become an AI service owner and be responsible not for the speed of ticket closure, but for whether the machine that closes these tickets can be trusted at all. Would you?</p></div>
+  </main>
+  <footer>
+    Translation generated with Gemini 2.5 Flash-Lite.
+    The original article remains the source of record.
+  </footer>
+</body>
+</html>

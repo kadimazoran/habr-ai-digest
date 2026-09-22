@@ -1,0 +1,234 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Let&#x27;s try again, Misha: speculative decoding from draft to verification</title>
+  <meta name="description" content="A small model quickly drafts a few next tokens, and a large one verifies the whole batch in one pass. Matching tokens are kept, and at the first divergence, the large model rewrites the continuation itself, so the acceleration doesn&#x27;t change the response distribution. In speculative decoding, t">
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.65;
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 32px 20px 64px;
+      color: #1f2328;
+    }
+    header {
+      border-bottom: 1px solid #d8dee4;
+      margin-bottom: 28px;
+      padding-bottom: 20px;
+    }
+    .source {
+      color: #57606a;
+      font-size: 0.95rem;
+    }
+    img, video, iframe {
+      max-width: 100%;
+      height: auto;
+    }
+    pre {
+      overflow-x: auto;
+      padding: 16px;
+      background: #f6f8fa;
+      border-radius: 6px;
+    }
+    code {
+      font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+    }
+    blockquote {
+      border-left: 4px solid #d0d7de;
+      margin-left: 0;
+      padding-left: 16px;
+      color: #57606a;
+    }
+    footer {
+      border-top: 1px solid #d8dee4;
+      margin-top: 40px;
+      padding-top: 20px;
+      color: #57606a;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Let&#x27;s try again, Misha: speculative decoding from draft to verification</h1>
+    <p>A small model quickly drafts a few next tokens, and a large one verifies the whole batch in one pass. Matching tokens are kept, and at the first divergence, the large model rewrites the continuation itself, so the acceleration doesn&#x27;t change the response distribution. In speculative decoding, the large model literally tells the draft model: &quot;Let&#x27;s try again, Misha.&quot; At first glance, it seems that acceleration here is necessarily bought at the cost of quality. But no: this is precisely the case where generation can be accelerated without such a compromise. Next, we will analyze the entire cycle: how the draft model works, by what rule tokens are accepted, what the size of the draft should be, why the same tokenizer is important, and how to integrate it all into Transformers and vLLM. We will also look at approaches where the second model is not needed at all: EAGLE, Medusa, LayerSkip, and DFlash. Read more</p>
+    <p class="source">
+      Machine-translated from Habr.
+      <a href="https://habr.com/ru/articles/1081826/?utm_campaign=1081826&amp;utm_source=habrahabr&amp;utm_medium=rss">Read the original Russian article</a>.
+      Tue, 22 Sep 2026 09:09:00 GMT
+    </p>
+  </header>
+  <main>
+<div><p>A small model quickly generates a few next tokens, and a large one verifies them all at once in a batch. Matching tokens are accepted, and at the first divergence, the large model continues generation itself. With correct implementation, the final distribution remains the same as with regular decoding. In speculative decoding, the large model literally tells the draft model: "Let's try again, Misha."</p><p>At first glance, it seems that acceleration here is necessarily bought at the cost of quality. But no: this is precisely the case where generation can be accelerated without such a compromise.</p><p>The reason lies in how the inference of a large model works. When generating each next token, it has to access a huge amount of weights in memory. For modern LLMs, this is tens, and sometimes hundreds of gigabytes of data. Therefore, generation often bottlenecks not so much on GPU computational power as on memory bandwidth.</p><p>Speculative decoding allows some of this sequential work to be combined. Instead of verifying one token per pass, the large model verifies several proposed tokens at once, better utilizing the GPU.</p><p>Next, we will try to understand the entire cycle: how the draft model works, by what rule tokens are accepted, what the size of the draft should be, why the same tokenizer is important, and how to integrate it all into Transformers and vLLM. We will also look at approaches where the second model is not needed at all: EAGLE, Medusa, LayerSkip, and DFlash.</p><p>Google <a href="https://research.google/blog/looking-back-at-speculative-decoding/">uses</a> speculative decoding in AI Overviews. Typical gains are 2–3×, but they strongly depend on the acceptance rate of tokens and the cost of the draft.</p><figure><img alt="Regular generation vs. speculative decoding" loading="lazy" src="https://habrastorage.org/getpro/habr/upload_files/2bd/e55/105/2bde551055ed3e0acf1d3004e12ed9ff.gif"/><div><figcaption>Regular generation vs. speculative decoding</figcaption></div></figure><h3>Why is generation so slow in general?</h3><p>A 70 billion parameter model in FP16 occupies about 140 GB. And each token requires a full pass through all these weights. Generation is autoregressive: the next token cannot be calculated without obtaining the previous one.</p><p>Let's estimate the order of magnitude. The memory bandwidth of an H100 is about 3.35 TB/s. This means that just moving 140 GB of weights takes about 42 ms per token. So, the upper bound is about 24 tokens per second, and we haven't even computed anything yet, just transferred the weights.</p><p>There is, of course, an important caveat: 140 GB of weights do not fit into a single H100 with 80 GB of memory. In practice, such a model is distributed across multiple GPUs, for example, using tensor parallelism. If two cards are used, each stores and reads approximately half of the weights, about 70 GB. The theoretical read time is reduced to about 21 ms, but now there is another cost: at each layer, the cards have to exchange data.</p><p>Specific numbers change depending on the hardware, batch size, quantization, and parallelism scheme, but the overall picture remains the same: with sequential generation, LLMs often bottleneck primarily on memory bandwidth.</p><p>Hence, many methods for accelerating inference. Quantization reduces the amount of weights that need to be read. Batching allows using a single pass through weights for multiple requests. MoE activates only part of the model's parameters. Speculative decoding approaches the same problem from a different angle: it tries to get more than one useful token in a single pass of the large model.</p><figure><img alt="Regular decoding: N tokens - N full passes through a 70B model" loading="lazy" src="https://habrastorage.org/r/w1560/getpro/habr/upload_files/952/985/2d9/9529852d9ae82c89392307502e401f62.png"/><div><figcaption>Regular decoding: N tokens - N full passes through a 70B model</figcaption></div></figure><p>And here's the observation on which the whole idea rests: a significant portion of tokens are predictable. In stable expressions, the continuation is often obvious. The same applies to auxiliary words, punctuation marks, and many code fragments. For such cases, a model that is tens of times smaller than the main one often suggests the same next token.</p><p>So why run the large model separately for each such token?</p><h3>How it works</h3><p>Let's take a simple scheme with two models: a small draft model and a target model.</p><ol><li><p>The draft model (e.g., Qwen2.5-0.5B) autoregressively generates <img alt="gamma" loading="lazy" src="https://habrastorage.org/getpro/habr/formulas/a/ae/ae5/ae539dfcc999c28e25a0f3ae65c1de79.svg"/> tokens, say 5. It is a hundred times smaller than the target model, so it costs about one to two percent of a single pass of the large model.</p></li><li><p>The target model (e.g., Qwen2.5-7B) processes all 5 draft tokens in one pass; structurally, it's the same as a prefix fill. At this point, the GPU is finally loaded with computations, not waiting for memory.</p></li><li><p>The draft tokens are verified from left to right. The first consecutive matching tokens are accepted, and at the first divergence, the target model substitutes its token (it's already calculated in the same pass), and everything to the right is discarded.</p></li></ol><figure><img alt="Draft from a small model, verification by a large one in one pass" loading="lazy" src="https://habrastorage.org/r/w1560/getpro/habr/upload_files/9fe/ba7/743/9feba77436c5efd0a67da9f3545650b0.png"/><div><figcaption>Draft from a small model, verification by a large one in one pass</figcaption></div></figure><p>In the best case, the main model accepts all five proposed tokens. In the classic scheme, from the same pass, one more next token can be obtained – a total of six tokens instead of six sequential runs of the large model.</p><p>In the worst case, the very first draft token fails verification. Then, per iteration, approximately the same one useful token will be obtained as with regular decoding, only the work of the draft model will be added to the cost of the main model.</p><p>This means speculative decoding does not guarantee acceleration at every step. Everything depends on how often the draft model guesses the continuation well enough.</p><p>For sampling, the verification scheme is slightly more complex: tokens are not simply compared for equality. A probabilistic acceptance rule is used, which allows preserving the original distribution of the target model. We will return to this below.</p><h3>Why doesn't the response get corrupted?</h3><p>It's often explained this way: a token is accepted only if the large model would have predicted the same one. For greedy decoding (temperature = 0), this is true, as verification boils down to comparing argmax. But with sampling, a different mechanism is at play, and it's this mechanism that provides the guarantee.</p><p>Let <img alt="q(x)" loading="lazy" src="https://habrastorage.org/getpro/habr/formulas/9/9d/9db/9dbcf8f4523b910764da7f544a192a69.svg"/> be the probability of a token by the draft model, and <img alt="p(x)" loading="lazy" src="https://habrastorage.org/getpro/habr/formulas/4/41/413/4130c89f2d12c3ac81aba3adbff28685.svg"/> be the probability by the target model. A draft token is accepted with probability</p><img alt="min(1, p(x)/q(x))." loading="lazy" src="https://habrastorage.org/getpro/habr/formulas/6/6f/6ff/6ff91bfc3647bb8de4f7e2cb96c7b5c7.svg"/><p>If the token is rejected, a new token is sampled from the residual distribution</p><img alt="p'(x) = (max(0, p(x) - q(x))) / sum(x') max(0, p(x') - q(x'))." loading="lazy" src="https://habrastorage.org/getpro/habr/formulas/2/21/21b/21bd113e79dfbb23fa59d0be67e6a2c3.svg"/><p>It is this correction that compensates for tokens that the draft model proposed too frequently. As a result, after the acceptance and rejection procedure, the final token has the same distribution <img alt="p" loading="lazy" src="https://habrastorage.org/getpro/habr/formulas/8/83/838/83878c91171338902e0fe0fb97a8c47a.svg"/> as with regular sampling directly from the target model.</p><p>The quality of the draft model does not affect this guarantee. If it poorly predicts the continuation, most tokens will be rejected, and the acceleration will disappear. But the distribution of the result itself will not change because of this.</p><figure><img alt="Comparison of distributions at each position" loading="lazy" src="https://habrastorage.org/r/w1560/getpro/habr/upload_files/db2/e8c/08e/db2e8c08e6f5349354def6f1c01687f0.png"/><div><figcaption>Comparison of distributions at each position</figcaption></div></figure><p>There is an important clarification here. "The same distribution" does not mean "the same sequence of tokens." With sampling, generation is initially random, so two runs can produce different answers even without speculative decoding.</p><p>And even with greedy decoding, absolute bitwise reproducibility across different inference modes is not always guaranteed. Regular decoding and checking multiple tokens at once can use different CUDA cores and a different order of floating-point operations. This usually doesn't affect anything, but with nearly equal logits, a small numerical shift can sometimes change the argmax.</p><p>If regression tests require exact string matches between different inference modes, this effect should be considered.</p><h3>How much does it give?</h3><p>Now we can estimate what kind of gain is possible.</p><p>Let <img alt="alpha" loading="lazy" src="https://habrastorage.org/getpro/habr/formulas/7/7b/7b7/7b7f9dbfea05c83784f8b85149852f08.svg"/> be the probability that a draft token will be accepted (acceptance rate), and for simplicity, let it be independent of position. Then the expected number of tokens per pass of the target model with a draft length of <img alt="gamma" loading="lazy" src="https://habrastorage.org/getpro/habr/formulas/a/ae/ae5/ae539dfcc999c28e25a0f3ae65c1de79.svg"/> is given by the formula from <a href="https://arxiv.org/abs/2211.17192">the original paper by Leviathan et al.</a>:</p><img alt="E[tokens] = (1 - alpha^(gamma+1)) / (1 - alpha)." loading="lazy" src="https://habrastorage.org/getpro/habr/formulas/a/a6/a61/a61b8ca3d08f6013dbf9a893b3e90b41.svg"/><p>If one pass of the draft model costs a fraction <img alt="c" loading="lazy" src="https://habrastorage.org/getpro/habr/formulas/4/4a/4a8/4a8a08f09d37b73795649038408b5f33.svg"/> of a pass of the target model, the expected speedup in time is:</p><img alt="S(alpha, gamma, c) = (1 - alpha^(gamma+1)) / ((1 - alpha)*(gamma*c + 1))." loading="lazy" src="https://habrastorage.org/getpro/habr/formulas/3/37/378/378192910532effcf88cfe6c00c23250.svg"/><p>It's more convenient to play with this in code:</p><pre><code>def expected_tokens(alpha: float, gamma: int) -&gt; float: 
+    return (1 - alpha ** (gamma + 1)) / (1 - alpha)
+
+def speedup(alpha: float, gamma: int, c: float) -&gt; float:
+    return expected_tokens(alpha, gamma) / (gamma * c + 1)
+
+
+def best_gamma(alpha: float, c: float, max_gamma: int = 15) -&gt; tuple[int, float]:
+    g = max(range(1, max_gamma + 1), key=lambda k: speedup(alpha, k, c))
+    return g, speedup(alpha, g, c)
+
+
+print(f"{expected_tokens(0.8, 5):.2f}")  # 3.69 tokens per pass
+print(f"{speedup(0.8, 5, 0.05):.2f}")    # 2.95x
+print(best_gamma(0.6, 0.2))              # (2, 1.40...)
+</code><div><a href="https://sourcecraft.dev/"><img loading="lazy"/></a></div></pre><p>Speedup with <img alt="gamma = 5" loading="lazy" src="https://habrastorage.org/getpro/habr/formulas/0/06/065/0653b7ef265e9427de703609d1aa4727.svg"/>:</p><div><div><table><tbody><tr><th><p>Draft cost <img alt="c" loading="lazy" src="https://habrastorage.org/getpro/habr/formulas/4/4a/4a8/4a8a08f09d37b73795649038408b5f33.svg"/></p></th><th><p><img alt="alpha=0.6" loading="lazy" src="https://habrastorage.org/getpro/habr/formulas/7/7a/7a6/7a61c25f5ce2f0c8d39ebb995096b09d.svg"/></p></th><th><p><img alt="alpha=0.7" loading="lazy" src="https://habrastorage.org/getpro/habr/formulas/3/33/331/33103117f56ae7f81dc0f98b37c7d6dd.svg"/></p></th><th><p><img alt="alpha=0.8" loading="lazy" src="https://habrastorage.org/getpro/habr/formulas/6/6d/6d2/6d26c2a300a2c0b6e4e1b3fcc9ff939b.svg"/></p></th><th><p><img alt="alpha=0.9" loading="lazy" src="https://habrastorage.org/getpro/habr/formulas/c/c8/c88/c884dd9db584e711db11d2cd0f7cb4e3.svg"/></p></th></tr><tr><td><p>0.01</p></td><td><p>2.27×</p></td><td><p>2.80×</p></td><td><p>3.51×</p></td><td><p>4.46×</p></td></tr><tr><td><p>0.05</p></td><td><p>1.91×</p></td><td><p>2.35×</p></td><td><p>2.95×</p></td><td><p>3.75×</p></td></tr><tr><td><p>0.10</p></td><td><p>1.59×</p></td><td><p>1.96×</p></td><td><p>2.46×</p></td><td><p>3.12×</p></td></tr><tr><td><p>0.20</p></td><td><p>1.19×</p></td><td><p>1.47×</p></td><td><p>1.84×</p></td><td><p>2.34×</p></td></tr></tbody></table></div></div><p>The table clearly shows several things.</p><p><strong>The acceptance rate of tokens is most important.</strong> At <img alt="c=0.05" loading="lazy" src="https://habrastorage.org/getpro/habr/formulas/8/86/860/86011d2e3680cf6dfd3b386fedd53090.svg"/>, an increase in <img alt="alpha" loading="lazy" src="https://habrastorage.org/getpro/habr/formulas/7/7b/7b7/7b7f9dbfea05c83784f8b85149852f08.svg"/> from 0.6 to 0.8 increases the speedup from 1.91× to 2.95×. For comparison: if <img alt="alpha=0.6" loading="lazy" src="https://habrastorage.org/getpro/habr/formulas/7/7a/7a6/7a61c25f5ce2f0c8d39ebb995096b09d.svg"/> is kept, but the draft is made five times cheaper, the speedup increases only from 1.91× to 2.27×.</p><p>Therefore, a good draft is not necessarily the smallest. It should be cheap enough, but at the same time, it should predict the target model well.</p><p><strong>The draft length needs to be chosen, not just set to "as large as possible."</strong> Each additional token increases the chance of moving forward, but it comes at the cost of another step by the draft model.</p><p>At <img alt="alpha=0.8" loading="lazy" src="https://habrastorage.org/getpro/habr/formulas/6/6d/6d2/6d26c2a300a2c0b6e4e1b3fcc9ff939b.svg"/> and <img alt="c=0.05" loading="lazy" src="https://habrastorage.org/getpro/habr/formulas/8/86/860/86011d2e3680cf6dfd3b386fedd53090.svg"/>, the maximum of this simple model is around <img alt="gamma=8" loading="lazy" src="https://habrastorage.org/getpro/habr/formulas/3/38/384/384176ab1206959beac2415471d7a0a3.svg"/>: about 3.09×. And at <img alt="alpha=0.6" loading="lazy" src="https://habrastorage.org/getpro/habr/formulas/7/7a/7a6/7a61c25f5ce2f0c8d39ebb995096b09d.svg"/> and <img alt="c=0.2" loading="lazy" src="https://habrastorage.org/getpro/habr/formulas/3/33/33b/33bd98f13dab1d7752906582e16eb336.svg"/>, only two tokens are optimal, giving about 1.40×. Further increasing the draft starts to eat into the gains.</p><p><strong>A larger draft model is not always better.</strong> A good example is in AMD's benchmark with Llama 3.1 70B. With Llama 3.2 1B as the draft, they achieved a speedup of 2.31×, with Llama 3.2 3B – 2.28×, and with Llama 3.1 8B – 2.04×.</p><figure><img alt="Draft model size: 1B is faster, 8B is more accurate" loading="lazy" src="https://habrastorage.org/r/w1560/getpro/habr/upload_files/2d3/4b4/259/2d34b4259997dc127429b52249106cde.png"/><div><figcaption>Draft model size: 1B is faster, 8B is more accurate</figcaption></div></figure><p>The reason is exactly what the formula shows: a stronger draft can more often match the target model's distribution, but if each of its steps becomes significantly more expensive, the additional acceptance rate is no longer justified.</p><p>The picture also changes with temperature. With greedy decoding, both models simply compare the most probable token, and similar models often match well. With sampling, it's more important not just the argmax match, but how similar the distributions <img alt="p" loading="lazy" src="https://habrastorage.org/getpro/habr/formulas/8/83/838/83878c91171338902e0fe0fb97a8c47a.svg"/> and <img alt="q" loading="lazy" src="https://habrastorage.org/getpro/habr/formulas/7/76/769/7694f4a66316e53c8cdd9d9954bd611d.svg"/> are. Therefore, changing the temperature can significantly alter the acceptance rate and the final speedup. How exactly depends on the specific pair of models and the task.</p><p>And here it's important not to treat the formula as a predictor of real speed to the second decimal place. It well illustrates the balance between draft length, its cost, and the acceptance rate, but the actual result additionally depends on the implementation of verification, batch size, KV cache, context length, parallelism, and specific hardware.</p><h3>Try it in five minutes: Hugging Face Transformers</h3><p>In Transformers, speculative decoding is enabled with almost one line: just pass the draft model via `assistant_model` in `generate()`.</p><p>For a simple example, let's use OPT-6.7B as the main model and OPT-125M as the draft. They use the same tokenizer, so no additional token alignment is required.</p><pre><code>import time
+
+import torch
+from transformers import AutoModelForCausalLM, AutoTokenizer
+
+
+TARGET = "facebook/opt-6.7b"
+DRAFT = "facebook/opt-125m"
+
+tokenizer = AutoTokenizer.from_pretrained(TARGET)
+
+target = AutoModelForCausalLM.from_pretrained(
+    TARGET,
+    torch_dtype=torch.float16,
+    device_map="auto",
+)
+
+draft = AutoModelForCausalLM.from_pretrained(
+    DRAFT,
+    torch_dtype=torch.float16,
+    device_map="auto",
+)
+
+inputs = tokenizer(
+    "Explain how transformers process input tokens.",
+    return_tensors="pt",
+).to(target.device)
+
+
+def timed(**kwargs):
+    torch.cuda.synchronize()
+    t0 = time.perf_counter()
+
+    out = target.generate(
+        **inputs,
+        max_new_tokens=200,
+        do_sample=False,
+        **kwargs,
+    )
+
+    torch.cuda.synchronize()
+    elapsed = time.perf_counter() - t0
+    n_tokens = out.shape[1] - inputs.input_ids.shape[1]
+
+    return elapsed, n_tokens / elapsed
+
+
+# Warm up CUDA and both generation schemes.
+target.generate(
+    **inputs,
+    max_new_tokens=10,
+    do_sample=False,
+)
+
+target.generate(
+    **inputs,
+    max_new_tokens=10,
+    do_sample=False,
+    assistant_model=draft,
+)
+
+# Compare regular generation with generation via draft model.
+baseline_time, baseline_tps = timed()
+spec_time, spec_tps = timed(assistant_model=draft)
+
+print(
+    f"Without speculative decoding: {baseline_time:.2f} s, "
+    f"{baseline_tps:.1f} tokens/s"
+)
+print(
+    f"With speculative decoding: {spec_time:.2f} s, "
+    f"{spec_tps:.1f} tokens/s"
+)
+print(f"Speedup: ×{spec_tps / baseline_tps:.2f}")
+</code><div><a href="https://sourcecraft.dev/"><img loading="lazy"/></a></div></pre><p>The numbers will be different on specific hardware, but the output might look something like this:</p><pre><code>Without speculative decoding:   2.63 s,   81.2 tokens/s
+With speculative decoding:    1.39 s,  154.0 tokens/s
+Speedup:                  ×1.90
+</code><div><a href="https://sourcecraft.dev/"><img loading="lazy"/></a></div></pre><p>Here, it's important to compare the two schemes on the same machine, with the same prompt and generation parameters. The absolute number of tokens per second strongly depends on the GPU, PyTorch and Transformers version, context length, and other implementation details.</p><p>If you add `TextStreamer`, the difference becomes noticeable even without a stopwatch. With regular decoding, text appears almost uniformly, token by token. With speculative decoding, output can come in small bursts: when several sentences from the draft model pass verification, the target model accepts several tokens at once.</p><figure><img alt="Left: regular decoding, Right: speculative with the same target model: 81.2 and 154.0 tokens/s" loading="lazy" src="https://habrastorage.org/getpro/habr/upload_files/fc9/491/1e0/fc94911e0047e608b70f3b85e00834a2.gif"/><div><figcaption>Left: regular decoding, Right: speculative with the same target model: 81.2 and 154.0 tokens/s</figcaption></div></figure><p>The `assistant_model` itself is just the simplest option. Transformers can dynamically change the draft length depending on how confidently the assistant model works, so the actual scheme no longer has to verify a fixed five tokens per iteration.</p><h3>Why can't I use any small model?</h3><p>In classic speculative decoding, the target and draft models must have the same tokenizer.</p><p>The reason is quite simple. Verification is done token by token: for each position, the draft model's proposal needs to be compared with the target model's distribution. If the vocabularies are different, such direct comparison is no longer possible.</p><p>The same text can be split into different tokens by two models. One might have a word as two tokens, another as three. After that, neither the positions nor the token IDs themselves match.</p><figure><img alt="One word, different tokenizers: distributions cannot be compared" loading="lazy" src="https://habrastorage.org/r/w1560/getpro/habr/upload_files/0d6/c35/f46/0d6c35f46350efd57b30b8fe6c305455.png"/><div><figcaption>One word, different tokenizers: distributions cannot be compared</figcaption></div></figure><p>Therefore, early implementations usually used models with a shared tokenizer: for example, a small and a large Llama, or two Qwen models of the same generation.</p><p>This severely limited the choice of draft models. A large model might simply not have a sufficiently small relative: a formally suitable model exists, but it's too heavy and eats up most of the gains.</p><p>In Transformers 4.46 (October 2024), <a href="https://huggingface.co/blog/universal_assisted_generation">Universal Assisted Generation</a> was introduced. UAG decodes draft tokens back into text, re-encodes them with the target model's tokenizer, and aligns the sequences. This allows using a draft from a different family, for example, a small Qwen with Gemma.</p><p>The idea is to translate the continuation between two tokenizations.</p><p>The draft model generates several tokens with its tokenizer. They are decoded back into text, after which this text is encoded by the target model's tokenizer. The resulting sequence can then be passed to the large model for verification.</p><p>On the next iteration, the reverse translation is needed: the continuation confirmed by the target model is converted into the draft model's representation so that it can continue generation.</p><p>A simple decode → encode is not enough here. Due to the specifics of BPE and other tokenizers, token boundaries near the concatenation point can change. Therefore, Transformers additionally aligns the old and new sequences and finds their common part.</p><p>In code, the difference is minimal: `generate()` needs to be passed both tokenizers.</p><pre><code>from transformers import AutoModelForCausalLM, AutoTokenizer
+
+
+TARGET = "google/gemma-2-9b"
+DRAFT = "double7/vicuna-68m"
+
+target_tok = AutoTokenizer.from_pretrained(TARGET)
+draft_tok = AutoTokenizer.from_pretrained(DRAFT)
+
+target = AutoModelForCausalLM.from_pretrained(
+    TARGET,
+    device_map="auto",
+)
+
+draft = AutoModelForCausalLM.from_pretrained(
+    DRAFT,
+    device_map="auto",
+)
+
+inputs = target_tok(
+    "The capital of France is",
+    return_tensors="pt",
+).to(target.device)
+
+out = target.generate(
+    **inputs,
+    assistant_model=draft,
+    tokenizer=target_tok,
+    assistant_tokenizer=draft_tok,
+    max_new_tokens=64,
+)
+</code><div><a href="https://sourcecraft.dev/"><img loading="lazy"/></a></div></pre><p>Now the draft and target are not required to belong to the same family at all.</p><p>But "you can use any small model" does not yet mean "any small model will provide acceleration." Recoding and alignment add overhead, and the draft model itself still needs to predict the target well enough. If it too often suggests an unsuitable continuation, the gain will disappear.</p><p>Therefore, a shared tokenizer remains the simplest and usually the cheapest option. Universal Assisted Decoding is primarily needed when the large model lacks a good small counterpart.</p><h4>Pitfall: same tokenizer - not always same vocab_size</h4><p>Compatible models have another non-obvious detail. The same tokenizer does not necessarily mean the same output layer size of the model.</p><p>Let's take Qwen2.5-7B-Instruct and Qwen2.5-0.5B-Instruct:</p><pre><code>from transformers import AutoTokenizer
+
+t1 = AutoTokenizer.from_pretrained("Qwen/Qwen2.5-7B-Instruct")
+t2 = AutoTokenizer.from_pretrained("Qwen/Qwen2.5-0.5B-Instruct")
+
+print("Vocabulary size:     ", t1.vocab_size, "and", t2.vocab_size)
+print("Vocabularies are equal:      ", t1.get_vocab() == t2.get_vocab())
+print("Chat templates are equal: ", t1.chat_template == t2.chat_template)
+</code><div><a href="https://sourcecraft.dev/"><img loading="lazy"/></a></div></pre><p>Their tokenizers are effectively the same:</p><pre><code>Vocabulary size:      151643 and 151643
+Vocabularies are equal:       True
+Chat templates are equal:  True
+</code><div><a href="https://sourcecraft.dev/"><img loading="lazy"/></a></div></pre><p>But `generate(..., assistant_model=draft)` still fails:</p><pre><code>ValueError: The main and assistant models have different tokenizers.
+Please provide `tokenizer` and `assistant_tokenizer` to `generate()`
+</code><div><a href="https://sourcecraft.dev/"><img loading="lazy"/></a></div></pre><p>The first suspicion is different chat templates. But the output above shows they match. The real reason is buried in the Transformers code: the check before generation compares not the tokenizers, but the `config.vocab_size` of the two models, i.e., the number of rows in the embedding matrix. And this is padded to different sizes in Qwen2.5:</p><div><div><table><tbody><tr><th><p>Models</p></th><th><p><code>config.vocab_size</code></p></th></tr><tr><td><p>Qwen2.5-0.5B, 1.5B, 3B</p></td><td><p>151,936</p></td></tr><tr><td><p>Qwen2.5-7B, 14B, 32B, 72B</p></td><td><p>152,064</p></td></tr></tbody></table></div></div><p>There is no contradiction here. `tokenizer.vocab_size` describes the actual tokenizer vocabulary, while `config.vocab_size` defines the size of the model's embedding and output matrices. They can be padded with extra rows for convenient size alignment on hardware. The tokenizer never generates these additional IDs.</p><p>In older assisted generation implementations, such a difference could be an unpleasant surprise: the code expected identical vocabulary sizes even where the actual tokenization matched.</p><p>In the current Transformers, this case is already handled separately. Internally, there is a mapping between the token spaces of the target and assistant, and Qwen2.5-7B with Qwen2.5-0.5B are directly given in the source code as examples of models with a common tokenizer but different `vocab_size`.</p><p>Therefore, today, such a pair by itself is not a reason to abandon speculative decoding.</p><p>But before benchmarking, it's still useful to check both values:</p><pre><code>print(target.config.vocab_size, draft.config.vocab_size)
+</code><div><a href="https://sourcecraft.dev/"><img loading="lazy"/></a></div></pre><h3>In production: vLLM</h3><p>For serving, speculative decoding is supported in vLLM out of the box: separate draft model, EAGLE and EAGLE-3, Medusa, MTP, n-gram, and even DFlash. Configuration is done via `speculative_config`:</p><pre><code>from vllm import LLM, SamplingParams
+
+# Separate draft model of the same family
+llm = LLM(
+    model="meta-llama/Llama-3.1-70B-Instruct",
+    tensor_parallel_size=2,
+    speculative_config={
+        "method": "draft_model",
+        "model": "meta-llama/Llama-3.2-1B-Instruct",
+        "num_speculative_tokens": 5,
+    },
+)
+
+# Without a second model: draft from n-grams of the prompt itself
+llm_ngram = LLM(
+    model="meta-llama/Llama-3.1-8B-Instruct",
+    speculative_config={
+        "method": "ngram",
+        "num_speculative_tokens": 5,
+        "prompt_lookup_min": 2,
+        "prompt_lookup_max": 4,
+    },
+)
+
+out = llm.generate(["Explain speculative decoding."], SamplingParams(temperature=0, max_tokens=200))
+</code><div><a href="https://sourcecraft.dev/"><img loading="lazy"/></a></div></pre><p>The format is based on the <a href="https://docs.vllm.ai/en/latest/features/speculative_decoding/">current vLLM documentation</a>; in older versions, the keys were named differently, so check your version.</p><p>I'll specifically mention the n-gram draft, which is undeservedly rarely recalled. No second model, no extra KV cache – it just looks into the prompt. And it works well where the response repeats parts of the input: code editing, document extraction, RAG with citations.</p><p>If you have such a workload profile, start with it, not with selecting a second model. It's one line of configuration.</p><h3>Can it be done without a second model at all?</h3><p>Classic speculative decoding has an additional cost: a separate draft model needs to be selected, loaded into memory, and its own KV cache maintained. Moreover, a good small counterpart doesn't exist for every large model.</p><p>Therefore, several approaches have emerged where a full second LLM is not needed at all.</p><h4>EAGLE: draft from the model's own hidden states</h4><p><a href="https://arxiv.org/abs/2401.15077">EAGLE</a> uses a small trainable draft part that works not only with tokens but also with the target model's hidden representations.</p><p>In the original EAGLE, the key idea is this: predicting the next representation at the penultimate layer level is easier than predicting the next token directly. The draft module receives the hidden states of the target model and the already selected tokens, predicts the next hidden state, and through the LM head, converts it into the probability distribution of the next token.</p><p>The draft is still built autoregressively: the obtained token participates in predicting the next one. After several such steps, the candidates are verified by the main model.</p><p>The advantage is that the draft relies on a much richer signal than just a sequence of tokens. At the same time, a separate full-fledged small LLM is not needed, and the token space automatically matches the target model. For LLaMA2-Chat 70B, the EAGLE authors reported a speedup of 2.7–3.5× while preserving the original model's distribution.</p><p>Later, EAGLE-2 and EAGLE-3 appeared. In EAGLE-2, the candidate tree is built dynamically considering their acceptance probability, and EAGLE-3 uses features from several levels of the target model instead of initially predicting one type of hidden state.</p><figure><img alt="EAGLE: the head predicts tokens from the large model's hidden states" loading="lazy" src="https://habrastorage.org/r/w1560/getpro/habr/upload_files/f82/0aa/aa8/f820aaaa831ac071af1f0a803a2d9fe2.png"/><div><figcaption>EAGLE: the head predicts tokens from the large model's hidden states</figcaption></div></figure><h4>Medusa: multiple heads, multiple positions at once</h4><p><a href="https://arxiv.org/abs/2401.10774">Medusa</a> takes a different path. Several small decoding heads are added to the main model: one tries to predict the next token, another the token one position ahead, the next one even further.</p><p>The main difference from EAGLE is that these predictions can be obtained in parallel in one pass.</p><p>But parallelism comes at a cost. The head for the third position doesn't know in advance which token will be chosen for the second. Therefore, Medusa gets several possible continuations, builds a tree of candidates from them, and then verifies it with the main model using tree attention.</p><p>There are two main versions of the method. In Medusa-1, only the additional heads are trained, and the LLM itself remains frozen. The authors achieved over 2.2× speedup without changing the main model. In Medusa-2, along with the heads, the backbone is also fine-tuned; the claimed speedup in experiments was 2.3–3.6×.</p><figure><img alt="Medusa: heads predict different positions independently" loading="lazy" src="https://habrastorage.org/r/w1560/getpro/habr/upload_files/ce5/827/cc4/ce5827cc4bcdf83d38cc5c01942250bf.png"/><div><figcaption>Medusa: heads predict different positions independently</figcaption></div></figure><h4>Self-speculative: early exit from the same model</h4><p>In <a href="https://arxiv.org/abs/2404.16710">LayerSkip</a>, there is no separate draft module at all. The draft is generated by the target model itself, but only using its initial layers.</p><p>For example, instead of all 80 layers, one can pass through the first 12 and make an early exit. The tokens obtained this way become the draft, and then the remaining layers of the same model verify them and correct them if necessary.</p><p>This means verification doesn't necessarily mean another full model pass from scratch: the draft and verification can reuse some computations and activations.</p><p>For early exits to actually predict tokens, LayerSkip specifically trains the model with layer dropout and an additional loss on intermediate layers. Simply taking an arbitrary Llama and starting to exit after the twelfth layer is not the same.</p><p>The authors achieved up to 2.16× on CNN/DM summarization, up to 1.82× on code generation, and up to 2.0× on TOPv2.</p><p>The main advantage is no additional draft model weights. The disadvantage is that for good results, the target model itself must be prepared for early exit.</p><figure><img alt="Self-speculative decoding: early layers write the draft, the full model verifies" loading="lazy" src="https://habrastorage.org/r/w1560/getpro/habr/upload_files/314/b83/e72/314b83e72a6b8af9378b761329005553.png"/><div><figcaption>Self-speculative decoding: early layers write the draft, the full model verifies</figcaption></div></figure><h4>DFlash: draft in one pass via diffusion</h4><p>Classic draft models and EAGLE have one common problem: the draft is built autoregressively.</p><p>A diffusion model generates a block of tokens in parallel: it starts with noise and refines the entire sequence in a few steps. <a href="https://arxiv.org/abs/2602.06036">DFlash</a> trains a small diffusion head conditioned on the target model's hidden states and obtains the entire draft in one pass. And here's what's interesting: the cost of the draft stops increasing with its length. In terms of the formula above, <img alt="c" loading="lazy" src="https://habrastorage.org/getpro/habr/formulas/4/4a/4a8/4a8a08f09d37b73795649038408b5f33.svg"/> is no longer multiplied by <img alt="gamma" loading="lazy" src="https://habrastorage.org/getpro/habr/formulas/a/ae/ae5/ae539dfcc999c28e25a0f3ae65c1de79.svg"/>.</p><p>The authors report over 6× speedup without loss and up to 2.5× compared to EAGLE-3.</p><p>In the demonstration from the DFlash repository on a single mathematical task, it looks like this: autoregressive Qwen3-8B - 48.5 tokens/s, block diffusion SDAR-8B as a standalone model - 97.5 tokens/s with quality loss, EAGLE-3 - 114.2 tokens/s, DFlash - 415.7 tokens/s without loss. This is one example, not an average across benchmarks.</p><figure><img alt="Autoregressive draft vs. diffusion draft" loading="lazy" src="https://habrastorage.org/r/w1560/getpro/habr/upload_files/cc0/615/619/cc0615619c9e4226152444c5a0eb95c9.png"/><div><figcaption>Autoregressive draft vs. diffusion draft</figcaption></div></figure><figure><img alt="One task, four generation methods: 48.5 / 97.5 / 114.2 / 415.7 tokens/s" loading="lazy" src="https://habrastorage.org/r/w1560/getpro/habr/upload_files/441/6ad/828/4416ad8281db57b788fd4a19e4246260.gif"/><div><figcaption>One task, four generation methods: 48.5 / 97.5 / 114.2 / 415.7 tokens/s</figcaption></div></figure><h3>When it's not needed</h3><p>Speculative decoding looks good in theory, but the acceleration is not achieved under all loads. There are several cases where the gain quickly diminishes or even turns into a slowdown.</p><p><strong>Large batch and high GPU utilization.</strong> With a small batch size, decoding usually bottlenecks on memory, and the GPU's computational units are underutilized. It is precisely these free computational resources that speculative decoding uses to verify multiple candidates at once.</p><p>As the batch size increases, the situation changes. If for each of the <img alt="B" loading="lazy" src="https://habrastorage.org/getpro/habr/formulas/9/9d/9d5/9d5ed678fe57bcca610140957afab571.svg"/> sequences, we also check <img alt="gamma" loading="lazy" src="https://habrastorage.org/getpro/habr/formulas/a/ae/ae5/ae539dfcc999c28e25a0f3ae65c1de79.svg"/> speculative tokens, the effective amount of work approaches <img alt="B * gamma" loading="lazy" src="https://habrastorage.org/getpro/habr/formulas/0/05/054/054d6c2da8580882ba76faf282098b52.svg"/>. When the GPU is already loaded with computations, rejected candidates are no longer almost free and start consuming bandwidth.</p><p>Therefore, a fixed five or eight speculative tokens, which work well for a single request, may be a poor choice for a hundred simultaneous requests. Modern engines can reduce the speculation depth as the load increases.</p><p><strong>Sampling and open-ended generation.</strong> Here too, there is no simple rule like "the higher the temperature, the lower the acceptance rate." Everything depends on how the overlap of draft and target model distributions changes after applying sampling parameters.</p><p>In practice, open-ended tasks often turn out to be more difficult for the draft than code continuation, summarization, or generation strongly tied to the input text. If the draft frequently diverges from the target, most of the extra work is wasted.</p><p>Therefore, the acceptance rate should be measured on real requests, not transferred from someone else's benchmark.</p><p><strong>Memory for the draft model.</strong> The classic scheme requires storing not only its weights but also a separate KV cache for active requests. If the target model already occupies almost all GPU memory, a few gigabytes for the draft can reduce the available batch size, and the latency gain will have to be paid for with a loss in overall throughput.</p><p>In such a situation, methods with a small speculator module, EAGLE, or variants without a neural draft like n-gram and suffix decoding are more interesting.</p><p><strong>Bitwise match of results.</strong> Lossless speculative decoding means preserving the target model's distribution, not necessarily matching every floating-point computation.</p><p>A different batch size, a different order of operations, or a different CUDA core can slightly change the logits. This usually doesn't affect anything, but with nearly equal probabilities, even greedy decoding can sometimes choose a different token.</p><p>If tests require exact string matches between different inference modes, this should be checked separately.</p><h3>KV cache and speculative decoding work together</h3><p>Speculative decoding does not replace the KV cache – on the contrary, without it, there would be much less practical sense in such a scheme.</p><p>With regular decoding, the KV cache stores keys and values for already processed context, so that the entire sequence is not re-processed for each new token.</p><p>In the classic scheme, the draft model maintains its own KV cache, allowing it to cheaply generate subsequent candidates. The target model, in turn, verifies the entire speculative block and saves the state for the part that was actually accepted. Computations for the rejected tail are not used further.</p><p>This results in two independent optimizations:</p><p>The KV cache prevents re-calculating already processed context; speculative decoding reduces the number of sequential decode steps of the large model.</p><p>They solve different parts of the same problem and are almost always used together.</p><h3>Cheat Sheet: What to choose</h3><div><div><table><tbody><tr><th><p>Situation</p></th><th><p>What to enable</p></th><th><p>Benchmark</p></th></tr><tr><td><p>There is a small model of the same family, latency for a single request is important</p></td><td><p>Separate draft: `assistant_model` in Transformers, `draft_model` in vLLM; choose draft length using the formula</p></td><td><p>1.5–3×</p></td></tr><tr><td><p>The response rewrites parts of the prompt: code editing, RAG with citations, field extraction</p></td><td><p>N-gram draft: no second model, no extra memory</p></td><td><p>Depends on the repetition rate, for successful tasks – like with a separate draft</p></td></tr><tr><td><p>No suitable small model, memory is occupied by the target</p></td><td><p>EAGLE or EAGLE-3: a lightweight head on top of the target model</p></td><td><p>2.7–3.5×</p></td></tr><tr><td><p>Models are only from different families, no fine-tuning</p></td><td><p>UAG: pass both tokenizers to `generate()`</p></td><td><p>1.5–1.9×</p></td></tr><tr><td><p>The target model can be fine-tuned</p></td><td><p>Medusa-2 or LayerSkip with early exit</p></td><td><p>2.3–3.6× and up to 2.16×</p></td></tr><tr><td><p>Server handles a large batch, throughput is important</p></td><td><p>Nothing: GPU is already loaded, almost no gain</p></td><td><p>≈1×, slower with incorrect settings</p></td></tr></tbody></table></div></div><h3>Conclusion</h3><p>The main idea of speculative decoding is quite simple: sequential generation by a large LLM often bottlenecks on memory bandwidth, while verifying several next positions can be done much more efficiently than several separate decode steps.</p><p>A small or specialized drafter tries to guess several tokens ahead, and a large model verifies them in one batch.</p><p>With sampling, quality is preserved not because "the large model agreed with the small one." In classic speculative sampling, this is backed by an acceptance rule and a correction distribution that preserve the target model's distribution.</p><p>And speed, in the first approximation, is determined by three things: how often the draft is correct, how much it costs itself, and how many tokens are proposed per iteration.</p><p>Therefore, the main practical advice here is simple: do not choose speculative decoding based on a nice number from an article. Measure the acceptance rate and latency on your traffic, with your batch size, and on the same hardware where the system will run.</p><p>The table of speedups above shows how much the result depends on the conditions: from 1.19× to 4.46×. The same algorithm, a difference of almost four times.</p><p>If you remember one thing from this article, let it be this: stop moving weights back and forth.</p><p>Sources: <a href="https://github.com/huggingface/transformers/blob/main/src/transformers/generation/utils.py">assistant check in <code>generation/utils.py</code></a>, Hugging Face Transformers; <a href="https://arxiv.org/abs/2211.17192">Fast Inference from Transformers via Speculative Decoding</a>, Leviathan et al.; <a href="https://research.google/blog/looking-back-at-speculative-decoding/">Looking back at speculative decoding</a>, Google Research; <a href="https://huggingface.co/blog/universal_assisted_generation">Universal Assisted Generation</a>, Hugging Face; <a href="https://arxiv.org/abs/2401.15077">EAGLE</a>; <a href="https://arxiv.org/abs/2401.10774">Medusa</a>; <a href="https://arxiv.org/abs/2404.16710">LayerSkip</a>; <a href="https://arxiv.org/abs/2602.06036">DFlash: Block Diffusion for Flash Speculative Decoding</a>.</p></div>
+  </main>
+  <footer>
+    Translation generated with Gemini 2.5 Flash-Lite.
+    The original article remains the source of record.
+  </footer>
+</body>
+</html>

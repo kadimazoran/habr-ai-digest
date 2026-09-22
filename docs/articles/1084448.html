@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Why the Same Model Can Cost Five Times More</title>
+  <meta name="description" content="Researchers from UC Berkeley and Arena compared seven models within Claude Code, Codex CLI, and the minimalist Pi. On two benchmarks, the choice of harness barely changed the average success rate but increased the cost of the same model by up to five times. The result explains why comparing coding a">
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.65;
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 32px 20px 64px;
+      color: #1f2328;
+    }
+    header {
+      border-bottom: 1px solid #d8dee4;
+      margin-bottom: 28px;
+      padding-bottom: 20px;
+    }
+    .source {
+      color: #57606a;
+      font-size: 0.95rem;
+    }
+    img, video, iframe {
+      max-width: 100%;
+      height: auto;
+    }
+    pre {
+      overflow-x: auto;
+      padding: 16px;
+      background: #f6f8fa;
+      border-radius: 6px;
+    }
+    code {
+      font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+    }
+    blockquote {
+      border-left: 4px solid #d0d7de;
+      margin-left: 0;
+      padding-left: 16px;
+      color: #57606a;
+    }
+    footer {
+      border-top: 1px solid #d8dee4;
+      margin-top: 40px;
+      padding-top: 20px;
+      color: #57606a;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Why the Same Model Can Cost Five Times More</h1>
+    <p>Researchers from UC Berkeley and Arena compared seven models within Claude Code, Codex CLI, and the minimalist Pi. On two benchmarks, the choice of harness barely changed the average success rate but increased the cost of the same model by up to five times. The result explains why comparing coding agents by model name alone is already meaningless. Read more</p>
+    <p class="source">
+      Machine-translated from Habr.
+      <a href="https://habr.com/ru/companies/koda/articles/1084448/?utm_campaign=1084448&amp;utm_source=habrahabr&amp;utm_medium=rss">Read the original Russian article</a>.
+      Tue, 22 Sep 2026 12:00:40 GMT
+    </p>
+  </header>
+  <main>
+<div><p>Researchers from UC Berkeley and Arena compared seven models within Claude Code, Codex CLI, and the minimalist Pi. On two benchmarks, the choice of harness barely changed the average success rate but increased the cost of the same model by up to five times. The result explains why comparing coding agents by model name alone is already meaningless.</p><h3>What Exactly Was Measured?</h3><p>As a reminder, a harness is a software wrapper around a model. It forms system instructions, connects tools, decides which files and command results to put into context, launches the terminal, and repeats the cycle until the task is solved. The model remains the same, but the path to the answer changes.</p><p>The authors of <a href="https://harnesstax.github.io/">HarnessTax</a> collected 21 combinations of seven models and three harnesses. The study included Claude Fable 5, Opus 4.8, Sonnet 4.6, Haiku 4.5, GPT-5.6 Sol, GPT-5.6 Luna, and Kimi K3. Each combination was tested on 30 random SWE-bench Lite tasks and 30 Terminal-Bench 2.0 tasks. Each task was run three times, with one run limited to 100 agent steps.</p><p>On SWE-bench Lite, Claude Fable 5 solved <em>97.8%</em> of attempts in Claude Code and <em>96.7%</em> in Pi. The difference in success rate was 1.1 percentage points. The average cost per attempt reached $1.33 in Claude Code and $0.67 in Pi.</p><figure><img alt="SWE-bench Lite. Color indicates the model, dot shape indicates the harness. The graph is based on official HarnessTax data." loading="lazy" src="https://habrastorage.org/r/w1560/getpro/habr/upload_files/5af/dd5/d57/5afdd5d57351cce7ef5cd14b8b0978fa.png" title="SWE-bench Lite. Color indicates the model, dot shape indicates the harness. The graph is based on official HarnessTax data."/><div><figcaption>SWE-bench Lite. Color indicates the model, dot shape indicates the harness. The graph is based on official HarnessTax data.</figcaption></div></figure><p>The most significant gap appeared with GPT-5.6 Luna. In Claude Code, an attempt cost an average of $0.152, while in Pi it was around $0.030. The success rate was 55.6% and 53.3% respectively. Almost the same result cost about five times more.</p><p>On average across all models, Claude Code was twice as expensive as Pi and 1.6 times more expensive than Codex CLI on SWE-bench Lite. On Terminal-Bench 2.0, the difference with Pi was 1.5 times. The authors called this overpayment "harness tax" or a tax for the agent wrapper.</p><figure><img alt="Terminal-Bench 2.0. The Pareto frontier shows the best observed price-performance combinations. HarnessTax data." loading="lazy" src="https://habrastorage.org/r/w1560/getpro/habr/upload_files/341/cb6/aae/341cb6aaed52f0aef93d779af7155a88.png" title="Terminal-Bench 2.0. The Pareto frontier shows the best observed price-performance combinations. HarnessTax data."/><div><figcaption>Terminal-Bench 2.0. The Pareto frontier shows the best observed price-performance combinations. HarnessTax data.</figcaption></div></figure><h3>Where Does the Extra Cost Come From?</h3><p>Pi provides models with only four tools: read, write, edit, and bash. Despite its minimalism, it landed on the Pareto frontier for price and success on both benchmarks.</p><ol><li><p>This doesn't mean that four tools are always better than forty.</p></li><li><p>It means that every tool, rule, and piece of context must pay for itself.</p></li></ol><figure><img alt="First model call on SWE-bench Lite. Average values across 630 calls for each harness. HarnessTax data" loading="lazy" src="https://habrastorage.org/r/w1560/getpro/habr/upload_files/84f/325/26b/84f32526bc8722eeb9fe8d7356b7b56e.png" title="First model call on SWE-bench Lite. Average values across 630 calls for each harness. HarnessTax data"/><div><figcaption>First model call on SWE-bench Lite. Average values across 630 calls for each harness. HarnessTax data</figcaption></div></figure><p>The same Fable 5 provided a good example. In Pi, it completed the task in an average of 15.4 steps; in Claude Code, it took 15.3 steps. The number of steps was almost the same, but Claude Code was about twice as expensive. One factor is visible in the very first model call. The average initial context contained 1,972 tokens for Pi, 11,308 for Codex, and 27,011 for Claude Code. The difference between Pi and Claude Code reached 13.7 times. The tool schemas differed even more, 2,873 vs. 76,995 characters. Long instructions and tool descriptions are charged again on subsequent calls if they are not covered by caching.</p><figure><img alt="Claude Fable 5 on SWE-bench Lite. Pi and Codex achieved 96.7% at $0.67 and $0.89 per run. Claude Code achieved 97.8% at $1.33. HarnessTax data" loading="lazy" src="https://habrastorage.org/r/w1560/getpro/habr/upload_files/618/760/fa7/618760fa7f1cf63865523e7d368801a8.png" title="Claude Fable 5 on SWE-bench Lite. Pi and Codex achieved 96.7% at $0.67 and $0.89 per run. Claude Code achieved 97.8% at $1.33. HarnessTax data"/><div><figcaption>Claude Fable 5 on SWE-bench Lite. Pi and Codex achieved 96.7% at $0.67 and $0.89 per run. Claude Code achieved 97.8% at $1.33. HarnessTax data</figcaption></div></figure><p>There is another inconvenient result. In nine out of twelve comparisons of Anthropic and OpenAI models, the native harness of the provider did not show the maximum observed success rate. For example, GPT-5.6 Sol on Terminal-Bench 2.0 scored 83.3% in Pi and 78.9% in Codex CLI. An attempt in Pi cost $0.42 versus $0.76 in Codex.</p><p>Let me clarify immediately. The study uses <strong>only two public benchmarks</strong> that might have been included in the training data. 30 tasks were taken for each benchmark, so the confidence intervals are wide. The cost is calculated based on API rates as of September 1, 2026, and does not include subscriptions. Furthermore, a short and minimalist harness might perform well in a limited run but lag in long-term work over multiple sessions. The study's conclusion is not that Pi won. It is that <strong>the combination of model, harness, and your specific task type needs to be tested.</strong></p><h3>What This Means for KodaCode</h3><p>We at HarnessTax find the conclusion particularly interesting because we independently verified the same principle on a different set of tasks. In our <a href="https://habr.com/ru/companies/koda/articles/1083546/">harness comparison</a>, the same DeepSeek V4 Flash Max with the same reasoning level achieved 52.2% in Koda, 49.5% in KiloCode, 48.2% in Claude Code, and 47.6% in OpenCode.</p><figure><img alt="One model and the same reasoning level, different harnesses" loading="lazy" src="https://habrastorage.org/r/w1560/getpro/habr/upload_files/c79/d3a/457/c79d3a457865c0ea4133fcf80fd71a98.png" title="One model and the same reasoning level, different harnesses"/><div><figcaption><em>One model and the same reasoning level, different harnesses</em></figcaption></div></figure><p>In a separate comparison of models within Koda, the new Koda Pro achieved 54.3%, and Koda Base achieved 49.5% with an average calculated cost of about 11.9 rubles per task. These figures do not isolate the harness's contribution but show the correct unit of measurement. It is primarily the quality and price of the entire agent trajectory, not the rate per million tokens.</p><figure><img alt="Koda Index and average calculated task cost. All models worked within the same Koda wrapper." loading="lazy" src="https://habrastorage.org/r/w1560/getpro/habr/upload_files/f25/0dd/fba/f250ddfbaf3b653aa52d8bfa9bfcb791.png" title="Koda Index and average calculated task cost. All models worked within the same Koda wrapper."/><div><figcaption><em>Koda Index and average calculated task cost. All models worked within the same Koda wrapper.</em></figcaption></div></figure><p>And yes, I am not directly comparing with HarnessTax. Of course, the task sets, models, and methodologies are different. For example, our Koda Index includes 261 tasks. Among them are 125 fixes in existing repositories, 45 software design and implementation tasks, and 91 data analysis tasks. The agent operates in an isolated environment without a network, does not see hidden tests, and cannot peek at the fix in Git history. Infrastructure failure or exceeding limits is considered an unsolved task. <strong>Therefore, the results show not universal Koda leadership, but the specific effect of the harness on a fixed model and a reproducible run.</strong></p><p>The harness's influence arises within the agent cycle. It decides which instructions and tool schemas to send to the model, how much terminal output to keep in context, how to pass an error, when to retry, and when to stop. For us, two things are important here: controllable context and a predictable "change, run, verify" cycle. These are what can reduce unnecessary calls and prevent a long session from drowning in its own logs. However, claiming exact savings without a separate cost measurement would be dishonest.</p><p>Therefore, our conclusion aligns with HarnessTax:</p><blockquote><p>One should evaluate not the model or the harness separately, but their combination. The accepted changes, the total expenditure for the trajectory, and the number of attempts to reach a working result are important.</p></blockquote><p>This leads to a practical hypothesis. <strong>Kodacode may be cheaper than another client even when working with the same model</strong>. Not because the tokens within it cost differently, but because the harness can send less extraneous context, repeat failed actions less often, and bring a change to verification faster.</p><p>Our DeepSeek V4 Flash run already shows a quality difference between wrappers. To prove the price advantage, a separate, identical measurement of full trajectories is needed. But after HarnessTax, looking only at the model's tariff is definitely no longer sufficient. Sometimes, it's not the intelligence itself that is expensive, but the road taken to reach the answer.</p><h3>Sources</h3><ul><li><p><a href="https://harnesstax.github.io/">HarnessTax, original research source</a></p></li><li><p><a href="https://docs.kodacode.ru/">KodaCode Documentation</a></p></li><li><p><a href="https://habr.com/ru/companies/koda/articles/1083546/">Comparison of Harnesses and Koda Index Methodology</a></p></li><li><p><a href="https://docs.kodacode.ru/cli/features/summarization.html">Context Compression in Koda CLI</a></p></li><li><p><a href="https://docs.kodacode.ru/plugin/advanced/subagents.html">Koda Subagents</a></p></li><li><p><a href="https://docs.kodacode.ru/cli/features/sessions/checkpointing.html">Koda CLI Checkpoints</a></p></li><li><p><a href="https://download.kodacode.ru">Try new Koda Base and Koda Pro in KodaCode</a></p></li></ul><figure><img loading="lazy" src="https://habrastorage.org/r/w1560/getpro/habr/upload_files/85c/951/be1/85c951be1da68bb14f1e219a1208dfaa.png"/></figure><p>Try Kodacode on your project: <a href="https://download.kodacode.ru/?utm_source=habr&amp;utm_medium=referral&amp;utm_campaign=article_footer&amp;utm_content=banner_caption">download for IDE, CLI, and Desktop</a>. Updates, practical analyses, and product news in our <a href="https://t.me/+jXL51ZSI48Q0YTNi">Telegram channel</a>.</p></div>
+  </main>
+  <footer>
+    Translation generated with Gemini 2.5 Flash-Lite.
+    The original article remains the source of record.
+  </footer>
+</body>
+</html>

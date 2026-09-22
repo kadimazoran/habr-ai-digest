@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>A Method for Visualizing N-Dimensional Embeddings in Three-Dimensional Space</title>
+  <meta name="description" content="A method for visualizing n-dimensional embeddings in three-dimensional space. Typically, when discussing embedding visualization (or, as we now know, n-dimensional vectors), it refers to mapping a set of these vectors into a two- or three-dimensional space with dimensionality reduction. However, for">
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.65;
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 32px 20px 64px;
+      color: #1f2328;
+    }
+    header {
+      border-bottom: 1px solid #d8dee4;
+      margin-bottom: 28px;
+      padding-bottom: 20px;
+    }
+    .source {
+      color: #57606a;
+      font-size: 0.95rem;
+    }
+    img, video, iframe {
+      max-width: 100%;
+      height: auto;
+    }
+    pre {
+      overflow-x: auto;
+      padding: 16px;
+      background: #f6f8fa;
+      border-radius: 6px;
+    }
+    code {
+      font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+    }
+    blockquote {
+      border-left: 4px solid #d0d7de;
+      margin-left: 0;
+      padding-left: 16px;
+      color: #57606a;
+    }
+    footer {
+      border-top: 1px solid #d8dee4;
+      margin-top: 40px;
+      padding-top: 20px;
+      color: #57606a;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>A Method for Visualizing N-Dimensional Embeddings in Three-Dimensional Space</h1>
+    <p>A method for visualizing n-dimensional embeddings in three-dimensional space. Typically, when discussing embedding visualization (or, as we now know, n-dimensional vectors), it refers to mapping a set of these vectors into a two- or three-dimensional space with dimensionality reduction. However, for human analysis of vectors, it can also be useful to visualize an individual vector. In this case, it&#x27;s possible to compare the &#x27;shape&#x27; of objects representing vectors and infer the proximity of compared vectors based on the similarity of these shapes. It would also be interesting to visualize a vector during neural network training iterations and observe changes in the vector&#x27;s &#x27;shape&#x27; as the model trains. This approach avoids the data loss drawback of commonly used dimensionality reduction methods for vector mapping. Read more</p>
+    <p class="source">
+      Machine-translated from Habr.
+      <a href="https://habr.com/ru/articles/1085044/?utm_campaign=1085044&amp;utm_source=habrahabr&amp;utm_medium=rss">Read the original Russian article</a>.
+      Tue, 22 Sep 2026 09:05:13 GMT
+    </p>
+  </header>
+  <main>
+<div><p>Embeddings, in simple terms, are just a mapping of some object that a neural network needs to work with to a set of numbers—a vector. The number of coordinates in the vector is the dimensionality of the n-dimensional space in which this vector (embedding) is defined. You can read more about embeddings in <a href="https://habr.com/ru/articles/947216/">this beginner-friendly article</a>.</p><p>Typically, when discussing embedding visualization (or, as we now know, n-dimensional vectors), it refers to mapping a set of these vectors into a two- or three-dimensional space with dimensionality reduction. The article <a href="https://habr.com/ru/companies/bothub/articles/1062924/">"How Dimensionality Reduction Algorithms Can Deceive You"</a>, for example, discusses the main methods for mapping n-dimensional vectors.</p><p>These mapping methods are designed to show the position of several vectors in space and assess how close or far apart the vectors are. It's also possible to identify groups of vectors that are closer to each other (based on some formula calculating the distance between vectors) than to other vectors in the set.</p><p>However, for human analysis of vectors, it can also be useful to visualize an individual vector. In this case, it's possible to compare the 'shape' of objects representing vectors and infer the proximity of compared vectors based on the similarity of these shapes. It would also be interesting to visualize a vector during neural network training iterations and observe changes in the vector's 'shape' as the model trains. This approach avoids the data loss drawback of commonly used dimensionality reduction methods for vector mapping. To be objective, we must admit that we gain another drawback—difficulty in visualizing a large number of vectors. But for a pair (or a few) vectors, this visualization method is quite acceptable.</p><p>As a basis for mapping a vector into three-dimensional space, we decided to use a standard three-dimensional sphere. However, the radius of this sphere will be variable. Its value at each point on the sphere will represent the value of one of the coordinates of the n-dimensional vector we are visualizing.</p><p>We will use the locally run model "qwen3-embedding:latest" and the ollama library as the source for vector coordinate values. The installation and setup of a local LLM will not be described in this article. We will use the numpy library to form coordinate arrays, and for rendering three-dimensional objects based on the calculated coordinates, we will use the plotly and dash libraries.</p><p>The main sequence of actions will be as follows:</p><ol><li><p>Obtain the vector value for the object of interest (in the case of LLMs, these will be words)</p></li><li><p>Calculate a set of three-dimensional coordinates for the object</p></li><li><p>Visualize the obtained coordinates in three-dimensional space.</p></li></ol><p>Obtaining the vector for a selected word <code>word</code> by calling the ollama API might look like this:</p><pre><code>import ollama
+import numpy as np
+
+response = ollama.embed(
+    model='qwen3-embedding:latest',
+    input='word'
+)
+
+vector = response['embeddings'][0]</code><div><a href="https://sourcecraft.dev/"><img loading="lazy"/></a></div></pre><p>Next, the obtained vector <code>vector</code> needs to be converted into a matrix for ease of coordinate calculation. In our case, the dimensionality of the vector returned by the LLM <code>qwen3-embedding:latest</code> is 4096 coordinates. We transform it into a 64 x 64 matrix (64 x 64 = 4096) of values.</p><pre><code>r = np.reshape(vector, (64, 64))</code><div><a href="https://sourcecraft.dev/"><img loading="lazy"/></a></div></pre><p>And then we can calculate the three-dimensional coordinates of the object that will represent our vector:</p><pre><code>u, v = np.mgrid[0:2*np.pi:64j, -np.pi/2:np.pi/2:64j]
+x = r * np.sin(u) * np.cos(v)
+y = r * np.sin(u) * np.sin(v)
+z = r * np.cos(u)</code><div><a href="https://sourcecraft.dev/"><img loading="lazy"/></a></div></pre><p>In the example above, we first form a set of parameters u and v (which is a set of angle values—spherical coordinates) necessary for calculating the three Cartesian coordinates x, y, z of the object. Then, using the numpy library, we calculate the set of Cartesian coordinates for the object's points.</p><p>After this, all that remains is to visualize this set of coordinates in three-dimensional space.</p><p>To demonstrate the results of the described method for visualizing n-dimensional vectors, several images have been prepared. The first image shows visualizations of the word "death" (left figure) and "life" (right figure).</p><figure><img loading="lazy" src="https://habrastorage.org/r/w1560/getpro/habr/upload_files/efb/312/95f/efb31295ff05deb99e360d140113166a.JPG"/></figure><p>Looking at the provided image, we can note the following:</p><ol><li><p>The shape of the objects resembles a sea urchin. Therefore, this method of visualizing n-dimensional vectors in three-dimensional space can be called the "sea urchin" method.</p></li><li><p>The objects have distinct, longer "spines." These "spines" correspond to large values of the vector's coordinates.</p></li><li><p>The number, size, and direction of the long "spines" differ significantly between the objects visualizing the words "death" and "life." That is, based on the shape of the objects, one can judge their degree of similarity and infer how close (more similar objects) or far apart (less similar objects) the vectors corresponding to the objects are.</p></li></ol><p>For comparison, here are the objects corresponding to the vectors for the words "table" (left) and "chair" (right):</p><figure><img loading="lazy" src="https://habrastorage.org/r/w1560/getpro/habr/upload_files/637/e8c/547/637e8c547f486a67c70f6f2d448796c0.JPG"/></figure><p>It is evident that these objects are similar—the number and direction of the long "spines" are practically the same. There are far fewer differences than for the words "death" and "life."</p><p>The following conclusions can be drawn:</p><ol><li><p>The described method for visualizing n-dimensional vectors in three-dimensional space indeed allows for the visualization of objects corresponding to these vectors, and this is done without loss of coordinates.</p></li><li><p>The resulting objects resemble sea urchins, characterized by longer "spines" that represent vector coordinates with large absolute values. These coordinates are likely more significant for the object (word in our example) corresponding to the vector.</p></li><li><p>Objects can be compared by their shape. The more the objects differ (in the number, direction, and length of spines), the farther apart the vectors corresponding to the objects are located.</p></li></ol></div>
+  </main>
+  <footer>
+    Translation generated with Gemini 2.5 Flash-Lite.
+    The original article remains the source of record.
+  </footer>
+</body>
+</html>

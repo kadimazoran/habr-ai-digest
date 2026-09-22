@@ -1,0 +1,134 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>AI Gateway as a Unified Entry Point to LLMs: How to Give Employees AI and Maintain Control</title>
+  <meta name="description" content="We explore why AGIMA needs an AI Gateway – a unified, manageable access point to language models. We&#x27;ll cover how to control the transmission of personal and corporate data, manage permissions and costs, switch between providers, and maintain compatibility with familiar tools. Read more">
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.65;
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 32px 20px 64px;
+      color: #1f2328;
+    }
+    header {
+      border-bottom: 1px solid #d8dee4;
+      margin-bottom: 28px;
+      padding-bottom: 20px;
+    }
+    .source {
+      color: #57606a;
+      font-size: 0.95rem;
+    }
+    img, video, iframe {
+      max-width: 100%;
+      height: auto;
+    }
+    pre {
+      overflow-x: auto;
+      padding: 16px;
+      background: #f6f8fa;
+      border-radius: 6px;
+    }
+    code {
+      font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+    }
+    blockquote {
+      border-left: 4px solid #d0d7de;
+      margin-left: 0;
+      padding-left: 16px;
+      color: #57606a;
+    }
+    footer {
+      border-top: 1px solid #d8dee4;
+      margin-top: 40px;
+      padding-top: 20px;
+      color: #57606a;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>AI Gateway as a Unified Entry Point to LLMs: How to Give Employees AI and Maintain Control</h1>
+    <p>We explore why AGIMA needs an AI Gateway – a unified, manageable access point to language models. We&#x27;ll cover how to control the transmission of personal and corporate data, manage permissions and costs, switch between providers, and maintain compatibility with familiar tools. Read more</p>
+    <p class="source">
+      Machine-translated from Habr.
+      <a href="https://habr.com/ru/articles/1085166/?utm_campaign=1085166&amp;utm_source=habrahabr&amp;utm_medium=rss">Read the original Russian article</a>.
+      Tue, 22 Sep 2026 11:59:37 GMT
+    </p>
+  </header>
+  <main>
+<div><p>When only a few enthusiasts in a company use LLMs, personal keys and agreements like "don't send anything sensitive" might suffice. But when dozens of teams, IDEs, internal agents, and automations connect to the models, an experiment turns into infrastructure with demands for security, cost, and fault tolerance.</p><p>In this article, we'll examine how an AI Gateway becomes a unified entry point to models: it verifies and anonymizes data before sending, manages permissions and limits, routes requests between providers, and allows for a clear view of corporate AI economics. We'll also discuss compatibility with OpenAI API, migration to Chinese models, and the boundaries between Gateway, DLP, and MCP.</p><figure><img loading="lazy" src="https://habrastorage.org/r/w1560/webt/f4/1e/ea/f41eeab398e0fc5e32c8fcbf0171951b.png"/></figure><p>Hello, Habr! My name is Nazar Bashinsky, and I'm a developer at <a href="https://www.agima.ru/?utm_source=habr&amp;utm_medium=article&amp;utm_campaign=ai_gateway_llm">AGIMA</a>.</p><p>An AI Gateway is needed precisely at this juncture. It's a layer between people, agents, corporate systems, and LLM providers. It doesn't make the model smarter, but it makes LLM usage observable, manageable, and safer for the company.</p><h3>Gateway is Not Just a Proxy</h3><p>In its minimal form, an AI Gateway acts as a proxy: a client sends a request to a compatible API endpoint, and the gateway forwards it to the appropriate model. However, if the layer merely shuttles JSON back and forth, its value quickly diminishes.</p><p>A corporate gateway is needed to make several decisions before each request:</p><ul><li><p>Who is making the request and from which tool?</p></li><li><p>What models and functions does the user have access to?</p></li><li><p>Does the request contain personal data, tokens, secrets, or client information?</p></li><li><p>Does part of the data need to be masked before sending?</p></li><li><p>Which model is suitable in terms of quality, cost, latency, and policy?</p></li><li><p>Where to switch if the primary provider is unavailable?</p></li><li><p>What to record in the audit log and how to attribute costs to a team, project, or cost center?</p></li></ul><p>This set of functions is already visible in mature gateway solutions. Cloudflare AI Gateway offers analytics, logging, caching, rate limiting, and fallback. Kong focuses on routing and governance for AI traffic. Microsoft demonstrates GenAI gateway patterns in Azure API Management: token limits, quotas, load balancing, and consumption management. This indicates that the market is starting to view LLMs not just as separate chat interfaces, but as traffic that needs to be controlled.</p><h3>Why You Can't Just "Give Everyone ChatGPT"</h3><p>The problem in large companies is rarely that employees don't want to use AI. Usually, it's the opposite: they are already integrating AI functions into their IDEs, browser chats, CLIs, internal agents, and external services. Moreover, ChatGPT is officially unavailable in Russia, leading employees to access it through unmanaged and unapproved company methods.</p><p>This is particularly dangerous for enterprises due to information security requirements, personal data, client NDAs, internal code, contractual limitations, and accountability for where corporate information goes. The consequences can be more than just reputational. For instance, repeated personal data leaks can result in turnover-based fines for companies—starting from 20 million rubles.</p><p>A simple ban doesn't work: people find workarounds because models already help them write code, analyze texts, prepare responses, and speed up routine tasks. Full permission is also risky: the company loses control over data, budgets, and legal risks.</p><p>A third option is needed: convenient corporate access to models through a single managed layer. Employees continue working in their familiar tools, while the company gains access policies, DLP, auditing, limits, and request routing.</p><h3>How a Single Request Flows</h3><p>A simplified pipeline looks like this:</p><pre><code>IDE / chat / agent / OpenWebUI
+
+↓
+
+AI Gateway
+
+↓
+
+Auth: who is the user
+
+↓
+
+Policy: what are they allowed
+
+↓
+
+DLP: are there PII, tokens, secrets, client code
+
+↓
+
+Depersonalization: replacing sensitive entities with markers
+
+↓
+
+Router: selecting model, provider, and mode
+
+↓
+
+LLM
+
+↓
+
+Reverse depersonalization, if permissible
+
+↓
+
+Audit, billing, metrics
+
+↓
+
+Response to the user
+</code><div><a href="https://sourcecraft.dev/"><img loading="lazy"/></a></div></pre><p>The main verification should occur before the request reaches the model. If an API token or a fragment of a client agreement ends up in the prompt, it's not enough to see it in the logs later. It needs to be stopped, removed, or replaced before being sent to an external service.</p><p>For Russian companies, the framework of Federal Law 152 "On Personal Data" is particularly important. Not every prompt with a name automatically becomes a legal catastrophe, but the gateway should help control the data composition, processing purpose, transmission scope, and permissibility of sending to an external provider. The specific scheme depends on the scenario, operator, data composition, and cross-border transfer, so such formulations should be agreed upon with information security and legal departments before publication.</p><h3>Compatible API Reduces Implementation Costs</h3><p>Employees already have work habits: IDEs, CLIs, chats, OpenWebUI, internal agents. If every team is forced to rewrite integrations for a new corporate standard, gateway implementation might stall at the start.</p><p>Therefore, compatibility with common API formats is crucial. For the user, the changes are minimal: base URL and token. The tool continues to work as usual, but the request goes not directly to the model, but through the corporate layer.</p><p>Compatibility is also important for migrations. The model market changes faster than corporate integrations. Today, a team uses one provider; tomorrow, they migrate some scenarios to another model; the day after, they add a local model for sensitive data. If all code is rigidly tied to one API, migration turns into a long tail of rewrites. The gateway handles protocol mapping, routing, and some incompatibilities, allowing clients to change slower than model providers.</p><p>We spent a lot of time and hit many snags during model migrations—especially when switching from OpenAI API to Chinese providers' APIs.</p><p>On paper, everything looks good: compatibility with OpenAI API is declared. In practice, some tools, like web search, image recognition, and generation, might be missing or work differently. To maintain compatibility for existing clients and scenarios, missing functionality needs to be implemented at the LLM Gateway level.</p><h3>Depersonalization is More Complex Than It Seems</h3><p>At an idea level, depersonalization seems simple. A user writes:</p><pre><code>Show Vasya's tasks for last week</code><div><a href="https://sourcecraft.dev/"><img loading="lazy"/></a></div></pre><p>The gateway replaces the name with a technical marker:</p><pre><code>Show PERSON_1's tasks for last week</code><div><a href="https://sourcecraft.dev/"><img loading="lazy"/></a></div></pre><p>The model responds with the same marker, and the system restores the original entity on the return path.</p><p>In real corporate scenarios, this is often insufficient. Internal systems work not with a text string, but with a canonical entity: an employee, their ID, login, directory entry. Vasya, Vasily, and Vasily can be the same person; a name might appear in a genitive case; some data might be in Russian, some in English; the LLM might return a marker not in plain text, but within a tool call.</p><p>If you simply replace the string back, automation might break or refer to the wrong entity. Therefore, alongside depersonalization, entity resolution is needed: mapping the textual form to a canonical object within the corporate environment. This is an example of why an AI Gateway quickly goes beyond being a proxy: it begins to understand not only model providers but also the rules for working with corporate data.</p><h3>What the Gateway Should Not Let Out</h3><p>Several types of policies are typically applied to a gateway. The basic layer includes full names, phone numbers, emails, passport data, SNILS, INN, API tokens, passwords, keys, secrets from code, client NDA data, fragments of internal documents, and project information.</p><p>Some policies should block the request. Some should mask the dangerous fragment. Some are useful to run in review or shadow mode: the system only logs triggers but doesn't impede the user.</p><p>This is crucial for implementation. If strict blocking for all suspicious items is enabled on day one, employees will decide that corporate AI hinders their work and revert to workarounds. A more effective trajectory is: first observation, then analysis of false positives, rule tuning, and only then enforcement for the most risky data classes.</p><h3>Tokens Become a Management Metric</h3><p>When everyone accesses models through a gateway, the company finally sees the real economics of AI. Not an abstract "we actively use neural networks," but concrete breakdowns.</p><p>For example, in a monthly report, the company might see that Ivan Petrov from the sales department used models within the "Client Personal Account" project via SiteOS and automation of commercial proposal preparation. During this period, he sent 1.2 million input tokens and received 800,000 output tokens, with a total usage cost of 420 rubles.</p><p>This data is not just for finance. It helps understand how much a department spends, where an expensive model is truly justified, which teams use AI systematically, which scenarios can be migrated to a cheaper model, and what costs to attribute to a project or cost center.</p><p>For enterprises, this is often no less important than routing. The gateway transforms LLMs from a general subscription "somewhere by someone" into a manageable resource.</p><h3>Fallback: When the Model Goes Down</h3><p>LLM providers are sometimes unavailable. They might run out of limits, change their API, increase latency, have a specific model or region fail. </p><p>If every automation accesses models directly, the failure of one provider turns into a set of unrelated incidents: a chat fails somewhere, an IDE elsewhere, a pipeline in another place, an agent somewhere else. The gateway allows for centralized degradation management:</p><pre><code>Request goes to the primary model
+
+↓
+
+Model is unavailable or returns an error
+
+↓
+
+Gateway logs the failure
+
+↓
+
+Circuit breaker temporarily closes the problematic route
+
+↓
+
+Request goes to the fallback model
+
+↓
+
+User receives a response or a clear degradation message
+</code><div><a href="https://sourcecraft.dev/"><img loading="lazy"/></a></div></pre><p>Fallback doesn't mean all models are equal. If a strong reasoning model is unavailable, a backup might provide a worse result. Therefore, degradation rules should be explicit: where automatic switching is possible, where the user needs to be warned, and where it's better to stop the scenario than to get a weak answer.</p><h3>Where to Draw the Lines</h3><p>AI Gateway, MCP Gateway, DLP, depersonalization, and guardrails are often conflated into a single entity. This is understandable in an MVP: few functions, one team, everything wants to be gathered together. But for platform development, it's better to define the boundaries from the start.</p><p>AI Gateway is responsible for model access: routing, keys, limits, auditing, API compatibility, fallback, and cost. DLP checks data: what can be sent, what needs masking, what should be blocked. Depersonalization replaces sensitive entities and restores them on the return path. MCP Gateway manages agent access to Jira, Wiki, CRM, DWH, GitLab, and other corporate systems. Guardrails define acceptable agent behavior: what actions are allowed, when confirmation is needed, what responses cannot be given.</p><p>If all of this is called a single gateway, the system quickly turns into a "magic box" that is difficult to develop, maintain, and explain to information security.</p><h3>What to Include from Day One</h3><p>If designing such a layer not as an experiment but as production infrastructure, I would include five things from the start.</p><p>First: a service owner, monitoring, alerts, runbooks, staging, and clear support. The gateway quickly becomes a dependency for people and automations.</p><p>Second: auditing from the very beginning. When dozens of people are already using AI, reconstructing usage history retroactively is almost impossible.</p><p>Third: testing real client compatibility. Streaming, tool calls, vision, structured output, various SDKs and IDEs break in the details, not in presentation schemes.</p><p>Fourth: DLP via shadow mode. First, you need to see real triggers and false positives, then enable blocking.</p><p>Fifth: separation of public architecture and internal temporary solutions. Only decisions that can be legally supported and explained should remain in articles, documentation, and client materials.</p><h3>Conclusion</h3><p>An AI Gateway is not needed when a company "wants to try neural networks." For experiments, a personal account, a couple of scripts, and caution are sufficient.</p><p>A gateway is needed when AI becomes a working environment: employees use LLMs daily, agents access internal systems, budgets become noticeable, and information security wants to understand what data goes where.</p><p>At this point, a unified entry point ceases to be an architectural whim. It becomes a way to give the company AI without losing control.</p><p>If you're interested in corporate AI infrastructure, subscribe to our CTO's Telegram channel <a href="https://t.me/cto_neuro">"Nepyakhin and Machines"</a>: he writes about development, AI, outsourcing, sales, and people management there.</p><h3>Further Reading</h3><ul><li><p><a href="https://habr.com/ru/companies/agima/articles/1072932/">Why We Couldn't Find a Ready-Made PII Detector for Russian: Pitfalls of a Production Environment Before LLM</a> - about masking personal data, Cyrillic, morphology, and the structure of a protective layer before the model.</p></li><li><p><a href="https://habr.com/ru/companies/agima/articles/1077190/">Fine-tuning a Prompt Injection Detector: Five Rounds, Four Failures, and Gates Against Regression</a> - a continuation about training a guard model, release gates, and errors in a production environment.</p></li><li><p><a href="https://habr.com/ru/companies/agima/articles/1031960/">GenAI and Cybersecurity in E-commerce: How to Protect Business and Avoid Creating New Vulnerabilities</a> - a broader analysis of GenAI risks, data, APIs, and vulnerabilities in business systems.</p></li></ul></div>
+  </main>
+  <footer>
+    Translation generated with Gemini 2.5 Flash-Lite.
+    The original article remains the source of record.
+  </footer>
+</body>
+</html>

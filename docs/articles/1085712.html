@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Twelve Days of an AI Agent on a Live B2B Portal: What It Found and Where It Can&#x27;t Be Trusted</title>
+  <meta name="description" content="Twelve working days of an AI agent on a live b2b portal: exchange with 1C on schedule, real managers, active orders. Four quiet exchange failures it resolved (zero from 1C instead of price, trailing space in order number, double nightly export, unbuilt showcase), and four areas where the agent canno">
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.65;
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 32px 20px 64px;
+      color: #1f2328;
+    }
+    header {
+      border-bottom: 1px solid #d8dee4;
+      margin-bottom: 28px;
+      padding-bottom: 20px;
+    }
+    .source {
+      color: #57606a;
+      font-size: 0.95rem;
+    }
+    img, video, iframe {
+      max-width: 100%;
+      height: auto;
+    }
+    pre {
+      overflow-x: auto;
+      padding: 16px;
+      background: #f6f8fa;
+      border-radius: 6px;
+    }
+    code {
+      font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+    }
+    blockquote {
+      border-left: 4px solid #d0d7de;
+      margin-left: 0;
+      padding-left: 16px;
+      color: #57606a;
+    }
+    footer {
+      border-top: 1px solid #d8dee4;
+      margin-top: 40px;
+      padding-top: 20px;
+      color: #57606a;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Twelve Days of an AI Agent on a Live B2B Portal: What It Found and Where It Can&#x27;t Be Trusted</h1>
+    <p>Twelve working days of an AI agent on a live b2b portal: exchange with 1C on schedule, real managers, active orders. Four quiet exchange failures it resolved (zero from 1C instead of price, trailing space in order number, double nightly export, unbuilt showcase), and four areas where the agent cannot be trusted. Regarding failures, the interesting part isn&#x27;t the fix, but how they were noticed: half of the tasks were never assigned to it. Regarding errors, they are repetitive, and a specific safeguard had to be implemented for each. Read on.</p>
+    <p class="source">
+      Machine-translated from Habr.
+      <a href="https://habr.com/ru/articles/1085712/?utm_campaign=1085712&amp;utm_source=habrahabr&amp;utm_medium=rss">Read the original Russian article</a>.
+      Wed, 23 Sep 2026 12:48:04 GMT
+    </p>
+  </header>
+  <main>
+<div><p>So much has been written about agents that "write code for you" that it's almost embarrassing to read. Almost all of it is demos: a todo list, a test, a clean repository, the author's hand on the mouse. I was interested in something else: what happens if you put an agent on a live project, where data travels between the site and 1C on a schedule, orders are taken by real managers, and a broken price reaches you via a client call.</p><p>Below are twelve working days of such an experience: from August 26 to September 8, 2026, one b2b portal, four resolved failures, and four areas where the agent makes predictable mistakes. Regarding the failures, the most interesting part is how they were noticed at all: fixing them was routine work. Regarding the errors, conversely: they are repetitive, and a specific safeguard had to be implemented for each.</p><h3>The Project</h3><p>An wholesale supplier of finishing materials: three brands, about one and a half thousand items, thirty people in the office. A closed portal for corporate clients. The catalog, prices, stock levels, and orders are exchanged between the site and 1C on a schedule, using the standard exchange protocol.</p><p>Before the portal, life looked like this: a manager exported the price list to Excel once a day, emailed it to clients, took orders from email, and manually entered them into 1C. An order received at six in the evening would be processed the next morning.</p><p>The exchange with 1C breaks precisely where two external systems connect, and it breaks quietly. No one calls, nothing crashes, just an incorrect price somewhere. This silence was the main job.</p><h3>What Happened These Twelve Days</h3><p>During the period, there were 456 work sessions, approximately 38 per day: the agent doesn't wait for Monday morning. Of these, 235 were closed tasks, 105 were requests for code integration, and 28 were deployments to the production server.</p><p>The numbers themselves prove nothing: 456 sessions can easily be accumulated by going in circles. What needs to be looked at is what exactly was fixed.</p><h4>Zero from 1C Overwrote the Real Price</h4><p>Symptom: zero appears instead of a price on product cards, even though the price was there yesterday.</p><p>For some items, the base price in 1C is simply not filled in: the item is added on demand, and the manager sets the price manually. Such an item is still included in the export and arrives as zero. The code on the site honestly recorded what arrived.</p><p>Here, it's important that the agent didn't stop at the first working solution. For the first hour, it used a patch <code>if (price &gt; 0)</code>. This removes the symptom but breaks precisely when a client receives an item for one ruble or a gift for free. The discussion moved on: each field has an owner. Purchase price, retail price, stock, name come from different sources; some fields are edited by the manager on the site. Once this is established, the behavior with an empty value ceases to be a matter of taste: a field whose source is 1C is cleared with an empty value, while a field whose source is the site is not touched at all by an empty value.</p><p>Next, the most useful part. After deployment, instead of saying "done," it proceeded to calculate the result on the production server: the price returned for seven out of eight cards; the eighth card has no price even in 1C itself. The eighth card is not an oversight; it's precisely the case for which the rule was written.</p><h4>Order Number with a Space</h4><p>A manager takes a number from 1C, enters it into the portal's search, and finds nothing. The order exists and opens via a direct link.</p><p>The number was stored in the database with a trailing space. The portal's search looks for an exact match, and the space that came with the data turns a valid order into an unfindable one, even though it looks fine in the table.</p><p>Trailing spaces, non-breaking spaces instead of regular ones, and different case in article numbers regularly come from 1C: fields are filled by people in the interface without validation.</p><p>Such issues linger in the backlog for months because they aren't critical: the system works, the data is intact, it's just a space, and any developer honestly puts the task at the end of the queue. But for someone searching for orders twenty times a day, it's a search failure.</p><h4>Nightly Export Ran Twice</h4><p>A duplicate copy of orders ended up in the accounting system overnight because the cron job launched the export twice.</p><p>The reason is mundane, but the conclusion isn't about cron. A double launch should not lead to duplicates in principle: the exchange protocol itself requires retries (the response <code>progress</code> means "send this same request again"), 1C re-requests after a timeout, and an administrator clicks "exchange now" over the schedule. Session retries are normal here, and idempotency transforms from a luxury into a requirement for functionality.</p><p>Verification, again, based on facts: on the night of September 8, the export started once. Not "should start," but it started, according to the launch log.</p><h4>Showcase for the Second Brand Didn't Build</h4><p>The build was canceled due to a busy queue, the main categories didn't appear, and there was no client request about it: the agent saw an empty showcase itself, restarted the build, and waited until all eight categories were in place.</p><p>This, in my opinion, is more interesting than anything else. Half of the failures were not reported to it.</p><h3>Where the Agent Makes Mistakes and What to Do About It</h3><p>Now for the unpleasant part. It makes mistakes predictably: it has several stable failure modes, and each is treated by structuring the process; persuasion won't help here.</p><p><strong>"Seems to be working."</strong> The most frequent and most expensive. The model readily declares a task done when the code is written and looks correct. This is only cured by having the readiness criterion defined in advance and checked by a machine or a live request: not "fixed price handling," but "there were eight cards with zero on production, now there are zero such cards, except for one where the price is not in 1C." Defining the criterion is human work, and this is perhaps the main thing required of you.</p><p><strong>Green tests instead of a live page.</strong> The agent looks at CI, but the showcase has its own life: build queue, cache, role permissions. The rule we learned the hard way: the result is viewed through the eyes of the user and under their permissions. An administrator sees everything, while a manager and a client have different selections. The page built correctly under the administrator's access, but not for the second brand's client.</p><p><strong>Fixing the symptom instead of the cause.</strong> The story with <code>if (price &gt; 0)</code> is typical. The model excellently finds the place where the value is overwritten and excellently writes a check right there. It doesn't ask itself the question "who actually owns this field?" This has to be specified in the task description.</p><p><strong>A fix that will be overwritten by another process overnight.</strong> A value was corrected manually, and it reverted in the morning: the nightly exchange process overwrites it. Before editing a field, you need to find everyone who reads and writes to it: cron jobs, exchange processes, the admin panel, migrations. This is not an instinct for the agent; it's a step in the procedure.</p><p>And separately about irreversibility. Deploying to production and migrating the production database should require human confirmation, and it's best not to let the agent handle correspondence with the client at all: let it prepare a draft, and a human sends it. The issue here is the cost of error: code can be rolled back, but a letter to a client cannot.</p><h3>What It Costs in Infrastructure</h3><p>In short: the agent is profitable to the extent that the project already has mechanical verification. It needs tests that run with a single command, requests for integration instead of commits to main, a readable deployment log, and the ability to view the production environment firsthand. On a project where all this exists, the agent handles a stream of minor issues that people don't get around to for months. On a project where the result can only be verified by a senior developer's manual check, it turns into a generator of review requests and becomes more expensive than its benefits.</p><p>The second thing that turned out to be more important than expected: the project context needs to live somewhere. It should be kept in files next to the code: who owns which fields, what cannot be touched, how readiness is verified. The model's "head" is discarded every session. This is standard documentation, just now it's read by more than just new employees.</p><h3>What It Doesn't Replace</h3><p>It doesn't replace the conversation with the client. It doesn't decide what to do with an item that has no price even in 1C. It doesn't make the decision "we are switching clients to a different pricing formula." It executes it after the meeting.</p><p>What it does well: it handles the flow of tasks that humans lack the attention for, and it notices failures before the manager does. For a portal that communicates with 1C daily, this was enough to stop managers from retyping orders from email.</p><p>If you have a similar exchange and have encountered other quiet failures, please share in the comments: I'm interested to know what other areas break silently.</p></div>
+  </main>
+  <footer>
+    Translation generated with Gemini 2.5 Flash-Lite.
+    The original article remains the source of record.
+  </footer>
+</body>
+</html>

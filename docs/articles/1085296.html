@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>How to Quickly Convert an Image to Excel</title>
+  <meta name="description" content="A 300 IQ supplier sends a price list not as a file, but as a photo of a sheet. The accounting department asks to enter data from a receipt or report that exists only as a scan into a table. Previously, the only option was to sit down and retype everything manually, line by line. Now, all you need is">
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.65;
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 32px 20px 64px;
+      color: #1f2328;
+    }
+    header {
+      border-bottom: 1px solid #d8dee4;
+      margin-bottom: 28px;
+      padding-bottom: 20px;
+    }
+    .source {
+      color: #57606a;
+      font-size: 0.95rem;
+    }
+    img, video, iframe {
+      max-width: 100%;
+      height: auto;
+    }
+    pre {
+      overflow-x: auto;
+      padding: 16px;
+      background: #f6f8fa;
+      border-radius: 6px;
+    }
+    code {
+      font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+    }
+    blockquote {
+      border-left: 4px solid #d0d7de;
+      margin-left: 0;
+      padding-left: 16px;
+      color: #57606a;
+    }
+    footer {
+      border-top: 1px solid #d8dee4;
+      margin-top: 40px;
+      padding-top: 20px;
+      color: #57606a;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>How to Quickly Convert an Image to Excel</h1>
+    <p>A 300 IQ supplier sends a price list not as a file, but as a photo of a sheet. The accounting department asks to enter data from a receipt or report that exists only as a scan into a table. Previously, the only option was to sit down and retype everything manually, line by line. Now, all you need is a chat with a neural network. Upload the photo, write one short request, and get a ready-made table that you can just paste into Excel. We show with three real examples how to do this and what to pay attention to, so that the numbers at the output don&#x27;t diverge from what was in the photo. Read more</p>
+    <p class="source">
+      Machine-translated from Habr.
+      <a href="https://habr.com/ru/companies/bothub/articles/1085296/?utm_campaign=1085296&amp;utm_source=habrahabr&amp;utm_medium=rss">Read the original Russian article</a>.
+      Wed, 23 Sep 2026 13:01:26 GMT
+    </p>
+  </header>
+  <main>
+<div><p>A 300 IQ supplier sends a price list not as a file, but as a photo of a sheet. The accounting department asks to enter data from a receipt or report that exists only as a scan into a table. Previously, the only option was to sit down and retype everything manually, line by line.</p><p>Now, all you need is a chat with a neural network. Upload the photo, write one short request, and get a ready-made table that you can just paste into Excel.</p><p>We show with three real examples how to do this and what to pay attention to, so that the numbers at the output don't diverge from what was in the photo.</p><h3>How it works</h3><p>In the examples below, we use <a href="https://bothub.ru/gemini-3.5-flash">Gemini 3.5 flash</a>, which has historically been one of the strongest options for recognizing text and tables in photos, but the same will work in <a href="https://bothub.ru/kimi-k2.6">Kimi K2.6</a>, <a href="https://bothub.ru/mistral-medium-3-5">Mistral</a>, and other models with image support.</p><p>The process is the same for any photo. Upload the image to the chat within BotHub and write: "Convert the table from this photo into a format that can be pasted into Excel.".</p><blockquote><p>Via the <a href="https://bothub.ru/?invitedBy=zx7xIePYIOcWHhTfgg6-O">link</a>, new users will immediately receive 300,000 CAPS on their balance, which is more than enough for these three examples and for your own tasks.</p></blockquote><p>Next, copy the table from the response and paste it into Excel using Ctrl+V; usually, the cells will align themselves. If everything is pasted into one column of text, select the pasted content and go to Data → Text to Columns, specifying the delimiter used by the model, most often it's a space, semicolon, or |.</p><p>Next are three examples from simple to complex.</p><h3>Example 1. A regular price list</h3><p>The most common case is a photographed, not scanned, price list. The numbers intentionally include a space as a thousands separator, a comma instead of a decimal point for fractional values, and a discount that makes the total sum not equal to the simple sum of the rows.</p><figure><img alt="image.png" loading="lazy" src="https://habrastorage.org/r/w1560/getpro/habr/upload_files/735/c73/1d6/735c731d63ef381b661556a3820117c9.png" title="Image for scanning"/><div><figcaption>Image for scanning</figcaption></div></figure><figure><img alt="image.png" loading="lazy" src="https://habrastorage.org/r/w1560/getpro/habr/upload_files/c55/609/cba/c55609cba605c9d391bafe1f021d9e06.png" title="Neural network response"/><div><figcaption>Neural network response</figcaption></div></figure><p>The model was not confused by any of the three pitfalls. The space in 2,500 and 4,500 remained part of the number, not split into two columns. The comma in 0.5 and 1.5 was preserved. And most importantly, "Total for the full package" remained 9,720, exactly as in the photo, not turning into the sum of five rows, 10,800. The model did not recalculate for us.</p><p>An unexpected bonus from Excel itself. In the photo, the discount was in parentheses, "(10%)", and after pasting, Excel automatically converted it to -10%, recognizing the parentheses as a negative number. So, even if the model leaves the parentheses as they are, Excel often corrects the format itself.</p><figure><img alt="image.png" loading="lazy" src="https://habrastorage.org/r/w1560/getpro/habr/upload_files/8c4/262/4b9/8c42624b90ce600454489c975ee24e99.png" title="Screenshot from Excel"/><div><figcaption>Screenshot from Excel</figcaption></div></figure><h3>Example 2. A report with a two-level header</h3><figure><img alt="image.png" loading="lazy" src="https://habrastorage.org/r/w1560/getpro/habr/upload_files/38d/4b8/053/38d4b8053e29d8a021889142226a160d.png" title="Image for scanning"/><div><figcaption>Image for scanning</figcaption></div></figure><p>The second case is more complex in structure, not in numbers. In the header "Sales, thousand ₽", it combines two columns, "Plan" and "Actual", and the "Total" row contains a percentage that is not the average of the other rows because it's calculated from the sum, not as an average.</p><figure><img alt="image.png" loading="lazy" src="https://habrastorage.org/r/w1560/getpro/habr/upload_files/c0d/a49/d77/c0da49d774a973c4688b589d2ec6446d.png" title="Neural network response"/><div><figcaption>Neural network response</figcaption></div></figure><p>The numbers are all correct. The percentages for each branch match the photo, and "Total" remained 98.7%, not shifting to the average of the four branches, which would have given 97.5% and looked plausible, but would have been incorrect.</p><p>However, the model did not handle the two-level header optimally: instead of a single clear line "Sales, thousand ₽ (Plan)" and "Sales, thousand ₽ (Actual)", it duplicated "Sales, thousand ₽" twice and put "Plan" and "Actual" on a separate second line. The data is not lost, but the first row after pasting consists of two identical headers in a row, and not everyone would be satisfied with such a result.</p><figure><img alt="image.png" loading="lazy" src="https://habrastorage.org/r/w1560/getpro/habr/upload_files/d7d/1dd/daf/d7d1dddaf0303171b7ff50460ee8db3a.png" title="Screenshot from Excel"/><div><figcaption>Screenshot from Excel</figcaption></div></figure><p>For such cases, the same model has a backup option, a CSV version of the response, which it offers immediately below the main one. There, the columns are already labeled humanly, "Sales, thousand ₽ (Plan)" and "Sales, thousand ₽ (Actual)" in one line. Copy this text, paste it into Notepad, save the file with a .csv extension, and open it in Excel; the table will be laid out in columns automatically, without the hassle of Text to Columns.</p><h3>Example 3. A receipt</h3><p>The third format is not a table in the usual sense, but a receipt with columns aligned to different edges. Here, the discount is shown with a minus sign, not parentheses as in the first example, and the amounts are indicated with kopecks.</p><figure><img alt="image.png" loading="lazy" src="https://habrastorage.org/r/w1560/getpro/habr/upload_files/b33/f79/f91/b33f79f9194b3382dd82a986704e9a79.png" title="Image for scanning"/><div><figcaption>Image for scanning</figcaption></div></figure><figure><img alt="image.png" loading="lazy" src="https://habrastorage.org/r/w1560/getpro/habr/upload_files/085/661/152/085661152c82fe07ac8d345b504f399f.png" title="Neural network response"/><div><figcaption>Neural network response</figcaption></div></figure><p>The minus sign for the discount was not lost; -58.50 remained a negative number, not text. "TOTAL TO PAY" matched the receipt, 1,111.50. As a minor detail, in the table itself, the value appeared as -58.5 without the second zero; this is the general cell format in Excel, not something the model "broke." If desired, it's enough to set the number format with two decimal places.</p><figure><img alt="image.png" loading="lazy" src="https://habrastorage.org/r/w1560/getpro/habr/upload_files/c0d/14e/75e/c0d14e75ed5b963e8567ed24cbfb208e.png" title="Screenshot from Excel"/><div><figcaption>Screenshot from Excel</figcaption></div></figure><h3>What to look for in any photo</h3><p>It's always worth manually verifying the final and calculated rows. The neural network sometimes doesn't just rewrite what it sees but subtly recalculates it in its own way, and it looks just as confident as the correct answer.</p><p>Neural networks usually don't assemble multi-level table headers into a single clean row on the first try. It's cheaper to immediately check the CSV alternative, which many models offer after the main response, or to fix the header manually than to redo the entire table.</p><p>Numbers with a space instead of a thousands separator and a comma instead of a decimal point don't always get into Excel as numbers the first time; sometimes, the result needs to be corrected by cell format.</p><p>Negative values are formatted differently: with a minus sign, parentheses, or the separate word "discount." After pasting into Excel, you should check that they are indeed counted as negative, not as text.</p><h3>What's the result</h3><p>The process is the same for photos of any complexity; all you need is the image itself and a couple of minutes. This saves time but doesn't replace careful attention to numbers, especially if the table is later used for accounting or reporting.</p><p>If you've used a similar method, share in the comments which photos confuse the neural network the most.</p><blockquote><p>You can test document scanning right now on our <a href="https://bothub.ru/?invitedBy=zx7xIePYIOcWHhTfgg6-O">BotHub</a> service. And via the <a href="https://bothub.ru/?invitedBy=zx7xIePYIOcWHhTfgg6-O">referral link</a>, you'll get 300,000 CAPS for free, which is more than enough to scan hundreds of images.</p></blockquote><h4>Our blog</h4><p>In <a href="https://habr.com/ru/companies/bothub/">our blog</a>, there are many other interesting articles:</p><ul><li><p><a href="https://habr.com/ru/companies/bothub/articles/1084020/">Top 15 Russian-language AI Chatbots in 2026: Comparing GPT, Claude, Gemini, DeepSeek</a></p></li><li><p><a href="https://habr.com/ru/companies/bothub/articles/1082534/">AI for Resumes in 2026: How to Beat ATS, ChatGPT, and HR Algorithms</a></p></li><li><p><a href="https://habr.com/ru/companies/bothub/articles/1082510/">How to Write a Cover Letter for a Job Opening Using AI: Instructions, Examples, and Neural Network Tests</a></p></li><li><p><a href="https://habr.com/ru/companies/bothub/articles/1080918/">AI for Business Analysts: Analyzing Technical Specifications, Project Estimation, and Schedule Planning in 15 Minutes</a></p></li><li><p><a href="https://habr.com/ru/companies/bothub/articles/1083288/">How to Create a Photo Collage Using AI for Free: Step-by-Step Instructions</a></p></li></ul></div>
+  </main>
+  <footer>
+    Translation generated with Gemini 2.5 Flash-Lite.
+    The original article remains the source of record.
+  </footer>
+</body>
+</html>

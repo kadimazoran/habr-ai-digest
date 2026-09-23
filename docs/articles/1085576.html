@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>We Wrote an Autonomous Agent for VACUUM/ANALYZE and Launched it on 800+ Test Databases: What Came of It</title>
+  <meta name="description" content="How to simplify the management of a fleet of 800+ PostgreSQL database instances? You can customize postgres_exporter to get the metrics you need. Or, for an even simpler approach, monitor using Grafana, Prometheus, and a customized postgres_exporter, and get data through an AI report that aggregates">
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.65;
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 32px 20px 64px;
+      color: #1f2328;
+    }
+    header {
+      border-bottom: 1px solid #d8dee4;
+      margin-bottom: 28px;
+      padding-bottom: 20px;
+    }
+    .source {
+      color: #57606a;
+      font-size: 0.95rem;
+    }
+    img, video, iframe {
+      max-width: 100%;
+      height: auto;
+    }
+    pre {
+      overflow-x: auto;
+      padding: 16px;
+      background: #f6f8fa;
+      border-radius: 6px;
+    }
+    code {
+      font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+    }
+    blockquote {
+      border-left: 4px solid #d0d7de;
+      margin-left: 0;
+      padding-left: 16px;
+      color: #57606a;
+    }
+    footer {
+      border-top: 1px solid #d8dee4;
+      margin-top: 40px;
+      padding-top: 20px;
+      color: #57606a;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>We Wrote an Autonomous Agent for VACUUM/ANALYZE and Launched it on 800+ Test Databases: What Came of It</h1>
+    <p>How to simplify the management of a fleet of 800+ PostgreSQL database instances? You can customize postgres_exporter to get the metrics you need. Or, for an even simpler approach, monitor using Grafana, Prometheus, and a customized postgres_exporter, and get data through an AI report that aggregates Prometheus data via direct PromQL queries. But if that&#x27;s not enough, you can even entrust an AI agent with typical tickets like freeing up disk space and scheduling database shutdowns. My name is Stanislav Epishin, and I&#x27;m from the &quot;R4C.Support.Apocalypse Riders&quot; team at SberTech. I&#x27;ve previously written about how we customized postgres_exporter to pangolin_exporter, fixing a bug in transaction duration calculation, and how we implemented the Prometheus + Pipeliner + TaskTracker + GigaChat stack for automatic ticket creation. In this article, I&#x27;ll discuss an R&amp;D project for a small DBA team where we tested a hypothesis: can we build an autonomous agent that will independently handle tickets, such as clearing disk space, performing VACUUM/ANALYZE, and scheduling database shutdowns? Here, I&#x27;ve outlined instructions for creating the agent (with full code and explanations) and a detailed real-world example of autonomous VACUUM/ANALYZE with anomaly detection via LLM. I&#x27;ll also show how to organize an event feed for monitoring the agent&#x27;s operation and delve into where and how LLM is used in the project. Read on</p>
+    <p class="source">
+      Machine-translated from Habr.
+      <a href="https://habr.com/ru/companies/sberbank/articles/1085576/?utm_campaign=1085576&amp;utm_source=habrahabr&amp;utm_medium=rss">Read the original Russian article</a>.
+      Wed, 23 Sep 2026 13:51:54 GMT
+    </p>
+  </header>
+  <main>
+<div><figure><img loading="lazy" src="https://habrastorage.org/r/w1560/getpro/habr/upload_files/d02/7d9/edf/d027d9edf0eb14bf8de410ccf9a01f40.png"/></figure><p>How to simplify the management of a fleet of 800+ PostgreSQL database instances? You can customize postgres_exporter to get the metrics you need. Or, for an even simpler approach? Monitor using Grafana, Prometheus, and a customized postgres_exporter, and get data through an AI report that aggregates Prometheus data via direct PromQL queries.</p><p>But if that's not enough, you can even entrust an AI agent with typical tickets like freeing up disk space and scheduling database shutdowns.</p><p>My name is Stanislav Epishin, and I'm from the "R4C.Support.Apocalypse Riders" team at SberTech. I've previously written about how we <a href="https://habr.com/ru/companies/sberbank/articles/845616/">customized postgres_exporter to pangolin_exporter</a>, fixing a bug in transaction duration calculation, and how we <a href="https://habr.com/ru/companies/sberbank/articles/1051076/">implemented the Prometheus + Pipeliner + TaskTracker + GigaChat stack</a> for automatic ticket creation. </p><p>In this article, I'll discuss an R&D project for a small DBA team where we tested a hypothesis: can we build an autonomous agent that will independently handle tickets: clearing disk space, performing VACUUM/ANALYZE, and scheduling database shutdowns?</p><p>Here, I've outlined instructions for creating the agent (with full code and explanations) and a detailed real-world example of autonomous VACUUM/ANALYZE with anomaly detection via LLM. I'll also show how to organize an event feed for monitoring the agent's operation and delve into where and how LLM is used in the project.</p><h3>Project Architecture: Two Operating Modes</h3><p>The project has two independent modes that use the same codebase and common tools but are launched differently and pursue different goals:</p><ul><li><p><strong>Interactive Agent (LangGraph). </strong>User → Streamlit WebUI → LangGraph graph → 32 tools → external systems (<a href="https://pangolin.sbertech.ru/">Platform V Pangolin DB</a>, TaskTracker, Prometheus, Pipeliner, LLM).</p></li><li><p><strong>Autonomous Agent (cron). </strong>Cron → Ticket Scanner → Handlers (Statistics / DiskSpace / PlannedMaintenance) → external systems (TaskTracker, DB, LLM).</p></li></ul><p>The interactive agent is designed for manual diagnostics and chat operations, while the autonomous agent is for automatic ticket resolution on a schedule.</p><h3>Where LLM is Used in the Entire Project </h3><p>LLM (GigaChat) is used in four different scenarios. Below is a brief description of each (instead of a complex diagram):</p><ul><li><p><strong>Interactive Agent (LangGraph)</strong> — LLM is called repeatedly in a loop: it understands the request, selects a tool, enriches arguments, requests confirmation, and forms a response.</p></li><li><p><strong>Autonomous Agent (cron)</strong> — LLM is called once to extract structured data from the ticket text (host, mountpoint, date and time, action). After that, hard logic is executed (SSH, SQL).</p></li><li><p><strong>analyze_pangolin_ai</strong> collects metrics from Prometheus and error logs, and passes them to the LLM to generate conclusions and recommendations in Russian.</p></li><li><p><strong>get_db_log_errors</strong> analyzes database logs, identifies critical errors (FATAL, PANIC, deadlock), and can pass them to the LLM for analysis (extension point).</p></li></ul><h2>Event Feed — A Window into the Agent's Inner World</h2><p>The agent logs every significant action to a JSONL log file (logs/agent_events.jsonl). The WebUI has an "Event Feed" page that allows you to:</p><ul><li><p>filter events by importance level (INFO, WARNING, ERROR, DEBUG);</p></li><li><p>search by ticket number, handler (StatisticsHandler, DiskSpaceHandler), or message fragment;</p></li><li><p>view details — which step was executed, what parameters were passed, the result;</p></li><li><p>monitor the processing progress in real-time (with auto-refresh).</p></li></ul><p>Example of the feed display:<br/><br/>✅ CORESUP-61769 — StatisticsHandler — 1 event (ticket detected at 03.06 16:50)<br/>✅ CORESUP-61768 — StatisticsHandler — 1 event (ticket detected at 03.06 16:50)<br/>✅ CORESUP-61770 — StatisticsHandler — 1 event (ticket detected at 03.06 16:50)<br/>✅ CORESUP-61771 — StatisticsHandler — 5 events (ticket detected at 03.06 16:50)<br/>✅ CORESUP-61772 — StatisticsHandler — 5 events (ticket detected at 03.06 16:50)<br/>✅ CORESUP-61773 — StatisticsHandler — 5 events (ticket detected at 03.06 16:50)<br/>✅ CORESUP-61774 — StatisticsHandler — 3 events (ticket detected at 03.06 16:50)<br/>✅ CORESUP-61775 — StatisticsHandler — 5 events (ticket detected at 03.06 16:50)<br/>✅ CORESUP-61776 — StatisticsHandler — 5 events (ticket detected at 03.06 16:50)<br/>ℹ️ CORESUP-61749 — PlannedMaintenanceHandler — 4 events (ticket detected at 03.06 16:51)</p><p>Example log entry:</p><blockquote><p>{"timestamp": "2025-04-15T10:23:45", "event_type": "progress", "ticket": "R4CDBA-12345", "handler": "StatisticsHandler", "step": "llm_plan", "message": "LLM plan: vacuum orders.status_updates, analyze", "level": "INFO"}</p></blockquote><h2>Quick Start: Writing Your Own Agent in 30 Minutes (Step-by-Step)</h2><p>A complete working project template (with all code, configurations, and scripts) is available in the <a href="https://gitverse.ru/pelmen/DBA_agent">public repository</a> (the link leads to a de-identified template ready for launch). Here, I'll show only the key elements so you can get started quickly by cloning the repository.</p><h3>1. Project Structure</h3><figure><img loading="lazy" src="https://habrastorage.org/r/w1560/getpro/habr/upload_files/599/05b/395/59905b395981cd188f146911b34a2e74.png"/></figure><h3>2. Key Handler StatisticsHandler (Abbreviated, Core Only)</h3><pre><code>class StatisticsHandler(BaseHandler): # ... (initialization, can_handle, extract_details omitted — see repository) def __init__(self): self.llm = LLMClient() # ... settings # ... (auxiliary methods omitted, full code in repository) def process(self, ticket_code, ticket_data=None): log_event(
+  </main>
+  <footer>
+    Translation generated with Gemini 2.5 Flash-Lite.
+    The original article remains the source of record.
+  </footer>
+</body>
+</html>

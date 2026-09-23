@@ -1,0 +1,209 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Not a word in Chinese</title>
+  <meta name="description" content="Sometimes LLMs get confused about the language they respond in. You ask a question in English, and you get a wall of Chinese text in response. Why not help them forget the languages we&#x27;re not interested in? Read more">
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.65;
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 32px 20px 64px;
+      color: #1f2328;
+    }
+    header {
+      border-bottom: 1px solid #d8dee4;
+      margin-bottom: 28px;
+      padding-bottom: 20px;
+    }
+    .source {
+      color: #57606a;
+      font-size: 0.95rem;
+    }
+    img, video, iframe {
+      max-width: 100%;
+      height: auto;
+    }
+    pre {
+      overflow-x: auto;
+      padding: 16px;
+      background: #f6f8fa;
+      border-radius: 6px;
+    }
+    code {
+      font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+    }
+    blockquote {
+      border-left: 4px solid #d0d7de;
+      margin-left: 0;
+      padding-left: 16px;
+      color: #57606a;
+    }
+    footer {
+      border-top: 1px solid #d8dee4;
+      margin-top: 40px;
+      padding-top: 20px;
+      color: #57606a;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Not a word in Chinese</h1>
+    <p>Sometimes LLMs get confused about the language they respond in. You ask a question in English, and you get a wall of Chinese text in response. Why not help them forget the languages we&#x27;re not interested in? Read more</p>
+    <p class="source">
+      Machine-translated from Habr.
+      <a href="https://habr.com/ru/articles/1085742/?utm_campaign=1085742&amp;utm_source=habrahabr&amp;utm_medium=rss">Read the original Russian article</a>.
+      Wed, 23 Sep 2026 13:26:42 GMT
+    </p>
+  </header>
+  <main>
+<div><p>Sometimes LLMs get confused about the language they respond in (<a href="https://habr.com/ru/companies/selectel/articles/1044854/">Why neural networks think so</a>). So why not help them forget the languages we're not interested in.</p><figure><img loading="lazy" src="https://habrastorage.org/r/w1560/getpro/habr/upload_files/827/362/94f/82736294f2ad4c3e8009f4b559a09540.png"/></figure><p>As we know, LLMs work with tokens: they translate chunks of words into multidimensional vectors, multiply them by their weights many times, add them together, and then, based on the last vector that has absorbed all the context, they compute the next token. Consequently, it shouldn't be difficult to prohibit the computation of specific tokens from languages we don't need.</p><p>Let's try to dissect a small model, <a href="https://huggingface.co/unsloth/Qwen3.5-0.8B-GGUF">Qwen3.5-0.8B-Q8_0.gguf</a>, and modify it.</p><figure><img alt="Initial state" loading="lazy" src="https://habrastorage.org/r/w1560/getpro/habr/upload_files/75b/626/27d/75b62627d3d735cb9791bb6cdae7ea05.png" title="Initial state"/><div><figcaption>Initial state</figcaption></div></figure><pre><code>import gguf
+
+reader = gguf.GGUFReader("./Qwen3.5-0.8B-Q8_0.gguf")
+tokens = reader.fields.get("tokenizer.ggml.tokens").contents()
+print(f"Total tokens {len(tokens)}")
+types = reader.fields.get("tokenizer.ggml.token_type").contents()
+print(f"Total token types {len(set(types))} : {set(types)}")
+
+# Total tokens 248320
+# Total token types 4 : {1, 3, 4, 5}</code><div><a href="https://sourcecraft.dev/"><img loading="lazy"/></a></div></pre><p>It uses a byte-pair encoding tokenizer with a vocabulary of 248320 tokens, divided into 4 types (1 - text, 3 - &lt;|special|&gt;&lt;|tokens|&gt;, 4 - &lt;special&gt;&lt;/tokens&gt;, 5 - padding). Text tokens range from <code>id_0=!</code> to <code>id_248043=ありますか</code>. Let's define a list of tokens we want to keep:</p><pre><code>import sys
+
+keep_check = regex.compile(r"["
+  r"[\p{N}\p{P}\p{S}&&[\p{Script=Common}]]" # Numbers, punctuation, and symbols
+  r"\s"                                   # Whitespace characters
+  r"а-яА-ЯёЁ"                             # Cyrillic
+  r"a-zA-Z"                               # Latin alphabet
+r"]", regex.V1)
+
+symbols_to_keep = set()
+for cp in range(sys.maxunicode + 1):
+  if keep_check.fullmatch(chr(cp)):
+    symbols_to_keep.add(chr(cp))
+print(f"{len(symbols_to_keep)} symbols")
+
+# 7994 symbols</code><div><a href="https://sourcecraft.dev/"><img loading="lazy"/></a></div></pre><p>This gives us a list of 7994 symbols. Now we can filter the LLM's tokens so that they only contain these symbols.</p><pre><code>from gguf.vocab import bytes_to_unicode
+
+byte_decoder = {ch: b for b, ch in bytes_to_unicode().items()}
+tokens_to_rm = set()
+for i, t in enumerate(tokens):
+  if types[i] != 1:
+    # We are only interested in text tokens
+    continue
+
+  raw = bytes(byte_decoder[ch] for ch in t)
+  try:
+    text = raw.decode("utf-8")
+    if not all((ch in symbols_to_keep) for ch in text):
+      tokens_to_rm.add(i)
+  except UnicodeDecodeError:
+    # Leftovers of utf-8, let them be
+    continue
+
+  print(f"Remove {len(tokens_to_rm)} tokens")
+  
+  # Remove 100468 tokens</code><div><a href="https://sourcecraft.dev/"><img loading="lazy"/></a></div></pre><p>In total, out of the initial 248320 tokens, we will remove 100468. We will do this by zeroing out the weights in the penultimate layer, which is responsible for decoding the multidimensional vector into token logits.</p><pre><code>for t in reader.tensors:
+  print(t.name)
+
+# output_norm.weight
+# token_embd.weight
+# blk.0.attn_gate.weight
+# ... 329 more layers
+# blk.24.nextn.shared_head_norm.weight
+# blk.24.post_attention_norm.weight</code><div><a href="https://sourcecraft.dev/"><img loading="lazy"/></a></div></pre><p>This <code>token_embd.weight</code> is what we need. It's a shared encode/decode layer, so zeroing out tokens will also affect the LLM's ability to read texts in these languages. Well, that's a sacrifice I'm willing to make.</p><pre><code>import numpy as np
+
+token_embd = next(t for t in reader.tensors if t.name == "token_embd.weight")
+n_vocab, bytes_per_row = token_embd.data.shape
+block_size = 1*2 + 32*1 # Q8_0: one fp16 scale coefficient + 32 int8
+n_blocks = bytes_per_row // block_size
+
+# we will patch the file directly
+token_embd_data = np.memmap(
+  gguf_file,
+  dtype=np.uint8,
+  mode="r+",
+  offset=token_embd.data_offset,
+  shape=(n_vocab, n_blocks, block_size)
+)
+# zero out the fp16 scale coefficient
+token_embd_data[tokens_to_rm, :, 0:2] = 0
+token_embd_data.flush()
+del token_embd_data</code><div><a href="https://sourcecraft.dev/"><img loading="lazy"/></a></div></pre><p>Now let's try what we've got. Let's run this model in llama.cpp and try to get it to produce hieroglyphs.</p><figure><img alt="No words" loading="lazy" src="https://habrastorage.org/r/w1560/getpro/habr/upload_files/4f0/c24/2fd/4f0c242fd12198f91d4f36d2ed3c7eac.png" title="No words"/><div><figcaption>No words</figcaption></div></figure><p>That's all, really.</p><details><summary>Full code</summary><div><pre><code>import shutil
+
+gguf_file = shutil.copyfile(
+    "./Qwen3.5-0.8B-Q8_0.gguf",
+    "./Qwen3.5-0.8B-Q8_0.latcyr.gguf"
+)
+
+import gguf
+
+reader = gguf.GGUFReader(gguf_file)
+tokens = reader.fields.get("tokenizer.ggml.tokens").contents()
+print(f"Total tokens {len(tokens)}")
+types = reader.fields.get("tokenizer.ggml.token_type").contents()
+print(f"Total token types {len(set(types))} : {set(types)}")
+
+
+import sys
+import regex
+
+keep_check = regex.compile(r"["
+  r"[\p{N}\p{P}\p{S}&&[\p{Script=Common}]]" # General numbers, punctuation, and symbols
+  r"\s"                                   # Whitespace characters
+  r"а-яА-ЯёЁ"                             # Cyrillic
+  r"a-zA-Z"                               # Latin alphabet
+r"]", regex.V1)
+
+symbols_to_keep = set()
+for cp in range(sys.maxunicode + 1):
+  if keep_check.fullmatch(chr(cp)):
+    symbols_to_keep.add(chr(cp))
+print(f"{len(symbols_to_keep)} symbols")
+
+
+from gguf.vocab import bytes_to_unicode
+BYTE_DECODER = {ch: b for b, ch in bytes_to_unicode().items()}
+tokens_to_rm = []
+for i, t in enumerate(tokens):
+    if types[i] != 1:
+        continue
+
+    raw = bytes(BYTE_DECODER[ch] for ch in t)
+    try:
+        text = raw.decode("utf-8")
+        if not all((ch in symbols_to_keep) for ch in text):
+            tokens_to_rm.append(i)
+    except UnicodeDecodeError:
+        # Leftovers of utf-8
+        continue
+
+print(f"Remove {len(tokens_to_rm)} tokens")
+
+import numpy as np
+
+token_embd = next(t for t in reader.tensors if t.name == "token_embd.weight")
+n_vocab, bytes_per_row = token_embd.data.shape
+block_size = 1*2 + 32*1 # Q8_0: one fp16 scale coefficient + 32 int8
+n_blocks = bytes_per_row // block_size
+
+token_embd_data = np.memmap(
+    gguf_file,
+    dtype=np.uint8,
+    mode="r+",
+    offset=token_embd.data_offset,
+    shape=(n_vocab, n_blocks, block_size)
+)
+token_embd_data[tokens_to_rm, :, 0:2] = 0 # zero out fp16 scale coefficient
+token_embd_data.flush()
+del token_embd_data</code><div><a href="https://sourcecraft.dev/"><img loading="lazy"/></a></div></pre></div></details></div>
+  </main>
+  <footer>
+    Translation generated with Gemini 2.5 Flash-Lite.
+    The original article remains the source of record.
+  </footer>
+</body>
+</html>

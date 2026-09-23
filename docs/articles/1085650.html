@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>I wanted my own system that I could change at any time, so I made three desktop AI applications</title>
+  <meta name="description" content="I&#x27;ve always wanted to have my own system: my own applications where I can change anything, not someone else&#x27;s, which they might change tomorrow. This is how Zeqou came about – three desktop applications for working with language models: the ZeqouXChat chat on Tauri 2 and React 19, the Zeqo">
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.65;
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 32px 20px 64px;
+      color: #1f2328;
+    }
+    header {
+      border-bottom: 1px solid #d8dee4;
+      margin-bottom: 28px;
+      padding-bottom: 20px;
+    }
+    .source {
+      color: #57606a;
+      font-size: 0.95rem;
+    }
+    img, video, iframe {
+      max-width: 100%;
+      height: auto;
+    }
+    pre {
+      overflow-x: auto;
+      padding: 16px;
+      background: #f6f8fa;
+      border-radius: 6px;
+    }
+    code {
+      font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+    }
+    blockquote {
+      border-left: 4px solid #d0d7de;
+      margin-left: 0;
+      padding-left: 16px;
+      color: #57606a;
+    }
+    footer {
+      border-top: 1px solid #d8dee4;
+      margin-top: 40px;
+      padding-top: 20px;
+      color: #57606a;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>I wanted my own system that I could change at any time, so I made three desktop AI applications</h1>
+    <p>I&#x27;ve always wanted to have my own system: my own applications where I can change anything, not someone else&#x27;s, which they might change tomorrow. This is how Zeqou came about – three desktop applications for working with language models: the ZeqouXChat chat on Tauri 2 and React 19, the Zeqou Harness workspace for agents with a task list and memory, and the ZeqouXTraining model fine-tuning studio with LoRA, QLoRA, and a Thinking mode. I&#x27;ll explain how it all works, what problems I encountered (spoiler: installers), and why I chose a closed license. Read more</p>
+    <p class="source">
+      Machine-translated from Habr.
+      <a href="https://habr.com/ru/articles/1085650/?utm_campaign=1085650&amp;utm_source=habrahabr&amp;utm_medium=rss">Read the original Russian article</a>.
+      Wed, 23 Sep 2026 11:40:15 GMT
+    </p>
+  </header>
+  <main>
+<div><h2>I wanted my own system that I could change at any time, so I made three desktop AI applications</h2><p>Hello, Habr! This is my first article, and it's about <strong>Zeqou</strong>: a small ecosystem of desktop applications for working with language models. Two applications are ready, and the third will be released very soon. I'll tell you what they can do, how they are structured, and what unexpected problems I encountered.</p><blockquote><p><strong>In short.</strong> Zeqou consists of three applications: a chat, a workspace for agents, and a model fine-tuning studio. They are free and work on Windows, macOS, and Linux. The chat and Harness are ready, xtraining will be released very soon.</p></blockquote><h3>Why all this</h3><p>I've always wanted to have <strong>my own system</strong>: my own applications where I can change anything at any time. Not something external, where you don't know what will happen to it tomorrow: they might change the terms, remove a feature, shut down the service. This is how Zeqou came about.</p><h3>Ecosystem in one table</h3><div><div><table><tbody><tr><th><p>Application</p></th><th><p>What it is</p></th><th><p>Stack</p></th><th><p>Status</p></th></tr><tr><td><p><strong>ZeqouXChat</strong></p></td><td><p>AI chat with streaming responses</p></td><td><p>Tauri 2 + React 19</p></td><td><p>ready</p></td></tr><tr><td><p><strong>Zeqou Harness</strong></p></td><td><p>Workspace for models and agents</p></td><td><p>Electron</p></td><td><p>ready</p></td></tr><tr><td><p><strong>ZeqouXTraining</strong></p></td><td><p>Model fine-tuning studio</p></td><td><p>Electron + React + Python</p></td><td><p>soon</p></td></tr></tbody></table></div></div><p>Ecosystem website: <a href="https://mishaadevv.github.io/zeqou/">mishaadevv.github.io/zeqou</a></p><h3>ZeqouXChat: desktop AI chat</h3><p><a href="https://github.com/Mishaadevv/xchat">ZeqouXChat</a> is a chat with language models built on Tauri 2 and React 19. It works with both cloud models using your API key and local models via Ollama.</p><p><strong>Supported providers:</strong> OpenAI, Anthropic, Google, OpenRouter, Ollama, and any custom endpoints.</p><p><strong>What's inside:</strong></p><ul><li><p>streaming responses;</p></li><li><p>code highlighting (highlight.js), Markdown, and KaTeX formulas;</p></li><li><p>built-in Zeqou datasets for the trainer: the main v2 (EN→RU translation with reasoning), as well as parts with dialogues, code, science and technology, and language packs;</p></li><li><p>installers for Windows, macOS, and Linux.</p></li></ul><h3>Zeqou Harness: workspace for models and agents</h3><p><a href="https://github.com/Mishaadevv/harness">Zeqou Harness</a> is designed for more serious work than a regular chat. It's a desktop application built with Electron, which brings together models and agents, and stores project context in one place. The providers are the same as in the chat.</p><p><strong>What it includes:</strong></p><ul><li><p><strong>Memory.</strong> This is the context that the AI remembers, so it doesn't have to explain everything again in each session.</p></li><li><p><strong>Agent's task list.</strong> When the work is multi-step, the agent plans the steps using the <code>todo</code> tool, and the <strong>Tasks</strong> panel displays this plan in real-time with statuses like "pending," "in progress," and "done." You can also edit statuses manually. The idea is to see what the agent is about to do and correct its course in time.</p></li><li><p><strong>Tools and MCP.</strong> MCP is not included out of the box, but it can be connected.</p></li><li><p><strong>Installers</strong> for Windows, macOS, and Linux.</p></li></ul><h3>ZeqouXTraining: model fine-tuning studio (release soon)</h3><p><a href="https://github.com/Mishaadevv/xtraining">ZeqouXTraining</a> is a desktop studio for fine-tuning small language models <strong>locally, without the cloud</strong>: a real pipeline on GPU or CPU.</p><h4>How it's structured</h4><p>The application consists of three layers:</p><pre><code>┌───────────────────────────────────────────────┐
+│  React interface (Vite, TypeScript, Tailwind) │
+│  pages, wizard, charts, playground        │
+├───────────────────────────────────────────────┤
+│  Electron main (Node)                         │
+│  preload bridge, IPC, tasks, registry, storage │
+├───────────────────────────────────────────────┤
+│  Python engine                                │
+│  datasets, backends, trainer, inference          │
+└───────────────────────────────────────────────┘
+      Node ⇄ Python: line-by-line JSON in stdout
+</code><div><a href="https://sourcecraft.dev/"><img loading="lazy"/></a></div></pre><p>Node and Python communicate via a line-by-line JSON protocol. This way, the Node part remains a thin supervisor, and all ML logic is tested as regular Python without an interface.</p><h4>What it can do already</h4><div><div><table><tbody><tr><th><p>Section</p></th><th><p>What it does</p></th></tr><tr><td><p><strong>Projects</strong></p></td><td><p>Each training run has its own history, best loss, and recorded configuration</p></td></tr><tr><td><p><strong>Training Wizard</strong></p></td><td><p>You select a base model and dataset, and the application automatically selects batch size, precision, context length, optimizer, and rank based on your hardware, explaining each choice. Simple and Advanced modes</p></td></tr><tr><td><p><strong>Datasets</strong></p></td><td><p>JSON, JSONL, CSV, TXT, Parquet, a folder of shards, or IDs from Hugging Face Hub. Files are not copied but used in place</p></td></tr><tr><td><p><strong>Validation</strong></p></td><td><p>Shows what the model will actually learn: field matching, duplicates, overly long entries, role statistics</p></td></tr><tr><td><p><strong>Training</strong></p></td><td><p>Live loss and LR curves, GPU and VRAM load (via nvidia-smi), ETA, event log, checkpoints with pause and resume</p></td></tr><tr><td><p><strong>Models</strong></p></td><td><p>Library of base and trained models, export (copying or merging adapter into base model) and one-click launch in playground</p></td></tr><tr><td><p><strong>Playground</strong></p></td><td><p>Dialogue with the trained model and Thinking mode</p></td></tr><tr><td><p><strong>Hardware</strong></p></td><td><p>Graphics cards, PyTorch version, CUDA support, CPU, and RAM</p></td></tr><tr><td><p><strong>Settings</strong></p></td><td><p>Interpreter selection, one-click ML environment setup in an isolated venv, Hugging Face token in system key storage</p></td></tr></tbody></table></div></div><p><strong>Training methods:</strong> LoRA, 4-bit QLoRA, full fine-tune, SFT, and training a small GPT from scratch.</p><h4>Thinking mode</h4><p>In the playground, you can enable <strong>Thinking</strong> mode. Then, the model's reasoning between <code>&lt;think&gt;</code> and <code>&lt;/think&gt;</code> is displayed in a separate collapsible panel before the response, and temperature, top-p, and repetition penalty can be changed on the fly. Models that were not trained to reason will simply return an empty block, so the switch is safe.</p><h4>How it's tested</h4><ul><li><p><strong>206</strong> tests for the Python engine.</p></li><li><p><strong>54</strong> end-to-end smoke tests.</p></li></ul><p>Smoke tests don't simulate reality: they launch a real Electron and a real Python backend, import real dataset fixtures, check for corrupted files, and export a real folder with artifacts. All of this happens in a temporary directory, so your library is not affected.</p><h3>The stack didn't go as planned</h3><p>To be honest: the different stacks (Tauri in the chat, Electron in Harness and xtraining) were not the result of a long-term strategy. It just happened, and partly it was just for variety. Tauri is good where small size and a native feel are important, while Electron is convenient when you need a Node layer and a familiar ecosystem. There's no secret here.</p><p>The most unpleasant part turned out to be the <strong>installers</strong>. On Windows, I have NSIS with a choice of installation folder, where the license is shown before copying files, plus a portable build without installation. For macOS and Linux, different formats are needed (<code>.dmg</code>, <code>.AppImage</code>, <code>.deb</code>), and setting everything up so that builds for three operating systems are released together turned out to be more difficult than expected.</p><h3>Why the license is closed</h3><p>All three projects are under <a href="https://polyformproject.org/licenses/strict/1.0.0/">PolyForm Strict 1.0.0</a>. This is source-available, not open source.</p><div><div><table><tbody><tr><th><p>Allowed</p></th><th><p>Not allowed without my permission</p></th></tr><tr><td><p>View code</p></td><td><p>Copy</p></td></tr><tr><td><p>Use applications personally</p></td><td><p>Modify</p></td></tr><tr><td><p></p></td><td><p>Distribute</p></td></tr><tr><td><p></p></td><td><p>Create derivative projects</p></td></tr></tbody></table></div></div><p>Why I decided this:</p><ol><li><p><strong>Reputation.</strong> I don't want my system to be called viruses: if someone builds and distributes a modified version, the reputation of the original will suffer.</p></li><li><p><strong>A year of work.</strong> This is a project I've been working on for a whole year, and I don't want it to be simply taken and completely redone for someone else's needs.</p></li></ol><p>If the project doesn't take off, I might open the source code later.</p><h3>What's next</h3><ul><li><p>✅ <strong>ZeqouXChat</strong>: ready.</p></li><li><p>✅ <strong>Zeqou Harness</strong>: ready.</p></li><li><p>🔜 <strong>ZeqouXTraining</strong>: will be released very soon, I'm working on it now.</p></li><li><p>🔜 <strong>Built-in model.</strong> Currently, to use the chat and Harness, you need your own API key or a local model via Ollama. When the project starts generating revenue, I will add an AI model that will work right out of the box.</p></li></ul><h3>Links</h3><ul><li><p>Website: <a href="https://mishaadevv.github.io/zeqou/">mishaadevv.github.io/zeqou</a></p></li><li><p>ZeqouXChat: <a href="https://github.com/Mishaadevv/xchat">github.com/Mishaadevv/xchat</a></p></li><li><p>Zeqou Harness: <a href="https://github.com/Mishaadevv/harness">github.com/Mishaadevv/harness</a></p></li><li><p>ZeqouXTraining: <a href="https://github.com/Mishaadevv/xtraining">github.com/Mishaadevv/xtraining</a></p></li></ul><p>I would be glad to receive feedback and questions in the comments. I'm especially interested in what local models you use and what you feel is missing in such applications.</p></div>
+  </main>
+  <footer>
+    Translation generated with Gemini 2.5 Flash-Lite.
+    The original article remains the source of record.
+  </footer>
+</body>
+</html>

@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>The Evolution of AI Harness</title>
+  <meta name="description" content="Over the past few years, the wrapper around LLM models has evolved from a simple chat interface and a rules file in an editor to a self-sufficient technological layer – the harness – with its own protocols, standards, and foundation. Client lock-in has shifted from the specific LLM model level to th">
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.65;
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 32px 20px 64px;
+      color: #1f2328;
+    }
+    header {
+      border-bottom: 1px solid #d8dee4;
+      margin-bottom: 28px;
+      padding-bottom: 20px;
+    }
+    .source {
+      color: #57606a;
+      font-size: 0.95rem;
+    }
+    img, video, iframe {
+      max-width: 100%;
+      height: auto;
+    }
+    pre {
+      overflow-x: auto;
+      padding: 16px;
+      background: #f6f8fa;
+      border-radius: 6px;
+    }
+    code {
+      font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+    }
+    blockquote {
+      border-left: 4px solid #d0d7de;
+      margin-left: 0;
+      padding-left: 16px;
+      color: #57606a;
+    }
+    footer {
+      border-top: 1px solid #d8dee4;
+      margin-top: 40px;
+      padding-top: 20px;
+      color: #57606a;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>The Evolution of AI Harness</h1>
+    <p>Over the past few years, the wrapper around LLM models has evolved from a simple chat interface and a rules file in an editor to a self-sufficient technological layer – the harness – with its own protocols, standards, and foundation. Client lock-in has shifted from the specific LLM model level to this harness level. Definitions: 1. Model – an LLM, a neural network that generates text on demand. It is stateless (doesn&#x27;t remember previous calls), has no access to the external world, and is incapable of action – only generating the next token or a probable set of phrases based on the input context. 2. Harness – the software and infrastructure wrapper around the model, transforming it from a text generator into a system capable of performing &quot;meaningful&quot; actions. The harness provides the model with functionality: tools (access to the external world), context management (memory, sessions, compaction), rules/instructions (behavior), permissions and rights (security), and optionally enhancements – hooks, skills, orchestration. The harness is the &quot;body,&quot; the model is the &quot;semantic brain.&quot; 3. AI Agent – a model placed within a harness, thus capable of acting, i.e., perceiving the environment&#x27;s state through tools, maintaining context between steps, planning, and executing multi-step tasks. An agent is not a component but the result of combining a model and a harness. Below is an approximate account of the development of harness ideas and its current state. Read more</p>
+    <p class="source">
+      Machine-translated from Habr.
+      <a href="https://habr.com/ru/articles/1085652/?utm_campaign=1085652&amp;utm_source=habrahabr&amp;utm_medium=rss">Read the original Russian article</a>.
+      Wed, 23 Sep 2026 11:44:07 GMT
+    </p>
+  </header>
+  <main>
+<div><p>Over the past few years, the wrapper around LLM models has evolved from a chat interface and a rules file in an editor to a self-sufficient technological layer – the harness – with its own protocols, standards, and foundation. Client lock-in has shifted from the specific LLM model level to this harness level.</p><p><strong><u>Definitions:</u></strong></p><p>1. <strong>Model</strong> – an LLM, a neural network that generates text on demand. It is stateless (doesn't remember previous calls), has no access to the external world, and is incapable of action – only generating the next token or a probable set of phrases based on the input context.</p><p>2. <strong>Harness</strong> – the software and infrastructure wrapper around the model, transforming it from a text generator into a system capable of performing "meaningful" actions. The harness provides the model with functionality: tools (access to the external world), context management (memory, sessions, compaction), rules/instructions (behavior), permissions and rights (security), and optionally enhancements – hooks, skills, orchestration. The harness is the "body," the model is the "semantic brain."</p><p>3. <strong>AI Agent</strong> – a model placed within a harness, thus capable of acting, i.e., perceiving the environment's state through tools, maintaining context between steps, planning, and executing multi-step tasks. An agent is not a component but the result of combining a model and a harness.</p><p>Below is an approximate account of the development of harness ideas and its current state.</p><p>1. <strong>Rules and Prompt (2023 – February 2025)</strong>. Beginnings in editors (.cursorrules, ~2024), systemically – with the release of Claude Code and CLAUDE.md (February 2025), then the open standard AGENTS.md (OpenAI, August 2025). In December 2025, OpenAI transferred it to the AAIF foundation; by September 2026, it was adopted in over 60,000 open-source repositories, supported by Amp, Codex, Cursor, Gemini CLI, and others.</p><p>2. <strong>MCP (November 2024).</strong> Standardized connection of external tools to an AI agent.<br/>In December 2025, Anthropic transferred MCP to the neutral Agentic AI Foundation (Linux Foundation) along with AGENTS.md and goose – with support from Google, Microsoft, AWS, and Cloudflare.<br/>Specification update from 07/28/2026: stateless core (server – a regular HTTP service without sticky sessions), Extensions framework (enterprise authentication, interactive applications, long-running tasks).</p><p>3. <strong>Context and Sessions (First half of 2025).</strong> Compaction/summarization of long context, checkpoints in short-term memory (model cache), and step rollback, forking (cloning) dialogues (~Spring-Summer 2025). Sub-agents – July 2025; in 2026, they gained asynchronicity, persistent YAML configs, file prompts, and their own hooks that launch with the sub-agent. Session compaction evolved into session memory compaction with background threads and prompt caching.</p><p>4. <strong>Hooks (insertion/correction points, triggers, or anchors) (~June 2025).</strong> Scripts on lifecycle events (before/after any inference). The essence: deterministic logic for deciding what to say/remind the agent; the signal reaches the agent without interrupting the current task. This approach is the path from giant markdown files to loading/reminding only relevant instructions at the right moment.<br/>In OpenCode, the equivalent is plugins (TS modules with hooks); a native hook layer was still being discussed as a feature request there as of February 2026.</p><p>5. <strong>Skills (October 2025).</strong> A lightweight alternative to MCP: markdown instructions loaded as needed. Evolved into "markdown + executable scripts"; the ideal is to be covered by scripts as much as possible, not prose.<br/>Anthropic published Agent Skills as an open cross-platform standard in December 2025; by mid-2026, there were about 40 compatible platforms and millions of skills. The focus shifted from portability to trust infrastructure (security scanning, quality control).<br/>Microsoft added the APM package manager (April 2026) – an npm/pip-like declaration of skills, prompts, and MCP servers in a single apm.yml.</p><p>6. <strong>Orchestration (2025).</strong> Multi-agent wrappers on top of agent management protocols (ACP and others): different agents under a single management point; based on this, benchmark frameworks for comparing models and tools.<br/>ACP (Zed, August 2025; JetBrains joined in October 2025) merged with A2A (August 2025, under LF AI &amp; Data); by April 2026, A2A was a production-ready standard, with 150+ organizations.<br/>2026 Stack: MCP – agent + tools, A2A – agent + agent.<br/>Based on orchestration layers (ACP/A2A), benchmark frameworks are used for comparing models and tools.</p><p><strong><u>Nuances:</u></strong></p><p>Portability problem. A harness cannot be transferred by copy-pasting: hook capabilities and folder structures differ between tools. Partially solved at the skills level (open standard, ~40 platforms) and rules level (AGENTS.md as a de facto universal format), but not for hooks/plugins. A unified standard is still missing.<br/><u>Working workaround</u>: a unified harness in a separate repository + an input instruction that allows the agent to adapt it to its environment; on top of this, a package manager for declarative dependency installation.</p><p>A harness is a product with a role. Universal ones do not exist yet. Typical patterns established by the end of 2025: conversational interfaces, "talking to the database" (natural language → SQL → readable response), code base analyzers, personal assistants.</p><p>Models in 2025 became practically interchangeable: quality differences are leveled out within months, and retaining clients at this level is no longer possible. Therefore, vendor client lock-in shifted to the harness – the wrapper environment where rules, skills, hooks, MCP configuration, and agent memory reside. Changing a model takes minutes, changing a harness means migrating accumulated engineering effort.</p><p>Development patterns: open source develops ideas faster and sometimes leaps ahead of vendor capabilities, adopting ideas (OpenCode's hooks/plugins are richer than Claude's), but what becomes the de facto standard is what a major player solidifies. In 2025–2026, the "fixer" was not a single major player but a "neutral" consortium – agreements began, but under the auspices of a foundation, not a single winning vendor.</p><p><strong><u>Three Levels of Harness Application</u></strong>.</p><p>a) per project;<br/>b) per personality;<br/>c) per team.</p><p>The team variant is the most problematic: there are almost no successful implementations because a team that has tightly integrated agents into its tasks ceases to be a team – each developer becomes a micro-manager of an agent pool when the task volume is that of a small team.<br/>Team harness as a layer is still being formed. Anthropic, for example, only added Shared Skills and usage reports to Team/Enterprise tools in 2026.</p><p><strong>Levels of Software Hierarchy</strong>:<br/>┌─ Interface Layer: ACP (IDE ↔ agent), AG‑UI (frontend ↔ agent)<br/>├─ Orchestration: A2A (agent ↔ agent) external, sub-agents – internal (within one harness)<br/>├─ AI Agent: &lt;Model&gt; + harness<br/>└─ Harness: MCP (tools) + rules + context + permissions </p><p><br/><strong><u>Status (as of September 2026).</u></strong></p><p>The harness development chain (2023–2026) is as follows: rules → MCP → context management/sessions → permissions/sub-agents → hooks → skills → plugins → orchestration.<br/>Within a single tool, everything is usually well-established. Between tools, a neutral management layer (stewardship) has emerged – Linux Foundation/AAIF: MCP, AGENTS.md, goose, A2A. However, a unified harness standard has not yet formed.</p><hr/><p><strong><u>For reference, major vendor harnesses:</u></strong></p><p><strong>First tier</strong> – mass market:<br/>a) Claude Code (Anthropic) – benchmark for the category, ~142k stars on GitHub, leader in downloads, standards are built around it<br/>b) Codex (OpenAI) – CLI + App Server + ChatGPT Work; #1 in Terminal-Bench, #2 in usage, open-source framework in August 2026<br/>c) GitHub Copilot Harness (Microsoft) – largest audience via VS Code base; agent mode + Copilot Studio<br/>d) OpenCode (SST/Anomaly, MIT) – open-source flagship, 75+ model providers<br/>e) Cursor (Anysphere) – strongest in-editor agent, own IDE<br/>f) Antigravity 2.0 / CLI (Google) – BUT! In June, Google shifted from an open path to a proprietary service model – the only one among the big four to make such a turn in 2026<br/>g) Grok Build (xAI) – beta from May 25, 2026, open Rust code from July 2026</p><p><strong>Second tier</strong> – mature open source:<br/>a) Kimi Code CLI (Moonshot) – for Kimi K3; best pass rate in benchmarks, token-hungry<br/>b) Qwen Code (Alibaba) – Apache-2.0, ~27k stars<br/>c) Goose (Block) – founding project of Agentic AI Foundation<br/>d) Zed Agent + OpenHands (ex-OpenDevin) – said to be interchangeable at the ACP layer<br/>e) Aider – CLI pioneer, still active but losing market share<br/>f) Cline / Kilo Code – VS Code branch; Roo Code discontinued (May 2026), Kilo is its upgrade</p><p><strong>Third tier</strong> – new/niche/exotic:<br/>a) Pi – minimalist, "ideal small harness" for compact models<br/>b) OpenClaw – personal assistant over chat applications (Telegram, Slack); independent foundation, no telemetry<br/>c) Crush (Charm) – "beautiful" fork of the OpenCode line, FSL<br/>d) Beam CLI – AGPL-3, security-focused (offline scans, skill bundle)<br/>e) DeepSeek-Reasonix – single-file Go binary, optimized for cheap inference; not to be confused with the main DeepSeek Harness</p><p><strong><u>De facto standards</u></strong>:<br/>— Claude Code;<br/>— OpenCode (open source) – by stars;<br/>— DeepSeek Harness – by audience acquisition speed.</p></div>
+  </main>
+  <footer>
+    Translation generated with Gemini 2.5 Flash-Lite.
+    The original article remains the source of record.
+  </footer>
+</body>
+</html>

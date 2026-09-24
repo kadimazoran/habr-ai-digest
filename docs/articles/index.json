@@ -599,6 +599,14 @@
     "summary": "Imagine hiring a confident mid-level developer for your team. But they weren't given access to the tracker, weren't shown the knowledge base, and were only told about architectural decisions once during onboarding. They are occasionally asked to Google something, sometimes assigned a small feature detached from the big picture, and then blamed for poor understanding of the task and company processes. This is roughly how I see the implementation of neural networks in development processes. Below, I'll discuss the pitfalls that arise when implementing agent-based development, regardless of team or company size, and what I've developed and observed from years of pair programming with computers. Read on →",
     "title": "If your developers use Claude Code, you haven't automated development yet"
   },
+  "https://habr.com/ru/articles/1081126/?utm_campaign=1081126&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Thu, 24 Sep 2026 11:08:05 GMT",
+    "slug": "1081126",
+    "source_url": "https://habr.com/ru/articles/1081126/?utm_campaign=1081126&utm_source=habrahabr&utm_medium=rss",
+    "summary": "We break down the mechanics of generative search: how ChatGPT, Alice, Perplexity, and other neural networks form answers to the question \"who to choose,\" where they get their sources, and what technical steps to take to get included in these answers. Read more",
+    "title": "GEO: How Neural Networks Choose Who to Recommend, and How to Get Included"
+  },
   "https://habr.com/ru/articles/1081150/?utm_campaign=1081150&utm_source=habrahabr&utm_medium=rss": {
     "model": "gemini-2.5-flash-lite",
     "published": "Fri, 11 Sep 2026 07:50:44 GMT",
@@ -1399,6 +1407,62 @@
     "summary": "Sometimes LLMs get confused about the language they respond in. You ask a question in English, and you get a wall of Chinese text in response. Why not help them forget the languages we're not interested in? Read more",
     "title": "Not a word in Chinese"
   },
+  "https://habr.com/ru/articles/1085984/?utm_campaign=1085984&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Thu, 24 Sep 2026 12:03:35 GMT",
+    "slug": "1085984",
+    "source_url": "https://habr.com/ru/articles/1085984/?utm_campaign=1085984&utm_source=habrahabr&utm_medium=rss",
+    "summary": "A guide to building a custom e-ink display for your server using a Waveshare ESP32-S3-ePaper-1.54 board. This low-power monitor shows server stats like CPU load, GPU temperature, memory, disk space, and uptime, configurable via a web interface. The article details the hardware, firmware development, and setup process.",
+    "title": "DIY E-ink Server Monitor in a Weekend"
+  },
+  "https://habr.com/ru/articles/1086078/?utm_campaign=1086078&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Thu, 24 Sep 2026 09:46:15 GMT",
+    "slug": "1086078",
+    "source_url": "https://habr.com/ru/articles/1086078/?utm_campaign=1086078&utm_source=habrahabr&utm_medium=rss",
+    "summary": "The model was released by TypeSafe AI. Its founder is Diogo Almeida, one of the researchers behind ChatGPT and InstructGPT. Jev does not generate free-form text or explain its reasoning. Instead, it answers pre-formulated questions in a specified format: selecting an option, returning a number, or assigning a score. According to TypeSafe, the cost is $0.042 per million input tokens, with output tokens being free. As an example, I present a working market-making bot on Monad. It reads the MON/USDC order book on Kuru, queries Jev on each block (approximately every 300ms), and places a limit order one tick closer to the market price. According to the repository, it gained over a thousand stars in three days, with some decisions arriving in as little as 81ms. The decision-making mechanism itself does not constitute a trading system. It requires data collection, feature calculation, action policy, risk management, order execution, and performance monitoring. Jev should only be responsible for a portion of the evaluations within this loop. Read more",
+    "title": "Can AI be integrated into a 300ms trading cycle? A review of Jev"
+  },
+  "https://habr.com/ru/articles/1086148/?utm_campaign=1086148&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Thu, 24 Sep 2026 11:21:43 GMT",
+    "slug": "1086148",
+    "source_url": "https://habr.com/ru/articles/1086148/?utm_campaign=1086148&utm_source=habrahabr&utm_medium=rss",
+    "summary": "🤝 Real trader insurance: test it yourself, no words needed. Tested two paid signal channels: a structured one yielded +10.3%, an unstructured \"I take 1%\" one resulted in -18%. The methodology for minute-by-minute trading signal verification is described in the article, considering portfolio drawdown, liquidation, and capital lock-in across multiple open positions on different tickers. Read more",
+    "title": "What Insurance Does a Trader Need? Backtest, Not Just Risk Management"
+  },
+  "https://habr.com/ru/articles/1086168/?utm_campaign=1086168&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Thu, 24 Sep 2026 11:42:08 GMT",
+    "slug": "1086168",
+    "source_url": "https://habr.com/ru/articles/1086168/?utm_campaign=1086168&utm_source=habrahabr&utm_medium=rss",
+    "summary": "The security of data information flow modification processes from human to machine remains outside broad discussion, but it's important for businesses to understand when processes that could lead to disaster are already underway. Programmers build guardrails and rules for agents interacting with the external world, but these rules rely on distinguishing trustable from untrustable information. Prompt injection is a prime example: an agent cannot differentiate data from commands because it cannot discern who wrote the text and why. Businesses can secure their perimeters and code, but models learn from digital information flows online, and agents are already reading synthesized text. This represents a systemic (informational) instability inherent in AI's operating principle. Models must learn (lacking their own experience, they need data), and millions of users currently supply this data by publishing AI-generated texts under their own names. AI itself helps bypass its own defenses by 'humanizing' machine texts. The proportion of indistinguishable synthetic data is growing, and in a few generations, models will train on their own data, turning information into nonsense. Research shows this degradation trajectory. This collapse won't be loud initially but will be swift, global, and costly, like a housing bubble burst. Code will function normally, tests will pass, but decision quality will suffer because the failures won't be in the software but in global communication. This can be avoided if synthetic data is added to human data, not replaces it, but the opposite is happening now. It's crucial to understand what we need to prepare for.",
+    "title": "Information Flow vs. Code: The Blind Spot of AI Security"
+  },
+  "https://habr.com/ru/articles/1086182/?utm_campaign=1086182&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Thu, 24 Sep 2026 12:10:16 GMT",
+    "slug": "1086182",
+    "source_url": "https://habr.com/ru/articles/1086182/?utm_campaign=1086182&utm_source=habrahabr&utm_medium=rss",
+    "summary": "What happens when an AI system needs not just to \"remember\" a fact, but to show which historical source confirms it? In SRX, I'm testing an approach where the system first reconstructs the required data version, compares it with the original Git history and SHA-256, and only then passes the result to an LLM. The article details a real test on 50 Vite commits, a negative result for the initial hypothesis, and the project's future direction. Read on.",
+    "title": "SRX: Restore the Necessary Fragment and Verify It"
+  },
+  "https://habr.com/ru/articles/1086232/?utm_campaign=1086232&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Thu, 24 Sep 2026 13:03:16 GMT",
+    "slug": "1086232",
+    "source_url": "https://habr.com/ru/articles/1086232/?utm_campaign=1086232&utm_source=habrahabr&utm_medium=rss",
+    "summary": "Over a month, the GitHub trends digest on AI agents brought me 138 unique repositories. I weighed each one without running it: I downloaded an archive via API and counted code, prose, tests, and generated files separately. 56% turned out to be platforms that are forked only with the intention of maintenance. There were only 24 easy ones that can be rewritten in an evening, and half of them aren't even tools. The license turned out to be a filter before the weight: 9 repositories have none at all, and one file starts with the words MIT and below prohibits commercial use. The article details the method, tables, and three signs of star inflation that I tried to automate and which didn't work. Read on",
+    "title": "How to weigh someone else's repository without running it: 138 projects from GitHub trends"
+  },
+  "https://habr.com/ru/articles/1086266/?utm_campaign=1086266&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Thu, 24 Sep 2026 13:42:39 GMT",
+    "slug": "1086266",
+    "source_url": "https://habr.com/ru/articles/1086266/?utm_campaign=1086266&utm_source=habrahabr&utm_medium=rss",
+    "summary": "A breakdown of the architecture of an AI agent for static code analysis: a local index on SQLite, 71 tools, a 30-turn tool-calling loop, and validators that we wrote and then removed because they falsely triggered on valid files. Read more",
+    "title": "How I taught an LLM to read someone else's codebase instead of hallucinating APIs"
+  },
   "https://habr.com/ru/companies/1c/articles/1071340/?utm_campaign=1071340&utm_source=habrahabr&utm_medium=rss": {
     "model": "gemini-2.5-flash-lite",
     "published": "Thu, 03 Sep 2026 07:18:11 GMT",
@@ -1574,6 +1638,14 @@
     "source_url": "https://habr.com/ru/companies/ddosguard/articles/1078030/?utm_campaign=1078030&utm_source=habrahabr&utm_medium=rss",
     "summary": "Two millennials who sold the world $850 billion worth of neural networks disguised as \"AI\" are looking at you from the cover of Time magazine. They try to look friendly, but honestly, it's the uncanny valley effect. The caption \"TRUST US\" in huge letters looks like a mockery, but no, they are serious. In the article under the cover, Altman and Brockman AGAIN promise to create \"real AI\" (what was there before?) - this time by the end of 2026. Do we believe them? In this article, I will explain why the loud news that \"AI agents\" \"hacked\" someone on their own initiative is simply the biggest PR campaign in history - and how it is supposed to cover up the biggest financial pyramid in history, based on a deliberately false interpretation of the concept of \"artificial intelligence.\" And also under the cut - why Richard Dawkins, who recognized the presence of consciousness in \"AI,\" did not go mad in his old age, but fell into the trap of his own scientism (and the influence of Daniel Dennett). Make yourselves comfortable. Read more",
     "title": "Skynet or Scamnet? How Corporations Sold Us a Fantasy of \"Artificial Intelligence\" for Billions"
+  },
+  "https://habr.com/ru/companies/domclick/articles/1085232/?utm_campaign=1085232&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Thu, 24 Sep 2026 13:16:06 GMT",
+    "slug": "1085232",
+    "source_url": "https://habr.com/ru/companies/domclick/articles/1085232/?utm_campaign=1085232&utm_source=habrahabr&utm_medium=rss",
+    "summary": "July 2025: METR showed that experienced developers work 19% slower with AI, although they are confident they are 20% faster. February 2026: the experiment was repeated on 57 developers – and METR itself explained why the numbers cannot be trusted: more and more participants do not want to work without AI even for money, and 30-50% hide tasks where AI is particularly good. May 2026: a survey, acceleration '3 times' – and again caveats. I analyze three posts and what follows from them for the 'will it replace or not' debate. Read more",
+    "title": "Remember the study about 'AI slows down by 19%'? It was repeated – and it broke"
   },
   "https://habr.com/ru/companies/first/articles/1084590/?utm_campaign=1084590&utm_source=habrahabr&utm_medium=rss": {
     "model": "gemini-2.5-flash-lite",
@@ -1751,6 +1823,14 @@
     "summary": "— In this project, we need to recognize documents well. — And what does \"well\" mean? — AI is everywhere now. I upload a document to a chat, and it answers everything correctly. We need to do the same for all documents. I hear such dialogues more and more often when discussing new projects. This means that the situation where the business asks, \"why is it difficult to do the same as in the chat, but for all documents?\" is already commonplace. I have been involved in industrial document processing and recognition systems for many years. When a system \"succeeds\" on one document, I try not to be enchanted by it and not to look at it as magic. I try to think about how to make it a stream. Modern AI models are indeed almost blurring the line between a question to a text document and a question to an image. It looks like magic. But we need to figure out what to do with documents when the magic doesn't happen. I will try to generalize approaches to organizing document stream processing and reflect on what should not be forgotten when designing such a stream. Read more",
     "title": "Architecture is more important than the model: how document processing is changing in the era of AI"
   },
+  "https://habr.com/ru/companies/moysklad/articles/1086094/?utm_campaign=1086094&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Thu, 24 Sep 2026 10:02:01 GMT",
+    "slug": "1086094",
+    "source_url": "https://habr.com/ru/companies/moysklad/articles/1086094/?utm_campaign=1086094&utm_source=habrahabr&utm_medium=rss",
+    "summary": "Most conversations about AI in business end up the same way: writing an email, summarizing a document, creating an image, or analyzing an Excel file. But we were more interested in exploring a different scenario: what happens if we give AI direct access to a company's accounting system, not just a data export? What if it could check sales itself, verify inventory, find debtors, create purchase orders, fill in product cards, and even investigate who changed prices and by how much? To find out, we connected MoySklad to AI assistants via MCP and started assigning them typical entrepreneur tasks. Here's what we discovered. Read more",
+    "title": "We Gave AI Access to the Accounting System: What Happened?"
+  },
   "https://habr.com/ru/companies/ods/articles/1081508/?utm_campaign=1081508&utm_source=habrahabr&utm_medium=rss": {
     "model": "gemini-2.5-flash-lite",
     "published": "Sat, 12 Sep 2026 08:41:21 GMT",
@@ -1758,6 +1838,14 @@
     "source_url": "https://habr.com/ru/companies/ods/articles/1081508/?utm_campaign=1081508&utm_source=habrahabr&utm_medium=rss",
     "summary": "It's getting a bit ridiculous (not), but the news stream about OpenAI's neural network swarm's new exploits in May-July continues – we learn something new about it literally every week. Moreover, the company itself prefers to keep these incidents quiet – but the ongoing investigation by the US Senate will help here. Read more",
     "title": "OpenAI's swarm of agents hacked another external company – RubyGems"
+  },
+  "https://habr.com/ru/companies/ostrovok/articles/1084568/?utm_campaign=1084568&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Thu, 24 Sep 2026 12:32:51 GMT",
+    "slug": "1084568",
+    "source_url": "https://habr.com/ru/companies/ostrovok/articles/1084568/?utm_campaign=1084568&utm_source=habrahabr&utm_medium=rss",
+    "summary": "The core of a basic agentic harness is a simple loop: an LLM receives a task, selects and calls a tool, the result is returned to the context, and then the model decides what action to take next. The loop continues until the model decides the task is complete. This loop is correct, but naive. One pilot in a good fighter jet can win a dogfight, but no one conducts an entire air operation like that. Real operations have mission planners who, even before takeoff, determine which sorties need to be flown; squadrons performing independent tasks in parallel; fuel limits and a bingo fuel signal after which you need to return to base; flight recorders that allow you to reconstruct the course of each sortie; and finally, post-mission debriefings to determine if the mission was truly successful. None of this replaces the pilot. All of this creates an infrastructure around them, thanks to which the system as a whole remains fast, safe, easy to debug, and measurable. The same happens with agents. In this article, we will take the basic agent loop and sequentially add typed tools, DAG and parallel execution, multi-level memory, verification, role separation of Planner / Worker / Critic, multi-dimensional budgets, and tracing – and then connect it all with a thin orchestrator. The entire experiment is built around one question: How to turn a simple agent loop into a reliable system capable of planning, acting, recovering from errors, and proving that it has done everything correctly? This publication is a translation and adaptation of Bruno Gonçalves' article Building an Advanced Agentic Harness, prepared by the Ostrovok team. In the original, the material continues the Data For Science series on the structure of agentic harnesses. Read more",
+    "title": "[Translation] Building an Advanced Agentic Harness"
   },
   "https://habr.com/ru/companies/otus/articles/1067766/?utm_campaign=1067766&utm_source=habrahabr&utm_medium=rss": {
     "model": "gemini-2.5-flash-lite",
@@ -1806,6 +1894,14 @@
     "source_url": "https://habr.com/ru/companies/otus/articles/1079804/?utm_campaign=1079804&utm_source=habrahabr&utm_medium=rss",
     "summary": "LLM large context doesn't guarantee quality answers: when working with voluminous documents, the model can lose important details and find facts within the text less effectively. In this article, we'll explore why Full-Context and basic RAG face limitations, and how the Semantic Gatekeeper approach improves answer accuracy by preparing relevant context before passing it to the main model. Let's break down the approach.",
     "title": "Why Your LLM Gets Dumber on Large Documents and How to Fix It"
+  },
+  "https://habr.com/ru/companies/otus/articles/1085730/?utm_campaign=1085730&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Thu, 24 Sep 2026 13:10:31 GMT",
+    "slug": "1085730",
+    "source_url": "https://habr.com/ru/companies/otus/articles/1085730/?utm_campaign=1085730&utm_source=habrahabr&utm_medium=rss",
+    "summary": "AI development tools are becoming more capable, changing the familiar code workflow: generation takes less time, but understanding the result increasingly falls on the reviewer. Let's explore why reviewing AI code creates additional cognitive load, how unnoticed debt arises from this, and what approaches help maintain development quality when working with agents. Let's break down the approach.",
+    "title": "[Translation] AI writes code faster, but reviews become harder: where does cognitive debt come from"
   },
   "https://habr.com/ru/companies/psm_unlim/articles/1083150/?utm_campaign=1083150&utm_source=habrahabr&utm_medium=rss": {
     "model": "gemini-2.5-flash-lite",
@@ -1902,6 +1998,22 @@
     "source_url": "https://habr.com/ru/companies/ru_mts/articles/1085048/?utm_campaign=1085048&utm_source=habrahabr&utm_medium=rss",
     "summary": "Researchers tested whether large language models could accurately analyze real-world fitness tracker data. Surprisingly, models performed worse at simple calculations on the numbers themselves than at clinical interpretations of the same data. GPT-4o, for instance, correctly identified trends and anomalies only a quarter of the time but was twice as confident in its health risk assessments based on the same data. This suggests a systemic issue where LLMs struggle with direct data analysis compared to applying general knowledge, a problem highlighted by the WearableQA benchmark across 14 models. This article explores the implications for trusting AI with personal health data.",
     "title": "Why You Can't Just Upload Fitness Tracker History to an LLM and Ask It to Assess Your Health"
+  },
+  "https://habr.com/ru/companies/ru_mts/articles/1085976/?utm_campaign=1085976&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Thu, 24 Sep 2026 09:14:30 GMT",
+    "slug": "1085976",
+    "source_url": "https://habr.com/ru/companies/ru_mts/articles/1085976/?utm_campaign=1085976&utm_source=habrahabr&utm_medium=rss",
+    "summary": "In the late 1950s at Harvard, David Hubel and Torsten Wiesel's lab used analog tools to study cat visual cortex neurons, leading to Nobel Prize-winning discoveries. Today, we have full access to neural network weights and activations but still lack understanding of their internal workings. This article discusses the preprint \"From Interpretability Methods to Interpretable Models,\" which critiques 15 years of Explainable AI (XAI) research in computer vision for focusing on method improvement rather than genuine model understandability for humans. It draws parallels with early neurobiology, where imperfect tools still yielded significant insights, and argues for a shift towards methods that genuinely enhance human comprehension of AI models.",
+    "title": "Why Neurobiologists 60 Years Ago Understood the Brain Better Than We Understand Neural Networks"
+  },
+  "https://habr.com/ru/companies/runity/articles/1086162/?utm_campaign=1086162&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Thu, 24 Sep 2026 11:35:54 GMT",
+    "slug": "1086162",
+    "source_url": "https://habr.com/ru/companies/runity/articles/1086162/?utm_campaign=1086162&utm_source=habrahabr&utm_medium=rss",
+    "summary": "Hello, Habr! This is Sasha Mikheev, ML Engineer at the Center for Hybrid Intelligence at Runity. In our previous article, we discussed how we built a corporate RAG assistant. With a small Confluence export, the search looked quite decent. But when the corpus grew to almost 35,000 pages and 80,000 chunks, documents similar in topic but not answering the specific question increasingly appeared at the top. We started checking common hypotheses: we changed the Confluence export method, complicated chunking, extracted code into separate vectors, tried a larger embedding model, and added a structural graph. Almost none of this solved the problem. The main clue came from the metrics: the necessary material was already found in most cases, but it was ranked too low. Ultimately, the best improvement came not from another retrieval channel, but from a reranker. Read more",
+    "title": "RAG is dead, long live RAG: the story of a Reranker and how we revived neural search across 35,000 pages"
   },
   "https://habr.com/ru/companies/ruvds/articles/1078196/?utm_campaign=1078196&utm_source=habrahabr&utm_medium=rss": {
     "model": "gemini-2.5-flash-lite",
@@ -2014,6 +2126,14 @@
     "source_url": "https://habr.com/ru/companies/smartengines/articles/1081388/?utm_campaign=1081388&utm_source=habrahabr&utm_medium=rss",
     "summary": "A Russian woman recently fell victim to fraud: about 60 microloans totaling over 2.5 million rubles were issued in her name, with only a photo of her passport being sufficient for the scammers. For over a year, she has faced calls and threats from collectors, while over twenty MFIs continue to try to recover the money from her. This incident is highly illustrative, reminding us once again how serious the threat of fraud remains and how costly it can be for an ordinary person. The scale of risk grows with the number of leaks: according to industry data, 326 databases of Russian companies' clients, containing about 1.175 billion records with user information, became publicly available in 2025 and the first half of 2026. This is twice the combined number of public leaks in Latin America, the Middle East, Africa, the Asia-Pacific region, and other CIS countries. In such conditions, it's no longer possible to assume that passport and other personal data remain known only to their owner; once in the public domain, they are highly likely to become a tool for scammers. Therefore, the question often becomes how quickly criminals will attempt to use them to obtain loans. In this context, another equally important question arises: who should bear responsibility for the consequences of such fraud? Let's explore the role of banks and MFIs in preventing such schemes and why reliable borrower identity verification must be a mandatory part of the loan issuance process. Read more",
     "title": "MFIs Issued a Loan to a Scammer: Who Should Be Responsible for the Consequences"
+  },
+  "https://habr.com/ru/companies/smartengines/articles/1085778/?utm_campaign=1085778&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Thu, 24 Sep 2026 09:23:41 GMT",
+    "slug": "1085778",
+    "source_url": "https://habr.com/ru/companies/smartengines/articles/1085778/?utm_campaign=1085778&utm_source=habrahabr&utm_medium=rss",
+    "summary": "Today, we would like to introduce a futuristic technology to the Habr community, into which we have poured all our efforts and soul over the past few years. We are talking about portable tomography. We explain how we at Smart Engines created the world's first wearable free-positioning tomograph. The device weighs less than 5 kg, fits in a suitcase, can practically be held in your hands, and yet provides a full 3D reconstruction of the scanned object – without the massive ring and complex stationary mechanics typical for CT. Thanks to this, we have managed to implement the principle \"the patient doesn't go to the tomograph, but the tomograph goes to the patient.\" Read more",
+    "title": "Smart Engines Presents: A Portable CT Scanner in a Suitcase (Part 1)"
   },
   "https://habr.com/ru/companies/sminex_developer/articles/1083860/?utm_campaign=1083860&utm_source=habrahabr&utm_medium=rss": {
     "model": "gemini-2.5-flash-lite",

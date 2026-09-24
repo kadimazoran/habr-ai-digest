@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>RAG is dead, long live RAG: the story of a Reranker and how we revived neural search across 35,000 pages</title>
+  <meta name="description" content="Hello, Habr! This is Sasha Mikheev, ML Engineer at the Center for Hybrid Intelligence at Runity. In our previous article, we discussed how we built a corporate RAG assistant. With a small Confluence export, the search looked quite decent. But when the corpus grew to almost 35,000 pages and 80,000 ch">
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.65;
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 32px 20px 64px;
+      color: #1f2328;
+    }
+    header {
+      border-bottom: 1px solid #d8dee4;
+      margin-bottom: 28px;
+      padding-bottom: 20px;
+    }
+    .source {
+      color: #57606a;
+      font-size: 0.95rem;
+    }
+    img, video, iframe {
+      max-width: 100%;
+      height: auto;
+    }
+    pre {
+      overflow-x: auto;
+      padding: 16px;
+      background: #f6f8fa;
+      border-radius: 6px;
+    }
+    code {
+      font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+    }
+    blockquote {
+      border-left: 4px solid #d0d7de;
+      margin-left: 0;
+      padding-left: 16px;
+      color: #57606a;
+    }
+    footer {
+      border-top: 1px solid #d8dee4;
+      margin-top: 40px;
+      padding-top: 20px;
+      color: #57606a;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>RAG is dead, long live RAG: the story of a Reranker and how we revived neural search across 35,000 pages</h1>
+    <p>Hello, Habr! This is Sasha Mikheev, ML Engineer at the Center for Hybrid Intelligence at Runity. In our previous article, we discussed how we built a corporate RAG assistant. With a small Confluence export, the search looked quite decent. But when the corpus grew to almost 35,000 pages and 80,000 chunks, documents similar in topic but not answering the specific question increasingly appeared at the top. We started checking common hypotheses: we changed the Confluence export method, complicated chunking, extracted code into separate vectors, tried a larger embedding model, and added a structural graph. Almost none of this solved the problem. The main clue came from the metrics: the necessary material was already found in most cases, but it was ranked too low. Ultimately, the best improvement came not from another retrieval channel, but from a reranker. Read more</p>
+    <p class="source">
+      Machine-translated from Habr.
+      <a href="https://habr.com/ru/companies/runity/articles/1086162/?utm_campaign=1086162&amp;utm_source=habrahabr&amp;utm_medium=rss">Read the original Russian article</a>.
+      Thu, 24 Sep 2026 11:35:54 GMT
+    </p>
+  </header>
+  <main>
+<div><figure><img loading="lazy" src="https://habrastorage.org/r/w1560/getpro/habr/upload_files/a89/01f/c3f/a8901fc3f45778b187ea50cfd254c530.png"/></figure><p>Hello, Habr! This is Alexander Mikheev, ML Engineer at the Center for Hybrid Intelligence at Runity. In the <a href="https://habr.com/ru/companies/runity/articles/1014712/">previous article</a>, we discussed how we built a corporate RAG assistant. With a small Confluence export, the search looked quite decent. But when the corpus grew to almost 35,000 pages and 80,000 chunks, documents similar in topic but not answering the specific question increasingly appeared at the top.</p><p>We started checking common hypotheses: we changed the Confluence export method, complicated chunking, extracted code into separate vectors, tried a larger embedding model, and added a structural graph. Almost none of this solved the problem. The main clue came from the metrics: the necessary material was already found in most cases, but it was ranked too low. Ultimately, the best improvement came not from another retrieval channel, but from a reranker.</p><p><strong>Navigation:</strong></p><ul><li><p><a href="https://habr.com/ru/companies/runity/articles/1086162/?utm_campaign=1086162&amp;utm_source=habrahabr&amp;utm_medium=rss#1">When the knowledge base became too large for "just dense"</a></p></li><li><p><a href="https://habr.com/ru/companies/runity/articles/1086162/?utm_campaign=1086162&amp;utm_source=habrahabr&amp;utm_medium=rss#2">Dense + sparse: the first noticeable improvement</a></p></li><li><p><a href="https://habr.com/ru/companies/runity/articles/1086162/?utm_campaign=1086162&amp;utm_source=habrahabr&amp;utm_medium=rss#3">Five hypotheses that seemed reasonable</a></p></li><li><p><a href="https://habr.com/ru/companies/runity/articles/1086162/?utm_campaign=1086162&amp;utm_source=habrahabr&amp;utm_medium=rss#4">The problem was in the order itself</a></p></li><li><p><a href="https://habr.com/ru/companies/runity/articles/1086162/?utm_campaign=1086162&amp;utm_source=habrahabr&amp;utm_medium=rss#5">What we prepared for A/B testing</a></p></li><li><p><a href="https://habr.com/ru/companies/runity/articles/1086162/?utm_campaign=1086162&amp;utm_source=habrahabr&amp;utm_medium=rss#6">Key takeaways</a></p></li></ul><a></a><h2>When the knowledge base became too large for "just dense"</h2><p>The first large export contained 7,991 pages. After expanding the index to 20 Confluence spaces, the corpus grew to 34,949 pages and 79,671 chunks: the number of pages increased 4.4 times, and chunks approximately 5.5 times.</p><p>Along with useful documentation, the index included old versions of instructions, overview architectural pages, tables, JSON, macros, endpoints, and internal identifiers. On a small corpus, dense search easily finds the semantically closest document. On a large one, a dozen almost correct candidates appear around the query: they are semantically similar, but only one contains the needed fact. Therefore, a precise instruction might end up in the 6th–7th position.</p><p>Manual checking of a dozen queries is useless here: you can improve them and imperceptibly worsen hundreds of others. Therefore, the first result of R&D was not a new model, but a proper benchmark.</p><p>We generated 5,000 queries for 1,700 unique pages: 4,459 prose queries and 541 code/API queries. The set included regular Russian questions, exact keywords, mixed Russian-English formulations, troubleshooting, and API terms. The expected page was defined by the source page on which the question was built, not selected from search results. This is an LLM-generated and then LLM-corrected regression benchmark, not a human gold standard: the source page is not necessarily the only relevant document or the corporate source of truth.</p><p>All these queries were distributed among three experts: Minimax, Kimi, and Qwen. After the first pass, 3,859 queries were deemed correct, 1,097 were sent for rewriting, and another 44 were marked as incorrect. In the second pass, Minimax rewrote 1,002 queries, leaving 139 unchanged; the final set retained all 5,000 lines.</p><p>At the page level, we calculated Page@1, Page@5, Page@10, and MRR@10, where Page@1 is particularly important for us, as the context window capacity is limited, and passing more candidates to the local LLM means paying for latency and throughput. Separately, we collected a chunk benchmark of 3,000 queries and calculated Chunk@1/5/10/20 and EvidenceRecall. The chunk gold standard was obtained heuristically, not fully labeled by humans, so it's a tool for comparing configurations, not an absolute production truth. Page-level and chunk-level are different samples, so we don't combine them into a single "growth line."
+  </main>
+  <footer>
+    Translation generated with Gemini 2.5 Flash-Lite.
+    The original article remains the source of record.
+  </footer>
+</body>
+</html>

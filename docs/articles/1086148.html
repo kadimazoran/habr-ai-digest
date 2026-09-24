@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>What Insurance Does a Trader Need? Backtest, Not Just Risk Management</title>
+  <meta name="description" content="🤝 Real trader insurance: test it yourself, no words needed. Tested two paid signal channels: a structured one yielded +10.3%, an unstructured &quot;I take 1%&quot; one resulted in -18%. The methodology for minute-by-minute trading signal verification is described in the article, considering portfoli">
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.65;
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 32px 20px 64px;
+      color: #1f2328;
+    }
+    header {
+      border-bottom: 1px solid #d8dee4;
+      margin-bottom: 28px;
+      padding-bottom: 20px;
+    }
+    .source {
+      color: #57606a;
+      font-size: 0.95rem;
+    }
+    img, video, iframe {
+      max-width: 100%;
+      height: auto;
+    }
+    pre {
+      overflow-x: auto;
+      padding: 16px;
+      background: #f6f8fa;
+      border-radius: 6px;
+    }
+    code {
+      font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+    }
+    blockquote {
+      border-left: 4px solid #d0d7de;
+      margin-left: 0;
+      padding-left: 16px;
+      color: #57606a;
+    }
+    footer {
+      border-top: 1px solid #d8dee4;
+      margin-top: 40px;
+      padding-top: 20px;
+      color: #57606a;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>What Insurance Does a Trader Need? Backtest, Not Just Risk Management</h1>
+    <p>🤝 Real trader insurance: test it yourself, no words needed. Tested two paid signal channels: a structured one yielded +10.3%, an unstructured &quot;I take 1%&quot; one resulted in -18%. The methodology for minute-by-minute trading signal verification is described in the article, considering portfolio drawdown, liquidation, and capital lock-in across multiple open positions on different tickers. Read more</p>
+    <p class="source">
+      Machine-translated from Habr.
+      <a href="https://habr.com/ru/articles/1086148/?utm_campaign=1086148&amp;utm_source=habrahabr&amp;utm_medium=rss">Read the original Russian article</a>.
+      Thu, 24 Sep 2026 11:21:43 GMT
+    </p>
+  </header>
+  <main>
+<div><blockquote><p>You can find the <a href="https://github.com/backtest-kit/backtest-ollama-casual">backtest engine code here</a>.</p></blockquote><figure><img loading="lazy" src="https://habrastorage.org/r/w1560/getpro/habr/upload_files/4f3/dac/bd3/4f3dacbd3754b0115b869531a5f52967.jpg"/></figure><p>I took two paid Telegram channels with signals, read their posts for a month (August 2026) using an LLM, and backtested each signal on minute candles, including commissions and slippage. The first channel yielded <strong>+10.3%</strong> for the month, the second <strong>-18.1%</strong>. Both figures are without leverage. The difference is explained by the post format, and it's visible even before starting the backtest.</p><h3>Why All This?</h3><p>Imagine a trader who plans to pay for signals from Telegram and follow them. What kind of insurance do they need?</p><p>A stop-loss by itself doesn't protect. You can set a stop that triggers 100% of the time and lose your deposit while formally adhering to risk management. Whether the author's rules work or not can only be shown by running through historical data: real posts, minute candles, commissions, slippage. The output is a verifiable number.</p><p>This is what I set out to do. I chose channels with opposite formats:</p><ul><li><p><strong>Channel A</strong> publishes a complete trading plan in each post.</p></li><li><p><strong>Channel B</strong> relies on personal discipline: "I take 1% of the deposit," "I accept losses and move on.".</p></li></ul><h3>Results</h3><div><div><table><tbody><tr><th><p></p></th><th><p>Channel A</p></th><th><p>Channel B</p></th></tr><tr><td><p>Signal Format</p></td><td><p>entry range + 5 targets + stop</p></td><td><p>"I'm going short on BTC" + screenshot</p></td></tr><tr><td><p>Trades per Month</p></td><td><p>21</p></td><td><p>24</p></td></tr><tr><td><p>Result (no leverage, after commissions)</p></td><td><p><strong>+10.3%</strong></p></td><td><p><strong>−18.1%</strong></p></td></tr><tr><td><p>Profitable Trades (win rate)</p></td><td><p>76% (16 out of 21)</p></td><td><p>29% (7 out of 24)</p></td></tr><tr><td><p>Profit Factor</p></td><td><p>1.78</p></td><td><p>0.57</p></td></tr><tr><td><p>Average Position Duration</p></td><td><p>~17 hours</p></td><td><p>~44 hours</p></td></tr><tr><td><p>Worst Trade</p></td><td><p>−4.6% (author's stop)</p></td><td><p>−7.9% (our stop, author has none)</p></td></tr></tbody></table></div></div><p>The market, month, and model in the pipeline are the same, yet the difference is 28 percentage points. Next, I'll break down how this was calculated and where it came from.</p><h3>LLM Parses Posts, Code Makes Decisions</h3><p>The main decision in the project: the model <strong>does not make trading decisions</strong>. It was assigned a task that LLMs handle well – reading unstructured data.</p><p>A post like "Open LONG in the range $78600 – $79400, targets..., stop $77400" is text with typos, emojis, and promotional inserts. Sometimes the signal isn't text but a screenshot of a terminal with the word "Short" in the image. The model's job is to turn this into a typed JSON. The code should decide whether to enter a position and where to cut losses.</p><pre><code>import { generateObject, InferenceName, type FormatModel } from
+  </main>
+  <footer>
+    Translation generated with Gemini 2.5 Flash-Lite.
+    The original article remains the source of record.
+  </footer>
+</body>
+</html>

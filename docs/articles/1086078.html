@@ -1,0 +1,167 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Can AI be integrated into a 300ms trading cycle? A review of Jev</title>
+  <meta name="description" content="The model was released by TypeSafe AI. Its founder is Diogo Almeida, one of the researchers behind ChatGPT and InstructGPT. Jev does not generate free-form text or explain its reasoning. Instead, it answers pre-formulated questions in a specified format: selecting an option, returning a number, or a">
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.65;
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 32px 20px 64px;
+      color: #1f2328;
+    }
+    header {
+      border-bottom: 1px solid #d8dee4;
+      margin-bottom: 28px;
+      padding-bottom: 20px;
+    }
+    .source {
+      color: #57606a;
+      font-size: 0.95rem;
+    }
+    img, video, iframe {
+      max-width: 100%;
+      height: auto;
+    }
+    pre {
+      overflow-x: auto;
+      padding: 16px;
+      background: #f6f8fa;
+      border-radius: 6px;
+    }
+    code {
+      font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+    }
+    blockquote {
+      border-left: 4px solid #d0d7de;
+      margin-left: 0;
+      padding-left: 16px;
+      color: #57606a;
+    }
+    footer {
+      border-top: 1px solid #d8dee4;
+      margin-top: 40px;
+      padding-top: 20px;
+      color: #57606a;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Can AI be integrated into a 300ms trading cycle? A review of Jev</h1>
+    <p>The model was released by TypeSafe AI. Its founder is Diogo Almeida, one of the researchers behind ChatGPT and InstructGPT. Jev does not generate free-form text or explain its reasoning. Instead, it answers pre-formulated questions in a specified format: selecting an option, returning a number, or assigning a score. According to TypeSafe, the cost is $0.042 per million input tokens, with output tokens being free. As an example, I present a working market-making bot on Monad. It reads the MON/USDC order book on Kuru, queries Jev on each block (approximately every 300ms), and places a limit order one tick closer to the market price. According to the repository, it gained over a thousand stars in three days, with some decisions arriving in as little as 81ms. The decision-making mechanism itself does not constitute a trading system. It requires data collection, feature calculation, action policy, risk management, order execution, and performance monitoring. Jev should only be responsible for a portion of the evaluations within this loop. Read more</p>
+    <p class="source">
+      Machine-translated from Habr.
+      <a href="https://habr.com/ru/articles/1086078/?utm_campaign=1086078&amp;utm_source=habrahabr&amp;utm_medium=rss">Read the original Russian article</a>.
+      Thu, 24 Sep 2026 09:46:15 GMT
+    </p>
+  </header>
+  <main>
+<div><figure><img loading="lazy" src="https://habrastorage.org/r/w1560/getpro/habr/upload_files/4ae/adb/ade/4aeadbade439630ce589d028046321a0.png"/></figure><div><p>I view Jev as a model for rapid decisions, not another chatbot. You can feed it a market state snapshot and typed questions, and in return, get scores with probabilities. Such a mechanism can be integrated into a trading system that continuously analyzes the order book, checks signals, and manages orders.</p><p>In this article, I will break down how such a high-frequency trading (HFT) loop works: where the model's work ends and regular code begins, how to ask questions to Jev, what checks to implement before sending orders, and how to measure system quality.</p></div><h2>About Jev in brief</h2><p>The model was released by TypeSafe AI. Its founder is Diogo Almeida, one of the researchers behind ChatGPT and InstructGPT. Jev does not generate free-form text or explain its reasoning. Instead, it answers pre-formulated questions in a specified format: selecting an option, returning a number, or assigning a score.</p><p>According to TypeSafe, the cost is $0.042 per million input tokens, with output tokens being free.</p><p>As an example, I present a working market-making bot on Monad. It reads the MON/USDC order book on Kuru, queries Jev on each block (approximately every 300ms), and places a limit order one tick closer to the market price. According to the repository, it gained over a thousand stars in three days, with some decisions arriving in as little as 81ms.</p><p>The decision-making mechanism itself does not constitute a trading system. It requires data collection, feature calculation, action policy, risk management, order execution, and performance monitoring. Jev should only be responsible for a portion of the evaluations within this loop.</p><h2>What I will cover in this article</h2><ul><li><p>How calling a model differs from a full decision-making loop.</p></li><li><p>How to separate deterministic calculations from probabilistic assessments.</p></li><li><p>How to set up the TypeSafe SDK and send the first request.</p></li><li><p>How to assemble a market state snapshot and a batch of parallel queries.</p></li><li><p>How to organize continuous operation, error handling, and quality assurance.</p></li></ul><h2>1. What is Jev and why I consider it for HFT</h2><p>TypeSafe calls Jev a "System 1" model – the fast, intuitive part of thinking, in Daniel Kahneman's terminology. The idea is that many decisions within a program don't require lengthy reasoning: you need to determine which category an object belongs to, assess urgency, or understand if an order flow resembles informed trading.</p><p><strong>It's easier to understand how Jev works with this visualization:</strong></p><div></div><p>A language model typically converts input data into a sequence of tokens, then outputs text that the program must parse. Jev receives the market state and questions with pre-defined response formats. It returns structured values and confidence in them – without free text, parsing, or JSON correction.</p><figure><img loading="lazy" src="https://habrastorage.org/r/w1560/getpro/habr/upload_files/a50/933/d12/a50933d12ee004851a197c7bbc526fd3.png"/></figure><p>I use three response formats:</p><ul><li><p><strong>Noul</strong> returns a number between 0 and 1. For example: "How likely is the order flow to be toxic?" - <code>0.83</code>.</p></li><li><p><strong>Choice</strong> selects an option from a list, which can have up to 255 items. For example: trending regime - <code>0.63</code>, mean reversion - <code>0.22</code>, chaotic - <code>0.15</code>.</p></li><li><p><strong>Score</strong> evaluates a state on a given scale. For example: "How suitable is the market for quoting on a scale of 0 to 3?" - <code>2.3</code>.</p></li></ul><p>All three formats can be combined into a single call. Questions are evaluated in parallel and independently; I assume that adding more questions barely increases latency. The speed is related to two features:</p><ol><li><p>Jev is not an autoregressive model: it doesn't generate tokens one by one but calculates probability distributions for response options in parallel. Therefore, six questions might take roughly the same amount of time as one.</p></li><li><p>The model is trained using RLCD (Reinforcement Learning for Calibrated Decisions). According to TypeSafe's description, it calibrates probabilities to actual outcomes, not human preferences. On average, higher confidence should correspond to higher accuracy.</p></li></ol><p>The context window is 32,000 tokens. This is sufficient for a compact market snapshot and recent trades, but not for loading an entire strategy. Jev provides narrow assessments, and the rest of the logic is handled by code.</p><h2>Where Jev fits into the latency budget</h2><p>In co-located infrastructure for stock trading, latencies are measured in microseconds. I don't consider Jev for such scenarios: they require Field-Programmable Gate Arrays (FPGAs) and C++.</p><p>Blockchain stacks have a different pace. Monad blocks appear approximately every 300ms, Solana slots around every 400ms. Jev can fit into such a cycle along with order execution. For tactical assessments – such as market regime, flow toxicity, or strategy selection – the horizon is typically seconds.</p><p>I provide the following cost estimates:</p><div><div><table><tbody><tr><td><p><strong>Metric</strong></p></td><td><p><strong>Jev</strong></p></td><td><p><strong>GPT-5.6 Terra</strong></p></td></tr><tr><td><p>Agreement with leading models' consensus in TypeSafe test</p></td><td><p>67.8%</p></td><td><p>67.9%</p></td></tr><tr><td><p>Cost per test case</p></td><td><p>$0.0004</p></td><td><p>$0.0304</p></td></tr></tbody></table></div></div><p>According to this benchmark, Jev shows almost the same consensus agreement and is about 76 times cheaper. This is a proprietary vendor test; I consider the figures provided to be indicative: results may vary on different tasks.</p><p>By my estimate, one full call on every block 24/7 would cost $10–25 per month, while a similar cycle on a leading LLM would cost $50–150 per hour. These amounts depend on configuration and load, so I recommend verifying them with your own data.</p><figure><img loading="lazy" src="https://habrastorage.org/r/w1560/getpro/habr/upload_files/9d5/da8/63a/9d5da863a5bd960013febcb8a1a1619d.jpeg"/></figure><h2>2. Architecture: the model assesses, the code decides</h2><p>The main principle of the entire system: Jev should not manage the trading bot entirely. It is assigned specific assessments, and the code handles the rest of the work.</p><p>Do not send the model a request like "Look at BTC and tell me what to do." To answer, it would have to simultaneously reconstruct the market state, estimate probabilities, account for fees and risk, choose a position size, and guess execution rules.</p><p>It's more reliable to divide responsibilities:</p><ol><li><p>The code collects data and calculates the state.</p></li><li><p>Jev assesses features that are difficult to describe with a set of hard rules.</p></li><li><p>The policy in the code matches assessments with thresholds and selects an action.</p></li><li><p>The executor sends or cancels an order.</p></li><li><p>Hard risk constraints can prohibit an action at any stage.</p></li></ol><p>All precise calculations remain in the code: average price, spread, imbalance, realized volatility, position size, drawdown, VWAP, and queue position. There's no need to pay for a model call to perform arithmetic.</p><p>You can ask Jev, for example, about the market regime, the informativeness of aggressive flow, the quality of a trading opportunity, or execution degradation. Each question should be atomic. If an assessment depends on multiple factors, it's better to break down the request into separate questions and combine the results in the code with specified weights. When priorities change, you only need to adjust the coefficient, not rewrite the prompt.</p><figure><img loading="lazy" src="https://habrastorage.org/r/w1560/getpro/habr/upload_files/67e/56f/f79/67e56ff79c4316d0d98086dc74d4e450.png"/></figure><p>The hard constraint layer always has the final say. The model can suggest an action, but it cannot override position limits or emergency shutdowns.</p><h2>3. Setting up Jev from scratch</h2><p>Below, I follow the official TypeSafe quick start guide.</p><figure><img loading="lazy" src="https://habrastorage.org/r/w1560/getpro/habr/upload_files/ca1/839/c90/ca1839c90d15fabf66327ab44cd85088.png"/></figure><p><strong>Step 1. Apply for access</strong></p><p>You can leave a request for access at <a href="http://typesafe.ai">typesafe.ai</a>. I note that some users get access the same day.</p><p><strong>Step 2. Install the official skill</strong></p><p>The skill helps the agent call Jev correctly:</p><pre><code>npx skills add typesafe-ai/skills --skill typesafe-ai</code><div><a href="https://sourcecraft.dev/"><img loading="lazy"/></a></div></pre><p>In Claude Code, two commands are needed. Simply adding to the marketplace is not enough – you also need to install the plugin:</p><pre><code>claude plugin marketplace add typesafe-ai/skills
+claude plugin install typesafe@typesafe-ai</code><div><a href="https://sourcecraft.dev/"><img loading="lazy"/></a></div></pre><p><strong>Step 3. Create an API key</strong></p><p>The key is created in the TypeSafe dashboard. You can then pass it to the client via an environment variable:</p><pre><code>export TYPESAFE_API_KEY="your-key"</code><div><a href="https://sourcecraft.dev/"><img loading="lazy"/></a></div></pre><p><strong>Step 4. Install the SDK</strong></p><p>For Python, version 3.10 or newer is required:</p><pre><code># Python
+pip install typesafe-sdk
+
+# TypeScript
+npm install @typesafe-ai/sdk
+
+# Rust - for the execution layer
+cargo add typesafe-ai-rs</code><div><a href="https://sourcecraft.dev/"><img loading="lazy"/></a></div></pre><p>In the example below, the lines with questions are left in English, as in the original.</p><p><strong>Step 5. Execute the first request</strong></p><p>The client reads <code>TYPESAFE_API_KEY</code> and by default connects to <code>jev-latest</code>:</p><pre><code>from typesafe_sdk import Choice, Noul, Score, TypeSafeClient
+
+client = TypeSafeClient()
+
+state = {
+    "mid": 3.4127,
+    "spread_bps": 3.5,
+    "imbalance": 0.71,
+    "realized_vol_5m": 0.034,
+    "inventory": -120,
+    "aggressive_buy_ratio": 0.63,
+}
+
+response = client.system_one(
+    state=state,
+    questions={
+        "regime": Choice(
+            instructions="What market regime does this state describe?",
+            criteria={
+                "trending": None,
+                "mean_reverting": None,
+                "chaotic": None,
+            },
+        ),
+        "toxic_flow": Noul(
+            instructions="Is aggressive flow likely informed rather than noise?",
+        ),
+        "quote_environment": Score(
+            instructions="How favorable is this state for providing liquidity?",
+            legend={
+                "0": "Do not quote",
+                "1": "Marginal",
+                "2": "Standard",
+                "3": "Excellent",
+            },
+        ),
+    },
+)</code><div><a href="https://sourcecraft.dev/"><img loading="lazy"/></a></div></pre><p>For HFT, I recommend connecting directly to the API – via <code>POST </code><a href="https://api.typesafe.ai/v1/systemone"><code>https://api.typesafe.ai/v1/systemone</code></a>. Any intermediate gateway adds network latency, which can be critical under strict latency limits.</p><p>You should also fix the model version and record it with each response. Confidence thresholds are tuned for a specific version; an unnoticed model update can disrupt their operation.</p><h2>4. State snapshot and batch of parallel assessments</h2><p>Two key components are the state engine and the assessment batch. The state engine is regular deterministic code. On each block, it generates a compact snapshot of less than 400 tokens.</p><p>It can include:</p><ul><li><p><strong>Price:</strong> mid, microprice, and returns for 1, 5, and 30 minutes.</p></li><li><p><strong>Order Book:</strong> spread in basis points, depth at three levels, imbalance, and queue position.</p></li><li><p><strong>Order Flow:</strong> aggressive buy and sell volume, trade and cancellation frequency.</p></li><li><p><strong>Volatility:</strong> short- and medium-term realized volatility, comparison with 24-hour regime.</p></li><li><p><strong>Other Exchanges:</strong> divergence from a benchmark exchange, basis, and funding.</p></li><li><p><strong>Position:</strong> inventory, unrealized profit or loss (PnL), drawdown, and position holding time.</p></li><li><p><strong>Execution Health:</strong> fill rate, rejections, slippage, and the last ten latency values.</p></li></ul><p>I highlight three rules:</p><ol><li><p>The snapshot must be dense and numerical: input tokens incur a fee.</p></li><li><p>Timestamps require special discipline. Each field must only consider data available before the decision point.</p></li><li><p>You must save each snapshot along with the decision and subsequent outcome. These records will become calibration data.</p></li></ol><p>A single "buy or sell?" question is fine for a demonstration, but in a production system, I would send a whole batch of assessments in one call. In my estimation, batching provides approximately a 12x cost saving compared to individual requests:</p><pre><code>response = client.system_one(
+    state=snapshot,
+    questions={
+        "regime": Choice(
+            instructions="Regime?",
+            criteria={
+                "trending": None,
+                "mean_reverting": None,
+                "high_vol": None,
+                "crisis": None,
+            },
+        ),
+        "direction": Choice(
+            instructions="Bias next 10 blocks?",
+            criteria={"up": None, "down": None, "neutral": None},
+        ),
+        "toxic_flow": Noul(
+            instructions="Is aggressive flow informed?",
+        ),
+        "liquidity_stressed": Noul(
+            instructions="Book thinner than 24h norm?",
+        ),
+        "quote_environment": Score(
+            instructions="Favorable to provide liquidity?",
+            legend={"0": "No", "1": "Marginal", "2": "Standard", "3": "Excellent"},
+        ),
+        "inventory_pressure": Score(
+            instructions="Urgency to cut inventory?",
+            legend={"0": "None", "1": "Mild", "2": "Skew hard", "3": "Reduce now"},
+        ),
+    },
+)</code><div><a href="https://sourcecraft.dev/"><img loading="lazy"/></a></div></pre><p>Six assessments in one request – one latency. I estimate the cost of such a batch at approximately $0.00001 per block.</p><p>The code then applies thresholds and selects an action. A conditional example:</p><pre><code>def compose_action(ans, snap, limits):
+    if snap["drawdown"] &gt; limits.max_drawdown:
+        return KILL
+
+    if ans["toxic_flow"].noul &gt; 0.6:
+        return PULL_QUOTES
+
+    if ans["liquidity_stressed"].noul &gt; 0.7:
+        return WIDEN
+
+    quote = ans["quote_environment"]
+    if quote.score &gt;= 2.0 and quote.confidence &gt; 0.80:
+        skew = inventory_skew(ans["inventory_pressure"].score)
+        return quote_both_sides(skew=skew)
+
+    if quote.score &gt;= 1.0:
+        return quote_wide()
+
+    return STAND_DOWN</code><div><a href="https://sourcecraft.dev/"><img loading="lazy"/></a></div></pre><figure><img loading="lazy" src="https://habrastorage.org/r/w1560/getpro/habr/upload_files/b52/b68/19d/b52b6819dcdf73874c9f3b428e09aa8d.png"/></figure><p>Three principles are important here:</p><ul><li><p>Thresholds are set in the code, not delegated to the model.</p></li><li><p>Different thresholds can be set for different actions, considering the cost of error.</p></li><li><p>The fractional Kelly criterion <code>(2p − 1)</code>, limited to a quarter, is only meaningful with a reliably calibrated probability <code>p</code>. In my opinion, applying it to probability logarithms from a standard LLM without calibration is pointless.</p></li></ul><h2>5. Continuous loop, risk engine, and emergency mode</h2><p>Now we can assemble a loop that justifies round-the-clock operation.</p><figure><img loading="lazy" src="https://habrastorage.org/r/w1560/getpro/habr/upload_files/b77/acb/1ed/b77acb1edd67d4e9f7d1ce96f662bb89.png"/></figure><p>The core mathematics of market making has been known for about half a century, so its place is in deterministic code. On each block, the pricing engine calculates the reservation price and spread using the Avellaneda-Stoikov model:</p><pre><code>reservation price r = mid − inventory × γ × σ² × (T − t)
+half spread      = γ × σ² × (T − t) + (2 / γ) × ln(1 + γ / κ)</code><div><a href="https://sourcecraft.dev/"><img loading="lazy"/></a></div></pre><p>Jev only answers the question that the formula cannot answer on its own: is it worth quoting at all under current conditions?</p><p>The full loop looks like this:</p><ol><li><p>Receive a new block event via WebSocket <code>newHeads</code>; in case of failure, use a fallback polling mechanism.</p></li><li><p>Read the Level 2 (L2) order book: best bid and ask prices, depth.</p></li><li><p>Assemble a deterministic state snapshot of less than 400 tokens.</p></li><li><p>Get a batch of six Jev assessments in a single call.</p></li><li><p>Formulate an action in the policy engine.</p></li><li><p>Calculate the reservation price and spread using the Avellaneda-Stoikov model.</p></li><li><p>Check hard risk constraints. If violated, any action is canceled.</p></li><li><p>Cancel old quotes and place new limit orders that add liquidity.</p></li><li><p>Record the result, account for fills and PnL, update the position, and proceed to the next block.</p></li></ol><p>Each stage is a separate module with its own failure conditions. At module interfaces, manual assembly often turns into lengthy debugging, so I pre-define and verify component interactions.</p><p>Two conditions are particularly important:</p><ul><li><p><strong>Do not trade on stale data.</strong> If Jev doesn't return before the next block, you must skip the cycle, not send a quote based on an old snapshot.</p></li><li><p><strong>Account for fees in advance.</strong> In the <code>jevons critique</code> project fork, an estimate is provided showing that naive cancellation and re-quoting on every block costs approximately 428 MON per hour with a 3.5 basis point spread. The system will have to account for a wider spread, less frequent re-quoting, or the real advantage of a directional signal. I recommend repeating this calculation for your network and strategy before placing real orders.</p></li></ul><p><strong>Hard risk limits</strong></p><p>The risk engine should not delegate limits to Jev. Before each order, regular code checks at least:</p><ul><li><p>maximum position and order size;</p></li><li><p>daily loss and maximum drawdown;</p></li><li><p>maximum inventory holding time;</p></li><li><p>age of market data;</p></li><li><p>leverage;</p></li><li><p>number of API errors;</p></li><li><p>maximum decision latency.</p></li></ul><p>Each limit must be checked independently of the model's assessment. For example, you can check if a file with the execution result exists or if a metric has dropped below a set threshold.</p><p><strong>Fallback scenario</strong></p><p>For continuous operation, a pre-defined plan is needed for delays, low confidence, or model unavailability:</p><div><div><table><tbody><tr><td><p><strong>State</strong></p></td><td><p><strong>Action</strong></p></td></tr><tr><td><p>System operational, high confidence</p></td><td><p>Normal trading</p></td></tr><tr><td><p>System operational, low confidence</p></td><td><p>Reduce position size or refrain from entering</p></td></tr><tr><td><p>Response not received before the next block</p></td><td><p>Skip the cycle; do not place stale quotes</p></td></tr><tr><td><p>Jev unavailable</p></td><td><p>Switch to a deterministic fallback algorithm</p></td></tr><tr><td><p>Hard limit breached</p></td><td><p>Halt trading, close positions, and send an alert</p></td></tr></tbody></table></div></div><p>With such a plan, the system can be considered autonomous. Without it, it only functions until the first network failure.</p><p>I would consider blockchain stacks with block-level update frequencies for independent developers – Monad via Kuru, Solana DEX platforms, and Hyperliquid – as well as prediction markets with wide spreads of 200–500 basis points. The 300ms cycle is irrelevant to the microsecond trading of major US stocks.</p><h2>6. Calibration and applicability limits</h2><p>You need to test not only whether Jev guessed the price direction correctly but the entire trading policy as a whole.</p><p>I propose comparing four variants on identical data, features, costs, and limits:</p><ol><li><p>manually written rules;</p></li><li><p>a system with a leading LLM;</p></li><li><p>a system with Jev;</p></li><li><p>Jev with confidence thresholds that allow the model to abstain from making a decision.</p></li></ol><p>For each variant, you should measure Sharpe and Sortino ratios, maximum drawdown, win rate, slippage, adverse selection losses, cost per million decisions, and coverage rate.</p><p>A separate research question is whether the confidence filter helps: does Jev perform better when it skips dubious situations than when it is forced to answer every query? If the model is calibrated, such a filter should improve portfolio quality.</p><p>Calibration also needs to be verified. If the model estimates an 80% probability of an increase, do events with such an assessment actually occur about 80% of the time on your specific venue? To check, compare predicted probabilities with actual frequencies and calculate the Brier score, log loss, and Expected Calibration Error using the saved "snapshot - decision - outcome" triplets.</p><p>RLCD calibrates responses on TypeSafe's data, not yours. If the reliability curve deviates from the actual frequency, I would apply Platt scaling at the policy level.</p><p><strong>What Jev can do – and what not to expect</strong></p><p><strong>Jev can:</strong></p><ul><li><p>return typed decisions with calibrated probabilities in 70–500ms;</p></li><li><p>assess dozens of independent questions in parallel with the latency of a single question;</p></li><li><p>accept up to 255 response options and a context of up to 32,000 tokens;</p></li><li><p>operate within a blockchain cycle with a 300ms interval;</p></li><li><p>replace some fuzzy rules, classifiers, heuristic assessments, and market regime detectors;</p></li><li><p>participate in Kelly criterion calculation after calibration checks;</p></li><li><p>execute a batch of assessments on each block for $10–25 per month – this is my estimate for the specified configuration, not a universal price.</p></li></ul><p><strong>Jev cannot:</strong></p><ul><li><p>generate text or design a trading strategy;</p></li><li><p>solve interdependent questions in a single call: each is evaluated separately, dependency requires a second request;</p></li><li><p>compete in the microsecond range;</p></li><li><p>replace market data collection, numerical calculations, exchange connectivity, or hard risk constraints;</p></li><li><p>guarantee TypeSafe benchmark results on your workload;</p></li><li><p>turn a losing strategy into a profitable one.</p></li></ul><p>Jev can make individual decisions faster and cheaper. You still need to find and validate your trading edge independently.</p><h2>Conclusion</h2><p>Jev is not just a smarter language model, but a different type of tool: a decision engine that returns structured assessments with probabilities within a single blockchain cycle.</p><p>A working system doesn't ask Jev to "trade." It calculates everything calculable with regular code, sends a compact market snapshot, receives a set of atomic assessments, and passes each action through confidence thresholds and hard risk constraints. The price and spread are calculated by deterministic code; the model helps assess what is difficult to express with a formula.</p><p>I chose Jev not because it's the newest model on the market. I separate the system into deterministic calculations and probabilistic assessments, and then check if a calibrated model is suitable for the latter part. Records of decisions and their outcomes are needed not only for auditing: they help me check calibration and improve the system.</p><p>I pose this question to the developer: wait several seconds for a text response from a chat model, or ask six typed questions and get assessments before the next block?</p><p>If you liked the article and are interested in seeing the bot or joining our algo-trader community – <a href="https://t.me/tot_gromov">message me</a></p></div>
+  </main>
+  <footer>
+    Translation generated with Gemini 2.5 Flash-Lite.
+    The original article remains the source of record.
+  </footer>
+</body>
+</html>

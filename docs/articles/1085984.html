@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>DIY E-ink Server Monitor in a Weekend</title>
+  <meta name="description" content="A guide to building a custom e-ink display for your server using a Waveshare ESP32-S3-ePaper-1.54 board. This low-power monitor shows server stats like CPU load, GPU temperature, memory, disk space, and uptime, configurable via a web interface. The article details the hardware, firmware development,">
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.65;
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 32px 20px 64px;
+      color: #1f2328;
+    }
+    header {
+      border-bottom: 1px solid #d8dee4;
+      margin-bottom: 28px;
+      padding-bottom: 20px;
+    }
+    .source {
+      color: #57606a;
+      font-size: 0.95rem;
+    }
+    img, video, iframe {
+      max-width: 100%;
+      height: auto;
+    }
+    pre {
+      overflow-x: auto;
+      padding: 16px;
+      background: #f6f8fa;
+      border-radius: 6px;
+    }
+    code {
+      font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+    }
+    blockquote {
+      border-left: 4px solid #d0d7de;
+      margin-left: 0;
+      padding-left: 16px;
+      color: #57606a;
+    }
+    footer {
+      border-top: 1px solid #d8dee4;
+      margin-top: 40px;
+      padding-top: 20px;
+      color: #57606a;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>DIY E-ink Server Monitor in a Weekend</h1>
+    <p>A guide to building a custom e-ink display for your server using a Waveshare ESP32-S3-ePaper-1.54 board. This low-power monitor shows server stats like CPU load, GPU temperature, memory, disk space, and uptime, configurable via a web interface. The article details the hardware, firmware development, and setup process.</p>
+    <p class="source">
+      Machine-translated from Habr.
+      <a href="https://habr.com/ru/articles/1085984/?utm_campaign=1085984&amp;utm_source=habrahabr&amp;utm_medium=rss">Read the original Russian article</a>.
+      Thu, 24 Sep 2026 12:03:35 GMT
+    </p>
+  </header>
+  <main>
+<div><figure><img alt="Micro-monitor for the server" loading="lazy" src="https://habrastorage.org/r/w1560/getpro/habr/upload_files/bab/57a/17a/bab57a17accc34d8c3a5a1ef2c5bd46c.jpg" title="Micro-monitor for the server"/><div><figcaption>Micro-monitor for the server</figcaption></div></figure><p>In short: a Waveshare ESP32-S3-ePaper-1.54 board, a single USB cable, and a 200x200 screen that hangs near the server and displays CPU load, GPU temperature, memory, disk, uptime, live ping, etc., as chosen by the administrator. You buy a ready-made dev board in a case from marketplaces, flash it with the custom firmware from the article, configure it via the built-in web interface, and get a finished device that connects to any server via USB. How to build one for yourself.</p><h3>Why Does a Server Need a Separate Screen?</h3><p>The server with two Tesla P100s lives in my kitchen; I wrote about it in a previous article (<a href="https://habr.com/ru/articles/1071442/">https://habr.com/ru/articles/1071442/</a>). It gets hot and noisy, and I only need to know three things about it: whether the GPU temperature is approaching the throttling threshold, how much memory is used, and whether the SSD space has run out.</p><p>I honestly considered various options. An old 15-inch monitor is out due to space constraints and the desire to avoid unnecessary power consumption. A web page with a summary seems logical, but to see it, I have to unlock my phone, find the tab, and wait for it to load. I need the numbers to be visible immediately when I walk by. E-ink is perfect for this: it doesn't emit light, consumes no power when idle, and holds the image without power.</p><figure><img alt="Now I can see when the local neural network finishes its work" loading="lazy" src="https://habrastorage.org/r/w1560/getpro/habr/upload_files/ef4/6e7/2ac/ef46e72acca96e9dac631933a488c532.jpg" title="Now I can see when the local neural network finishes its work"/><div><figcaption>Now I can see when the local neural network finishes its work</figcaption></div></figure><p>The screen is powered by USB, redraws itself once a minute, and shows load, temperature, and uptime. Now, for the details of creating this device.</p><h3>Procurement</h3><figure><img alt='Typical marketplace listing for ESP32-S3 e-Paper 1.54" development board' loading="lazy" src="https://habrastorage.org/r/w1560/getpro/habr/upload_files/74a/2b2/0d0/74a2b20d03315474355e03ec0081929d.png" title='Typical marketplace listing for ESP32-S3 e-Paper 1.54" development board'/><div><figcaption>Typical marketplace listing for ESP32-S3 e-Paper 1.54" development board</figcaption></div></figure><p>After purchase, I had a plastic case with a no-name ESP32-S3-ePaper-1.54 V2 inside, but no cable. Its screen is 200x200 with an SSD1681 controller, and inside is an ESP32-S3-PICO module with eight megabytes of flash and the same amount of PSRAM. The board also has an SHTC3 temperature and humidity sensor, a real-time clock, a TF card slot, an audio codec with an amplifier and speaker, two buttons, and a Type-C connector. A battery wasn't included, and it's not needed if it's constantly powered via USB.</p><figure><img alt="How it's shipped" loading="lazy" src="https://habrastorage.org/r/w1560/getpro/habr/upload_files/104/e66/18e/104e6618ee37a15310581fbd4cd241b8.jpg" title="How it's shipped"/><div><figcaption>How it's shipped</figcaption></div></figure><p>For the monitor, I needed a little over a third of the device's functionality. The speaker remains silent, and I've never used the card slot.</p><h3>Firmware Development</h3><p>The panel displayed its first image an hour and a half after I started the task. Then came an evening I'll remember: the device rebooted every twenty seconds, and there were no logs at all because there was nowhere to output them.</p><p>Since then, the device has been named inkmetrics and has reached version 0.7.1. Below are the stats, a full list of its current capabilities, and links to the source code and a ready-to-flash package at the end.</p><p>In the first version of the article, the 200x200 frame was drawn by the computer: Pillow, Consolas font, 5000 bytes over the COM port, and the board only received the ready buffer. Now, there's no COM port in the build at all. The device presents itself to the host as two devices: a network card and a disk, and the screen draws itself using its own fonts. The computer sends only numbers once a minute: a flat JSON to POST /ingest at 192.168.7.1. All fields are optional; anything missing will be shown as a dash.</p><p>Why I redid it in the second version: The image from the computer lacked a second screen, browser-based settings, and a "no data" state. Plus, any visual change required modifying the image generator, and I wanted to move labels and fonts without touching the agent. Now, the layout lives in the firmware, fonts are generated by the device, and the computer only handles the simple task of collecting numbers.</p><div><div><table><tbody><tr><td><p><strong>What's on the screen</strong></p></td><td><p><strong>Source</strong></p></td></tr><tr><td><p>CPU load, memory, disk, uptime</p></td><td><p>Standard Windows counters, agent once a minute</p></td></tr><tr><td><p>Disk status</p></td><td><p>SMART, OK / WARNING string</p></td></tr><tr><td><p>Uptime</p></td><td><p>Standard Windows counters</p></td></tr><tr><td><p>Two GPUs: load, temperature, memory</p></td><td><p>nvidia-smi, or WDDM counters if unavailable</p></td></tr><tr><td><p>Does the computer have internet, latency, how many of four pings replied</p></td><td><p>Agent: four ICMP requests</p></td></tr><tr><td><p>Room temperature and humidity, clock</p></td><td><p>SHTC3 sensor on the board, time provided by the browser when opening the page</p></td></tr><tr><td><p>Data freshness</p></td><td><p>Device: silence longer than 90 seconds erases numbers into dashes</p></td></tr></tbody></table></div></div><h3>Establishing Convenient Communication</h3><p>USB networking isn't possible with the Arduino core: TinyUSB is compiled without the network class. I wanted the device to serve its own page, so I switched to ESP-IDF.</p><p>The first attempt hit a wall with descriptors. Windows refused NCM mode, so I switched to RNDIS, but the esp_tinyusb library only provides default descriptors for CDC, MSC, MTP, and NCM. For RNDIS, the user must define the configuration, and this manifests externally as a single ESP_ERR_TIMEOUT error. I spent half a day debugging the PHY and clocking until the registers explicitly stated: before the PHY comes up, the DWC2 core identifier reads 0x00000000; after it comes up, it's 0x4f54400a. This means the hardware is fine, and the PHY isn't the culprit.</p><p>Custom descriptors got the network running in a minute, and then the device started rebooting every twenty seconds. It turned out I was the one crashing it. esp_netif passes a linear frame, a regular buffer of bytes, to the driver, but in my code, I was casting it to a pbuf pointer, as is common in TinyUSB examples. The length was read from the wrong place, namely from the MAC address bytes, and the very first outgoing frame, a DHCP reply to a Windows request, sent the board into a panic with the reason LoadProhibited. </p><p>Fortunately, the panic dump was already decipherable by then: the stack trace showed the entire path, from udp_sendto_if through etharp_output and esp_netif_transmit to my usb_transmit and tud_network_xmit_cb. The fix took one line. The board, instead of twenty seconds, lasted one hundred and thirty-four and showed no signs of stopping.</p><p>It also turned out that the address conflict on the screen was false, and the host wasn't getting an address for another reason: a DHCP repeat every minute for eight seconds disabled the device's emergency DHCP server. And one more thing that cost me internet on the computer: the device's adapter must not be given a gateway, otherwise Windows will route the default route through it. So, I had to hardcode the device and host addresses to prevent the host's internet from dropping.</p><figure><img alt=
+  </main>
+  <footer>
+    Translation generated with Gemini 2.5 Flash-Lite.
+    The original article remains the source of record.
+  </footer>
+</body>
+</html>

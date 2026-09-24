@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>SRX: Restore the Necessary Fragment and Verify It</title>
+  <meta name="description" content="What happens when an AI system needs not just to &quot;remember&quot; a fact, but to show which historical source confirms it? In SRX, I&#x27;m testing an approach where the system first reconstructs the required data version, compares it with the original Git history and SHA-256, and only then pass">
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.65;
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 32px 20px 64px;
+      color: #1f2328;
+    }
+    header {
+      border-bottom: 1px solid #d8dee4;
+      margin-bottom: 28px;
+      padding-bottom: 20px;
+    }
+    .source {
+      color: #57606a;
+      font-size: 0.95rem;
+    }
+    img, video, iframe {
+      max-width: 100%;
+      height: auto;
+    }
+    pre {
+      overflow-x: auto;
+      padding: 16px;
+      background: #f6f8fa;
+      border-radius: 6px;
+    }
+    code {
+      font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+    }
+    blockquote {
+      border-left: 4px solid #d0d7de;
+      margin-left: 0;
+      padding-left: 16px;
+      color: #57606a;
+    }
+    footer {
+      border-top: 1px solid #d8dee4;
+      margin-top: 40px;
+      padding-top: 20px;
+      color: #57606a;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>SRX: Restore the Necessary Fragment and Verify It</h1>
+    <p>What happens when an AI system needs not just to &quot;remember&quot; a fact, but to show which historical source confirms it? In SRX, I&#x27;m testing an approach where the system first reconstructs the required data version, compares it with the original Git history and SHA-256, and only then passes the result to an LLM. The article details a real test on 50 Vite commits, a negative result for the initial hypothesis, and the project&#x27;s future direction. Read on.</p>
+    <p class="source">
+      Machine-translated from Habr.
+      <a href="https://habr.com/ru/articles/1086182/?utm_campaign=1086182&amp;utm_source=habrahabr&amp;utm_medium=rss">Read the original Russian article</a>.
+      Thu, 24 Sep 2026 12:10:16 GMT
+    </p>
+  </header>
+  <main>
+<div><p>What happens when an AI system needs to answer not just "What do I remember?", but also show <strong>which historical source confirms the answer</strong>?</p><p>In SRX, I'm experimenting with a different approach to long history: instead of passing the entire accumulated context to the model, the system first finds the required data version, reconstructs it, and verifies it against the original source. Only then can the result be given to the LLM for interpretation.</p><h3>Why Ordinary Search Is Not Enough</h3><p>Imagine the parameter <code>database.pool_size</code> changed like this:</p><pre><code>v1: 4
+v2: 16
+v3: decision made to switch to 32
+v4: decision canceled, value reverted to 16</code><div><a href="https://sourcecraft.dev/"><img loading="lazy"/></a></div></pre><p>Semantic search or RAG can find all four entries. But the system still needs to understand which state corresponds to the required version, which decision was later canceled, and whether the original file on which the answer is based can be restored.</p><p>Therefore, in SRX, the chain looks like this:</p><pre><code>storage
+  ↓
+retrieval
+  ↓
+state reconstruction
+  ↓
+verification
+  ↓
+answer</code><div><a href="https://sourcecraft.dev/"><img loading="lazy"/></a></div></pre><p>The LLM here should not "decide" for itself whether the data matches. Reconstruction, hash, and verification remain deterministic.</p><blockquote><p><strong>LLM never creates metrics; LLM only interprets measured evidence.</strong></p></blockquote><h3>What Has Been Tested</h3><p>To avoid being limited to synthetic data, SRX was tested on the real Git history of Vite. The system imports 50 first-parent commits, reconstructs selected historical states, and compares them with the original Git history.</p><p>Result:</p><pre><code>Imported real commits: 50
+Persistence reload: PASS
+
+Verified evidence: 4/4
+SRX verification: PASS
+bit-perfect vs git show: PASS
+source SHA match: PASS</code><div><a href="https://sourcecraft.dev/"><img loading="lazy"/></a></div></pre><p>This means the selected historical states were reconstructed byte-for-byte and passed the SHA-256 verification.</p><p>This is not yet proof of retrieval quality. But it confirms a fundamental point: a historical answer can be linked to a realistically reconstructed and verified source.</p><h3>What Didn't Work</h3><p>Initially, I also tested SRX as a way to represent changes between versions more compactly.</p><p>The results were much weaker than expected. On some real data, structural operators provided no advantage at all, and strong baselines like <code>zstd + reference</code> performed better.</p><p>Therefore, I consider the hypothesis "SRX as a new compressor" closed.</p><p>Now, another question is more interesting:</p><blockquote><p><strong>Can only the minimally necessary fragment of history be reconstructed, the correct answer obtained, and simultaneously a verifiable source be shown?</strong></p></blockquote><p>This is precisely the direction that seems most important to me now.</p><h3>What's Next</h3><p>The next stage is to measure selective reconstruction: how much history is actually needed to reconstruct for an answer, how accurately the required state is selected, and whether it can be confirmed by the original source.</p><p>I am also separately investigating whether it's possible to machine-describe the <strong>meaning of the change</strong> between versions, not just record the byte difference. But conclusions here will only come after a separate experiment.</p><p>The project is open:</p><p><strong>SRX — Semantic Reconstructive eXchange</strong><br/>GitHub: <a href="https://github.com/IgorRybakoff/srx">https://github.com/IgorRybakoff/srx</a></p><p>Last public update:<br/><a href="https://github.com/IgorRybakoff/srx/commit/9c7c515477d7dc3e10fcfd4c38cf9a57be6d60e0">https://github.com/IgorRybakoff/srx/commit/9c7c515477d7dc3e10fcfd4c38cf9a57be6d60e0</a></p></div>
+  </main>
+  <footer>
+    Translation generated with Gemini 2.5 Flash-Lite.
+    The original article remains the source of record.
+  </footer>
+</body>
+</html>

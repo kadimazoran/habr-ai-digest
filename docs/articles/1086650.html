@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>A Warm Tube Agent</title>
+  <meta name="description" content="It so happened that I completely missed agent systems. I decided that it was worth filling this gap and catching up. The less understanding, the greater the appetite, so I decided to blindly start with an ambitious task – to transfer project development under the control of agents. My enthusiasm coo">
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.65;
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 32px 20px 64px;
+      color: #1f2328;
+    }
+    header {
+      border-bottom: 1px solid #d8dee4;
+      margin-bottom: 28px;
+      padding-bottom: 20px;
+    }
+    .source {
+      color: #57606a;
+      font-size: 0.95rem;
+    }
+    img, video, iframe {
+      max-width: 100%;
+      height: auto;
+    }
+    pre {
+      overflow-x: auto;
+      padding: 16px;
+      background: #f6f8fa;
+      border-radius: 6px;
+    }
+    code {
+      font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+    }
+    blockquote {
+      border-left: 4px solid #d0d7de;
+      margin-left: 0;
+      padding-left: 16px;
+      color: #57606a;
+    }
+    footer {
+      border-top: 1px solid #d8dee4;
+      margin-top: 40px;
+      padding-top: 20px;
+      color: #57606a;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>A Warm Tube Agent</h1>
+    <p>It so happened that I completely missed agent systems. I decided that it was worth filling this gap and catching up. The less understanding, the greater the appetite, so I decided to blindly start with an ambitious task – to transfer project development under the control of agents. My enthusiasm cooled down a bit during the work process, and I want to share the first results. Perhaps you can help me point out my blind spot or start using agents if you haven&#x27;t already :) Where I drew the line for LLM</p>
+    <p class="source">
+      Machine-translated from Habr.
+      <a href="https://habr.com/ru/articles/1086650/?utm_campaign=1086650&amp;utm_source=habrahabr&amp;utm_medium=rss">Read the original Russian article</a>.
+      Fri, 25 Sep 2026 11:09:45 GMT
+    </p>
+  </header>
+  <main>
+<div><p>It so happened that I completely missed agent systems. I decided that it was worth filling this gap and catching up. The less understanding, the greater the appetite, so I decided to blindly start with an ambitious task – to transfer project development under the control of agents. My enthusiasm cooled down a bit during the work process, and I want to share the first results. Perhaps you can help me point out my blind spot or start using agents if you haven't already :)</p><h2>Philosophy of Application</h2><p>In my daily work, I use LLMs to write short code snippets: where the input and output can be clearly isolated, but honestly, even here problems arise. My first attempt to trust the result without verification led to about 4 hours of human effort for the function "Split period into chunks." I was extremely disappointed: people commit generated code to the Linux kernel, create entire projects, and I broke down on a simple function. Then I returned LLM to the status of "search facilitation tool" and returned to the dogma "you still have to think."</p><p>Several months passed, and I successfully used LLMs in automation, but I still hadn't approached code generation. I build my work on the premise that the main thing in development is the transformation of business coordinates into algorithmic ones. Writing code itself is the routine that helps relax and clear your head: familiar tools, familiar problems, and an absolute guarantee of results. It turns out that a development agent doesn't solve my problems, but only removes the part where I relax, which doesn't make me very happy. Therefore, I decided that the place for LLM in my task-solving pipeline is precisely the part where coordinates degenerate: at the stage of transforming business requirements into architectural ones.</p><p>The most valuable thing in completing a task is finding out that the solution was based on incorrect assumptions. This converts the cost of all previous stages into the cost of error detection, increases the cost of achieving the result by introducing cognitive biases among participants, and most importantly, wastes our time. For large teams with small individual contributions, this is acceptable; for productive teams with a small number of participants, it is very expensive.</p><p>An agent is an LLM with the ability to do something. I decided to treat it like an employee – competencies and expected results of activity should be described. I used to call this a job description, now it's a technical specification for agent development. Here's a small digression about expediency: eliminating task returns to development lacks transparency at the tracker level. "It seems there's some problem with this task" – this is our feeling when we hear about a certain part of the system often enough. To translate this signal into a measurable metric means entrusting all our incoming noise to a system that will be our intuition. Or, to devise a model that analyzes artifacts significant to our intuition: business priorities, employee morale, development artifacts, tracker events. All this is far from me; I want to test the applicability of the tool and create a practical implementation that doesn't depend on the LLM's "mood" on a given workday. Setting a two-week deadline, I got to work.</p><h2>Technical Details</h2><p>I wrote about 3000 lines of code in Python, which I dislike. Writing the main functionality took me one full evening, and then the work continued in the background: one day was spent on debugging without team involvement, one day on testing interaction with project participants, and one day on release to production. It turned out to be something between an agent and automation, but the result impressed the whole team. I was satisfied, and I consider the experiment successful.</p><details><summary>CHANGELOG.md</summary><div><p><span><em>I don't know why I keep the changelog from bottom to top</em></span></p><h4>2026–09-21</h4><ol><li><p>Now comments are directed to team members in a language they can read</p></li><li><p>Comments used for context are filtered from TriageAgent to avoid hallucinations</p></li><li><p>Fixed missing ambiguous comment</p></li></ol><h4>2026–09-20</h4><ol><li><p>Each agent has a <em>Model</em> for both input and output</p></li><li><p>Implemented base class for Model that provides abstract render_dbg function (allows printing debug info in console) and to_prompt_text that allows to summarize a model for prompting</p></li><li><p>Model was renamed to Contract as it best represents the future usage</p></li><li><p>IssueReader renamed to IssueTriage since it creates a step sequence for solution</p></li><li><p>IssueTriage can now post comments to clarify requirements and ask for missing agent skills</p></li></ol><h4>2026–09-19</h4><ol><li><p>Created an agent that can accept YouTrack™ task ID, read an issue, create a context for a task (body, comments, image attachments) and decompose it for implementing</p></li><li><p><strong>[missing]</strong> extract the decomposition because its manner depends on the task context (i.e. backend‑dev, frontend‑dev, seller, marketing, ad, design,...) so an issue_reader agent should listen for undelivered tasks, create a context and delegate the decomposition to a specific agent. If there is no agent that can do this work — add comment that it cannot be resolved until an appropriate agent is created, assign a task to admin and change status to “To Be Discussed”. There should be an agent that has information about all the rest of agents and can provide the information, who can do that task and how (in case of confusion — ask the others agents if they can do the task). As this architecture is a highly future‑oriented automation, it is enough to have just a registry of agents and omit the conversation between the issue reader and the other agents. <strong>[adopted restrictions]</strong> agents work in the context of a single project, which is zArch (issues ARCH‑*) so: </p><ol><li><p>the project is defined, the.yaml exists</p></li><li><p>agent list is known, agents can ask each other</p></li></ol></li></ol></div></details><p>The essence is as follows: the IssueTriage agent receives the task ID via FastAPI. Then it forms a context: using YoutrackMCP, it downloads the task content, images, and comments. The next step is interaction with the LLM agent, which studies the feasibility of the task (the project description includes the current team with roles). If the task cannot be implemented under the current circumstances, it will leave a comment with a specific marker that is not visible to the user but has human-readable content.</p><p>Next is a check for ambiguity: if there are double meanings in the task, it adds a comment with possible interpretations and a question addressed to a team member.</p><figure><img alt=
+  </main>
+  <footer>
+    Translation generated with Gemini 2.5 Flash-Lite.
+    The original article remains the source of record.
+  </footer>
+</body>
+</html>

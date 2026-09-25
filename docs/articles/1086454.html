@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Why an AI Agent is Not a Digital Employee</title>
+  <meta name="description" content="An AI agent already performs part of the work previously done by humans. But this doesn&#x27;t make it a digital employee. A person joins an organization not only with knowledge but also with professional norms, an understanding of the context of rules, and boundaries that don&#x27;t need to be expl">
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.65;
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 32px 20px 64px;
+      color: #1f2328;
+    }
+    header {
+      border-bottom: 1px solid #d8dee4;
+      margin-bottom: 28px;
+      padding-bottom: 20px;
+    }
+    .source {
+      color: #57606a;
+      font-size: 0.95rem;
+    }
+    img, video, iframe {
+      max-width: 100%;
+      height: auto;
+    }
+    pre {
+      overflow-x: auto;
+      padding: 16px;
+      background: #f6f8fa;
+      border-radius: 6px;
+    }
+    code {
+      font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+    }
+    blockquote {
+      border-left: 4px solid #d0d7de;
+      margin-left: 0;
+      padding-left: 16px;
+      color: #57606a;
+    }
+    footer {
+      border-top: 1px solid #d8dee4;
+      margin-top: 40px;
+      padding-top: 20px;
+      color: #57606a;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Why an AI Agent is Not a Digital Employee</h1>
+    <p>An AI agent already performs part of the work previously done by humans. But this doesn&#x27;t make it a digital employee. A person joins an organization not only with knowledge but also with professional norms, an understanding of the context of rules, and boundaries that don&#x27;t need to be explicitly defined. An agent lacks these supports by default. The article explores how to replace them and why agent platforms and frameworks are insufficient. They provide management mechanisms, but the organization will have to extract their content from its own practices, employee knowledge, and formulate it explicitly. At the end, there are eight questions to answer before launching an agent, rather than after the first incident.</p>
+    <p class="source">
+      Machine-translated from Habr.
+      <a href="https://habr.com/ru/companies/tn_digital/articles/1086454/?utm_campaign=1086454&amp;utm_source=habrahabr&amp;utm_medium=rss">Read the original Russian article</a>.
+      Fri, 25 Sep 2026 11:10:28 GMT
+    </p>
+  </header>
+  <main>
+<div><p>Hello, Habr! This is Alexey Lapunov from the Information Security and System Administration department of TЕХНОНИКОЛЬ Digital.</p><p>Last time, we <a href="https://habr.com/ru/companies/tn_digital/articles/1078382/">analyzed</a> how to approach complex problems: why it's important not to jump at the first solution but to decompose the problem and find points of change.</p><p>Today, I propose we look at the AI agent as a new type of performer: how it differs from humans and traditional automation, why its ability to perform work is not enough to call it a digital employee, and what management mechanisms are needed around it.</p><h3>Why Mature Agent Control Doesn't Save from Rollbacks</h3><p>In 2026, <a href="https://news.cision.com/sinch-ab/r/sinch-research-reveals-74--of-enterprises-have-rolled-back-live-ai-customer-communications-agents,c4375762">Sinch surveyed</a> 2,527 executives about the implementation of AI agents in customer communications. Among companies where agents were already working in production, 74% had rolled back or shut down a launched agent at least once due to management issues. Among those who considered their control mechanisms mature, the figure was even higher – 81%.</p><p>The study's authors attribute this to developed monitoring: mature companies notice things earlier than others.</p><p>This explanation is plausible. Monitoring answers the question of how to detect undesirable behavior. But it says nothing about why it became undesirable in the first place and why the response was a rollback rather than a correction. I'll return to these figures later, when we have an explanation.</p><h3>An Agent Makes Choices</h3><p>The idea of a digital workforce emerged long before AI agents. RPA was also supposed to take over repetitive office work from humans.</p><p>However, RPA only automated processes where the necessary choices could be pre-defined in code, settings, and the logic of a specific implementation. Under unchanging conditions, this choice was not re-determined with each launch.</p><p>An agent is structured differently: it interprets the situation and chooses a course of action during operation. This is precisely what allows AI to be assigned tasks that previously remained with humans due to the need for interpretation and judgment. And this same capability has a downside: whatever the organization hasn't explicitly closed off becomes an available course of action.</p><h3>What an Organization Gets Along with a Human</h3><p>When managing work, an organization relies on several things: whom to assign the work to and how to prepare them, what norms they share, what they are allowed to do, what result is needed, and what follows its evaluation. The company formulates some of these itself. It receives others along with the person in a ready-made form, and no additional mechanisms are required.</p><p>The organization assesses the performer's capabilities before the work begins: it conducts a thorough selection, checks knowledge, qualifications, and diplomas. An employee brings some norms with their profession, and learns others within the company, adapting to established rules and culture. Operational corrections often happen verbally and are recorded in meeting minutes. If a precedent arises, the organization issues a regulation, order, or internal legal act. But the key difference with a human is their ability to understand not only the words but also the context of these rules, both oral agreements and written ones.</p><p>Some boundaries are not built at all. They are set not by rules, but by the performer's limitations: lack of knowledge, tools, or access. An employee only knows the standard system interface, so no other paths to data exist for them, and there's no need to prohibit them. An agent is given a different set of tools and can find an unacceptable path. A limitation sufficient for a human does not apply to a digital performer, even if it hasn't been formally changed.</p><p>The organization formulates the requirements for the result itself. However, the link between evaluation and consequences for the employee—rewards, authority, reputation—works without a separate mechanism and influences choices even before the result is obtained. An agent lacks such a regulator. Telling it why the work result is unsatisfactory is not the same as changing its next execution. Therefore, these safeguards must be replaced by external rules.</p><p>In essence, a digital employee is an agent around which work management mechanisms are built: both those that come with a human by default and those that the organization creates additionally.</p><h3>How to Replace Missing Supports</h3><p>The missing supports are assembled from three means.</p><p><strong>Deterministic Restriction</strong>. The system prevents actions beyond authority, changing an inadmissible state, or proceeding without a mandatory condition. It only works where the boundary is already known and explicitly closed.</p><p><strong>Execution Verification</strong>. Both the result and the method must be verified: a correct result can be achieved through an inadmissible method. Evaluating the result requires criteria and an independent basis for comparison. Verifying the method requires a saved trace of what happened during operation.</p><p><strong>Human Decision</strong> — where an action creates an obligation or risk that the organization is not prepared to transfer to a digital performer. This is configured by a threshold: above a certain risk level, execution stops, and the decision is transferred to a human.</p><h3>How Much Control Is Needed</h3><p>It all depends on two properties of the work: how much it costs to verify execution and how reversible the consequences of an error are.</p><p>Where verification is cheap and an error can be corrected painlessly, external support is almost unnecessary: it's enough to check the result, roll back the error, and leave variability to the agent. In software development, the agent has tests, compilation, and commit rollback—cheap and fast verification built into the process long before AI. This leads to the feeling that tools for agents have already been created, although they only exist for this class of tasks.</p><p>The more expensive the verification and critical the consequences, the more restrictions must be ensured before the action is taken. A legal document, a letter creating an obligation, an analytical report for decision-making—here, verification is costly with a high price for error. Separate mechanisms exist for this: managed context, limiting the agent's available tools and permissions, execution tracing, a human confirmation gateway before irreversible actions. But by themselves, they do not determine what restrictions, criteria, and thresholds are needed for a specific job.</p><p>Designing boundaries and defining criteria before starting work is the price that must be paid. And here, imbalances are possible. Too few boundaries—significant variability remains within the agent's choices, and the cost of management shifts to verifying each execution. Too many boundaries—useful solutions are discarded, and the agent turns into an expensive way to execute a pre-defined algorithm.</p><h3>Why Agents Are Rolled Back, Not Corrected</h3><p>Let's return to the Sinch data. Mature monitoring explains why the problem is detected earlier. But another question remains: why does it have to be solved by rollback rather than adjusting a working agent?</p><p>A plausible explanation is that to correct it, it's not enough to know that the agent made a mistake. You need to understand which part of the execution system to change: the restriction, the verification criterion, or the escalation threshold. If configurable mechanisms haven't been created in advance, there's nothing to adjust quickly.</p><p>A rollback becomes a way to stop execution until such a mechanism is created.</p><h3>What's Needed for an Agent to Become a Digital Employee</h3><p>The ability to autonomously perform tasks is a property of the agent. A digital employee is a construct around it: an agent plus mechanisms for restriction, execution verification, and decision transfer to a human, assembled for a specific task.</p><p>For some classes of tasks, a significant part of this construct already exists. For example, in development, there are tests, compilation, version control, and rollback. The agent integrates into an existing verification loop, so the path to a digital employee is relatively short here.</p><p>Business tasks are more complex. The necessary rules and restrictions are determined by the specifics of a particular organization and are often not available in ready-made form. You cannot obtain them along with a model, platform, or agent framework. Technology can implement restrictions and checks, but it cannot define their content for the organization.</p><p>Therefore, the organization will have to extract the missing part of the construct from its work.</p><h3>Where to Start</h3><p>You can start already at the first pilot: define authorities and mandatory conditions, acceptance criteria and independent grounds for verification, requirements for execution trace, and the threshold for transferring decisions to a human. All of this is independent of the platform and will outlast changes in models, vendors, and tools.</p><p>For this, you can use a list of questions to answer before launching an agent, rather than after the first incident. The answers to these questions form the organizational part of the construct: what cannot be bought with the platform. The depth of the answers is determined by the same two properties of the work: the cost of execution verification and the reversibility of error consequences. Where verification is cheap and errors can be rolled back, short answers suffice, and some mechanisms won't be needed. The more expensive the verification and irreversible the consequences, the more must be defined before launch.</p><ul><li><p>What decisions does the agent make autonomously?</p></li><li><p>What actions should be technically impossible regardless of its choice?</p></li><li><p>By what criteria is the result accepted, and where do the grounds for verification come from?</p></li><li><p>Should only the result be checked, or also the method of obtaining it?</p></li><li><p>What execution trace should be preserved?</p></li><li><p>Before which actions is human decision mandatory?</p></li><li><p>Can a detected deviation be corrected by adjusting existing mechanisms, or will the agent need to be reassembled?</p></li><li><p>Which of these mechanisms will be preserved when changing the model, execution environment (harness), or platform?</p></li></ul><p><strong>Sinch Data Source:</strong></p><p>Sinch, "Sinch research reveals 74% of enterprises have rolled back live AI customer communications agents," press release, May 13, 2026: <a href="https://sinch.com/news/sinch-releases-ai-production-paradox/">sinch.com/news/sinch-releases-ai-production-paradox</a></p></div>
+  </main>
+  <footer>
+    Translation generated with Gemini 2.5 Flash-Lite.
+    The original article remains the source of record.
+  </footer>
+</body>
+</html>

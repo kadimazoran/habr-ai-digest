@@ -1,0 +1,256 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Pressed a Button, Said a Task, Forgot About It: How I Connected PLAUD, Raspberry Pi, Codex, and Microsoft To Do</title>
+  <meta name="description" content="Voice notes to ready-made Microsoft To Do tasks. I explain how I connected PLAUD, Raspberry Pi, and Codex to automatically get tasks with categories, deadlines, and reminders. From Voice to Task.">
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.65;
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 32px 20px 64px;
+      color: #1f2328;
+    }
+    header {
+      border-bottom: 1px solid #d8dee4;
+      margin-bottom: 28px;
+      padding-bottom: 20px;
+    }
+    .source {
+      color: #57606a;
+      font-size: 0.95rem;
+    }
+    img, video, iframe {
+      max-width: 100%;
+      height: auto;
+    }
+    pre {
+      overflow-x: auto;
+      padding: 16px;
+      background: #f6f8fa;
+      border-radius: 6px;
+    }
+    code {
+      font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+    }
+    blockquote {
+      border-left: 4px solid #d0d7de;
+      margin-left: 0;
+      padding-left: 16px;
+      color: #57606a;
+    }
+    footer {
+      border-top: 1px solid #d8dee4;
+      margin-top: 40px;
+      padding-top: 20px;
+      color: #57606a;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Pressed a Button, Said a Task, Forgot About It: How I Connected PLAUD, Raspberry Pi, Codex, and Microsoft To Do</h1>
+    <p>Voice notes to ready-made Microsoft To Do tasks. I explain how I connected PLAUD, Raspberry Pi, and Codex to automatically get tasks with categories, deadlines, and reminders. From Voice to Task.</p>
+    <p class="source">
+      Machine-translated from Habr.
+      <a href="https://habr.com/ru/articles/1083580/?utm_campaign=1083580&amp;utm_source=habrahabr&amp;utm_medium=rss">Read the original Russian article</a>.
+      Fri, 25 Sep 2026 11:03:10 GMT
+    </p>
+  </header>
+  <main>
+<div><figure><img loading="lazy" src="https://habrastorage.org/r/w1560/getpro/habr/upload_files/84c/f95/5b9/84cf955b90479a333541ab39bdcff710.jpg"/></figure><p>A phone isn't always suitable for quick notes. You have to take it out, unlock it, open an app, and type something. It's especially inconvenient when you're busy with another task and don't want to switch context entirely.</p><p>That's why I started looking at what's available on the market for creating voice notes that automatically turn into text. The main criteria were high-quality Russian speech recognition and the ability to wear the device on my wrist. I bought PLAUD and quickly realized that the gadget itself only solves half the problem.</p><p>I can press a button and say:</p><blockquote><p>Work. On Monday at 3 PM, check Exchange backups, remind me an hour before.</p></blockquote><p>PLAUD will save the recording and create the text just fine.</p><p>But then I still have to open the app, find the right recording, read it, and manually create a task in Microsoft To Do. This means instead of one action, I still get several. <br/><br/>I wanted something different:</p><p><strong>press button → say thought → forget → task automatically appears in To Do with category, deadline, and reminder.</strong></p><p>As a result, I assembled a small system on a Raspberry Pi Zero 2 W.</p><p><strong>What you'll find in the article</strong></p><p>Using my system as an example, I'll show you:</p><ul><li><p>How to connect PLAUD, Codex, and Microsoft To Do: dictate a thought — get a ready task.</p></li><li><p>How to reduce token consumption by offloading routine operations to Python and leaving the models only for text parsing.</p></li><li><p>How to extract deadlines, reminders, and task categories from spoken language.</p></li><li><p>How to run everything on a Raspberry Pi so the automation works around the clock.</p></li><li><p>How to store processing state in SQLite, retry after failures, and avoid duplicates.</p></li><li><p>What difficulties arose with service authorization and how I solved them.</p></li><li><p>How to use accumulated tasks for weekly reports and short daily summaries.</p></li></ul><hr/><h3>What I Achieved</h3><p>Now the workflow is exactly as I initially wanted.</p><p>For example, I can say:</p><blockquote><p>Health. Go to the dentist on Friday.</p></blockquote><p>After a while, in my Microsoft To Do task manager, I'll see:</p><p><strong>Health: Go to the dentist</strong></p><ul><li><p> with the category <code>Health</code>; </p></li><li><p> the corresponding date; </p></li><li><p> the original PLAUD transcription in the notes; </p></li><li><p> the ID of the original recording. </p></li></ul><p>Or:</p><blockquote><p>Work. On Monday at 3 PM, check Exchange backups, remind me an hour before.</p></blockquote><p>The system will create a task with:</p><pre><code>Title: Work: Check Exchange backups
+
+Due:
+Monday, 3:00 PM
+
+Reminder:
+2:00 PM
+
+Category:
+Work</code></pre><div><a href="https://sourcecraft.dev/"><img loading="lazy"/></a></div></pre><p>And the Raspberry works completely autonomously. No open SSH session or constantly running Codex is required.</p><hr/><h2>Architecture</h2><p>The current diagram looks something like this:</p><figure><img loading="lazy" src="https://habrastorage.org/r/w1560/getpro/habr/upload_files/38f/169/cbb/38f169cbb7db292593649f94f8c7e539.png"/></figure><p>And all this is launched by a <code>systemd timer</code> every 5 minutes.</p><hr/><h2>Why Raspberry Pi After All</h2><p>I wanted the automation to:</p><ul><li><p> not depend on my work computer; </p></li><li><p> not require an open browser; </p></li><li><p> survive reboots; </p></li><li><p> work 24/7; </p></li><li><p> consume almost no power. </p></li></ul><p>The Raspberry Pi Zero 2 W has more than enough power for this task.</p><p>It currently runs:</p><pre><code>Python
+Node.js
+PLAUD MCP
+Codex CLI
+SQLite
+systemd
+Microsoft Graph/MSAL</code><div><a href="https://sourcecraft.dev/"><img loading="lazy"/></a></div></pre><p>The model itself, of course, doesn't run on the Raspberry — Codex accesses the cloud model.</p><hr/><h2>The First Version Turned Out Too Expensive</h2><p>Initially, I made the most obvious option.</p><p>Codex itself accessed PLAUD via the connected MCP and executed a request like:</p><pre><code>List my recent Plaud recordings</code><div><a href="https://sourcecraft.dev/"><img loading="lazy"/></a></div></pre><p>It worked perfectly. I sent a request — the agent got the recordings and returned the result.</p><p>But then I looked at the token consumption.</p><p>One very simple request:</p><pre><code>list my recent Plaud recordings</code><div><a href="https://sourcecraft.dev/"><img loading="lazy"/></a></div></pre><p>consumed:</p><pre><code>16 901 tokens</code><div><a href="https://sourcecraft.dev/"><img loading="lazy"/></a></div></pre><p>Even though the final result consisted of literally a few recording titles.</p><p>The reason is quite obvious: not only my prompt was passed to the agent.</p><p>The context included:</p><ul><li><p> Codex system instructions; </p></li><li><p> descriptions of available tools; </p></li><li><p> MCP tools; </p></li><li><p> the <code>list_files</code> call; </p></li><li><p> the PLAUD response; </p></li><li><p> agent context; </p></li><li><p> the final response. </p></li></ul><p>This is fine for manual work.</p><p>But running such a construct every 5 minutes is already a questionable idea.</p><p> 288 runs per day just to check if a new recording has appeared.</p><hr/><h2>Main Architectural Change</h2><p>After this, I divided the system into two parts.</p><p>All mechanical operations are performed by regular Python:</p><pre><code>get list of PLAUD recordings
+↓
+compare IDs with SQLite
+↓
+get only new transcriptions
+↓
+save them</code><div><a href="https://sourcecraft.dev/"><img loading="lazy"/></a></div></pre><p>And the LLM is used <strong>only where text meaning is truly needed</strong>.</p><p>That is, now:</p><pre><code>Python → PLAUD
+Python → SQLite
+           ↓ only new texts
+          Codex</code><div><a href="https://sourcecraft.dev/"><img loading="lazy"/></a></div></pre><p>If there are no new recordings:</p><pre><code>Codex is not launched at all.</code><div><a href="https://sourcecraft.dev/"><img loading="lazy"/></a></div></pre><p>This turned out to be an important architectural decision for the project.</p><hr/><h2>The Savings Were Significant</h2><p>First test:</p><pre><code>Codex → PLAUD MCP → list_files</code><div><a href="https://sourcecraft.dev/"><img loading="lazy"/></a></div></pre><p>yielded:</p><pre><code>16 901 tokens</code><div><a href="https://sourcecraft.dev/"><img loading="lazy"/></a></div></pre><p>After moving PLAUD data retrieval to Python, the same semantic test on two notes:</p><pre><code>2 712 tokens</code><div><a href="https://sourcecraft.dev/"><img loading="lazy"/></a></div></pre><p>Then I tried to make Codex return the result via a fairly detailed JSON Schema.</p><p>I got:</p><pre><code>12 146 tokens</code><div><a href="https://sourcecraft.dev/"><img loading="lazy"/></a></div></pre><p>The schema was removed.</p><p>The final lightweight classifier usually shows approximately:</p><pre><code>2 700–3 500 tokens</code><div><a href="https://sourcecraft.dev/"><img loading="lazy"/></a></div></pre><p>for a small batch of notes.</p><p>It turned out something like this:</p><div><div><table><tbody><tr><th><p>Version</p></th><th><p>What the LLM does</p></th><th><p>Consumption in test</p></th></tr><tr><td><p>First</p></td><td><p>accesses PLAUD via MCP itself</p></td><td><p>16 901</p></td></tr><tr><td><p>Structured output</p></td><td><p>classification + large schema</p></td><td><p>12 146</p></td></tr><tr><td><p>Final</p></td><td><p>receives only text</p></td><td><p>~2 700–3 500</p></td></tr></tbody></table></div></div><p>The exact Codex quota consumption, of course, doesn't have to linearly correspond to <code>tokens used</code>, but the difference in context volume is clearly visible.</p><hr/><h2>Getting Recordings from PLAUD Without Codex</h2><p>PLAUD MCP provides several useful methods:</p><pre><code>list_files
+get_file
+get_note
+get_transcript</code><div><a href="https://sourcecraft.dev/"><img loading="lazy"/></a></div></pre><p>First, Python calls:</p><pre><code>list_files</code><div><a href="https://sourcecraft.dev/"><img loading="lazy"/></a></div></pre><p>and gets something like:</p><pre><code>{
+  "id": "of_...",
+  "name": "2026-09-16 13:44:54",
+  "created_at": "2026-09-16T10:44:54",
+  "duration": 8000
+}</code><div><a href="https://sourcecraft.dev/"><img loading="lazy"/></a></div></pre><p>The key field here is <code>id</code>.</p><p>It's perfect for deduplication.</p><p>If such an ID doesn't exist in SQLite yet, the Raspberry gets the transcription:</p><pre><code>get_transcript(
+    file_id,
+    block="transaction_polish"
+)</code><div><a href="https://sourcecraft.dev/"><img loading="lazy"/></a></div></pre><p>I prefer <code>transaction_polish</code> because PLAUD already cleans up the recognized speech a bit.</p><p>If the polished version is not available, you can use the regular one:</p><pre><code>transaction</code><div><a href="https://sourcecraft.dev/"><img loading="lazy"/></a></div></pre><p>The Raspberry doesn't download the audio itself at all.</p><hr/><h2>SQLite as a Small State Machine</h2><p>For this kind of automation, it turned out to be very convenient not to try to do everything in one huge script.</p><p>Each recording has a state.</p><p>The main chain:</p><pre><code>waiting_transcript
+        ↓
+pending_ai
+        ↓
+ready_todo
+        ↓
+synced</code><div><a href="https://sourcecraft.dev/"><img loading="lazy"/></a></div></pre><p>There are also terminal states:</p><pre><code>done
+note
+question
+ignored</code><div><a href="https://sourcecraft.dev/"><img loading="lazy"/></a></div></pre><p>For example, a recording:</p><blockquote><p>Work. Create a test task for integrating PLAUD and Codex.</p></blockquote><p>gets the state:</p><pre><code>pending_ai</code><div><a href="https://sourcecraft.dev/"><img loading="lazy"/></a></div></pre><p>after classification:</p><pre><code>ready_todo</code><div><a href="https://sourcecraft.dev/"><img loading="lazy"/></a></div></pre><p>after successful Microsoft Graph POST:</p><pre><code>synced</code><div><a href="https://sourcecraft.dev/"><img loading="lazy"/></a></div></pre><p>And the phrase:</p><blockquote><p>Report. Ordered cables, they've all arrived.</p></blockquote><p>can be classified as:</p><pre><code>done</code><div><a href="https://sourcecraft.dev/"><img loading="lazy"/></a></div></pre><p>and will be added to Microsoft To Do as already completed — this will be useful in future work reports.</p><hr/><h2>I Also Save Temporary Traces</h2><p>The database stores:</p><pre><code>created_at
+first_seen_at
+transcript_received_at
+classified_at
+todo_created_at</code><div><a href="https://sourcecraft.dev/"><img loading="lazy"/></a></div></pre><p>This allows you to see the entire pipeline:</p><pre><code>PLAUD created recording
+        ↓
+Raspberry saw it
+        ↓
+received transcript
+        ↓
+Luna classified it
+        ↓
+Microsoft To Do created task</code><div><a href="https://sourcecraft.dev/"><img loading="lazy"/></a></div></pre><p>For example, you can then calculate the actual delay:</p><pre><code>voice → To Do = 4 min 18 sec</code><div><a href="https://sourcecraft.dev/"><img loading="lazy"/></a></div></pre><p>Or quickly understand where exactly the problem occurred.</p><hr/><h2>What the LLM Does</h2><p>At this stage, the model's task is very narrow.</p><p>It receives something like:</p><pre><code>[
+  {
+    "id": "of_123",
+    "text": "Work. Check Exchange backups tomorrow"
+  }
+]</code><div><a href="https://sourcecraft.dev/"><img loading="lazy"/></a></div></pre><p>and must determine:</p><pre><code>type
+title
+due_date
+due_time
+reminder_at
+category</code><div><a href="https://sourcecraft.dev/"><img loading="lazy"/></a></div></pre><p>Example result:</p><pre><code>{
+  "id": "of_123",
+  "type": "task",
+  "title": "Check Exchange backups",
+  "due_date": "2026-09-18",
+  "due_time": null,
+  "reminder_at": null,
+  "category": "work"
+}</code><div><a href="https://sourcecraft.dev/"><img loading="lazy"/></a></div></pre><p>I use GPT-5.6 Luna via Codex CLI.</p><p>For this kind of classification, I simply don't need a heavier model.</p><hr/><h2>Natural Dates</h2><p>I specifically wanted to be able to speak normally, not dictate ISO 8601.</p><p>For example:</p><pre><code>tomorrow
+after tomorrow
+on Monday
+on Friday
+ on the weekend</code><div><a href="https://sourcecraft.dev/"><img loading="lazy"/></a></div></pre><p>If today is Wednesday and I say:</p><blockquote><p>Check backups on Monday.</p></blockquote><p>the model returns the nearest upcoming Monday:</p><pre><code>2026-09-21</code><div><a href="https://sourcecraft.dev/"><img loading="lazy"/></a></div></pre><p>The same applies to time:</p><blockquote><p>Check backups on Monday at 3 PM.</p></blockquote><p>results in:</p><pre><code>{
+  "due_date": "2026-09-21",
+  "due_time": "15:00"
+}</code><div><a href="https://sourcecraft.dev/"><img loading="lazy"/></a></div></pre><hr/><h2>Reminders</h2><p>You can say:</p><blockquote><p>Check Exchange backups on Monday at 3 PM, remind me an hour before.</p></blockquote><p>Result:</p><pre><code>{
+  "due_date": "2026-09-21",
+  "due_time": "15:00",
+  "reminder_at": "2026-09-21T14:00"
+}</code><div><a href="https://sourcecraft.dev/"><img loading="lazy"/></a></div></pre><p>These are then sent to Microsoft Graph as proper:</p><pre><code>dueDateTime
+reminderDateTime
+isReminderOn</code><div><a href="https://sourcecraft.dev/"><img loading="lazy"/></a></div></pre><p>As a result, To Do shows the deadline and a standard push notification.</p><hr/><h2>The Most Unexpected Part — Categories</h2><p>I quickly got used to starting notes with a keyword:</p><pre><code>Work.
+Hobby.
+Personal.
+Health.</code><div><a href="https://sourcecraft.dev/"><img loading="lazy"/></a></div></pre><p>And I started using the first word as a Microsoft To Do category.</p><p>For example:</p><blockquote><p>Health. Go to the dentist.</p></blockquote><p>becomes:</p><pre><code>Health: Go to the dentist</code><div><a href="https://sourcecraft.dev/"><img loading="lazy"/></a></div></pre><p>and the task gets a real Microsoft category:</p><pre><code>Health</code><div><a href="https://sourcecraft.dev/"><img loading="lazy"/></a></div></pre><p>In Microsoft Graph, this looks something like this:</p><pre><code>"categories": [
+  "Health"
+]</code><div><a href="https://sourcecraft.dev/"><img loading="lazy"/></a></div></pre><hr/><h2>And Then Speech Recognition Intervened</h2><p>Of course, STT doesn't always hear a word the same way.</p><p>I got variations like:</p><pre><code>Health
+To health
+Zdrovye (misspelling)
+Zdarova (slang/misspelling)</code><div><a href="https://sourcecraft.dev/"><img loading="lazy"/></a></div></pre><p>If you create a category from the first word, after a while, Microsoft will have:</p><pre><code>Health
+To health
+Zdrovye
+Zdarova</code><div><a href="https://sourcecraft.dev/"><img loading="lazy"/></a></div></pre><p>which would quickly turn into a mess.</p><p>Therefore, I added normalization.</p><p>Important: it applies <strong>only to the first word</strong>.</p><p>The rest of the task is never touched by fuzzy matching.</p><hr/><h2>Exact → Alias → Fuzzy</h2><p>The algorithm is as follows:</p><pre><code>first word
+    ↓
+exact match
+    ↓
+alias
+    ↓
+fuzzy match
+    ↓
+new category</code><div><a href="https://sourcecraft.dev/"><img loading="lazy"/></a></div></pre><p>For example:</p><pre><code>Health
+→ exact
+→ Health</code><div><a href="https://sourcecraft.dev/"><img loading="lazy"/></a></div></pre><pre><code>To health
+→ alias
+→ Health</code><div><a href="https://sourcecraft.dev/"><img loading="lazy"/></a></div></pre><pre><code>Zdrovye
+→ alias/fuzzy
+→ Health</code><div><a href="https://sourcecraft.dev/"><img loading="lazy"/></a></div></pre><pre><code>Khobiy (misspelling)
+→ fuzzy
+→ Hobby</code><div><a href="https://sourcecraft.dev/"><img loading="lazy"/></a></div></pre><hr/><h2>How to Distinguish a New Category from a Regular First Word</h2><p>There's another problem: the first word in a voice note doesn't always mean a category.</p><p>Suppose a recording:</p><blockquote><p>Go to the doctor.</p></blockquote><p>The first word is <code>Go</code>.</p><p>Obviously, you don't want to create a category <code>Go</code>.</p><p>So the rule is now as follows.</p><p>If there's an explicit separator, a period or comma — meaning you said the first word and paused slightly, resulting in a transcription like this:</p><blockquote><p>Car. Buy antifreeze.</p></blockquote><p>Here, the word Car will be a new category that is automatically created.</p><p>Result in To Do:</p><pre><code>Car: Buy antifreeze</code><div><a href="https://sourcecraft.dev/"><img loading="lazy"/></a></div></pre><p>If there's no separator:</p><blockquote><p>Car buy antifreeze.</p></blockquote><p>the system first looks for <code>Car</code> among existing categories.</p><p>If such a category doesn't exist — the task is still created, but <strong>without a category</strong>.</p><p>That is:</p><pre><code>Go to the doctor
+→ regular task
+→ category=None</code><div><a href="https://sourcecraft.dev/"><img loading="lazy"/></a></div></pre><p>This significantly reduces the number of false categories.</p><hr/><h2>Microsoft To Do and Client Quirks</h2><p>Here, an interesting peculiarity was discovered.</p><p>Through Microsoft Graph, I see:</p><pre><code>TITLE: Go to the dentist
+CATEGORIES: ["Health"]</code><div><a href="https://sourcecraft.dev/"><img loading="lazy"/></a></div></pre><p>So the category is recorded correctly.</p><p>In the web version of Microsoft To Do, it displays perfectly:</p><pre><code>● Health</code><div><a href="https://sourcecraft.dev/"><img loading="lazy"/></a></div></pre><p>But the Windows application simply doesn't show categories. </p><p>Therefore, I decided to duplicate the information in the title as well:</p><pre><code>Health: Go to the dentist</code><div><a href="https://sourcecraft.dev/"><img loading="lazy"/></a></div></pre><p>This is not a replacement for the actual category.</p><p>The task simultaneously has:</p><pre><code>Title:
+Health: Go to the dentist
+
+Category:
+Health</code><div><a href="https://sourcecraft.dev/"><img loading="lazy"/></a></div></pre><p>This approach turned out to be more convenient: if the Microsoft To Do client supports categories, I get proper categorization. If not, the necessary information still remains directly in the task title.</p><hr/><h2>Microsoft Graph</h2><p>For integration, standard Microsoft Graph with delegated permissions is used.</p><figure><img loading="lazy" src="https://habrastorage.org/r/w1560/getpro/habr/upload_files/715/1a9/a65/7151a9a657b9d72f2899f963f8330b51.png"/></figure><p>The main permission:</p><pre><code>Tasks.ReadWrite</code><div><a href="https://sourcecraft.dev/"><img loading="lazy"/></a></div></pre><p>To manage Outlook master categories, the following was needed:</p><pre><code>MailboxSettings.ReadWrite</code><div><a href="https://sourcecraft.dev/"><img loading="lazy"/></a></div></pre><p>Authorization is done via Device Code Flow.</p><p>The Raspberry stores the MSAL token cache, so you don't need to re-enter your password with every launch.</p><p>A client secret is not required for this scenario.</p><hr/><h2>Fault Tolerance</h2><p>I specifically avoided doing:</p><pre><code>get PLAUD recording
+↓
+call AI immediately
+↓
+POST to Microsoft immediately</code><div><a href="https://sourcecraft.dev/"><img loading="lazy"/></a></div></pre><p>The problem with this approach is that with any error, it becomes unclear at which stage everything stopped.</p><p>For example, the recording was already processed by AI, but Microsoft Graph returned an error. Or the task was created, but the system crashed before it could save the result.</p><p>Therefore, SQLite was placed between all stages. This allows you to calmly handle:</p><ul><li><p> lack of internet; </p></li><li><p> temporary PLAUD error; </p></li><li><p> exhausted Codex limit; </p></li><li><p> Microsoft Graph error; </p></li><li><p> Raspberry reboot; </p></li><li><p> unfinished transcript. </p></li></ul><p>If the AI is temporarily unavailable, the recording simply remains in the state:</p><pre><code>pending_ai</code><div><a href="https://sourcecraft.dev/"><img loading="lazy"/></a></div></pre><p>If Microsoft Graph doesn't respond:</p><pre><code>ready_todo</code><div><a href="https://sourcecraft.dev/"><img loading="lazy"/></a></div></pre><p>As a result, an error at one of the stages does not mean the loss of the recording: it remains in the database and can be processed on the next run. The database itself will also be useful — for example, you can build your own interface on top of it with search, filters, and history viewing. </p><hr/><h2>Deduplication</h2><p>The main key:</p><pre><code>PLAUD recording_id</code><div><a href="https://sourcecraft.dev/"><img loading="lazy"/></a></div></pre><p>In SQLite, this is the <code>PRIMARY KEY</code>.</p><p>Additionally, after successfully creating a Microsoft task, the following is saved:</p><pre><code>todo_id</code><div><a href="https://sourcecraft.dev/"><img loading="lazy"/></a></div></pre><p>Therefore, a repeated pipeline run should not create another identical task.</p><hr/><h2>Automatic Launch</h2><p>A small shell script is responsible for orchestration:</p><pre><code>run_pipeline.sh</code><div><a href="https://sourcecraft.dev/"><img loading="lazy"/></a></div></pre><p>It performs:</p><pre><code>1. ingest_plaud.py
+
+2. SELECT COUNT(*) 
+   WHERE status='pending_ai'
+
+3. If count &gt; 0:
+      classify.py
+   else:
+      Codex NOT launched
+
+4. SELECT COUNT(*)
+   WHERE status='ready_todo'
+
+5. If count &gt; 0:
+      sync_todo.py</code><div><a href="https://sourcecraft.dev/"><img loading="lazy"/></a></div></pre><p>This is a rather important point.</p><p>Every 5 minutes:</p><pre><code>PLAUD list_files</code><div><a href="https://sourcecraft.dev/"><img loading="lazy"/></a></div></pre><p>But AI is called only when there are actually new notes.</p><hr/><h2>systemd</h2><p>The service is a standard <code>oneshot</code>.</p><p>Timer:</p><pre><code>[Timer]
+OnCalendar=*:0/5
+Persistent=true
+AccuracySec=30s</code><div><a href="https://sourcecraft.dev/"><img loading="lazy"/></a></div></pre><p>This means the launch occurs at:</p><pre><code>05
+10
+15
+20
+...</code><div><a href="https://sourcecraft.dev/"><img loading="lazy"/></a></div></pre><p>of every hour.</p><hr/><h2>What's on the Raspberry</h2><p>The structure is roughly like this:</p><pre><code>/opt/plaud-todo/
+├── .venv/
+├── config/
+│   ├── plaud-todo.env
+│   └── msal_cache.json
+│
+├── data/
+│   ├── state.db
+│   └── pipeline.lock
+│
+└── scripts/
+    ├── ingest_plaud.py
+    ├── classify.py
+    ├── sync_todo.py
+    └── run_pipeline.sh</code><div><a href="https://sourcecraft.dev/"><img loading="lazy"/></a></div></pre><p><strong><em><sub>.venv/</sub></em></strong><em><sub> — Project's Python environment.<br/>Contains the interpreter and libraries for working with PLAUD MCP, Microsoft Graph, and Microsoft authorization. Scripts are run via Python from this environment.</sub></em></p><p><strong><em><sub>config/plaud-todo.env</sub></em></strong><em><sub> — Integration settings.<br/>Specifies the registered Microsoft application ID, the To Do list name, and the time zone for deadlines and reminders.</sub></em></p><p><strong><em><sub>config/msal_cache.json</sub></em></strong><em><sub> — Microsoft authorization cache.<br/>Used by the MSAL library to obtain tokens without manual login on each run. Created during initial authorization and updated as the system runs. Contains sensitive data.</sub></em></p><p><strong><em><sub>data/state.db</sub></em></strong><em><sub> — SQLite state database.<br/>Stores PLAUD recordings, transcripts, classification results, categories, errors, and created task IDs. Statuses indicate the stage of each recording: awaiting transcript, classification, sending, or already processed. It also stores a checkpoint for detecting new recordings.</sub></em></p><p><strong><em><sub>data/pipeline.lock</sub></em></strong><em><sub> — Lock file.<br/>Used by the flock command to prevent two pipeline runs from executing simultaneously. Created automatically. The lock is held by the running process.</sub></em></p><p><strong><em><sub>scripts/ingest_plaud.py</sub></em></strong><em><sub> — Getting recordings from PLAUD.<br/>Accesses PLAUD MCP, finds new recordings, and retrieves their transcripts. First requests the processed text, and if necessary, the original. Saves data to SQLite and transitions ready recordings to pending_ai. Does not download audio files.</sub></em></p><p><strong><em><sub>scripts/classify.py</sub></em></strong><em><sub> — Semantic analysis of notes.<br/>Takes up to 20 pending recordings from SQLite and sends their texts to Codex. The model determines the recording type, formulates the task title, extracts the date, time, and reminder. The script checks the JSON response and saves the result. Task-type recordings get the status ready_todo.</sub></em></p><p><strong><em><sub>scripts/sync_todo.py</sub></em></strong><em><sub> — Creating tasks in Microsoft To Do.<br/>Reads the processed results, determines the category from the first word of the transcript, and normalizes it using exact matches, aliases, and fuzzy matching. If necessary, it creates a Microsoft category, adds it to the title, and sends the task via Graph. After successful creation, it saves the todo_id and the synced status.</sub></em></p><p><strong><em><sub>scripts/run_pipeline.sh</sub></em></strong><em><sub> — Overall launch script.<br/>Acquires a lock and sequentially runs recording retrieval, classification, and synchronization. Before classification, it checks for pending_ai: if the queue is empty, Codex is not launched. Similarly, the sender is launched only if there are ready tasks.</sub></em></p><hr/><blockquote><p>PLAUD MCP and Codex CLI authorization is stored separately in the user's home directory, from which the service runs. Scheduled execution is provided by <code>plaud-todo.service</code> and <code>plaud-todo.timer</code> in <code>/etc/systemd/system/</code>. During classification, a <code>tmp/</code> directory is also created for Codex's temporary JSON response.</p></blockquote><p>Codex also does not run as root.</p><hr/><h2>Security</h2><p>Several things I immediately tried to avoid.</p><p>No tokens within the source code.</p><p>Microsoft MSAL cache:</p><pre><code>chmod 600</code><div><a href="https://sourcecraft.dev/"><img loading="lazy"/></a></div></pre><p>PLAUD tokens:</p><pre><code>chmod 600</code><div><a href="https://sourcecraft.dev/"><img loading="lazy"/></a></div></pre><p>Codex auth:</p><pre><code>chmod 600</code><div><a href="https://sourcecraft.dev/"><img loading="lazy"/></a></div></pre><p>Service runs as:</p><pre><code>User=one
+Group=one
+NoNewPrivileges=true</code><div><a href="https://sourcecraft.dev/"><img loading="lazy"/></a></div></pre><p>Plus, <code>flock</code> is used to prevent two pipeline instances from accidentally modifying SQLite and creating tasks simultaneously.</p><hr/><h2>What Was Achieved in the End</h2><p>Now the task creation interface effectively consists of a single physical button.</p><p>I can walk around the apartment, work with the server, solder something, or assemble a robot, and just say:</p><blockquote><p>Work. Tomorrow, have a meeting with Vasya at 2 PM.</p></blockquote><p>And not think about this thought again.</p><p>After some time, I'll see:</p><pre><code>Work: Tomorrow, have a meeting with Vasya at 2 PM.</code><div><a href="https://sourcecraft.dev/"><img loading="lazy"/></a></div></pre><p>with the correct date and category.</p><p>Or:</p><blockquote><p>Hobby. On the weekend, print a mount for the tracked manipulator.</p></blockquote><p>I get:</p><pre><code>Hobby: On the weekend, print a mount for the tracked manipulator.</code><div><a href="https://sourcecraft.dev/"><img loading="lazy"/></a></div></pre><p>Or even without a category:</p><blockquote><p>Buy batteries.</p></blockquote><p>I get a regular task:</p><pre><code>Buy batteries</code><div><a href="https://sourcecraft.dev/"><img loading="lazy"/></a></div></pre><hr/><h3> Task Analysis: Weekly Reports </h3><p>This combination has another application: tasks can be used to prepare short reports. </p><p>Over the week, Microsoft To Do accumulates a history: what was planned, what was completed, what remains pending. If this data is passed to Codex or ChatGPT — via a connected tool or a regular export — you can get a ready digest.</p><p>For example, ask:</p><blockquote><p>Summarize my work tasks for the week: what's completed, what's in progress, and what's planned next. Group by topic, remove duplicates. Separately highlight blockers, if they are specified in the notes. Prepare a short version for the daily stand-up that can be told in a minute.</p></blockquote><p>For the daily stand-up, it's enough to change the period: what was done yesterday, what I plan to do today, and where help is needed. For the weekly report — to get an overall picture of the projects.</p><p>Here, the fact that the original transcription is saved in the tasks comes in handy. A short title might be "Check backups," while the notes will contain details: which server, what exactly to check, and why.<br/><br/>For this, during the testing phase, I set up a local MCP server on my PC for Codex to interact with Microsoft To Do, based on the <code>@mag-cie/mcp-microsoft-todo</code> package. Through it, Codex gets tasks directly, so you can ask in the chat to analyze completed tasks, compile a weekly digest, or prepare a short summary for the daily stand-up. In the future, I plan to move this functionality to Raspberry Pi, creating automatic reports in OneNote. </p><hr/><h3>What Else I Want to Add</h3><p>The system already does what it was created for, but there are plenty of directions for development.</p><p>For example:</p><ul><li><p> processing long meetings separately from short notes for recording in OneNote minutes; </p></li><li><p> automatic weekly/daily summaries; </p></li><li><p> a web interface for SQLite — my own task manager with the necessary filters. To Do is not ideal; </p></li><li><p> automatic alias list training based on recurring PLAUD errors. </p></li></ul><hr/><h3>What Went Wrong: Authentication</h3><p>On paper, the scheme looked simple: authorize PLAUD, authorize Codex, get a Microsoft Graph token — and you can start writing the integration. In practice, authentication was one of the unpleasant moments of the project, mainly because the Raspberry Pi works headless, and the OAuth flows of different services assume a browser on the same machine.</p><h4>PLAUD OAuth and localhost, which turned out to be the wrong localhost</h4><p>PLAUD MCP was installed with the command:</p><pre><code>npx -y @plaud-ai/mcp@latest install</code><div><a href="https://sourcecraft.dev/"><img loading="lazy"/></a></div></pre><p>The installer found the Codex configuration:</p><pre><code>Codex Desktop /home/one/.codex/config.toml</code><div><a href="https://sourcecraft.dev/"><img loading="lazy"/></a></div></pre><p>and started OAuth.</p><p>The problem appeared at the callback. PLAUD used the address:</p><pre><code>http://localhost:8199/auth/callback</code><div><a href="https://sourcecraft.dev/"><img loading="lazy"/></a></div></pre><p>But my browser was open on Windows, and the OAuth listener itself was running on the Raspberry Pi.</p><p>As a result, after authorization, the browser tried to open:</p><pre><code>localhost:8199</code><div><a href="https://sourcecraft.dev/"><img loading="lazy"/></a></div></pre><p>on <strong>my Windows computer</strong>, not on the Raspberry. PLAUD MCP on the Pi didn't receive the callback, and OAuth timed out.</p><p>The solution was SSH port forwarding:</p><pre><code>ssh -F NUL -L 8199:127.0.0.1:8199 one@10.1.9.149</code><div><a href="https://sourcecraft.dev/"><img loading="lazy"/></a></div></pre><p>The chain then looked like this:</p><pre><code>Browser Windows
+     ↓
+localhost:8199
+     ↓ SSH tunnel
+Raspberry Pi:8199
+     ↓
+PLAUD MCP OAuth listener</code><div><a href="https://sourcecraft.dev/"><img loading="lazy"/></a></div></pre><p>PLAUD OAuth tokens were saved locally.</p><hr/><h4>Codex: Device Code Suddenly Required a Phone Number</h4><p>The next problem was Codex itself.</p><p>I wanted to use <strong>authorization via ChatGPT</strong>, not an OpenAI API key. This was crucial: an API key would mean separate usage-based API billing, whereas Codex via ChatGPT uses the limits of my ChatGPT workspace.</p><p>When trying to go through the standard headless authorization via Device Code, the browser at some point sent me to:</p><pre><code>auth.openai.com/add-phone</code><div><a href="https://sourcecraft.dev/"><img loading="lazy"/></a></div></pre><p>and required adding a phone number.</p><p>The problem was that the desired country was not in the list.</p><p>However, on Windows, I already had Codex Desktop normally authorized under the same ChatGPT workspace. Therefore, I used the existing Codex authorization on the Raspberry and transferred the authorization file to:</p><pre><code>/home/one/.codex/auth.json</code><div><a href="https://sourcecraft.dev/"><img loading="lazy"/></a></div></pre><p>After that, I restricted the permissions:</p><pre><code>chmod 600 ~/.codex/auth.json</code><div><a href="https://sourcecraft.dev/"><img loading="lazy"/></a></div></pre><p>Check:</p><pre><code>codex login status</code><div><a href="https://sourcecraft.dev/"><img loading="lazy"/></a></div></pre><p>yielded:</p><pre><code>Logged in using ChatGPT</code><div><a href="https://sourcecraft.dev/"><img loading="lazy"/></a></div></pre><p>This means the Raspberry started using ChatGPT authentication specifically, without an API key.</p><hr/><h4>Microsoft To Do: Personal Account Required a Slightly Different OAuth Scheme</h4><p>My Microsoft To Do is on a <strong>personal Microsoft Account</strong>, not in a corporate Entra tenant.</p><p>Therefore, the App Registration was created with support for personal Microsoft accounts, and the authority used in MSAL was:</p><pre><code>https://login.microsoftonline.com/consumers</code><div><a href="https://sourcecraft.dev/"><img loading="lazy"/></a></div></pre><p>The application works as a public client:</p><pre><code>Allow public client flows = Yes</code><div><a href="https://sourcecraft.dev/"><img loading="lazy"/></a></div></pre><p>A client secret is not needed here at all.</p><p>Initial Graph permission:</p><pre><code>Tasks.ReadWrite</code><div><a href="https://sourcecraft.dev/"><img loading="lazy"/></a></div></pre><p>Later, when I added automatic category creation, the following was also needed:</p><pre><code>MailboxSettings.ReadWrite</code><div><a href="https://sourcecraft.dev/"><img loading="lazy"/></a></div></pre><p>For the Raspberry, Device Code Flow turned out to be convenient here. The script output something like:</p><pre><code>To sign in, use a web browser to open the page
+https://www.microsoft.com/link
+and enter the code XXXXXXXX</code><div><a href="https://sourcecraft.dev/"><img loading="lazy"/></a></div></pre><p>I opened the page on my PC, entered the code, and the Raspberry received the token.</p><p>After that, re-login is no longer required — MSAL automatically tries to refresh the access token from the cache.</p><hr/><h4>In the end, there were three independent authentication mechanisms</h4><pre><code>PLAUD
+→ OAuth token
+→ ~/.plaud/tokens-mcp.json
+
+Codex
+→ ChatGPT auth
+→ ~/.codex/auth.json
+
+Microsoft
+→ OAuth/MSAL
+→ /opt/plaud-todo/config/msal_cache.json</code><div><a href="https://sourcecraft.dev/"><img loading="lazy"/></a></div></pre><p>And the systemd service must run as a user:</p><pre><code>User=one
+Group=one</code><div><a href="https://sourcecraft.dev/"><img loading="lazy"/></a></div></pre><p>and not as <code>root</code>.</p><p>Otherwise, the service simply won't see the user's PLAUD/Codex credentials.</p><p>All sensitive files ultimately received <code>600</code> permissions.</p><hr/><h2>The Main Takeaway</h2><p>The most useful part of this project for me was not the AI itself.</p><p>The first version was literally:</p><pre><code>give the agent all the tools
+and ask it to do everything</code><div><a href="https://sourcecraft.dev/"><img loading="lazy"/></a></div></pre><p>It worked.</p><p>But it turned out to be expensive and excessive.</p><p>The final architecture, on the contrary, is maximally boring:</p><pre><code>Python does deterministic things.
+SQLite stores state.
+LLM is used only where language understanding is truly required.</code><div><a href="https://sourcecraft.dev/"><img loading="lazy"/></a></div></pre><p>It was after this that the system began to resemble not a demonstration of neural network capabilities, but a normal, continuously operating service.</p><p>Now my workflow looks like this:</p><blockquote><p><strong>press button → speak → forget.</strong></p></blockquote><p>And the task will catch up with me in Microsoft To Do on its own.</p></div>
+  </main>
+  <footer>
+    Translation generated with Gemini 2.5 Flash-Lite.
+    The original article remains the source of record.
+  </footer>
+</body>
+</html>

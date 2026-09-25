@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Google Gave AI Agents a Face. Gemini 3.8 Live Creates Talking Avatars in Real Time</title>
+  <meta name="description" content="Google introduced Gemini 3.8 Live with Live Avatar. The model accepts voice, image, video, and text, and responds through an animated character with lip-sync, facial expressions, and voice. This is not a separate talking-head generator attached to a chatbot. The avatar is built directly into the con">
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.65;
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 32px 20px 64px;
+      color: #1f2328;
+    }
+    header {
+      border-bottom: 1px solid #d8dee4;
+      margin-bottom: 28px;
+      padding-bottom: 20px;
+    }
+    .source {
+      color: #57606a;
+      font-size: 0.95rem;
+    }
+    img, video, iframe {
+      max-width: 100%;
+      height: auto;
+    }
+    pre {
+      overflow-x: auto;
+      padding: 16px;
+      background: #f6f8fa;
+      border-radius: 6px;
+    }
+    code {
+      font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+    }
+    blockquote {
+      border-left: 4px solid #d0d7de;
+      margin-left: 0;
+      padding-left: 16px;
+      color: #57606a;
+    }
+    footer {
+      border-top: 1px solid #d8dee4;
+      margin-top: 40px;
+      padding-top: 20px;
+      color: #57606a;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Google Gave AI Agents a Face. Gemini 3.8 Live Creates Talking Avatars in Real Time</h1>
+    <p>Google introduced Gemini 3.8 Live with Live Avatar. The model accepts voice, image, video, and text, and responds through an animated character with lip-sync, facial expressions, and voice. This is not a separate talking-head generator attached to a chatbot. The avatar is built directly into the conversational model and can see the interlocutor, listen to them, respond, and access external services during the conversation. Read more</p>
+    <p class="source">
+      Machine-translated from Habr.
+      <a href="https://habr.com/ru/companies/koda/articles/1086738/?utm_campaign=1086738&amp;utm_source=habrahabr&amp;utm_medium=rss">Read the original Russian article</a>.
+      Fri, 25 Sep 2026 12:59:07 GMT
+    </p>
+  </header>
+  <main>
+<div><p>Google <a href="https://blog.google/innovation-and-ai/models-and-research/gemini-models/gemini-3-8-live-with-live-avatar/">introduced Gemini 3.8 Live with Live Avatar</a>. The model accepts voice, image, video, and text, and responds through an animated character with lip-sync, facial expressions, and voice.</p><p>This is not a separate talking-head generator attached to a chatbot. The avatar is built directly into the conversational model and can see the interlocutor, listen to them, respond, and access external services during the conversation.</p><h3>What Live Avatar Can Do</h3><p>Gemini generates video with an avatar at a resolution of up to 24 frames per second. Lip movements are synchronized with speech, and facial expressions change with the intonation of the response.</p><p>The model supports switching between 97 languages directly during a conversation. Lip-sync and facial expressions should adapt to the new speech without restarting the session.</p><figure><img loading="lazy" src="https://habrastorage.org/getpro/habr/upload_files/d57/bf8/66f/d57bf866f1ff0d772ae03ae73e9df6e5.gif"/></figure><p>Gemini 3.8 Live also includes two more features by default.</p><ul><li><p><strong>Affective dialogue</strong> helps the model consider the interlocutor's speech tempo, pauses, intonation, and emotional cues. Simply put, the agent should distinguish a calm question from an irritated complaint and change its response style accordingly.</p></li><li><p><strong>Proactive audio</strong> filters out background noise and extraneous conversations. The model tries to respond only when addressed directly. Useful for an office, store, or hotel where there is ambient life.</p></li></ul><h3>The Agent Can Work During a Conversation</h3><p>One of the most interesting capabilities is related to asynchronous tool calls.</p><p>Function calling allows the model to access external functions and services. For example, checking a reservation, finding an order in CRM, or requesting data from an internal system.</p><figure><img loading="lazy" src="https://habrastorage.org/getpro/habr/upload_files/e4d/af0/bfe/e4daf0bfea3f6297b3461d8c81fb8f8a.gif"/></figure><p>Previously, a voice agent often had to interrupt the conversation and wait for a server response. Gemini 3.8 Live can continue the dialogue while the required operation is performed in the background.</p><figure><img loading="lazy" src="https://habrastorage.org/getpro/habr/upload_files/ecb/9ad/e27/ecb9ade27e6087773d691cf1a3e70f9a.gif"/></figure><p>In Google's demonstration, a virtual employee registers a guest at a hotel. The avatar talks to the person and simultaneously accesses the booking system. The user no longer has to wait with a "Your request is being processed" message.</p><h3>What's Under the Hood</h3><p>According to <a href="https://docs.cloud.google.com/gemini-enterprise-agent-platform/models/guides/gemini-3-8-live">Google Cloud documentation</a>, interaction occurs via a bidirectional WebSocket connection. This allows for continuous data transfer between the application and the model without creating a new request for each utterance.</p><p>The model accepts audio in PCM format at 16 kHz, text, and video frames in JPEG format. Incoming video is analyzed at a rate of up to one frame per second. The agent outputs audio at 24 kHz, text, and MP4 video with an avatar at 24 frames per second.</p><p>The context window is up to 128 thousand tokens. When using Live Avatar, the model can output up to 24 thousand tokens. The context window determines how much information the system can consider within a single session.</p><p>The model ID in the API looks like this.</p><p><code>gemini-3.8-live</code></p><p>Google offers ready-made characters and a set of voices. Companies will also be allowed to create their own avatars from a single reference image. The model preserves the character's appearance and turns a static image into a talking digital employee.</p><p>However, <a href="https://docs.cloud.google.com/gemini-enterprise-agent-platform/models/live-api/configure-live-avatars">custom avatars</a> are currently only available to select clients after approval from Google Cloud. The use of images of minors and celebrities is prohibited. The company also requires obtaining the necessary rights to the face and voice.</p><h3>Where the Model is Available</h3><p>Live Avatar is launched in Gemini Enterprise. Gemini 3.8 Live itself has General Availability status in Google's enterprise platform, meaning it is no longer an experimental preview.</p><p>Use cases are quite obvious. Virtual consultants, support staff, educators, game characters, digital guides, and administrators gain a visual presence without a separate animation engine.</p><p><strong>The cost of Live Avatar is not disclosed in Google's announcement.</strong></p><h3>How Google Suggests Distinguishing an Avatar from a Human</h3><p>Audio and video created by the model receive invisible SynthID watermarking. This is a Google DeepMind technology that embeds a machine-readable watermark directly into the generated content.</p><p>This watermark does not interfere with viewing but allows verification of the recording's origin. At least, if the platform actually performs such verification.</p><figure><img loading="lazy" src="https://habrastorage.org/getpro/habr/upload_files/aad/23f/8a4/aad23f8a4896425323eff3a3f22b7b51.gif"/></figure><p>This is especially important for talking avatars. The more natural the digital character looks and reacts, the easier it is to use it not only for customer support but also for outright deception.</p><h3>Limitations Have Not Disappeared</h3><p>In the <a href="https://deepmind.google/models/model-cards/gemini-3-8-audio/">model card</a>, Google states that Live Avatar is designed for only a few minutes of continuous interaction, not for multi-hour sessions.</p><p>Delays, timeouts, and hallucinations are also possible. The model's knowledge cutoff date is January 2025. To obtain current information, the agent will require an external data source.</p><p>Therefore, Live Avatar cannot yet be considered a digital employee that can be placed at the reception desk in the morning and picked up in the evening. It is an interface for short conversational scenarios within which the agent performs a limited set of actions.</p><h3>What's the Bottom Line</h3><p>Google has combined a conversational model, video generation, visual context recognition, and tool calling into a single API. Developers no longer need to separately connect a language model, speech synthesis, and a facial animation engine.</p><p>This can significantly simplify the creation of visual AI agents. Especially for support, training, and services where a human face increases engagement.</p><p>However, a face does not make the model smarter or more reliable. Now AI can make mistakes while looking the user directly in the eyes. Progress should still be felt.</p><p>Announcements of updates, practical analyses, and product news in our <a href="https://t.me/+HokSHRtr2T4wMGZi">Telegram channel</a>.</p><figure><img loading="lazy" src="https://habrastorage.org/r/w1560/getpro/habr/upload_files/85c/951/be1/85c951be1da68bb14f1e219a1208dfaa.png"/></figure><p>Try Kodacode on your project: <a href="https://download.kodacode.ru/?utm_source=habr&amp;utm_medium=referral&amp;utm_campaign=article_footer&amp;utm_content=banner_caption">download for IDE, CLI, and Desktop</a>.</p></div>
+  </main>
+  <footer>
+    Translation generated with Gemini 2.5 Flash-Lite.
+    The original article remains the source of record.
+  </footer>
+</body>
+</html>

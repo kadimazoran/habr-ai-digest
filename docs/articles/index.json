@@ -1087,6 +1087,14 @@
     "summary": "Prologue: live meeting, backlog, and a free model. Hello everyone! A little introduction: the client's AI agent has been working in production for four months: night requests in NEIZYAGRAM Direct, dialogues, questionnaires, deals in amoCRM. In the previous article - a breakdown of Reasoning Lock and announcements of sequels. One of the agreements with the client is a branch for processing comments under posts: a person writes \"+\" or \"how much does it cost?\" under a publication = the agent replies to them with a private message in Direct. The promise hung in the backlog and waited for its hour. The hour came by itself. On the evening of September 16, a new stealth model was released on OpenRouter: stealth/union-alpha. The provider is anonymous, the release stamp on the page is September 16, meaning the stealth model is a day old by the time this article is published. Facts about this llm: multimodality, tool calling, GPQA Diamond 90.9%, and most importantly - the price is exactly zero (for now). Read more",
     "title": "Not by benchmark alone: the stealth model union-alpha on a real task - a day from release to battle"
   },
+  "https://habr.com/ru/articles/1083580/?utm_campaign=1083580&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Fri, 25 Sep 2026 11:03:10 GMT",
+    "slug": "1083580",
+    "source_url": "https://habr.com/ru/articles/1083580/?utm_campaign=1083580&utm_source=habrahabr&utm_medium=rss",
+    "summary": "Voice notes to ready-made Microsoft To Do tasks. I explain how I connected PLAUD, Raspberry Pi, and Codex to automatically get tasks with categories, deadlines, and reminders. From Voice to Task.",
+    "title": "Pressed a Button, Said a Task, Forgot About It: How I Connected PLAUD, Raspberry Pi, Codex, and Microsoft To Do"
+  },
   "https://habr.com/ru/articles/1083648/?utm_campaign=1083648&utm_source=habrahabr&utm_medium=rss": {
     "model": "gemini-2.5-flash-lite",
     "published": "Fri, 18 Sep 2026 04:11:15 GMT",
@@ -1463,6 +1471,54 @@
     "summary": "A breakdown of the architecture of an AI agent for static code analysis: a local index on SQLite, 71 tools, a 30-turn tool-calling loop, and validators that we wrote and then removed because they falsely triggered on valid files. Read more",
     "title": "How I taught an LLM to read someone else's codebase instead of hallucinating APIs"
   },
+  "https://habr.com/ru/articles/1086612/?utm_campaign=1086612&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Fri, 25 Sep 2026 10:20:57 GMT",
+    "slug": "1086612",
+    "source_url": "https://habr.com/ru/articles/1086612/?utm_campaign=1086612&utm_source=habrahabr&utm_medium=rss",
+    "summary": "Why large language models are better understood not as an independent \"artificial mind,\" but as a new class of human Information Tools. We too quickly agreed on what the two letters AI stand for. \"Artificial Intelligence\" has long been perceived not just as a historical term, but as a near-literal description of a new entity. From this name has grown the entire modern drama of human-machine relations: does AI think, does it understand us, will it become smarter than humans, whom will it replace, and when will it start making decisions independently? But perhaps the error occurs before all these questions—in the name itself. The term \"artificial intelligence\" preemptively suggests accepting the main assumption: we are dealing with a form of intelligence. After this, we inevitably begin to compare it with human intelligence. Meanwhile, large language models can be viewed in a different frame of reference—not as an emerging artificial subject, but as a human information tool, and then the familiar abbreviation takes on a different meaning: AI—Information Tool. Read more",
+    "title": "AI without the Illusion of Intelligence: A Format Shift"
+  },
+  "https://habr.com/ru/articles/1086650/?utm_campaign=1086650&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Fri, 25 Sep 2026 11:09:45 GMT",
+    "slug": "1086650",
+    "source_url": "https://habr.com/ru/articles/1086650/?utm_campaign=1086650&utm_source=habrahabr&utm_medium=rss",
+    "summary": "It so happened that I completely missed agent systems. I decided that it was worth filling this gap and catching up. The less understanding, the greater the appetite, so I decided to blindly start with an ambitious task – to transfer project development under the control of agents. My enthusiasm cooled down a bit during the work process, and I want to share the first results. Perhaps you can help me point out my blind spot or start using agents if you haven't already :) Where I drew the line for LLM",
+    "title": "A Warm Tube Agent"
+  },
+  "https://habr.com/ru/articles/1086698/?utm_campaign=1086698&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Fri, 25 Sep 2026 12:08:57 GMT",
+    "slug": "1086698",
+    "source_url": "https://habr.com/ru/articles/1086698/?utm_campaign=1086698&utm_source=habrahabr&utm_medium=rss",
+    "summary": "I wanted to automate technical article writing and ended up creating StoryOps: a system that reads an author's past publications, researches a repository, fact-checks, and analyzes current platform materials. Then the uncomfortable question arose: how is this different from another AI slop factory? I tried to figure it out with numbers: how much AI content is already online, why there's so much of it on TikTok and YouTube, why audiences reject it, how platforms are dealing with it, and where the line is between AI as a tool and a garbage conveyor belt. Read on",
+    "title": "I Made an AI Editor for Habr — and Had to Figure Out if I Was Building an AI Slop Factory"
+  },
+  "https://habr.com/ru/articles/1086742/?utm_campaign=1086742&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Fri, 25 Sep 2026 12:59:20 GMT",
+    "slug": "1086742",
+    "source_url": "https://habr.com/ru/articles/1086742/?utm_campaign=1086742&utm_source=habrahabr&utm_medium=rss",
+    "summary": "Is it possible to turn two RTX 3060 12GB cards on an old Z97 platform into a decent local backend for OpenCode? I started with 9 tokens/s on a long context and ended up with about 40 tokens/s in a real agent session with over 100K context, without reducing the model size or sacrificing 128K context. This article covers tensor split without CUDA P2P, Q8 KV-cache, integrated MTP, n-max tuning, failed experiments with NCCL and shared buffers, real long-context tests, and quality checks on coding tasks. Read on",
+    "title": "Qwen3.8–27B on two RTX 3060 12GB: How I overclocked OpenCode from ~9 to ~40 tokens/s with 128K context"
+  },
+  "https://habr.com/ru/articles/1086758/?utm_campaign=1086758&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Fri, 25 Sep 2026 13:31:01 GMT",
+    "slug": "1086758",
+    "source_url": "https://habr.com/ru/articles/1086758/?utm_campaign=1086758&utm_source=habrahabr&utm_medium=rss",
+    "summary": "A dog training collar on your forearm, a wire to your laptop's COM port, a Portuguese phrase in your headphones. Make a typo, and you get a shock. I do machine learning, and one day I asked a question that would make any teacher squirm: what's the fundamental difference between how humans learn and how models learn? Then, for two years, I tested the answer on the most complex subject of all—my own brain. It's half past one in the morning. A dog training collar is strapped to my left forearm—the one with the metal contacts. A wire runs from it to the COM port of an old laptop. On the screen is a Portuguese phrase; I hear it in my headphones and have to type it blind. My finger hovers over the key. I know: make a typo, and I'll get a shock. Not a strong one. Just enough. Why an adult man, an engineer, a father of three, sits up at night and electrocutes himself for typos in Portuguese is a long story. It began with desperation, went through several wild experiments, and ended with a working system that my whole family is now learning with. I'll tell you the whole story. And let me preface this by saying, so the collar doesn't seem like a mere gimmick for a dramatic opening: without this madness, none of the rest would have happened. It was this that showed me why the signal stops working altogether—and from that grew everything that truly keeps me and my family at the table today. So, we'll come back to it, more than once. Read on.",
+    "title": "Brain Machine Learning"
+  },
+  "https://habr.com/ru/articles/1086766/?utm_campaign=1086766&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Fri, 25 Sep 2026 13:49:51 GMT",
+    "slug": "1086766",
+    "source_url": "https://habr.com/ru/articles/1086766/?utm_campaign=1086766&utm_source=habrahabr&utm_medium=rss",
+    "summary": "This minute-long film contains no images, video files, or samples. Fire, engraving, a 3D sphere, a pixel game, and music are drawn and synthesized by a single HTML file of 1700 lines, written by an AI agent. Without rules, the same agent produces a dull screensaver: blue background, neon, everything moves linearly. I'll break down what changes this: a frame as a pure function draw(ctx, t), rendering to MP4 without a single stutter, and an agent that self-checks the film by timecodes. Read more",
+    "title": "1700 lines of JS and not a single video file: how an AI agent makes a movie on Canvas and renders it to MP4"
+  },
   "https://habr.com/ru/companies/1c/articles/1071340/?utm_campaign=1071340&utm_source=habrahabr&utm_medium=rss": {
     "model": "gemini-2.5-flash-lite",
     "published": "Thu, 03 Sep 2026 07:18:11 GMT",
@@ -1703,6 +1759,22 @@
     "summary": "The 22nd issue of IT news from OpenIDE! Linus Torvalds made AI search for a bug in Linux, although it offered to give up several times. OpenAI announced a solution to a millennium problem, and mathematicians explained why the correct answer is not enough for them. A major release of OpenIDE has been released with C/C++ support from an independent developer. Also in this issue: Jev for quick solutions, Dario Amodei's call to slow down AI development, the new Opus 5.5, and ZCode, which packed repositories for cloud transfer without permission. Usually, there's a week between releases, but this time it's been a whole month. There was plenty to choose from. Read more",
     "title": "Massive code leak, old Linus, and releases of Jev and Opus 5.5"
   },
+  "https://habr.com/ru/companies/hexlet/articles/1086774/?utm_campaign=1086774&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Fri, 25 Sep 2026 14:07:38 GMT",
+    "slug": "1086774",
+    "source_url": "https://habr.com/ru/companies/hexlet/articles/1086774/?utm_campaign=1086774&utm_source=habrahabr&utm_medium=rss",
+    "summary": "Different tasks require different models. Some are faster, others cheaper. Some excel at data analysis, others at coding. Sometimes, the choice is dictated by data processing requirements, internal infrastructure, information security, and regulatory compliance. To combine these superpowers, model routing comes in handy. Read more",
+    "title": "AI Model Routing: When One Model Isn't Enough"
+  },
+  "https://habr.com/ru/companies/infera_security/articles/1086434/?utm_campaign=1086434&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Fri, 25 Sep 2026 10:30:23 GMT",
+    "slug": "1086434",
+    "source_url": "https://habr.com/ru/companies/infera_security/articles/1086434/?utm_campaign=1086434&utm_source=habrahabr&utm_medium=rss",
+    "summary": "Corporate AI is no longer a pilot project in a single department. Requests to models come from IDEs, internal assistants, agent loops, and \"shadow\" employee chats. The attack surface looks different from a classic perimeter: prompt injection, PII leakage to an external model, uncontrolled token consumption, an AI agent calling a tool without authorization. This article analyzes a real requirements matrix for an LLM/AI Firewall. The goal is not a feature catalog, but a map of what the Customer considers mandatory, and how these requirements translate into a control architecture where trust boundaries, cost, regulation, and manageability are important. Over the past year, large enterprise companies' requirements for generative AI protection have changed significantly. Initially, it was a short list of tasks for a \"ChatGPT proxy.\" Now it's a multi-page matrix with over 500 formalized requirements: standard tasks first, then requirements for AI agents, MCP, 152-FZ, model supply chains, etc. This is no longer a request for a filter. It's a request for a control loop. Read more",
+    "title": "Customer Requirements for LLM/AI Firewall"
+  },
   "https://habr.com/ru/companies/inferit/articles/1078620/?utm_campaign=1078620&utm_source=habrahabr&utm_medium=rss": {
     "model": "gemini-2.5-flash-lite",
     "published": "Mon, 07 Sep 2026 08:27:46 GMT",
@@ -1782,6 +1854,14 @@
     "source_url": "https://habr.com/ru/companies/koda/articles/1084448/?utm_campaign=1084448&utm_source=habrahabr&utm_medium=rss",
     "summary": "Researchers from UC Berkeley and Arena compared seven models within Claude Code, Codex CLI, and the minimalist Pi. On two benchmarks, the choice of harness barely changed the average success rate but increased the cost of the same model by up to five times. The result explains why comparing coding agents by model name alone is already meaningless. Read more",
     "title": "Why the Same Model Can Cost Five Times More"
+  },
+  "https://habr.com/ru/companies/koda/articles/1086738/?utm_campaign=1086738&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Fri, 25 Sep 2026 12:59:07 GMT",
+    "slug": "1086738",
+    "source_url": "https://habr.com/ru/companies/koda/articles/1086738/?utm_campaign=1086738&utm_source=habrahabr&utm_medium=rss",
+    "summary": "Google introduced Gemini 3.8 Live with Live Avatar. The model accepts voice, image, video, and text, and responds through an animated character with lip-sync, facial expressions, and voice. This is not a separate talking-head generator attached to a chatbot. The avatar is built directly into the conversational model and can see the interlocutor, listen to them, respond, and access external services during the conversation. Read more",
+    "title": "Google Gave AI Agents a Face. Gemini 3.8 Live Creates Talking Avatars in Real Time"
   },
   "https://habr.com/ru/companies/kodik/articles/1081264/?utm_campaign=1081264&utm_source=habrahabr&utm_medium=rss": {
     "model": "gemini-2.5-flash-lite",
@@ -1878,6 +1958,14 @@
     "source_url": "https://habr.com/ru/companies/otus/articles/1077556/?utm_campaign=1077556&utm_source=habrahabr&utm_medium=rss",
     "summary": "Implementing artificial intelligence into a product can easily turn into an expensive experiment with no clear business benefit. In this article, we'll break down 9 mistakes product managers make, from choosing the right problem and working with data to evaluating metrics, economics, and the quality of AI features. Let's analyze the mistakes.",
     "title": "Implementing AI in a Product: 9 Mistakes of a Product Manager"
+  },
+  "https://habr.com/ru/companies/otus/articles/1077946/?utm_campaign=1077946&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Fri, 25 Sep 2026 13:05:37 GMT",
+    "slug": "1077946",
+    "source_url": "https://habr.com/ru/companies/otus/articles/1077946/?utm_campaign=1077946&utm_source=habrahabr&utm_medium=rss",
+    "summary": "A green status on eval tests doesn't guarantee an AI agent is working correctly: it might give the right answer but perform incorrect actions or none at all. This article examines seven common mistakes in evaluating AI agents and shows which approaches help measure the system's real quality. Let's break down the errors.",
+    "title": "Evaluating AI Agents: 7 Mistakes That Make Tests Lie"
   },
   "https://habr.com/ru/companies/otus/articles/1077972/?utm_campaign=1077972&utm_source=habrahabr&utm_medium=rss": {
     "model": "gemini-2.5-flash-lite",
@@ -2006,6 +2094,14 @@
     "source_url": "https://habr.com/ru/companies/ru_mts/articles/1085976/?utm_campaign=1085976&utm_source=habrahabr&utm_medium=rss",
     "summary": "In the late 1950s at Harvard, David Hubel and Torsten Wiesel's lab used analog tools to study cat visual cortex neurons, leading to Nobel Prize-winning discoveries. Today, we have full access to neural network weights and activations but still lack understanding of their internal workings. This article discusses the preprint \"From Interpretability Methods to Interpretable Models,\" which critiques 15 years of Explainable AI (XAI) research in computer vision for focusing on method improvement rather than genuine model understandability for humans. It draws parallels with early neurobiology, where imperfect tools still yielded significant insights, and argues for a shift towards methods that genuinely enhance human comprehension of AI models.",
     "title": "Why Neurobiologists 60 Years Ago Understood the Brain Better Than We Understand Neural Networks"
+  },
+  "https://habr.com/ru/companies/ru_mts/articles/1086570/?utm_campaign=1086570&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Fri, 25 Sep 2026 11:00:27 GMT",
+    "slug": "1086570",
+    "source_url": "https://habr.com/ru/companies/ru_mts/articles/1086570/?utm_campaign=1086570&utm_source=habrahabr&utm_medium=rss",
+    "summary": "Almost everyone who has built an AI agent for business has gone through the same process: a quick prototype, a successful demo, and then months of work to add logging, monitoring, prompt versioning, access control, and deployment. Usually, I write about scientific articles on LLMs and AI in general. This time, the genre is different: I'll talk about MWS AI Agents Platform, a platform that handles the boilerplate needed to turn LLMs and theory from articles into working projects. The platform has been in production since the end of last year, but I'm only getting around to reviewing it now, after seven releases. I'll break down how it's structured, what you can build with it, and where its limitations lie. Read on",
+    "title": "MWS AI Agents Platform Review: A Platform for Creating AI Agents"
   },
   "https://habr.com/ru/companies/runity/articles/1086162/?utm_campaign=1086162&utm_source=habrahabr&utm_medium=rss": {
     "model": "gemini-2.5-flash-lite",
@@ -2238,6 +2334,14 @@
     "source_url": "https://habr.com/ru/companies/tn_digital/articles/1080052/?utm_campaign=1080052&utm_source=habrahabr&utm_medium=rss",
     "summary": "A common task: add order status, change API, update form, migration, tests, and documentation. In an AI-native process, an agent can go through almost this entire route: study the requirements, find related components, propose a plan, change code, run checks, and prepare a merge request (MR). A human makes the decision and is responsible for the result. But this is not a story about proven success. It is an example of a real case of implementing an AI-native development pilot in a corporation: a testable hypothesis, an engineering framework, and measurement rules. A positive outcome is not guaranteed. Read more",
     "title": "AI-native development in Russian"
+  },
+  "https://habr.com/ru/companies/tn_digital/articles/1086454/?utm_campaign=1086454&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Fri, 25 Sep 2026 11:10:28 GMT",
+    "slug": "1086454",
+    "source_url": "https://habr.com/ru/companies/tn_digital/articles/1086454/?utm_campaign=1086454&utm_source=habrahabr&utm_medium=rss",
+    "summary": "An AI agent already performs part of the work previously done by humans. But this doesn't make it a digital employee. A person joins an organization not only with knowledge but also with professional norms, an understanding of the context of rules, and boundaries that don't need to be explicitly defined. An agent lacks these supports by default. The article explores how to replace them and why agent platforms and frameworks are insufficient. They provide management mechanisms, but the organization will have to extract their content from its own practices, employee knowledge, and formulate it explicitly. At the end, there are eight questions to answer before launching an agent, rather than after the first incident.",
+    "title": "Why an AI Agent is Not a Digital Employee"
   },
   "https://habr.com/ru/companies/uralsib/articles/1077456/?utm_campaign=1077456&utm_source=habrahabr&utm_medium=rss": {
     "model": "gemini-2.5-flash-lite",

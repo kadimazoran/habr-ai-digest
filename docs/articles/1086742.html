@@ -1,0 +1,86 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Qwen3.8–27B on two RTX 3060 12GB: How I overclocked OpenCode from ~9 to ~40 tokens/s with 128K context</title>
+  <meta name="description" content="Is it possible to turn two RTX 3060 12GB cards on an old Z97 platform into a decent local backend for OpenCode? I started with 9 tokens/s on a long context and ended up with about 40 tokens/s in a real agent session with over 100K context, without reducing the model size or sacrificing 128K context.">
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.65;
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 32px 20px 64px;
+      color: #1f2328;
+    }
+    header {
+      border-bottom: 1px solid #d8dee4;
+      margin-bottom: 28px;
+      padding-bottom: 20px;
+    }
+    .source {
+      color: #57606a;
+      font-size: 0.95rem;
+    }
+    img, video, iframe {
+      max-width: 100%;
+      height: auto;
+    }
+    pre {
+      overflow-x: auto;
+      padding: 16px;
+      background: #f6f8fa;
+      border-radius: 6px;
+    }
+    code {
+      font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+    }
+    blockquote {
+      border-left: 4px solid #d0d7de;
+      margin-left: 0;
+      padding-left: 16px;
+      color: #57606a;
+    }
+    footer {
+      border-top: 1px solid #d8dee4;
+      margin-top: 40px;
+      padding-top: 20px;
+      color: #57606a;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Qwen3.8–27B on two RTX 3060 12GB: How I overclocked OpenCode from ~9 to ~40 tokens/s with 128K context</h1>
+    <p>Is it possible to turn two RTX 3060 12GB cards on an old Z97 platform into a decent local backend for OpenCode? I started with 9 tokens/s on a long context and ended up with about 40 tokens/s in a real agent session with over 100K context, without reducing the model size or sacrificing 128K context. This article covers tensor split without CUDA P2P, Q8 KV-cache, integrated MTP, n-max tuning, failed experiments with NCCL and shared buffers, real long-context tests, and quality checks on coding tasks. Read on</p>
+    <p class="source">
+      Machine-translated from Habr.
+      <a href="https://habr.com/ru/articles/1086742/?utm_campaign=1086742&amp;utm_source=habrahabr&amp;utm_medium=rss">Read the original Russian article</a>.
+      Fri, 25 Sep 2026 12:59:20 GMT
+    </p>
+  </header>
+  <main>
+<div><p>The task was simple: build a personal compute unit at home for coding agents and minimize dependence on cloud limits as much as possible. I like Codex and Claude Code, but I don't want to constantly hit limitations, let alone pay $100 or even $200 a month for more expensive plans. So, I decided to see how far I could push with what I already had.</p><p>I tried to select hardware for the experiment with minimal investment: Core i7-4790, 32GB DDR3, ASUS Sabertooth Z97 Mark 2, and two RTX 3060s with 12GB each. No NVLink, and no CUDA P2P between the cards. However, in total, I have 24GB of VRAM and a desire to squeeze every last drop out of them.<br/></p><figure><img alt="The whole server: Z97, i7-4790, 32GB DDR3, and two RTX 3060 12GB" loading="lazy" src="https://habrastorage.org/r/w1560/getpro/habr/upload_files/cac/d93/02b/cacd9302b972fc3d8ba5d9508260e0c1.png" title="The whole server: Z97, i7-4790, 32GB DDR3, and two RTX 3060 12GB"/><div><figcaption>The whole server: Z97, i7-4790, 32GB DDR3, and two RTX 3060 12GB</figcaption></div></figure><p>In my specific situation, this setup was logical: a significant portion of the hardware was free (my old computer), and the notable purchases were a second RTX 3060 12GB and a large sound-dampened case. Therefore, I wasn't comparing a 'new expensive server versus a subscription,' but a one-time upgrade of an existing PC against monthly payments for higher cloud limits.</p><p>At the same time, I don't equate local Qwen with Codex or Claude Code. Cloud neural networks have a higher ceiling for the most complex multi-step tasks. But for most of my scenarios, a local 27B model is more than sufficient.</p><p>There's another very significant advantage: privacy. The model itself runs entirely on my server, so source code, prompts, and context don't need to be sent to a third-party LLM provider. This is convenient for internal code, configurations, technical logs, and other sensitive data. Of course, this statement is only true if the OpenCode wrapper, plugins, and connected tools are also not configured to send this data externally.</p><p><strong>At the same time, speed was not an end in itself for me.</strong> I didn't want to achieve a beautiful tokens-per-second number at the cost of a noticeable loss in quality, switching to overly aggressive quantization, or cutting down the long context. The goal was precisely the opposite: to maintain a sufficiently high-quality 27B model and a large context, but to make the two 3060s work as efficiently as possible.</p><p>Initially, Qwen3.8–27B Q4 worked, but with a truly long context, generation dropped to about 9–10 tokens/s. After a series of experiments on the same two graphics cards in a controlled test with ~120K input tokens, I achieved 28.16 tokens/s, and in a real OpenCode session, an average of 39.6 tokens/s according to server logs. The working scenario is most important to me: the model should not just run, but be fast enough to use comfortably every day.</p><h2>1. The Subject Under Test</h2><div><div><table><tbody><tr><td><p><strong>Component</strong></p></td><td><p><strong>Configuration</strong></p></td></tr><tr><td><p>CPU</p></td><td><p>Intel Core i7-4790</p></td></tr><tr><td><p>Motherboard</p></td><td><p>ASUS Sabertooth Z97 Mark 2</p></td></tr><tr><td><p>RAM</p></td><td><p>32 GB DDR3 1600MHz</p></td></tr><tr><td><p>GPU</p></td><td><p>2 × NVIDIA GeForce RTX 3060 12 GB</p></td></tr><tr><td><p>GPU Interconnect</p></td><td><p>PHB, CUDA P2P read/write unavailable</p></td></tr><tr><td><p>Software</p></td><td><p>Ubuntu, llama.cpp, Docker, CUDA</p></td></tr><tr><td><p>llama.cpp</p></td><td><p>build 10991, commit 930e2fa59, Docker tag server-cuda13-b10991</p></td></tr><tr><td><p>Primary Scenario</p></td><td><p>OpenCode / local coding-agent</p></td></tr></tbody></table></div></div><p>An important disclaimer upfront: this article is not about a new algorithm. All the core mechanisms already exist in llama.cpp. This is a practical review of which setting combinations actually worked on specific old home hardware, and which didn't, and why.</p><h2>2. Where I Started</h2><p>As a starting point, I took a fairly basic configuration: a standard Qwen3.8–27B Q4_K_M from ggml-org, full server context of 131,072 tokens, Flash Attention, Q4 KV-cache, and standard layer distribution of the model between two GPUs. This wasn't a deliberately slowed-down model, but my actual first working version: it fit into memory, launched stably, and already allowed me to use it via OpenCode.</p><p>Below is the initial launch command. By the end, you'll see which parameters actually changed. The path to the GGUF, of course, depends on where the model is located on your specific PC or server.</p><p>Why Q4_K_M and 128K in the first place? I didn't need a benchmark record, but a sufficiently large model for code with a context that doesn't end after reading a few files and a couple of long logs. A coding agent quickly accumulates source code, search results, test outputs, and its own history, so a 16K or 32K mode didn't suit me initially.</p><pre><code>docker run --rm --gpus all 
+  -p 8080:8080 
+  -v "$HOME/models:/models:ro" 
+  ghcr.io/ggml-org/llama.cpp:server-cuda13-b10991 
+  -m /models/Qwen3.8-27B-Q4_K_M.gguf 
+  -sm layer 
+  --fit on 
+  --fit-target 512 
+  -c 131072 
+  -np 1 
+  -fa on 
+  -ctk q4_0 
+  -ctv q4_0 
+  --host 0.0.0.0 
+  --port 8080</code><div><a href=
+  </main>
+  <footer>
+    Translation generated with Gemini 2.5 Flash-Lite.
+    The original article remains the source of record.
+  </footer>
+</body>
+</html>

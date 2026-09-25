@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Evaluating AI Agents: 7 Mistakes That Make Tests Lie</title>
+  <meta name="description" content="A green status on eval tests doesn&#x27;t guarantee an AI agent is working correctly: it might give the right answer but perform incorrect actions or none at all. This article examines seven common mistakes in evaluating AI agents and shows which approaches help measure the system&#x27;s real qualit">
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.65;
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 32px 20px 64px;
+      color: #1f2328;
+    }
+    header {
+      border-bottom: 1px solid #d8dee4;
+      margin-bottom: 28px;
+      padding-bottom: 20px;
+    }
+    .source {
+      color: #57606a;
+      font-size: 0.95rem;
+    }
+    img, video, iframe {
+      max-width: 100%;
+      height: auto;
+    }
+    pre {
+      overflow-x: auto;
+      padding: 16px;
+      background: #f6f8fa;
+      border-radius: 6px;
+    }
+    code {
+      font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+    }
+    blockquote {
+      border-left: 4px solid #d0d7de;
+      margin-left: 0;
+      padding-left: 16px;
+      color: #57606a;
+    }
+    footer {
+      border-top: 1px solid #d8dee4;
+      margin-top: 40px;
+      padding-top: 20px;
+      color: #57606a;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Evaluating AI Agents: 7 Mistakes That Make Tests Lie</h1>
+    <p>A green status on eval tests doesn&#x27;t guarantee an AI agent is working correctly: it might give the right answer but perform incorrect actions or none at all. This article examines seven common mistakes in evaluating AI agents and shows which approaches help measure the system&#x27;s real quality. Let&#x27;s break down the errors.</p>
+    <p class="source">
+      Machine-translated from Habr.
+      <a href="https://habr.com/ru/companies/otus/articles/1077946/?utm_campaign=1077946&amp;utm_source=habrahabr&amp;utm_medium=rss">Read the original Russian article</a>.
+      Fri, 25 Sep 2026 13:05:37 GMT
+    </p>
+  </header>
+  <main>
+<div><p>Hello everyone, my name is Sergey Proshchaev, and in this article, I'll discuss seven mistakes in evaluating <a href="https://otus.pw/E1aV/">AI agents</a>—the very ones that cause tests to pass with a green light, while the team learns about degradation from support.</p><p>The team has an <abbr>eval set</abbr>: forty tasks, a run in CI, a success percentage report. The number stays around ninety, everyone is calm. Two weeks later, support brings a chat log where the agent reported "request processed," but the database shows an empty entry for this request.</p><p>We go to the set—the scenario is there, and it passes. Green. The tests aren't broken; they're just measuring the wrong thing.</p><figure><img alt="Fig. 1. The dashboard shows normal because it's not looking where the failure is happening" loading="lazy" src="https://habrastorage.org/r/w1560/getpro/habr/upload_files/684/50a/755/68450a755b56e963ecd98de1733e8a26.png" title="Fig. 1. The dashboard shows normal because it's not looking where the failure is happening"/><div><figcaption><em>Fig. 1. The dashboard shows normal because it's not looking where the failure is happening</em></figcaption></div></figure><p>I am a Tech Lead and Head of Java | Kotlin Development at FinTech &amp; E-commerce and teach development and architecture courses at OTUS.</p><p>A few months ago, I discussed <a href="https://habr.com/ru/companies/otus/articles/1047062/">six architectural mistakes</a> that cause agents to not make it to launch.</p><p>That article was about how an agent is structured.</p><p>This one is about a related layer that, in my observations, is underestimated even more: how to understand if an agent is actually working.</p><blockquote><p><em>We will break down seven mistakes in the eval setup that I most often see in reviews: symptom, cause, consequences, and how to fix them. At the end, there will be a summary table, a checklist, and a conclusion about what skill this group of pitfalls actually tests.</em></p></blockquote><h3>Mistake 1. Success is judged by final text, not system state</h3><p><strong>Symptom.</strong> In the report, a task is marked as completed because the agent wrote "done, request created." However, the database is empty.</p><p><strong>Cause.</strong> This is the easiest way to write a check: compare the final response to a reference or give it to a <abbr>judge</abbr>. But the response and the action are different entities. The model can perfectly describe a result that didn't happen, and the text is flawless.</p><p><strong>Consequences.</strong> Checking only the final text misses situations where the agent reports a successful action, even though the action didn't occur. This problem is well illustrated by <a href="https://arxiv.org/abs/2406.12045">τ‑bench</a> from Sierra: the main criterion there is the correspondence of the final database state to the target state, and for some tasks, the mandatory text output is additionally checked. It's telling that in the original experiment, GPT-4o in the corresponding configuration solved less than half of the tasks.</p><blockquote><p><strong>How to fix.</strong> A task is considered successful by checking the state transition. Specifically, the transition, not its presence: if you only compare the final value, the test will pass even for an agent that did nothing—the required status was already in the <abbr>fixture</abbr> from the start. And you should separate <abbr>transactional writes</abbr> and event delivery: these are different levels, and they need to be waited for differently.</p></blockquote><pre><code>// (Kotlin) Checking state transition, not its presence. 10423 is the order ID. Status is REFUND_REQUESTED. Outbox is for outgoing messages. Consumer is for incoming messages. await is for waiting. 5.seconds is the timeout. run.id is the unique identifier for the agent's run. 42 is a user ID. 14 is the number of days.
+  </main>
+  <footer>
+    Translation generated with Gemini 2.5 Flash-Lite.
+    The original article remains the source of record.
+  </footer>
+</body>
+</html>

@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>I Made an AI Editor for Habr — and Had to Figure Out if I Was Building an AI Slop Factory</title>
+  <meta name="description" content="I wanted to automate technical article writing and ended up creating StoryOps: a system that reads an author&#x27;s past publications, researches a repository, fact-checks, and analyzes current platform materials. Then the uncomfortable question arose: how is this different from another AI slop fact">
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.65;
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 32px 20px 64px;
+      color: #1f2328;
+    }
+    header {
+      border-bottom: 1px solid #d8dee4;
+      margin-bottom: 28px;
+      padding-bottom: 20px;
+    }
+    .source {
+      color: #57606a;
+      font-size: 0.95rem;
+    }
+    img, video, iframe {
+      max-width: 100%;
+      height: auto;
+    }
+    pre {
+      overflow-x: auto;
+      padding: 16px;
+      background: #f6f8fa;
+      border-radius: 6px;
+    }
+    code {
+      font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+    }
+    blockquote {
+      border-left: 4px solid #d0d7de;
+      margin-left: 0;
+      padding-left: 16px;
+      color: #57606a;
+    }
+    footer {
+      border-top: 1px solid #d8dee4;
+      margin-top: 40px;
+      padding-top: 20px;
+      color: #57606a;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>I Made an AI Editor for Habr — and Had to Figure Out if I Was Building an AI Slop Factory</h1>
+    <p>I wanted to automate technical article writing and ended up creating StoryOps: a system that reads an author&#x27;s past publications, researches a repository, fact-checks, and analyzes current platform materials. Then the uncomfortable question arose: how is this different from another AI slop factory? I tried to figure it out with numbers: how much AI content is already online, why there&#x27;s so much of it on TikTok and YouTube, why audiences reject it, how platforms are dealing with it, and where the line is between AI as a tool and a garbage conveyor belt. Read on</p>
+    <p class="source">
+      Machine-translated from Habr.
+      <a href="https://habr.com/ru/articles/1086698/?utm_campaign=1086698&amp;utm_source=habrahabr&amp;utm_medium=rss">Read the original Russian article</a>.
+      Fri, 25 Sep 2026 12:08:57 GMT
+    </p>
+  </header>
+  <main>
+<div><p>I spent the last week building StoryOps. The idea came from a fairly common curiosity, which is generally how I approach anything. I had accumulated several articles about my projects, the projects themselves had changed significantly in the meantime, and before each new publication, I had to re-establish the context. What had I already covered, what had changed in the code since then, which decisions were actually implemented, and which remained only in old plans. The longer a project lives, the harder it is to write a continuation without retelling the previous article or inventing a nice story after the fact.</p><p>I wanted to get a tool that I could tell: here's the repository, here are my previous publications, see what has changed, find the next relevant topic, and help gather material. Not to write the article for me, but first to understand what is even worth writing about.</p><p>Thus, StoryOps was born. Currently, it's a CLI and a set of Agent Skills for Codex and Claude Code. It can read an author's publications, examine Git history and project documentation, find the difference between what has already been told and what has actually appeared in the code, gather evidence for technical claims, and separately research the platform for which the material is being prepared.</p><p>At this point, everything seemed harmless enough. Then I looked at the resulting process from a slight distance.</p><pre><code>repository
+    ↓
+agent
+    ↓
+article
+    ↓
+Habr</code><div><a href="https://sourcecraft.dev/"><img loading="lazy"/></a></div></pre><p>If you add a schedule, auto-publishing, and several projects, it becomes not an editorial assistant, but a fully functional conveyor belt. It will be able to release texts faster than I can properly reread them.</p><p>And here, for the first time, I encountered a question that turned out to be more interesting than StoryOps itself: how does such a tool differ from an AI slop factory?</p><p>In 2025, the American Dialect Society chose <em>slop</em> as its word of the year. It refers to low-quality mass content, most often associated with generative AI. The definition is convenient, until you try to draw a line in practice.</p><p>If I used Claude for a draft, is that slop? If a model wrote most of the first version, and then I spent several days checking sources, deleting weak parts, and rewriting the text, what exactly makes the result machine garbage? Conversely, if a person manually produced three hundred nearly identical SEO pages for search traffic, do they become good just because all the words were typed by a human?</p><p>At some point, I became more interested in viewing slop not as a separate genre of strange videos and identical articles, but as a consequence of the new content economy. The production of information has become drastically cheaper. Human attention, however, has remained the same limited resource.</p><p>This is where this article began.</p><h3>AI-generated and AI slop are not the same thing</h3><p>The simplest mistake in this topic is to label any material involving AI as slop.</p><p>In practice, the scenarios are too diverse. Some use a model as a proofreader. Others ask it to translate text, compile interview transcripts, or suggest a structure. Some write the draft themselves and then hand it over to an agent for fact-checking. Others, conversely, generate the entire article and publish it almost without reading.</p><p>Formally, AI was involved in all cases. The quality of the process, however, is entirely different.</p><p>I like the approach from a study published in <em>JMIR Medical Education</em>. The authors studied AI-generated videos on TikTok and YouTube and linked slop not just to the fact of using a model, but to the degree of human care in production.</p><p>This definition doesn't provide a precise mathematical boundary, but it well describes the difference between a tool and a conveyor belt. The problem doesn't start where AI enters the process, but where verification, responsibility, and any reason to do a specific piece of work well disappear.</p><p>To put it very simply, slop looks something like this:</p><pre><code>mass production
+    +
+minimal verification
+    +
+minimal responsibility
+    +
+bet on number of attempts</code><div><a href="https://sourcecraft.dev/"><img loading="lazy"/></a></div></pre><p>Therefore, from now on, I will distinguish between two things. AI-generated content means only that a model was significantly involved in the creation of the material. AI slop additionally implies low value, scale, and weak human control.</p><p>This is important because otherwise, any discussion about the amount of AI content on the internet quickly turns into a set of scary percentages that actually measure completely different things.</p><h3>How much AI content is already online</h3><p>If you search for numbers on this topic, you'll quickly find estimates ranging from 10 to over 70 percent. At first glance, it seems like the studies contradict each other. If you look at the methodology, the contradiction almost disappears.</p><p>In 2026, the Pew Research Center took 490,000 random English-language pages from Common Crawl. In the overall sample, signs of significant AI authorship or AI editing were found on approximately <strong>10% of pages</strong>. But a significant portion of the internet predates ChatGPT. Looking only at pages published after its launch, the share exceeds <strong>a third</strong>.</p><p>Graphite studied not the entire web, but new English-language articles and listicles. In the first quarter of 2026, <strong>49.9% of new materials</strong> in their sample were classified as predominantly AI-generated. Interestingly, the figure had stopped growing rapidly by this point: in Q1 2025 it was 49.6%, in Q4 2025 it was 50.9%, then back to around half.</p><p>Ahrefs obtained an even larger figure. In a study of 900,000 new pages, <strong>74.2% contained signs of AI-generated content</strong>. But here, the key word is precisely "contained." A page with one generated block and a completely automatically written article fall into the same large category.</p><p>This gives us the following picture:</p><div><div><table><tbody><tr><th><p>Study</p></th><th><p>Result</p></th><th><p>What was actually measured</p></th></tr><tr><td><p>Pew, 2026</p></td><td><p>10%</p></td><td><p>All random pages in a web sample</p></td></tr><tr><td><p>Pew, 2026</p></td><td><p>&gt;33%</p></td><td><p>Pages published after ChatGPT launch</p></td></tr><tr><td><p>Graphite, 2026</p></td><td><p>49.9%</p></td><td><p>New articles/listicles, predominantly AI-generated</p></td></tr><tr><td><p>Ahrefs, 2025</p></td><td><p>74.2%</p></td><td><p>New pages where at least some AI content was found</p></td></tr></tbody></table></div></div><figure><img alt=
+  </main>
+  <footer>
+    Translation generated with Gemini 2.5 Flash-Lite.
+    The original article remains the source of record.
+  </footer>
+</body>
+</html>

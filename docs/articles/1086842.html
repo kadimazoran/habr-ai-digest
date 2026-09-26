@@ -1,0 +1,90 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>How to Collect Project Semantics for a Code Agent Without Opening a Confluence Branch</title>
+  <meta name="description" content="A practical guide for small projects: how to collect a compact context layer for a code agent - with a ready-made mini-repository, examples of invariants and contracts. Read more">
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.65;
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 32px 20px 64px;
+      color: #1f2328;
+    }
+    header {
+      border-bottom: 1px solid #d8dee4;
+      margin-bottom: 28px;
+      padding-bottom: 20px;
+    }
+    .source {
+      color: #57606a;
+      font-size: 0.95rem;
+    }
+    img, video, iframe {
+      max-width: 100%;
+      height: auto;
+    }
+    pre {
+      overflow-x: auto;
+      padding: 16px;
+      background: #f6f8fa;
+      border-radius: 6px;
+    }
+    code {
+      font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+    }
+    blockquote {
+      border-left: 4px solid #d0d7de;
+      margin-left: 0;
+      padding-left: 16px;
+      color: #57606a;
+    }
+    footer {
+      border-top: 1px solid #d8dee4;
+      margin-top: 40px;
+      padding-top: 20px;
+      color: #57606a;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>How to Collect Project Semantics for a Code Agent Without Opening a Confluence Branch</h1>
+    <p>A practical guide for small projects: how to collect a compact context layer for a code agent - with a ready-made mini-repository, examples of invariants and contracts. Read more</p>
+    <p class="source">
+      Machine-translated from Habr.
+      <a href="https://habr.com/ru/articles/1086842/?utm_campaign=1086842&amp;utm_source=habrahabr&amp;utm_medium=rss">Read the original Russian article</a>.
+      Fri, 25 Sep 2026 20:16:19 GMT
+    </p>
+  </header>
+  <main>
+<div><p>A code agent in a small project usually finds the right file with a very confident air. This is pleasant right up to the moment when it changes the wrong counter, alters the module's behavior, and reports that the task is complete. Confidence is free, regressions are too.</p><p>In the test example, we need to add a weekly limit to a small module. The agent finds the method, adds a counter, and even writes a test. Then it turns out that the limit is counted per user, a rejected attempt should not consume quota, and a negative limit should remain an error. In the code, this is scattered across the model, tests, and an old comment.</p><p>This is not necessarily the model's fault. I gave it the code, but not the intent.</p><p>Below is an overview of the SDD practice for a small repository. Not RAG, not a corporate knowledge base, and not a new religion with a folder naming committee. Just four short files that help the agent understand the project before the first change.</p><h3>What is called semantics here</h3><p>Code answers the question “how it is done now”. It answers the questions “why”, “what cannot be broken”, and “which two similar words mean different things” worse.</p><p>By project semantics, I mean a small layer of agreements:</p><ul><li><p>a domain dictionary;</p></li><li><p>invariants that must survive refactoring;</p></li><li><p>public contracts;</p></li><li><p>boundaries of a specific change.</p></li></ul><p>This is similar to Spec-Driven Development, but on a smaller scale. The GitHub Spec Kit documentation describes SDD as a process where intent is captured before implementation and refined in several steps <a href="https://github.github.com/spec-kit/concepts/sdd.html">[1]</a>. I am not suggesting copying the entire workflow. For a small project, it is enough to make the intent accessible to the agent and link it to the tests.</p><h3>Minimal set of files</h3><p>Place the following structure next to the code:</p><pre><code>agent-context/ 
+  index.md 
+  domain.md 
+  contracts.md 
+  features/ 
+    weekly-limit.md 
+</code><div><a href="https://sourcecraft.dev/"><img loading="lazy"/></a></div></pre><p>This is not documentation "just in case". Each file has one job. If a file does not help select source code or make a decision, it is a candidate for deletion, not for another subsection.</p><div><div><table><tbody><tr><th><p>File</p></th><th><p>What's in it</p></th><th><p>What's not in it</p></th></tr><tr><td><p><code>index.md</code></p></td><td><p>Where to go with a task of a specific type</p></td><td><p>A retelling of the entire repository</p></td></tr><tr><td><p><code>domain.md</code></p></td><td><p>Terms and invariants</p></td><td><p>Implementation details</p></td></tr><tr><td><p><code>contracts.md</code></p></td><td><p>What external calling code sees</p></td><td><p>Internal classes and SQL</p></td></tr><tr><td><p><code>features/*.md</code></p></td><td><p>Boundaries and readiness criteria for a feature</p></td><td><p>Plans for the next six months</p></td></tr></tbody></table></div></div><p>The <a href="https://github.com/dgerasina/agent-context-mini-example">mini-example</a> contains all four files, tests, and ready-made instructions for the agent. It models a module with a weekly quota.</p><pre><code># domain.md 
+
+- The weekly limit is counted per user, not per API key or IP address. 
+- A rejected attempt due to the limit does not consume quota. 
+- The week starts on Monday at 00:00 UTC. 
+</code><div><a href="https://sourcecraft.dev/"><img loading="lazy"/></a></div></pre><p>These three lines are more useful for the agent than another retelling of <code>app/limits.py</code>. The first sets the aggregation boundary, the second defines behavior on refusal, and the third is a time rule. All three should be verifiable by tests.</p><h3>How to collect context in an evening</h3><p>You shouldn't start by generating documentation with the model. Otherwise, you'll quickly get a neat retelling of <code>package-lock.json</code>, which nobody needs. I would look at five things:</p><ol><li><p>the entry point and module tree;</p></li><li><p>the dependency file and the test run command;</p></li><li><p>the public API or CLI;</p></li><li><p>two or three illustrative integration checks;</p></li><li><p>the last non-trivial feature in the change history.</p></li></ol><p>From these, you can assemble navigation, module names, and the external contract. But the meaning of the rule "refusal does not consume quota" cannot be reliably extracted from the code. It must be written by someone who knows the domain.</p><p>The filter is simple: if a statement can be restored from the source code without loss, do not copy it into <code>agent-context</code>. Provide the path to the module in <code>index.md</code>. If, after refactoring, the statement must still be true, it belongs in <code>domain.md</code> or the feature specification.</p><h3>How the agent uses this</h3><p>Do not send the entire repository in the first request. The context window is not a warehouse where you need to stuff all the boxes before moving. Give the agent a short route:</p><pre><code>Before making a change, read agent-context/index.md. 
+For the task about limits, read domain.md, contracts.md, and 
+features/weekly-limit.md, then open the sources and tests named there. 
+
+First, match each readiness criterion with a test. If a criterion has no 
+match, add or change a test. Do not change the public contract without 
+updating contracts.md. 
+</code><div><a href="https://sourcecraft.dev/"><img loading="lazy"/></a></div></pre><p>The benefit is not in a magical prompt. The route forces reading the rules first and then limits the search to the relevant part of the repository. If the agent suggests changing the result type, it sees that this is no longer a local fix.</p><h3>What to automate and what not to</h3><p>For a small project, two rules in a PR are sufficient:</p><ul><li><p>the public API has changed - update <code>contracts.md</code>;</p></li><li><p>an invariant has appeared or changed - update <code>domain.md</code> and the test.</p></li></ul><p>It only makes sense to automate the obvious: for example, comparing the generated OpenAPI with the committed schema. You should not set up CI that requires rewriting documentation after renaming a variable. Otherwise, the context will become a ritual that everyone bypasses with the expression of a person updating a password in a corporate VPN.</p><p>The specification for a one-time feature can be deleted after merging. If it contains a permanent invariant, move it to <code>domain.md</code> or <code>contracts.md</code>. Spec Kit also does not prescribe a single fate for specification artifacts after requirements change <a href="https://github.com/github/spec-kit/blob/main/DEVELOPMENT.md">[2]</a>.</p><h3>Where this approach ends</h3><p>Four files will not replace an architectural review, will not make the agent's code safe, and will not resolve conflicting requirements. They will also cease to be convenient if dozens of teams change one repository simultaneously.</p><p>Here you can already look towards <a href="https://github.com/volcengine/OpenViking">OpenViking</a>. This is a context database for agents that combines knowledge, memory, and skills in a virtual file system. In it, the agent first reads the short abstract of a directory, then the overview, and only then the source materials. The idea is close to our <code>index.md</code>, but the scale is different: instead of four files, there is a server, indexing, and a separate context storage layer <a href="https://github.com/volcengine/OpenViking">[3]</a>.</p><p>For a pet project, I wouldn't set up OpenViking just so the agent could find two tests. It's like calling a crane to move a stool. But when the context lives longer than one feature, the agent has memory between sessions, and there are already many sources, such a system becomes a sensible next step.</p><p>But until then, you don't have to start with RAG, a dependency graph, and an autonomous orchestrator heroically orchestrating two Markdown files. First, you should answer one question: can a new person understand in ten minutes what to read before changing the limits? If not, the agent will also have to guess, only faster.</p><h3>First version checklist</h3><ul><li><p>[ ] <code>index.md</code> leads from task type to sources and tests.</p></li><li><p>[ ] <code>domain.md</code> contains only terms and invariants.</p></li><li><p>[ ] <code>contracts.md</code> captures externally observable behavior.</p></li><li><p>[ ] The active feature has readiness criteria and task boundaries.</p></li><li><p>[ ] Each important criterion is covered by a test.</p></li><li><p>[ ] The PR includes a question: has the contract or invariant changed?</p></li></ul><p>This is enough for the agent to get not "the whole project", but its working model. And then tools should only be added where four files are truly insufficient.</p><h3>Sources</h3><ol><li><p><a href="https://github.github.com/spec-kit/concepts/sdd.html">GitHub Spec Kit: What is Spec-Driven Development?</a></p></li><li><p><a href="https://github.com/github/spec-kit/blob/main/DEVELOPMENT.md">GitHub Spec Kit: Development notes</a></p></li><li><p><a href="https://github.com/volcengine/OpenViking">OpenViking: Context Database for AI Agents</a></p></li></ol></div>
+  </main>
+  <footer>
+    Translation generated with Gemini 2.5 Flash-Lite.
+    The original article remains the source of record.
+  </footer>
+</body>
+</html>

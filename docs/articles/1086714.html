@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>AI Agents in Investments: Building a Telegram Assistant and Trading Bot with Tinkoff Investments MCP</title>
+  <meta name="description" content="Hello, Habr! I&#x27;m Alexey Kabanov, a developer in the Tinkoff Investments public API team. We recently launched an MCP server that allows AI agents to interact with Tinkoff Investments: search for suitable securities, analyze the market, and a client&#x27;s portfolio. I&#x27;ll explain how to bui">
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.65;
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 32px 20px 64px;
+      color: #1f2328;
+    }
+    header {
+      border-bottom: 1px solid #d8dee4;
+      margin-bottom: 28px;
+      padding-bottom: 20px;
+    }
+    .source {
+      color: #57606a;
+      font-size: 0.95rem;
+    }
+    img, video, iframe {
+      max-width: 100%;
+      height: auto;
+    }
+    pre {
+      overflow-x: auto;
+      padding: 16px;
+      background: #f6f8fa;
+      border-radius: 6px;
+    }
+    code {
+      font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+    }
+    blockquote {
+      border-left: 4px solid #d0d7de;
+      margin-left: 0;
+      padding-left: 16px;
+      color: #57606a;
+    }
+    footer {
+      border-top: 1px solid #d8dee4;
+      margin-top: 40px;
+      padding-top: 20px;
+      color: #57606a;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>AI Agents in Investments: Building a Telegram Assistant and Trading Bot with Tinkoff Investments MCP</h1>
+    <p>Hello, Habr! I&#x27;m Alexey Kabanov, a developer in the Tinkoff Investments public API team. We recently launched an MCP server that allows AI agents to interact with Tinkoff Investments: search for suitable securities, analyze the market, and a client&#x27;s portfolio. I&#x27;ll explain how to build automation based on AI agents using our MCP server. Not long ago, to automate even a simple trading algorithm, you had to write your own script: Python, broker API, cron, and error handling for all life&#x27;s situations. Professional trading systems existed before, but the entry barrier for individual investors remained high. Now, there&#x27;s a standard layer between LLMs and broker APIs — MCP, Model Context Protocol: the model can get the portfolio state, view the order book, place or cancel an order, and you just need to describe the task in human language. Tinkoff Investments has a public MCP server, and this article is about how to use it. The client can be anything: an AI agent like Hermes Agent, an automation platform like n8n, a desktop assistant, an IDE. We&#x27;ll explore how these approaches differ and how they work with MCP, what the server can do, and then build two working examples. Read on</p>
+    <p class="source">
+      Machine-translated from Habr.
+      <a href="https://habr.com/ru/companies/tbank/articles/1086714/?utm_campaign=1086714&amp;utm_source=habrahabr&amp;utm_medium=rss">Read the original Russian article</a>.
+      Sat, 26 Sep 2026 09:00:55 GMT
+    </p>
+  </header>
+  <main>
+<div><figure><img loading="lazy" src="https://habrastorage.org/r/w1560/getpro/habr/upload_files/e5c/9ab/959/e5c9ab959cfabaa86d03fc308053983e.jpg"/></figure><p>Hello, Habr! I'm Alexey Kabanov, a developer in the Tinkoff Investments public API team. We recently launched an MCP server that allows AI agents to interact with Tinkoff Investments: search for suitable securities, analyze the market, and a client's portfolio. I'll explain how to build automation based on AI agents using our MCP server.</p><p>Not long ago, to automate even a simple trading algorithm, you had to write your own script: Python, broker API, cron, and error handling for all life's situations. Professional trading systems existed before, but the entry barrier for individual investors remained high. Now, there's a standard layer between LLMs and broker APIs — MCP, Model Context Protocol: the model can get the portfolio state, view the order book, place or cancel an order, and you just need to describe the task in human language.</p><p>Tinkoff Investments has a public MCP server, and this article is about how to use it. The client can be anything: an AI agent like Hermes Agent, an automation platform like n8n, a desktop assistant, an IDE. We'll explore how these approaches differ and how they work with MCP, what the server can do, and then build two working examples:</p><ul><li><p>A personal assistant in Telegram using Hermes Agent, which sets take-profits at night;</p></li><li><p>A trading bot in n8n that rebalances the account every evening between a money market fund and OFZ bonds — with trade confirmations in Telegram.</p></li></ul><p>Both examples can be replicated: you'll need Docker installed and three tokens — a free Google AI Studio API key, a Telegram bot token, and a Tinkoff Investments token.</p><h2>AI Agents and Automation Platforms: What's the Difference</h2><p>An AI agent is a program centered around a large language model, equipped with tools, context, and a decision-making loop. The classic loop looks like this:</p><ol><li><p>A user, schedule, or event formulates a task in natural language.</p></li><li><p>The LLM reasons about it and decides which tool to call and with what arguments.</p></li><li><p>It receives the tool's output as an "observation" and continues reasoning.</p></li><li><p>It repeats until it deems the task complete — and responds with text.</p></li></ol><p>The key feature of an agent is its autonomy within the task. We say: "Check if I have any securities without take-profits and set them," and how the agent arrives at this through tool calls is its decision.</p><p>Pros: flexibility, handling unplanned situations, zero entry barrier — no programming required. Cons: non-determinism, token costs, hallucinations, and difficulty auditing "what did it do there?"</p><p>Frameworks like Hermes Agent, or agent nodes within other systems, are also considered agents in a broad sense.</p><p>Automation platforms, including n8n, emerged long before the LLM trend. Their essence is a visual constructor for deterministic scenarios: trigger (schedule, webhook, message) → chain of action nodes → branches and loops.</p><p>Each workflow is a graph that executes identically every time, with execution history, logs, and retries on errors. Strengths: predictability, observability, and ready-made integrations with hundreds of services. Weakness: inflexibility: any additional action not foreseen by the author requires modifying the scenario.</p><p>The line between these classes is blurring before our eyes: n8n has long had an AI Agent node that embeds an LLM with tools and memory directly into a workflow. This results in a hybrid: a deterministic framework of triggers and checks, within which agent blocks operate.</p><div><div><table><tbody><tr><td><p><strong>Criterion</strong></p></td><td><p><strong>AI Agent</strong></p></td><td><p><strong>Automation Platform</strong></p></td></tr><tr><td><p>Logic</p></td><td><p>Decided by LLM, call path is not fixed</p></td><td><p>Fixed node graph, defined by author</p></td></tr><tr><td><p>Interface</p></td><td><p>Natural language</p></td><td><p>Visual editor</p></td></tr><tr><td><p>Predictability</p></td><td><p>Medium: the execution plan may vary with the same input data</p></td><td><p>High: one set of data is always interpreted into the same set of output data</p></td></tr><tr><td><p>Behavior Change</p></td><td><p>Rephrase the prompt</p></td><td><p>Rebuild the workflow</p></td></tr><tr><td><p>Observability</p></td><td><p>History of tool and LLM calls</p></td><td><p>Execution history for each node</p></td></tr><tr><td><p>Cost</p></td><td><p>LLM tokens for each run</p></td><td><p>Deterministic nodes are almost free, LLM only where added by the user</p></td></tr><tr><td><p>When to Choose</p></td><td><p>Dialogue, diverse tasks, research</p></td><td><p>Regular processes, mission-critical processes</p></td></tr></tbody></table></div></div><p><strong>Model Context Protocol</strong> is an open standard introduced by Anthropic in late 2024, becoming a common interface between LLM applications and external systems. The protocol is JSON-RPC over stdio (for local servers) or HTTP (for remote ones). The standard is based on three primitives:</p><ul><li><p>tools — functions that the model can call, passing parameters;</p></li><li><p>resources — data that the server can provide upon request;</p></li><li><p>prompts — ready-made task templates.</p></li></ul><p>Before MCP, each "application &lt;-&gt; service" pair required its own integration — the classic N*M problem. With MCP, the server is written once and can be connected to any compatible client: an agent, IDE, or automation platform. It's like USB-C, but for LLM tools.</p><details><summary>Diagram of AI Agent Interaction with MCP Server</summary><div><figure><img alt=
+  </main>
+  <footer>
+    Translation generated with Gemini 2.5 Flash-Lite.
+    The original article remains the source of record.
+  </footer>
+</body>
+</html>

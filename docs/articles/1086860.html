@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>A Way to Download AI-Generated 3D Models Without a Subscription or Payment</title>
+  <meta name="description" content="I propose a method to download AI-generated 3D models with textures after free generation, for reviewing the results in any 3D graphics software. Websites offering free generation usually don&#x27;t provide free export of the generated models. After uploading an image and generating a 3D model, the ">
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.65;
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 32px 20px 64px;
+      color: #1f2328;
+    }
+    header {
+      border-bottom: 1px solid #d8dee4;
+      margin-bottom: 28px;
+      padding-bottom: 20px;
+    }
+    .source {
+      color: #57606a;
+      font-size: 0.95rem;
+    }
+    img, video, iframe {
+      max-width: 100%;
+      height: auto;
+    }
+    pre {
+      overflow-x: auto;
+      padding: 16px;
+      background: #f6f8fa;
+      border-radius: 6px;
+    }
+    code {
+      font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+    }
+    blockquote {
+      border-left: 4px solid #d0d7de;
+      margin-left: 0;
+      padding-left: 16px;
+      color: #57606a;
+    }
+    footer {
+      border-top: 1px solid #d8dee4;
+      margin-top: 40px;
+      padding-top: 20px;
+      color: #57606a;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>A Way to Download AI-Generated 3D Models Without a Subscription or Payment</h1>
+    <p>I propose a method to download AI-generated 3D models with textures after free generation, for reviewing the results in any 3D graphics software. Websites offering free generation usually don&#x27;t provide free export of the generated models. After uploading an image and generating a 3D model, the export option is inactive without a subscription. However, if you still need to download it, here&#x27;s how to do it without clicking the &#x27;Export&#x27; button. I chose a photo from the internet as an example. Read more</p>
+    <p class="source">
+      Machine-translated from Habr.
+      <a href="https://habr.com/ru/articles/1086860/?utm_campaign=1086860&amp;utm_source=habrahabr&amp;utm_medium=rss">Read the original Russian article</a>.
+      Fri, 25 Sep 2026 23:25:59 GMT
+    </p>
+  </header>
+  <main>
+<div><p>I propose a method to download AI-generated 3D models with textures after free generation, for reviewing the results in any 3D graphics software. Websites offering free generation, <strong>usually</strong>, do not offer free export of generated 3D models. After uploading an image and generating a 3D model, the export option will be inactive unless a subscription is purchased.</p><p>But if you still need to download it, here's how you can do it without touching the "Export" button.</p><p>Without much deliberation, I took a photo from the internet as an example.</p><figure><img loading="lazy" src="https://habrastorage.org/r/w1560/getpro/habr/upload_files/cf6/415/dee/cf6415deeca4100f6c110c2c8bc08e91.jpg"/></figure><p>Next, I sent this photo to the AI. Using tripo3d.ai as an example.<br/> Modern AIs can create 3D models based on several photos of an object, but in this example, I only used one photograph.</p><figure><img loading="lazy" src="https://habrastorage.org/r/w1560/getpro/habr/upload_files/24d/77a/f9c/24d77af9c93eee014cdcdb156b6f0c0f.png"/></figure><figure><img loading="lazy" src="https://habrastorage.org/r/w1560/getpro/habr/upload_files/d00/98b/484/d0098b484d16c378036d8a78b9366deb.png"/></figure><p>The 3D model is ready, and so are the textures. Clicking the "Export" button prompts the site to offer a subscription.</p><figure><img loading="lazy" src="https://habrastorage.org/r/w1560/getpro/habr/upload_files/1c5/cab/8fa/1c5cab8fa9085b51af1c97d2012c3144.png"/></figure><p>Next, close the window; the "Export" button is not needed. Since the generated 3D model has already been created by the site and is in GLB format, this model can be downloaded by doing the following:</p><ol><li><p>Press "F12"</p></li><li><p>Go to the "Network" tab</p></li><li><p>In the line below, type .glb (or .gltf)</p></li><li><p>Refresh the page by pressing "F5"</p></li><li><p>Below, a file with the 3D model "file.glb" will appear</p></li><li><p>Right-click on the file and then select "Open in new tab"</p></li></ol><figure><img loading="lazy" src="https://habrastorage.org/r/w1560/getpro/habr/upload_files/a6c/d57/8c6/a6cd578c6d5e504767d94d061a1ddab4.png"/></figure><p>The 3D model in GLB format will be downloaded and will already contain the textures. I use 3ds Max, and it doesn't support GLB files by default. To resolve this, you can install the glTF/GLB import and export plugin.<br/> <a href="https://github.com/KhronosGroup/glTF-3ds-Max-Plugin">https://github.com/KhronosGroup/glTF-3ds-Max-Plugin</a></p><p>In my case, I cannot import the 3D model obtained from Tripo3d.ai into 3ds Max due to an error, which I believe is related to compression issues. For this, the file needs to be re-saved first. You can use <a href="https://gltf.report/">https://gltf.report/</a>. Import the file there and select compression — Draco. Then, you can export the file without problems and open it in 3ds Max for review.</p><figure><img loading="lazy" src="https://habrastorage.org/r/w1560/getpro/habr/upload_files/80b/88e/54c/80b88e54c290c1154d294264b6063e53.png"/></figure><p>After this, you can, for example, export the 3D model as an OBJ file or another popular format for subsequent editing in Zbrush. Perform auto-retopology there and refine the 3D model, as "glitches" are inevitable, especially considering that the generation was based on a single photograph. But since this is no longer about review, it can be revisited in another situation.<br/> In any case, creating 3D models with AI significantly simplifies the work of a 3D modeler. On the other hand, since the 3D model is created faster and easier, the value of such work for the client decreases, which can affect the payment for labor.</p><p>I checked the same thing using hi3d.ai as an example. The result is the same, only without import problems, due to unsuitable compression.</p><figure><img loading="lazy" src="https://habrastorage.org/r/w1560/getpro/habr/upload_files/ecd/a7b/84d/ecda7b84de12fd5e6e5df2713126dcac.jpg"/></figure><p>If there are no problems with payment or subscription. And no desire to further examine the 3D model and textures, then of course, you can do it more simply, without these manipulations. Moreover, such sites offer only a limited number of generations per account, and creating dozens of accounts to download 3D models is possibly not a very suitable way to obtain 3D models.</p></div>
+  </main>
+  <footer>
+    Translation generated with Gemini 2.5 Flash-Lite.
+    The original article remains the source of record.
+  </footer>
+</body>
+</html>

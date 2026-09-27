@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>How IT Companies Can Survive When Everyone Has AI</title>
+  <meta name="description" content="Not long ago, the question was &#x27;how do we implement neural networks.&#x27; Now it&#x27;s &#x27;how do we survive when everyone has neural networks.&#x27; These are different questions. When a powerful tool is available to everyone, it ceases to be an advantage and becomes the entry price to the">
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.65;
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 32px 20px 64px;
+      color: #1f2328;
+    }
+    header {
+      border-bottom: 1px solid #d8dee4;
+      margin-bottom: 28px;
+      padding-bottom: 20px;
+    }
+    .source {
+      color: #57606a;
+      font-size: 0.95rem;
+    }
+    img, video, iframe {
+      max-width: 100%;
+      height: auto;
+    }
+    pre {
+      overflow-x: auto;
+      padding: 16px;
+      background: #f6f8fa;
+      border-radius: 6px;
+    }
+    code {
+      font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+    }
+    blockquote {
+      border-left: 4px solid #d0d7de;
+      margin-left: 0;
+      padding-left: 16px;
+      color: #57606a;
+    }
+    footer {
+      border-top: 1px solid #d8dee4;
+      margin-top: 40px;
+      padding-top: 20px;
+      color: #57606a;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>How IT Companies Can Survive When Everyone Has AI</h1>
+    <p>Not long ago, the question was &#x27;how do we implement neural networks.&#x27; Now it&#x27;s &#x27;how do we survive when everyone has neural networks.&#x27; These are different questions. When a powerful tool is available to everyone, it ceases to be an advantage and becomes the entry price to the market. Below are six considerations about what will remain valuable in IT when wrappers around third-party models are no longer an advantage. Read more</p>
+    <p class="source">
+      Machine-translated from Habr.
+      <a href="https://habr.com/ru/articles/1087002/?utm_campaign=1087002&amp;utm_source=habrahabr&amp;utm_medium=rss">Read the original Russian article</a>.
+      Sat, 26 Sep 2026 17:30:12 GMT
+    </p>
+  </header>
+  <main>
+<div><p>Not long ago, the question was 'how do we implement neural networks.' Now it's 'how do we survive when everyone has neural networks.' These are different questions. When a powerful tool is available to everyone, it ceases to be an advantage and becomes the entry price to the market. Below are six considerations about what will remain valuable in IT when wrappers around third-party models are no longer an advantage.</p><h3>What is a harness</h3><p>We can't proceed without this term.</p><p>A harness is all the scaffolding around a language model that turns it from a 'text in, text out' function into a system capable of operating. The model itself cannot execute code, browse the internet, remember what happened ten steps ago, or stop in time. The harness provides all of this: it connects tools, organizes the 'action, verification, correction' loop, structures model calls into a graph, substitutes prompts and rules, and limits the blast radius if the agent goes rogue. A code agent in an IDE that takes a ticket and fixes a project, a support bot that independently retrieves the necessary database record, an 'AI employee' on a bank's website: internally, it's almost always the same third-party model. A typical IT company might only have its own harness. Some build entire agents on top of other agents, creating 'super-agents,' but the mechanics are the same: the model is external, the logic around it is internal.</p><h3>A race of wrappers with no finish line</h3><p>A few big tech companies and a handful of firms that investors allowed to burn billions have their own language models today. Everyone else works with third-party models via API and competes on the quality of their wrapper: whose agent hallucinates less often, whose long step chains are more accurate, whose call graph is more thought-out, whose skills and prompts are better suited to the task.</p><p>This looked like a normal business, and for a while, it was. But model vendors are working on the same task. In addition to the weights (models) themselves, they are building their own harness: releasing their own agents, expanding the set of built-in tools, and adopting successful techniques. The mechanism is simple: if a technique consistently helps most users, the vendor incorporates it into the product. Good prompts, loop and graph engineering schemes, entire sets of skills. Everything that is currently your custom development will, after some time, become a line in the changelog of someone else's release. It costs the vendor pennies compared to training a model, and it provides tangible convenience to users.</p><p>The story is not new. Platforms have always absorbed the best features of the layer above them: what was sold as a separate product yesterday becomes a free checkbox tomorrow. Now, the same machine has arrived for agent wrappers. Competing on harness quality is possible, but it's a treadmill that moves backward: you have to run fast just to stay in place, and every successful step brings your toolkit closer to what the vendor already offers out of the box.</p><h3>Value shifts to code that already works</h3><p>There is a category of assets that generative AI struggles to reproduce: code that has been debugged over years, especially if it was not part of the model's training data.</p><p>Code generated from scratch looks great right up until the first rare scenario. But code that has been running in banks, hospitals, and telecom for twenty years has already survived these scenarios. Its authors know about leap years, time zones, Unicode in filenames, and banks that send statements in strange encodings. An AI agent writing a module from scratch will check popular paths and stop. It will either not find sophisticated scenarios, or it will find them in production at the client's expense.</p><p>Hence, an unexpected twist with legacy code. For twenty years, old code was considered a debt that needed to be rewritten in something trendy. Now, rewriting from scratch means discarding accumulated knowledge of thousands of exceptions and getting beautiful but naive code. Legacy transforms into an asset: it's not an 'old system,' it's a system that can handle almost anything. Companies with a long history gain an advantage that is difficult to replicate.</p><h3>Everyone has top models, unique tools win</h3><p>The success of an IT company used to consist of two things: salespeople who win contracts, and engineers who pull projects through. Something interesting is happening with the second half of the equation: a top model via subscription costs like a restaurant dinner and is available to everyone. When the tool is the same, the winner is not the one who has it, but the one who has something of their own attached to it.</p><p>Previously, 'something of their own' were frameworks and platforms. Companies built internal tools, then created products around them (or vice versa), and a competitor without such a tool fell behind in speed.</p><p>The next iteration of the same logic: fine-tuned neural networks. Not frontier giants, but small models trained on proprietary data for a narrow task: parsing industry specifications, classifying defects, extracting fields from specific document types. On its narrow task, such a model outperforms a generic one because it has seen hundreds of thousands of examples of that specific task, not 'everything in general.' Meanwhile, the generic model is still there to handle everything else, and the specialized one takes on what the client is willing to pay for.</p><p>The chain closes on itself: fine-tuning requires quality data, data is hidden in debugged systems and accumulated expertise, which is again something that cannot be generated by a prompt.</p><h3>Non-critical software is devalued, critical software remains</h3><p>Games, habit trackers, personal finance apps, and even a hypothetical CRM can be assembled by anyone in an evening with a single prompt today. When a product can be built in an evening, the market stops paying a team of twenty people for it. Competition drives the price of non-critical software to zero, and this is already happening.</p><p>What remains are areas where the cost of error is measured in lives and large sums of money: medicine, aviation, space, industrial automation, payment infrastructure. You can't come to these fields with a single prompt: certification, audits, regulators, liability, SLAs. Companies that are responsible for results with their money and reputation are still needed there. Incidentally, this is precisely where the previous two points are best monetized: code debugged over years and highly specialized models with verifiable quality.</p><h3>The end of great openness</h3><p>The last change will not be technical, but cultural. IT is accustomed to being an open industry: we post code in public repositories, talk at conferences about how we built a system for a million users, publish postmortems and architectural diagrams. Essentially, we give away know-how and experience for free, out of love for the craft.</p><p>But this tradition has come at a cost: all of this goes into training neural networks. A technique from your presentation ends up in the next version of the model, and in a couple of months, what was your advantage is now known by everyone. Giving away knowledge from which competitors immediately print copies was possible when there were enough orders for everyone. In a fiercely competitive environment with shrinking budgets, this will become a luxury.</p><p>Lawyers lived differently. Try to find a normal standard agreement for the sale of a share in an LLC in the public domain: something will be found, of course, but the vast majority of law firms do not publish their templates; they sell them. Knowledge has always been a commodity for them, not content. IT faces something similar: fewer public repositories with working solutions, more demos without the core functionality, talks about processes instead of talks about details, datasets and developments under NDA. Perhaps closed communities will emerge where knowledge is exchanged but not published.</p><p>The irony is that it was precisely openness that fostered current AI: it is trained on our articles, code, and talks. Now, it makes openness too expensive to continue in the same vein.</p><h3>The data we feed vendors</h3><p>Openness has a practical continuation that is rarely discussed. It's not enough to stop publishing knowledge in blogs and repositories, because most companies have long been giving it away through another channel: they run their code, documents, correspondence, and client data through the APIs of third-party models. Every task an agent solves on a vendor's servers leaves a small report on how your business is structured: what you automate, what documents you process, where your clients' pain points are.</p><p>Officially, this data does not go into training: vendors promise it, and there's a checkbox in the settings. But a promise remains a legal construct, not a law of physics. Terms of service change unilaterally, checkboxes reset after settings redesigns, and every couple of years, the industry sees a news item like 'we accidentally included your logs in the training set' or 'a database of support requests leaked.' Moreover, an LLM vendor is not a neutral arbiter: they themselves release agents and applications and, in some scenarios, compete with those building on their API. Giving them data about your processes and clients means freely revealing your hand to a potential competitor.</p><p>The logical answer: local models. Open weights already cover a significant portion of tasks that a couple of years ago required a frontier API: classification, field extraction, document processing, code in a narrow domain. A local model will be more expensive in terms of hardware and less intelligent, but the data will not leave the perimeter. No change in contract will turn your expertise into someone else's, and you won't have to coordinate requests to a server in a foreign jurisdiction with anyone.</p><p>And fine-tuned models, discussed above, inherently require a local setup. If you train a third-party model with your own data via API, you get exactly what you're trying to avoid: the data is gone, and control remains with the vendor.</p><h3>What's the takeaway</h3><p>To summarize, survival looks like this: don't build a business on something the model vendor will eventually take for themselves; preserve and buy debugged code, don't rewrite it for fashion; collect unique data and fine-tune narrow models on it; don't feed your business-critical data to third-party models, keep the most sensitive information on local models; move into areas where the cost of error is high and 'assembled with a prompt' won't cut it; and finally, talk less about what actually works.</p><p>The next round of competition won't be about who has AI. It will be about what you have that isn't in the model and its wrapper.</p></div>
+  </main>
+  <footer>
+    Translation generated with Gemini 2.5 Flash-Lite.
+    The original article remains the source of record.
+  </footer>
+</body>
+</html>

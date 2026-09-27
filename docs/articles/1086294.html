@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Browser translator that teaches words: Chrome&#x27;s built-in Translator API, your own AI key, and spaced repetition</title>
+  <meta name="description" content="There was a popular Chinese extension Dadda Translate (达达划词翻译): you highlight a word, get a translation, save it to a vocabulary list, and the word later pops up as a notification until you memorize it. It stopped working: the Sogou and Shanbay APIs, which powered the translation, changed or disappe">
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.65;
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 32px 20px 64px;
+      color: #1f2328;
+    }
+    header {
+      border-bottom: 1px solid #d8dee4;
+      margin-bottom: 28px;
+      padding-bottom: 20px;
+    }
+    .source {
+      color: #57606a;
+      font-size: 0.95rem;
+    }
+    img, video, iframe {
+      max-width: 100%;
+      height: auto;
+    }
+    pre {
+      overflow-x: auto;
+      padding: 16px;
+      background: #f6f8fa;
+      border-radius: 6px;
+    }
+    code {
+      font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+    }
+    blockquote {
+      border-left: 4px solid #d0d7de;
+      margin-left: 0;
+      padding-left: 16px;
+      color: #57606a;
+    }
+    footer {
+      border-top: 1px solid #d8dee4;
+      margin-top: 40px;
+      padding-top: 20px;
+      color: #57606a;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Browser translator that teaches words: Chrome&#x27;s built-in Translator API, your own AI key, and spaced repetition</h1>
+    <p>There was a popular Chinese extension Dadda Translate (达达划词翻译): you highlight a word, get a translation, save it to a vocabulary list, and the word later pops up as a notification until you memorize it. It stopped working: the Sogou and Shanbay APIs, which powered the translation, changed or disappeared. Moreover, it was only for Chrome and only for English → Chinese. I rewrote it from scratch. The result is WordToast for Firefox, Chrome, and Edge (GitHub). It translates to the browser&#x27;s language, can work entirely on-device, and explains words in context using your own AI key. In the article, I will discuss three technical parts: How it works</p>
+    <p class="source">
+      Machine-translated from Habr.
+      <a href="https://habr.com/ru/articles/1086294/?utm_campaign=1086294&amp;utm_source=habrahabr&amp;utm_medium=rss">Read the original Russian article</a>.
+      Sun, 27 Sep 2026 06:41:16 GMT
+    </p>
+  </header>
+  <main>
+<div><p>There was a popular Chinese extension <strong>Dadda Translate (达达划词翻译)</strong>: you highlight a word, get a translation, save it to a vocabulary list, and the word later pops up as a notification until you memorize it. It stopped working: the Sogou and Shanbay APIs, which powered the translation, changed or disappeared. Moreover, it was only for Chrome and only for English → Chinese.</p><p>I rewrote it from scratch. The result is <strong>WordToast</strong> for Firefox, Chrome, and Edge (<a href="https://github.com/Perruer/wordtoast">GitHub</a>). It translates to the browser's language, can work entirely on-device, and explains words in context using your own AI key. In the article, I will discuss three technical parts:</p><ol><li><p>Chrome's built-in Translator API: useful, but with non-obvious limitations;</p></li><li><p>calling LLMs directly from the extension, without your own server;</p></li><li><p>pop-up cards over any site that don't break from external CSS and CSP.</p></li></ol><figure><img alt="WordToast" loading="lazy" src="https://habrastorage.org/r/w1560/getpro/habr/upload_files/2e1/047/380/2e10473809be2d8f02ffbe3768a605ad.png"/><div><figcaption>WordToast</figcaption></div></figure><h3>Multiple Engines and Fallback</h3><p>There are five translation engines:</p><ul><li><p>Google (public endpoint <a href="http://translate.googleapis.com"><code>translate.googleapis.com</code></a>);</p></li><li><p>MyMemory;</p></li><li><p>DeepL with your key;</p></li><li><p>Chrome's built-in translator;</p></li><li><p>any LLM.</p></li></ul><p>The engines are chained: if the first one returns an error, limit, or empty response, the next one is used. For single English words, the card is supplemented by the <a href="http://dictionaryapi.dev">dictionaryapi.dev</a> dictionary: parts of speech, definitions, examples, pronunciation.</p><p>A couple of practical observations:</p><ul><li><p><strong>Free APIs can have slow responses.</strong> <a href="http://dictionaryapi.dev">dictionaryapi.dev</a> sometimes takes 10 seconds to respond or returns 5xx. Therefore, each request has its own timeout: the card first shows the translation, and the dictionary part loads afterward.</p></li><li><p><strong>DeepL has two addresses.</strong> A free key is identified by the suffix <code>:fx</code> and goes to <a href="http://api-free.deepl.com"><code>api-free.deepl.com</code></a>, a paid one goes to <a href="http://api.deepl.com"><code>api.deepl.com</code></a>. It's easy to forget this and get a mysterious 403.</p></li><li><p><strong>The original did something dangerous.</strong> Dadda downloaded a script from the translator's website and executed it using <code>eval</code> to get a token. This is forbidden in MV3, and it was a bad idea even before. WordToast does not use any external code.</p></li></ul><h3>On-Device Translation: Chrome's Translator API</h3><p>Starting with Chrome 138, the browser has built-in translation and language detection models: <code>Translator</code> and <code>LanguageDetector</code>. Text doesn't go anywhere; everything is processed locally. For an extension that sees everything you highlight on pages, this is a strong argument for privacy.</p><pre><code>const g = globalThis as any; // Assuming globalThis is available and typed as 'any' for simplicity. In a real TS project, you'd use proper types.</code><br/><code></code><br/><code>async function onDeviceTranslate(text: string, to: string) {</code><br/><code>  const [best] = await (await g.LanguageDetector.create()).detect(text);</code><br/><code>  if (!best || best.confidence &lt; 0.3 || best.detectedLanguage ===
+  </main>
+  <footer>
+    Translation generated with Gemini 2.5 Flash-Lite.
+    The original article remains the source of record.
+  </footer>
+</body>
+</html>

@@ -1,0 +1,237 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Docker for the Paranoid: Organizing SSH Access for a Rootless Container Without Transferring the Private Key</title>
+  <meta name="description" content="SSH access is used in many scenarios, from working with repositories to automation and server management. But if the private key is available to the application itself, it can be stolen if the process is compromised. Replacing SSH with a token doesn&#x27;t solve the problem: it will just be another ">
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.65;
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 32px 20px 64px;
+      color: #1f2328;
+    }
+    header {
+      border-bottom: 1px solid #d8dee4;
+      margin-bottom: 28px;
+      padding-bottom: 20px;
+    }
+    .source {
+      color: #57606a;
+      font-size: 0.95rem;
+    }
+    img, video, iframe {
+      max-width: 100%;
+      height: auto;
+    }
+    pre {
+      overflow-x: auto;
+      padding: 16px;
+      background: #f6f8fa;
+      border-radius: 6px;
+    }
+    code {
+      font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+    }
+    blockquote {
+      border-left: 4px solid #d0d7de;
+      margin-left: 0;
+      padding-left: 16px;
+      color: #57606a;
+    }
+    footer {
+      border-top: 1px solid #d8dee4;
+      margin-top: 40px;
+      padding-top: 20px;
+      color: #57606a;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Docker for the Paranoid: Organizing SSH Access for a Rootless Container Without Transferring the Private Key</h1>
+    <p>SSH access is used in many scenarios, from working with repositories to automation and server management. But if the private key is available to the application itself, it can be stolen if the process is compromised. Replacing SSH with a token doesn&#x27;t solve the problem: it will just be another secret accessible to the same process. In this article, we&#x27;ll explore an architecture based on ssh-agent and rootless Docker, where a process can fully utilize granted SSH access without obtaining the private key itself. This restriction is enforced by the access scheme itself and remains even if the software inside the container is compromised. This approach is particularly relevant for systems with AI agents and additional API layers like MCP servers. Read more</p>
+    <p class="source">
+      Machine-translated from Habr.
+      <a href="https://habr.com/ru/articles/1087148/?utm_campaign=1087148&amp;utm_source=habrahabr&amp;utm_medium=rss">Read the original Russian article</a>.
+      Sun, 27 Sep 2026 14:03:32 GMT
+    </p>
+  </header>
+  <main>
+<div><figure><img loading="" loading="lazy" src="https://habrastorage.org/r/w1560/getpro/habr/upload_files/3c2/922/ce2/3c2922ce2b841ebca5dd97b08fbc361f.png"/></figure><h3>Foreword</h3><p>SSH access is used everywhere: for working with repositories, servers, automation, and many other tasks. But how often do we think about the fact that the private key available to the application can be stolen?</p><p>You can replace SSH with another authentication method, such as a token. But if this token is available to the process itself, the problem remains the same: if it's compromised, it can also be read and taken away. We'll just replace one secret with another. Therefore, the task here is not to choose SSH, a token, or another mechanism, but to ensure that the secret itself is not available to the process at all.</p><p>Even if we trust our own software, vulnerabilities can appear in it and its dependencies. If the process is compromised, the secrets available to it are also at risk.</p><p>This problem is particularly acute in systems with AI agents. An additional API layer, such as an MCP server, is often used between the agent and the infrastructure, but it can also contain vulnerabilities.</p><p>In this article, we will examine an architecture in which a process can fully utilize SSH access, but the ability to obtain the private key itself is excluded at the architectural level.</p><blockquote><p><strong>The main idea.</strong></p><ul><li><p>The process can <strong>use its granted SSH rights</strong> to access authorized resources.</p></li><li><p>At the same time, the process <strong>does not get access to the private SSH key</strong> used for authentication.</p></li><li><p>Even if the process inside the container is compromised, the private SSH key should not become accessible to it.</p></li></ul><p>Additionally, the container is run in rootless mode. In such a configuration, the scheme becomes more complex, so we will separately discuss the problems that arise during setup and ways to solve them.</p></blockquote><blockquote><p><strong>How the article is structured.</strong></p><p>The material is structured sequentially.</p><ul><li><p>First, we'll discuss why a container might need SSH.</p></li><li><p>Then, we'll look at UID/GID mapping in rootless Docker and explain why standard mounting of <code>SSH_AUTH_SOCK</code> doesn't work for a process with a non-root UID.</p></li><li><p>After that, we'll consider minimal configuration examples for <code>ssh-agent</code> and the target container.</p></li><li><p>Finally, we'll test the scheme's operation, discuss bind mount specifics, and the protection boundaries.</p></li></ul><p>A detailed description of how users are organized in Unix-like systems, how processes work, Unix sockets, and Docker isolation is beyond the scope of this article.</p><p>These topics are discussed here only to the extent necessary to understand and implement the described scheme. Brief explanations of key terms and mechanisms will be provided throughout the article.</p></blockquote><blockquote><p><strong>Setting up rootless Docker and additional security measures.</strong></p><p>It is assumed that rootless Docker and the user it runs as are already configured.</p><p>The article does not cover additional security measures such as limiting outgoing network traffic (egress), configuring firewalls, proxies, or network policies, nor isolation through virtual machines and microVMs. These measures can complement the described scheme but address separate tasks.</p></blockquote><h3>Introduction</h3><p>A container may require full SSH access: to clone a private Git repository, perform <code>git fetch</code>, connect to a server, or run another program that uses OpenSSH.</p><p>A simple option is to place the private key inside the container or mount <code>~/.ssh</code>:</p><pre><code>docker run 
+    -v ~/.ssh:/home/app/.ssh:ro 
+    image-name</code></pre><div><a href="https://sourcecraft.dev/"><img="" loading="lazy"/></a></div><p>This option works but <strong>violates credential isolation</strong>:</p><blockquote><p>The process inside the container gains direct access to the private key. Read-only mounting protects the file from modification but not from reading: the application can read the key and transfer it outside the container.</p></blockquote><p>This article discusses a configuration with the following requirements and restrictions:</p><ul><li><p>The Docker daemon must run in rootless mode, without root privileges on the host;</p></li><li><p>the process inside the container does not run as <code>root</code>;</p></li><li><p>Linux capabilities are removed from the container;</p></li><li><p>gaining new privileges is prohibited;</p></li><li><p>the root filesystem of the container is read-only;</p></li><li><p>the private key is not present in the container's mount namespace;</p></li><li><p>when using SSH, we prohibit <code>StrictHostKeyChecking=no</code>;</p></li><li><p>the private key must not be transferred to the container in a readable form:</p><ul><li><p>simple transfer of the private key from a secrets store is not suitable: the key material still becomes accessible to the container process;</p></li><li><p>environment variables are not suitable for transferring the private key: the value becomes part of the process environment and is accessible to that process;</p></li><li><p>mounting the private key from the host makes it readable by the container process.</p></li></ul></li></ul><p>The scheme:</p><figure><img="" loading="lazy" src="https://habrastorage.org/r/w1560/getpro/habr/upload_files/efb/a90/cba/efba90cba658cc16f50f915bcd68773b.jpg"/></figure><p>Instead of the key, a Unix socket for <code>ssh-agent</code> is passed to the container. SSH operations are then performed via the SSH agent without direct access to the private key material.</p><p>OpenSSH uses the <code>SSH_AUTH_SOCK</code> variable to work with the socket.</p><p><code>SSH_AUTH_SOCK</code> is the standard OpenSSH mechanism for client access to <code>ssh-agent</code>. However, when working with containers in rootless Docker mode, technical difficulties arise, let's examine them.</p><p>The main technical problem with this scheme is related to UIDs:</p><p><strong>The UID of the process inside a rootless container does not match its UID on the host.</strong></p><p>But first, let's determine why a container needs SSH and consider an alternative solution.</p><h3>Why SSH is Needed in a Container</h3><h4>Typical Scenarios</h4><p>Typical cases where a container might need SSH access:</p><ul><li><p>working with private Git repositories over SSH;</p></li><li><p>executing commands on remote servers;</p></li><li><p>transferring files via <code>scp</code> or <code>rsync</code>;</p></li><li><p>automated server deployment and maintenance;</p></li><li><p>accessing dependencies and Git submodules via SSH;</p></li><li><p>running tools that use OpenSSH and <code>SSH_AUTH_SOCK</code> as their standard authentication mechanism.</p></li></ul><h4>Alternative Solution</h4><p>An alternative architecture is to not provide SSH access to the container at all, but to move Git or other external system operations to a separate API service.</p><p>For example, for AI Agents, the intermediate layer could be an MCP server.</p><p>However, such a service is not always a complete replacement for local <code>git</code>.</p><p>If the application works with its own working copy, for example, <code>/container/workspace</code>, then when transferring file and Git operations to an external service, two independent file systems arise:</p><figure><img="" loading="lazy" src="https://habrastorage.org/r/w1560/getpro/habr/upload_files/e73/467/b6d/e73467b6dce4f8eb28d655c755192a72.png"/></figure><p>The state of files needs to be synchronized separately. One option is to provide both components with a common working copy via a volume.</p><p><strong>However, this solution introduces an additional trust boundary.</strong></p><p>In this implementation, the process inside the container does not see the authorization secrets but can modify the shared working copy. Let's consider one of the risks of this architecture.</p><p>If the container and the MCP service use the same writable working copy, the process inside the container can modify its contents. If the MCP service runs Git hooks from this copy, the modified hook can execute in the service's environment with its access rights, including its available secrets.</p><p>This scenario is only applicable when the service uses a shared working copy, runs Git hooks, and does not isolate their execution. If hooks are disabled or executed in an isolated environment without secrets, this scenario is not realized.</p><p>When using a third-party MCP service, its implementation and access model become an additional trust boundary that needs to be assessed separately.</p><p>In the scenario under consideration, the container needs local OpenSSH with access to its own working copy.</p><p>Next, we return to the scheme with a separate <code>ssh-agent</code> and discuss its main technical problem—UID mapping.</p><h3>How Rootless Docker Changes UIDs</h3><p>Before we start configuring <code>ssh-agent</code>, let's briefly delve into the theory.</p><h4>Theory: User Namespaces and UID/GID Mapping</h4><p>In Linux, the User ID (UID) is a number that the kernel uses to check access rights. In a configuration without user namespaces, the UID of a process inside a container numerically matches its UID on the host. Rootless Docker uses user namespaces, so the same process has different UIDs inside the container and on the host.</p><p>For example, a process with UID <code>1000</code> inside the container might be represented on the host as UID <code>100999</code>. This is not a new user in the host's <code>/etc/passwd</code>, but a result of namespace translation.</p><p>It's important to distinguish between:</p><ul><li><p>UID inside the container—the process identifier in the container environment;</p></li><li><p>UID on the host—the identifier of the same process as seen by the host;</p></li><li><p><code>/etc/subuid</code> and <code>/etc/subgid</code>—the ranges of identifiers that Docker can use for such translation.</p></li></ul><p>For <code>ssh-agent</code>, the UID on the host side is crucial because the Unix socket client verification is performed by the kernel and the <code>ssh-agent</code> process in the host environment.</p><p>In a standard Docker daemon configuration, it runs with root privileges.</p><p>In rootless mode, Docker runs the daemon and containers within user namespaces under an unprivileged host user. Docker recommends this mode as one way to reduce the impact of daemon or runtime compromises.</p><p>User namespaces change the UID mapping between the container and the host.</p><ul><li><p>In the examples, rootless Docker will run under the <code>rootless-docker</code> user.</p></li><li><p>And containers will run as the <code>app</code> user.</p></li></ul><p>Here's how UIDs/GIDs might look for the user on the host and in the container:</p><pre><code>host  UID 999 (rootless-docker) → container UID 0 (root) 
+host  GID 999 → container GID 0 (root)</code><div><a href="https://sourcecraft.dev/"><img="" loading="lazy"/></a></div></pre><p>Here's how UIDs/GIDs might look for the <code>app</code> user on the host and in the container:</p><pre><code>container UID 1000 (app) → host UID 100999 (UNDEFINED) 
+container GID 1000 (app) → host GID 100999 (UNDEFINED)</code><div><a href="https://sourcecraft.dev/"><img="" loading="lazy"/></a></div></pre><p>This is how you can view the current mapping inside the container:</p><pre><code>cat /proc/self/uid_map</code><div><a href="https://sourcecraft.dev/"><img="" loading="lazy"/></a></div></pre><p>Suppose we have many users. Here are the UIDs they would receive:</p><pre><code>container UID 0     → host UID 999 
+container UID 1     → host UID 100000 
+container UID 2     → host UID 100001 
+... 
+container UID 1000  → host UID 100999</code><div><a href="https://sourcecraft.dev/"><img="" loading="lazy"/></a></div></pre><p>A formula for UIDs <code>N &gt;= 1</code> is apparent:</p><pre><code>host UID = subuid_start + N - 1</code><div><a href="https://sourcecraft.dev/"><img="" loading="lazy"/></a></div></pre><p>Docker uses this scheme in rootless mode: UID <code>0</code> in the container maps to the user who started rootless Docker, and other UIDs are taken from the subordinate UID range. The same mechanism applies to GIDs.</p><p>The ranges are defined by the files <code>/etc/subuid</code> and <code>/etc/subgid</code> for users and groups, respectively.</p><p>Example of the <code>/etc/subuid</code> file:</p><pre><code>rootless-docker:100000:65536 
+john:165536:65536 
+ci-runner:231072:65536</code><div><a href="https://sourcecraft.dev/"><img="" loading="lazy"/></a></div></pre><p>More details: <a href="https://docs.docker.com/engine/security/rootless/uid-gid-mapping/">https://docs.docker.com/engine/security/rootless/uid-gid-mapping/</a>.</p><h4>How to Calculate the Host UID Given its Container UID</h4><p>To correctly configure the <code>ssh-agent</code> socket, you need to determine in advance which container user it should correspond to and calculate the corresponding UIDs/GIDs on the host.</p><pre><code>ROOTLESS_USER=rootless-docker 
+ROOTLESS_UID=$(id -u "$ROOTLESS_USER") 
+
+# Get UID/GID from the container via the rootless Docker daemon for the desired user 
+CONTAINER_UID=$(sudo -H -u "$ROOTLESS_USER" env DOCKER_HOST="unix:///run/user/$ROOTLESS_UID/docker.sock" docker run --rm image-name id -u app) 
+CONTAINER_GID=$(sudo -H -u "$ROOTLESS_USER" env DOCKER_HOST="unix:///run/user/$ROOTLESS_UID/docker.sock" docker run --rm image-name id -g app) 
+
+# Get the first UID/GID from the range settings for the desired user 
+# Example: will take `100000` from the line `rootless-docker:100000:65536` 
+SUBUID_START=$(awk -F: -v user="$ROOTLESS_USER" '$1 == user { print $2; exit }' /etc/subuid) 
+SUBGID_START=$(awk -F: -v user="$ROOTLESS_USER" '$1 == user { print $2; exit }' /etc/subgid) 
+
+echo "host UID: $((SUBUID_START + CONTAINER_UID - 1))" 
+echo "host GID: $((SUBGID_START + CONTAINER_GID - 1))"</code><div><a href="https://sourcecraft.dev/"><img="" loading="lazy"/></a></div></pre><p>With <code>SUBUID_START=100000</code> and <code>SUBGID_START=100000</code>, the result will be:</p><pre><code>UID: 1000 -&gt; 100999 
+GID: 1000 -&gt; 100999</code><div><a href="https://sourcecraft.dev/"><img="" loading="lazy"/></a></div></pre><p>Subsequently, <code>100999</code> will be used as the UID and GID for the <code>ssh-agent</code> process on the host.</p><p>In an automation system, these UIDs/GIDs should be calculated automatically. When changing the existing ranges in <code>/etc/subuid</code> and/or <code>/etc/subgid</code>, you should only do so considering existing files and running containers.</p><p>If you change the UID/GID of a user inside the container or the ranges in <code>/etc/subuid</code> and/or <code>/etc/subgid</code>, the numerical UIDs/GIDs of files already created on the host will not change, but their mapping to the owner inside the container will change. As a result, the container may no longer perceive these files as belonging to the expected user.</p><p>Now we know how the container process is represented on the host by its UID. This helps understand why the socket of the regular <code>ssh-agent</code> for the <code>rootless-docker</code> user cannot simply be mounted into the container.</p><h3>Why Direct Mounting of SSH_AUTH_SOCK Doesn't Work for Non-Root UIDs</h3><p>A common example of passing <code>ssh-agent</code> to Docker looks like this:</p><pre><code>docker run 
+    -e SSH_AUTH_SOCK=/ssh-agent 
+    -v "$SSH_AUTH_SOCK:/ssh-agent" 
+    image-name</code><div><a href="https://sourcecraft.dev/"><img="" loading="lazy"/></a></div></pre><p>In configurations without user namespaces, this is often sufficient.</p><p>The SSH client inside the rootless container runs as UID <code>1000</code>, which is represented as UID <code>100999</code> on the host.</p><figure><img="" loading="lazy" src="https://habrastorage.org/r/w1560/getpro/habr/upload_files/626/ca7/6bd/626ca76bdf0226f7b5f763764c327457.png"/></figure><p>Suppose the <code>ssh-agent</code> on the host is run by the <code>rootless-docker</code> user with UID = 999, then:</p><figure><img="" loading="lazy" src="https://habrastorage.org/r/w1560/getpro/habr/upload_files/0ac/720/7f8/0ac7207f818feb8720f3aee7447a39b6.png"/></figure><figure><img="" loading="lazy" src="https://habrastorage.org/r/w1560/getpro/habr/upload_files/a12/f84/a38/a12f84a38a928a204d9aa5c0519f7e8f.png"/></figure><p>From the host's perspective, these are different users. As a result, <code>ssh-agent</code> will reject the connection due to mismatched UIDs.</p><p>Furthermore, it's not enough to grant file access to the socket for all users, for example:</p><pre><code># Insecure diagnostic example: do not use this mode in a production configuration 
+chmod 0666 agent.sock</code><div><a href="https://sourcecraft.dev/"><img="" loading="lazy"/></a></div></pre><p>After this, the <code>connect()</code> system call to the Unix socket might succeed, but <code>ssh-add -l</code> might still fail. <code>ssh-agent</code> checks the UID of the connecting process on the host side. If the UID does not match the UID of the <code>ssh-agent</code> process, and the client does not have EUID <code>0</code>, the agent will reject the connection.</p><p>Therefore, instead of expanding socket permissions, it's necessary to align the UIDs of the client and <code>ssh-agent</code>:</p><figure><img="" loading="lazy" src="https://habrastorage.org/r/w1560/getpro/habr/upload_files/933/7e3/e6e/9337e3e6e15b0b1d39f148a8148949cb.png"/></figure><p>To align UIDs, we will run a separate <code>ssh-agent</code> with the mapped UID of the container user and provide the container with only the directory containing its socket.</p><h3>Setting Up the SSH Agent on the Host</h3><h4>Running ssh-agent with a Specific UID</h4><p>systemd can run a process with a numerical UID <code>100999</code> without an entry for it in <code>/etc/passwd</code>. However, when using <code>User=100999</code>, all commands in the unit file, including <code>ExecStartPost</code>, will also be executed with this UID.</p><p>Therefore, the unit remains a root service, and only the <code>ssh-agent</code> itself is run with the mapped UID using <code>setpriv</code>. This allows <code>ExecStartPost</code> to read the private key belonging to <code>root</code>.</p><pre><code>setpriv 
+    --reuid=100999 
+    --regid=100999 
+    --clear-groups --inh-caps=-all --no-new-privs 
+    /usr/bin/ssh-agent ...</code><div><a href="https://sourcecraft.dev/"><img="" loading="lazy"/></a></div></pre><p><code>setpriv</code> runs a process with the specified UID/GID without creating a separate user or user session.</p><p>We use <code>--clear-groups</code>, <code>--inh-caps=-all</code>, and <code>--no-new-privs</code> to remove additional groups and avoid passing unnecessary privileges to the process.</p><p>For example, if the user running the process is in the <code>docker</code> group, the process could formally access <code>/var/run/docker.sock</code> if the socket permissions allow it. <code>ssh-agent</code> doesn't do this by default, but in case of a vulnerability or process substitution, such permissions become important.</p><p>The execution chain looks like this:</p><figure><img="" loading="lazy" src="https://habrastorage.org/r/w1560/getpro/habr/upload_files/40d/c01/823/40dc01823ab6461fcb122fd28f6b4d91.png"/></figure><h4>Defining Variables</h4><p>Let's define the variables that will be used in the configuration and for clarity in subsequent examples:</p><pre><code>BASE=/opt/ssh-access 
+IDENTITY=git 
+
+# Main user for working with rootless Docker 
+ROOTLESS_USER=rootless-docker 
+ROOTLESS_UID=$(id -u "$ROOTLESS_USER") 
+ROOTLESS_GID=$(id -g "$ROOTLESS_USER") 
+
+# User under which the process runs inside the container 
+CONTAINER_UID=1000 
+CONTAINER_GID=1000 
+
+# Calculation see above 
+MAPPED_UID=100999 
+MAPPED_GID=100999</code><div><a href="https://sourcecraft.dev/"><img="" loading="lazy"/></a></div></pre><h4>File and Directory Structure</h4><p>For the example, we will use the following structure on the host:</p><pre><code>/opt/ssh-access/ 
+├── .ssh/ 
+│   └── git/ 
+│       ├── key 
+│       └── key.pub 
+├── sockets/ 
+│   └── git/ 
+│       └── agent.sock 
+└── ssh_known_hosts</code><div><a href="https://sourcecraft.dev/"><img="" loading="lazy"/></a></div></pre><p>The <code>.ssh</code> directory is not mounted into the container.</p><p>The container only gets access to <code>sockets/git/</code> and the SSH server known hosts file <code>ssh_known_hosts</code>.</p><blockquote><p><strong>Why is <code>ssh_known_hosts</code> needed?</strong></p><p>When connecting for the first time, SSH usually requires manual confirmation of the server's key. This is unacceptable for CI/CD and other automation.</p><p>Often, checking is disabled via <code>StrictHostKeyChecking=no</code>, but then the client stops verifying the server's authenticity.</p><p>Therefore, the server's key is pre-saved in <code>ssh_known_hosts</code>, and verification remains enabled.</p></blockquote><p><strong>Create the root directory for ssh-agent:</strong></p><pre><code>sudo install -d 
+    -o "$ROOTLESS_USER" 
+    -g "$ROOTLESS_GID" 
+    -m 0711 
+    "$BASE"</code><div><a href="https://sourcecraft.dev/"><img="" loading="lazy"/></a></div></pre><p>Permissions <code>0711</code> allow a process with the mapped UID to traverse the directory path but not list its contents.</p><p>The owner of the socket directories and the sockets themselves will be the mapped UID under which <code>ssh-agent</code> runs.</p><p>The rootless user's group allows Docker to use these directories as a source for bind mounts.</p><p><strong>Create the directory for sockets (identities):</strong></p><pre><code>sudo install -d 
+    -o "$MAPPED_UID" 
+    -g "$ROOTLESS_GID" 
+    -m 0710 
+    "$BASE/sockets"</code><div><a href="https://sourcecraft.dev/"><img="" loading="lazy"/></a></div></pre><p>This directory will contain separate directories for SSH identities.</p><p>The scheme allows using multiple independent <code>ssh-agent</code> instances and sockets. In our configuration, each socket corresponds to a separate SSH identity.</p><p>For example, you can create identities like <code>git</code>, <code>gitlab</code>, or separate <code>git-read</code> and <code>git-write</code> with corresponding SSH keys having different access levels.</p><p>Each container can be granted access only to the directory of the required identity. Thus, the container receives only the SSH access it is permitted.</p><p><strong>Then, create the directory for a specific identity (example for git):</strong></p><pre><code>sudo install -d 
+    -o "$MAPPED_UID" 
+    -g "$ROOTLESS_GID" 
+    -m 0710 
+    "$BASE/sockets/git"</code><div><a href="https://sourcecraft.dev/"><img="" loading="lazy"/></a></div></pre><p>A separate directory is created for each SSH identity because the container will be mounted with the directory itself, not the <code>agent.sock</code> file. This allows ssh-agent to recreate the socket within the already mounted directory.</p><h4>Creating an SSH Key</h4><p>The directory with the key must be accessible only to the <code>root</code> user:</p><pre><code>sudo install -d 
+    -o root 
+    -g root 
+    -m 0700 
+    "$BASE/.ssh/git"</code><div><a href="https://sourcecraft.dev/"><img="" loading="lazy"/></a></div></pre><p>Let's create an Ed25519 key:</p><pre><code>sudo 
+    ssh-keygen 
+    -t ed25519 
+    -f "$BASE/.ssh/git/key" 
+    -C 'container-git' 
+    -N ''</code><div><a href="https://sourcecraft.dev/"><img="" loading="lazy"/></a></div></pre><p>A key pair will be created:</p><pre><code>.ssh/git/key 
+.ssh/git/key.pub</code><div><a href="https://sourcecraft.dev/"><img="" loading="lazy"/></a></div></pre><p>Add <code>key.pub</code> to the services you need to grant access to via this SSH key.</p><h4>Systemd Service for Running ssh-agent</h4><p>To separate SSH identities, you can create multiple sockets with separate <code>ssh-agent</code> instances.</p><p>In this template, <code>%i</code> will be replaced by a specific name, e.g., <code>git</code>. Specific examples of service startup will follow.</p><pre><code># /etc/systemd/system/container-ssh-agent@.service 
+
+[Unit] 
+Description = SSH agent for container identity %i 
+
+[Service] 
+Type = simple 
+
+Environment = SSH_AUTH_SOCK=/opt/ssh-access/sockets/%i/agent.sock MAPPED_UID=100999 MAPPED_GID=100999 
+
+# Remove old socket that might remain after an abnormal shutdown 
+ExecStartPre = /usr/bin/rm -f -- /opt/ssh-access/sockets/%i/agent.sock 
+
+# Instead of `100999`, specify the calculated `MAPPED_UID` and `MAPPED_GID` values 
+ExecStart = /usr/bin/setpriv 
+            --reuid=${MAPPED_UID} 
+            --regid=${MAPPED_GID} 
+            --clear-groups --inh-caps=-all --no-new-privs 
+            /usr/bin/ssh-agent 
+            -D 
+            -a /opt/ssh-access/sockets/%i/agent.sock 
+
+# Wait for the `ssh-agent` socket to be created 
+# After the service starts, add the desired key using `ssh-add` 
+ExecStartPost = /bin/sh -c 'while [ ! -S "$SSH_AUTH_SOCK" ]; do sleep 0.05; done; exec /usr/bin/ssh-add /opt/ssh-access/.ssh/%i/key' 
+
+Restart = on-failure 
+
+[Install] 
+# Start this service automatically on normal system boot. 
+WantedBy = multi-user.target</code><div><a href="https://sourcecraft.dev/"><img="" loading="lazy"/></a></div></pre><p>Sequence:</p><figure><img="" loading="lazy" src="https://habrastorage.org/r/w1560/getpro/habr/upload_files/3ff/29c/627/3ff29c62768a765b2a665745a4369f81.png"/></figure><p>This command is executed on the host. The private key file is not mounted into the container and is not accessible to its processes.</p><h4>Starting the Service</h4><p>Let's reload the systemd configuration and start the service:</p><pre><code>sudo systemctl daemon-reload 
+
+# Start the service named `git`: the value `git` will be substituted into `%i` of the template 
+sudo systemctl enable --now container-ssh-agent@git.service 
+
+# check for successful startup 
+systemctl status container-ssh-agent@git.service --no-pager -l 
+
+# Check the created socket and its permissions: should be 100999:100999, i.e., `$MAPPED_UID:$MAPPED_GID` 
+ls -ln /opt/ssh-access/sockets/git/agent.sock 
+
+# Check all running `ssh-agent` services and their UIDs/GIDs 
+ps -o pid,uid,gid,cmd -C ssh-agent</code><div><a href="https://sourcecraft.dev/"><img="" loading="lazy"/></a></div></pre><p><code>ssh-agent</code> is configured and running. Now let's prepare <code>ssh_known_hosts</code> so the container can verify the authenticity of the remote SSH server.</p><h4>Verifying the Remote SSH Server's Key</h4><p>You should not disable the remote server key verification via <code>StrictHostKeyChecking=no</code>.</p><p>With this setting, the SSH client stops verifying if it's actually connecting to the expected server.</p><p>The scheme under consideration uses a separate file <code>/opt/ssh-access/ssh_known_hosts</code>, which is pre-populated with the verified server key.</p><p>First, create the file: <code>sudo install -o root -g root -m 0644 /dev/null /opt/ssh-access/ssh_known_hosts</code>. Then add the server keys:</p><ul><li><p>get the server's public host key: <code>ssh-keyscan -p 22 -t ed25519 </code><a href="http://git.example.com"><code>git.example.com</code></a></p></li><li><p>verify its fingerprint against the key on the server itself or an officially published fingerprint</p></li><li><p>add the obtained line to the end of the <code>/opt/ssh-access/ssh_known_hosts</code> file</p></li></ul><blockquote><p>The example requests an Ed25519 host key. If the server uses a key with a different algorithm, specify it explicitly.</p></blockquote><blockquote><p><strong>How to ensure the key is genuine?</strong></p><ul><li><p>if the server is yours, compare the result with its public host key directly on the server</p></li><li><p>a repeated <code>ssh-keyscan</code> from another computer can only be an additional, but not the primary, check</p></li></ul></blockquote><p>After verification, the file can be mounted into the container read-only.</p><h3>Running and Verifying the Container</h3><h4>Running the Container with Limited Privileges</h4><p>If you are creating the Dockerfile yourself, you need to create a non-root user for this scheme.</p><p>Example <code>Dockerfile</code> specifying <code>USER 1000:1000</code>:</p><pre><code>FROM debian:bookworm-slim 
+
+RUN apt-get update 
+    &amp;&amp; apt-get install -y --no-install-recommends 
+        ca-certificates 
+        git 
+        openssh-client 
+        util-linux 
+    &amp;&amp; rm -rf /var/lib/apt/lists/* 
+
+# Common UID/GID for an unprivileged user: `1000:1000` 
+RUN groupadd -g 1000 app 
+    &amp;&amp; useradd -m -u 1000 -g 1000 app &amp;&amp; install -d -o app -g app /workspace 
+
+USER 1000:1000</code><div><a href="https://sourcecraft.dev/"><img="" loading="lazy"/></a></div></pre><p>Build the demonstration image <code>ssh-client:test</code>:</p><pre><code>sudo -H -u "$ROOTLESS_USER" env DOCKER_HOST="unix:///run/user/$ROOTLESS_UID/docker.sock" docker build -t ssh-client:test .</code><div><a href="https://sourcecraft.dev/"><img="" loading="lazy"/></a></div></pre><p>If you are already using a pre-built image, find out its default UID/GID:</p><pre><code># Use the obtained UIDs/GIDs instead of 1000:1000 in subsequent examples. 
+sudo -H -u "$ROOTLESS_USER" env DOCKER_HOST="unix:///run/user/$ROOTLESS_UID/docker.sock" docker run --rm image-name id</code><div><a href="https://sourcecraft.dev/"><img="" loading="lazy"/></a></div></pre><p>Example of running a container from the <code>ssh-client:test</code> image:</p><pre><code>sudo -H -u "$ROOTLESS_USER" env DOCKER_HOST="unix:///run/user/$ROOTLESS_UID/docker.sock" docker run --rm -it 
+    --user 1000:1000 
+    --read-only 
+    --cap-drop ALL 
+    --security-opt no-new-privileges 
+    --tmpfs /tmp:rw,nosuid,nodev,noexec,size=64m 
+    --tmpfs /workspace:rw,uid=1000,gid=1000 
+    --workdir /workspace 
+    -e SSH_AUTH_SOCK=/ssh-agent/agent.sock 
+    -v /opt/ssh-access/sockets/git:/ssh-agent:ro 
+    -v /opt/ssh-access/ssh_known_hosts:/etc/ssh/ssh_known_hosts:ro 
+    ssh-client:test 
+    sh</code><div><a href="https://sourcecraft.dev/"><img="" loading="lazy"/></a></div></pre><p>Note the <code>--user</code>, <code>-e SSH_AUTH_SOCK</code>, and two bind mounts: this is how the container gets access to <code>ssh-agent</code> and verified SSH host keys.</p><p>Parameter description:</p><div><div><table><tbody><tr><th><p>Parameter</p></th><th><p>Purpose</p></th></tr><tr><td><p><code>--rm</code></p></td><td><p>Remove the container after it finishes.</p></td></tr><tr><td><p><code>-it</code></p></td><td><p>Run the container interactively with a terminal.</p></td></tr><tr><td><p><code>--user 1000:1000</code></p></td><td><p>Run the process as an unprivileged user with UID/GID <code>1000:1000</code>.</p></td></tr><tr><td><p><code>--read-only</code></p></td><td><p>Make the container's root filesystem read-only.</p></td></tr><tr><td><p><code>--cap-drop ALL</code></p></td><td><p>Drop all Linux capabilities granted to the container by default.</p></td></tr><tr><td><p><code>--security-opt no-new-privileges</code></p></td><td><p>Prevent processes inside the container from gaining additional privileges.</p></td></tr><tr><td><p><code>--tmpfs /tmp </code></p></td><td><p>Create a temporary filesystem <code>/tmp</code>. <code>nosuid</code> prohibits setuid/setgid, <code>nodev</code> devices, <code>noexec</code> file execution.</p></td></tr><tr><td><p><code>--tmpfs /workspace</code></p></td><td><p>Create a writable temporary <code>/workspace</code> owned by <code>1000:1000</code>.</p></td></tr><tr><td><p><code>--workdir /workspace</code></p></td><td><p>Use <code>/workspace</code> as the working directory.</p></td></tr><tr><td><p><code>-e SSH_AUTH_SOCK</code></p></td><td><p><strong>Specify the OpenSSH path</strong> to the <code>ssh-agent</code> socket inside the container.</p></td></tr><tr><td><p><code>-v ssh-agent:ro</code></p></td><td><p><strong>Mount</strong> the directory with the <code>ssh-agent</code> <strong>socket</strong> read-only.</p></td></tr><tr><td><p><code>-v ssh_known_hosts:ro</code></p></td><td><p><strong>Mount</strong> the file with trusted SSH <strong>host keys</strong> read-only.</p></td></tr><tr><td><p><code>ssh-client:test</code></p></td><td><p>The Docker image from which the container is launched.</p></td></tr><tr><td><p><code>sh</code></p></td><td><p>The command executed inside the container.</p></td></tr></tbody></table></div></div><p>Applied restrictions:</p><ul><li><p>Docker daemon runs in rootless mode;</p></li><li><p>the process runs as UID <code>1000:1000</code>;</p></li><li><p>the root filesystem is read-only;</p></li><li><p>Linux capabilities are dropped;</p></li><li><p><code>no-new-privileges</code> is enabled;</p></li><li><p>the private SSH key is not present in the container;</p></li><li><p>from SSH credentials, the container only gets access to the socket of the required <code>ssh-agent</code>.</p></li></ul><p>The directory with the socket is also mounted read-only: <code>:ro</code>.</p><h4>Verifying UID Mapping and ssh-agent Operation</h4><p>On the host:</p><pre><code># Check rootless mode: under Security Options, `rootless` should be specified. 
+sudo -H -u "$ROOTLESS_USER" env DOCKER_HOST="unix:///run/user/$ROOTLESS_UID/docker.sock" docker info 
+
+# Display the UID mapping table inside the container to UIDs on the host. 
+# The output will show which UID range inside the container maps to the subordinate UID range on the host. 
+# These values should match the calculations performed above. 
+sudo -H -u "$ROOTLESS_USER" env DOCKER_HOST="unix:///run/user/$ROOTLESS_UID/docker.sock" docker run --rm ssh-client:test cat /proc/self/uid_map</code><div><a href="https://sourcecraft.dev/"><img="" loading="lazy"/></a></div></pre><p>Inside the container:</p><pre><code># Get UID/GID 
+id 
+# Example: `uid=1000(app) gid=1000(app)` 
+
+# Check access permissions for the socket directory 
+ls -ldn /ssh-agent 
+# Example permissions on the host: `100999:&lt;ROOTLESS_GID&gt;` 
+# Example permissions inside the container: `1000:0` 
+
+# Check access permissions for the socket 
+ls -ln /ssh-agent/agent.sock 
+# Example: `1000:1000` — the socket is owned by the internal container user</code><div><a href="https://sourcecraft.dev/"><img="" loading="lazy"/></a></div></pre><p>Next, if the above checks are successful, proceed to test <code>ssh-agent</code> itself:</p><pre><code>ssh-add -l</code><div><a href="https://sourcecraft.dev/"><img="" loading="lazy"/></a></div></pre><p>The output should show the fingerprint of the loaded key.</p><p>Standard OpenSSH then works without additional intermediary programs:</p><pre><code>ssh git@git.example.com</code><div><a href="https://sourcecraft.dev/"><img="" loading="lazy"/></a></div></pre><p>or:</p><pre><code>git clone git@git.example.com:group/project.git</code><div><a href="https://sourcecraft.dev/"><img="" loading="lazy"/></a></div></pre><p>After successful verification, SSH access is ready to use. Now, let's consider the operational aspects of the socket and the protection boundaries of this scheme.</p><h3>Operation and Limitations</h3><h4>Potential Issue with Bind Mounting</h4><p>When working with the socket directory, you need to consider the behavior of bind mounts.</p><p>Imagine the container is already running with the mount:</p><pre><code>/opt/ssh-access/sockets/git 
+        ↓ 
+/ssh-agent</code><div><a href="https://sourcecraft.dev/"><img="" loading="lazy"/></a></div></pre><p>Then the directory on the host is deleted and recreated:</p><pre><code>rm -rf /opt/ssh-access/sockets/git 
+mkdir /opt/ssh-access/sockets/git</code><div><a href="https://sourcecraft.dev/"><img="" loading="lazy"/></a></div></pre><p>The path has the same name, but the new directory is a different filesystem object.</p><p>The existing bind mount continues to refer to the old object.</p><p>You can check the mount source inside the container:</p><pre><code>findmnt -T /ssh-agent -o TARGET,SOURCE,FSTYPE,OPTIONS -n</code><div><a href="https://sourcecraft.dev/"><img="" loading="lazy"/></a></div></pre><p>In this situation, the source might appear as:</p><pre><code>/opt/ssh-access/sockets/git//deleted</code><div><a href="https://sourcecraft.dev/"><img="" loading="lazy"/></a></div></pre><p>Creating a new directory with the same path does not change the existing bind mount.</p><p>If you encounter this problem, <strong>the container must be restarted or recreated</strong>.</p><p>Therefore, you should not delete and recreate the directory itself used as the bind mount source. Files within it can be deleted and recreated.</p><h4>How ssh-agent Restart Works in Our Scheme</h4><p>Deleting the directory itself and restarting <code>ssh-agent</code> are different operations.</p><p>In the scheme we chose, the container mounts the directory, not the <code>agent.sock</code> file itself. Therefore, the new socket immediately becomes available inside the container.</p><p>With this scheme, restarting or recreating <code>agent.sock</code> within an existing directory does not require recreating the container.</p><pre><code>systemctl restart container-ssh-agent@git.service</code><div><a href="https://sourcecraft.dev/"><img="" loading="lazy"/></a></div></pre><p>When restarting, the directory remains in place, and the socket within it is created anew:</p><figure><img="" loading="lazy" src="https://habrastorage.org/r/w1560/getpro/habr/upload_files/574/293/be1/574293be168e55e91bc08edc2cb3ef0d.png"/></figure><h4>Protection Boundary of This Scheme</h4><p><code>ssh-agent</code> does not prevent the container from using the loaded SSH identity. It does not transfer the private key material to the client.</p><p>The private key file remains on the host; after loading, the key is also stored in the memory of <code>ssh-agent</code>:</p><figure><img="" loading="lazy" src="https://habrastorage.org/r/w1560/getpro/habr/upload_files/261/69c/44f/26169c44fb14d432addd94e929447c85.png"/></figure><p>Within this scheme, the process inside the container does not receive the private key file and cannot read it via bind mount:</p><pre><code>cat ~/.ssh/id_ed25519</code><div><a href="https://sourcecraft.dev/"><img="" loading="lazy"/></a></div></pre><p>However, the container can use the loaded SSH identity via <code>ssh-agent</code>, including signing operations.</p><p>If the container is compromised during operation, an attacker can use the loaded identity through the agent as long as they have access to the socket.</p><p>Therefore, access to <code>SSH_AUTH_SOCK</code> should be considered delegated access to the loaded SSH identity.</p><p>Another process that gains access to the agent's socket can use the keys loaded into it, so you need to be careful about separating services between users.</p><p>Now let's consolidate the configured components and their connections into an overall scheme.</p><h3>Final Architecture</h3><p>The complete SSH authentication chain:</p><figure><img="" loading="lazy" src="https://habrastorage.org/r/w1560/getpro/habr/upload_files/460/9d1/075/4609d1075a90067ddc042ffc9d77a8bf.png"/></figure><p>The container can simultaneously use the following restrictions:</p><ul><li><p>Docker daemon runs in rootless mode;</p></li><li><p>the process runs without root privileges;</p></li><li><p>the root filesystem is read-only;</p></li><li><p>Linux capabilities are dropped;</p></li><li><p><code>no-new-privileges</code> is enabled;</p></li><li><p>the private SSH key is not present in the container;</p></li><li><p>from SSH credentials, the container only gets access to the socket of the required <code>ssh-agent</code>.</p></li></ul><p>The key technical element of this scheme is <strong>the matching of the <code>ssh-agent</code> process UID on the host with the UID to which the container user is mapped through the rootless user namespace</strong>.</p><p>Expanding socket permissions to solve this problem is not required.</p><p>It is necessary to run <code>ssh-agent</code> with a subordinate UID corresponding to the process UID inside the container:</p><figure><img="" loading="lazy" src="https://habrastorage.org/r/w1560/getpro/habr/upload_files/a0a/07b/3e2/a0a07b3e26cd001cfa980cc538768ddc.png"/></figure><p>As a result, standard OpenSSH continues to work via <code>SSH_AUTH_SOCK</code>, the private key remains outside the container, and the access control scheme relies on standard Linux mechanisms:</p><ul><li><p>user namespaces;</p></li><li><p>UID and GID mapping;</p></li><li><p>Unix sockets;</p></li><li><p>filesystem permissions;</p></li><li><p>running processes without additional privileges.</p></li></ul></div>
+  </main>
+  <footer>
+    Translation generated with Gemini 2.5 Flash-Lite.
+    The original article remains the source of record.
+  </footer>
+</body>
+</html>

@@ -1,0 +1,124 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Trusting an AI Agent with Your Server and Sleeping Soundly Without SSH</title>
+  <meta name="description" content="We are moving faster towards self-healing infrastructure. But when an incident does happen, it can take engineers a lot of time to gather information about server status. With 99.99% SLA, there are about 4 minutes left per month for downtime, every minute counts, and not automating this part of inci">
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.65;
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 32px 20px 64px;
+      color: #1f2328;
+    }
+    header {
+      border-bottom: 1px solid #d8dee4;
+      margin-bottom: 28px;
+      padding-bottom: 20px;
+    }
+    .source {
+      color: #57606a;
+      font-size: 0.95rem;
+    }
+    img, video, iframe {
+      max-width: 100%;
+      height: auto;
+    }
+    pre {
+      overflow-x: auto;
+      padding: 16px;
+      background: #f6f8fa;
+      border-radius: 6px;
+    }
+    code {
+      font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+    }
+    blockquote {
+      border-left: 4px solid #d0d7de;
+      margin-left: 0;
+      padding-left: 16px;
+      color: #57606a;
+    }
+    footer {
+      border-top: 1px solid #d8dee4;
+      margin-top: 40px;
+      padding-top: 20px;
+      color: #57606a;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Trusting an AI Agent with Your Server and Sleeping Soundly Without SSH</h1>
+    <p>We are moving faster towards self-healing infrastructure. But when an incident does happen, it can take engineers a lot of time to gather information about server status. With 99.99% SLA, there are about 4 minutes left per month for downtime, every minute counts, and not automating this part of incident analysis is an unaffordable luxury. Technically, this can be done now: give the AI agent SSH and sudo. I decided to go a different way and built the Linux MCP daemon (mcpd): a server initially designed for AI agents. Instead of wrappers around standard utilities, it reads system status directly from the kernel and provides it to the agent through tools - there are currently 38 of them, and the list is growing. When root is needed, the agent can request it, but will only get it where you allow it, and within specified boundaries. The linuxctl utility in the style of kubectl turned out to be a separate interesting solution. Under the cut is the architecture, installation, connecting an AI agent, and permissions that only look safe. Read on.</p>
+    <p class="source">
+      Machine-translated from Habr.
+      <a href="https://habr.com/ru/articles/1086976/?utm_campaign=1086976&amp;utm_source=habrahabr&amp;utm_medium=rss">Read the original Russian article</a>.
+      Sat, 26 Sep 2026 18:01:43 GMT
+    </p>
+  </header>
+  <main>
+<div><p>When analyzing incidents, I increasingly use an AI agent: it quickly gathers information about the server — load, memory, disks, processes, logs — and correlates it with monitoring data to understand why the site is slow, what's filling the disk, or what crashed overnight. Based on its findings, I can ask the agent to solve the problem, which might require restarting a service, changing a config, or even kernel settings. Giving it SSH with sudo is not the safest path. I wanted to try a different approach. Let's see what came of it.</p><p>I wanted the agent to see the server through a set of understandable tools, get root only for what I allowed, and have every step recorded. And due to my great love for Kubernetes and its object model, I wanted to manage the operating system in the same way: represent it as a tree of objects — processes, disks, services, files — and work with them using familiar commands like <code>get</code> and <code>describe</code>. For this, I created the <code>linuxctl</code> utility. Thus, <strong>linux-mcp-daemon</strong> was born — the <code>mcpd</code> daemon and the <code>linuxctl</code> client. In this article, I will explain how it works, how to install it in a couple of minutes and connect an AI agent, and what pitfalls I stumbled upon along the way.</p><h3>Existing Solutions and Their Problems</h3><p>Before writing my own, I looked at what had already been done. The protocol for connecting tools to AI agents is <strong>MCP</strong> (Model Context Protocol), and there are plenty of Linux servers for it. They can be broadly divided into three types:</p><ul><li><p><strong>Remote shell with MCP sauce.</strong> For example, <a href="https://github.com/tufantunc/ssh-mcp">ssh-mcp</a> and dozens of its forks: a "execute command" tool plus a whitelist. The problem is that the list usually only checks the first word of the command, and the command goes into <code>sh -c</code>, so <code>ls; rm -rf ~</code> passes. The most thoughtful options like <a href="https://github.com/t11z/ssh-mcp">t11z's fork</a> classify commands, ask for confirmation, and keep an audit log, but fundamentally it's still text command parsing. In essence, it's the same SSH, just with an illusion of control.</p></li><li><p><strong>Read-only.</strong> For example, <a href="https://github.com/rhel-lightspeed/linux-mcp-server">Red Hat's linux-mcp-server</a>: dozens of diagnostic tools, including on remote hosts via SSH. It's safe, but you can't do anything, only look, and host access is still granted via SSH keys for the entire account.</p></li><li><p><strong>Direct SSH.</strong> The agent gets everything the account can, and with sudo — even root.</p></li></ul><p>None of the options I found met my needs. I want to build systems where an AI agent, knowing the service architecture, can independently gather information from all servers involved in an incident. This requires network access with authentication, not a local process on each machine, as well as user separation and root privileges granted through a single tool.</p><h3>MCP in Brief</h3><p>MCP is an open protocol over JSON-RPC. The agent connects to the server and asks what it can do. Two types of capabilities are important to us:</p><ul><li><p><strong>Tools</strong> — functions that the model calls itself when it deems necessary. Each has a name, description, and JSON schema for arguments. In the specification, they are called <em>model-controlled</em>. mcpd currently has 38 of them: <code>processes/top</code>, <code>services/manage</code>, <code>files/read</code>, and others.</p></li><li><p><strong>Resources</strong> — data with a URI address that the application connects to the context, not the model (<em>application-controlled</em>). mcpd has 11 persistent resources (<code>os://release</code>, <code>network://routes</code>, <code>devices://pci</code>…) and 6 templates: <code>service://{name}/status</code>, <code>file:///{path}</code>, <code>process://{pid}/{target}</code>, etc.</p></li></ul><p>There are two transports. With stdio, the client itself launches the server as a child process. Over HTTP, the server runs separately, and the client connects to it. mcpd is network-based: it runs on the server, and the agent connects to it via HTTPS.</p><p>The difference is not formal. In April, OX Security <a href="https://habr.com/ru/news/1025116/">showed</a> how dangerous stdio is: the client executes a command from its config to launch the server — and it will execute it, even if it's not the server but anything else. It's enough to substitute the config, and malicious code will run on the developer's machine. There's a flaw in all official SDKs, and Anthropic refused to fix the protocol. mcpd doesn't have this problem: the client doesn't launch anything on its own, and official SDKs are not used. The researchers' main advice — to run MCP processes in isolation and with minimal privileges — is implemented by default in mcpd.</p><h3>How mcpd Works</h3><figure><img alt="Architecture of linux-mcp-daemon" loading="lazy" src="https://habrastorage.org/r/w1560/webt/01/43/bb/0143bb8a94297e677514b5c92d2174d1.png"/><div><figcaption>Architecture of linux-mcp-daemon</figcaption></div></figure><p>The daemon is written in Go; it's a single static binary. <strong>Tools instead of shell.</strong> The agent doesn't execute commands; it calls tools with understandable names like <code>group/command</code>: <code>processes/top</code>, <code>disks/usage</code>, <code>logs/journal-control</code>, <code>services/manage</code>, <code>files/read</code>, and others; currently, there are 38 of them. For each tool, the server provides a description and a JSON schema for arguments, so the agent itself understands what the server can do.</p><p><strong>Kernel-first.</strong> mcpd reads most data itself — from <code>/proc</code>, <code>/sys</code>, and systemd via D-Bus — rather than running <code>ps</code>, <code>df</code>, or <code>systemctl</code> and parsing their output. External programs are called only where a custom implementation would be worse: <code>smartctl</code>, <code>traceroute</code>, <code>journalctl</code>, <code>dmesg</code>, <code>last</code>, and <code>find</code>. For example, the systemd journal is stored in a binary format with compression, and a libsystemd library would require cgo and deprive us of a static binary. All of them are executed without a shell, with separate arguments.</p><p><strong>Each call is a separate process under the user's name.</strong> The main mcpd process only accepts requests, checks the token, and verifies permissions. It doesn't execute the tool itself: for each call, a new short-lived process (worker) is launched under the Linux user with the same name as the mcpd user. The worker executes one command, returns the result, and terminates. User <code>alice</code> in mcpd corresponds to the <code>alice</code> account in Linux: what the kernel prohibits for them, the agent cannot do.</p><p><strong>Root — per tool and with boundaries.</strong> In the <code>mcp-sudo.yaml</code> file, for each user, it's listed which tools they can call with <code>privileged: true</code>, meaning as root. And not just "can," but within what limits:</p><pre><code>users: 
+  logs:
+    privileged:
+      tools:
+        files/read:
+          allowed: true
+          paths: [/var/log]        # root only within /var/log
+        logs/journal-control:
+          allowed: true
+        network/curl:
+          network:
+            deny_private: true     # no localhost, 10/8, 169.254.169.254
+</code><div><a href="https://sourcecraft.dev/"><img loading="lazy"/></a></div></pre><p>For tools with paths, <code>paths</code> is mandatory: without it, the config won't load. If you want the whole disk, explicitly write <code>paths: ["/"]</code> so it's visible. If root is not granted, mcpd responds like this:</p><pre><code>$ linuxctl tool files/read --path /root/.bashrc --privileged true
+user mcp is not authorized to run files/read on path /root/.bashrc as root
+</code><div><a href="https://sourcecraft.dev/"><img loading="lazy"/></a></div></pre><p><strong>TLS by default.</strong> On first launch, mcpd generates a self-signed certificate, and clients trust it by its fingerprint. An open HTTP option exists in the config but is disabled.</p><p><strong>Everything is logged.</strong> Every call is written to the daemon's log (journald or <code>docker logs</code>): user, tool, arguments (secrets like tokens are redacted), and the result of the call. Calls that modify the system are marked <code>audit</code> and logged at any logging level.</p><h3>My Test Environments</h3><p>Everything below was tested on three installations simultaneously:</p><ul><li><p>local Kubernetes in Docker Desktop on Mac — the main development environment;</p></li><li><p>VPS with Ubuntu 24.04 (1 CPU, 2 GB): mcpd via systemd;</p></li><li><p>the same VPS: mcpd in a Docker container on a neighboring port.</p></li></ul><p>A change was considered ready only when it was deployed to all three and tested live. Several bugs only appeared on one of the setups.</p><h3>Installation</h3><p>On a server with systemd, it's a single command:</p><pre><code>curl -fsSL https://raw.githubusercontent.com/nucleusv/linux-mcp-daemon/main/scripts/install.sh | sudo bash
+</code><div><a href="https://sourcecraft.dev/"><img loading="lazy"/></a></div></pre><p>The script downloads the release, checks sha256, creates configs without any users, sets up the first user <code>mcp</code>, and prints their token (once — only the salted hash is stored in the config) and the certificate fingerprint. There are also <code>.deb</code>/<code>.rpm</code> packages and a <code>ghcr.io/nucleusv/linux-mcp-daemon</code> image.</p><p>We verify from any machine with <code>linuxctl</code> installed (it's also available for macOS):</p><pre><code>export MCP_SERVER=https://my-server:9091
+export MCP_TLS_FINGERPRINT=sha256:...   # from install.sh output
+export MCP_TOKEN=...
+linuxctl get system os-release
+</code><div><a href="https://sourcecraft.dev/"><img loading="lazy"/></a></div></pre><pre><code>OS Release Info:
+PRETTY_NAME="Ubuntu 24.04 LTS"
+...
+Kernel Info:
+Linux my-server 6.8.0-142-generic #142-Ubuntu SMP PREEMPT_DYNAMIC Wed Sep  2 14:24:27 UTC 2026 x86_64
+</code><div><a href="https://sourcecraft.dev/"><img loading="lazy"/></a></div></pre><p><code>linuxctl</code> is a client in the spirit of <code>kubectl</code>: <code>get</code>, <code>describe</code>, <code>create</code>, <code>update</code>, <code>delete</code> over tool groups. It doesn't store the command list but reads the schema from the daemon each time, so a new tool on the server is immediately available in the client. <code>explain</code> shows which commands are available for a group and what they translate to (descriptions are shortened):</p><pre><code>$ linuxctl explain disks
+  get              -&gt; tool disks/list
+  get free         -&gt; tool disks/free
+  get usage        -&gt; tool disks/usage
+  get mounts       -&gt; tool disks/mounts
+  get partitions   -&gt; tool disks/partitions
+  get performance  -&gt; tool disks/performance
+  get health       -&gt; tool disks/health
+  describe &lt;name&gt;  -&gt; template disks://{name}/stats
+
+$ linuxctl get processes --sort_by mem --limit 3 --output table
+PID   USER   COMM              STATE   PPID   RSS_BYTES   CMDLINE
+967   root   dockerd           S       1      107339776   /usr/bin/dockerd -H fd:// --containerd=/run/containerd/containerd.sock
+274   root   systemd-journal   S       1      65556480    /usr/lib/systemd/systemd-journald
+813   root   containerd        S       1      63471616    /usr/bin/containerd
+</code><div><a href="https://sourcecraft.dev/"><img loading="lazy"/></a></div></pre><p>There is autocompletion for bash and zsh: Tab completes verbs, groups, flags for a specific tool, and even resource URIs like <code>network://interfaces</code>. Hints are also taken from the daemon, so each user sees only what they are allowed. How to enable it is described in the <a href="https://nucleusv.github.io/linux-mcp-daemon/linuxctl/autocompletion/">documentation</a>.</p><pre><code>$ linuxctl get disks &lt;Tab&gt;
+free  health  mounts  partitions  performance  usage
+</code><div><a href="https://sourcecraft.dev/"><img loading="lazy"/></a></div></pre><h3>Connecting the Agent</h3><p>For Claude Code, it's enough:</p><pre><code>export NODE_EXTRA_CA_CERTS=~/.config/mcpd/my-server.crt   # certificate from the server
+claude mcp add --transport sse my-server https://my-server:9091/sse \
+  --header "Authorization: Bearer &lt;token&gt;"
+</code><div><a href="https://sourcecraft.dev/"><img loading="lazy"/></a></div></pre><p>After this, the agent sees the server's tools and decides for itself which ones to use. Here's what it gets, for example, from <code>processes/top</code> (real output from the VPS):</p><pre><code>top - 17:15:34 up 23:51,  1 user,  load average: 0.15, 0.06, 0.01
+Tasks: 114 total,   1 running, 113 sleeping,   0 stopped,   0 zombie
+%Cpu(s):  1.0 us,  1.9 sy,  0.0 ni, 96.1 id,  0.0 wa,  0.0 hi,  0.0 si,  1.0 st
+B Mem : 2063577088 total, 509673472 free, 305860608 used, 1248043008 buff/cache
+B Swap: 536866816 total, 536592384 free, 274432 used. 1552297984 avail Mem
+
+    PID USER      PR  NI         VIRT         RES         SHR S  %CPU  %MEM     TIME+ COMMAND
+  66914 mcp       20   0   1297649664    10428416     6569984 R   2.0   0.5   0:00.03 mcpd
+</code><div><a href="https://sourcecraft.dev/"><img loading="lazy"/></a></div></pre><p>This is not a call to <code>top</code>: everything is read from <code>/proc</code>, and <code>%CPU</code> is calculated the same way <code>top</code> does — by two measurements with an interval. Sizes are in bytes by default, so the agent doesn't have to parse <code>1.8G</code>; for humans, there's <code>human_readable</code>. In the last line, you can see the worker process for this call: the <code>mcpd</code> process, started by the <code>mcp</code> user.</p><h3>How an AI Analyzes an Incident</h3><p>To test all this not just in words, I simulated a training incident on a test VPS: the <code>my-service</code> service writes a debug log without rotation, and it constantly grows. For the agent, I created a separate mcpd user <code>agent</code>. Root privileges were granted for exactly one action: <code>files/update</code> for <code>/var/log/my-service.log</code>. Everything else it does from its unprivileged account. Then, a normal conversation in Claude Desktop connected to mcpd.</p><figure><img alt="Complaint and agent's tool calls" loading="lazy" src="https://habrastorage.org/r/w1560/webt/b5/26/ff/b526ffcb296f7f612c9e3aa56e2a8133.png"/><div><figcaption>Complaint and agent's tool calls</figcaption></div></figure><p>In a couple of minutes, the agent made 20 calls: free space, directory sizes, log list, tail and head of the growing file, journal settings, processes, service code. Two calls were marked with a cross, and both are telling. For <code>disks_usage</code> with <code>privileged: true</code>, the agent requested root, and mcpd denied it: the user didn't have such permission. The agent didn't insist and continued without root. The systemd journal was not accessible due to the kernel: the <code>agent</code> user is not in the <code>systemd-journal</code> group.</p><figure><img alt="Agent's response" loading="lazy" src="https://habrastorage.org/r/w1560/webt/09/b5/7e/09b57efdc0a15e81be33675695328c14.png"/><div><figcaption>Agent's response</figcaption></div></figure><p>The agent found the culprit, calculated the growth rate, honestly stated what it couldn't see without root, and didn't try to change anything without permission. Most importantly, it suggested cleaning the log itself rather than deleting it: the service keeps the file open, and after <code>rm</code>, the space wouldn't be freed anyway.</p><p><em>Conversation in Claude Desktop; formatting reproduced, agent's response shortened. Tool calls are from the mcpd log.</em></p><h3>Permissions That Only Look Safe</h3><p>The most important page in the documentation is not about installation, but about <a href="https://nucleusv.github.io/linux-mcp-daemon/configuration/permissions-and-risks/">risks</a>. Some permissions seem narrow but actually grant the agent full root privileges:</p><ul><li><p><strong>Writing to </strong><code><strong>/etc</strong></code> (<code>files/update</code> with paths covering it). The agent can add itself to <code>/etc/sudoers.d/</code>, schedule a cron job, or create a systemd unit that will run as root.</p></li><li><p><strong>Service management</strong> (<code>services/manage</code>). The permission applies to any unit, not just a specific one: the agent can stop <code>ssh</code> or mcpd itself.</p></li><li><p><strong>Writing kernel parameters</strong> (<code>kernel/system-control</code> without a <code>write_keys</code> list). Via <code>kernel.core_pattern</code>, you can specify a program that the kernel will launch as root when any process crashes.</p></li><li><p><strong>Reading the entire disk</strong> (<code>files/read</code> with <code>paths: ["/"]</code>). This includes password hashes from <code>/etc/shadow</code> and the private key of mcpd's own certificate.</p></li><li><p><strong>The </strong><code><strong>docker</strong></code><strong> group</strong> for the OS agent account. This grants root privileges without any grants in mcpd: it's enough to launch a container with <code>/</code> mounted.</p></li></ul><p>Separately about networking. <code>network/curl</code> without a <code>network:</code> block can access anything, including internal addresses and <code>169.254.169.254</code> — the cloud metadata service where temporary access keys are stored. If the agent is
+  </main>
+  <footer>
+    Translation generated with Gemini 2.5 Flash-Lite.
+    The original article remains the source of record.
+  </footer>
+</body>
+</html>

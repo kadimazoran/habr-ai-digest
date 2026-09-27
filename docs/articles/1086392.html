@@ -1,0 +1,212 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>My Own Gated RNN: How Does It Work? (and Benchmarks, of Course)</title>
+  <meta name="description" content="Hello everyone! I recently created my own Gated RNN, meaning with different math than LSTM, GRU, and similar. I want to break it down for you theoretically, practically, measure it (I don&#x27;t know how to measure well, so I&#x27;ll measure as best I can), and of course, discuss its pros and cons. ">
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.65;
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 32px 20px 64px;
+      color: #1f2328;
+    }
+    header {
+      border-bottom: 1px solid #d8dee4;
+      margin-bottom: 28px;
+      padding-bottom: 20px;
+    }
+    .source {
+      color: #57606a;
+      font-size: 0.95rem;
+    }
+    img, video, iframe {
+      max-width: 100%;
+      height: auto;
+    }
+    pre {
+      overflow-x: auto;
+      padding: 16px;
+      background: #f6f8fa;
+      border-radius: 6px;
+    }
+    code {
+      font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+    }
+    blockquote {
+      border-left: 4px solid #d0d7de;
+      margin-left: 0;
+      padding-left: 16px;
+      color: #57606a;
+    }
+    footer {
+      border-top: 1px solid #d8dee4;
+      margin-top: 40px;
+      padding-top: 20px;
+      color: #57606a;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>My Own Gated RNN: How Does It Work? (and Benchmarks, of Course)</h1>
+    <p>Hello everyone! I recently created my own Gated RNN, meaning with different math than LSTM, GRU, and similar. I want to break it down for you theoretically, practically, measure it (I don&#x27;t know how to measure well, so I&#x27;ll measure as best I can), and of course, discuss its pros and cons. Read more</p>
+    <p class="source">
+      Machine-translated from Habr.
+      <a href="https://habr.com/ru/articles/1086392/?utm_campaign=1086392&amp;utm_source=habrahabr&amp;utm_medium=rss">Read the original Russian article</a>.
+      Sat, 26 Sep 2026 17:52:14 GMT
+    </p>
+  </header>
+  <main>
+<div><p>Hello everyone!</p><p>I recently created my own Gated RNN, meaning with different math than LSTM, GRU, and similar.</p><p>I want to break it down for you theoretically, practically, measure it (I don't know how to measure well, so I'll measure as best I can), and of course, discuss its pros and cons.</p><h2>What Will Be in the Article</h2><p>Uh, bad title for a heading, but here are the headings you will encounter (in the correct order):</p><ol><li><p>Theory.</p></li><li><p>Practice (without measurements).</p></li><li><p>Benchmarking.</p></li><li><p>Pros and cons of my network.</p></li><li><p>Conclusion.</p></li></ol><p>This is my first article that resembles a scientific paper, so there might be shortcomings.</p><h2>Theory</h2><p>Let's start with theory and formulas.</p><p>I made a few non-standard decisions:</p><ol><li><p><img alt="softsign" loading="lazy" src="https://habrastorage.org/getpro/habr/upload_files/236/557/95e/23655795e09ebe6c22c1f02dfb5fc572.svg"/> and my version of it instead of <img alt="tanh" loading="lazy" src="https://habrastorage.org/getpro/habr/upload_files/461/e55/361/461e55361aeaa20a13ba43d56c1a7254.svg"/> and <img alt="sigmoid" loading="lazy" src="https://habrastorage.org/getpro/habr/upload_files/5e2/001/798/5e20017985dd9c70de2bc6f0630c1697.svg"/>.</p></li><li><p><img alt="x_{t}" loading="lazy" src="https://habrastorage.org/getpro/habr/formulas/8/8a/8ac/8ac66afa5dc4aefbf764ad6d9acc8d35.svg"/> + <img alt="h_{t-1}" loading="lazy" src="https://habrastorage.org/getpro/habr/formulas/c/c9/c9a/c9af8e1fcd4e3c3eccdbc3030aea6a40.svg"/> instead of concatenation.</p></li></ol><p>Actually, there are more than two, but let's move on to the theory.</p><p>So, for reference, here is the formula for <img alt="softsign" loading="lazy" src="https://habrastorage.org/getpro/habr/upload_files/b08/c0e/d91/b08c0ed91d15967fcde9203d7006bc07.svg"/>:</p><img alt="softsign(x) = \frac{x}{1 + |x|}" loading="lazy" src="https://habrastorage.org/getpro/habr/formulas/d/d6/d67/d670b04043f40e2a2d7bddf7a7ceeddf.svg"/><p>It's simple: <img alt="x" loading="lazy" src="https://habrastorage.org/getpro/habr/upload_files/9d4/db9/060/9d4db90604a6307eea9f266a5f4329aa.svg"/> divided by its absolute value + 1.</p><p>Now I want to show my formula for <img alt="softsign" loading="lazy" src="https://habrastorage.org/getpro/habr/formulas/2/21/21c/21c8cb2ca34bf9672b38b4280f67484c.svg"/>:</p><img alt="softsign_{scaled}(x) = \frac{1 + softsign(x)}{2}" loading="lazy" src="https://habrastorage.org/getpro/habr/formulas/2/2b/2b0/2b0bdf698d43e3497d1775f18e756208.svg"/><p>I need this formula to replace <img alt="sigmoid" loading="lazy" src="https://habrastorage.org/getpro/habr/upload_files/418/3d2/b02/4183d2b02f730930e4e42048cfe8ac03.svg"/> (sigmoid outputs a range from 0 to 1, while regular softsign outputs from -1 to 1, and I needed 0 to 1).</p><p>Here is the first formula for a kind of "saturation" (needed for better generalization) <img alt="x_t" loading="lazy" src="https://habrastorage.org/getpro/habr/formulas/c/cf/cf7/cf7ee950cf61a6003c0ec4af7971d8a8.svg"/>:</p><img alt="x_{t,new} = softsign(x_{t,old} + h_{t-1}) \alpha" loading="lazy" src="https://habrastorage.org/getpro/habr/formulas/c/cd/cd1/cd1bcd54860328284f43e728b4e0e3f8.svg"/><p>So, <img alt="x_t" loading="lazy" src="https://habrastorage.org/getpro/habr/upload_files/041/5ee/693/0415ee693b3ac7ff86f36ad161133d44.svg"/> is now <img alt="x_t" loading="lazy" src="https://habrastorage.org/getpro/habr/upload_files/bdb/028/c0d/bdb028c0d446a8c8240f79f37dc01ed4.svg"/>, just so you know. It works simply: we sum the (old) <img alt="x_t" loading="lazy" src="https://habrastorage.org/getpro/habr/upload_files/424/b9a/890/424b9a890e6a1503ce2248b86bae500a.svg"/> with <img alt="h_{t-1}" loading="lazy" src="https://habrastorage.org/getpro/habr/upload_files/72f/0fb/4dd/72f0fb4ddbb0c4b4a4b4a95c1baa5199.svg"/>, pass the sum through <img alt="softsign" loading="lazy" src="https://habrastorage.org/getpro/habr/upload_files/9cd/6a4/89c/9cd6a489cec80ecd438636847825d335.svg"/>, and multiply by a trainable parameter <img alt="\alpha" loading="lazy" src="https://habrastorage.org/getpro/habr/upload_files/c8a/108/eab/c8a108eab9ec038b60a1382976c8ecbc.svg"/> (I initially set it to 2, which seems to improve quality and generalization).</p><p>Now, here is the formula for the forget gate (<img alt="f_t" loading="lazy" src="https://habrastorage.org/getpro/habr/upload_files/6d3/4f6/30b/6d34f630b588a0567dcca57864f48a1b.svg"/>):</p><img alt="f_t = softsign_{scaled}(W_f (x_t + h_{t-1}) + b_f)" loading="lazy" src="https://habrastorage.org/getpro/habr/formulas/d/d2/d2c/d2caf34af39593446052b2a9a14aaae6.svg"/><p>In general, this is like in a regular LSTM, but without concatenation (replaced with +) and with my <img alt="softsign_{scaled}" loading="lazy" src="https://habrastorage.org/getpro/habr/upload_files/98f/188/905/98f188905a5b653a5b18b2c716aa5688.svg"/>.</p><p>Now we need the input gate (<img alt="i_t" loading="lazy" src="https://habrastorage.org/getpro/habr/upload_files/347/c7d/059/347c7d0597be511825494fc0a453bdc2.svg"/>):</p><img alt="i_t = softsign_{scaled}((W_{ix}x_t + b_{ix}) + (W_{ih}h_{t-1} + b_{ih}))" loading="lazy" src="https://habrastorage.org/getpro/habr/formulas/d/de/de6/de698cb78ea6c9d0af20a70e272f93f9.svg"/><p>It works like this:</p><p>We pass <img alt="x_t" loading="lazy" src="https://habrastorage.org/getpro/habr/upload_files/100/470/f00/100470f007393565798a66b148b6d86a.svg"/> and <img alt="h_{t-1}" loading="lazy" src="https://habrastorage.org/getpro/habr/upload_files/247/7fd/877/2477fd87757fb6a8f50c4d0e4ef772f8.svg"/> through two different linear layers with bias, sum both results, and pass the sum through <img alt="softsign_{scaled}" loading="lazy" src="https://habrastorage.org/getpro/habr/upload_files/067/6b3/d2c/0676b3d2c2e0dbb84f628f0b34550d05.svg"/>.</p><p>Now I will write down the candidate calculation:</p><img alt="\tilde{h}_t = softsign_{scaled}(f_t \odot h_{t-1} + i_t \odot x_t)" loading="lazy" src="https://habrastorage.org/getpro/habr/formulas/7/78/786/786e7829b156f0d29ee1ae0e6f812704.svg"/><p>That is, it's simply a summation of element-wise <img alt="f_t" loading="lazy" src="https://habrastorage.org/getpro/habr/upload_files/7f8/670/814/7f86708146a46303dea927354f63328a.svg"/> on <img alt="h_{t-1}" loading="lazy" src="https://habrastorage.org/getpro/habr/formulas/c/c9/c9a/c9af8e1fcd4e3c3eccdbc3030aea6a40.svg"/> and <img alt="i_t" loading="lazy" src="https://habrastorage.org/getpro/habr/upload_files/a9f/b6e/874/a9fb6e87431d4d9e6f4be78b165965cb.svg"/> on <img alt="x_t" loading="lazy" src="https://habrastorage.org/getpro/habr/formulas/c/cf/cf7/cf7ee950cf61a6003c0ec4af7971d8a8.svg"/>, and then we pass it through scaled softsign.</p><p>I myself doubt this calculation, but for now, it's the most workable option (for my tasks).</p><p>Then we calculate the output gate:</p><img alt="o_t = softsign(W_o(x_t + h_{t-1}) + b_o)" loading="lazy" src="https://habrastorage.org/getpro/habr/formulas/7/75/75d/75d50f045976cc580f6efe1e908de040.svg"/><p>You probably have a question:</p><blockquote><p>Why not <img alt="softsign_{scaled}" loading="lazy" src="https://habrastorage.org/getpro/habr/upload_files/a13/526/85c/a1352685c4d8c3fd3877172f43edbd43.svg"/> here?</p></blockquote><p>Well, I already tried doing the opposite: using regular softsign for candidate calculation and scaled softsign for output gate calculation, but the quality dropped by as much as 23%.</p><p>The new <img alt="h_t" loading="lazy" src="https://habrastorage.org/getpro/habr/upload_files/1bc/e91/f76/1bce91f76ef690130d2913849e844823.svg"/> is calculated simply:</p><img alt="h_t = o_t \odot \tilde{h}_t" loading="lazy" src="https://habrastorage.org/getpro/habr/formulas/b/b2/b29/b296622a082dd374a40f3f25b2e25e40.svg"/><p>Most likely, another question from readers is: where is <img alt="C_t" loading="lazy" src="https://habrastorage.org/getpro/habr/upload_files/e06/a2f/546/e06a2f546176854161691a219314265b.svg"/>, where is the CEC?</p><p>The answer is simple: I decided to remove all this fuss (okay, it's not fuss) from the start, and it worked. I thought, "Well, if it works, then I don't need it for now," and it remained that way until today (well, not anymore).</p><p>This is the first stage of calculation in my Gated RNN.</p><p>Perhaps you will ask - where is the Long-Term memory?</p><p>Well, I'll show you now.</p><p>The output of the first stage is:</p><img alt="H = (h_0, h_1, ..., h_L)" loading="lazy" src="https://habrastorage.org/getpro/habr/formulas/f/fe/fe1/fe1503295064f9647b18ad6721e8a7d8.svg"/><p>Here, L is the length of the entire sequence X.</p><p>Then comes the second stage (one formula, yes):</p><img alt="H_{long} = \frac{H \cdot (H^T \cdot H)}{\sqrt{d_h}}" loading="lazy" src="https://habrastorage.org/getpro/habr/formulas/e/ec/ec7/ec76acc97bdd2f2a838ce9ba471f02dd.svg"/><p><img alt="d_h" loading="lazy" src="https://habrastorage.org/getpro/habr/upload_files/80c/22d/9c2/80c22d9c28d3c9b424c355879bd8484f.svg"/> is the dimensionality of the hidden state.</p><p>It works like this:</p><p>We multiply <img alt="H^T" loading="lazy" src="https://habrastorage.org/getpro/habr/upload_files/df7/d6c/9e3/df7d6c9e3dda64fd05a2cc2cd9b61b4b.svg"/> by <img alt="H" loading="lazy" src="https://habrastorage.org/getpro/habr/formulas/c/c1/c1d/c1d9f50f86825a1a2302ec2449c17196.svg"/> - we get something like an "attention matrix" (the term is probably out of place, right?).</p><p>We multiply <img alt="H" loading="lazy" src="https://habrastorage.org/getpro/habr/formulas/c/c1/c1d/c1d9f50f86825a1a2302ec2449c17196.svg"/> by this very "attention matrix" to make the dimensionality correct and divide by <img alt="\sqrt{d_h}" loading="lazy" src="https://habrastorage.org/getpro/habr/formulas/f/f0/f00/f00414c88e15f464e7661c9659742a7c.svg"/> to avoid exploding gradients.</p><p>That's all, that's the entire long-term memory.</p><p>If my Gated RNN is the last layer of the entire network (or if there's a LayerNorm or a classifier after it) - then we output this:</p><img alt="Output = softsign(\sum_{i=1}^{L} H_{long,i})" loading="lazy" src="https://habrastorage.org/getpro/habr/formulas/b/b2/b2f/b2f178c4ce23ea621b6da4361003621a.svg"/><p>If anything, <img alt="\sum" loading="lazy" src="https://habrastorage.org/getpro/habr/upload_files/84d/277/ba4/84d277ba45cf02f2a9fad25c3a8ff8be.svg"/> here calculates the sum of each row of the H_long matrix and puts all results into one list. For example: [[1, 2], [2, 3]]. <img alt="\sum" loading="lazy" src="https://habrastorage.org/getpro/habr/upload_files/894/ddb/dfb/894ddbdfb7cb854c728629f5f5dff615.svg"/> here will calculate and give this result: [3, 5]. That is, 1 + 2 = 3, 2 + 3 = 5, collect into a list - done.</p><p>If there is some layer after it, we simply pass <img alt="H_{long}" loading="lazy" src="https://habrastorage.org/getpro/habr/upload_files/af6/85c/1b1/af685c1b18a1f99a681602775415277d.svg"/> as is, although it can be passed through <img alt="softsign" loading="lazy" src="https://habrastorage.org/getpro/habr/upload_files/17d/113/7a0/17d1137a0d4f7f1ff8ea62027cf10723.svg"/> if needed.</p><p>Next, in my Gated RNN, after these two stages, comes LayerNorm.</p><p>Why not RMSNorm and BatchNorm?</p><p>With them, my quality didn't improve at all, and even decreased (yes!). And then a classifier might follow, but I decided not to add one because <s>it already worked</s> I was afraid of overfitting or something similar.</p><p>This, it seems, is the entire structure of my network.</p><p>If anything, I named the first stage SWM - Short Working Memory, and the second - LWM - Long Working Memory (I named it that because I couldn't think of anything else, honestly). In short, this contraption is called LSWM - Long-Short Working Memory.</p><p>Now, the overall chain that I wrote in my code:</p><img alt="\text{Embedding -&gt; Short Working Memory -&gt; Long Working Memory -&gt; LayerNorm}" loading="lazy" src="https://habrastorage.org/getpro/habr/formulas/b/bf/bf7/bf7b6fcf53d7b981235a532f8e8f5707.svg"/><p>End of theory! Time for practice...</p><h2>Practice (Without Measurements)</h2><p>Let's move on to practice!</p><p>I decided to tackle a rather complex task right away - it's called "Multi-hop branching".</p><p>Regular multi-hop is like "a = b = c, what is a?" and the model, in theory, should output "c", but as it turned out, this was a simple task for my network.</p><p>And branching multi-hop is like "a = b, and also a = c. What was the initial 'a', and what is the final 'a'?"</p><p>In general, I had two inference scenarios after training:</p><ol><li><p>Simple test ("a = b, a = c"), without any modifications.</p></li><li><p>Test, but for (how is it pompously called) length extrapolation - meaning the test length is increased. So here it was like this: "a = b = c, a = c = b".</p></li></ol><p>My network always failed on the second test.</p><p>Initially, I thought the problem was in the LWM layer.</p><p>I tried to "solve" it like this: first, I tried replacing the division by <img alt="\sqrt{d_h}" loading="lazy" src="https://habrastorage.org/getpro/habr/upload_files/137/381/c84/137381c845faa58144fe44635f6a0337.svg"/> with LayerNorm (the quality was better, but it still failed), then I decided to pass H through three matrices first - Q, K, V - without changes.</p><p>In short, I tried all the reasonable options in my opinion, and I realized that LWM wouldn't help me at all.</p><p>Then I thought and thought - and realized - I forgot to add the output gate (well, yes...).</p><p>So, after an hour of fiddling with the output gate (sometimes turning it into a regular linear layer, sometimes using <img alt="\tilde{h}_t" loading="lazy" src="https://habrastorage.org/getpro/habr/upload_files/af4/ba5/7f1/af4ba57f1a98508ea236c7d8200288ab.svg"/> instead of the normal <img alt="x_t + h_t" loading="lazy" src="https://habrastorage.org/getpro/habr/upload_files/e68/776/1d0/e687761d0333231935ab1e24bb6121b5.svg"/>), I arrived at the conclusion of how the output gate should be. Well, I arrived at this option in the "Theory" section.</p><p>And suddenly, my network started passing these multi-hops.</p><details><summary>Test Code</summary><div><pre><code>import torch
+import torch.nn as nn
+import torch.optim as optim
+import numpy as np
+
+device = torch.device("cuda")
+
+class LSWM(nn.Module):
+    def __init__(self, vocab_size, d_model):
+        super().__init__()
+
+        self.d = d_model
+        self.sd = d_model ** 0.5
+
+        self.vocab_size = vocab_size
+        self.embedding = nn.Embedding(vocab_size, d_model).to(device)
+
+        self.W_f = nn.Linear(d_model, d_model).to(device)
+        self.W_ix = nn.Linear(d_model, d_model).to(device)
+        self.W_ih = nn.Linear(d_model, d_model).to(device)
+        self.W_o = nn.Linear(d_model, d_model).to(device)
+        self.a = nn.Parameter(torch.scalar_tensor(2)).to(device)
+
+        self.norm = nn.LayerNorm(d_model).to(device)
+
+    def softsign(self, x):
+        return x / (1.0 + torch.abs(x))
+
+    def softsign_scaled(self, x):
+        return (1.0 + self.softsign(x)) / 2.0
+
+    def forward(self, token_seq):
+        batch_size, seq_len = token_seq.size()
+
+        x_seq = self.embedding(token_seq)
+
+        h_t = torch.zeros(batch_size, self.d).to(device)
+        h = []
+
+        for t in range(seq_len):
+            x_t = x_seq[:, t, :]
+
+            x_normed = (self.softsign(x_t + h_t)) * self.a
+
+            f_t = self.softsign_scaled(self.W_f(x_normed + h_t))
+            i_t = self.softsign_scaled(self.W_ix(x_t) + self.W_ih(h_t))
+            o_t = self.softsign(self.W_o(x_normed + h_t))
+
+            c = self.softsign_scaled(f_t * h_t + i_t * x_normed)
+
+            h_t = o_t * c
+
+            h.append(h_t)
+
+        h = torch.stack(h, dim=1)
+        res = torch.bmm(h, torch.bmm(h.transpose(-2, -1), h))
+        h = res / self.sd
+
+        res = self.softsign(h.sum(dim=1))
+
+        return self.norm(res)
+
+VOCAB_SIZE = 21
+TOKEN_ARROW = 15
+TOKEN_Q_1 = 16
+TOKEN_Q_2 = 17
+
+def generate_branching_batch(batch_size, epoch):
+    x = np.zeros((batch_size, 7), dtype=np.int64)
+    y = np.zeros(batch_size, dtype=np.int64)
+
+    for i in range(batch_size):
+        a, b, c = np.random.choice(15, 3, replace=False)
+
+        ask_live = epoch % 2 == 0
+
+        if ask_live:
+            x[i] = [a, TOKEN_ARROW, b, a, TOKEN_ARROW, c,  TOKEN_Q_1]
+            y[i] = b
+        else:
+            x[i] = [a, TOKEN_ARROW, b, a, TOKEN_ARROW, c,  TOKEN_Q_2]
+            y[i] = c
+
+    return torch.tensor(x).to(device), torch.tensor(y).to(device)
+
+D_MODEL = 128
+model = LSWM(vocab_size=VOCAB_SIZE, d_model=D_MODEL).to(device)
+criterion = nn.CrossEntropyLoss().to(device)
+optimizer = optim.Adam(model.parameters(), lr=0.0002, weight_decay=0.0099999)
+
+acc = 0
+epoch = 1
+while epoch != 1001:
+    inputs, targets = generate_branching_batch(64, epoch)
+
+    optimizer.zero_grad()
+    outputs = model(inputs)
+    loss = criterion(outputs, targets)
+    loss.backward()
+    optimizer.step()
+
+    if epoch % 500 == 0:
+        preds = torch.argmax(outputs, dim=1)
+        acc = (preds == targets).float().mean().item() * 100
+        print(f"Loss: {loss.item():.4f} | Accuracy: {acc:.1f}%")
+
+    epoch += 1
+
+a, b, c = 3, 7, 12
+
+model.eval()
+
+with torch.no_grad():
+    test_live = torch.tensor([[a, TOKEN_ARROW, b, a, TOKEN_ARROW, c, TOKEN_Q_1]]).to(device)
+    pred_live = torch.argmax(model(test_live), dim=1).item()
+
+    test_work = torch.tensor([[a, TOKEN_ARROW, b, a, TOKEN_ARROW, c, TOKEN_Q_2]]).to(device)
+    pred_work = torch.argmax(model(test_work), dim=1).item()
+
+    print("test 1:")
+    print(f"a 1: {pred_live}")
+    print(f"a 2: {pred_work}")
+
+with torch.no_grad():
+    test_live = torch.tensor([[b, TOKEN_ARROW, c, TOKEN_ARROW, a, b, TOKEN_ARROW, a, TOKEN_ARROW, c, TOKEN_Q_1]]).to(device)
+    pred_live = torch.argmax(model(test_live), dim=1).item()
+
+    test_work = torch.tensor([[b, TOKEN_ARROW, c, TOKEN_ARROW, a, b, TOKEN_ARROW, a, TOKEN_ARROW, c, TOKEN_Q_2]]).to(device)
+    pred_work = torch.argmax(model(test_work), dim=1).item()
+
+    print("test 2:")
+    print(f"b 1: {pred_live}")
+    print(f"b 2: {pred_work}")
+</code><div><a href="https://sourcecraft.dev/"><img loading="lazy"/></a></div></pre></div></details><p>I run it and...</p><pre><code>Loss: 0.5694 | Accuracy: 89.1% 
+Loss: 0.1655 | Accuracy: 100.0%
+test 1:
+a 1: 7
+a 2: 12
+test 2:
+b 1: 3
+b 2: 12</code><div><a href="https://sourcecraft.dev/"><img loading="lazy"/></a></div></pre><p>Everything is as it should be.</p><p>By the way, "need: number" and "chain: sequence" are things I added to the output to make it clearer.</p><p>Incidentally, I also tried adding "junk" tokens to test 2 (there were only 3, but even 3 is a significant change in my opinion) - it still worked, to my surprise.</p><p>I won't publish other tests (I will publish them on GitHub later), but here's the table:</p><div><div><table><tbody><tr><td><p>Test</p></td><td><p>Correct?</p></td><td><p>Epochs</p></td></tr><tr><td><p>Multi-hop branching</p></td><td><p>Yes</p></td><td><p>1000</p></td></tr><tr><td><p>Multi-hop (regular)</p></td><td><p>Yes</p></td><td><p>1000</p></td></tr><tr><td><p>Simple sinusoid</p></td><td><p>Close (needed 0.2440, network output 0.2698)</p></td><td><p>600</p></td></tr></tbody></table></div></div><p>As we can see, the network answers quite correctly!</p><p>I haven't done text generation tests yet, but I will have to do them in the foreseeable future.</p><h2>Benchmarking</h2><p>It's time to move on to benchmarks!</p><p>I will record all results in a table.</p><p>However, a problem has arisen: I've exhausted the GPU limits on my Google Colab, so I'll be measuring on the CPU.</p><p>I decided to measure on the same multi-hop branching test (the first one where a = b, a = c) that I described earlier in the "Practice (without measurements)" section.</p><div><div><table><tbody><tr><td><p>Metric</p></td><td><p>LSTM</p></td><td><p>GRU</p></td><td><p>LSWM (torch.compile)</p></td></tr><tr><td><p>Loss at end of training (400 epochs).</p></td><td><p>0.8333</p></td><td><p>0.2362</p></td><td><p>0.1666</p></td></tr><tr><td><p>Accuracy at end of training (400 epochs).</p></td><td><p>71.9%</p></td><td><p>96.9%</p></td><td><p>100.0%</p></td></tr><tr><td><p>Network output (1).</p></td><td><p>7</p></td><td><p>7</p></td><td><p>7</p></td></tr><tr><td><p>Network output (2).</p></td><td><p>12</p></td><td><p>12</p></td><td><p>12</p></td></tr><tr><td><p>Number of parameters.</p></td><td><p>68,609</p></td><td><p>68,880</p></td><td><p>68,609</p></td></tr><tr><td><p>Training speed (400 epochs).</p></td><td><p>4 sec</p></td><td><p>4 sec</p></td><td><p>8 sec</p></td></tr><tr><td><p>Weight decay</p></td><td><p>0.0099999</p></td><td><p>0.0099999</p></td><td><p>0.0099999</p></td></tr><tr><td><p>Learning rate</p></td><td><p>0.0004</p></td><td><p>0.0004</p></td><td><p>0.0004</p></td></tr><tr><td><p>Hidden size</p></td><td><p>91</p></td><td><p>105</p></td><td><p>128</p></td></tr></tbody></table></div></div><p>As we can see, LSWM surpasses everyone in accuracy, while GRU and LSTM are faster in training speed, but they all have one thing in common - their answers are equally correct.</p><p>I don't want to do a second benchmark for the second test (everything is practically the same in terms of speed and everything else), so I'll give the results:</p><div><div><table><tbody><tr><td><p>LSTM</p></td><td><p>GRU</p></td><td><p>LSWM</p></td></tr><tr><td><p>3</p></td><td><p>3</p></td><td><p>3</p></td></tr><tr><td><p>12</p></td><td><p>12</p></td><td><p>12</p></td></tr></tbody></table></div></div><p>In general, this confirms that they will always produce the same answers after training on this task.</p><p>I decided to change the first chain of the second test to this chain:<br/>"b - c - a - b - a".</p><p>After testing, I realized that my network is sensitive to the seed (randomness).</p><p>So I decided to find the optimal mathematical configuration for my LSWM to eliminate sensitivity to the seed (randomness).</p><p>As a result, I made the following changes:</p><img alt="\tilde{c}_t = softsign((W_cx_t + b_c) + (W_ch_{t-1} + b_c))" loading="lazy" src="https://habrastorage.org/getpro/habr/formulas/2/2a/2a5/2a51400895c07a1a3f189aaacf1716d0.svg"/><img alt="c_t = f_t \odot \tilde{c}_t + i_t \odot x_t" loading="lazy" src="https://habrastorage.org/getpro/habr/formulas/d/d6/d67/d67f1f50a3ff81bf4a6ef261f4dfb118.svg"/><p>Then:</p><img alt="o_t = softsign_{scaled}((W_ox_t + b_o) + (W_oh_{t-1} + b_o))" loading="lazy" src="https://habrastorage.org/getpro/habr/formulas/0/0d/0dd/0dd428657290d2835ea46a55117095cc.svg"/><p>And I removed the modification of <img alt="x_t" loading="lazy" src="https://habrastorage.org/getpro/habr/upload_files/30f/472/09d/30f47209ddee7d7b83f286326284c25e.svg"/> (effectively <img alt="x_{t,new} = x_{t,old}" loading="lazy" src="https://habrastorage.org/getpro/habr/upload_files/ee7/ae4/e40/ee7ae4e402587d68ca1f6424fda1330d.svg"/> now).</p><p>And also - now the gate <img alt="f_t" loading="lazy" src="https://habrastorage.org/getpro/habr/upload_files/e81/0aa/c9b/e810aac9b44a7abd03b86555c5ba09ff.svg"/> is the same as <img alt="o_t" loading="lazy" src="https://habrastorage.org/getpro/habr/upload_files/881/bf9/f9f/881bf9f9f4a29cb706ee2082a92b323d.svg"/>, but it has its own matrix and bias (which is obvious).</p><p>And of course:</p><img alt="h_t = o_t \odot c_t" loading="lazy" src="https://habrastorage.org/getpro/habr/formulas/e/e5/e52/e52d17a0b125abdff67d36b1dd74683b.svg"/><p>That is, I removed <img alt="\tilde{h}_t" loading="lazy" src="https://habrastorage.org/getpro/habr/upload_files/6c0/bcc/202/6c0bcc2020ed26c5e8bda0078948e377.svg"/>.</p><p>And only then did my network become much better (and even faster!).</p><h2>Pros and Cons of My Network</h2><p>Pros of LSWM (original):</p><ol><li><p>"Larger" tails of softsign.</p></li><li><p>Simplicity of operations (0 exponents).</p></li><li><p>Relatively few parameters (no W_c).</p></li><li><p>"Self-Attention" in the LWM layer.</p></li></ol><p>Cons of the original LSWM:</p><ol><li><p>Sometimes the "large" tails of softsign can be detrimental.</p></li><li><p><img alt="x_{t,new}" loading="lazy" src="https://habrastorage.org/getpro/habr/upload_files/86e/f9a/3ca/86ef9a3ca224514ed3da5a5e4cbf7f58.svg"/> is actually a poor calculation that makes <img alt="x_t" loading="lazy" src="https://habrastorage.org/getpro/habr/upload_files/660/8c6/01f/6608c601f1190214cb0e77e98c770a99.svg"/> too strong, causing the network to be more sensitive to random seeds.</p></li><li><p>Absence of CEC - the carousel of constant error is still important.</p></li></ol><p>The modified LSWM (with the carousel of constant error described in the "Benchmarking" section and other modifications) has one disadvantage and loses one advantage.</p><p>This disadvantage is the softsign tails.</p><p>The advantage lost is the small number of parameters.</p><h2>Conclusion</h2><p>I'll make a quick conclusion.</p><p>Constant Error Carousel is a very important thing, you can't do without it.</p><p>Don't make <img alt="x_t" loading="lazy" src="https://habrastorage.org/getpro/habr/upload_files/71b/2eb/f5c/71b2ebf5c7939f6127beeff7f1df3a45.svg"/> too strong, even if you normalize it with softsign later.</p><p>Softsign and its scaled version (for the range 0 to 1) as a replacement for tanh and sigmoid is a working idea.</p><p>Replacing concat with summation is also a working idea.</p><p>The LWM layer is also a working idea (because the quality didn't drop due to it, the model still responds well).</p><p>P.S: This is my first article of this kind, I wrote it on the fly. If you see a flaw in the math, please write it down. If you see a grammatical error, also write it down, because simply downvoting the article doesn't give me the feedback I need to learn. I'll publish the GitHub later...</p></div>
+  </main>
+  <footer>
+    Translation generated with Gemini 2.5 Flash-Lite.
+    The original article remains the source of record.
+  </footer>
+</body>
+</html>

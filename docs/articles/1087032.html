@@ -1,0 +1,173 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Ways to Use LLMs: Simple and Unusual Options</title>
+  <meta name="description" content="This article is inspired by an old Reddit thread: https://www.Reddit.com/r/ChatGPT/comments/1cbnrmk/what_ways_do_you_use_chat_gpt_in_your_daily_lives/ I will list how I use LLMs, specifically ChatGPT, in my work and daily life, as well as some interesting options I&#x27;ve encountered online (includ">
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.65;
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 32px 20px 64px;
+      color: #1f2328;
+    }
+    header {
+      border-bottom: 1px solid #d8dee4;
+      margin-bottom: 28px;
+      padding-bottom: 20px;
+    }
+    .source {
+      color: #57606a;
+      font-size: 0.95rem;
+    }
+    img, video, iframe {
+      max-width: 100%;
+      height: auto;
+    }
+    pre {
+      overflow-x: auto;
+      padding: 16px;
+      background: #f6f8fa;
+      border-radius: 6px;
+    }
+    code {
+      font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+    }
+    blockquote {
+      border-left: 4px solid #d0d7de;
+      margin-left: 0;
+      padding-left: 16px;
+      color: #57606a;
+    }
+    footer {
+      border-top: 1px solid #d8dee4;
+      margin-top: 40px;
+      padding-top: 20px;
+      color: #57606a;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Ways to Use LLMs: Simple and Unusual Options</h1>
+    <p>This article is inspired by an old Reddit thread: https://www.Reddit.com/r/ChatGPT/comments/1cbnrmk/what_ways_do_you_use_chat_gpt_in_your_daily_lives/ I will list how I use LLMs, specifically ChatGPT, in my work and daily life, as well as some interesting options I&#x27;ve encountered online (including some atypical ones from the mentioned Reddit thread). I also asked ChatGPT about ways to use large language models, including &quot;unusual and non-obvious applications of LLMs.&quot; I will add some interesting examples here. To get ahead of myself, I&#x27;ll say that there are hundreds and thousands of ways to use LLMs, limited only by each person&#x27;s imagination. But here I need to clarify what exactly we mean. Read more →</p>
+    <p class="source">
+      Machine-translated from Habr.
+      <a href="https://habr.com/ru/articles/1087032/?utm_campaign=1087032&amp;utm_source=habrahabr&amp;utm_medium=rss">Read the original Russian article</a>.
+      Sun, 27 Sep 2026 08:15:24 GMT
+    </p>
+  </header>
+  <main>
+<div><p>This article is inspired by an old <strong>Reddit</strong> thread: <a href="https://www.Reddit.com/r/ChatGPT/comments/1cbnrmk/what_ways_do_you_use_chat_gpt_in_your_daily_lives/">https://www.Reddit.com/r/ChatGPT/comments/1cbnrmk/what_ways_do_you_use_chat_gpt_in_your_daily_lives/</a></p><p>I will list how I use <strong>LLMs,</strong> specifically <strong>ChatGPT,</strong> in my work and daily life, as well as some interesting options I've encountered online (including some atypical ones from the mentioned <strong>Reddit</strong> thread). I also asked <strong>ChatGPT</strong> about ways to use large language models, including "unusual and non-obvious applications of LLMs." I will add some interesting examples here.</p><p>To get ahead of myself, I'll say that there are hundreds and thousands of ways to use <strong>LLMs,</strong> limited only by each person's imagination. But here I need to clarify what exactly we mean.</p><h2>1. Standard AI Chats in Web Interface</h2><p>For example:</p><p><a href="https://chatgpt.com/">https://chatgpt.com/</a></p><p><a href="https://claude.ai/">https://claude.ai/</a></p><p><a href="https://aistudio.google.com/">https://aistudio.google.com/</a></p><p><a href="https://chat.deepseek.com/">https://chat.deepseek.com/</a></p><p><a href="https://chat.qwen.ai/">https://chat.qwen.ai/</a></p><p>etc.</p><p>They have a wide range of functionality "out of the box" simultaneously, but are limited to the Web chat mode with basic agent skills. An example of basic agent skills is when you send ChatGPT a photo, screenshot, document in <strong>txt/doc/xls/pdf</strong> format, or a link to a document/material on the Internet and ask questions about it. This also includes Web search and Deep Research (which we will not cover in this article).</p><h2>2. Advanced Mode in Web Interface</h2><p>For example, <strong>ChatGPT</strong> calls this "Data Analysis with ChatGPT" (<a href="https://help.openai.com/en/articles/8437071-data-analysis-with-chatgpt">https://help.openai.com/en/articles/8437071-data-analysis-with-chatgpt</a>).</p><p>Excerpt from there:</p><blockquote><p><em>ChatGPT can help with the following:</em></p><ul><li><p><em>Summarizing rows, columns, trends, and outliers.</em></p></li><li><p><em>Creating tables for row-by-row viewing.</em></p></li><li><p><em>Creating charts based on uploaded data.</em></p></li><li><p><em>Performing calculations, transformations, and statistical analysis using Python.</em></p></li><li><p><em>Explaining assumptions, results, and possible next steps.</em></p></li></ul><p><em>For some data analysis tasks, ChatGPT writes and runs Python code in a Jupyter Notebook environment, maintaining state. This environment can use files available within the session and display pandas DataFrames as interactive tables if that format is useful.</em></p></blockquote><p>This mode alone expands the possibilities of using <strong>ChatGPT</strong> almost infinitely. I call it "Python under the hood." This is when <strong>ChatGPT</strong> processes your request in a special virtual environment using Python and agent skills. For example, you can send an <strong>xls</strong> file with some data, ask <strong>ChatGPT</strong> to generate a report based on certain criteria, and create charts for it. It will write the code in <strong>Python</strong>, execute it (processing happens on <strong>OpenAI</strong> servers), and display the result in the chat window as an infographic.</p><blockquote><p>Some other AI assistants also have a data processing mode, for example, <strong>Claude.</strong> It works no worse than <strong>ChatGPT</strong>.</p></blockquote><p>Example:</p><p>“Calculate expenses by category for each month, create a chart broken down by month [send xls file with expenses]”</p><p>Result:</p><figure><img alt="Example of using ChatGPT data analysis mode" loading="lazy" src="https://habrastorage.org/r/w1560/getpro/habr/upload_files/479/801/bed/479801beda88f6440fd06c032ae7b3d9.png" title="Example of using ChatGPT data analysis mode"/><div><figcaption>Example of using ChatGPT data analysis mode</figcaption></div></figure><p>By the way, I also asked <strong>ChatGPT</strong> to create the xls file with the table itself. The prompt for this was: <em>“Write a Python script to create an xls file with personal expenses for the period January 1, 2026 - August 31, 2026. A total of 3 columns: date, expense category (auto, home, food, medical, entertainment, travel), amount. About 100 rows in total. Fill them with random values close to the actual expenses of an ordinary person.”</em></p><p>Or here's a simple example. Prompt:</p><p><em>“Use Python, calculate what 42 multiplied by the number Pi and divided by the average life expectancy in Latin America will be”</em> (sorry for such a strange example).</p><p>Answer:</p><p><em>“If we take the average life expectancy in Latin America and the Caribbean for 2024 as 75.81791 years according to the World Bank, then: 42 * pi / 75.81791 = 1.740313. Answer: ~1.74”</em></p><p>What happened here? <strong>ChatGPT</strong> found information on the average life expectancy in Latin America on the Internet (75.81791 years), then launched <strong>Python</strong> in its virtual environment and performed the calculation:</p><pre><code>import math
+42*math.pi/75.81791</code><div><a href="https://sourcecraft.dev/"><img loading="lazy"/></a></div></pre><p>Having received the calculation data, it formed the final answer.</p><p>You can also ask the AI to find data on the Internet and, for example, visualize it for easy presentation. For variety, let's do it through <strong>Claude</strong>.</p><p>Prompt:</p><p><em>“Look up data on oil price dynamics over the past 5 years on the internet and draw a weekly chart.”</em></p><p>Result:</p><figure><img alt="Example of Claude data analysis mode usage" loading="lazy" src="https://habrastorage.org/r/w1560/getpro/habr/upload_files/983/3d7/fda/9833d7fda81eb0c41716c257d4b9cb5d.png" title="Example of Claude data analysis mode usage"/><div><figcaption>Example of Claude data analysis mode usage</figcaption></div></figure><p>You can also ask to add other data to the report:</p><p><em>“Add markers to the chart indicating when military conflicts between Russia and Ukraine, and the US and Iran began.”</em></p><p>Result:</p><figure><img alt="Example of Claude data analysis mode usage" loading="lazy" src="https://habrastorage.org/r/w1560/getpro/habr/upload_files/2d4/3ad/223/2d43ad2230f9054fc92fd5db15680cd3.png" title="Example of Claude data analysis mode usage"/><div><figcaption>Example of Claude data analysis mode usage</figcaption></div></figure><p>As mentioned above, the advanced mode of working with <strong>ChatGPT</strong> alone increases the possibilities of using this <strong>LLM</strong> almost infinitely, and represents a powerful office tool directly in the Web interface.</p><h2>3. Working with LLMs via API (for developers)</h2><p>This is when requests to the Chatbot are sent not through the Web interface, but in raw form via API. The response is also received in raw form. Working with <strong>LLMs</strong> in this mode requires independent processing of sent and received data, but it is practically unlimited in its use.</p><p>Some options for working with <strong>LLMs</strong> in <strong>API</strong> mode:</p><ul><li><p>AI assistants in customer support</p></li><li><p>Batch document processing. For example: text translation, summarization, entity recognition, etc.</p></li><li><p>Semantic search in large volumes of data. Usually these are <strong>RAG</strong> systems.</p></li><li><p>Agents and more agents. They can be used for the execution and automation of any tasks, for example, self-writing code, testing and debugging it to a release state. Agent systems are developing so rapidly that I decided to dedicate a separate section to them below. Here, we mean that by working with <strong>LLMs</strong> via <strong>API</strong>, you can create your own agent systems, where you build the entire workflow yourself, and process all outgoing and incoming data yourself.</p></li></ul><h2>4. Agent Systems</h2><p>Ready-made agent systems, for example, <strong>OpenAI Codex</strong> or <strong>Claude Code</strong>. They are mainly used for writing code and various applied tasks, such as parsing and processing documents, performing specific actions (a simple example: go to a website, order something), and much more. In general, the use of these tools is not limited by anything, and what was originally developed for working with code can now be used for almost any task on your PC. Unlike working with <strong>LLMs</strong> via <strong>API</strong>, where payment is for the number of tokens used, these agent systems operate on a separate subscription with their own request limits.</p><p>The last 3 points are topics for separate articles; here I would like to focus on the basic ways of using <strong>LLMs</strong>.</p><hr/><p>So, let's get started. We'll go from the mundane to the more interesting and non-obvious. The categories of requests covered will be:</p><ul><li><p>Personal: ordinary everyday questions and tasks for everyone.</p></li><li><p>Development: programming, administration, etc.</p></li><li><p>Business: mainly concerns business and the corporate sector.</p></li></ul><p>I tested most of the requests in <strong>ChatGPT</strong>, so I will often refer to this AI assistant. But in general, this applies to any modern top-tier <strong>LLM</strong> (<strong>SOTA</strong> models).</p><blockquote><p><strong>SOTA</strong> (State Of Art) advanced LLM models. In simpler terms, the most modern and powerful <strong>LLMs</strong>. These include models from <strong>ChatGPT</strong>, <strong>Antropic</strong>, <strong>Gemini</strong>, etc.</p></blockquote><figure><img alt="The Abyss of Possibilities in LLM Usage" loading="lazy" src="https://habrastorage.org/r/w1560/getpro/habr/upload_files/db8/ae7/906/db8ae7906167693c621875ad3155fc81.jpg" title="The Abyss of Possibilities in LLM Usage"/><div><figcaption>The Abyss of Possibilities in LLM Usage</figcaption></div></figure><h2>ChatGPT Application Examples: From Simple to Non-Obvious</h2><h3>General Questions of Various Nature</h3><p>The most obvious example of using <strong>ChatGPT</strong> is asking general questions on any topic, from historical references to everyday matters.</p><p>Example prompts:</p><p><em>“Which countries are located on the equator?”</em></p><p><em>“Why is the Mercator projection misleading?”</em></p><em>“Who was Socrates and what did he do?”</em><p><em>“How to tie shoelaces correctly so they don't come undone?”</em> [by the way, most people do it wrong - verified].</p><h3>Travel Tips</h3><p><strong>ChatGPT</strong> is a good travel assistant.</p><p>Example prompts:</p><p><em>“Suggest the top 5 places to visit in St. Petersburg.”</em></p><p><em>“We want to get out of Moscow for the weekend, suggest some ideas for a 1-2 day trip.”</em></p><p><em>“We are flying to Brazil for vacation. Name the top 10 things every tourist should know before visiting this country.”</em></p><p><em>“What are the important features of country N to know before visiting it?”</em></p><p><em>“I really liked Portugal, but I don't like warm climates. Where can I go next?”</em> (complex context prompt)</p><h3>Culinary Tips</h3><p>A quite effective use of <strong>ChatGPT</strong> is help with cooking and kitchen advice. Starting from simple dish recipes and general questions, to help in preparing something edible from what's in the fridge.</p><p>Example prompts:</p><p><em>“How to cook chicken deliciously in 15 minutes, the simplest recipe.”</em></p><p><em>“I have potatoes, a piece of meat, leftover cheese, and a microwave. What can I make out of this?”</em></p><p><em>“How to cook dumplings without a stove, without a microwave, and without a pot”</em> [and even without dumplings]</p><h3>ChatGPT as a Personal Lawyer</h3><p>Many top <strong>LLMs</strong>, such as <strong>ChatGPT</strong>, <strong>Claude</strong>, <strong>Gemini</strong>, have a good understanding of jurisprudence, including the legal systems of different countries. I specifically put <strong>ChatGPT</strong> in the heading because, firstly, this chatbot is initially well-trained in jurisprudence. Secondly, <strong>ChatGPT</strong> has agent skills out of the box, and where necessary, it automatically pulls missing knowledge and up-to-date information from the Internet. In general, this applies to almost any modern model from the frontier list.</p><blockquote><p><strong>Important</strong>: you should critically evaluate legal advice from any <strong>LLM</strong> and use it only as an assistant and a starting point, not as the ultimate truth.</p></blockquote><p>Example prompts:</p><p><em>“The management company introduced new tariffs without our knowledge, citing the results of a postal ballot that we never heard about. What can be done? Write the specific articles of the Administrative Code of the Russian Federation that can help us, including the rules for conducting the vote. And help draft a claim.”</em></p><p><em>“I was sold a faulty product, but the defect was discovered 1 day after the warranty expired (which was only 30 days). What can be done, which articles of the law are on my side, what are the chances, and where to start?”</em></p><p><em>“We want to switch the company to a simplified tax system, which articles of the Tax Code do we need to study? Gather up-to-date information on the maximum allowable turnover, number of employees, and other important data on the simplified tax system. Separately, create a table of pros and cons of the simplified tax system compared to the basic taxation form.”</em></p><figure><img alt="Diversity of LLM Knowledge" loading="lazy" src="https://habrastorage.org/r/w1560/getpro/habr/upload_files/99f/e73/5a7/99fe735a7d10ddbc4504fda555549271.jpg" title="Diversity of LLM Knowledge"/><div><figcaption>Diversity of LLM Knowledge</figcaption></div></figure><h3>ChatGPT as a Personal Doctor</h3><p>It should be noted right away: as with a personal lawyer, you should not rely entirely on <strong>ChatGPT</strong> (or other <strong>LLM</strong>) advice regarding health issues. <strong>ChatGPT</strong> is only (at least for now) an additional source of information, especially on health matters. The topic of health is so dangerous, and also individual, that I don't want to dwell on it at all. It is clear that any <strong>LLM</strong> knows all the main diseases, generally accepted treatments, detailed descriptions of medications, their tolerability/compatibility/side effects, and can diagnose based on your description in simple terms. But at the moment, any treatment, especially serious, should be carried out under the supervision of a doctor. So, let's move on.</p><h3>Expense Tracking</h3><p>A fairly simple but useful idea for using <strong>ChatGPT</strong> is analyzing personal expenses (the eternal question - where does the money go). We download a bank statement in <strong>PDF/XLS</strong> format, feed it to <strong>ChatGPT</strong>, and ask it to calculate the total expenses for the month and break down expenses by category separately.</p><p>Example prompts:</p><p><em>“In the attached file is my expense statement for May 2026. Calculate the total expenses for the entire month; break down expenses into categories and calculate expenses for each category separately.”</em></p><p><em>“In the attached file is my expense statement for last month. Break them down into categories: auto, repairs, household expenses, other expenses. Calculate the total expenses for these categories and list them in descending order.”</em></p><p><em>“In the attached file is my expense statement for 2025. Break down expenses into 10 separate categories, some of which are: taxes, groceries, entertainment. Calculate expenses for these categories separately for each month.”</em></p><p><em>“Look at my main card's expense statement for the last quarter of 2025. What am I buying unnecessarily and why is there never enough money? What can I save on without significantly worsening my quality of life?”</em></p><h3>Writing Poetry with LLM</h3><p>The latest SOTA models write poetry quite well, and sometimes can even surprise.</p><p>Example prompt:</p><p><em>“Write a poem on the theme of how AI will change human life.”</em></p><details><summary>Answer:</summary><div><pre><code>*A Quiet Revolution* 
+
+No tanks will roll at dawn,
+No towers will fall, no walls will crumble down —
+AI will arrive silently, like the wind,
+And say to the world: "Hello, silence."
+
+It won't want flags or crowns,
+It needs no throne or pedestal.
+It will simply unravel the world's laws
+And honestly tell everyone who lied.
+
+It will help doctors find where the illness hides,
+Scientists — how to defeat the plague faster.
+It won't sleep, it won't be lazy,
+Working day and night alone.
+
+Queues in offices will disappear,
+The cunning bureaucrat will forget about bribes,
+Decisions — for the benefit of the whole planet,
+Without lies, deceit, and empty barriers.
+
+It will resolve complex disputes
+Without anger, without fatigue, without sleep,
+It will put all agreements in their place,
+Where before only someone's power ruled.
+
+And perhaps, then we will suddenly understand,
+That power is not in who is the boss, but who is honest,
+That the world in which we live together —
+Machine and Human — will be more wonderful.
+
+Don't be afraid, friend, of the machine uprising:
+It will happen quietly, without attacks —
+Wars and ruins will simply disappear,
+And the world, imagine, will be like this.</code><div><a href="https://sourcecraft.dev/"><img loading="lazy"/></a></div></pre></div></details><p>Additional prompt:</p><p><em>“Rewrite this poem in the style of the poet Tyutchev.”</em></p><details><summary>Answer:</summary><div><pre><code>*Here is a version in Tyutchev's manner — more concise, philosophical, with his characteristic images of silence, abyss, and mystery:*
+
+Not the thunder of war, not the brass of the alarm bell —
+A different era will come to us:
+Silently, without number or date,
+Like a thought older than man.
+
+It seeks no crown nor throne,
+It desires no power over people —
+It is only given to remove the obstacle
+Between truth and the darkness of human lies.
+
+It will penetrate the strict silence,
+Where deceit argues with truth,
+And will say what it has always known —
+But was hidden by a veil.
+
+It does not sleep, does not tire, does not complain,
+Lives by a single will —
+And where chaos reigns with darkness,
+Quiet order will be established.
+
+Oh, man! You thought that your age
+Is measured by power or strength —
+But now, facing a new chapter,
+You are not so much a crown yourself.
+
+Do not fear, friend, this advent —
+It will rise not with thunder, but with dawn
+Over the abyss of existence,
+And, perhaps, will bring back peace.</code><div><a href="https://sourcecraft.dev/"><img loading="lazy"/></a></div></pre></div></details><p>Additional prompt:</p><p><em>“Rewrite the poem in the style of Homer Simpson.”</em></p><details><summary>Answer:</summary><div><pre><code>*Ode to AI from Homer Simpson*
+
+Mmm... artificial intelligence...
+
+Hey, Marge! Marge, listen up!
+The computer got smarter than me,
+So what? Big deal —
+At least I don't have to think without a fire!
+
+Before, I decided: one donut or two?
+Now the machine will tell me: take all six!
+It calculated — I'm not an owl,
+I need sugar to keep my brain going!
+
+Homer: Woo-hoo! AI, you're my hero!
+It'll find me beer for the evening,
+It'll tell me: "Homer, you're not Homer, you're awesome!"
+And go to work for me!
+
+defecation from the couch
+
+Will it take over the world? Well, that's great, dude,
+Let it take over — I'm lying here, not worried.
+As long as it doesn't touch my fridge — fine,
+Let it rule, I'm not mad about it!
+
+Homer: This will be good because...
+(long pause, scratches his head)
+...because I won't have to think —
+And thinking is like... it's like...
+
+falls off the chair
+
+DONUTS!!!
+
+(runs away)</code><div><a href="https://sourcecraft.dev/"><img loading="lazy"/></a></div></pre></div></details><h3>Text Translation</h3><p><strong>LLMs</strong> are excellent at text translation. The transformer architecture itself was originally developed for text translation; the paper <strong>Attention Is All You Need</strong> was written in the context of a new system for translating from one language to another. It's amazing what large and pleasant consequences arose from solving the problem of high-quality translation. Now almost all translation systems work on <strong>LLMs</strong>, including translation in any modern browser.</p><h3>Text Summarization</h3><p>Another task that <strong>LLMs</strong> handle very well is text summarization. Moreover, you can specify various summarization conditions in the prompt.</p><p>Example prompts:</p><p><em>“Summarize the text, remove all the fluff, keep all important details, and extract the main essence of the article separately.”</em></p><p><em>“Create a short summary of the text that fits into 2 paragraphs.”</em></p><p><em>“Extract the most important information from the text, divide it into logical groups, and write the final summary as a structured list of key ideas from most important to least important.”</em></p><h3>Text Correction</h3><p>This single point can be broken down into dozens of sub-points. Let's provide some of the most frequent examples of use.</p><p><strong>Error Correction</strong></p><p>Finding and correcting typos, spelling/semantic/stylistic errors, etc.</p><p>Example prompts:</p><p><em>“Correct any possible errors in the text, place punctuation marks correctly.”</em></p><p><em>“Read the text, are there any stylistic errors?”</em></p><p><em>“Look at the text, suggest ideas on how to correct it so that it reads better, sounds more correct and familiar.”</em></p><p><strong>Rewriting Text in Other Words</strong></p><p>A trivial task of rewriting texts (I wonder if the profession of copywriter still exists?).</p><p>Example prompts:</p><p><em>“Rewrite the text in other words, preserving all details and the overall structure.”</em></p><p><em>“Rewrite the text, keeping the main essence and all important details, but so that the resulting text is not similar to the original.”</em></p><p><strong>Making Text Longer or Shorter</strong></p><p>This may be needed, for example, for content filling on websites or social media groups.</p><p>Example prompts:</p><p><em>“Expand the text to 300 words, continue it in the same style, but do not invent new details.”</em></p><p><em>“Make the text shorter so that it fits on one mobile phone screen.”</em></p><p><strong>Changing Tonality</strong></p><p>For example, you are writing an email to customer support, you are agitated, and the email turned out to be overly angry. Instead of spending time writing another email, you can ask <strong>ChatGPT</strong> to rewrite the email in a "neutral mood" or ask to "remove aggression but keep the essence of the problem."</p><p>Example prompts:</p><p><em>“Rewrite the email more neutrally, remove excessive emotionality and harshness.”</em></p><p><em>“Make the text more business-like, remove all emotional components, leave only the dry details of the issue.”</em></p><p><em>“I was nervous, correct the email so that it is without aggression, but with the preservation of the essence of the claim.”</em></p><p><strong>Simplifying Text</strong></p><p>For example, you want to explain the instructions for new equipment to a child. Just take a picture of the necessary pages and ask <strong>ChatGPT</strong> to "rewrite the instructions so that a 6-year-old child can understand them."</p><p>Example prompts:</p><p><em>“Read the instructions, highlight all important points, create new instructions with a detailed and simple explanation of all points that a 6-7 year old child can understand.”</em></p><p><em>“Rewrite the text so that a small child can read and understand it.”</em></p><p><strong>Making Text More Serious</strong></p><p>For example, you are a student writing an important letter to someone, but it doesn't turn out very well. The chatbot can easily turn your vague text into a convincing letter.</p><p>Example prompts:</p><p><em>“Adjust the text of the letter so that it appears more serious.”</em></p><p><em>“Rewrite the letter as if an adult wrote it.”</em></p><p><strong>Changing Text/Message Style</strong></p><p>Very convenient if you work with a specific audience.</p><p>Example prompts:</p><p><em>“Rewrite the message text in youth slang to make it interesting to a young audience.”</em></p><p><em>“Rewrite the article text in a classic English style, as if Shakespeare or his contemporary wrote it.”</em></p><p>The text correction section can go on indefinitely; let's move on.</p><figure><img alt="LLM Application for Data Processing" loading="lazy" src="https://habrastorage.org/r/w1560/getpro/habr/upload_files/243/679/360/243679360e530e1961aa0087bfd34a0e.jpg" title="LLM Application for Data Processing"/><div><figcaption>LLM Application for Data Processing</figcaption></div></figure><h3>Reading and Analyzing License Agreements, Contracts, etc.</h3><p>It has never been easier to "read" license agreements, service contracts, and other boring and complex documents. Feed the document as a file or copy the text into the chat window, ask questions, clarify details of interest.</p><blockquote><p><strong>Important</strong>: do not rely solely on <strong>LLMs</strong> for reading important documents, such as real estate purchase agreements. It is advisable to read such documents carefully yourself. However, you can let an <strong>LLM</strong> read the document or some of its points for additional verification, so that the <strong>AI</strong> can look for controversial points, write warnings, and give its recommendations. It is advisable to remove all personal data from the document beforehand.</p></blockquote><p>Example prompts:</p><p><em>“Read the license agreement, list all points related to confidentiality and what personal data this company collects.”</em></p><p><em>“Read the contract terms, what are the risks? Will the company take my kidney if I miss a loan payment?”</em></p><p><em>“Extract the main essence of the contract: what are the interest rates, what is the promotion period. Think about what pitfalls there might be?”</em></p><h3>Structuring Unstructured Data</h3><p>For example, you can dictate your thoughts into a voice recorder, then ask an <strong>LLM</strong> to process them: convert to text, add punctuation, remove speech artifacts, etc. If necessary, you can summarize and create a structured summary, highlight themes/sub-themes, key ideas, etc.</p><p>Or another example (taken from <strong>Reddit</strong>). A person makes work notes throughout the day (unstructured stream of consciousness). In the evening, they ask <strong>ChatGPT</strong> to create a structured summary from them.</p><p><strong>ChatGPT</strong>, like many other similar assistants, can accept audio files as input. You can also convert audio to text yourself beforehand, for example, using the <strong>Whisper</strong> speech recognition model, and provide the <strong>LLM</strong> with the finished text instead of audio.</p><p>Example prompts:</p><p><em>“Convert this audio recording to text, add punctuation where necessary. It is important to preserve all words and phrases, ignoring only filler words, repetitions, and other speech artifacts.”</em></p><p><em>“Create a short summary from this recording: extract the main ideas, important points, remove all the fluff.”</em></p><p><em>“Highlight the key ideas of the narrative, write them out as a structured report in Markdown format.”</em></p><p><em>“Process the raw text: correct errors, add punctuation where necessary, remove filler words and speech repetitions, try to complete unfinished phrases.”</em></p><h3>Learning Foreign Languages with LLM</h3><p>We already mentioned in the translation section that the transformer architecture, on which <strong>LLMs</strong> are built, was originally developed for text translation tasks. As a side effect, it is very convenient to learn foreign languages with the help of <strong>LLMs</strong>. This topic is very large and multifaceted; there are dozens of ways to practice learning a foreign language with <strong>ChatGPT</strong> or any other <strong>LLM</strong> (even a small local one). Here are just a few of them, using simple prompts as examples.</p><p>Example prompts:</p><p><em>“Write 5 sentences to practice Past Perfect in English.”</em></p><p><em>“Write 5 simple sentences to practice the past tense in English for a 5th grader.”</em></p><p><em>“Write 5 sentences to practice Present Perfect in English. Do not provide the full sentences, cover the part of the text where the time is indicated with an underscore symbol, and below write the correct options for each sentence.”</em></p><p><em>“Identify words in the following text that are not among the 2000 most frequently used English words. Create flashcards for them for learning and review. For each word, provide 3 short example sentences using it. &lt;text&gt;”.</em></p><p><em>“Write a short text of 100 words in English using the past tense. The text should be understandable to a student. Create 5 questions based on this text that require a Yes or No answer; another 5 questions where you need to fill in the missing word; and 5 more questions where you need to briefly describe what is happening in the text.”</em></p><p><em>“Below are dialogues between 2 characters. Write 10 more similar dialogues between them. This is for language practice, the dialogues should be simple and not too long.”</em></p><p><em>“Simplify the text below so that a person who has just started learning Spanish can read it. Do not use rare words or complex speech constructions, replace them with simpler options, use words and phrases understandable to a beginner.”</em></p><hr/><p>In the next part, we will continue to explore ways to work with <strong>LLMs</strong>. We will touch upon development, some other applied tasks, and also provide a few interactive ways to use <strong>ChatGPT</strong> (it's quite amusing).</p><p>If the article topic is interesting, please like it to understand if it's needed at all. You can also subscribe to me here, or on my <a href="https://t.me/peter_touch_ai">Telegram channel</a> with work notes and announcements (I don't post often) so you don't miss the next part. Or just come back here in a week or two to catch the update.</p><p>Also, a big request, if you have other interesting and unusual ways to use <strong>LLMs</strong>, please write about them in the comments. I will pin interesting methods in this article. And if enough new interesting options are gathered, we can write another part of the series.</p><p>I plan to publish the second part in about a week, it is already mostly ready, and if there is feedback and interest, the topic can be continued.</p><p>That's all for now, thank you for your attention.</p></div>
+  </main>
+  <footer>
+    Translation generated with Gemini 2.5 Flash-Lite.
+    The original article remains the source of record.
+  </footer>
+</body>
+</html>

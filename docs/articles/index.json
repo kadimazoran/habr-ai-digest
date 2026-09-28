@@ -1567,6 +1567,14 @@
     "summary": "A review of the only serial Russian neurochip, NTC \"Module\", which has been in production for 27 years. What it can do according to its datasheet and in real-world applications – from hospitals and Russian Railways to mines and satellites. How it compares to Jetson and Ascend 310. Who else in Russia is trying to make neurochips – and why it's called \"niche\". A deep dive into the review.",
     "title": "Russian Neurochip from NTC \"Module\""
   },
+  "https://habr.com/ru/articles/1086832/?utm_campaign=1086832&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Mon, 28 Sep 2026 14:30:30 GMT",
+    "slug": "1086832",
+    "source_url": "https://habr.com/ru/articles/1086832/?utm_campaign=1086832&utm_source=habrahabr&utm_medium=rss",
+    "summary": "Six months ago, I started building a service for myself, without a team. Agents in Claude Code write the code; I set the tasks and accept the results. Over this time, the experiment has evolved into a working system: twelve roles, a mandatory stage order, and maximum agent autonomy from task assignment to release. I'll explain who does what, how a task progresses from a backlog item to a release, and how to get started if you want to do the same.",
+    "title": "Agent Teams in Claude Code: From Task to Release"
+  },
   "https://habr.com/ru/articles/1086842/?utm_campaign=1086842&utm_source=habrahabr&utm_medium=rss": {
     "model": "gemini-2.5-flash-lite",
     "published": "Fri, 25 Sep 2026 20:16:19 GMT",
@@ -1671,6 +1679,14 @@
     "summary": "B&R process automation after sanctions, without magic and rituals: how to replace a dead controller with a mini-PC, keep the original racks, and not rewrite the project. Driver for Intel I226 network cards, real-time gateway, kernel for the task, and testing on real hardware. In the first article, I talked about how I was left alone with two hundred car washes. It was about why it all worked out. Here it will be about how exactly, with the specifics that were asked for in the comments. First, some context to understand where everything came from. Our car wash automation project is written in Automation Studio, which is B&R's development environment, and it runs on a B&R controller. When it became clear that controllers and modules could no longer be bought, we started migrating projects to regular PCs. For new car washes, this has been debugged since 2022: about a hundred facilities run on mini-PCs, and instead of B&R racks, they have racks from another manufacturer, using Modbus TCP. The project remains the same, only reconfigured for new modules. But this won't work for the old car washes. They have original B&R racks, and they communicate with the controller via POWERLINK. This is a hard real-time protocol with a cycle of two milliseconds, and it wasn't there for show: the PLC counted the flow meter pulses and generated dispenser pulses on it. On such facilities, it's usually the controller that dies, while the racks live on and are ready to serve for another ten years. It's a shame and expensive to replace them, buying a controller is also expensive; a used one through gray import costs from half a million to three and a half million rubles, and that's for each failure. This article is about this case: how to put a mini-PC instead of a controller and not touch the racks or the project itself. Read more",
     "title": "How do you even live without POWERLINK..."
   },
+  "https://habr.com/ru/articles/1087040/?utm_campaign=1087040&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Mon, 28 Sep 2026 14:30:31 GMT",
+    "slug": "1087040",
+    "source_url": "https://habr.com/ru/articles/1087040/?utm_campaign=1087040&utm_source=habrahabr&utm_medium=rss",
+    "summary": "I was hesitant to launch Astra. Not for lack of time, but because I knew once I started, it would pull me into an abyss. You ask one question, then another, 'Can this be done?' and the model delivers something that makes it impossible to stop, with the clock showing midnight and work in the morning. So, I waited. I also wanted an idea and curiosity to ignite in my mind, something that couldn't be contained. So, when I felt it on Friday afternoon, I decided it was time. Exactly at five, I closed my work laptop, turned to my home Mac, placed my iPad with ChatGPT to the right, and a large glass of water to the left. The task ahead was not trivial. Let's even say it was crazy – we decided to programmatically access the data from Euclid, the new telescope hanging a million and a half kilometers from Earth at the L2 Lagrange point, and process its data through a new GPT 6 model – Astra Extra High, and... That 'and' was the main question. Read more",
+    "title": "Reaching for the Heavens: An Amateur Astronomer with an AI Agent Analyzes Euclid Telescope Data"
+  },
   "https://habr.com/ru/articles/1087120/?utm_campaign=1087120&utm_source=habrahabr&utm_medium=rss": {
     "model": "gemini-2.5-flash-lite",
     "published": "Sun, 27 Sep 2026 11:41:40 GMT",
@@ -1702,6 +1718,70 @@
     "source_url": "https://habr.com/ru/articles/1087148/?utm_campaign=1087148&utm_source=habrahabr&utm_medium=rss",
     "summary": "SSH access is used in many scenarios, from working with repositories to automation and server management. But if the private key is available to the application itself, it can be stolen if the process is compromised. Replacing SSH with a token doesn't solve the problem: it will just be another secret accessible to the same process. In this article, we'll explore an architecture based on ssh-agent and rootless Docker, where a process can fully utilize granted SSH access without obtaining the private key itself. This restriction is enforced by the access scheme itself and remains even if the software inside the container is compromised. This approach is particularly relevant for systems with AI agents and additional API layers like MCP servers. Read more",
     "title": "Docker for the Paranoid: Organizing SSH Access for a Rootless Container Without Transferring the Private Key"
+  },
+  "https://habr.com/ru/articles/1087536/?utm_campaign=1087536&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Mon, 28 Sep 2026 14:42:42 GMT",
+    "slug": "1087536",
+    "source_url": "https://habr.com/ru/articles/1087536/?utm_campaign=1087536&utm_source=habrahabr&utm_medium=rss",
+    "summary": "With an AI assistant, a junior's work looks as neat as a senior's, and you can no longer find mistakes by appearance. If the author cannot explain how they got the result, the reviewer reconstructs the path themselves and essentially does the task a second time. I analyze where the senior's time is burned out, using an nginx fix as an example, and what requirements for submitting work can fix this. Read more &rarr;",
+    "title": "The Junior Was Given an AI, and the Senior Got More Work"
+  },
+  "https://habr.com/ru/articles/1087552/?utm_campaign=1087552&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Mon, 28 Sep 2026 11:28:05 GMT",
+    "slug": "1087552",
+    "source_url": "https://habr.com/ru/articles/1087552/?utm_campaign=1087552&utm_source=habrahabr&utm_medium=rss",
+    "summary": "Currently, the Jev model from Typesafe is widely discussed. I've decided to release my model in CMF format for personal use (License: apache-2.0), which has been operational on the gateway for a long time. How does it work? For example, a user writes that their card hasn't arrived. The application needs to select `card_arrival` and route the request to the appropriate handler, or write a Go function. Decisions must be made as quickly as possible. There are many such decision points: selecting an agent tool, determining the topic of a request, its complexity, sending a document for verification, determining task complexity and type. For these tasks, I've published CMF Decision: a model that makes decisions based on reconstruction error. The encoder, trained skills, and confidence rules are all in one `.cmf` file. New skills can be added using your own examples, and unfamiliar cases can be passed to a pluggable oracle-model that acts as a teacher. In Cortiq 0.8.0, the same file runs on CPU, Apple Metal, and Vulkan. On an RTX PRO 4000 Blackwell, the full local path took 1.10–1.24 ms. Below is how this mechanism works, what the results are compared to Jev and Laya, and how to run the model or add your own task. Read more",
+    "title": "CMF: Millisecond Decisions Without Token Generation (Jev Alternative) With Open Weights"
+  },
+  "https://habr.com/ru/articles/1087564/?utm_campaign=1087564&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Mon, 28 Sep 2026 11:51:36 GMT",
+    "slug": "1087564",
+    "source_url": "https://habr.com/ru/articles/1087564/?utm_campaign=1087564&utm_source=habrahabr&utm_medium=rss",
+    "summary": "Claude Opus 5.5 and GPT-6 Sol have been released, and everyone has started looking at gateway prices. I've compiled prices from five gateways with payment from Russia and calculated differently: how much an hour of work in Claude Code would cost with my load – based on logs from 49 of my sessions, 138 hours of work. The spread turned out to be almost tenfold: from 181 to 1,756 rubles for the same hour on the same model. Half of the bill goes to cache writes, even though it's only 5% of incoming tokens. And the cheapest price in the table doesn't give the cheapest hour: when cache reads cost as much as regular input, an hour of agent work turns out to be almost twice as expensive as a gateway with cheap caching. Read more",
+    "title": "How much does an hour of a coding agent cost: a rating of five API gateways by expenses"
+  },
+  "https://habr.com/ru/articles/1087648/?utm_campaign=1087648&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Mon, 28 Sep 2026 13:50:12 GMT",
+    "slug": "1087648",
+    "source_url": "https://habr.com/ru/articles/1087648/?utm_campaign=1087648&utm_source=habrahabr&utm_medium=rss",
+    "summary": "The article describes several experiments conducted with Alice, a virtual assistant provided by Yandex. These experiments can be replicated by any internet user and reveal unexpected properties of virtual assistants. Read more",
+    "title": "Experiments with Alice"
+  },
+  "https://habr.com/ru/articles/1087678/?utm_campaign=1087678&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Mon, 28 Sep 2026 14:29:12 GMT",
+    "slug": "1087678",
+    "source_url": "https://habr.com/ru/articles/1087678/?utm_campaign=1087678&utm_source=habrahabr&utm_medium=rss",
+    "summary": "Regardless of your opinion on AI-assisted programming, software development approaches are changing. Everyone is wondering: \"What will remain important?\" There are as many opinions as there are people, but here's mine: most ideas from Domain-Driven Design (DDD) are now more relevant than ever, as the DDD paradigm was never limited to code itself. The more agent-based programming develops, the better we need to understand the domain, model it well, and master teamwork. Let's talk about what DDD can still teach us that AI cannot replace. The usual disclaimer: I'm writing about complex projects supported for months and years, about what teams struggle with, and where DDD shines. There's no need to use such advanced patterns in pet projects or CRUD. Read more",
+    "title": "[Translation] The DDD Paradigm Has Become Much More Important When AI Writes Code For You"
+  },
+  "https://habr.com/ru/articles/1087682/?utm_campaign=1087682&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Mon, 28 Sep 2026 14:35:17 GMT",
+    "slug": "1087682",
+    "source_url": "https://habr.com/ru/articles/1087682/?utm_campaign=1087682&utm_source=habrahabr&utm_medium=rss",
+    "summary": "We've long observed most educational organizations struggling with AI in the educational process. This struggle should end and evolve into cooperation and integration of AI into the educational system. In the article, I raise the question of the purpose of education, how to integrate AI into this process, and complain about being forced to take handwritten notes in a master's program. Read more",
+    "title": "Education vs. AI"
+  },
+  "https://habr.com/ru/articles/1087696/?utm_campaign=1087696&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Mon, 28 Sep 2026 15:10:03 GMT",
+    "slug": "1087696",
+    "source_url": "https://habr.com/ru/articles/1087696/?utm_campaign=1087696&utm_source=habrahabr&utm_medium=rss",
+    "summary": "In 0.11 we ran AI reviewers over code for forty rounds and found many bugs. But each reviewer had their own idea of what \"correct\" means. In 0.12 we started from the other end: we wrote down sixteen invariants that our MCP memory promises, and then two models from different labs spent ten days looking for counterexamples. Only findings with reproduction were counted. I'll tell you what they broke (Windows counted NUL as a terminal), what it cost, and what we consciously left in Known issues. Read on",
+    "title": "Sixteen promises and two models that tried to break them: how we released skillmem 0.12"
+  },
+  "https://habr.com/ru/articles/1087738/?utm_campaign=1087738&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Mon, 28 Sep 2026 16:18:21 GMT",
+    "slug": "1087738",
+    "source_url": "https://habr.com/ru/articles/1087738/?utm_campaign=1087738&utm_source=habrahabr&utm_medium=rss",
+    "summary": "I took 139 package names that five recent AI models hallucinate identically and checked each against live PyPI and npm on September 22. These are registries from which libraries for Python and JavaScript are installed. The list is valuable because it's not tied to a single neural network: if all five hallucinate the same name, users of any of them are at risk. The list was disclosed on April 30, 2026. 7 out of 139 names are taken. Under one of them, metro-evaluator, malicious code was found in December 2025: npm removed it five days later and replaced it with a placeholder. This was before the list was disclosed, and whether it was a coincidence or a calculated move for a hallucinated name is not visible from the registry. The other six names are occupied by four existing third-party projects, a brand owner's placeholder, and an empty 53-byte package that appeared after the list's disclosure. Following an AI's advice, 'pip install odf' will install someone else's tool instead of the intended library. Read more",
+    "title": "AI model hallucinations in code usually break the build. With a fabricated package, it's different: its name can be taken by a malicious actor"
   },
   "https://habr.com/ru/companies/1c/articles/1071340/?utm_campaign=1071340&utm_source=habrahabr&utm_medium=rss": {
     "model": "gemini-2.5-flash-lite",
@@ -1959,6 +2039,14 @@
     "summary": "Corporate AI is no longer a pilot project in a single department. Requests to models come from IDEs, internal assistants, agent loops, and \"shadow\" employee chats. The attack surface looks different from a classic perimeter: prompt injection, PII leakage to an external model, uncontrolled token consumption, an AI agent calling a tool without authorization. This article analyzes a real requirements matrix for an LLM/AI Firewall. The goal is not a feature catalog, but a map of what the Customer considers mandatory, and how these requirements translate into a control architecture where trust boundaries, cost, regulation, and manageability are important. Over the past year, large enterprise companies' requirements for generative AI protection have changed significantly. Initially, it was a short list of tasks for a \"ChatGPT proxy.\" Now it's a multi-page matrix with over 500 formalized requirements: standard tasks first, then requirements for AI agents, MCP, 152-FZ, model supply chains, etc. This is no longer a request for a filter. It's a request for a control loop. Read more",
     "title": "Customer Requirements for LLM/AI Firewall"
   },
+  "https://habr.com/ru/companies/infera_security/articles/1087630/?utm_campaign=1087630&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Mon, 28 Sep 2026 13:24:42 GMT",
+    "slug": "1087630",
+    "source_url": "https://habr.com/ru/companies/infera_security/articles/1087630/?utm_campaign=1087630&utm_source=habrahabr&utm_medium=rss",
+    "summary": "The common assertion that existing DLP solutions can prevent data leaks to AI services like ChatGPT and Copilot is technically incorrect. This article explains why DLP systems are ill-equipped to monitor AI interactions, ensure secure usage, and provide end-to-end visibility of AI within corporate infrastructure. DLP and LLM/AI Firewalls serve distinct purposes on different fronts, though both aim to prevent data leakage. Classic DLP cannot parse model dialogues, block requests before they reach LLMs, detect jailbreaks or indirect RAG injections, or manage model routing. Conversely, LLM/AI Firewalls do not replace DLP for traditional channels like email, USB drives, or printing. DLP focuses on identifying known sensitive content within established channels (email, files, removable media, web, cloud, messengers), answering the question: 'Is marked confidential data leaking through a familiar channel?'. LLM/AI Firewalls sit between the user/AI agent and the AI model, addressing different concerns. Read on.",
+    "title": "Why DLP Doesn't Control AI and Fails to Address OWASP Top 10 for LLM, Agentic Applications, and MITRE ATLAS"
+  },
   "https://habr.com/ru/companies/inferit/articles/1078620/?utm_campaign=1078620&utm_source=habrahabr&utm_medium=rss": {
     "model": "gemini-2.5-flash-lite",
     "published": "Mon, 07 Sep 2026 08:27:46 GMT",
@@ -2175,6 +2263,14 @@
     "summary": "AI development tools are becoming more capable, changing the familiar code workflow: generation takes less time, but understanding the result increasingly falls on the reviewer. Let's explore why reviewing AI code creates additional cognitive load, how unnoticed debt arises from this, and what approaches help maintain development quality when working with agents. Let's break down the approach.",
     "title": "[Translation] AI writes code faster, but reviews become harder: where does cognitive debt come from"
   },
+  "https://habr.com/ru/companies/piter/articles/1087530/?utm_campaign=1087530&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Mon, 28 Sep 2026 11:07:57 GMT",
+    "slug": "1087530",
+    "source_url": "https://habr.com/ru/companies/piter/articles/1087530/?utm_campaign=1087530&utm_source=habrahabr&utm_medium=rss",
+    "summary": "Hello, Habr residents! When you enter a prompt into a large language model (LLM), the machine converts your text into numbers, processes them, and then returns the answer token by token. In this article, we will break down what inference (logical reasoning) in LLMs is and see how it works. Read more",
+    "title": "[Translation] How Inference Works in Large Language Models"
+  },
   "https://habr.com/ru/companies/psm_unlim/articles/1083150/?utm_campaign=1083150&utm_source=habrahabr&utm_medium=rss": {
     "model": "gemini-2.5-flash-lite",
     "published": "Tue, 22 Sep 2026 09:00:09 GMT",
@@ -2343,6 +2439,14 @@
     "summary": "How to simplify the management of a fleet of 800+ PostgreSQL database instances? You can customize postgres_exporter to get the metrics you need. Or, for an even simpler approach, monitor using Grafana, Prometheus, and a customized postgres_exporter, and get data through an AI report that aggregates Prometheus data via direct PromQL queries. But if that's not enough, you can even entrust an AI agent with typical tickets like freeing up disk space and scheduling database shutdowns. My name is Stanislav Epishin, and I'm from the \"R4C.Support.Apocalypse Riders\" team at SberTech. I've previously written about how we customized postgres_exporter to pangolin_exporter, fixing a bug in transaction duration calculation, and how we implemented the Prometheus + Pipeliner + TaskTracker + GigaChat stack for automatic ticket creation. In this article, I'll discuss an R&D project for a small DBA team where we tested a hypothesis: can we build an autonomous agent that will independently handle tickets, such as clearing disk space, performing VACUUM/ANALYZE, and scheduling database shutdowns? Here, I've outlined instructions for creating the agent (with full code and explanations) and a detailed real-world example of autonomous VACUUM/ANALYZE with anomaly detection via LLM. I'll also show how to organize an event feed for monitoring the agent's operation and delve into where and how LLM is used in the project. Read on",
     "title": "We Wrote an Autonomous Agent for VACUUM/ANALYZE and Launched it on 800+ Test Databases: What Came of It"
   },
+  "https://habr.com/ru/companies/sberbank/articles/1086726/?utm_campaign=1086726&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Mon, 28 Sep 2026 13:01:23 GMT",
+    "slug": "1086726",
+    "source_url": "https://habr.com/ru/companies/sberbank/articles/1086726/?utm_campaign=1086726&utm_source=habrahabr&utm_medium=rss",
+    "summary": "Controlling robots using images and text instructions remains a key challenge in modern robotics. Vision-Language-Action (VLA) models can handle many tasks, but most successes are on standard manipulators. Controlling an anthropomorphic robot like Sber's 'Green' presents a significantly higher complexity due to its many degrees of freedom, human-like hands, and mobile platform requiring whole-body coordination and balance. Sber Robotics is launching the Green Challenge competition as part of AI Journey 2026, inviting participants to develop or fine-tune control models for 'Green' to perform mobile manipulation tasks in a digital simulator. This is a complex Physical AI challenge, encompassing data preparation, multimodal perception, planning, and coordinated whole-body control.",
+    "title": "Green Challenge 2026: A Physical AI Model Competition for the 'Green' Anthropomorphic Robot"
+  },
   "https://habr.com/ru/companies/sberbank/articles/1086740/?utm_campaign=1086740&utm_source=habrahabr&utm_medium=rss": {
     "model": "gemini-2.5-flash-lite",
     "published": "Fri, 25 Sep 2026 16:13:01 GMT",
@@ -2422,6 +2526,14 @@
     "source_url": "https://habr.com/ru/companies/smartengines/articles/1085778/?utm_campaign=1085778&utm_source=habrahabr&utm_medium=rss",
     "summary": "Today, we would like to introduce a futuristic technology to the Habr community, into which we have poured all our efforts and soul over the past few years. We are talking about portable tomography. We explain how we at Smart Engines created the world's first wearable free-positioning tomograph. The device weighs less than 5 kg, fits in a suitcase, can practically be held in your hands, and yet provides a full 3D reconstruction of the scanned object – without the massive ring and complex stationary mechanics typical for CT. Thanks to this, we have managed to implement the principle \"the patient doesn't go to the tomograph, but the tomograph goes to the patient.\" Read more",
     "title": "Smart Engines Presents: A Portable CT Scanner in a Suitcase (Part 1)"
+  },
+  "https://habr.com/ru/companies/smartengines/articles/1087534/?utm_campaign=1087534&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Mon, 28 Sep 2026 11:15:14 GMT",
+    "slug": "1087534",
+    "source_url": "https://habr.com/ru/companies/smartengines/articles/1087534/?utm_campaign=1087534&utm_source=habrahabr&utm_medium=rss",
+    "summary": "Every minute counts in business. But if a document must first be sent for processing, checked, and only then its data entered into the accounting system, a gap arises between the real operation and its reflection in the system. All this time, the owner does not see the actual picture and is forced to make decisions based on outdated information. Therefore, documents need to be recognized directly where and when the operation occurs. This task is solved by edge recognition, implemented in Smart Document Engine. The platform allows processing documents directly at the point of their appearance - for example, in a warehouse or an employee's workspace - using a smartphone, tablet, or other device, and immediately transferring the ready data to corporate systems. As a result, the business gets an up-to-date picture of what's happening, and the gap between the real operation and its reflection in accounting is minimized. We've gathered the highlights of Smart Document Engine Week in one digest 👇 Read more",
+    "title": "Edge Recognition is the Future of Document Processing: Smart Document Engine Weekly Digest"
   },
   "https://habr.com/ru/companies/sminex_developer/articles/1083860/?utm_campaign=1083860&utm_source=habrahabr&utm_medium=rss": {
     "model": "gemini-2.5-flash-lite",

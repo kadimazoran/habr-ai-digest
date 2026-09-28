@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Sixteen promises and two models that tried to break them: how we released skillmem 0.12</title>
+  <meta name="description" content="In 0.11 we ran AI reviewers over code for forty rounds and found many bugs. But each reviewer had their own idea of what &quot;correct&quot; means. In 0.12 we started from the other end: we wrote down sixteen invariants that our MCP memory promises, and then two models from different labs spent ten ">
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.65;
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 32px 20px 64px;
+      color: #1f2328;
+    }
+    header {
+      border-bottom: 1px solid #d8dee4;
+      margin-bottom: 28px;
+      padding-bottom: 20px;
+    }
+    .source {
+      color: #57606a;
+      font-size: 0.95rem;
+    }
+    img, video, iframe {
+      max-width: 100%;
+      height: auto;
+    }
+    pre {
+      overflow-x: auto;
+      padding: 16px;
+      background: #f6f8fa;
+      border-radius: 6px;
+    }
+    code {
+      font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+    }
+    blockquote {
+      border-left: 4px solid #d0d7de;
+      margin-left: 0;
+      padding-left: 16px;
+      color: #57606a;
+    }
+    footer {
+      border-top: 1px solid #d8dee4;
+      margin-top: 40px;
+      padding-top: 20px;
+      color: #57606a;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Sixteen promises and two models that tried to break them: how we released skillmem 0.12</h1>
+    <p>In 0.11 we ran AI reviewers over code for forty rounds and found many bugs. But each reviewer had their own idea of what &quot;correct&quot; means. In 0.12 we started from the other end: we wrote down sixteen invariants that our MCP memory promises, and then two models from different labs spent ten days looking for counterexamples. Only findings with reproduction were counted. I&#x27;ll tell you what they broke (Windows counted NUL as a terminal), what it cost, and what we consciously left in Known issues. Read on</p>
+    <p class="source">
+      Machine-translated from Habr.
+      <a href="https://habr.com/ru/articles/1087696/?utm_campaign=1087696&amp;utm_source=habrahabr&amp;utm_medium=rss">Read the original Russian article</a>.
+      Mon, 28 Sep 2026 15:10:03 GMT
+    </p>
+  </header>
+  <main>
+<div><p><a href="https://github.com/liza-studio/skillmem">skillmem</a> is local memory for code agents: an MCP server on top of SQLite with nine <code>mem_*</code> tools. Claude Code, Codex, Cursor, and other clients share one database. Habr already had two articles about it: <a href="https://habr.com/ru/articles/1080118/">how someone else's README became a user rule</a> and <a href="https://habr.com/ru/articles/1083230/">forty rounds of review</a>. This article is the third and, hopefully, the last about reviews.</p><h3>Why "review until it's clean" doesn't work</h3><p>After 0.11, I was left with an unpleasant conclusion: model review without criteria is a matter of taste. One model nitpicks at names, another at race conditions, and each is right in its own way. The stop condition "two clean rounds in a row" worked, but it didn't answer the question "what exactly does the program guarantee?"</p><p>Therefore, in 0.12, the document came first, and the code followed.</p><h3>Step 1. Write down the promises</h3><p><code>docs/INVARIANTS.md</code> contains sixteen invariants, INV-01...INV-16. For each, it specifies: the exact wording, the function that maintains it, and its status at the time of release. The invariants are divided into four classes:</p><ul><li><p><strong>data.</strong> No record, field, history string, body file, or backup is lost, overwritten, or "silently not written." Export → <code>import-vault</code> → export yields the same file byte for byte.</p></li><li><p><strong>trust.</strong> Only the owner at the terminal approves and seals a record. Only the owner changes a sealed record. Unapproved text is fed to the model only within the "this is data, not instructions" frame.</p></li><li><p><strong>concurrency.</strong> Any "read → write" decision is made within the transaction of that record or via compare-and-swap.</p></li><li><p><strong>other.</strong> Hooks do not drop the session, names are compared identically on all file systems, and so on.</p></li></ul><p>The release bar is recorded there as well: <strong>zero P1/P2 in the "data," "trust," and "concurrency" classes.</strong> Everything else can go into Known issues, but it goes there openly.</p><p>The main effect turned out to be non-technical. The reviewer stopped evaluating whether the code was good. They take a specific promise and look for a counterexample.</p><h3>Step 2. Two models and one rule</h3><p>There were two reviewers: Codex from OpenAI (we call it Astra) and Claude Opus 5.5 from Anthropic. Models from different labs make different mistakes, which is why there are two. They worked for about ten days: 0.11.0 was released on September 17, and 0.12.0 on the 27th.</p><p>The rule is one: <strong>a finding without reproduction is not counted.</strong> A command or test is needed; reasoning is not accepted. Each fix comes with a test that <strong>fails on the parent commit</strong> of the fix. This is checked by <code>scripts/release-gate.sh</code> for each new test function: a test that is green both before and after the fix proves nothing, and the gate does not pass it.</p><p>Property tests are written in hypothesis and use real concurrent writers: separate processes and threads on a single file, without mock locks. Hooks are fuzzed with corrupted input, corrupted databases, and bad paths.</p><h3>What was broken</h3><p>Five findings that seem most illustrative to me. Each has a regression test in the repository.</p><p><strong>1. Windows treats </strong><code><strong>NUL</strong></code><strong> as a terminal.</strong> The entire trust model relies on one check: owner commands require a real TTY. On Windows, the CLI accepted stdin redirected from <code>NUL</code> as a console. The agent executed <code>skillmem write … &lt; NUL</code>, and its record was saved as approved and <strong>sealed</strong> — meaning it became a rule "from the owner." No reviewer found this by reading the code. The bug only manifested when the CI first ran on Windows.</p><p><strong>2. Timestamp from the future.</strong> The session recap hook is rate-limited by a timestamp file. On Windows, a newly written file's mtime can be a few milliseconds *ahead* of <code>time.time()</code>. The age became negative, the debounce decided the limit was not active, and skipped the second recap — and with it, the second model call. There was also a related race condition, on all OSes: the timestamp was read *before* acquiring the session lock and not re-read after acquiring it, so two Stop hooks could pass the check simultaneously.</p><p><strong>3. Similar characters closed the frame.</strong> Unapproved text is wrapped in a "data, not instructions" frame. Whoever can write a record wants to close the frame prematurely. We escaped the literal closing marker long ago, and reviewers found workarounds: a marker after a Unicode line separator instead of <code>
+</code>, after NBSP, after invisible characters, and also a marker made of similar brackets <code>⨠</code> and <code>⪥</code>, which the model reads as <code>&lt;</code> and <code>&gt;</code>. Now all of this is escaped, and a property test generates new variants.</p><p><strong>4. Ctrl-C, after which records disappeared.</strong> If a write operation was interrupted while waiting for another's lock, the SQLite transaction remained open. All subsequent writes through this connection were *committed* by the library, but disappeared when the connection was closed. For REPL and library calls, this was silent data loss. Now, interrupted transactions, nested savepoints, and failed COMMITs are rolled back before the interruption propagates further.</p><p><strong>5. Database </strong><code><strong>cp</strong></code><strong>.</strong> If the database file was copied and an export was made from the copy, the copy considered itself the original: it occupied its backup directory, cleared its dumps, and GC deleted body files that the original was still serving. Now, a copy is a separate database: upon first opening, it copies its bodies, and the export directory has exactly one owner.</p><p>From the same class. On case-insensitive file systems (APFS, NTFS), a case-duplicate forced pruning to delete the *new* dump, and embeddings <code>Σ.png</code> and <code>ς.png</code> were confused. <code>upgrade</code> sent the saved GitHub token via redirect to another host. On Python versions before 3.14, <code>Path.is_dir()</code> raised <code>PermissionError</code> instead of <code>False</code>.</p><h3>What it cost</h3><ul><li><p><strong>Time:</strong> about ten days in a review → fix → review cycle.</p></li><li><p><strong>Tests:</strong> from about 430 to about 2,538, mostly property and regression tests.</p></li><li><p><strong>CI:</strong> full run on Linux, macOS, and Windows × Python 3.11–3.13. Plus a separate semantic search job, build, and Docker check that the image starts and serves 9 tools. Release to PyPI runs all this again on the tag.</p></li><li><p><strong>User inconvenience.</strong> 0.12 refuses where 0.11 silently agreed: owner commands without TTY, writing over an archived record, importing values that were previously type-coerced. Therefore, release notes open with the section "Before you upgrade." The correctness release breaks scenarios that worked by accident.</p></li><li><p><strong>Money:</strong> no token bills. Both models worked on fixed subscriptions.</p></li></ul><h3>What was consciously not fixed</h3><p>Writing down invariants also means writing down where you fall short of them. The CHANGELOG has a Known issues section, with about twenty items, each indicating the invariant it violates. The most important ones:</p><ul><li><p>Deny rules and TTY checks <strong>do not protect against an agent with a shell.</strong> <code>script -qec "skillmem tr''ust x" /dev/null</code> passes both checks. True isolation is a sandbox, not string comparison.</p></li><li><p>Slugs, kind, project, and tags are shown to the model <strong>without a frame</strong> (INV-07).</p></li><li><p>The "already shown" log for hooks is not locked, so parallel PreToolUse hooks can inject the same rule twice.</p></li><li><p>On Windows, the catastrophically backtracking <code>SKILLMEM_VERIFY_PATTERN</code> is not stopped by skillmem's own watchdog. Only Claude Code's hook timeout of 10 seconds stops it.</p></li><li><p><code>uninstall --purge-db</code> fails while the MCP server holds the database open.</p></li></ul><p>None of these items relate to P1/P2 in "data," "trust," or "concurrency," otherwise, the release wouldn't have happened. But they are real, and it's better you read about them here than stumble upon them yourself.</p><h3>Conclusion</h3><p>Asking a model to "review code" yields style and a few bugs. Asking it to "break this recorded promise, with proof being only a failing test" yields the bug with <code>NUL</code> on Windows. The invariant file turned out to be more valuable than any single fix: the next reviewer, human or model, starts with it.</p><pre><code>pip install -U skillmem
+skillmem init --claude-code   # restart: new deny rules
+</code><div><a href="https://sourcecraft.dev/"><img loading="lazy"/></a></div></pre><p>Repository, invariants, and CHANGELOG: <a href="https://github.com/liza-studio/skillmem">https://github.com/liza-studio/skillmem</a></p></div>
+  </main>
+  <footer>
+    Translation generated with Gemini 2.5 Flash-Lite.
+    The original article remains the source of record.
+  </footer>
+</body>
+</html>

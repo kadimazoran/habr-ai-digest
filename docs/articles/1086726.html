@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Green Challenge 2026: A Physical AI Model Competition for the &#x27;Green&#x27; Anthropomorphic Robot</title>
+  <meta name="description" content="Controlling robots using images and text instructions remains a key challenge in modern robotics. Vision-Language-Action (VLA) models can handle many tasks, but most successes are on standard manipulators. Controlling an anthropomorphic robot like Sber&#x27;s &#x27;Green&#x27; presents a significant">
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.65;
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 32px 20px 64px;
+      color: #1f2328;
+    }
+    header {
+      border-bottom: 1px solid #d8dee4;
+      margin-bottom: 28px;
+      padding-bottom: 20px;
+    }
+    .source {
+      color: #57606a;
+      font-size: 0.95rem;
+    }
+    img, video, iframe {
+      max-width: 100%;
+      height: auto;
+    }
+    pre {
+      overflow-x: auto;
+      padding: 16px;
+      background: #f6f8fa;
+      border-radius: 6px;
+    }
+    code {
+      font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+    }
+    blockquote {
+      border-left: 4px solid #d0d7de;
+      margin-left: 0;
+      padding-left: 16px;
+      color: #57606a;
+    }
+    footer {
+      border-top: 1px solid #d8dee4;
+      margin-top: 40px;
+      padding-top: 20px;
+      color: #57606a;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Green Challenge 2026: A Physical AI Model Competition for the &#x27;Green&#x27; Anthropomorphic Robot</h1>
+    <p>Controlling robots using images and text instructions remains a key challenge in modern robotics. Vision-Language-Action (VLA) models can handle many tasks, but most successes are on standard manipulators. Controlling an anthropomorphic robot like Sber&#x27;s &#x27;Green&#x27; presents a significantly higher complexity due to its many degrees of freedom, human-like hands, and mobile platform requiring whole-body coordination and balance. Sber Robotics is launching the Green Challenge competition as part of AI Journey 2026, inviting participants to develop or fine-tune control models for &#x27;Green&#x27; to perform mobile manipulation tasks in a digital simulator. This is a complex Physical AI challenge, encompassing data preparation, multimodal perception, planning, and coordinated whole-body control.</p>
+    <p class="source">
+      Machine-translated from Habr.
+      <a href="https://habr.com/ru/companies/sberbank/articles/1086726/?utm_campaign=1086726&amp;utm_source=habrahabr&amp;utm_medium=rss">Read the original Russian article</a>.
+      Mon, 28 Sep 2026 13:01:23 GMT
+    </p>
+  </header>
+  <main>
+<div><figure><img loading="lazy" src="https://habrastorage.org/w1560/getpro/habr/upload_files/23d/1b9/40a/23d1b940a0c0d4d7f42fe04870348cc3.jpg"/></figure><p>Controlling a robot using images and text instructions remains one of the most pressing tasks in modern robotics. Vision-Language-Action, or VLA, models are already capable of solving a wide range of tasks. However, most notable results have been achieved on standard manipulators: a single robotic arm on a fixed base, with six or seven degrees of freedom and a two-fingered gripper.</p><p>Controlling an anthropomorphic robot requires solving a problem of a fundamentally different level of complexity. The large number of degrees of mobility, anthropomorphic hands, a mobile platform, and the need to coordinate the entire body's movements while maintaining balance significantly complicate the development of a control system.</p><p>Sber Robotics is launching the <strong>Green Challenge</strong>, a competition within AI Journey 2026. Participants will need to create or fine-tune a control model for 'Green,' Sber's first anthropomorphic robot. The model must solve mobile manipulation tasks in a digital simulator.</p><p>This is a complex task in the field of Physical AI: from data preparation and multimodal perception to planning and coordinated control of the robot's entire body movements.</p><figure><img alt="Scenario 'Sber Shop': robot places Sberkot in the cart" loading="lazy" src="https://habrastorage.org/getpro/habr/upload_files/062/6b0/fdd/0626b0fdd81bcea5a8cec3ad7953f4c9.gif" title="Scenario 'Sber Shop': robot places Sberkot in the cart"/><div><figcaption>Scenario 'Sber Shop': robot places Sberkot in the cart</figcaption></div></figure><figure><img alt="'Darkstore' scenario" loading="lazy" src="https://habrastorage.org/getpro/habr/upload_files/c67/01b/be0/c6701bbe06276558b9775b071ba2eafe.gif" title="'Darkstore' scenario"/><div><figcaption>'Darkstore' scenario</figcaption></div></figure><figure><img alt="'Sber Shop' scenario" loading="lazy" src="https://habrastorage.org/getpro/habr/upload_files/5f7/8c9/2f8/5f78c92f83daf5649e981aa89f538935.gif" title="'Sber Shop' scenario"/><div><figcaption>'Sber Shop' scenario</figcaption></div></figure><h2>What is the Task?</h2><p>The model controls the robot by receiving three types of input data:</p><ul><li><p><strong>RGB images from three cameras</strong>: one located in the robot's head, and two attached to the left and right wrists. Each image has a resolution of 448 × 448 pixels.</p></li><li><p><strong>Text instruction</strong>: a formulation of the complete scenario task (task), as well as a description of the current atomic subtask (subtask).</p></li><li><p><strong>Robot's proprioceptive state</strong>: joint positions and body orientation.</p></li></ul><p>As a result, the model must predict target joint positions, i.e., absolute joint positions. These commands are executed by the Whole-Body Controller (WBC), which coordinates the movements of the entire robot body.</p><p>Scenarios are sequences of interconnected actions. For example, the robot needs to raise the correct arm, reach for a shelf, pick up an object, move it, and return its arm to the starting position.</p><p>This is not a set of independent skills, but a single sequence of actions. An error early on can disrupt the robot's or object's position and cascade to affect the success of the entire episode.</p><h2>The Main Challenge: Robustness to Out-of-Distribution States</h2><p>The first natural solution is to collect robot demonstrations and train a model using behavior cloning. However, this is precisely where the main challenge of the competition arises: robustness to states that differ from those in the training data. In machine learning, such states are called out-of-distribution (OOD) states. The primary reason for OOD is the discrepancy between the states recorded in demonstrations and the states the robot enters during autonomous task execution.</p><p>Several factors lead to such discrepancies:</p><ul><li><p>New combinations of initial robot and object positions not present in the training dataset.</p></li><li><p>Accumulation of execution errors. The low-level whole-body motion controller may fail to bring the robot to the target position. As a result, the next observation and the robot's actual state will differ from what the model expects.</p></li><li><p>Inaccurate trajectories predicted by the VLA policy. These can lead the robot into states not present in the training dataset.</p></li><li><p>Non-determinism in the simulation of dynamics and contact interactions.</p></li><li><p>Erroneous subsequent actions that the policy takes from an already deviated state.</p></li></ul><p>The fundamental conditions of the task do not change: the robot model, the set of cameras, the observation and action formats, and the behavior of the whole-body motion controller during solution verification in the simulator remain the same.</p><p>This leads to a key requirement: the model must not only reproduce demonstrations but also correct actions based on current observations, work with out-of-distribution states, and recover from deviations.</p><p>The competition evaluates the entire solution: data preparation, state and action coordination, temporal synchronization, multimodal perception, control robustness, and model execution speed.</p><h2>What Does a Participant Get?</h2><p>We provide a full set of tools for work: from the robot model and simulator to a baseline VLA model. All components are open-source and can be reused in research and applied projects.</p><figure><img alt=
+  </main>
+  <footer>
+    Translation generated with Gemini 2.5 Flash-Lite.
+    The original article remains the source of record.
+  </footer>
+</body>
+</html>

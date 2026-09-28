@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>The Junior Was Given an AI, and the Senior Got More Work</title>
+  <meta name="description" content="With an AI assistant, a junior&#x27;s work looks as neat as a senior&#x27;s, and you can no longer find mistakes by appearance. If the author cannot explain how they got the result, the reviewer reconstructs the path themselves and essentially does the task a second time. I analyze where the senior&">
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.65;
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 32px 20px 64px;
+      color: #1f2328;
+    }
+    header {
+      border-bottom: 1px solid #d8dee4;
+      margin-bottom: 28px;
+      padding-bottom: 20px;
+    }
+    .source {
+      color: #57606a;
+      font-size: 0.95rem;
+    }
+    img, video, iframe {
+      max-width: 100%;
+      height: auto;
+    }
+    pre {
+      overflow-x: auto;
+      padding: 16px;
+      background: #f6f8fa;
+      border-radius: 6px;
+    }
+    code {
+      font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+    }
+    blockquote {
+      border-left: 4px solid #d0d7de;
+      margin-left: 0;
+      padding-left: 16px;
+      color: #57606a;
+    }
+    footer {
+      border-top: 1px solid #d8dee4;
+      margin-top: 40px;
+      padding-top: 20px;
+      color: #57606a;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>The Junior Was Given an AI, and the Senior Got More Work</h1>
+    <p>With an AI assistant, a junior&#x27;s work looks as neat as a senior&#x27;s, and you can no longer find mistakes by appearance. If the author cannot explain how they got the result, the reviewer reconstructs the path themselves and essentially does the task a second time. I analyze where the senior&#x27;s time is burned out, using an nginx fix as an example, and what requirements for submitting work can fix this. Read more &amp;rarr;</p>
+    <p class="source">
+      Machine-translated from Habr.
+      <a href="https://habr.com/ru/articles/1087536/?utm_campaign=1087536&amp;utm_source=habrahabr&amp;utm_medium=rss">Read the original Russian article</a>.
+      Mon, 28 Sep 2026 14:42:42 GMT
+    </p>
+  </header>
+  <main>
+<div><figure><img loading="lazy" src="https://habrastorage.org/r/w1560/getpro/habr/upload_files/50d/6a9/0fe/50d6a90febe474eacdbb84451529c148.jpg"/></figure><p>The junior's clumsy code used to be useful. A strange JOIN, variables <code>tmp2</code> and <code>data_new</code>, three nested <code>if</code>s where one would suffice. Following such traces, the reviewer could immediately see where the person was struggling and go check precisely there.</p><p>With an assistant, this signal is gone. The PR comes in neat: normal names, docstrings, error handling, tests for the happy path. It looks just like the work of someone who understands what they are doing. However, the error might be in a single line, and you can no longer find it by appearance, so you have to look at everything.</p><p>Juniors close tasks faster with AI, but this only increases the senior's workload.</p><h3>Generating Became Cheaper, Checking Did Not</h3><p>Here are two descriptions for the same PR. The first: "Here's the code." The second: "I chose this algorithm because the input is no more than a couple of thousand records; I ran it on an empty list and on duplicates; it will break if the API starts returning paginated responses." The code is the same. In the first case, the reviewer has nothing to check except the code itself, and they solve the task anew: they read the documentation of the called API, run tests, think about parallel requests. In the second, they have something to build on: run the same empty list, see what happens with three thousand records, open the API documentation on pagination. The model will, of course, write such a description too, and you shouldn't take its word for it. The benefit is that it can be quickly double-checked.</p><p>When the only thing between the task and the result was the prompt, the intermediate steps (hypothesis, discarded options, how it was tested) are simply absent, and the reviewer will have to reconstruct them.</p><h3>It's Especially Painful in Infrastructure</h3><p>Suppose a service has an SSE endpoint behind nginx. Events arrive in the browser in batches, with delays, and if the backend goes silent for more than a minute, the stream breaks: <code>proxy_read_timeout</code> defaults to 60 seconds. A junior asks the model and brings a fix:</p><pre><code>location /api/stream/ { 
+ proxy_pass http://backend;
+ proxy_buffering off;
+ proxy_read_timeout 3600s;
+}
+</code><div><a href="https://sourcecraft.dev/"><img loading="lazy"/></a></div></pre><p>If the batching is caused by nginx buffering, this config fixes both symptoms.</p><p>But what did it change along with it? With buffering turned off, nginx sends the response to the client synchronously, as it receives it, and a slow client keeps the upstream open while reading (and if the backend uses one worker per connection, then the worker too). This is not important for SSE; the connection lives long anyway. But if <code>proxy_buffering off</code> was set not in this location, but in <code>server {}</code>, all regular responses will go the same way. And <code>proxy_read_timeout</code> limits the pause between two reads from the upstream, so nginx will now only interrupt a truly stuck upstream after an hour of silence.</p><p>Perhaps the backend should have sent keepalive comments every half minute, and left the timeout as is? Where did these lines end up, in the location or higher? How was the effect measured, and how to roll back? Buffering, by the way, can be turned off by the backend itself, with the header <code>X-Accel-Buffering: no</code> for the relevant responses, without touching the config (it doesn't change the timeout in this case).</p><p>If the answer to all this is "the model suggested it," the reviewer goes to the nginx documentation and figures it out themselves. They do the task a second time, and then explain why the first version was dangerous.</p><h3>What I Would Change</h3><p>I wouldn't ban assistants. AI significantly speeds up the work for a strong engineer precisely because they can verify the answer, and that's what juniors need to be taught.</p><p>It makes sense to change the requirements for submitting work, and these are long-known requirements that were simply managed without before. The task should be accompanied by assumptions and how the result was verified: a test, <code>EXPLAIN</code>, a query on staging, metrics before and after, and for infrastructure, also a rollback plan. All of this should be verifiable without the model. And the chunks should be small: a PR with a thousand generated lines cannot be reviewed in a reasonable time.</p><p>There's also a very simple test: close the chat window and ask the author to explain the solution verbally. Why this timeout, what happens after a restart, what happens on an empty input. As long as the author cannot answer these questions without the open chat, the senior will have to check the task for them.</p></div>
+  </main>
+  <footer>
+    Translation generated with Gemini 2.5 Flash-Lite.
+    The original article remains the source of record.
+  </footer>
+</body>
+</html>

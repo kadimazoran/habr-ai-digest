@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>BB Internals: How an Open IDE for Claude Code and Codex Updates Itself Without Restarting</title>
+  <meta name="description" content="BB is an open-source MIT-licensed program where Claude Code, Codex, Pi, and ACP agents work in a single window. In 7 months, the repository has gathered about 4,000 stars. The key feature of BB isn&#x27;t the window itself, but how its interface is extended by plugins, with new plugins being recogni">
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.65;
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 32px 20px 64px;
+      color: #1f2328;
+    }
+    header {
+      border-bottom: 1px solid #d8dee4;
+      margin-bottom: 28px;
+      padding-bottom: 20px;
+    }
+    .source {
+      color: #57606a;
+      font-size: 0.95rem;
+    }
+    img, video, iframe {
+      max-width: 100%;
+      height: auto;
+    }
+    pre {
+      overflow-x: auto;
+      padding: 16px;
+      background: #f6f8fa;
+      border-radius: 6px;
+    }
+    code {
+      font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+    }
+    blockquote {
+      border-left: 4px solid #d0d7de;
+      margin-left: 0;
+      padding-left: 16px;
+      color: #57606a;
+    }
+    footer {
+      border-top: 1px solid #d8dee4;
+      margin-top: 40px;
+      padding-top: 20px;
+      color: #57606a;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>BB Internals: How an Open IDE for Claude Code and Codex Updates Itself Without Restarting</h1>
+    <p>BB is an open-source MIT-licensed program where Claude Code, Codex, Pi, and ACP agents work in a single window. In 7 months, the repository has gathered about 4,000 stars. The key feature of BB isn&#x27;t the window itself, but how its interface is extended by plugins, with new plugins being recognized without restarting the program. Recently, I made a video about BB. In it, an agent, using just 20 minutes and two prompts, created a plugin that transcribes call recordings, extracts agreements with deadlines, and drafts a client email. The video focused on the user benefits, while this article will dive into the code to explain how it all works. Everything below is verified against the get-bb/bb repository as of late September 2026. Read on</p>
+    <p class="source">
+      Machine-translated from Habr.
+      <a href="https://habr.com/ru/articles/1088186/?utm_campaign=1088186&amp;utm_source=habrahabr&amp;utm_medium=rss">Read the original Russian article</a>.
+      Tue, 29 Sep 2026 13:50:02 GMT
+    </p>
+  </header>
+  <main>
+<div><p>BB is an open-source MIT-licensed program where Claude Code, Codex, Pi, and ACP agents work in a single window. In 7 months, the repository has gathered about 4,000 stars. The key feature of BB isn't the window itself, but how its interface is extended by plugins, with new plugins being recognized without restarting the program.</p><p>Recently, I made a <a href="https://youtu.be/I7kd8Fp0n6Y">video</a> about BB. In it, an agent, using just 20 minutes and two prompts, created a plugin that transcribes call recordings, extracts agreements with deadlines, and drafts a client email. The video focused on the user benefits, while this article will dive into the code to explain how it all works. Everything below is verified against the <a href="https://github.com/get-bb/bb">get-bb/bb</a> repository as of late September 2026.</p><figure><img alt="Two layers of BB: agents at the bottom, a single window at the top" loading="lazy" src="https://habrastorage.org/r/w1560/getpro/habr/upload_files/b24/d7c/51b/b24d7c51bcc008ccade78df4827503de.png"/><div><figcaption>Two layers of BB: agents at the bottom, a single window at the top</figcaption></div></figure><p>The idea behind BB is based on two layers. At the bottom are the agents you already have, each running in its own environment with its own tools and settings. At the top is a single window that communicates with them. To understand how one window manages different agents, let's start by looking at what processes are launched.</p><h3>The Server Stores, the Daemon Executes</h3><p>The command <code>npx bb-app</code> launches the launcher, which then starts two Node processes: server and host-daemon. The server is written in Hono, listens on <code>127.0.0.1:38886</code> by default, and stores all state in SQLite, in the file <code>~/.bb/bb.db</code>. The daemon manages the machine's primitives, such as files, git, terminals, and agent execution. The desktop application built with Electron is merely a shell that launches the same <code>bb-app</code> and displays the server's web interface.</p><p>The direction of communication is noteworthy. It's not the server that reaches out to the daemon; instead, the daemon itself opens a WebSocket connection to the server and receives commands like <code>turn.submit</code>. This allows a second machine to connect to BB without open ports: a one-liner <code>curl .../</code><a href="http://install.sh"><code>install.sh</code></a> is generated in the settings, which installs the daemon as a launchd or systemd service, and the daemon receives its machine key. The server, in this context, is a role rather than a separate computer, and the same daemon runs on the server machine as on the others.</p><p>Since the daemon and server don't always update simultaneously, the protocol between them is versioned. Currently, the contract specifies <code>HOST_DAEMON_PROTOCOL_VERSION = 220</code>. If the versions diverge, the daemon automatically downloads the appropriate build, verifies its SHA-256, and restarts. This is important for the second machine, as it eliminates the need for manual updates after every server release.</p><figure><img alt="BB Processes: Clients, Server, Daemon, and Agents" loading="lazy" src="https://habrastorage.org/r/w1560/getpro/habr/upload_files/39e/6b3/924/39e6b3924a56978c4d7c7bf9d7cbebbc.png"/><div><figcaption>BB Processes: Clients, Server, Daemon, and Agents</figcaption></div></figure><p>A server can have multiple clients: a React 19 web interface, an Electron window, the <code>bb</code> CLI, an SDK, and an Expo mobile app. They all communicate with the same <code>/api/v1</code> endpoint, so a thread started in the browser can be continued from a phone or terminal. Let's explore how agent responses reach all of them.</p><p>The thread is stored as a log: the <code>events</code> table is append-only, and each event has a <code>sequence</code> number within the thread. When the daemon sends a new batch of events, the server inserts them and broadcasts a <code>changed</code> notification via WebSocket. The WebSocket itself doesn't contain the data; instead, the client marks its interface state as stale and fetches the timeline via HTTP. This "notify, then fetch" pattern is simpler than streaming because the client doesn't maintain its own copy of the thread, which could diverge from the server's.</p><h3>Its Own Protocol, and ACP is Just a Dialect</h3><p>To ensure that events in the log appear consistently, BB must communicate with agents that have vastly different interfaces. For this, it employs its own provider bridge protocol. The daemon launches a separate bridge process for each agent and communicates with it via JSON-RPC 2.0 over standard input and output. The bridge is part of the provider plugin, which the daemon downloads from the server and verifies the hash of before launching.</p><p>I expected BB to be built on top of ACP, the <a href="https://agentclientprotocol.com/get-started/introduction">Agent Client Protocol</a> from Zed, but that's not the case. ACP in BB is just one of the dialects that the bridges translate into BB's native protocol. The table below shows how each agent is launched:</p><div><div><table><tbody><tr><th><p>Agent</p></th><th><p>How it's Launched</p></th><th><p>How it Communicates</p></th></tr><tr><td><p>Claude Code</p></td><td><p>Claude Agent SDK, <code>query</code> function</p></td><td><p>SDK itself launches the <code>claude</code> CLI</p></td></tr><tr><td><p>Codex</p></td><td><p>separate <code>codex app-server</code> for each thread</p></td><td><p>JSON-RPC over stdio</p></td></tr><tr><td><p>Pi</p></td><td><p><code>pi --mode rpc</code> with BB extension</p></td><td><p>JSON over stdio, BB tools via fd 3 and 4</p></td></tr><tr><td><p>ACP Agents</p></td><td><p><code>cursor-agent acp</code>, <code>opencode acp</code>, <code>hermes acp</code>, and others</p></td><td><p><code>session/new</code>, <code>session/prompt</code>, <code>session/update</code></p></td></tr></tbody></table></div></div><p>Normalization occurs in two steps. First, the bridge translates the agent's native stream into a small set of events: open turn, open element, append text, close element, report token consumption. Then, the assembler within the daemon assigns identifiers to turns and elements, manages their lifecycle, and stitches together token streams into 100ms chunks. The protocol documentation summarizes this separation with a single phrase: "the bridge knows the dialect, the runtime knows the timeline."</p><figure><img alt="How an agent's response reaches the interface" loading="lazy" src="https://habrastorage.org/r/w1560/getpro/habr/upload_files/32d/7ff/99b/32d7ff99bd2d7c568c85ab8142a77124.png"/><div><figcaption>How an agent's response reaches the interface</figcaption></div></figure><p>The bridge provides the signature and icon for each element, so the core doesn't need to maintain tables of tool names for Claude or Codex. A new agent can be added without modifying the core or the interface.</p><p>BB also doesn't impose a single model for permissions. During the handshake, the bridge reports the <code>approvalEnforcedBy</code> field. For Claude Code, this is set to <code>provider</code>, meaning Claude's own permission engine makes the decisions, and BB integrates via the <code>canUseTool</code> callback. For Codex, Pi, and ACP agents, it's set to <code>runtime</code>, indicating that BB itself enforces the policy. Anything not resolved by the policy is presented to the user as a uniform request, regardless of which agent initiated it.</p><p>Skills are managed similarly. The daemon collects all skills into a single directory and passes it to the bridge via the <code>skills/configure</code> command. The bridge then translates these skills into the agent's native language. For Claude Code, a Claude plugin is dynamically generated with a symlink to the skills directory. Codex receives <code>skills/extraRoots/set</code>, Pi gets the <code>--skill</code> flag, and ACP agents have the list of skills with their paths appended to the instructions. Consequently, a skill added once to BB is visible to any agent.</p><p>Environment plugins determine where an agent actually runs. The built-in git-worktree creates a separate worktree for each thread, while project-checkout operates directly within the project's checkout directory and prevents branch changes if there are uncommitted modifications. The most interesting option is modal-sandbox, which registers not a directory but an entire machine. BB launches a Modal sandbox, installs its daemon there, and then interacts with it as if it were any other computer.</p><p>I particularly liked how this layer is tested. The repository contains recorded sessions of real agents performing scenarios like approval, interruption, and compaction. The command <code>pnpm parity</code> replays these sessions through bridges of old and new code versions and compares the timeline output line by line. Since bridges are plugins, let's examine the structure of a plugin itself.</p><h3>What Constitutes a Plugin</h3><p>A plugin in BB is essentially a folder, with its manifest being the <code>package.json</code> file containing a <code>bb</code> block. This block lists the plugin's components. Here's a snippet from the <code>package.json</code> of the built-in tasks plugin:</p><pre><code>
+  </main>
+  <footer>
+    Translation generated with Gemini 2.5 Flash-Lite.
+    The original article remains the source of record.
+  </footer>
+</body>
+</html>

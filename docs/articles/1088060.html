@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Local Call Analysis Without GPU: What Happens on the Path from Audio to Summary</title>
+  <meta name="description" content="I wanted to test not how well a local LLM writes a summary from a clean test dialogue, but what happens to the full pipeline on a regular phone call with music, an answering machine, interruptions, and poor sound. I built a desktop application using Tauri, Rust, React, and SQLite. It recognizes spee">
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.65;
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 32px 20px 64px;
+      color: #1f2328;
+    }
+    header {
+      border-bottom: 1px solid #d8dee4;
+      margin-bottom: 28px;
+      padding-bottom: 20px;
+    }
+    .source {
+      color: #57606a;
+      font-size: 0.95rem;
+    }
+    img, video, iframe {
+      max-width: 100%;
+      height: auto;
+    }
+    pre {
+      overflow-x: auto;
+      padding: 16px;
+      background: #f6f8fa;
+      border-radius: 6px;
+    }
+    code {
+      font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+    }
+    blockquote {
+      border-left: 4px solid #d0d7de;
+      margin-left: 0;
+      padding-left: 16px;
+      color: #57606a;
+    }
+    footer {
+      border-top: 1px solid #d8dee4;
+      margin-top: 40px;
+      padding-top: 20px;
+      color: #57606a;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Local Call Analysis Without GPU: What Happens on the Path from Audio to Summary</h1>
+    <p>I wanted to test not how well a local LLM writes a summary from a clean test dialogue, but what happens to the full pipeline on a regular phone call with music, an answering machine, interruptions, and poor sound. I built a desktop application using Tauri, Rust, React, and SQLite. It recognizes speech, separates speakers, analyzes sentiment, emotions, and risks, and finally, a local model generates a summary and recommendations. Everything runs on a computer; the internet is only needed to download models. In the experiment, I ran real recordings through two recognizers and compared where exactly problems arise on the path from audio to the final summary. Read more</p>
+    <p class="source">
+      Machine-translated from Habr.
+      <a href="https://habr.com/ru/articles/1088060/?utm_campaign=1088060&amp;utm_source=habrahabr&amp;utm_medium=rss">Read the original Russian article</a>.
+      Tue, 29 Sep 2026 11:16:27 GMT
+    </p>
+  </header>
+  <main>
+<div><p>I wanted to test not how well a local LLM writes a summary from a clean test dialogue, but what happens to it on a regular phone call with music, an answering machine, interruptions, and poor sound.</p><p>I built a desktop application using Tauri, Rust, React, and SQLite. It recognizes speech, separates speakers, calculates sentiment, emotions, and risks, and finally, a local model writes a summary and recommendations. Everything is calculated on the computer; the internet is only needed to download models. When parsing calls, there are often names, addresses, and contract numbers, and I don't want to send them to an external API.</p><figure><img alt="List of test calls  " loading="lazy" src="https://habrastorage.org/r/w1560/getpro/habr/upload_files/4eb/52e/467/4eb52e467533c78abcb160aabafae4bd.png" title="List of test calls  "/><div><figcaption>List of test calls </figcaption></div></figure><p>I took some sample recordings <a href="https://zvyki.com/search/q/%D1%80%D0%B0%D0%B7%D0%B3%D0%BE%D0%B2%D0%BE%D1%80+%D1%81+%D1%82%D0%B5%D1%85+%D0%BF%D0%BE%D0%B4%D0%B4%D0%B5%D1%80%D0%B6%D0%BA%D0%BE%D0%B9/">from open internet sources</a>.</p><h4>Why Such Models and Such Hardware</h4><p>I chose models that are neither the simplest nor the heaviest. Rather, models that can actually be run on a regular work laptop. The test machine: Intel Core i7 10870H, 16 GB RAM, Windows, CPU only. For the final analysis, Qwen 2.5 1.5B is used, meaning models that require only a couple of gigabytes.</p><p>It's not difficult to show that a 27B model (at the time of writing, Bonsai-27B Ternary had already been released) or larger, running on a good graphics card, writes accurate summaries, but not everyone has such a setup. I was interested in something else: what would a person with a laptop and no GPU get if they assembled such a pipeline and fed it live recordings instead of a clean test dialogue?</p><p>In short, about the result. Six runs (three calls → two speech recognizers) completed without a single error, and I wouldn't give any of the six summaries to a manager without edits. Diarization, not the model, consumed more than half the time. Errors that ended up in the final output were almost always born in the early stages, not in the model itself.</p><h3>What's Inside</h3><figure><img alt="Call chain " loading="lazy" src="https://habrastorage.org/r/w1560/getpro/habr/upload_files/81c/b09/161/81cb09161e380c442a24bbbde2a30ccf.png" title="Call chain "/><div><figcaption>Call chain </figcaption></div></figure><div><div><table><tbody><tr><td><p>Stage</p></td><td><p>Model</p></td><td><p>Size</p></td></tr><tr><td><p>STT</p></td><td><p>GigaAM v3 </p></td><td><p>~224 MB</p></td></tr><tr><td><p>STT</p></td><td><p>Whisper Turbo Q5 / Full </p></td><td><p>~574 MB / ~1.6 GB </p></td></tr><tr><td><p>Diarization </p></td><td><p>speakrs (pyannote community-1: segmentation-3.0 + wespeaker‑resnet34 + PLDA + VBx)</p></td><td><p>~60 MB</p></td></tr><tr><td><p>Sentiment</p></td><td><p>RuBERT‑tiny2 </p></td><td><p>~32 MB</p></td></tr><tr><td><p>Emotions and Risks</p></td><td><p>DeBERTa</p></td><td><p>~131 MB</p></td></tr><tr><td><p>LLM</p></td><td><p>Qwen2.5–1.5B</p></td><td><p>~1.6 GB</p></td></tr></tbody></table></div></div><p>All models are not kept in memory simultaneously; each is loaded before its stage and unloaded after. The LLM runs in a separate llama-server process; heavy operations are sent to a background process (everything as usual).</p><h3>How I Measured</h3><p>Three calls: 3:16, 6:43, and 9:29. All real recordings with actual noise, music on the line, and people interrupting each other.</p><p>Each call is processed by two recognizers, GigaAM and Whisper Full. After that, everything is the same: the same Qwen, temp 0.2, context 6144; no more than 4000 characters of transcript go into the LLM.</p><p>Time measurements were taken for one run per configuration. This is not a benchmark, but three cases that show where the chain breaks.</p><p>I didn't have reference summaries. I evaluated the correctness myself by comparing the output with what was happening in the recording. Below, for each case, it is described what actually happened in the call.</p><h3>Time, the Main Consumer, Wasn't Where I Expected</h3><div><div><table><tbody><tr><td><p>Call</p></td><td><p>Recognizer</p></td><td><p>STT, s</p></td><td><p>Diarization, s</p></td><td><p>Role Refinement, s</p></td><td><p>Summary, s</p></td><td><p>Total </p></td><td><p>Total / Call Length </p></td></tr><tr><td><p>3:16 </p></td><td><p>GigaAM</p></td><td><p>35 </p></td><td><p>141</p></td><td><p>15</p></td><td><p>25</p></td><td><p>3:41</p></td><td><p>1.1 </p></td></tr><tr><td><p>3:16</p></td><td><p>Whisper </p></td><td><p>172 </p></td><td><p>152 </p></td><td><p>42 </p></td><td><p>40 </p></td><td><p>6:51 </p></td><td><p>2.1 </p></td></tr><tr><td><p>6:43 </p></td><td><p>GigaAM </p></td><td><p>65 </p></td><td><p>343 </p></td><td><p>61 </p></td><td><p>29 </p></td><td><p>8:25 </p></td><td><p>1.25 </p></td></tr><tr><td><p>6:43 </p></td><td><p>Whisper </p></td><td><p>589 </p></td><td><p>322 </p></td><td><p>89 </p></td><td><p>36 </p></td><td><p>17:23 </p></td><td><p>2.6 </p></td></tr><tr><td><p>9:29 </p></td><td><p>GigaAM </p></td><td><p>149 </p></td><td><p>441 </p></td><td><p>135 </p></td><td><p>62 </p></td><td><p>13:13 </p></td><td><p>1.4 </p></td></tr><tr><td><p>9:29 </p></td><td><p>Whisper </p></td><td><p>876 </p></td><td><p>443 </p></td><td><p>98 </p></td><td><p>35 </p></td><td><p>24:17 </p></td><td><p>2.6</p></td></tr></tbody></table></div></div><p>I expected the LLM to take the longest. It takes 25 to 62 seconds per summary. Diarization on CPU runs at about 0.7–0.85 times the recording length and takes 64%, 68%, and 56% of the total time in the GigaAM runs. Whisper on CPU is also not cheap, 0.9 times the length on a short call and about 1.5 times on longer ones.</p><p>The practical takeaway for a laptop is that the entire pipeline runs longer than the conversation itself, even with the fastest recognizer. For post-call analysis, this is tolerable, but not for anything close to real-time.</p><p>About diarization specifically. I use speakrs (pyannote community-1 port), onset 0.4 / offset 0.35 thresholds, min_on 6 / min_off 12 frames. Before inference, the mono signal undergoes compression (-30 dB, 5:1) and gating, because raw gain in a mono mix is useless and just scales both speakers. I tried different threshold settings and got practically the same result. Therefore, the problem wasn't simply choosing the wrong threshold. I also looked into Sortformer and WhisperX, but they didn't offer a clear advantage in my configuration.</p><h3>What's Actually in the Recordings</h3><p>To have something to compare with, here's a brief description of what happens in each call.</p><p><strong>3:16, Tech Support.</strong> The client is unhappy that in her Windows network environment, she sees 59 computers with unfamiliar names. The operator explains that these are devices on the shared local network, and they can only be removed by disabling network access. The client says she will then consider changing providers and asks a second question about setting up a computer after a store reinstallation, and the operator transfers her to a specialist.</p><p><strong>6:43, Hotline.</strong> An outgoing call from the store to the client regarding an order. The operator confirms home delivery, the timeframe (Friday or Tuesday), and that delivery is free. The client had previously purchased an older version of the product. The operator promises to check with management about a discount of 500 rubles or more and persuades her to leave an online review. The client refuses to leave a review.</p><p><strong>9:29, Provider.</strong> A client from another city calls to disconnect a service. The first minute and a half is taken up by the automated voice menu listing available services.</p><h3>Case 1: The Answering Machine as the Essence of the Conversation</h3><p>This is the most illustrative episode. The answering machine menu lists which services can be connected. GigaAM honestly transcribed the menu, diarization merged it with the operator's greeting and the start of the conversation into one chunk lasting two and a half minutes, and the LLM decided that the client was calling to connect additional services. The summary was about connecting additional services, even though the person called to disconnect.</p><p>With Whisper, everything looked better; the topic was identified correctly (Disconnecting services). However, the LLM receives a maximum of 4000 characters, and the transcript is longer, so the model physically didn't see the end of the call. The summary mainly described the beginning of the conversation. In the operator field for Whisper, there was an empty value; the model returned a service code from the greeting instead of the speaker number, and the parser discarded it. An empty field is more honest than in the GigaAM run, where the local LLM confidently identified the client as the operator.</p><p>No stage failed, and the JSON was valid.</p><h3>Case 2: A Call from an Elderly Person, One Metaphor Turned into Advice</h3><p>Transcripts from two engines at the same point, mid-call (the client describes her problem; names and profanity related to the computer are removed)</p><p>GigaAM</p><blockquote><p><em>S2 00:06–00:29 please tell me, I went today and changed my new computer, I wanted to change it because of what? Because in my network, it turns out, when I press the start button and network, and I have fifty-nine various computers, PC there, PC, even PC, what is this? S1 00:30–00:36 well, that's your... S2 00:36–00:40 yes, but you can't remove it? S1 00:41–00:48 generally, the setup is going... S1 02:24–02:28 the same as neighbors in the apartment, you are there, where do you go from them, nowhere</em></p></blockquote><p>Whisper Full</p><blockquote><p><em>S1 00:00–00:04 S1, hello. S2 00:04–00:05 Good evening. S1 00:05–00:06 Tell me, S2 00:06–00:30 please, I went today and changed my new computer, I wanted to change it. Because of what? Because in my network, it turns out... When I press the start button and network. And I have 59 names of various computers. PC Kirill, PC Andrey, PC, even [...] PC. What is this? Well, these are S1 00:30–00:35 users of your mini-local network, that is, users who are in your house. Well, I S2 00:35–00:41 think that [...] we don't have that. Can't it be removed? Generally, this S1 00:41–00:49 is already computer setup. That is, these are active connections...... S1 02:24–02:28 it's the same as neighbors in the apartment. You are there, where do you go from them? Nowhere.</em></p></blockquote><p>In the middle of the call, GigaAM produces phonetic gibberish ("generally, the setup is going..."), the operator's explanation about the local network is completely lost, and the phrase about neighbors in the apartment, which the operator used as an analogy, remains. Below is what the LLM did with this.</p><p>GigaAM + Qwen </p><pre><code>{
+  </main>
+  <footer>
+    Translation generated with Gemini 2.5 Flash-Lite.
+    The original article remains the source of record.
+  </footer>
+</body>
+</html>

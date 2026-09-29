@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Not Frozen, Just Calculating: How Two Neural Networks Accelerated Archicad Catalog from Minutes to Seconds</title>
+  <meta name="description" content="In the task manager, Archicad 26 showed &#x27;Not Responding.&#x27; The process was using about 13% of the CPU and almost 4 GB of memory, while the wall finishes catalog displayed &#x27;2D | Processing Elements&#x27; for over six minutes. Usually, you&#x27;d kill the task at this point. We didn&#x27">
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.65;
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 32px 20px 64px;
+      color: #1f2328;
+    }
+    header {
+      border-bottom: 1px solid #d8dee4;
+      margin-bottom: 28px;
+      padding-bottom: 20px;
+    }
+    .source {
+      color: #57606a;
+      font-size: 0.95rem;
+    }
+    img, video, iframe {
+      max-width: 100%;
+      height: auto;
+    }
+    pre {
+      overflow-x: auto;
+      padding: 16px;
+      background: #f6f8fa;
+      border-radius: 6px;
+    }
+    code {
+      font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+    }
+    blockquote {
+      border-left: 4px solid #d0d7de;
+      margin-left: 0;
+      padding-left: 16px;
+      color: #57606a;
+    }
+    footer {
+      border-top: 1px solid #d8dee4;
+      margin-top: 40px;
+      padding-top: 20px;
+      color: #57606a;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Not Frozen, Just Calculating: How Two Neural Networks Accelerated Archicad Catalog from Minutes to Seconds</h1>
+    <p>In the task manager, Archicad 26 showed &#x27;Not Responding.&#x27; The process was using about 13% of the CPU and almost 4 GB of memory, while the wall finishes catalog displayed &#x27;2D | Processing Elements&#x27; for over six minutes. Usually, you&#x27;d kill the task at this point. We didn&#x27;t: at the 389th second, processing was still ongoing, and by the 452nd, the table was ready. The program wasn&#x27;t frozen; it was calculating. This is the laptop of an interior designer, our client. She asked for remote assistance: the wall finishes catalog took minutes to open, and when placed on a layout, Archicad would become unresponsive. Two neural networks were involved. Codex controlled her desktop via remote access: opening the project, reading settings, measuring time, and keeping a log. Claude Code analyzed the log, asked the client questions, and prepared tasks for the next session. There&#x27;s no code in this story, only someone else&#x27;s program with an interface that the agent had to navigate by clicking. Read more</p>
+    <p class="source">
+      Machine-translated from Habr.
+      <a href="https://habr.com/ru/articles/1088022/?utm_campaign=1088022&amp;utm_source=habrahabr&amp;utm_medium=rss">Read the original Russian article</a>.
+      Tue, 29 Sep 2026 10:35:10 GMT
+    </p>
+  </header>
+  <main>
+<div><p>In the task manager, Archicad 26 showed 'Not Responding.' The process was using about 13% of the CPU and almost 4 GB of memory, while the wall finishes catalog displayed '2D | Processing Elements' for over six minutes. Usually, you'd kill the task at this point. We didn't: at the 389th second, processing was still ongoing, and by the 452nd, the table was ready. The program wasn't frozen; it was calculating.</p><p>This is the laptop of an interior designer, our client. She asked for remote assistance: the wall finishes catalog took minutes to open, and when placed on a layout, Archicad would become unresponsive. Two neural networks were involved. Codex controlled her desktop via remote access: opening the project, reading settings, measuring time, and keeping a log. Claude Code analyzed the log, asked the client questions, and prepared tasks for the next session. There's no code in this story, only someone else's program with an interface that the agent had to navigate by clicking.</p><h3>Where Neural Networks Struggle</h3><p>First, let's talk about what isn't reflected in the final numbers. Remote control behaved unpredictably. Scrolling over the floating Navigator panel zoomed the drawing instead of the list. Attempting to drag the table to a layout moved the program's main window. Some clicks were lost when the client also moved the mouse, and Codex would stop each time and ask if both computers were free.</p><p>Another limitation is the client's time. The client needed to work, and at one point, the diagnostics had to be interrupted, a test copy closed, and her laptop returned. The next session was strictly limited: ten minutes for one specific check. Therefore, experiments were conducted on copies of the project, and the original was not overwritten. For a control measurement, a separate copy was made with the suffix <code>repair</code>.</p><h3>Catalog Criteria</h3><p>A catalog is a table that Archicad compiles from the model based on conditions in 'Scheme Settings.' Here, it was calculating wall areas by finishes. Codex read the conditions without changing anything. Simplified, with conditional finish names:</p><pre><code>Element Type = Wall                                    AND
+Wall Finish Material differs from Building Material      AND
+( Finish = Tile A                                      OR
+  Finish = Tile B                                      OR
+  Finish = Plaster )                                   OR
+  Finish = White Paint</code><div><a href="https://sourcecraft.dev/"><img loading="lazy"/></a></div></pre><p>The opening parenthesis was on the third line, and the closing one on the fifth. White paint was on the sixth line, after the parenthesis. 'AND' has higher precedence than 'OR,' so the expression reads:</p><pre><code>(Wall AND Differs AND (Tile A OR Tile B OR Plaster)) OR White Paint</code><div><a href="https://sourcecraft.dev/"><img loading="lazy"/></a></div></pre><p>For the 'White Paint' branch, the 'only walls' condition does not apply. Archicad has to check all elements in the project for this finish, not just walls. Graphisoft explains this directly: an ungrouped 'OR' forces the program to check all project elements (see <a href="https://support.graphisoft.com/hc/en-us/articles/46568365494417-Optimizing-Schedule-Criteria-with-Parentheses">support article</a>). So, we found not a new bug, but a known trap. Next, we'll discuss how it was discovered in someone else's file and what the fix changed.</p><h3>A/B Testing on a Single Copy</h3><p>Codex took one project copy and changed only the position of the closing parenthesis: moved it from the fifth line to the sixth. Then it measured the time until the table was ready.</p><div><div><table><tbody><tr><th><p>Closing parenthesis position</p></th><th><p>Time until table is ready</p></th><th><p>Plaster, m²</p></th><th><p>Tile A, m²</p></th><th><p>Tile B, m²</p></th><th><p>White Paint, m²</p></th></tr><tr><td><p>after plaster (original)</p></td><td><p>still calculating at 68th and 142nd seconds, ready by 210th</p></td><td><p>130.11</p></td><td><p>7.48</p></td><td><p>9.05</p></td><td><p>33.06</p></td></tr><tr><td><p>after white paint</p></td><td><p>ready in no more than 8 seconds</p></td><td><p>130.11</p></td><td><p>7.48</p></td><td><p>9.05</p></td><td><p>27.45</p></td></tr></tbody></table></div></div><p>The time here is the interval between screen captures, not a benchmark. The agent sees the screen in frames, and dozens of seconds pass between frames. Honestly, the old version took over two to three and a half minutes to calculate, while the new one took seconds. The very first opening of the original catalog took about seven minutes, but the measurement conditions were different then, and we don't include it in the table.</p><p>Along the way, a minor issue cropped up, costing several minutes out of those ten. To avoid touching the original catalog, Codex made a duplicate and moved the parenthesis in it. But after clicking 'OK' in the duplicate's settings, Archicad unexpectedly started recalculating the old catalog, which remained open on a neighboring tab. Pressing 'Esc' didn't stop the calculation, and we had to wait another three minutes. If you plan to experiment with a heavy catalog, close its tab before editing a copy.</p><h3>5.61 m² We Can't Explain</h3><p>Three out of four lines matched to the hundredth. White paint decreased by 5.61 m². Logically, these are elements that were included in the table only through the 'OR White Paint' branch, bypassing the wall filter. We didn't determine exactly which ones. Codex started temporarily adding an 'Element Type' field to the table to see them, but didn't complete this check and canceled the dialog without changes.</p><p>Moving the parenthesis changes not only the speed but also the selection. You can't silently put the faster version into someone else's estimate and consider the task solved: the numbers in it have changed, and we don't know which of the two sets is correct.</p><h3>The Question the Client Answered</h3><p>Claude Code presented this as a separate question to the client: what does she use this table for, and why is there white paint in the model? The answer resolved the problem. For her, white paint is a temporary fill: first, all walls are white, then she assigns them the desired tile or color. She needs to calculate plaster and tile, and these matched in both variants. The fast catalog is suitable for her task, and the discrepancy in white paint doesn't bother her.</p><p>This knowledge was not in the model, the log, or Graphisoft's documentation. The neural networks found the line, measured carefully, and didn't force the numbers. The client made the decision about which set was correct.</p><h3>Transferring to the Working File</h3><p>In the working project, the client corrected the parenthesis herself based on our suggestion. She opened our catalog copy as a sample, asked in chat where the parenthesis should be, and corrected the condition in her table within minutes. By the next day, she had changed the finishes in the catalog, so yesterday's numbers no longer applied to her file. Codex didn't substitute them but reread the current scheme: the parentheses were correctly placed, and the catalog opened in less than ten seconds.</p><p>We also checked the template from which each of her new projects starts. There, both wall finish catalogs were already grouped correctly, and we didn't touch them again. A new project created from the template opened the wall catalog in about twenty seconds, accounting for remote screen delays.</p><h3>If Your Catalog is Slow</h3><ol><li><p>Copy the project and work on the copy. Check the window title to ensure you've opened the correct one.</p></li><li><p>Don't rush to kill a task just because it shows 'Not Responding.' If the process is using the CPU, record the time and give the operation a reasonable amount of time: this will give you a baseline for comparison. If it still doesn't complete, that's a different diagnostic issue.</p></li><li><p>Open 'Scheme Settings' and look for chains of identical conditions connected by 'OR.' Check where the parentheses are placed and which element type conditions are outside the group.</p></li><li><p>Before making changes, rewrite the areas for all table rows.</p></li><li><p>Change only one thing: the parenthesis position. Don't add or remove finishes simultaneously.</p></li><li><p>Compare both the time and each area. If the numbers differ, find out from the model's author which variant meets their needs.</p></li><li><p>Close the tab of a heavy catalog before confirming the settings for its copy.</p></li></ol><h3>What This Means for Agents</h3><p>This check explained the slow catalog calculation. After the fix, the client immediately placed it on a layout, so the previous freezes during placement were likely due to the same recalculation. Conclusions about other program failures cannot be drawn from a single experiment like this.</p><p>In a program with a graphical interface, an agent works slower than with code and stumbles over things that aren't present in a terminal: losing clicks, seeing the world in frames, sharing the mouse with a human. But it did what it was called for well. It changed one variable, measured, recorded all the numbers, not just the pretty ones, and stopped where the decision wasn't its own. The parenthesis was found in one evening. The question about white paint took one conversation with the client, and without it, the fix would have been half guesswork.</p></div>
+  </main>
+  <footer>
+    Translation generated with Gemini 2.5 Flash-Lite.
+    The original article remains the source of record.
+  </footer>
+</body>
+</html>

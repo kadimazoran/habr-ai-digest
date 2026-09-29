@@ -1719,6 +1719,30 @@
     "summary": "SSH access is used in many scenarios, from working with repositories to automation and server management. But if the private key is available to the application itself, it can be stolen if the process is compromised. Replacing SSH with a token doesn't solve the problem: it will just be another secret accessible to the same process. In this article, we'll explore an architecture based on ssh-agent and rootless Docker, where a process can fully utilize granted SSH access without obtaining the private key itself. This restriction is enforced by the access scheme itself and remains even if the software inside the container is compromised. This approach is particularly relevant for systems with AI agents and additional API layers like MCP servers. Read more",
     "title": "Docker for the Paranoid: Organizing SSH Access for a Rootless Container Without Transferring the Private Key"
   },
+  "https://habr.com/ru/articles/1087168/?utm_campaign=1087168&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Tue, 29 Sep 2026 10:00:53 GMT",
+    "slug": "1087168",
+    "source_url": "https://habr.com/ru/articles/1087168/?utm_campaign=1087168&utm_source=habrahabr&utm_medium=rss",
+    "summary": "The first version turned out to be a shell scripting course. But that's not what I wanted: I needed to understand Linux in practice, not in theory from a book — permissions, services, logs, mounting, networking. In the end, there were about fifty tasks like \"write a .sh that...\". Although each one individually seemed fine. I noticed this when I started counting what a person physically does in each series. Almost everywhere it's the same: open an editor and write a script. The reason is boring and technical. A script is easy to check: run it, look at the output, compare. Everything else is inconvenient to check, so everything else is washed out on its own, without anyone's intent. The model I dictated all this to followed the path of least resistance, relying on the C language course I gave it as a model. And an administrator doesn't automate most of the time. He reads the config, sees what's running, and figures out why it's not working as written in the documentation. He also writes scripts — but that's a consequence, not the main activity. Stop, I started from the middle",
+    "title": "I built myself a Linux course (but it turned out to be a .sh course at first)"
+  },
+  "https://habr.com/ru/articles/1087240/?utm_campaign=1087240&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Tue, 29 Sep 2026 14:41:23 GMT",
+    "slug": "1087240",
+    "source_url": "https://habr.com/ru/articles/1087240/?utm_campaign=1087240&utm_source=habrahabr&utm_medium=rss",
+    "summary": "Hello friends! My name is Sabrina, I am an XAI/MI researcher, and this is our new tutorial, and this time it's closer to an article review. If you don't know a single term from the title, you can and should read the article - it is written with the aim of introducing you to all the terms as you read. We will work with two beautiful things. The first is from DL: autoencoders. The second is from mathematics: a dynamical system and what is inside it. We will study the dynamical system in AE based on the publication Navigating the Latent Space Dynamics of Neural Models. Let's get started! Read more",
+    "title": "Autoencoder as a Dynamical System, Latent Vector Field, Its Attractors, and Other Fancy Words"
+  },
+  "https://habr.com/ru/articles/1087390/?utm_campaign=1087390&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Tue, 29 Sep 2026 11:03:38 GMT",
+    "slug": "1087390",
+    "source_url": "https://habr.com/ru/articles/1087390/?utm_campaign=1087390&utm_source=habrahabr&utm_medium=rss",
+    "summary": "During harvest, grain travels a long path inside a combine harvester: from the header through the threshing drum, sieve, and cleaning shoe to the grain elevator and hopper. This entire path is not for nothing; it's designed to clean the grain as much as possible while preserving its integrity, as the selling price directly depends on this. However, you usually only find out how well the cleaning process went after the fact: at the grain elevator or in a lab, when it's already too late to influence the harvest outcome. I'll tell you how we created the Crop Control system, which can be retrofitted onto a combine harvester (even if it had no automation before) and allows monitoring of grain quality and quantity directly during operation. Quantity monitoring is needed to understand how much crop has been harvested from a specific field: yield is one of the key metrics for assessing the productivity of the entire harvesting campaign. Quality monitoring is necessary to influence the harvested product in a timely manner, for example, by adjusting combine settings, and to prevent already threshed grain from being spoiled. Read more",
+    "title": "Express Laboratory Inside a Combine Harvester: How to Teach Machinery to Assess Grain Every 6 Seconds"
+  },
   "https://habr.com/ru/articles/1087536/?utm_campaign=1087536&utm_source=habrahabr&utm_medium=rss": {
     "model": "gemini-2.5-flash-lite",
     "published": "Mon, 28 Sep 2026 14:42:42 GMT",
@@ -1782,6 +1806,70 @@
     "source_url": "https://habr.com/ru/articles/1087738/?utm_campaign=1087738&utm_source=habrahabr&utm_medium=rss",
     "summary": "I took 139 package names that five recent AI models hallucinate identically and checked each against live PyPI and npm on September 22. These are registries from which libraries for Python and JavaScript are installed. The list is valuable because it's not tied to a single neural network: if all five hallucinate the same name, users of any of them are at risk. The list was disclosed on April 30, 2026. 7 out of 139 names are taken. Under one of them, metro-evaluator, malicious code was found in December 2025: npm removed it five days later and replaced it with a placeholder. This was before the list was disclosed, and whether it was a coincidence or a calculated move for a hallucinated name is not visible from the registry. The other six names are occupied by four existing third-party projects, a brand owner's placeholder, and an empty 53-byte package that appeared after the list's disclosure. Following an AI's advice, 'pip install odf' will install someone else's tool instead of the intended library. Read more",
     "title": "AI model hallucinations in code usually break the build. With a fabricated package, it's different: its name can be taken by a malicious actor"
+  },
+  "https://habr.com/ru/articles/1087984/?utm_campaign=1087984&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Tue, 29 Sep 2026 09:55:18 GMT",
+    "slug": "1087984",
+    "source_url": "https://habr.com/ru/articles/1087984/?utm_campaign=1087984&utm_source=habrahabr&utm_medium=rss",
+    "summary": "I'm a product designer with over six years of experience building SaaS. I can code, but I wouldn't call myself a full-stack developer. For several months, I've been building Kotomka alone, a life planner based on the PARA method: spheres, projects, tasks, calendar, habits, finances. It has a web version, a mobile version, synchronization between devices, and with Google and Apple calendars. Almost all the code is written by Claude Code. I set tasks, check results, and make decisions. Read more",
+    "title": "Product Designer, Claude Code, and a Month of Solo Development: What Had to Be Built Around AI to Prevent the Project from Falling Apart"
+  },
+  "https://habr.com/ru/articles/1088006/?utm_campaign=1088006&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Tue, 29 Sep 2026 10:24:32 GMT",
+    "slug": "1088006",
+    "source_url": "https://habr.com/ru/articles/1088006/?utm_campaign=1088006&utm_source=habrahabr&utm_medium=rss",
+    "summary": "Disclaimer: this was originally a comment on another article, but that article was quickly moved to drafts, and @0xKubik to readonly (?!). So I'm writing here, hoping the author will respond here someday, or get in touch otherwise. I've heard the opinion that education is slow to adopt AI use solely out of conservatism and fear of change. I would say the situation is actually more complex, and language models are a double-edged sword. But first, what I take as an axiom. Read more",
+    "title": "Education vs. AI from a Teacher's Perspective"
+  },
+  "https://habr.com/ru/articles/1088022/?utm_campaign=1088022&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Tue, 29 Sep 2026 10:35:10 GMT",
+    "slug": "1088022",
+    "source_url": "https://habr.com/ru/articles/1088022/?utm_campaign=1088022&utm_source=habrahabr&utm_medium=rss",
+    "summary": "In the task manager, Archicad 26 showed 'Not Responding.' The process was using about 13% of the CPU and almost 4 GB of memory, while the wall finishes catalog displayed '2D | Processing Elements' for over six minutes. Usually, you'd kill the task at this point. We didn't: at the 389th second, processing was still ongoing, and by the 452nd, the table was ready. The program wasn't frozen; it was calculating. This is the laptop of an interior designer, our client. She asked for remote assistance: the wall finishes catalog took minutes to open, and when placed on a layout, Archicad would become unresponsive. Two neural networks were involved. Codex controlled her desktop via remote access: opening the project, reading settings, measuring time, and keeping a log. Claude Code analyzed the log, asked the client questions, and prepared tasks for the next session. There's no code in this story, only someone else's program with an interface that the agent had to navigate by clicking. Read more",
+    "title": "Not Frozen, Just Calculating: How Two Neural Networks Accelerated Archicad Catalog from Minutes to Seconds"
+  },
+  "https://habr.com/ru/articles/1088060/?utm_campaign=1088060&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Tue, 29 Sep 2026 11:16:27 GMT",
+    "slug": "1088060",
+    "source_url": "https://habr.com/ru/articles/1088060/?utm_campaign=1088060&utm_source=habrahabr&utm_medium=rss",
+    "summary": "I wanted to test not how well a local LLM writes a summary from a clean test dialogue, but what happens to the full pipeline on a regular phone call with music, an answering machine, interruptions, and poor sound. I built a desktop application using Tauri, Rust, React, and SQLite. It recognizes speech, separates speakers, analyzes sentiment, emotions, and risks, and finally, a local model generates a summary and recommendations. Everything runs on a computer; the internet is only needed to download models. In the experiment, I ran real recordings through two recognizers and compared where exactly problems arise on the path from audio to the final summary. Read more",
+    "title": "Local Call Analysis Without GPU: What Happens on the Path from Audio to Summary"
+  },
+  "https://habr.com/ru/articles/1088144/?utm_campaign=1088144&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Tue, 29 Sep 2026 12:33:20 GMT",
+    "slug": "1088144",
+    "source_url": "https://habr.com/ru/articles/1088144/?utm_campaign=1088144&utm_source=habrahabr&utm_medium=rss",
+    "summary": "In vibe coding, the agent reads documentation first, and opens almost only what it's linked to. According to the Claude Code logs of one of my projects, files without an incoming link were opened by the agent an average of 1.2 times, and 57 out of 88 such files were never opened at all. Previously, documentation was written at the end of the cycle, and a human read it. In vibe coding, the agent writes code and receives only what is provided to it. I counted from five weeks of logs which markdown files the agent opened. I call the entry point the means by which the agent is launched for a task: slash command files in .claude/commands and descriptions of sub-agents in .claude/agents. Documents named in the entry point were opened by the agent an average of 12.3 times. Read more",
+    "title": "In vibe coding, an agent barely reads documentation without a link: 57 out of 88 files were never opened"
+  },
+  "https://habr.com/ru/articles/1088150/?utm_campaign=1088150&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Tue, 29 Sep 2026 12:42:10 GMT",
+    "slug": "1088150",
+    "source_url": "https://habr.com/ru/articles/1088150/?utm_campaign=1088150&utm_source=habrahabr&utm_medium=rss",
+    "summary": "Plugins that started as small solutions for myself and then became useful to thousands of designers. When the same actions are constantly repeated in work, sooner or later you start thinking about how to eliminate them. In this article, I talk about how my own plugins grew from minor annoyances in Figma: from simple utilities to ShapeFlow, which is now used by 20,000+ designers. I also share how vibe-coding helped me test ideas faster, build tools for my tasks, and look at the usual design routine differently. Read more",
+    "title": "From a Small Idea to 20,000 Users: How I Make Plugins for Figma"
+  },
+  "https://habr.com/ru/articles/1088186/?utm_campaign=1088186&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Tue, 29 Sep 2026 13:50:02 GMT",
+    "slug": "1088186",
+    "source_url": "https://habr.com/ru/articles/1088186/?utm_campaign=1088186&utm_source=habrahabr&utm_medium=rss",
+    "summary": "BB is an open-source MIT-licensed program where Claude Code, Codex, Pi, and ACP agents work in a single window. In 7 months, the repository has gathered about 4,000 stars. The key feature of BB isn't the window itself, but how its interface is extended by plugins, with new plugins being recognized without restarting the program. Recently, I made a video about BB. In it, an agent, using just 20 minutes and two prompts, created a plugin that transcribes call recordings, extracts agreements with deadlines, and drafts a client email. The video focused on the user benefits, while this article will dive into the code to explain how it all works. Everything below is verified against the get-bb/bb repository as of late September 2026. Read on",
+    "title": "BB Internals: How an Open IDE for Claude Code and Codex Updates Itself Without Restarting"
+  },
+  "https://habr.com/ru/articles/1088206/?utm_campaign=1088206&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Tue, 29 Sep 2026 14:47:54 GMT",
+    "slug": "1088206",
+    "source_url": "https://habr.com/ru/articles/1088206/?utm_campaign=1088206&utm_source=habrahabr&utm_medium=rss",
+    "summary": "AI helps find vulnerabilities faster, analyze fixes, and prepare exploits. The window for technological work doesn't get longer. The team still has compatibility checks, approvals, and systems that need to work. The attacker only needs to find one suitable vulnerability. The more findings, the more pressing the question: what to fix first? Read more",
+    "title": "cKEV Index: Beat the Clock"
   },
   "https://habr.com/ru/companies/1c/articles/1071340/?utm_campaign=1071340&utm_source=habrahabr&utm_medium=rss": {
     "model": "gemini-2.5-flash-lite",
@@ -2023,6 +2111,14 @@
     "summary": "The 22nd issue of IT news from OpenIDE! Linus Torvalds made AI search for a bug in Linux, although it offered to give up several times. OpenAI announced a solution to a millennium problem, and mathematicians explained why the correct answer is not enough for them. A major release of OpenIDE has been released with C/C++ support from an independent developer. Also in this issue: Jev for quick solutions, Dario Amodei's call to slow down AI development, the new Opus 5.5, and ZCode, which packed repositories for cloud transfer without permission. Usually, there's a week between releases, but this time it's been a whole month. There was plenty to choose from. Read more",
     "title": "Massive code leak, old Linus, and releases of Jev and Opus 5.5"
   },
+  "https://habr.com/ru/companies/haulmont/articles/1087664/?utm_campaign=1087664&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Tue, 29 Sep 2026 12:12:30 GMT",
+    "slug": "1087664",
+    "source_url": "https://habr.com/ru/companies/haulmont/articles/1087664/?utm_campaign=1087664&utm_source=habrahabr&utm_medium=rss",
+    "summary": "Earlier this year, I was convinced that planning would become the most important part of AI-driven software development. This idea consumed me so much that I built and launched an entire desktop development application around it. Nuanced emerged from an observation: AI has radically increased the speed and volume of code generation, but the interfaces needed to support this new pace of work have not kept up. Read more",
+    "title": "[Translation] Plan Mode is Dead"
+  },
   "https://habr.com/ru/companies/hexlet/articles/1086774/?utm_campaign=1086774&utm_source=habrahabr&utm_medium=rss": {
     "model": "gemini-2.5-flash-lite",
     "published": "Fri, 25 Sep 2026 14:07:38 GMT",
@@ -2262,6 +2358,14 @@
     "source_url": "https://habr.com/ru/companies/otus/articles/1085730/?utm_campaign=1085730&utm_source=habrahabr&utm_medium=rss",
     "summary": "AI development tools are becoming more capable, changing the familiar code workflow: generation takes less time, but understanding the result increasingly falls on the reviewer. Let's explore why reviewing AI code creates additional cognitive load, how unnoticed debt arises from this, and what approaches help maintain development quality when working with agents. Let's break down the approach.",
     "title": "[Translation] AI writes code faster, but reviews become harder: where does cognitive debt come from"
+  },
+  "https://habr.com/ru/companies/otus/articles/1087130/?utm_campaign=1087130&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Tue, 29 Sep 2026 10:41:57 GMT",
+    "slug": "1087130",
+    "source_url": "https://habr.com/ru/companies/otus/articles/1087130/?utm_campaign=1087130&utm_source=habrahabr&utm_medium=rss",
+    "summary": "When a language model-based function doesn't have a single correct answer, traditional 'expected = actual result' checks stop working. Testers need to determine which response properties are truly important, how to distinguish acceptable variability from errors, and how to build a clear pass/fail criterion. This article uses a customer support ticket summarization function as an example to explain how to form a behavior contract, a set of checks, and an approach to regression testing AI features.",
+    "title": "How to Find the Cause of AI Feature Errors and Test Them Using a Test Oracle"
   },
   "https://habr.com/ru/companies/piter/articles/1087530/?utm_campaign=1087530&utm_source=habrahabr&utm_medium=rss": {
     "model": "gemini-2.5-flash-lite",
@@ -2702,6 +2806,14 @@
     "source_url": "https://habr.com/ru/companies/vk/articles/1085306/?utm_campaign=1085306&utm_source=habrahabr&utm_medium=rss",
     "summary": "Hi! This is Nikolay Anokhin from the AI VK team. In this article, I'll talk about candidate caching – an approach that makes a recommendation system significantly less demanding on hardware without affecting the quality of the output. The mechanism is already working in the VK Video and VK Clips recommendations. How we implemented candidate caching",
     "title": "Candidate Caching: How to Reduce Hardware Costs in a Recommendation System Without Losing Quality"
+  },
+  "https://habr.com/ru/companies/vk/articles/1088034/?utm_campaign=1088034&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Tue, 29 Sep 2026 10:43:11 GMT",
+    "slug": "1088034",
+    "source_url": "https://habr.com/ru/companies/vk/articles/1088034/?utm_campaign=1088034&utm_source=habrahabr&utm_medium=rss",
+    "summary": "Hello, Habr. This is Nikolay Karasov, lead developer at the content services recommendation department at AI VK. Our team is responsible for recommendations in the VKontakte Feed. We had a goal to develop a new user scenario within VKontakte: a person comes for content, sees an interesting product from an author, and proceeds to purchase directly from the social network. Thus, a new object type appeared in the Feed – a product post. The first partner in this scenario was Ozon. From now on, we will talk specifically about author product posts within the Ozon referral program, not about any posts with products. It was clear that a regular recommender was not suitable for this scenario. As a result, we built a separate product contour within the Feed: with its own logging, candidate selectors, ranking model, and a dedicated quota in the final output. I will talk about this. About the product contour",
+    "title": "Product recommendations in VKontakte: How we taught the Feed to distinguish content interest from purchase intent"
   },
   "https://habr.com/ru/companies/vktech/articles/1068846/?utm_campaign=1068846&utm_source=habrahabr&utm_medium=rss": {
     "model": "gemini-2.5-flash-lite",

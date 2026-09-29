@@ -1,0 +1,113 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>In vibe coding, an agent barely reads documentation without a link: 57 out of 88 files were never opened</title>
+  <meta name="description" content="In vibe coding, the agent reads documentation first, and opens almost only what it&#x27;s linked to. According to the Claude Code logs of one of my projects, files without an incoming link were opened by the agent an average of 1.2 times, and 57 out of 88 such files were never opened at all. Previou">
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.65;
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 32px 20px 64px;
+      color: #1f2328;
+    }
+    header {
+      border-bottom: 1px solid #d8dee4;
+      margin-bottom: 28px;
+      padding-bottom: 20px;
+    }
+    .source {
+      color: #57606a;
+      font-size: 0.95rem;
+    }
+    img, video, iframe {
+      max-width: 100%;
+      height: auto;
+    }
+    pre {
+      overflow-x: auto;
+      padding: 16px;
+      background: #f6f8fa;
+      border-radius: 6px;
+    }
+    code {
+      font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+    }
+    blockquote {
+      border-left: 4px solid #d0d7de;
+      margin-left: 0;
+      padding-left: 16px;
+      color: #57606a;
+    }
+    footer {
+      border-top: 1px solid #d8dee4;
+      margin-top: 40px;
+      padding-top: 20px;
+      color: #57606a;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>In vibe coding, an agent barely reads documentation without a link: 57 out of 88 files were never opened</h1>
+    <p>In vibe coding, the agent reads documentation first, and opens almost only what it&#x27;s linked to. According to the Claude Code logs of one of my projects, files without an incoming link were opened by the agent an average of 1.2 times, and 57 out of 88 such files were never opened at all. Previously, documentation was written at the end of the cycle, and a human read it. In vibe coding, the agent writes code and receives only what is provided to it. I counted from five weeks of logs which markdown files the agent opened. I call the entry point the means by which the agent is launched for a task: slash command files in .claude/commands and descriptions of sub-agents in .claude/agents. Documents named in the entry point were opened by the agent an average of 12.3 times. Read more</p>
+    <p class="source">
+      Machine-translated from Habr.
+      <a href="https://habr.com/ru/articles/1088144/?utm_campaign=1088144&amp;utm_source=habrahabr&amp;utm_medium=rss">Read the original Russian article</a>.
+      Tue, 29 Sep 2026 12:33:20 GMT
+    </p>
+  </header>
+  <main>
+<div><figure><img loading="lazy" src="https://habrastorage.org/r/w1560/getpro/habr/upload_files/ee4/f97/524/ee4f97524d6d3b4388f9fe0efec706aa.jpg"/></figure><p>In vibe coding, the agent reads documentation first, and opens almost only what it's linked to. According to the Claude Code logs of one of my projects, files without an incoming link were opened by the agent an average of 1.2 times, and 57 out of 88 such files were never opened at all.</p><p>Previously, documentation was written at the end of the cycle, and a human read it. In <a href="https://x.com/karpathy/status/1886192184808149383">vibe coding</a>, the agent writes code and receives only what is provided to it. I counted from five weeks of logs which markdown files the agent opened. I call the entry point the means by which the agent is launched for a task: slash command files in <code>.claude/commands</code> and descriptions of sub-agents in <code>.claude/agents</code>. Documents named in the entry point were opened by the agent an average of 12.3 times.</p><h3>How to count from Claude Code logs which markdown files the agent opened</h3><p>Logs are stored locally in <code>~/.claude/projects/</code> in jsonl format, recording every tool call. Over five weeks, 112 sessions and 472 sub-agent launches were recorded. I will refer to any of these as a launch; there are 584 in total.</p><p>The script counts <code>.md</code> file openings via Read and via cat, head, tail, sed in Bash. The path is taken from the repository root so that identically named <a href="http://README.md">README.md</a> files from different folders do not merge into a single counter. The list of documents comes from <code>git ls-files</code>. A file is grouped as linked if the entry point mentions its path or name. Another case is a path template like <code>guides/{topic}.md</code>: then all files in the folder go into this group. CLAUDE.md itself is not included in any group; it is loaded without links.</p><pre><code>import glob, json, os, re, subprocess
+from collections import Counter
+
+REPO = os.getcwd() + "/"
+LOGS = os.path.expanduser("~/.claude/projects/" + re.sub(r"[^A-Za-z0-9]", "-", REPO.rstrip("/")))
+SHELL_READ = re.compile(r"(?:cat|head|tail|sed -n \S+)(?: -\S+)*\s+\"?([^\s"|;]+\.md)")
+
+reads = Counter()
+for path in glob.glob(LOGS + "/**/*.jsonl", recursive=True):
+    for line in open(path, errors="ignore"):
+        if '"tool_use"' not in line:
+            continue
+        for b in json.loads(line).get("message", {}).get("content") or []:
+            if not isinstance(b, dict) or b.get("type") != "tool_use":
+                continue
+            args = b.get("input", {})
+            files = ([args.get("file_path", "")] if b["name"] == "Read"
+                     else SHELL_READ.findall(args.get("command", "")) if b["name"] == "Bash" else [])
+            for f in files:
+                f = f if f.startswith("/") else REPO + f
+                if f.startswith(REPO) and f.endswith(".md"):
+                    reads[f[len(REPO):]] += 1
+
+git = ["git", "-c", "core.quotePath=off", "ls-files", "-z", "*.md"]
+docs = subprocess.run(git, capture_output=True, text=True).stdout.split("\0")[:-1]
+entry = [d for d in docs if d.startswith((".claude/commands/", ".claude/agents/"))]
+entry_text = "".join(open(d).read() for d in entry)
+templates = re.findall(r"([\w.-]+)/\{[^}]+\}\.md", entry_text)   # guides/{тема}.md
+
+def named_in(d, text):
+    return d in text or os.path.basename(d) in text
+
+linked = [d for d in docs if d not in entry + ["CLAUDE.md"] and (named_in(d, entry_text)
+          or os.path.basename(os.path.dirname(d)) in templates)]
+claude_md = open("CLAUDE.md").read() if os.path.exists("CLAUDE.md") else ""
+toc_only = [d for d in docs if d not in entry + linked + ["CLAUDE.md"] and named_in(d, claude_md)]
+orphans = [d for d in docs if d not in entry + linked + toc_only + ["CLAUDE.md"]]
+for name, group in [("точки входа", entry), ("названы в точке входа", linked),
+                    ("только в оглавлении CLAUDE.md", toc_only), ("без ссылки", orphans)]:
+    avg = sum(reads[d] for d in group) / len(group) if group else 0
+    print(name, len(group), "файлов, в среднем", round(avg, 1))
+print("ни разу не открыты:", *[d for d in orphans if reads[d] == 0], sep="\n  ")</code><div><a href="https://sourcecraft.dev/"><img/></a></div></pre><p>Under git, the project has 162 markdown files; the agent opened them 898 times.</p><h3>How often the agent opened a file depending on who referenced it</h3><p>Most often, the agent opened documents named in the entry point: there are 53 such files, with an average of 12.3 openings. The command and sub-agent files themselves, 15 in total, were opened 7.2 times each. Five files referenced only by the table of contents in <a href="http://CLAUDE.md">CLAUDE.md</a> received 3.0 openings each. Files that no one references have an average of 1.2.</p><figure><img alt="There are only five files in the group with the CLAUDE.md table of contents, so it only shows the direction.  " loading="lazy" src="https://habrastorage.org/r/w1560/getpro/habr/upload_files/fd0/45b/086/fd045b086d3058b3f05b8b90bccce4a7.png" title="There are only five files in the group with the CLAUDE.md table of contents, so it only shows the direction.  "/><figcaption><em>There are only five files in the group with the CLAUDE.md table of contents, so it only shows the direction.</em> </figcaption></figure><p>A link from the entry point looks like a regular string in a slash command file, for example: <code>Before the visuals stage, read docs/</code><a href="http://visuals.md"><code>visuals.md</code></a>. Files named this way account for those 12.3 openings.</p><p><a href="http://README.md">README.md</a> in the root was opened 6 times across 584 launches. It is written for a newcomer, but no one showed it to the agent.</p><p>Among the files without links, there were exceptions: one was opened 15 times, and two others 11 times each. All three have names directly related to the task. Perhaps the agent found them by name, but this is not visible in the logs.</p><p>A human reads a document when it's needed: during onboarding, when debugging a bug. The agent starts each launch with a clean context and only knows about the project what it received in that launch. Therefore, documentation moves from the end of the cycle to the beginning and becomes part of the entry setup: which files the agent will see at the start, which it will receive via a link, and which it will not receive at all.</p><h3>What Claude Code puts into context itself, without a link</h3><p><a href="http://CLAUDE.md">CLAUDE.md</a> is <a href="https://code.claude.com/docs/en/memory">loaded entirely</a> at the beginning of each session; imports via <code>@</code> come with it. Rules from <code>.claude/rules</code> with the <code>paths:</code> field are pulled when the agent works with relevant files, and only the description of a skill is always visible in the context. The agent reads the rest if it's prompted. Constant loading has a cost: the model's response <a href="https://www.trychroma.com/research/context-rot">degrades as the input grows</a>, so an extra file in <a href="http://CLAUDE.md">CLAUDE.md</a> hinders every launch.</p><figure><img alt="A file without a link is in the repository, but not in the agent's work.  " loading="lazy" src="https://habrastorage.org/r/w1560/getpro/habr/upload_files/327/891/491/327891491626d82b00fdde409279d7b8.png" title="A file without a link is in the repository, but not in the agent's work.  "/><figcaption><em>A file without a link is in the repository, but not in the agent's work.</em> </figcaption></figure><h3>Why studies on AGENTS.md differ in assessing usefulness</h3><p>A study on <a href="https://arxiv.org/abs/2601.20404">10 repositories</a> found that with <a href="http://AGENTS.md">AGENTS.md</a>, the median task time was 28.64% lower. <a href="https://arxiv.org/abs/2602.11988">ETH Zürich</a> on a different set of tasks saw no increase in the proportion of solved tasks, and the inference cost increased by more than 20%. The first study looked at the speed of edits, the second at whether the task was solved. They agree on one thing: the agent executes instructions from the file, but a repository overview does not help it. If AI is used for documentation in the most common way, asking the model to describe the repository, you get exactly such an overview.</p><h3>How to decide what documentation will be included in the agent's context</h3><ol><li><p>Keep <a href="http://CLAUDE.md">CLAUDE.md</a> short: only what the agent will fail without. Anthropic recommends <a href="https://code.claude.com/docs/en/memory">up to 200 lines</a>. Mine grew to about two hundred lines, and I still need to shorten it.</p></li><li><p>Provide the rest via a link at the moment it's needed: from a slash command, sub-agent description, skill, or rule with <code>paths:</code>. Write the skill description as a trigger condition, as the agent decides whether to call the skill based on it.</p></li><li><p>Do not delete a file without an incoming link immediately; first, check it in the log. I have three such files opened 15, 11, and 11 times; it's better to link them to a command.</p></li><li><p>Transfer a rule that must not be forgotten to a hook: it checks every tool call. <a href="http://CLAUDE.md">CLAUDE.md</a> <a href="https://code.claude.com/docs/en/best-practices">does not guarantee execution</a>.</p></li><li><p>Run the script above once a month: the last line prints files that the agent has never opened. The month is not chosen randomly: by default, Claude Code stores logs for 30 days, which is the <code>cleanupPeriodDays</code> setting.</p></li><li><p>Provide documentation for external libraries at the moment of call. Among AI tools for vibe coding, <a href="https://github.com/upstash/context7">Context7</a> does this, and the library's website can provide it to the model in <a href="https://llmstxt.org">llms.txt</a> format.</p></li></ol><h3>Why logs from one project don't prove that the link itself works</h3><p>This is a correlation: files needed for the task are named in the entry point, and part of the difference is explained by this. Counting via Bash doesn't catch all reads; I didn't count grep operations on files. The project is one, and the agent is also one.</p></div>
+  </main>
+  <footer>
+    Translation generated with Gemini 2.5 Flash-Lite.
+    The original article remains the source of record.
+  </footer>
+</body>
+</html>

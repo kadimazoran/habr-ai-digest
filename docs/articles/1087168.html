@@ -1,0 +1,115 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>I built myself a Linux course (but it turned out to be a .sh course at first)</title>
+  <meta name="description" content="The first version turned out to be a shell scripting course. But that&#x27;s not what I wanted: I needed to understand Linux in practice, not in theory from a book — permissions, services, logs, mounting, networking. In the end, there were about fifty tasks like &quot;write a .sh that...&quot;. Alth">
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.65;
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 32px 20px 64px;
+      color: #1f2328;
+    }
+    header {
+      border-bottom: 1px solid #d8dee4;
+      margin-bottom: 28px;
+      padding-bottom: 20px;
+    }
+    .source {
+      color: #57606a;
+      font-size: 0.95rem;
+    }
+    img, video, iframe {
+      max-width: 100%;
+      height: auto;
+    }
+    pre {
+      overflow-x: auto;
+      padding: 16px;
+      background: #f6f8fa;
+      border-radius: 6px;
+    }
+    code {
+      font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+    }
+    blockquote {
+      border-left: 4px solid #d0d7de;
+      margin-left: 0;
+      padding-left: 16px;
+      color: #57606a;
+    }
+    footer {
+      border-top: 1px solid #d8dee4;
+      margin-top: 40px;
+      padding-top: 20px;
+      color: #57606a;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>I built myself a Linux course (but it turned out to be a .sh course at first)</h1>
+    <p>The first version turned out to be a shell scripting course. But that&#x27;s not what I wanted: I needed to understand Linux in practice, not in theory from a book — permissions, services, logs, mounting, networking. In the end, there were about fifty tasks like &quot;write a .sh that...&quot;. Although each one individually seemed fine. I noticed this when I started counting what a person physically does in each series. Almost everywhere it&#x27;s the same: open an editor and write a script. The reason is boring and technical. A script is easy to check: run it, look at the output, compare. Everything else is inconvenient to check, so everything else is washed out on its own, without anyone&#x27;s intent. The model I dictated all this to followed the path of least resistance, relying on the C language course I gave it as a model. And an administrator doesn&#x27;t automate most of the time. He reads the config, sees what&#x27;s running, and figures out why it&#x27;s not working as written in the documentation. He also writes scripts — but that&#x27;s a consequence, not the main activity. Stop, I started from the middle</p>
+    <p class="source">
+      Machine-translated from Habr.
+      <a href="https://habr.com/ru/articles/1087168/?utm_campaign=1087168&amp;utm_source=habrahabr&amp;utm_medium=rss">Read the original Russian article</a>.
+      Tue, 29 Sep 2026 10:00:53 GMT
+    </p>
+  </header>
+  <main>
+<div><p>The first version turned out to be a shell scripting course. But that's not what I wanted: I needed to understand Linux in practice, not in theory from a book — permissions, services, logs, mounting, networking. In the end, there were about fifty tasks like "write a <code>.sh</code> that...". Although each one individually seemed fine.</p><p>I noticed this when I started counting what a person physically does in each series. Almost everywhere it's the same: open an editor and write a script.</p><p>The reason is boring and technical. A script is easy to check: run it, look at the output, compare. Everything else is inconvenient to check, so everything else is washed out on its own, without anyone's intent. The model I dictated all this to followed the path of least resistance, relying on the C language course I gave it as a model.</p><p>And an administrator doesn't automate most of the time. He reads the config, sees what's running, and figures out why it's not working as written in the documentation. He also writes scripts — but that's a consequence, not the main activity.</p><h3>Stop, I started from the middle</h3><p>I'm talking about KERNEL SHADOWS: 101 episodes in eight seasons, <a href="https://github.com/gfazzz/kernel-shadows">available on GitHub</a> under GPL v3, for free. It's not a video course or a platform: it's a repository with text. A folder per episode, inside it a README with theory and a task, a starter file, tests, and a reference solution. You go through it in an editor with a terminal — I do it in Cursor. No registration required.</p><p>It looks like this:</p><pre><code>git clone https://github.com/gfazzz/kernel-shadows.git
+cd kernel-shadows/season-01-shell-foundations/s01e01-terminal-awakening
+less README.md
+cp starter/whereami.sh artifacts/
+bash tests/test.sh
+</code><div><a href="https://sourcecraft.dev/"><img loading="lazy"/></a></div></pre><p>In <code>starter/</code>, you won't find the solution, but rather placeholders:</p><pre><code>set -euo pipefail
+
+# TODO 1: get the current absolute path (hint: a 3-letter command)
+#         and save it to the 'here' variable.
+here="" # &lt;-- replace with the command call
+
+# TODO 2: print the current directory and the home directory ($HOME).
+echo "Current directory (pwd):   ${here}"
+
+# TODO 3: determine if you are in the root directory "/", and print a clear status.
+</code><div><a href="https://sourcecraft.dev/"><img loading="lazy"/></a></div></pre><p>The test for it immediately fails, and that's normal:</p><pre><code>  PASS: whereami.sh found
+  PASS: bash syntax is correct
+  PASS: shebang is present
+  FAIL: current path /home/max/ops/deep/place is missing from output (script should print pwd)
+  FAIL: $HOME (/home/max) is missing from output
+  FAIL: path appears to be hardcoded: output does not change when changing directory
+  Result: 3 passed, 3 failed
+</code><div><a href="https://sourcecraft.dev/"><img loading="lazy"/></a></div></pre><p>The third <code>FAIL</code> is for the very reason tests were written manually. It doesn't compare output text; it runs the script from two different directories and checks if the answer changes. A hardcoded path won't pass this.</p><p>The reference solution is nearby in <code>solution/</code>, and opening it before your attempt is the only way to ruin the course for yourself. <code>make progress</code> won't count the episode as completed; it's only done when the green test passes on your file.</p><p>Required software: <code>bash</code>, <code>git</code>, <code>make</code>, <code>python3</code>. No test requires root, network, docker, or hardware — more on that later.</p><h3>A rule that had to be enforced</h3><p>To prevent the course from devolving into bash scripting, I outlined the types of episodes for Claude and made balance a criterion for season acceptance:</p><div><div><table><tbody><tr><th><p>Type</p></th><th><p>What you do</p></th><th><p>What the test checks</p></th></tr><tr><td><p>Automation</p></td><td><p>write a <code>.sh</code></p></td><td><p>script behavior on a fixture</p></td></tr><tr><td><p>Configuration</p></td><td><p>edit a config file</p></td><td><p>config properties, idempotency</p></td></tr><tr><td><p>Investigation</p></td><td><p>work in CLI, gather a report</p></td><td><p>reproducibility of findings</p></td></tr><tr><td><p>Code</p></td><td><p>write a <code>.py</code> or <code>.c</code></p></td><td><p>program behavior</p></td></tr></tbody></table></div></div><p><strong>A season composed entirely of Automation tasks will not be accepted.</strong> Currently, the breakdown is: 25 episodes on automation, 38 on configuration, 30 on investigation, 8 on code. Scripts make up a quarter of the course.</p><h3>Investigation sounds good right up until the first test</h3><p>How do you verify that someone has understood an incident? Not "did they write a script?", but "did they understand?". Plus, I preemptively banned tests that require root, network, docker, clusters, or hardware.</p><p>The ban isn't out of asceticism. A course that requires setting up Kubernetes won't be completed by anyone, including the author — and it was primarily made for the author. A test that pokes a live network fails half the time, and the person concludes it's broken. The first version of the node accessibility episode honestly called <code>ping</code>, and I had to move away from that.</p><p>Now, the test places its own <code>ping</code> at the beginning of <code>PATH</code>:</p><pre><code>cat &gt; "${FAKEBIN}/ping" &lt;&lt;'MOCK'
+#!/usr/bin/env bash
+host="${!#}"
+case "${host}" in
+  up-*|10.0.0.1) exit 0 ;; 
+  *)            exit 1 ;; 
+esac
+MOCK
+</code><div><a href="https://sourcecraft.dev/"><img loading="lazy"/></a></div></pre><p>It checks not connectivity, but the logic of the solution: did it save the return code, did it hardcode the status, does it distinguish between "no response" and "responded, but without the <code>time=</code> field"? The same has been done for <code>ss</code>, <code>dig</code>, <code>ufw</code>, and <code>dpkg</code>.</p><h4>A config can be read with the eyes of the program that reads it</h4><p>Next was systemd, and here the AI struggled for a long time, thinking it had hit a dead end. An episode about a unit: the user writes a <code>.service</code> file, but how can you be sure it's correct if systemd can't be run in the test?</p><p>It turns out, you don't need to run it. A unit is text with a known semantics, and the semantics can be reproduced. The test reads the file the way systemd does: sections are significant, the last assignment wins, an empty value resets the setting, comments are ignored. Then it compares the effective values with the service requirements. It separately catches pipelines in <code>ExecStart</code> (there's no shell, after all), <code>After</code> without <code>Wants</code>, and a setting that was reset by an empty assignment later in the file.</p><p>Unexpectedly, this proved more useful than running it. A running service answers the question "did it start now, on this system, with this environment?". The investigation answers "what is actually written here?", and that's the skill the person came for. The same method is used to check <code>sshd_config</code>, <code>fstab</code>, <code>logrotate</code>, <code>compose.yaml</code>, Kubernetes manifests, and <code>auditd</code> rules.</p><p>A pleasant side effect: the test catches things that surface weeks later in real life. A directive left inside a comment. A directive set twice. <code>Host *</code> at the beginning of <code>~/.ssh/config</code>, which causes all subsequent private sections to become inactive.</p><p>You can argue with this, and I'll agree in advance: if you need to ensure that a service actually starts on your distribution with your SELinux, config parsing won't show that. For a learning task, the former is more important; for production, the latter. Two episodes where a live kernel is absolutely necessary (module compilation, <code>insmod</code>, reading <code>/dev/shadow0</code>) are moved to a separate goal and honestly print SKIP without Linux.</p><h4>And forensics in life also works with a snapshot</h4><p>Episodes on incident investigation are run on snapshots: output of <code>ps</code>, contents of <code>/proc</code>, logs, dump of <code>/proc/net/tcp</code>. You need to find a hidden process, a deleted binary, and a server control address encoded in little-endian. There's no compromise here: you can't ask a live machine with a rootkit about itself.</p><h3>What broke</h3><p>Tests that pass on my machine are not tests. Therefore, the Makefile has three targets, each introduced after a specific failure.</p><p><code>make test-repeat</code> runs everything twice in a row. It catches episodes where the second run sees garbage from the first.</p><p><code>make test-locale</code> runs under <code>LC_ALL=C</code> and with a foreign timezone and German locale. It catches checks that compare sorted output: in a different locale, sorting is different, and the test fails on a correct solution.</p><p><code>make clean-clone</code> unpacks the course from scratch and runs it on a fresh clone. The most offensive discovery happened here: a typical <code>.gitignore</code> excludes <code>*.log</code>, keys, and <code>.env</code>, but in a Linux course, these are exactly the learning materials — fixtures for log analysis, training SSH and TLS keys, <code>app.env</code> for container episodes. Locally, everything is in place because you already have it, but in a clone, the tasks remain without input data. Now, ignoring is based on the launch directory, not the extension, and there's a CAPSLOCK comment in <code>.gitignore</code> so we don't overwrite it.</p><h3>What it consists of</h3><p>Eight seasons, eight countries, sixty days of operation. You are an administrator hired to build and protect infrastructure for fifty nodes, and along the way, it turns out that protection will be serious.</p><div><div><table><tbody><tr><th><p>Season</p></th><th><p>Topic</p></th><th><p>Episodes</p></th></tr><tr><td><p>1</p></td><td><p>Shell and Foundations</p></td><td><p>16</p></td></tr><tr><td><p>2</p></td><td><p>Networking</p></td><td><p>12</p></td></tr><tr><td><p>3</p></td><td><p>Administration</p></td><td><p>13</p></td></tr><tr><td><p>4</p></td><td><p>DevOps and Automation</p></td><td><p>12</p></td></tr><tr><td><p>5</p></td><td><p>Security</p></td><td><p>12</p></td></tr><tr><td><p>6</p></td><td><p>Embedded Linux</p></td><td><p>12</p></td></tr><tr><td><p>7</p></td><td><p>Operations</p></td><td><p>12</p></td></tr><tr><td><p>8</p></td><td><p>Final Operation</p></td><td><p>12</p></td></tr></tbody></table></div></div><p>The season titles don't tell you anything, so here's the third one by episode topics:</p><pre><code>s03e01  List of Residents: "Who is on this machine" 
+s03e02  Three Letters: "Who can do what"
+s03e03  Loaded Gun: "To each exactly what they need"
+s03e04  PID 6623: "The name that writes itself"
+s03e05  The service that will return: "Who starts them"
+s03e06  Five minutes on schedule: "Who will catch up on missed ones"
+s03e07  Evening of October 14: "All this was recorded"
+s03e08  The place that isn't there: "df says one thing, du says another"
+s03e09  Five hundred gigabytes that are not visible: "Disk exists, space is gone"
+s03e10  The machine that didn't start: "Who tells it what to mount"
+s03e11  The copy that wasn't there: "When did you last restore?"
+s03e12  The line that wasn't there: "Who tells the service the log was rotated"
+s03e13  03:47: "The third question"
+</code><div><a href="https://sourcecraft.dev/"><img loading="lazy"/></a></div></pre><p>An episode is one concept, one task, one verifiable artifact, 45–90 minutes. A season builds a working entity, not a set of exercises: <code>shadow_toolkit</code>, <code>netshield</code>, <code>fleet_admin</code>, <code>shadow_iac</code>, <code>hardening_kit</code>, <code>shadow_mesh</code>, <code>aurora</code>, <code>shadow_core</code>. The finale doesn't introduce new topics; it accepts what has been built: twelve phases, one for each season's skill.</p><p>Hints become fewer as you progress. The first three seasons provide a complete framework and reference solution; seasons four and five provide a framework and reference solution after an attempt; seasons six and seven provide only interfaces; season eight provides the call contract and that's it.</p><p>This is a spin-off of my own C language course, <a href="https://habr.com/ru/articles/1077372/">which I wrote about three weeks ago</a>. The universe and characters are shared; the difference is that there you write programs, and here you manage the systems they run on. <a href="https://eurecable.com/ideas/973">The idea was recorded</a> three days after the first, and at that time I didn't yet know if it would be a prequel or a spin-off.</p><h3>About AI, since nothing would have happened without it</h3><p>I built both courses myself, with AI, and wrote almost no code by hand. The conclusion I drew from this is not what is usually expected.</p><p>AI didn't write code for me here; it did two other things.</p><p>First: it helped create a program for me. Not "generate a Linux course" — that results in a textbook table of contents, I tried. But a conversation about what I want to learn, in what order, with what material, and what should be the outcome. Previously, this was only available to those with a live mentor.</p><p>Second: it helps while I go through this course. The story includes a mentor named LILITH, and behind her is a regular chat in Cursor, open next to the code. You must proceed in <code>Ask</code> mode. In <code>Agent</code> mode, the assistant edits files itself: the episode will be marked as solved, and you won't type a single command. The first section of <code>.cursorrules</code> forbids it from writing to <code>artifacts/</code>, revealing the episode's solution, or retelling <code>solution/</code> — but you switch the mode, not the file, so it's more of a reminder than a protection.</p><p>Therefore, at the end of each episode, the AI lists questions that are worth asking it, and one forbidden question. The forbidden one always looks completely reasonable and is detrimental precisely here. In the episode about packet analysis, it's "analyze the header for me": the hardcoded IP header length works for nine out of ten packets, and you have to find the tenth one yourself. In the profiling episode, it's "optimize my code": profile first, then optimize; doing it the other way around is guesswork.</p><p>Usually, the discussion about AI boils down to the fact that administrators and programmers will soon be obsolete. In my opinion, it's the opposite. What has become cheaper is not the profession, but the personal learning program: previously, between "I want to understand Linux" and "I understand" stood the search for a good course, someone else's pace, and someone else's topic order; now, it's an evening's conversation with an assistant. A person who can look at <code>sshd_config</code> and see that a directive is not active is needed just as much as they were needed before.</p><p><strong>Repositories:</strong> <a href="https://github.com/gfazzz/kernel-shadows">KERNEL SHADOWS</a> — Linux, GPL v3 <a href="https://github.com/gfazzz/moonlight-course">OPERATION MOONLIGHT</a> — C, MIT</p></div>
+  </main>
+  <footer>
+    Translation generated with Gemini 2.5 Flash-Lite.
+    The original article remains the source of record.
+  </footer>
+</body>
+</html>

@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Giga Pisar: A Major Update for Mac, Where We&#x27;ve Polished Things Up and Stopped Getting in Your Way</title>
+  <meta name="description" content="Hello Habr! This update is for those who dictate on Mac, and it&#x27;s the most significant one yet. The Giga Pisar settings window has been completely redesigned: new interface, images instead of tables, animations. When you open it, it feels like a system settings pane, not a separate application.">
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.65;
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 32px 20px 64px;
+      color: #1f2328;
+    }
+    header {
+      border-bottom: 1px solid #d8dee4;
+      margin-bottom: 28px;
+      padding-bottom: 20px;
+    }
+    .source {
+      color: #57606a;
+      font-size: 0.95rem;
+    }
+    img, video, iframe {
+      max-width: 100%;
+      height: auto;
+    }
+    pre {
+      overflow-x: auto;
+      padding: 16px;
+      background: #f6f8fa;
+      border-radius: 6px;
+    }
+    code {
+      font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+    }
+    blockquote {
+      border-left: 4px solid #d0d7de;
+      margin-left: 0;
+      padding-left: 16px;
+      color: #57606a;
+    }
+    footer {
+      border-top: 1px solid #d8dee4;
+      margin-top: 40px;
+      padding-top: 20px;
+      color: #57606a;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Giga Pisar: A Major Update for Mac, Where We&#x27;ve Polished Things Up and Stopped Getting in Your Way</h1>
+    <p>Hello Habr! This update is for those who dictate on Mac, and it&#x27;s the most significant one yet. The Giga Pisar settings window has been completely redesigned: new interface, images instead of tables, animations. When you open it, it feels like a system settings pane, not a separate application. I&#x27;ll tell you what&#x27;s changed and a bit about who&#x27;s making it all happen – spoiler, it&#x27;s not just me anymore. Read more</p>
+    <p class="source">
+      Machine-translated from Habr.
+      <a href="https://habr.com/ru/companies/gigapisar/articles/1088630/?utm_campaign=1088630&amp;utm_source=habrahabr&amp;utm_medium=rss">Read the original Russian article</a>.
+      Wed, 30 Sep 2026 13:37:50 GMT
+    </p>
+  </header>
+  <main>
+<div><p>Hello, Habr!</p><p>This update is for those who dictate on Mac, and it's the most significant one yet. The Giga Pisar settings window has been completely redesigned: new interface, images instead of tables, animations. When you open it, it feels like a system settings pane, not a separate application.</p><p>I'll tell you what's changed and a bit about who's making it all happen – spoiler, it's not just me anymore.</p><h2>Briefly, if you're here for the first time</h2><p>Giga Pisar is dictation on Mac (and not only). You hold down the right ⌘, speak, release, and the text appears wherever your cursor is: in email, Telegram, notes, anywhere. Speech is recognized directly on your Mac using Sber's GigaAM model, without the internet, without a subscription, and your audio never leaves your device.</p><h2>Why the settings had to be redone</h2><p>Over the past month, Pisar has gained new capabilities: a Brain that corrects text with a neural network, voice editing of selected text, cloud services via API keys. The settings grew along with it and at some point became unmanageable: four tabs, a "label and field" table, everything was uniformly gray, and finding what you needed was difficult; I even got confused myself.</p><p>Now the window is structured like macOS system settings: sections on the left with icons, neat cards on the right, and what's hard to explain in words is shown with an image.</p><figure><img alt="Dictation section" loading="lazy" src="https://habrastorage.org/r/w1560/getpro/habr/upload_files/b0c/dca/c49/b0cdcac495a83edf33f62f59b54992e1.png" title="Dictation section"/><div><figcaption><em>Dictation section</em></figcaption></div></figure><p><strong>Dictation key on the physical keyboard</strong></p><p>The most beautiful part. Above is a live 3D Magic Keyboard, and every few seconds it presses the key you've selected. Below are the keys themselves: right ⌘, right ⌥, right ⌃, Fn. You don't choose a line in a list, but the key you see, and an animation immediately shows you where it is on the keyboard.</p><p><strong>Simplify syntax.</strong> This feature was requested <a href="https://github.com/moznoazachem/giga-pisar/issues/11">in an issue on GitHub</a>, and it was immediately supported by others. In correspondence, people usually don't start with a capital letter or end with a period, especially if they want to continue or just insert text in the middle.</p><p>Now, if a single sentence is dictated, Pisar will insert it exactly like that. Question and exclamation marks remain; it's off by default.</p><figure><img alt="Brain section" loading="lazy" src="https://habrastorage.org/r/w1560/getpro/habr/upload_files/368/f2f/a1e/368f2fa1e16f4f1354a3afd3811f6da7.png" title="Brain section"/><div><figcaption><em>Brain section</em></figcaption></div></figure><p><strong>Brain: selection by logos.</strong></p><p>The Brain is a neural network that corrects dictated text: it removes "uhms" and repetitions, adds punctuation, and translates on the command "Pisar, translate to English."</p><p>Where it will process is now chosen by logos: GigaChat or Qwen directly on your Mac. I remind you that these are two models you can already download to your computer and they will work right on your device, without the internet. Below the selection, there's a hint whether the model can handle your Mac: Pisar checks how much memory you have.</p><p><strong>Disk space.</strong></p><p>Local models weigh two gigabytes or more. Now, a downloaded model can be deleted with one button if it's no longer needed.</p><p>Also, in previous updates, we added a cloud service via API key that connects to the service you choose and isn't limited by your hardware resources. All of this is now clearly displayed in the new settings. And by the way, you can now add multiple online services that you can switch between.</p><p><strong>Each service has its own key.</strong></p><p>Switched from DeepSeek to OpenAI and back? The previous key is still there, no need to re-enter it. The key you saved earlier will migrate automatically.</p><figure><img alt="Voice wave." loading="lazy" src="https://habrastorage.org/r/w1560/getpro/habr/upload_files/bff/4bc/a6d/bff4bca6d9ad50fae7e06b93e7cb5dcf.png" title="Voice wave."/><div><figcaption><em>Voice wave.</em></figcaption></div></figure><p><strong>Voice wave.</strong></p><p>Where to show the wave during dictation – near the cursor or at the bottom of the screen – is chosen by two laptop images.</p><p><strong>Testing</strong></p><p>In the settings window, there's a field where you can dictate and immediately see how the selected settings work.</p><p><strong>How updates work now</strong></p><p>Previously, when a new version was released, Pisar would show a window on top of everything. This annoyed some users, especially when it popped up in the middle of a call with screen sharing. Now, a small red dot on the icon in the menu bar reminds you of a new version. Click the icon, select "Update," and Pisar will do the rest.</p><h2>I didn't do all of this myself</h2><p>This window was submitted by <a href="https://github.com/vitkuzmenko">vitkuzmenko</a>. A pull request of two thousand lines arrived: "Settings: window with sidebar, cards, and images instead of tabs." I compiled it, opened it, and realized I was merging it almost as is.</p><p>And this isn't the first such case. In the last month:</p><ul><li><p><a href="https://github.com/vitkuzmenko">vitkuzmenko</a> previously created the live voice wave near the cursor, and now the settings;</p></li><li><p><a href="https://github.com/pkochubey">pkochubey</a> submitted text correction via neural network using his own key for the Windows version, which led to the cloud-based Brain on all platforms;</p></li><li><p><a href="https://github.com/Denio1337">Denio1337</a> wrote Pisar for Android himself; I'll cover this later, it needs a bit more testing.</p></li><li><p>Issues contain requests, and many of them are already in the app: like the simplified syntax.</p></li></ul><p>And the other day, a pull request arrived that I didn't expect at all: <a href="https://github.com/Bekbo01">Bekbo01</a> added Kazakh language support to Pisar. It has its own recognition model and punctuation rules; I'll definitely look into it and write about it separately.</p><p>This is the most valuable thing for me in the project. Firstly, you like Pisar: it has been downloaded over a thousand times. Secondly, you don't just use it, but improve it yourselves. Thank you to everyone who submits code, writes in issues, and responds in the comments.</p><h2>How to update</h2><p>If Pisar is already installed, a red dot will appear on the icon in the menu bar. If not yet, you can download it from <a href="https://gigapisar.github.io">the website</a> or <a href="https://github.com/moznoazachem/giga-pisar/releases/latest">on GitHub</a>. The application is notarized by Apple and opens without warnings.</p><p>Simplified syntax will soon appear in the Windows version as well.</p><p>If something is bothering you or something is missing, <a href="https://github.com/moznoazachem/giga-pisar/issues">write to us</a>. Or send a pull request.</p></div>
+  </main>
+  <footer>
+    Translation generated with Gemini 2.5 Flash-Lite.
+    The original article remains the source of record.
+  </footer>
+</body>
+</html>

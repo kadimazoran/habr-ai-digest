@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>664 thousand books, dozens of agents — and not a single metric can be trusted</title>
+  <meta name="description" content="I need my own book canon. A canon is a single stable record of &quot;this text&quot; to which everything else is attached: files in different formats, audiobooks, editions, duplicates. Not because external sources are bad. If I need to quickly get the author, title, or identifier of a book, I can ea">
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.65;
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 32px 20px 64px;
+      color: #1f2328;
+    }
+    header {
+      border-bottom: 1px solid #d8dee4;
+      margin-bottom: 28px;
+      padding-bottom: 20px;
+    }
+    .source {
+      color: #57606a;
+      font-size: 0.95rem;
+    }
+    img, video, iframe {
+      max-width: 100%;
+      height: auto;
+    }
+    pre {
+      overflow-x: auto;
+      padding: 16px;
+      background: #f6f8fa;
+      border-radius: 6px;
+    }
+    code {
+      font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+    }
+    blockquote {
+      border-left: 4px solid #d0d7de;
+      margin-left: 0;
+      padding-left: 16px;
+      color: #57606a;
+    }
+    footer {
+      border-top: 1px solid #d8dee4;
+      margin-top: 40px;
+      padding-top: 20px;
+      color: #57606a;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>664 thousand books, dozens of agents — and not a single metric can be trusted</h1>
+    <p>I need my own book canon. A canon is a single stable record of &quot;this text&quot; to which everything else is attached: files in different formats, audiobooks, editions, duplicates. Not because external sources are bad. If I need to quickly get the author, title, or identifier of a book, I can easily get it from an existing catalog. Even if the catalog has garbage, it&#x27;s not a disaster: garbage can be gradually fixed. The problem is different — it&#x27;s not my catalog. I can spend years accumulating the results of my own analyzers around an external identifier: linking audiobooks to it, finding duplicates, identifying editions, collecting statistics, building recommendations. And then the external source will change identifiers, structure, or simply disappear, and all the accumulated work will hang in the air. Therefore, I decided to create my own corpus of books. It will also be dirty, and that&#x27;s okay. The main thing is that it&#x27;s my dirty corpus: I can gradually improve it, and I control its identifiers myself. The corpus currently contains about 664 thousand books. And the task for which all this was needed, at first glance, was very simple: take a few minutes of an audiobook, run it through Whisper, and find the corresponding book by text. What could be difficult? It turned out — almost everything. Read more</p>
+    <p class="source">
+      Machine-translated from Habr.
+      <a href="https://habr.com/ru/articles/1088532/?utm_campaign=1088532&amp;utm_source=habrahabr&amp;utm_medium=rss">Read the original Russian article</a>.
+      Wed, 30 Sep 2026 11:42:07 GMT
+    </p>
+  </header>
+  <main>
+<div><p>I need my own book canon. A canon is a single stable record of "this text" to which everything else is attached: files in different formats, audiobooks, editions, duplicates.</p><p>Not because external sources are bad. If I need to quickly get the author, title, or identifier of a book, I can easily get it from an existing catalog. Even if the catalog has garbage, it's not a disaster: garbage can be gradually fixed. The problem is different — it's not my catalog. I can spend years accumulating the results of my own analyzers around an external identifier: linking audiobooks to it, finding duplicates, identifying editions, collecting statistics, building recommendations. And then the external source will change identifiers, structure, or simply disappear, and all the accumulated work will hang in the air.</p><p>Therefore, I decided to create my own corpus of books. It will also be dirty, and that's okay. The main thing is that it's my dirty corpus: I can gradually improve it, and I control its identifiers myself.</p><p>The corpus currently contains about 664 thousand books. And the task for which all this was needed, at first glance, was very simple: take a few minutes of an audiobook, run it through Whisper, and find the corresponding book by text.</p><p>What could be difficult? It turned out — almost everything.</p><hr/><h2>First, there was a regular text search</h2><p>The idea is standard: break the text into shingles (a few words in a row), build an index, and search for similar sequences. I started with MinHash on shingles.</p><p>It quickly became clear that the naive approach breaks down in a very real scenario: one book is entirely contained within another. There's a short novel and a huge collection of works that includes it. The novel has tens of thousands of shingles, the collection has millions. MinHash estimates Jaccard similarity: the size of the intersection divided by the size of the union. But I need containment — whether a small book is entirely within a large one. The novel within the collection has a containment of one, while the Jaccard similarity is approximately the ratio of their sizes, i.e., around hundredths. As a result, two books, one of which literally contains the other, barely overlap in their fingerprints.</p><p>I started experimenting with MinHash and Winnowing variants, and here's where the first useful mistake happened: I changed several parameters simultaneously and at some point decided that MinHash was completely unsuitable. Later, it turned out that I simply didn't understand which specific parameter was ruining the result.</p><p>So, I returned to MinHash and took the main idea from Winnowing — local minima. The fingerprint is calculated not for the entire book, but for blocks of 300 shingles, each block having its own minima. Blocks of the novel within the collection strongly overlap with the blocks of the novel itself, and a significant portion of their minima coincide — the size of the collection no longer affects anything. The second half is chaining verification: a candidate is counted only if a contiguous piece of the query, about ten words in a row, was found in it, not a scattering of randomly matching shingles. This is how the current version emerged: block MinHash plus chaining verification.</p><p>It works well enough to build the rest of the system on it. But I don't know if it's the best: I still don't have a dataset on which I can honestly compare variants. That's what the rest of the article is about.</p><h2>Finding a book doesn't mean understanding that the search works</h2><p>After the working index appeared, a natural question arose: how well does it work? For a proper evaluation, you need a dataset where the correct answer is known in advance: this query corresponds to book A, this one to book B, this one should return several duplicates, and for this one, there's no correct answer in the corpus at all.</p><p>I didn't have such a dataset. A small corpus is useless: it doesn't show how the system behaves in a large search space (there will be an example below of how little it shows). A large corpus cannot be manually labeled. So, I went down a path that now seems both obvious and quite insane: building a dataset from existing data and verifying it with LLM agents. I have parallel sessions of an agent family, each on its own machine.</p><p>From then on, almost every new source of "truth" went through the same cycle. First: "this seems like it can be used for labeling." Then verification. Then: "no, this is also garbage."
+  </main>
+  <footer>
+    Translation generated with Gemini 2.5 Flash-Lite.
+    The original article remains the source of record.
+  </footer>
+</body>
+</html>

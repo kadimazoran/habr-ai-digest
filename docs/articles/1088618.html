@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>How I Beat Microsoft, But Nobody Needs It (I&#x27;m Enjoying It Myself)</title>
+  <meta name="description" content="I&#x27;m not a programmer. I&#x27;m a model and writer. I just got tired of typing, so I asked ChatGPT to help me create my own voice dictation for Windows. What difficulties did I encounter, and what was the result? Read more">
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.65;
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 32px 20px 64px;
+      color: #1f2328;
+    }
+    header {
+      border-bottom: 1px solid #d8dee4;
+      margin-bottom: 28px;
+      padding-bottom: 20px;
+    }
+    .source {
+      color: #57606a;
+      font-size: 0.95rem;
+    }
+    img, video, iframe {
+      max-width: 100%;
+      height: auto;
+    }
+    pre {
+      overflow-x: auto;
+      padding: 16px;
+      background: #f6f8fa;
+      border-radius: 6px;
+    }
+    code {
+      font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+    }
+    blockquote {
+      border-left: 4px solid #d0d7de;
+      margin-left: 0;
+      padding-left: 16px;
+      color: #57606a;
+    }
+    footer {
+      border-top: 1px solid #d8dee4;
+      margin-top: 40px;
+      padding-top: 20px;
+      color: #57606a;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>How I Beat Microsoft, But Nobody Needs It (I&#x27;m Enjoying It Myself)</h1>
+    <p>I&#x27;m not a programmer. I&#x27;m a model and writer. I just got tired of typing, so I asked ChatGPT to help me create my own voice dictation for Windows. What difficulties did I encounter, and what was the result? Read more</p>
+    <p class="source">
+      Machine-translated from Habr.
+      <a href="https://habr.com/ru/articles/1088618/?utm_campaign=1088618&amp;utm_source=habrahabr&amp;utm_medium=rss">Read the original Russian article</a>.
+      Wed, 30 Sep 2026 13:25:34 GMT
+    </p>
+  </header>
+  <main>
+<div><p>How I Beat Microsoft, But Nobody Needs It (I'm Enjoying It Myself)</p><p>One day I got tired of typing a lot, I turned on Microsoft's voice typing, and I didn't like it: slow, stupid, and it also loads the processor.</p><p>— ChatGPT, my dear, can we write our own dictation app? — I asked the AI.</p><p>— No problem, — it replied.</p><p>And so it began.</p><blockquote><p>I'll warn you right away. I'm not a programmer.</p></blockquote><p>I'm an actor and model, a writer, a financier, an entrepreneur — and this is not to mention Bruce Wayne. I'm just a person who has been coming up with and trying to implement things constantly for the past few years.</p><p>I haven't studied algorithms. I don't know design patterns. I can roughly imagine Clean Architecture, but if you ask me to explain it in an interview — it's better to call someone else immediately.</p><p>But I have ChatGPT.</p><p>And, as it turned out, sometimes that's enough to get yourself deeply involved in development for months.</p><h2>I just got tired of typing.</h2><p>I write a lot. Very much: messages, notes, texts, documents, some thoughts. It takes a lot of time, nerves, and my hands get tired. It's easier to dictate.</p><p>So I tried the regular Windows voice dictation. Shortcut — Win+H key.</p><p>Well, what can I say? In my opinion: slow, lags, words are entered with a delay, and you have to press a button every time. Then I tried other programs available on the internet, and the result for them is the same — all the same as with Voice typing. Inconvenient. To put it mildly.</p><p>Moreover, most of them send the dictated text to the cloud. And I'm paranoid about privacy. So I decided to make my own.</p><p>Criteria:</p><blockquote><p>I said a word → the word appeared on the screen. And preferably anywhere you can currently type: Word. Telegram. Browser. Notepad. A form on a website. It doesn't matter.</p></blockquote><p>I didn't want a separate application that I'd have to switch to first. I didn't want to press a hotkey every time. I didn't want to send my voice somewhere to the cloud. And I definitely didn't want to run a huge neural network just to write:</p><blockquote><p>“I need to buy milk tonight.”</p></blockquote><h2>How a person who doesn't know how to program writes a program</h2><p>At first, it looked something like this.</p><p>Me: Make the program listen to the microphone and type text.</p><p>ChatGPT: Sure.</p><p>Then:</p><p>Now make it not type when I'm silent.</p><p>Ok.</p><p>Now make it understand that I'm continuing to speak after a short pause.</p><p>Good.</p><p>And so on, you get the idea.</p><p>I ran the program. It crashed. I sent the error to ChatGPT. It fixed it. I pasted the corrected code. It crashed in a different way. We figured it out again. And so on in a loop.</p><p>I didn't write this system like a programmer. I rather conducted experiments and talked to the neural network about the results. I said what should happen. It suggested how to do it. I ran it. I watched. I said what happened. It redid it. And gradually, individual pieces started to come together.</p><p>And then, for some reason, they started working together.</p><h2>Thus appeared Jupiter</h2><p>Why I named it that — I don't remember anymore. Just the first thing that came to mind.</p><p>Essentially, it's a very simple idea. The microphone is constantly listening, but not everything at once: a separate layer determines that the person has actually started speaking. The program recognizes this stream and sends the words to where the cursor is. The text appears immediately.</p><p>Then the system can refine what has already been recognized. Punctuation and corrections are overlaid on top of the result.</p><p>And all this happens locally on the computer. Without sending voice to the server.</p><p>It was important for me that Jupiter worked normally even on a weak Windows computer.</p><p>I specifically didn't want to turn regular dictation into a model size competition.</p><p>I needed a tool. Not an AI agent. Not a digital secretary. Not a "talk to your computer about the meaning of life.".</p><blockquote><p>Simply: I speak → the computer types. And preferably quickly.</p></blockquote><p>And here comes the most interesting part</p><p>If I were doing this as a normal developer, I might have gone a completely different way.</p><p>But I'm not a developer. Therefore, some of my decisions turned out to be quite... controversial. For example, Jupiter doesn't try to integrate separately with each application.</p><p>Why? If Windows can already accept keystrokes, why not use that?</p><p>Jupiter receives the recognized text and essentially types it where the cursor is currently located.</p><p>Therefore, it doesn't matter what's in front of it. Word or Telegram. Browser or Notepad. It just types. Surely someone is already writing:</p><blockquote><p>"This is a hack."</p></blockquote><p>Perhaps. But it works. There's another interesting thing.</p><p>Since the recognition is streaming, the new version of the text may differ slightly from what was recognized a second ago.</p><p>For example, at first, the model heard one thing. A moment later, it got more context and realized that it was a different word.</p><p>Therefore, I had to create a text synchronization layer. It compares what has already been typed with what the system considers correct now, and if necessary, corrects the previous result. That is, instead of a nice scheme:</p><p><code>wait → recognize → get perfect sentence → type</code></p><p>we got the scheme:</p><p><code>hear → type → hear more → understand better → correct</code></p><p>I like it. But I suspect that a professional developer might get a twitch from it.</p><h2>Why didn't I use one big neural network?</h2><p>Because I didn't need one big neural network. I started assembling the system from small specialized components. One is responsible for speech detection. Another — for recognition. A separate part handles result synchronization. Another — punctuation and text correction.</p><p>Then all this needed to be made to work in real time. And here I first realized one unpleasant thing.</p><p>A working program is not at all the same as a set of working components. Each individual part can work perfectly.</p><p>But together they can cause complete chaos.</p><p>The stream starts to lag. Text jumps. The cursor ends up in the wrong place. A short pause suddenly ends the phrase. The next phrase starts with garbage from the previous one.</p><p>Text correction comes when the user has already managed to type twenty more words. And all this has to be caught manually. Well, almost manually. Mostly — manually through ChatGPT.</p><h2>The strangest part</h2><p>At some point, Jupiter started working so well that I stopped perceiving it as an experiment. I just started using it. I write a message — I dictate. I need to jot down a thought — I dictate, and so on.</p><p>A command appeared:</p><blockquote><p>“Jupiter, delete the last word.”</p></blockquote><p>And it deletes.</p><p>Spell check and punctuation correction were added (still in development). Speech becomes more like normal written text. At the same time, the idea itself remains primitive. I'm not trying to talk to the computer. I just replaced the keyboard with my voice. And here I have a question.</p><p>Why couldn't such a simple scenario be done properly out of the box?</p><p>Microsoft, Google, Apple, and many other companies have been developing voice technologies for years.</p><p>They know much more than I do. They have development teams, infrastructure, huge models, money, and everything else. And I'm an actor, writer, financier… (you remember) with ChatGPT.</p><p>And yet, I managed to assemble a thing that is personally more convenient for me than what I used before. Not better overall. Not technologically cooler. Not a "revolution." It's just more convenient for me. And that's probably the funniest part of the whole story.</p><h2>I assembled a Windows build</h2><p>Then the next level of pain began.</p><p>I wanted to share Jupiter with others.</p><p>Try explaining to an ordinary person:</p><p>“Now install Python 3.12, dependencies, ONNX Runtime, this library, this model, and now open PowerShell…”</p><p>So I had to figure out building. Jupiter transformed from a folder with Python files into a normal Windows application. An installer appeared. Launch without a Python console. Models are located inside the correct structure. The program launches like regular Windows software.</p><p>You can give a person an installer and say:</p><blockquote><p>“Install it.”</p></blockquote><p>And here's the problem</p><p>I made Jupiter for myself. Not a startup. Not a business. Not an investment project. Not a "let's find a market of $10 billion now." I just got tired of typing. That was the entire business model.</p><p><code>Got fed up → made it</code></p><p>And while I was making it for myself, I didn't care at all whether anyone needed it or not.</p><p>And then I looked at the result and thought that maybe someone else, besides me, is also tired of typing: doctors, lawyers, writers, journalists, those who communicate with neural networks.</p><p>In general, people who work with text all day long.</p><p>But this is where a completely different story begins. Because making a tool for yourself is quite easy. You can forgive it almost anything. It did what you needed — great. But if you want someone else to pay for it, the unpleasant question arises:</p><blockquote><p>why should they?</p></blockquote><p>And I don't have an answer to that yet. Therefore, perhaps I really did beat Microsoft. Only there's a nuance. Microsoft lost nothing from this. I didn't create a technology that changed the market. I didn't build a new OpenAI. I didn't invent a new way of speech recognition.</p><p>I just took existing technologies, glued them together into a rather strange construction, and got a tool that I now use myself every day.</p><p>Moreover, I wouldn't be able to defend some of the architectural decisions in an interview.</p><p>Somewhere there are probably hacks. Somewhere there are decisions that a professional developer would immediately call incorrect. Somewhere I might have reinvented the wheel.</p><p>But the wheel rides. And it's convenient for me.</p><p>The funniest thing is — I didn't start Jupiter to prove that a person without a technical education can replace a programmer.</p><h2>I just wanted to type less.</h2><p>And in the end, I discovered that today, a person who doesn't know how to program at all can take a neural network by the hand and bring a fairly complex idea to a working Windows application.</p><p>I don't know if this is good or bad. And I don't know how long this scheme can even work.</p><p>But Jupiter works for me. I enjoy it. And whether anyone else needs it — that's probably the most interesting part of the experiment.</p><p>For those who, after reading the article, want to try it: Jupiter is on GitHub. You can download the Windows installer there.</p><p><a href=
+  </main>
+  <footer>
+    Translation generated with Gemini 2.5 Flash-Lite.
+    The original article remains the source of record.
+  </footer>
+</body>
+</html>

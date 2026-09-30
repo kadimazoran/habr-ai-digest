@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Welcome to the Plastic World. How the BrickGPT/LegoGPT Model Works</title>
+  <meta name="description" content="Greetings, dear readers. This article will be as philosophical and Platonic as possible on Habr. Read more">
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.65;
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 32px 20px 64px;
+      color: #1f2328;
+    }
+    header {
+      border-bottom: 1px solid #d8dee4;
+      margin-bottom: 28px;
+      padding-bottom: 20px;
+    }
+    .source {
+      color: #57606a;
+      font-size: 0.95rem;
+    }
+    img, video, iframe {
+      max-width: 100%;
+      height: auto;
+    }
+    pre {
+      overflow-x: auto;
+      padding: 16px;
+      background: #f6f8fa;
+      border-radius: 6px;
+    }
+    code {
+      font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+    }
+    blockquote {
+      border-left: 4px solid #d0d7de;
+      margin-left: 0;
+      padding-left: 16px;
+      color: #57606a;
+    }
+    footer {
+      border-top: 1px solid #d8dee4;
+      margin-top: 40px;
+      padding-top: 20px;
+      color: #57606a;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Welcome to the Plastic World. How the BrickGPT/LegoGPT Model Works</h1>
+    <p>Greetings, dear readers. This article will be as philosophical and Platonic as possible on Habr. Read more</p>
+    <p class="source">
+      Machine-translated from Habr.
+      <a href="https://habr.com/ru/articles/1088704/?utm_campaign=1088704&amp;utm_source=habrahabr&amp;utm_medium=rss">Read the original Russian article</a>.
+      Wed, 30 Sep 2026 15:17:02 GMT
+    </p>
+  </header>
+  <main>
+<div><p>Greetings, dear readers.</p><p>This article will be as philosophical and Platonic as possible on Habr.</p><p>Transformer-class neural networks (GPT) have become so diverse in just two to three years that <a href="https://drcowinj-locationindependentteach.com/2023/03/12/an-overview-generative-ai-programs-and-chatgpt-infographic-by-dr-jasmin-bey-cowin/">they are difficult to classify</a>.</p><figure><img loading="lazy" src="https://habrastorage.org/r/w1560/getpro/habr/upload_files/13a/c7b/3ad/13ac7b3ad8e735ddb4b881bd2b71636f.png"/></figure><p>Today, I will remind you about a small research transformer called LegoGPT (also referred to as BrickGPT in sources). This is a research project developed during 2025 by a group of scientists from Carnegie Mellon University. Previously, the respected Daniil Shatukhin @daniilshat published <a href="https://habr.com/ru/news/908340/">news</a> about this transformer on Habr.</p><p><strong>BrickGPT</strong> is the first successful attempt to generate physically stable LEGO bricks based on text prompts. To achieve this, the authors assembled a dataset of potentially possible LEGO bricks, labeled them with descriptions, and then trained an autoregressive large language model on this data so that it suggests the next LEGO brick based on the same principle as selecting the next token. The existing construction is held in the context window, and its 3D geometry and overall stability are evaluated. Autoregressive inference allows for the exclusion of unrealistic options, considering mechanics, physical laws, the geometry of rectangular bodies, and LEGO assembly rules. Simulations and experiments conducted by the authors have shown that <strong>BrickGPT</strong> suggests stable, aesthetically pleasing, and tightly fitting bricks that can be used to assemble simple objects, such as toy furniture. Moreover, since all bricks have a correct and predictable shape, they are easy to 3D print, and simple robotic arms (manipulators) can assemble objects.</p><figure><img loading="lazy" src="https://habrastorage.org/r/w1560/getpro/habr/upload_files/c74/75d/55e/c7475d55ea3622be29b929c9ae47ba24.png"/></figure><p>Building models and casting plastic figures based on them is not a new task, so let me explain how BrickGPT surpasses such experiments with CAD. Indeed, CAD tools allow for the creation of individual physical bodies, and they turn out to be realistic and geometrically harmonious. However, such objects are difficult to assemble from parts (the computer generated the object as a whole). Furthermore, a 3D object in its physical form often turns out to be unstable. Such an object can not only tip over but also collapse under its own weight, or simply fall apart.</p><p>BrickGPT eliminates precisely these shortcomings. Moreover, since this neural network assembles models from standard and mutually similar components in the simulator, this work can be conveyorized and automated in its real-world implementation.</p><p>For this project, the authors assembled a special dataset called <strong>StableText2Brick</strong>, which is available <a href="https://huggingface.co/datasets/AvaLovelace/StableText2Brick">here</a>.</p><h2>Philosophical Component</h2><p>The experiment was successful in practice, but I find it more interesting from a philosophical standpoint. A neural network knows nothing about the world beyond its training dataset, nor does it have any real understanding of physical laws. However, the material of the dataset and training through trial and error (including reinforcement learning) allows it to clearly establish which combinations of bricks form stable assemblies and which ones are unstable, fall apart on their own, or under load. The result is a system that assembles structures faster than a human can even imagine the process. The LegoGPT algorithm combines sorting, trial and error, and evolutionary improvement of the structure, but as of 2026, it only assembles the simplest structures that lack internal structure or moving parts.</p><h2>Bricks as Tokens: Step-by-Step Stability Prediction</h2><p>LegoGPT is a fine-tuned version of the large language model LLaMA-3.2-Instruct-1B. This model can be considered an open-source version of ChatGPT. The researchers trained this model on 47,000 LEGO brick assemblies and 28,000 unique 3D figures. All these objects were described in detail (annotated). Therefore, LegoGPT can assemble both real and hypothetical objects in a simulation environment based solely on a text prompt.</p><p>The authors trained <strong>LLaMA-3.2–1B‑Instruct</strong> to solve a narrow task, namely: <em>predicting the next brick</em>. The model receives a natural language description as input and outputs a sequence (arrangement) of LEGO bricks encoded in text format. These are tokens, each describing the type of block, its position relative to all previously built blocks (in particular, which blocks it connects to and which it only abuts), and the block's orientation in a 20x20x20 three-dimensional grid.</p><p>LegoGPT outperforms <a href="https://huggingface.co/collections/Litllefarmer/3d-mesh-generator">3D mesh generators</a> precisely because it builds figures sequentially and reliably, preventing the formation of open contours or figures whose extended elements would "hang" in the air, leading to a shift in the center of gravity and inevitable collapse. Additionally, the algorithm does not allow blocks to overlap, the structure to go beyond the grid boundaries, or the appearance of <a href="https://im-possible.info/russian/articles/triangle/triangle.html">impossible figures, such as the Penrose triangle</a>. If, at any step, the proposed figure does not fit into the existing construction or does not match the prompt, then this step.</p><p>In the base paper, the authors showed that the model can construct objects belonging to approximately 20 simple categories (chairs, cabinets, boats, guitars, cars, trains), but these constructions are gradually becoming more complex. The key feature of the model is backtracking one step if the current step was unsuccessful, a dead end, or conditionally permissible but pushed the construction towards an unstable state. Without backtracking (when building a figure from start to finish, from simple to complex), only 24% of the constructions were stable, while with the ability to backtrack, their proportion reached 98.8%.</p><p>As you may have already appreciated, LegoGPT is far from just a neural network whose capabilities are limited to prompt execution. The model has a built-in physics engine that further checks all generated figures: how gravity will act on them, what the friction between the bricks will be, and what the adhesion force will be. If the system identifies a part of the structure that could collapse in a real situation, it first removes the most unstable brick, and then all bricks that depend on it or are supported by it. After that, fixation occurs, and the model can try another option for superstructure.</p><h2>Non-Gaming Possibilities: The First Attempt at Generative 3D Design</h2><p>Apparently, LegoGPT is not just a toy for LEGO enthusiasts, but the first tool paving the way for creating <strong>drawings for generative design under dynamically changing constraints</strong>. Some possibilities for development and practical application of this tool include:</p><ul><li><p><strong>Furniture Design</strong>: AI generates blueprints for exotic interior items, starting from basic models of "chair," "cabinet," "bed," where each minor change is made considering structural integrity, stability, and the weight that the item should bear.</p></li><li><p><strong>Architecture</strong>: Planning of buildings and structures based on prompts. The model can consider not only purely physical constraints but also construction standards and their refinements (permafrost conditions, seismically active areas).</p></li><li><p><strong>Robotics</strong>: Customizing parts considering the function of the designed robot, its interaction with other people and robots, the dimensions of the conveyor and assembly line, the degrees of freedom of the robot itself, and the materials it will handle.</p></li><li><p><strong>Protein Folding</strong>: This is a vast topic. On Habr, it has been discussed, for example, by the respected <a href="https://habr.com/users/sly_g">@SLY_G</a> in the article "<a href="https://habr.com/ru/articles/501236/">So What Exactly Is Protein Folding?</a>" and <a href="https://habr.com/users/tac">@tac</a> in the article "<a href="https://habr.com/ru/articles/140150/">Part #1. Introduction to Protein Folding Computations. From Proteins to RNA</a>." The essence is the same: the requirement to assemble a molecule that simultaneously possesses the desired biological properties and maintains integrity in solution.</p></li></ul><h2>Conclusion</h2><p>In my opinion, LegoGPT, conceived as a niche and semi-gaming project, has opened the door to the world of Plato's "ideal ideas" and the "atoms" of Leucippus and Democritus, from which all existence is composed. The model materializes not individual tokens, but their specific combinations that fit within the context window. The model discovers the world of physical bodies and physical laws. It would likely work (and will work) differently if the task were reformulated for "operation in zero gravity," "operation under increased gravity," "operation in conditions of rocking," etc. Such a model is likely capable of constructing non-obvious combinations of blocks and making hard-to-verify errors (hallucinate), meaning it will require careful human supervision. However, overall, its capabilities in applied stereometry seem limitless to me.</p></div>
+  </main>
+  <footer>
+    Translation generated with Gemini 2.5 Flash-Lite.
+    The original article remains the source of record.
+  </footer>
+</body>
+</html>

@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>How to Stop Reviewing Unsolicited Changes</title>
+  <meta name="description" content="With the advent of AI agents in development, there&#x27;s more code and more noise. Pull requests are growing, keeping an agent within the scope of a task is becoming more difficult, and more code is passing through a person&#x27;s head. Reviewing is becoming the main workload, and the green numbers">
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.65;
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 32px 20px 64px;
+      color: #1f2328;
+    }
+    header {
+      border-bottom: 1px solid #d8dee4;
+      margin-bottom: 28px;
+      padding-bottom: 20px;
+    }
+    .source {
+      color: #57606a;
+      font-size: 0.95rem;
+    }
+    img, video, iframe {
+      max-width: 100%;
+      height: auto;
+    }
+    pre {
+      overflow-x: auto;
+      padding: 16px;
+      background: #f6f8fa;
+      border-radius: 6px;
+    }
+    code {
+      font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+    }
+    blockquote {
+      border-left: 4px solid #d0d7de;
+      margin-left: 0;
+      padding-left: 16px;
+      color: #57606a;
+    }
+    footer {
+      border-top: 1px solid #d8dee4;
+      margin-top: 40px;
+      padding-top: 20px;
+      color: #57606a;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>How to Stop Reviewing Unsolicited Changes</h1>
+    <p>With the advent of AI agents in development, there&#x27;s more code and more noise. Pull requests are growing, keeping an agent within the scope of a task is becoming more difficult, and more code is passing through a person&#x27;s head. Reviewing is becoming the main workload, and the green numbers of added lines in the header start to become stressful even before you open it. A typical scenario: a pull request for a small feature, and in it, changes in a dozen files that are not related to the task. Individually, they might be useful, but together they turn the review into a scavenger hunt. Read more</p>
+    <p class="source">
+      Machine-translated from Habr.
+      <a href="https://habr.com/ru/articles/1089136/?utm_campaign=1089136&amp;utm_source=habrahabr&amp;utm_medium=rss">Read the original Russian article</a>.
+      Thu, 01 Oct 2026 12:37:50 GMT
+    </p>
+  </header>
+  <main>
+<div><p>With the advent of AI agents in development, there's more code and more noise. Pull requests are growing, keeping an agent within the scope of a task is becoming more difficult, and more code is passing through a person's head. Reviewing is becoming the main workload, and the green numbers of added lines in the header start to become stressful even before you open it.</p><p>A typical scenario: a pull request for a small feature, and in it, changes in a dozen files that are not related to the task. Individually, they might be useful, but together they turn the pull request into a mishmash.</p><h3>The Problem: The Agent Sees More Than It Can Handle</h3><p>When an AI agent works on a task, it constantly stumbles upon side issues. An outdated dependency, duplicate code, a function not covered by tests, a strange variable name in a neighboring module. All of these are valid observations, but they are not related to the current task.</p><p>Then the agent does one of two things. Either it gets distracted and starts fixing everything: the diff inflates, the review turns into torture, and the context window is wasted on the wrong things. Or it mentions the finding in one of a hundred messages, and it gets lost forever.</p><p>A separate pain point is the context window. If the agent works in a waterfall mode and does everything in one session, the context gets clogged with side changes. The fuller it is, the worse the agent remembers why it came here in the first place: it forgets earlier agreements, gets confused by what has already been done, and after context compression, it loses details. Sometimes the session simply hits the limit in the middle of work.</p><p>Moreover, models differ. Some have larger windows, others smaller, and a task that one model completes in a session might not fit into another. Yet, tokens are limited for all: every incidental refactoring eats into the budget that should have gone to the main task.</p><h3>The Idea: A Backlog Managed by the Agent Itself</h3><p>After the euphoria of the first months of working with agents, when everything seems like magic, at some point you realize that the entire code writing system can be structured even better. First, you ask the agent not to do extra work. Then you look for ready-made solutions. Then you write your own skill that gives the agent instructions taking into account the specifics of your domain, and in the end, you get a solution you want to share with the team.</p><p>This led to the idea of a local development backlog—a full-fledged one, with a task lifecycle and checks. It's needed to avoid distractions for both the agent and the human in the moment. When working on a task, everything extraneous goes into the backlog:</p><ul><li><p>observations and ideas found during work;</p></li><li><p>incidental refactorings that beg for a separate branch;</p></li><li><p>side effects of changes that need to be checked separately;</p></li><li><p>technical debt that would otherwise remain a TODO comment in the code;</p></li><li><p>questions for a human that the agent cannot answer itself.</p></li></ul><p>The principle is simple: if we're automating, we automate everything. The backlog is primarily an agent's tool. It records tasks itself, takes them into work itself, and closes them itself with a link to the commit. And a Stop-hook after each agent's move checks if the code of open tasks has changed and asks to re-check them. The human doesn't need to maintain the backlog manually.</p><p>At the same time, the human still has a window to observe the work: how effective the agent is, what's already done, and what's left. Control without micromanagement.</p><h3>From Idea to Implementation</h3><p>To make the idea work, we had to answer three questions: where to store tasks, how the agent should work with them, and how the human should monitor this. The answers resulted in four parts:</p><div><div><table><tbody><tr><th><p>Component</p></th><th><p>What it does</p></th></tr><tr><td><p>Core</p></td><td><p>Stores tasks and epics, backlog management logic</p></td></tr><tr><td><p>CLI</p></td><td><p>Add, view, take, close tasks from the terminal</p></td></tr><tr><td><p>Agent Skill</p></td><td><p>Instructs the agent when and how to record observations and how to take tasks from the backlog</p></td></tr><tr><td><p>Stop-hook</p></td><td><p>After each agent move, checks if the code of open tasks has changed and asks to re-check them</p></td></tr><tr><td><p>Server and Web App</p></td><td><p>Conveniently view and manage the backlog in a browser</p></td></tr></tbody></table></div></div><p>The main interface became the CLI: it's easiest for the agent to call a command in the terminal, without tokens, APIs, or network. But the CLI alone is not enough—the agent needs to know when to use it. This role was taken by the skill: it turns "the agent has a CLI" into "the agent records tasks itself at the right time and takes them itself.".</p><p>The web part covers the second half of the idea—the window for the human. In the browser, you can see what's done, what's left, and how effectively the agent is working, without having to read a hundred tasks in the terminal.</p><figure><img alt=
+  </main>
+  <footer>
+    Translation generated with Gemini 2.5 Flash-Lite.
+    The original article remains the source of record.
+  </footer>
+</body>
+</html>

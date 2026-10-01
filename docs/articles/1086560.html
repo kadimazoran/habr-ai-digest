@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>How We Describe Thousands of Tables Using LLMs</title>
+  <meta name="description" content="Hello Habr! My name is Sergey Tretyakov. I am the product owner of MWS Data Scout, a service that describes database tables using large language models (LLMs). In this article, I will explain why the task of documentation cannot be solved by simply passing the schema to the model, what layers of con">
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.65;
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 32px 20px 64px;
+      color: #1f2328;
+    }
+    header {
+      border-bottom: 1px solid #d8dee4;
+      margin-bottom: 28px;
+      padding-bottom: 20px;
+    }
+    .source {
+      color: #57606a;
+      font-size: 0.95rem;
+    }
+    img, video, iframe {
+      max-width: 100%;
+      height: auto;
+    }
+    pre {
+      overflow-x: auto;
+      padding: 16px;
+      background: #f6f8fa;
+      border-radius: 6px;
+    }
+    code {
+      font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+    }
+    blockquote {
+      border-left: 4px solid #d0d7de;
+      margin-left: 0;
+      padding-left: 16px;
+      color: #57606a;
+    }
+    footer {
+      border-top: 1px solid #d8dee4;
+      margin-top: 40px;
+      padding-top: 20px;
+      color: #57606a;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>How We Describe Thousands of Tables Using LLMs</h1>
+    <p>Hello Habr! My name is Sergey Tretyakov. I am the product owner of MWS Data Scout, a service that describes database tables using large language models (LLMs). In this article, I will explain why the task of documentation cannot be solved by simply passing the schema to the model, what layers of context we had to build, and which prompt block, contrary to expectations, only degrades the quality of work. Read more</p>
+    <p class="source">
+      Machine-translated from Habr.
+      <a href="https://habr.com/ru/companies/mws/articles/1086560/?utm_campaign=1086560&amp;utm_source=habrahabr&amp;utm_medium=rss">Read the original Russian article</a>.
+      Thu, 01 Oct 2026 12:43:22 GMT
+    </p>
+  </header>
+  <main>
+<div><figure><img loading="lazy" src="https://habrastorage.org/r/w1560/getpro/habr/upload_files/c3a/a1a/3f1/c3aa1a3f154433408c843d0ac6104024.jpg"/></figure><p>Hello Habr! My name is Sergey Tretyakov. I am the product owner of <a href="https://mws.ru/data/data-scout/?utm_source=habr.com&amp;utm_medium=owned_media_datascout&amp;utm_content=article&amp;utm_term=datascout">MWS Data Scout</a>, a service that describes database tables using large language models (LLMs).</p><p>In this article, I will explain why the task of documentation cannot be solved by simply passing the schema to the model, what layers of context we had to build, and which prompt block, contrary to expectations, only degrades the quality of work.</p><h2>Problems with Table Descriptions</h2><p>MWS Data Scout began with an experiment. We took the <em>Resource Inventory</em> system and tasked seven employees with manually describing its data marts.</p><p>Result after three months: 310 data marts.</p><p>Speed: about two tables per day per person.</p><p>Time spent: up to six hours per table.</p><p>Such high time costs are due to the complexity of finding answers to the questions "what is stored here and why": it is necessary to find the data owner, restore the system's history, understand how status_2 differs from status_new, and verify assumptions with SQL queries.</p><p>On the scale of MWS — our cluster alone contains over 600 databases — the data landscape cannot be described manually. It grows faster than people can document it.</p><p>When we started, AI agents for corporate data did not yet exist. The task was down-to-earth: to help an analyst who spends hours each time figuring out which of the forty similar tables contains the current data. We learned later that a ready-made layer of descriptions would also be useful for AI agents.</p><h2>First Attempt: Passing the Schema to the Model</h2><p>We started with the most obvious approach — we passed the data structure to the LLM: table names, column names, and data types.</p><p>The result was disappointing. The model simply rephrased what was already visible in the schema: <em>"The table contains information about users, the user_id column is the user identifier."</em> There was no new knowledge or business logic in such texts.</p><p>The problem is that a column name is a label that a developer once assigned. A technical field like status_2 could be a payment status, a delivery status, or a migration flag. This cannot be directly inferred from the schema.</p><h2>Context Layers</h2><p>To overcome this barrier, we began collecting context from all available sources:</p><p><strong>1. Data Samples.</strong> We take 10 random records per table. This is not enough for analysis, but it is sufficient to distinguish a directory from a log and to see that the column contains not "some statuses," but specific repeating values.</p><p><strong>2. Classification by Usage.</strong> We divide tables into types:</p><ul><li><p>Log — events and monitoring;</p></li><li><p>Transactional — business transactions and ETL (including stage tables);</p></li><li><p>Directory — reference data with constant values;</p></li><li><p>Bridge — many-to-many relationships;</p></li><li><p>Summary — aggregates and summary metrics.</p></li></ul><p>One needs to write about a log and a directory completely differently, so we determine the table class first.</p><p><strong>3. Domain Affiliation.</strong> If a company does not have its own description of the subject area, we rely on industry standards. For telecom, this is <strong>eTOM</strong> (a telecommunications operator's process map); for finance, it is <strong>BIAN</strong>. As a result, the model correlates the table with a verified external business schema.</p><p><strong>4. Own Glossary.</strong> If there is no ready-made industry model, the product itself builds a glossary of the subject area based on the data and maps tables to it.</p><p><strong>5. Documentation.</strong> We connected parsers for Confluence, git repositories, and files (PDF, DOCX, XLSX, MD, TXT, HTML). Pages are divided into fragments, saved in Elasticsearch, and searched using a hybrid method — simultaneously full-text and vector search.</p><h2>What Works in a Prompt and What Hinders</h2><p>It would seem that the more context we give the model, the better the result should be. But experiments showed the opposite.</p><p><strong>Testing Methodology</strong></p><p>We took the same model and performed <strong>1048 generations</strong> for <strong>93 unique tables</strong> from three different sources. The quality was assessed by an automatic rater — a combination of <em>LLM-as-a-judge</em> and <em>CatBoost</em> on a scale of 1 to 5. The influence of prompt blocks was calculated using a paired t-test and fixed-effects regression.</p><p>We tested the following prompt blocks:</p><ul><li><p>task — instructions on what needs to be done;</p></li><li><p>examples — samples of desired output;</p></li><li><p>output_format — strict specification of the format;</p></li><li><p>documentation — found documentation fragments.</p></li></ul><p><strong>Influence of Blocks on Description Quality</strong></p><div><div><table><tbody><tr><td><p><strong>Prompt Block</strong></p></td><td><p><strong>Quality Increase</strong></p></td><td><p><strong>p-value</strong></p></td></tr><tr><td><p><strong>task</strong></p></td><td><p><strong>+0.60</strong></p></td><td><p>&lt;0.001</p></td></tr><tr><td><p><strong>examples</strong></p></td><td><p><strong>+0.51</strong></p></td><td><p>&lt;0.001</p></td></tr><tr><td><p><strong>output_format</strong></p></td><td><p><strong>−0.08</strong></p></td><td><p>0.012</p></td></tr><tr><td><p><strong>documentation</strong></p></td><td><p><strong>−0.11</strong></p></td><td><p>0.020</p></td></tr></tbody></table></div></div><p>The top two results are expected, but the bottom two are not. <strong>Strict format specification and adding documentation degrade quality</strong>. And we spent the most effort on extracting documentation!</p><p><strong>Reason for the Problems</strong></p><p>Both of these blocks add noise:</p><ul><li><p>Documentation often contains outdated information, describes a neighboring system, or a different process. The model begins to blindly copy this information into the description.</p></li><li><p>The format specification distracts the model too much from analyzing the data itself.</p></li></ul><p>Combinations of blocks behave even more interestingly. The best quality was achieved by combining context, examples, and documentation. But if the task block was added to this set, the overall score decreased. A block that is useful in itself starts to interfere in an oversaturated prompt.</p><p><strong>The main conclusion</strong>: one cannot assemble a prompt based on the principle of "let's add everything we have." As a result, we moved to a <strong>prompt matrix</strong>. At the intersection of the table class and its business domain, a unique version of the prompt is created. A prompt for a financial directory and a prompt for a log of customer clicks are different entities that evolve independently.</p><h2>Implementation Results</h2><p>We tested the system on MTC's production databases. Automation results:</p><ul><li><p>8180 tables from 7 DBMS were fully described in less than 3 days.</p></li><li><p>Generation speed was about 25 seconds per table (instead of 6 hours of manual work).</p></li><li><p>About 80% of the documentation work is now fully automated. The team only needs to configure the domain and approve the result.</p></li><li><p>95% of descriptions are accepted by analysts without any edits.</p></li><li><p>The productivity of one employee increased from 30 to 2000 tables per month.</p></li></ul><p><em>Speed strongly depends on the volume of collected context. We processed a system with 634 tables in 33 hours, and another system with 4653 tables in just 1.75 hours. This is the net generation time, excluding human review.</em></p><p>In addition to texts, the system performs related tasks:</p><ul><li><p><strong>Builds ER diagrams.</strong> Including hidden relationships identified by analyzing data intersections (when relationships are not defined by foreign keys).</p></li><li><p><strong>Generates business terms and synonyms</strong>.</p></li><li><p><strong>Marks personal data (PDn)</strong>.</p></li></ul><h2>Personal Data Security</h2><p>Marking personal data is a critically important task with a high error cost. From May 2025, according to Law No. 152-FZ, significant turnover fines are provided for data leaks: up to 3% of annual revenue (up to 500 million rubles) for a repeated leak and up to 15 million rubles for an initial one.</p><p>The main danger is "forgotten" copies in legacy systems. Our product automatically searches for PDn across the entire landscape using LLMs and classic machine learning methods. Based on the ER diagram, we can see exactly where this data flows within the storage.</p><p><strong>Important</strong>: masking of sensitive fields occurs at the network gateway before an AI agent can access them. The data itself never leaves the company's secure perimeter.</p><h2>Technical Limitations</h2><p><strong>1. Data Sources.</strong> Out-of-the-box, there are over eight connectors to DBMS: Oracle, PostgreSQL, MS SQL, ClickHouse, MySQL, Greenplum, Hadoop. Lakehouse architecture is supported, and there is integration with DataHub and OpenMetadata catalogs. Results can be exported to Excel and JSON.</p><p><strong>2. Cost and Infrastructure.</strong> Each LLM request costs money. Models are deployed within the company's network on dedicated servers with A100 and A40 GPUs. This is a fixed expense item and simultaneously a performance "ceiling" — scaling requires purchasing expensive additional equipment.</p><p><strong>3. Optimization.</strong> To reduce costs, we are migrating simple tasks (e.g., PDn detection) from heavy LLMs to lightweight classifiers — from logistic regression to <em>DistilBERT</em>-class models. We train them on synthetic data generated by AI. This reduces response time to milliseconds and provides a stable, deterministic result.</p><h2>MWS Data Scout for AI Agents</h2><p>We created the product to help people find the information they need faster, avoid spending time deciphering tables, and not create duplicates. But with the advent of corporate AI agents, it turned out that they need a semantic layer even more.</p><p>Unlike a human, an AI agent cannot just "ask a colleague for directions." It can only work with information that is clearly and systematically documented.</p><p>Without clear descriptions, a glossary, and relationships, an AI agent works blindly: it confuses tables from hundreds of similar ones, interprets business metrics (e.g., "revenue") differently each time, joins tables randomly, and may accidentally disclose confidential data.</p><h2>Conclusion</h2><p><a href="https://mws.ru/data/data-scout/?utm_source=habr.com&amp;utm_medium=owned_media_datascout&amp;utm_content=article&amp;utm_term=datascout">MWS Data Scout</a> collects multi-layered context: data samples, table classification, domain affiliation, glossary, and documentation. In addition to text descriptions, the system builds ER diagrams, including hidden relationships, generates business terms, and marks personal data. Due to this solution, the productivity of one employee has increased from 30 to 2000 tables per month.</p><p>It is also important to note the work with AI. Agents can confuse similar tables, arbitrarily interpret metrics, randomly join data, and risk disclosing confidential information. Our product allows for the creation of a unified and accurate source of descriptions for all databases for other AI agents. At the same time, sensitive data itself remains within the secure perimeter.</p></div>
+  </main>
+  <footer>
+    Translation generated with Gemini 2.5 Flash-Lite.
+    The original article remains the source of record.
+  </footer>
+</body>
+</html>

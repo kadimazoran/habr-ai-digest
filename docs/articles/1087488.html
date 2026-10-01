@@ -1,0 +1,160 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>LSWM 2.0 is all you need</title>
+  <meta name="description" content="Hello again everyone! It&#x27;s only been two days since I released LSWM. In general, I tested and experimented with this network again and found SO MANY problems that even a vanilla RNN hasn&#x27;t seen. In this article, I will try to fix them. Read more">
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.65;
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 32px 20px 64px;
+      color: #1f2328;
+    }
+    header {
+      border-bottom: 1px solid #d8dee4;
+      margin-bottom: 28px;
+      padding-bottom: 20px;
+    }
+    .source {
+      color: #57606a;
+      font-size: 0.95rem;
+    }
+    img, video, iframe {
+      max-width: 100%;
+      height: auto;
+    }
+    pre {
+      overflow-x: auto;
+      padding: 16px;
+      background: #f6f8fa;
+      border-radius: 6px;
+    }
+    code {
+      font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+    }
+    blockquote {
+      border-left: 4px solid #d0d7de;
+      margin-left: 0;
+      padding-left: 16px;
+      color: #57606a;
+    }
+    footer {
+      border-top: 1px solid #d8dee4;
+      margin-top: 40px;
+      padding-top: 20px;
+      color: #57606a;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>LSWM 2.0 is all you need</h1>
+    <p>Hello again everyone! It&#x27;s only been two days since I released LSWM. In general, I tested and experimented with this network again and found SO MANY problems that even a vanilla RNN hasn&#x27;t seen. In this article, I will try to fix them. Read more</p>
+    <p class="source">
+      Machine-translated from Habr.
+      <a href="https://habr.com/ru/articles/1087488/?utm_campaign=1087488&amp;utm_source=habrahabr&amp;utm_medium=rss">Read the original Russian article</a>.
+      Thu, 01 Oct 2026 11:41:17 GMT
+    </p>
+  </header>
+  <main>
+<div><p>Hello again everyone!</p><p>It's only been a few days since I released LSWM [1].</p><p>In general, I tested and experimented with this network again and found SO MANY problems that even a vanilla RNN hasn't seen.</p><p>In this article, I will try to fix them.</p><h2>Contents.</h2><p>This article will cover:</p><ol><li><p>Theory.</p></li><li><p>Benchmarks.</p></li><li><p>Pros and cons.</p></li><li><p>Conclusion.</p></li></ol><h2>Theory.</h2><p>Let's start with the theory.</p><p>I want to say that it will be the same softsign and scaled softsign here [2].</p><p>So... Let's start with the first formula:</p><img alt="comb_t = x_t + h_{t-1} + n_{t-1}" loading="lazy" src="https://habrastorage.org/getpro/habr/formulas/6/6c/6c7/6c767d558b51c50d036871c1d0254caf.svg"/><p>What is <img alt="n_{t-1}" loading="lazy" src="https://habrastorage.org/getpro/habr/upload_files/292/538/44c/29253844ca634bfb483010a8bb83b1b9.svg"/>? It's the same <img alt="c_t" loading="lazy" src="https://habrastorage.org/getpro/habr/upload_files/7fc/985/971/7fc9859714d2a466eeda745884cade74.svg"/>, but I ran it through softsign. In principle, we can write this formula as:</p><img alt="comb_t = x_t + h_{t-1} + softsign(c_{t-1})" loading="lazy" src="https://habrastorage.org/getpro/habr/formulas/0/01/015/0150d6491c96c5c1d672e527eb42faae.svg"/><p>But, let's keep <img alt="n_{t}" loading="lazy" src="https://habrastorage.org/getpro/habr/upload_files/fcc/48f/12f/fcc48f12f9852841ad91c0596d8df489.svg"/>.</p><p>Then come the first two gates (updated):</p><img alt="f_t = softsign_{scaled}(W_fcomb_t + b_f)" loading="lazy" src="https://habrastorage.org/getpro/habr/formulas/a/a9/a92/a92a7266100015dc12cf911df4b3dedf.svg"/><p>In principle, it's the same <img alt="f_t" loading="lazy" src="https://habrastorage.org/getpro/habr/upload_files/a0e/b9e/479/a0eb9e4795365db1dbd30b8f1781ce33.svg"/>.</p><p>Now <img alt="i_t" loading="lazy" src="https://habrastorage.org/getpro/habr/upload_files/4b9/2de/341/4b92de3417c8d4878c61806db01f7eac.svg"/>:</p><img alt="i_t = softsign_{scaled}(W_icomb_t + b_i)" loading="lazy" src="https://habrastorage.org/getpro/habr/formulas/5/52/524/524618a8694b57d81508239c9c9af52d.svg"/><p>As we can see, I removed two linear layers from the previous article and replaced them with one linear layer.</p><p>Why? Quality - up, number of parameters - much less.</p><p>Well, now for the main innovation:</p><img alt="q_t = W_q(comb_t 	ext{ 	ext{	extcurrency}} softsign(q_{t-1})) + b_q" loading="lazy" src="https://habrastorage.org/getpro/habr/formulas/a/a5/a55/a55fd53383a01364461f509a4ef31167.svg"/><img alt="k_t = W_k(comb_t 	ext{ 	ext{	extcurrency}} softsign(k_{t-1})) + b_k" loading="lazy" src="https://habrastorage.org/getpro/habr/formulas/d/d4/d45/d459df4b4229878c3b92fedfab1f626d.svg"/><img alt="v_t = W_v(comb_t 	ext{ 	ext{	extcurrency}} softsign(v_{t-1})) + b_v" loading="lazy" src="https://habrastorage.org/getpro/habr/formulas/d/d5/d59/d597aa6fa3380a6c0d6502826e11b6bd.svg"/><p>As we can see, we pass <img alt="comb_t" loading="lazy" src="https://habrastorage.org/getpro/habr/upload_files/24d/19c/8e5/24d19c8e503480562fdf30c1477d804a.svg"/> through three linear layers, just like in a transformer (or in xLSTM). But, it's not that we just "passed <img alt="comb_t" loading="lazy" src="https://habrastorage.org/getpro/habr/upload_files/43f/416/bd3/43f416bd3984dfc17bbd02c0a07a29b8.svg"/> through three layers", it's that due to the multiplication (element-wise) of <img alt="comb_t" loading="lazy" src="https://habrastorage.org/getpro/habr/upload_files/1af/369/994/1af36999484dd8d9b22963998e867f5a.svg"/> by the previous <img alt="q_t" loading="lazy" src="https://habrastorage.org/getpro/habr/upload_files/e91/d94/fcb/e91d94fcbdd9ab184019250821ea676e.svg"/>, <img alt="k_t" loading="lazy" src="https://habrastorage.org/getpro/habr/upload_files/62f/8f8/715/62f8f87159480749028167c6da9d35ff.svg"/>, or <img alt="v_t" loading="lazy" src="https://habrastorage.org/getpro/habr/upload_files/08e/efd/830/08eefd8308cd2e3803899df627368823.svg"/> - in general, generalizing - the new <img alt="q_t" loading="lazy" src="https://habrastorage.org/getpro/habr/upload_files/530/d50/a97/530d50a97b339e18257002b214a216fa.svg"/> becomes dependent on the past history of <img alt="q_t" loading="lazy" src="https://habrastorage.org/getpro/habr/upload_files/da9/d21/bac/da9d21bac342e6d7962a06d990a5dcdb.svg"/>, <img alt="k_t" loading="lazy" src="https://habrastorage.org/getpro/habr/upload_files/0ea/3d5/30a/0ea3d530a653fef3cb3cb23463ac7aa4.svg"/> becomes dependent on the past history of <img alt="k_t" loading="lazy" src="https://habrastorage.org/getpro/habr/upload_files/a63/948/9dd/a639489dd68e220cf04972c89a84d128.svg"/>, and v_t becomes dependent on the past history of <img alt="v_t" loading="lazy" src="https://habrastorage.org/getpro/habr/upload_files/6cb/b07/eb5/6cbb07eb55dd03c2052da64b2a02c9c2.svg"/>.</p><p>This is one of the reasons why LSWM 2.0 can handle long sequences.</p><p>What to do next?</p><p>Next is only <img alt="c_t" loading="lazy" src="https://habrastorage.org/getpro/habr/upload_files/efa/b29/85a/efab2985a7a0ced9301501a6d5c241ff.svg"/>:</p><img alt="c_t = f_t 	ext{ 	ext{	extcurrency}} c_{t-1} + i_t 	ext{ 	ext{	extcurrency}} (k_t 	ext{ 	ext{	extcurrency}} v_t)" loading="lazy" src="https://habrastorage.org/getpro/habr/formulas/1/1a/1a4/1a43cc586082a674e89b38576e49fbbf.svg"/><p>Previously [3], we multiplied <img alt="i_t" loading="lazy" src="https://habrastorage.org/getpro/habr/upload_files/491/e8d/525/491e8d5253df4287fffea1906d14f41d.svg"/> by the regular <img alt="x_t" loading="lazy" src="https://habrastorage.org/getpro/habr/upload_files/456/c6d/269/456c6d269e756784192d700e70818a5b.svg"/> (a sin!).</p><p>Now, we take the key and value of our combined value and multiply them (element-wise), and only then multiply <img alt="i_t" loading="lazy" src="https://habrastorage.org/getpro/habr/upload_files/5f2/a09/92d/5f2a0992dc747bd4220b6638bc0670e0.svg"/> by the result.</p><p>The network has become less sensitive to the seed and remembers better!</p><p>Then comes the long-awaited <img alt="n_t" loading="lazy" src="https://habrastorage.org/getpro/habr/upload_files/a6c/38d/cc4/a6c38dcc4904062c176617026a040b85.svg"/>:</p><img alt="n_t = softsign(c_t)" loading="lazy" src="https://habrastorage.org/getpro/habr/formulas/5/5f/5f1/5f18161b58501901bdcb461f20880db7.svg"/><p>Nothing supernatural, we just pass <img alt="c_t" loading="lazy" src="https://habrastorage.org/getpro/habr/upload_files/a4c/3df/69b/a4c3df69b7ff5c54a6857c45a54aff16.svg"/> through softsign.</p><p>Then the main part (not):</p><img alt="o_t = softsign_{scaled}(W_oc_t + b_o)" loading="lazy" src="https://habrastorage.org/getpro/habr/formulas/c/c2/c27/c2732057fa4adc981034e1456b1b36e8.svg"/><p>I decided to make <img alt="o_t" loading="lazy" src="https://habrastorage.org/getpro/habr/upload_files/94c/769/85b/94c76985bf6ea44195b30c122a7f11a4.svg"/> dependent not on <img alt="comb_t" loading="lazy" src="https://habrastorage.org/getpro/habr/upload_files/6c8/cc5/178/6c8cc5178f58ba0e199ec2d5658538cb.svg"/>, but on <img alt="c_t" loading="lazy" src="https://habrastorage.org/getpro/habr/upload_files/5a7/eae/0f9/5a7eae0f9071d35dc2cb87cd9b8a22d2.svg"/> itself.</p><p>And this even improved the quality!</p><p>Then comes:</p><img alt="h_t = o_t 	ext{ 	ext{	extcurrency}} softsign(c_t 	ext{ 	ext{	extcurrency}} q_t)" loading="lazy" src="https://habrastorage.org/getpro/habr/formulas/8/82/829/8296f8e3cb42a800b62af2507c9c73ca.svg"/><p>We multiply the query of our <img alt="comb_t" loading="lazy" src="https://habrastorage.org/getpro/habr/upload_files/b2d/4f7/4de/b2d4f74de2a0f2bf3b7ecb8a73e969d5.svg"/> by <img alt="c_t" loading="lazy" src="https://habrastorage.org/getpro/habr/upload_files/761/169/0dc/7611690dc5ab29f88bbd23793aa3161d.svg"/>, pass it through softsign, and of course multiply o_t by this result.</p><p>That's it, this is the whole network.</p><p>And also:</p><img alt="Output = LayerNorm(h_t) 	ext{ or } H 	ext{ where } H = (h_0, h_1, ..., h_L)" loading="lazy" src="https://habrastorage.org/getpro/habr/formulas/9/9a/9a1/9a1d7f663941c23deb4c511f280f20d9.svg"/><p>In general, I completely removed the <abbr>LWM</abbr> layer [4].</p><p>As it turned out, the LWM layer made the network sensitive to the seed (much more than now).</p><p>And also - LSWM stands for Long-Short Working Memory.</p><h2>Benchmarking.</h2><p>So, let's start with benchmarking.</p><p>If anything, the dataset is mine, the training is also as before [5].</p><p>But, first, I measured the scaling law (did I express myself correctly?) in 3D graphics:</p><figure><img alt="Result (image is slightly cropped)." loading="lazy" src="https://habrastorage.org/r/w1560/getpro/habr/upload_files/5b7/18c/45b/5b718c45be809d4de36aa3bd964bc929.png" title="Result (image is slightly cropped)."/><div><figcaption>Result (image is slightly cropped).</figcaption></div></figure><p>Here's how I calculated it:</p><ol><li><p>hidden dim = 128, 400 epochs.</p></li><li><p>hidden dim = 2048, 1200 epochs.</p></li><li><p>hidden dim = 4096, 1500 epochs.</p></li><li><p>hidden dim = 128, 20000 epochs.</p></li></ol><p>And a while ago I calculated a 2D graph (log-log):</p><figure><img alt="Result." loading="lazy" src="https://habrastorage.org/r/w1560/getpro/habr/upload_files/661/a9c/15c/661a9c15c93c7e379360a6d8ae55f6e2.png" title="Result."/><div><figcaption>Result.</figcaption></div></figure><p>So. As we can see, it seems that if we scale LSWM (by the way, I measured using the new version) - there will be no particular pitfalls.</p><p>Time to benchmark with the rest.</p><p>I took the same dataset, but I'm testing the model (i.e., doing inference) on a LARGER chain, yes.</p><p>Here is the inference itself, if anything:</p><pre><code>model.eval() 
+
+with torch.no_grad(): 
+    tokens_pool = [a, b, c] 
+    random_noise = [] 
+    for _ in range(1000): 
+        if _ == 500: 
+            random_noise.extend([a]) 
+        random_noise.extend([random.choice(tokens_pool), TOKEN_ARROW]) 
+
+    chain1 = random_noise + [c, TOKEN_Q_1] 
+    chain2 = random_noise + [c, TOKEN_Q_2] 
+
+    test1 = torch.tensor([chain1]).to(device) 
+    test2 = torch.tensor([chain2]).to(device) 
+
+    pred_live = torch.argmax(model(test1), dim=1).item() 
+    pred_work = torch.argmax(model(test2), dim=1).item() 
+
+    print(f"need: 3 answer: {pred_live}") 
+    print(f"need: 12 answer: {pred_work}")</code><div><a href="https://sourcecraft.dev/"><span></span></a></div></pre><p>Uh, well, it's written quite poorly, but it works.</p><p>I configured three networks (LSWM, LSTM, GRU) for the correct parameter size and correct bias settings, and went to check.</p><p>Here's how I checked:</p><ul><li><p>I ran each network 10 times and counted how many times it answered incorrectly and how many times correctly.</p></li><li><p>The one that performed best (i.e., had more correct answers than incorrect ones compared to the others) - won.</p></li></ul><p>Here are the results:</p><div><div><table><tbody><tr><td><p>Network</p></td><td><p>Correct</p></td><td><p>Incorrect</p></td><td><p>Parameters</p></td></tr><tr><td><p>LSWM (2.0)</p></td><td><p>5</p></td><td><p>5</p></td><td><p>101632</p></td></tr><tr><td><p>GRU</p></td><td><p>3</p></td><td><p>7</p></td><td><p>101632</p></td></tr><tr><td><p>LSTM</p></td><td><p>4</p></td><td><p>6</p></td><td><p>101672</p></td></tr></tbody></table></div></div><p>I omitted the loss and accuracy because I'm lazy and forgot to calculate at least the average between all 10 runs, but in principle, everyone had 100%-93% accuracy mostly.</p><p>And also - I cannot guarantee that this statistic of correct and incorrect answers will always match the table, but it will always be approximately like this.</p><p>Well, now about the table itself:</p><ol><li><p>LSWM 2.0 outperformed everyone.</p></li><li><p>GRU, accordingly, is the worst.</p></li><li><p>LSTM is "in second place".</p></li></ol><p>This means that LSWM 2.0 is competitive.</p><h2>Pros and cons.</h2><p>Pros:</p><ol><li><p>(In theory) Remembers more.</p></li><li><p>Much less sensitivity to the seed (but it's still there).</p></li><li><p>Training is not that slow.</p></li><li><p><img alt="o_t" loading="lazy" src="https://habrastorage.org/getpro/habr/upload_files/b2d/bb7/d73/b2dbb7d73866b764389fe92808e8c5c5.svg"/> "makes a decision" based on existing memory (<img alt="c_t" loading="lazy" src="https://habrastorage.org/getpro/habr/upload_files/503/f57/207/503f57207ca4589479bcf4875d19d228.svg"/>), which can be very beneficial.</p></li></ol><p>Cons:</p><ol><li><p>All sensitivity to the seed is still present (this con might as well not be written, I've practically described it in the pros...).</p></li><li><p>softsign sometimes just gets in the way with its "tails" (but I haven't seen this yet).</p></li><li><p>Unfortunately, the network still struggles with tasks like "Needle in the haystack".</p></li></ol><p>In general, I believe that this version of LSWM is quite competitive, but I am still testing it.</p><h2>Conclusion.</h2><p>Putting Q, K, V into a sequential Gated RNN is a working approach.</p><p>Summation instead of concatenation is a very workable idea.</p><p><img alt="softsign" loading="lazy" src="https://habrastorage.org/getpro/habr/upload_files/3fd/ece/76b/3fdece76b14ddb90c1cbe49443ac52cd.svg"/> - very good.</p><p>But it's also worth noting that you can't just stuff everything into one pile, which I confirmed with the LWM example.</p><p>P.S: Since there are still problems with Github, here is the LSWM code:</p><details><summary>Code.</summary><div><pre><code>import torch 
+import torch.nn as nn 
+import torch.optim as optim 
+import torch.nn.functional as F 
+import numpy as np 
+
+device = torch.device("cuda") 
+
+class LSWM(nn.Module): 
+    def __init__(self, vocab_size, d_model): 
+        super().__init__() 
+
+        self.d = d_model 
+
+        self.vocab_size = vocab_size 
+        self.embedding = nn.Embedding(vocab_size, d_model).to(device) 
+
+        self.W_f = nn.Linear(d_model, d_model).to(device) 
+        self.W_i = nn.Linear(d_model, d_model).to(device) 
+        self.W_o = nn.Linear(d_model, d_model).to(device) 
+
+        with torch.no_grad(): 
+            self.W_f.bias.fill_(3.0) 
+            self.W_i.bias.fill_(0.0) 
+            self.W_o.bias.fill_(0.0) 
+
+        self.W_q = nn.Linear(d_model, d_model).to(device) 
+        self.W_k = nn.Linear(d_model, d_model).to(device) 
+        self.W_v = nn.Linear(d_model, d_model).to(device) 
+
+        self.norm = nn.LayerNorm(d_model) 
+
+    def softsign_scaled(self, x): 
+        return (F.softsign(x) + 1.0) / 2.0 
+
+    def forward(self, token_seq): 
+        batch_size, seq_len = token_seq.size() 
+
+        x_seq = self.embedding(token_seq) 
+
+        h_t = torch.zeros(batch_size, self.d).to(device) 
+        c_t = torch.zeros(batch_size, self.d).to(device) 
+
+        q_t = torch.ones(batch_size, self.d).to(device) 
+        k_t = torch.ones(batch_size, self.d).to(device) 
+        v_t = torch.ones(batch_size, self.d).to(device) 
+
+        n_t = torch.zeros(batch_size, self.d).to(device) 
+
+        for t in range(seq_len): 
+            x_t = x_seq[:, t, :] 
+
+            combined = h_t + x_t + n_t 
+
+            f_t = self.softsign_scaled(self.W_f(combined)) 
+            i_t = self.softsign_scaled(self.W_i(combined)) 
+
+            q_t = self.W_q(combined * F.softsign(q_t)) 
+            k_t = self.W_k(combined * F.softsign(k_t)) 
+            v_t = self.W_v(combined * F.softsign(v_t)) 
+
+            c_t = f_t * c_t + i_t * (k_t * v_t) 
+            n_t = F.softsign(c_t) 
+
+            o_t = self.softsign_scaled(self.W_o(c_t)) 
+
+            h_t = o_t * F.softsign(c_t * q_t) 
+
+        return self.norm(h_t)</code><div><a href="https://sourcecraft.dev/"><span></span></a></div></pre></div></details></div>
+  </main>
+  <footer>
+    Translation generated with Gemini 2.5 Flash-Lite.
+    The original article remains the source of record.
+  </footer>
+</body>
+</html>

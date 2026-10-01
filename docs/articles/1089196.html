@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>ssh-commander: An SSH Panel with an AI Agent for Your VPS</title>
+  <meta name="description" content="I created ssh-commander for myself: a terminal, file manager, Docker control, and AI agent in one window. You can work with the server manually, and when you need help, pass the output to the agent or give it a task. It examines files and logs itself, suggests commands, and executes changes after co">
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.65;
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 32px 20px 64px;
+      color: #1f2328;
+    }
+    header {
+      border-bottom: 1px solid #d8dee4;
+      margin-bottom: 28px;
+      padding-bottom: 20px;
+    }
+    .source {
+      color: #57606a;
+      font-size: 0.95rem;
+    }
+    img, video, iframe {
+      max-width: 100%;
+      height: auto;
+    }
+    pre {
+      overflow-x: auto;
+      padding: 16px;
+      background: #f6f8fa;
+      border-radius: 6px;
+    }
+    code {
+      font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+    }
+    blockquote {
+      border-left: 4px solid #d0d7de;
+      margin-left: 0;
+      padding-left: 16px;
+      color: #57606a;
+    }
+    footer {
+      border-top: 1px solid #d8dee4;
+      margin-top: 40px;
+      padding-top: 20px;
+      color: #57606a;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>ssh-commander: An SSH Panel with an AI Agent for Your VPS</h1>
+    <p>I created ssh-commander for myself: a terminal, file manager, Docker control, and AI agent in one window. You can work with the server manually, and when you need help, pass the output to the agent or give it a task. It examines files and logs itself, suggests commands, and executes changes after confirmation. The application runs locally via Docker, with the interface accessible in a browser. It connects to servers via SSH. The code is open-source under MIT, with no subscriptions. An API key is required for the agent; manual tools work without it. Read more</p>
+    <p class="source">
+      Machine-translated from Habr.
+      <a href="https://habr.com/ru/articles/1089196/?utm_campaign=1089196&amp;utm_source=habrahabr&amp;utm_medium=rss">Read the original Russian article</a>.
+      Thu, 01 Oct 2026 13:26:01 GMT
+    </p>
+  </header>
+  <main>
+<div><p>I created ssh-commander for myself: a terminal, file manager, Docker control, and AI agent in one window. You can work with the server manually, and when you need help, pass the output to the agent or give it a task. It examines files and logs itself, suggests commands, and executes changes after confirmation.</p><p>The application runs locally via Docker, with the interface accessible in a browser. It connects to servers via SSH. The code is <a href="https://github.com/lexuss1979/ssh-commander">open-source under MIT</a>, with no subscriptions. An API key is required for the agent; manual tools work without it.</p><figure><img alt="I set up a separate test environment with sample data for the screenshots. The Deepseek responses and command results are real.  " loading="lazy" src="https://habrastorage.org/r/w1560/getpro/habr/upload_files/d64/154/eeb/d64154eeb9b9f2ab62b2fffb7df4db1f.png" title="I set up a separate test environment with sample data for the screenshots. The Deepseek responses and command results are real.  "/><figcaption>I set up a separate test environment with sample data for the screenshots. The Deepseek responses and command results are real. </figcaption></figure><h3>Why I Made This</h3><p>I needed to migrate several of my web projects to a new server. To ensure I didn't miss anything, I launched an AI agent on the old server and asked it to study the configuration and compile a document for the migration. Where the projects were located, how services were started, which config files needed to be backed up.</p><p>Then I thought: if the agent can study all this, why not entrust it with the setup as well? At the same time, I wanted to see what it was planning to do and have the ability to verify the results myself.</p><p>Thus, ssh-commander was born. On the left, you select the server; at the top, you switch between the terminal, files, and other sections. On the right is the chat with the agent. You can open a log, send a relevant snippet to the chat, and continue troubleshooting within the same window.</p><p>You can also run the agent directly on the server; that's how I started. I found it more convenient to consolidate connections and manual tools in one panel.</p><h3>What the Application Offers</h3><ul><li><p><strong>Terminal.</strong> Multiple tabs per server, command history, session recovery after page reload. You can send highlighted text or the last output to the agent with a single click.</p></li><li><p><strong>Files via SFTP.</strong> Upload and download, editor with syntax highlighting, search, viewing growing logs. There's a disk space analyzer: you can navigate from a large directory down to specific files.</p></li><li><p><strong>Docker.</strong> Containers, images, logs, start/stop, Compose, terminal within a container.</p></li></ul><p>There are also sections for PostgreSQL and MySQL, Nginx, systemd, ports, and cron. A full list of features is available in the <a href="https://github.com/lexuss1979/ssh-commander/blob/v0.1.1/README.ru.md">README</a>.</p><figure><img alt="Switched from files to the terminal. The chat remained in place.  " loading="lazy" src="https://habrastorage.org/r/w1560/getpro/habr/upload_files/8eb/978/459/8eb97845973bcf621b7ca148c9fb370d.png" title="Switched from files to the terminal. The chat remained in place.  "/><figcaption><em>Switched from files to the terminal. The chat remained in place.</em> </figcaption></figure><p>The agent has memory for each server: a local file named <a href="http://MEMORY.md"><code>MEMORY.md</code></a>, which is loaded at the beginning of the next session. You can record where projects are located and how they are launched there. Writing requires confirmation. You can connect multiple servers to a single chat; each command shows which machine it is executing on. </p><h3>An Example of Use: PDF, Free Space, and a Broken Backup</h3><p>When the application was already running, one of the servers ran out of space. The agent found duplicate large PDFs and suggested freeing up almost 1.5 GB. It also suggested switching PDF handling to Yandex S3.</p><p>We removed the duplicates, then configured S3 integration and moved the documents there. When it was time to delete the PDFs from the disk that had already been transferred, it turned out there was no up-to-date backup of all media files in S3, even though backups were configured earlier.</p><p>The agent quickly figured out the cause. The synchronization broke when we deleted the duplicate PDFs: the backup process tried to delete the corresponding files in S3, but the service account lacked deletion permissions. The operation failed, and the backup stopped updating.</p><p>This means that before cleaning up the remaining local files, a problem with the backup was discovered. The agent linked it to our previous action and identified the missing permissions.</p><h3>What the Agent Does Automatically and What Requires Confirmation</h3><p>The agent can automatically read a regular file, view logs, list containers, or check free space. Writing to a file, restarting a container, or executing arbitrary shell commands requires confirmation. A banner appears at the bottom of the chat: you can expand the command fully, then confirm or reject it. </p><figure><img alt="Demonstration on a test server: the agent suggests deleting a PDF copy. After the screenshot, the command was rejected, and the file remained in place.  " loading="lazy" src="https://habrastorage.org/r/w1560/getpro/habr/upload_files/1ea/90f/9f3/1ea90f9f341e9d67bcc25ffcd7617358.png" title="Demonstration on a test server: the agent suggests deleting a PDF copy. After the screenshot, the command was rejected, and the file remained in place.  "/><figcaption><em>Demonstration on a test server: the agent suggests deleting a PDF copy. After the screenshot, the command was rejected, and the file remained in place.</em> </figcaption></figure><p>For read-only commands, there's a separate tool, <code>exec_readonly</code>, with an allowlist. Initially, I used a blocklist, but during testing, I found bypasses: for example, <code>/bin/rm</code> and <code>m</code> didn't match the checked name. Therefore, now only a limited set of commands passes automatically. Their flags are checked separately, and pipelines, redirections, and substitutions are prohibited.</p><div><div><table><tbody><tr><th><p>Command</p></th><th><p>Will pass without confirmation</p></th></tr><tr><td><p><code>df -h</code></p></td><td><p>Yes</p></td></tr><tr><td><p><code>find /opt -name '*.conf'</code></p></td><td><p>Yes</p></td></tr><tr><td><p><code>find /tmp -delete</code></p></td><td><p>No: file deletion</p></td></tr><tr><td><p><code>sort -o /tmp/list.txt /etc/hosts</code></p></td><td><p>No: writing to file</p></td></tr></tbody></table></div></div><p>Interpreters and network clients are not on this list. For complex commands, the agent can suggest using regular <code>exec</code>, requiring confirmation. Sometimes, even a harmless request has to be confirmed this way. For my tool, I consider this a reasonable compromise. Here is the <a href="https://github.com/lexuss1979/ssh-commander/blob/v0.1.1/server/src/ai/guard.ts">filter</a> and <a href="https://github.com/lexuss1979/ssh-commander/blob/v0.1.1/server/test/guard.test.ts">its tests</a>.</p><p>For larger tasks, there's a planning mode. The model creates a plan based on already gathered information, without invoking tools. If fresh information is needed, it must be obtained before entering this mode. Approving the plan initiates the work but does not override the confirmation of individual changes.</p><h3>Limitations</h3><p>The agent might suggest an incorrect command. You must read it before confirming, and verify the result after execution. Backups are still necessary.</p><p>When working with an external AI provider, read files and logs are sent to it. Reading paths that resemble secret files, such as <code>.env</code> or private keys, requires confirmation. Recognized secrets are hidden in tool outputs. These are pattern-based checks; they might miss something and do not anonymize logs.</p><p>Prompt injection also remains a problem: a file or log might contain text with extraneous instructions for the model. Command checks and confirmations are still in place, but they cannot guarantee the correctness of the agent's suggestions.</p><p>The panel is designed for a single user, is accessible only on <code>127.0.0.1</code> by default, and is password-protected. SSH passwords, database passwords, and the API key are stored locally in plain text; the panel password is stored as a hash. The <code>data/</code> and <code>keys/</code> directories, along with backups, should be protected from unauthorized access.</p><h3>How to Try It</h3><p>You'll need Docker with Compose v2 on your computer and SSH access to a Linux server. On Linux or macOS, the ready-made image version 0.1.1 can be launched like this:</p><pre><code>mkdir ssh-commander 
+cd ssh-commander 
+curl --fail --location https://raw.githubusercontent.com/lexuss1979/ssh-commander/v0.1.1/docker-compose.release.yml --output compose.yaml 
+docker compose up -d</code><div><a href="https://sourcecraft.dev/"><span></span></a></div></pre><p>Open <a href="http://localhost:8080"><code>http://localhost:8080</code></a>, set a panel password, and add a server. In the address field, enter the VPS IP or hostname. <code>localhost</code> here will be the address of the container itself.</p><p>For the agent, add an API key in the settings. There are provider presets and configuration for your own OpenAI-compatible API with tool-calling support. Costs are based on the provider's rates; the application includes token tracking and cost estimation per conversation. The screenshots use <code>deepseek-v4-flash</code>. I also use this model myself – it's very fast and inexpensive. </p><p><a href="https://github.com/lexuss1979/ssh-commander/blob/v0.1.1/docs/installation.md">Installation, including on Windows</a>, and <a href="https://github.com/lexuss1979/ssh-commander/blob/v0.1.1/docs/getting-started.ru.md">first connection</a> are described separately. If you want to look at the code: TypeScript, Node.js, and <code>ssh2</code> on the backend; React and xterm.js on the frontend. There is a <a href="https://github.com/lexuss1979/ssh-commander/blob/v0.1.1/docs/architecture.md">description of the architecture</a>.</p><p>Repository: <a href="https://github.com/lexuss1979/ssh-commander">lexuss1979/ssh-commander</a>. If you try it out, please let me know what worked and what was missing. Errors and suggestions can be reported in the issues.</p></div>
+  </main>
+  <footer>
+    Translation generated with Gemini 2.5 Flash-Lite.
+    The original article remains the source of record.
+  </footer>
+</body>
+</html>

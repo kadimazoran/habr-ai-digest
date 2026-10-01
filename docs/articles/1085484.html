@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>AI Agents. What They Are in Simple Terms and How They Differ from Regular AI</title>
+  <meta name="description" content="The development of artificial intelligence in the 21st century is one of the most significant things in the industry, in my opinion. It seems like just a couple of years ago, a neural network was akin to a smart calculator: you ask a question, it calculates, analyzes, writes, or explains something, ">
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.65;
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 32px 20px 64px;
+      color: #1f2328;
+    }
+    header {
+      border-bottom: 1px solid #d8dee4;
+      margin-bottom: 28px;
+      padding-bottom: 20px;
+    }
+    .source {
+      color: #57606a;
+      font-size: 0.95rem;
+    }
+    img, video, iframe {
+      max-width: 100%;
+      height: auto;
+    }
+    pre {
+      overflow-x: auto;
+      padding: 16px;
+      background: #f6f8fa;
+      border-radius: 6px;
+    }
+    code {
+      font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+    }
+    blockquote {
+      border-left: 4px solid #d0d7de;
+      margin-left: 0;
+      padding-left: 16px;
+      color: #57606a;
+    }
+    footer {
+      border-top: 1px solid #d8dee4;
+      margin-top: 40px;
+      padding-top: 20px;
+      color: #57606a;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>AI Agents. What They Are in Simple Terms and How They Differ from Regular AI</h1>
+    <p>The development of artificial intelligence in the 21st century is one of the most significant things in the industry, in my opinion. It seems like just a couple of years ago, a neural network was akin to a smart calculator: you ask a question, it calculates, analyzes, writes, or explains something, and then waits for the next task. Now, neural networks have a deeper, broader, and significantly more complex role. AI agents have emerged – these are systems that don&#x27;t just generate an answer but try to independently achieve a set goal using tools and a series of sequential actions. In this article, I want to explain in simple terms the fundamental difference between AI and AI agents and which is more useful in practice for different tasks. Read more</p>
+    <p class="source">
+      Machine-translated from Habr.
+      <a href="https://habr.com/ru/companies/timeweb/articles/1085484/?utm_campaign=1085484&amp;utm_source=habrahabr&amp;utm_medium=rss">Read the original Russian article</a>.
+      Thu, 01 Oct 2026 15:05:00 GMT
+    </p>
+  </header>
+  <main>
+<div><figure><img loading="lazy" src="https://habrastorage.org/r/w1560/getpro/habr/upload_files/8ed/388/404/8ed3884042b1a2079de8315a1ec8b691.png"/></figure><p>The development of artificial intelligence in the 21st century is one of the most significant things in the industry, in my opinion. It seems like just a couple of years ago, a neural network was akin to a smart calculator: you ask a question, it calculates, analyzes, writes, or explains something, and then waits for the next task.</p><p>Now, neural networks have a deeper, broader, and significantly more complex role. AI agents have emerged – these are systems that don't just generate an answer but try to independently achieve a set goal using tools and a series of sequential actions.</p><p>In this article, I want to explain in simple terms the fundamental difference between AI and AI agents and which is more useful in practice for different tasks.</p><hr/><h2>❯ A Neural Network Isn't Obligated to Decide What to Do Next, Only to Respond</h2><figure><img alt="Source" loading="lazy" src="https://habrastorage.org/r/w1560/getpro/habr/upload_files/d5b/a47/25e/d5ba4725e9130b888839e72da5d63bc7.png" title="Source"/><div><figcaption><a href="https://sborka.ai/a/istoriya-neyrosetey"><em>Source</em></a></figcaption></div></figure><p>Throughout the history of neural network development, from the perceptron to modern LLMs, they have essentially had one task: to transform an input signal into a correct output signal. While in the late 50s this signal was binary code, nowadays it's text, and sometimes even in conversational format.</p><p>Over the years, neural networks have even changed how we search for information, shifting from a set of keywords to a format of "I write as I imagine it in my head."</p><p>However, there's one nuance – it's still fundamentally an "Input – Computation – Output" algorithm. At best, in most cases, a neural network will ask what to do next or try to expand the context of the original question.</p><p>The key word here is "question." And this brings us to the main point.</p><h2>❯ An AI Agent Receives a Goal, Not a Question</h2><figure><img alt="Source" loading="lazy" src="https://habrastorage.org/r/w1560/getpro/habr/upload_files/889/20b/96e/88920b96e7f5ea4307983525ce7bd399.png" title="Source"/><div><figcaption><a href="https://habr.com/ru/companies/haulmont/articles/875238/"><em>Source</em></a></figcaption></div></figure><p>Traditional AI tools require the user to be a "micromanager" – formulating precise questions and guiding the system step-by-step.</p><p>An AI agent changes the game: a human sets the goal, and the agent takes care of the entire path to achieving it, selecting tools, and reacting to errors.</p><p>A simple example. If you ask a chatbot whether a specific internet store has the Realme 15 Pro in stock, it will answer yes or no and ask what color you're interested in. An AI agent in a similar situation would find the phone, and if it's out of stock, it would suggest alternatives and other stores where it is available.</p><figure><img alt="Source" loading="lazy" src="https://habrastorage.org/r/w1560/getpro/habr/upload_files/6ad/e52/be0/6ade52be0702ec2f487939962759628f.png" title="Source"/><div><figcaption><a href="https://theaidigest.org/village/open-chat"><em>Source</em></a></figcaption></div></figure><p>Essentially, regular AI and AI agents represent a reactive versus a proactive approach. A regular LLM is in a dormant state (conditionally) until you interact with it. An AI agent, on the other hand, is in a continuous "Perception – Reasoning – Action" cycle. It breaks down one global goal into a tree of subtasks, generates prompts for internal neural network calls itself, and executes them sequentially, step by step, moving closer to the result.</p><p>Unlike a regular LLM, an AI agent focuses on the goal independently and for a significantly longer period, carrying context over to other tasks.</p><figure><img alt="Source" loading="lazy" src="https://habrastorage.org/r/w1560/getpro/habr/upload_files/240/bbb/449/240bbb449960b3c138e60eed85937b98.png" title="Source"/><div><figcaption><a href="https://blog.bytebytego.com/p/how-grab-is-using-ai-agents-to-boost"><em>Source</em></a></figcaption></div></figure><p>For instance, knowing how much money you spent on a phone from one request, the agent will reason about where to save you money when choosing a tablet in another request, and will consider all its past activities when forming a response. A neural network simply won't do this without an additional prompt.</p><p>Let's summarize visually:</p><div><div><table><tbody><tr><th><p>Criterion</p></th><th><p>Regular Neural Network (Chatbot / LLM)</p></th><th><p>AI Agent (Digital Employee)</p></th></tr><tr><td><p><strong>Operating Mode</strong></p></td><td><p><strong>Reactive.</strong> Dormant, activated only by user prompt.</p></td><td><p><strong>Proactive.</strong> Operates autonomously in the background based on triggers or schedule.</p></td></tr><tr><td><p><strong>Task Type</strong></p></td><td><p><strong>Question.</strong> Provides text response, code, translation, or generation within a session.</p></td><td><p><strong>Goal.</strong> Strives for an end result by independently decomposing the task.</p></td></tr><tr><td><p><strong>Actions</strong></p></td><td><p><strong>Text/Media only.</strong> Result remains within the chat window.</p></td><td><p><strong>Transactions.</strong> Has access to APIs, CRM, ERP; can process payments, change statuses.</p></td></tr><tr><td><p><strong>Error Handling</strong></p></td><td><p>Displays error on screen and <strong>stops</strong>, awaiting human action.</p></td><td><p>Engages in <strong>self-reflection</strong>, replans on the fly, and tries again.</p></td></tr><tr><td><p><strong>Primary Interface</strong></p></td><td><p>Chat UI. Human acts as micromanager.</p></td><td><p>Dashboard. Human sets KPIs and approves critical steps.</p></td></tr><tr><td><p><strong>Target Audience</strong></p></td><td><p><strong>B2C (for everyone).</strong> Ideal as an advisor, idea generator, and quick assistant.</p></td><td><p><strong>B2B (for business).</strong> Designed for automating end-to-end workflows.</p></td></tr></tbody></table></div></div><h2>❯ So Why Isn't the Entire Industry Rushing to Adopt AI Agents?</h2><figure><img alt="Source" loading="lazy" src="https://habrastorage.org/r/w1560/getpro/habr/upload_files/55d/663/47e/55d66347e7f76b411f9e47c1f08a2e08.png" title="Source"/><div><figcaption><a href="https://cybersecuritynews.com/agentjacking-attack-hijacks-ai-coding-agent/"><em>Source</em></a></figcaption></div></figure><p>And here we come to the main point: despite the frankly breakthrough status of AI agents and agent systems (which involve multiple agents), they are not being widely adopted, and some manufacturers, such as Chinese smartphone makers, are passing off regular neural networks as AI agents.</p><p>The first and most obvious reason is cost. The development and implementation of an AI agent are several times more expensive than a basic LLM.</p><figure><img alt="Source" loading="lazy" src="https://habrastorage.org/r/w1560/getpro/habr/upload_files/f79/53a/fb4/f7953afb4007b9a0e130d07c629355d6.png" title="Source"/><div><figcaption><a href="https://br.az/inworld/124322/anthropic-openai-i-google-obsuzhdayut-sozdanie-obschego-organa-po-standartam-ii/"><em>Source</em></a></figcaption></div></figure><p>Less obvious, but much more significant, is the issue of ethics and security. AI agents are incredibly convenient and useful for a range of work and even personal tasks. But even specialists from Google admit that without proper control, they (the agents) start intruding where they are not asked, and for this reason, major IT companies (Nvidia, OpenAI, Anthropic, Google, and XAI) are <a href="https://www.forbes.ru/tekhnologii/569439-tramp-i-it-giganty-ssa-podpisali-soglasenie-o-kontrole-nad-ii">signing an agreement on AI control</a>, which declares commitments to ensure the safety of AI developments. This agreement exists, not least, because AI agents are getting very close to a critical barrier in terms of information security. It's important to remember that an agent is given a goal, but it chooses the path to achieve it itself.</p><p>And the final point, which significantly impacts the development of the AI industry, is that controlling and testing neural networks is expensive, and there is still no ultimate method. Yes, Prediction-Powered Smoothing was introduced in September, but there are no objective tests yet, although the method looks like a breakthrough.</p><h2>❯ Nevertheless, AI Agents Are an Important Step in Neural Network Development</h2><p>On the other hand, the fact cannot be denied – the emergence of AI agents is an important step for the development of the entire industry. We have come a long way from simple mathematical models to proactive systems capable of changing the digital world.</p><p>Previously, programmers wrote every line of code rigidly, and early neural networks only classified objects on command. A modern AI agent has overcome this boundary – it can plan its own actions, choose tools, and bring tasks to completion. Users no longer need to be prompt operators and control every word of the AI. It's enough to set a goal and success metrics – the system handles all the routine work.</p><p>The other question is that if we take this beyond business and largely niche production areas, it turns out that an ordinary person is quite content with a simple chatbot based on ChatGPT or its competitors. An ordinary person is much more comfortable using a chatbot as an advisor: "Show me the 5 best hotels in Sochi with a pool" than entrusting an agent with planning their vacation and purchasing tickets with their personal card.</p><p>Somewhere here lies the boundary that we all need to think about.</p><details><summary>May be interesting:</summary><div><ul><li><p><a href="https://habr.com/ru/companies/timeweb/articles/1085464/"><strong>What is Vibe Coding in Simple Terms, How We Got Here, and Why AI Changed the Game</strong></a></p></li><li><p><a href="https://habr.com/ru/companies/timeweb/articles/1085370/"><strong>One Line, Open Port, and a Hacked Server: The Cost of Vibe Coding</strong></a></p></li><li><p><a href="https://habr.com/ru/companies/timeweb/articles/1084344/"><strong>Practical GitHub Actions: Full CI/CD for FastAPI + PostgreSQL</strong></a></p></li></ul></div></details><figure><img alt="Go ↩" loading="lazy" src="https://habrastorage.org/r/w1560/getpro/habr/upload_files/fc7/8a0/381/fc78a0381122b7210569c3b4838e779e.jpg" title="Go ↩"/><div><figcaption><a href="https://timeweb.cloud/?utm_source=habr&amp;utm_medium=banner&amp;utm_campaign=promo"><strong><em>Go</em></strong></a><strong><em> ↩</em></strong></figcaption></div></figure><blockquote><p><a href="https://t.me/timewebru"><strong>News, product reviews, and contests from the Timeweb.Cloud team — on our Telegram channel</strong></a> <strong>↩</strong></p></blockquote></div>
+  </main>
+  <footer>
+    Translation generated with Gemini 2.5 Flash-Lite.
+    The original article remains the source of record.
+  </footer>
+</body>
+</html>

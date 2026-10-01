@@ -1,0 +1,87 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Automating Matchmaking: How I Introduce Leads Who Can Benefit Each Other</title>
+  <meta name="description" content="I introduce leads to each other frequently. Now, this process is automated. This method allows me to expand my network and provide value to those I connect. Read more">
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.65;
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 32px 20px 64px;
+      color: #1f2328;
+    }
+    header {
+      border-bottom: 1px solid #d8dee4;
+      margin-bottom: 28px;
+      padding-bottom: 20px;
+    }
+    .source {
+      color: #57606a;
+      font-size: 0.95rem;
+    }
+    img, video, iframe {
+      max-width: 100%;
+      height: auto;
+    }
+    pre {
+      overflow-x: auto;
+      padding: 16px;
+      background: #f6f8fa;
+      border-radius: 6px;
+    }
+    code {
+      font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+    }
+    blockquote {
+      border-left: 4px solid #d0d7de;
+      margin-left: 0;
+      padding-left: 16px;
+      color: #57606a;
+    }
+    footer {
+      border-top: 1px solid #d8dee4;
+      margin-top: 40px;
+      padding-top: 20px;
+      color: #57606a;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Automating Matchmaking: How I Introduce Leads Who Can Benefit Each Other</h1>
+    <p>I introduce leads to each other frequently. Now, this process is automated. This method allows me to expand my network and provide value to those I connect. Read more</p>
+    <p class="source">
+      Machine-translated from Habr.
+      <a href="https://habr.com/ru/articles/1089220/?utm_campaign=1089220&amp;utm_source=habrahabr&amp;utm_medium=rss">Read the original Russian article</a>.
+      Thu, 01 Oct 2026 14:05:32 GMT
+    </p>
+  </header>
+  <main>
+<div><p>A warm introduction is my currency of exchange.</p><p>Not everything in business can be paid for with money. More often than not, connections play a decisive role. I have a very large network precisely because I learned how to expand it and continue to do so methodically. I meet people (often at conferences) myself and I introduce people to each other.</p><p>I connect two people, and a month later one of them brings me a third, and so on.</p><p>For a long time, I made these kinds of lead-to-lead introductions manually.</p><p>Then I started automating the process little by little. It wasn't perfect right away, of course, but gradually.</p><h3>Initially, I had overlaps. Two systems duplicated each other, and I didn't know how to stop it.</h3><p>The first was in the CRM. There was a list of leads selected by filters, a queue was created in the database, and a background task created a group chat with the lead, and that was it.</p><p>The second was a separate script with my Claude Code: it asked for my permission, created an invitation link for the leads, and sent the invitation to the group for both leads. A group specifically created for them.</p><p>In both systems, for some historical reason, there were different ways of creating groups, different ways of naming these groups, and different methods of obtaining confirmations.</p><p>I even had three different naming conventions for groups simultaneously. <code>Name1 &lt;&gt; Name2 &lt;&gt; Company</code> in the script, <code>{lead}{counterparty}</code> in the CRM, and <code>Company 🤝 Company INTRO</code> from my own 2024 regulations.</p><h3>How I choose who to introduce to whom</h3><p>My task here is to filter the list by tag, exclude those I haven't communicated with recently (as the contact is no longer warm), select one, and initiate the intro.</p><p>Everything else is calculated before I even open the list.</p><p><strong>I don't set the tag manually.</strong> A three-layer pipeline determines who a person is, and each subsequent layer only sees what the previous one hasn't filtered out.</p><p>The first layer matches information I already have: role and company from CRM, warmth of our correspondence, notes about the acquaintance, match with a fund database, their recent messages. LLMs are not involved here.</p><p>The second layer categorizes based on direct indicators and dictionaries. The CRM category says "fund," the role contains the word "investor," and the person is found in the fund database: the answer is already written in the data, and a model isn't needed here either.</p><p>The third layer is a model, and it only works with the remainder. This is where the determination and extraction of what specifically makes this person useful happens.</p><p><strong>The filter "who I've communicated with in the last month" is not based on the date of the last message.</strong> Dates can be deceiving. A person might have replied "ok" yesterday and be irrelevant to me, while someone I corresponded with a month ago, who hasn't written to me in two weeks, might have a more complete and useful interaction than someone I messaged yesterday.</p><p>It counts how many DIFFERENT days they messaged me themselves. I'm keeping this filter for now, as initiative from the lead serves as (potentially indirect) confirmation that the person is in touch with me.</p><p>The formula is intentionally arithmetic so I can adjust it myself. Triple weight for different days of their replies, single weight for all their messages, half weight for mine. Then a freshness multiplier: up to 90 days full, up to a year sixty percent, older than that thirty percent.</p><p><strong>My own mass mailings are subtracted from the count.</strong> I didn't realize this at first, although it's obvious – if I send a mass holiday greeting to many leads, it doesn't make those leads equally warm (or warm at all).</p><p><strong>The interface is a Google Sheet, not my admin panel.</strong> The tabs are simple: columns for warmth, investors, engineers, and a legend explaining each column.</p><p>The tag filter button here is simple. Filters, sorting, access by link, and mobile operation were implemented before me and without me – the table structure inherently supports all of this.</p><p><strong>What is NOT in this mechanism, even though it seems like it is.</strong> The machine does not select the second party for the pair. It provides me with a filtered final list, and I choose whom to introduce my lead to. I choose specifically from this already filtered, final list.</p><p>Next is just a simple step – the "make intro" option – the process is ready to start.</p><h3>The current algorithm for introducing leads to each other</h3><p>Here, I thought through and laid out the order of steps from the start, which is the most important thing:</p><ol><li><p><strong>Personal message to each separately.</strong> I write to one lead (with whom I have a connection) about wanting to introduce them to another acquaintance, for this reason and that. I immediately specify who the lead is whom I want to introduce and how this acquaintance might be useful. I also ask if they are okay with the introduction.</p></li><li><p><strong>I wait for consent from both.</strong> If I write to a lead, they read it but don't reply, I don't consider it consent. I only wait for actual confirmation that the lead agrees to be introduced.</p></li><li><p><strong>A three-person group</strong> is created to provide a communication space for the leads, which I can influence a little at the beginning. If one lead is already active in the group, and the second hasn't joined or seen the message – I remind them, nudge them a bit.</p></li><li><p><strong>An invitation link</strong> is sent in direct messages to the leads and pinned in the chats.</p></li><li><p><strong>One intro at a time.</strong> This is just a basic rule to avoid triggering bans.</p></li><li><p><strong>Day 3 and Day 14: I check with the leads if the introduction was useful.**</p></li></ol><p>Point 6 here is the most important. The usefulness of an intro is something I used to spend a lot of time on. Now, I consider many factors in advance to select leads who are mutually beneficial.</p><h3>Why the order is like this</h3><p>Previously, there were many things I didn't anticipate. For example, I would create a group with leads, add several of my work accounts to the group, and Telegram would immediately register the status that "group created successfully."</p><p>But in the group, besides my accounts, there wasn't a single invited person. For instance, a lead might have a restriction like "do not add to groups," and the bot couldn't add the lead even when their consent was obtained.</p><p>I needed to work on the statuses I was recording.</p><h3>How many of these groups do I actually have?</h3><p>Before building anything, I calculated what I already had. I ran a script through the chat history, without using models, zero paid tokens.</p><p><strong>7,077 intro groups.</strong> Of these, 810 are corporate, 4,235 are between individuals, and 2,032 involve funds and market makers. Data on correspondence is available for 6,051.</p><p>The script also collected data on company-to-company groups, not just person-to-person introductions.</p><div><div><table><tbody><tr><th><p>What was measured</p></th><th><p>Result</p></th></tr><tr><td><p>Empty groups: created, but no one wrote anything in them</p></td><td><p>2.3%</p></td></tr><tr><td><p>Groups where a real conversation took place (4 messages or more)</p></td><td><p>73.5%, lower bound 72.4%</p></td></tr><tr><td><p>For corporate introductions</p></td><td><p>85%</p></td></tr><tr><td><p>Between individuals</p></td><td><p>72%</p></td></tr><tr><td><p>Funds and market makers</p></td><td><p>74%</p></td></tr></tbody></table></div></div><h3>How my priorities have changed</h3><p>I had a plan: first, get mandatory consent before creating a group. I simply didn't want to create "dead" groups.</p><p>I have 2.3% dead groups. It seems like a small number.</p><p>But I spent a lot of effort on this. That is, I paid too much attention to something that was already working fine.</p><p>It became more important to collect information on the results of my introductions.</p><h3>How it's set up</h3><p>This is a table. Specifically one, so I can fix it myself at any moment.</p><pre><code>CREATE TABLE IF NOT EXISTS intro_groups ( 
+    group_id            TEXT PRIMARY KEY, 
+    title               TEXT, 
+    side_a              TEXT, 
+    side_b              TEXT, 
+    created_date        TEXT NOT NULL, 
+    day3_followup_sent  INTEGER NOT NULL DEFAULT 0, 
+    day3_followup_ts    TEXT, 
+    day14_followup_sent INTEGER NOT NULL DEFAULT 0, 
+    day14_followup_ts   TEXT, 
+    outcome             TEXT NOT NULL DEFAULT 'unknown', 
+    outcome_logged_date TEXT 
+); 
+</code><div><a href="https://sourcecraft.dev/"><span></span></a></div></pre><p>The outcome is one of six values:</p><pre><code>OUTCOMES = ("unknown", "no_response", "conversation", 
+            "meeting_booked", "deal", "dead") 
+</code><div><a href="https://sourcecraft.dev/"><span></span></a></div></pre><p>There are 2 important points here:</p><p><strong>First: the module doesn't send anything.</strong> It only calculates who needs to be messaged now and provides the ready text. This text is sent by a separate component that has access to the messenger and runs on a separate computer.</p><p><strong>Second: protection against repeated sending.</strong> If a group has the "day 3 sent" flag, it will never be added to the day 3 queue again, no matter how many times it's run.</p><p>And one more rule, which I didn't figure out immediately. If the outcome is known before the deadline, for example, a conversation happened on the fifth day, then the question "how did it go" is not sent on the fourteenth day.</p><h3>What is NOT working for me right now</h3><p>The self-test passes completely, nine out of nine checks. The code is working.</p><p>But the outcomes log is empty.</p><p>Not a single intro is registered in it.</p><p>I've had this happen before: the tool is written, the self-test is green, but it's not connected to the workflow. The live messenger is on one machine, and I was running this loop on another, which has no chats at all. Silly.</p><h3>What I am consciously not building</h3><p>I was offered two solutions that I refused.</p><p><strong>A heavy process engine and a graph database.</strong> My current actual scale is about a thousand intros per month, approximately 33 per day. For 33 per day, a standard database and scheduler are quite sufficient; a heavy stack makes sense only if there are tens of thousands of live timers.</p><p><strong>A fleet of accounts for 500 cold introductions per day.</strong> Absolutely not. Because introductions, and the value I provide to leads, are only for leads with whom I have an existing connection.</p><p>Why do I recommend many people build their work with people around them? Because leads won't find out about you, hear you, or see you on their own. They won't learn about your product.</p><p>Because connections need to be maintained – and this is a constant process.</p><p>Because win-win schemes are good in business.</p><p>And considering how rapidly the volume of information around us is increasing, the volume of contacts in many businesses is also growing.</p><p>And working with these contacts is becoming a priority for many people I observe.</p><p>You need to prepare the ground in advance.</p></div>
+  </main>
+  <footer>
+    Translation generated with Gemini 2.5 Flash-Lite.
+    The original article remains the source of record.
+  </footer>
+</body>
+</html>

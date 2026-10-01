@@ -1,0 +1,105 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>30 Years of Beautiful Interfaces — And Here We Go Back to Text Again</title>
+  <meta name="description" content="The first CSS specification was released in 1996. Since then, for about thirty years, we&#x27;ve been trying to make interfaces beautiful: adding shadows, gradients, animations, flexboxes, and grids. But what did we get with the advent of LLMs? Back to text. Ironic, isn&#x27;t it? :) Let&#x27;s cons">
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.65;
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 32px 20px 64px;
+      color: #1f2328;
+    }
+    header {
+      border-bottom: 1px solid #d8dee4;
+      margin-bottom: 28px;
+      padding-bottom: 20px;
+    }
+    .source {
+      color: #57606a;
+      font-size: 0.95rem;
+    }
+    img, video, iframe {
+      max-width: 100%;
+      height: auto;
+    }
+    pre {
+      overflow-x: auto;
+      padding: 16px;
+      background: #f6f8fa;
+      border-radius: 6px;
+    }
+    code {
+      font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+    }
+    blockquote {
+      border-left: 4px solid #d0d7de;
+      margin-left: 0;
+      padding-left: 16px;
+      color: #57606a;
+    }
+    footer {
+      border-top: 1px solid #d8dee4;
+      margin-top: 40px;
+      padding-top: 20px;
+      color: #57606a;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>30 Years of Beautiful Interfaces — And Here We Go Back to Text Again</h1>
+    <p>The first CSS specification was released in 1996. Since then, for about thirty years, we&#x27;ve been trying to make interfaces beautiful: adding shadows, gradients, animations, flexboxes, and grids. But what did we get with the advent of LLMs? Back to text. Ironic, isn&#x27;t it? :) Let&#x27;s consider a relatively common scenario: you ask a model, &#x27;Find me headphones in Megamarket.&#x27; The model enthusiastically tries to access the store and hits either sanctions restrictions or anti-bot protection. As a result, it sheepishly returns text: &#x27;Well, there are such and such headphones, google it yourself, everything will be fine,&#x27; or, in the best case: &#x27;Here&#x27;s a list of links, but I&#x27;m not sure they&#x27;re correct.&#x27; Thanks, of course, but we want more. And now we finally have the tools to provide that &#x27;more.&#x27; Read on.</p>
+    <p class="source">
+      Machine-translated from Habr.
+      <a href="https://habr.com/ru/companies/sberbank/articles/1089106/?utm_campaign=1089106&amp;utm_source=habrahabr&amp;utm_medium=rss">Read the original Russian article</a>.
+      Thu, 01 Oct 2026 13:03:29 GMT
+    </p>
+  </header>
+  <main>
+<div><p>The first CSS specification was released in 1996. Since then, for about thirty years, we've been trying to make interfaces beautiful: adding shadows, gradients, animations, flexboxes, and grids. But what did we get with the advent of LLMs? Back to text.</p><p>Ironic, isn't it? :)</p><p>Let's consider a relatively common scenario: you ask a model, 'Find me headphones in Megamarket.' The model enthusiastically tries to access the store and hits either sanctions restrictions or anti-bot protection. As a result, it sheepishly returns text: 'Well, there are such and such headphones, google it yourself, everything will be fine,' or, in the best case: 'Here's a list of links, but I'm not sure they're correct.' Thanks, of course, but we want more. And now we finally have the tools to provide that 'more.'</p><h3>Basic Solution: MCP Server with Tools</h3><p>The simplest step is to write an MCP server that will access Megamarket itself and return the necessary data to the model. It will have tools: find product, show product card, add to cart, check delivery. My demo server has nine of them. I write the schema description in English — for a number of recommendations, this consumes fewer tokens and the model understands better — but conceptually, everything is simple:</p><pre><code>{ 
+    "name": "search_products",
+    "description": "Search the catalog by category, price and rating.",
+    "inputSchema": {
+        "type": "object",
+        "properties": {
+            "query": { "type": "string" },
+            "category": { "enum": ["headphones"] }
+        },
+        "required": ["query"]
+    },
+    "annotations": { "readOnlyHint": true }
+}
+
+// The rest are in the same vein</code><div><a href="https://sourcecraft.dev/"><span></span></a></div></pre><p>The tool has a <code>readOnlyHint</code> marker: a hint to the host that the call only reads and changes nothing. It's just a hint: the specification explicitly requires considering annotations untrusted if the server is untrusted, as nothing prevents a malicious server from assigning <code>readOnlyHint: true</code> to an instrument that clears the cart. The host builds its confirmation policy on these annotations, but they are not a guarantee.</p><p>We connect the server to Claude Desktop and ask: 'Search for headphones under 5000 rubles.' The model picks up the tools, the server goes to the store, returns the products — and we get a neat table with prices, ratings, and an exact link.</p><figure><img alt="Model response based on MCP server data" loading="lazy" src="https://habrastorage.org/r/w1560/getpro/habr/upload_files/6ad/e43/0a5/6ade430a57069e9e0ea9ba1838dca40f.png" title="Model response based on MCP server data"/><div><figcaption>Model response based on MCP server data</figcaption></div></figure><p>This is no longer 'google it yourself,' but it's not magic either.</p><h3>Why Tools Are Not Enough</h3><p>The agent sees from the descriptions that we have search, delivery address, and product information. And yet, it outputs text without prompt wizardry. The tool schema answers the question 'What does the tool do?' It tells the model nothing about how to display the result to a human or how to go through a multi-step scenario.</p><p>Suppose we want to filter the results so that delivery arrives no later than tomorrow. This is a chain: 'search → filter by delivery → filter by price → sort.' The model will try, but without clear instructions, it will wander, especially if Opus is replaced by GLM or DeepSeek. And we also want the user to fall in love with the product, its appearance, and be able to easily compare the characteristics of different offers.</p><p>These tasks are covered by two MCP resources:</p><ul><li><p><code>ui://</code> — an interface for humans;</p></li><li><p><code>skill://</code> — instructions for the agent.</p></li></ul><p>Both are formatted as MCP resources, meaning the core protocol hasn't been changed for them; current servers can be extended, but the client will also need to handle them.</p><h3>How Does MCP Apps Work?</h3><p>For the user, we will render a live widget — an interactive product gallery where you can flip through cards, apply filters, and add to cart. All this, under the hood, requires two nested iframes for security (we'll talk about this below).</p><p>Lifecycle:</p><ol><li><p><strong>Initialization.</strong> The host retrieves the HTML template from the server and can cache it in advance, even upon connection. The fact that the template is declared before the call allows the host to read and verify it before anything is executed.</p></li><li><p><strong>Call.</strong> When the model calls a tool, the host launches an iframe, the widget greets via <code>ui/initialize</code> and receives context in response: theme, CSS variables, container size, locale, timezone, platform. The host renders the widget.</p></li><li><p><strong>Interaction.</strong> From within the widget, we manage the display: gallery, filters, cards. The widget can, through the host, request the server's tools to be called.</p></li><li><p><strong>Cleanup.</strong> Before removing the widget from the screen, the host sends it <code>ui/resource-teardown</code> with the reason and waits for a response so the widget can complete correctly. It does not handle state saving between calls; this is on the list of future specification improvements.</p></li></ol><p>The result of the tool call comes in two streams, and both fields are already present in MCP:</p><ul><li><p><code>content</code> — a textual representation for the model and hosts that cannot render widgets;</p></li><li><p><code>structuredContent</code> — structured data for the widget. This is where the aforementioned 20 headphones from the search, warehouse balances, prices, and ratings go. According to the specification's recommendation, they are not included in the model's context.</p></li></ul><h4>On Divergence from the Core</h4><p>There's a subtlety here. The core protocol states that a tool returning structured content SHOULD also return serialized JSON as a text block — for backward compatibility. This means, according to the core rules, these fields duplicate each other, and MCP Inspector versions 0.17-0.21 even showed a warning about the discrepancy. In February 2026, it was removed as misleading.</p><p>MCP Apps deliberately separates them and describes this as a recommended practice: <code>content</code> is for the model, <code>structuredContent</code> is for rendering. The meaning is clear: no one needs to render twenty cards as text, and paying for them with tokens is even less desirable. The debate about this has been ongoing since the fall of 2025 (SEP-1624). OpenAI decided differently in their Apps SDK: there, the model sees <code>structuredContent</code>, and only <code><em>meta</em></code> is hidden from it. And some maintainers, including Olivier Chafik from ext-apps, believe that data for the widget should be carried precisely in <code>meta</code>.</p><h4>Under the Hood</h4><p>The widget communicates with the host via JSON-RPC over <code>postMessage</code>. The host acts as a gatekeeper: it decides whether to allow the tool call, may require user confirmation, and logs everything that comes from the widget. A tool call from the widget is a standard <code>tools/call</code>, which the host proxies to the server.</p><figure><img alt="Host asks for permission to call a tool" loading="lazy" src="https://habrastorage.org/r/w1560/getpro/habr/upload_files/579/f9c/2f6/579f9c2f654d8841d13beae1d6fd1a67.png" title="Host asks for permission to call a tool"/><div><figcaption>Host asks for permission to call a tool</figcaption></div></figure><p>On top of standard MCP messages, the extension adds its own layer of <code>ui/*</code> methods: handshake <code>ui/initialize</code>, <code>ui/open-link</code>, <code>ui/message</code>, <code>ui/request-display-mode</code>, <code>ui/update-model-context</code>, plus notifications about tool entry, result, cancellation, and size changes. The transport remains the same, but the set of messages is new, and the host must learn to understand them.</p><p>Everything is linked via <code>_meta</code>: the resource is declared separately, and the tool references it.</p><pre><code>// Declare the resource
+{
+    "uri": "ui://shop/compare",
+    "name": "Headphone Comparison",
+    "mimeType": "text/html;profile=mcp-app"
+}
+// Use the resource
+{
+    "name": "compare_products",
+    "inputSchema": {
+        "type": "object",
+        "properties": { "product_ids": { "type": "array" } }
+    },
+    "_meta": {
+        "ui": {
+            "resourceUri": "ui://shop/compare",
+            "visibility": ["model", "app"]
+        }
+    }
+}</code><div><a href="https://sourcecraft.dev/"><span></span></a></div></pre><p>Inside the resource is HTML. The host retrieves it: upon seeing <code>_meta.ui.resourceUri</code> for a tool, it calls <code>resources/read</code> over a regular MCP connection, just like <code>tools/list</code>. The specification allows doing this in advance, immediately after server connection; in the worst case, the host reads the resource in parallel with the tool call. The widget cannot and should not load itself: its script starts executing within the sandbox, where the host has placed the ready HTML.</p><p>The <code>visibility</code> field lives next to <code>resourceUri</code> and controls access. By default, it's <code>[
+  </main>
+  <footer>
+    Translation generated with Gemini 2.5 Flash-Lite.
+    The original article remains the source of record.
+  </footer>
+</body>
+</html>

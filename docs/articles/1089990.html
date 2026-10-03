@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Forecasting infection outbreaks</title>
+  <meta name="description" content="I&#x27;ve built an MVP of a decision support system for epidemiological monitoring. The goal was technical: to test the full path from a time series per territory to risk calculation and output in a conversational interface. An important limitation: the epidemiological dynamics in this MVP are synth">
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.65;
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 32px 20px 64px;
+      color: #1f2328;
+    }
+    header {
+      border-bottom: 1px solid #d8dee4;
+      margin-bottom: 28px;
+      padding-bottom: 20px;
+    }
+    .source {
+      color: #57606a;
+      font-size: 0.95rem;
+    }
+    img, video, iframe {
+      max-width: 100%;
+      height: auto;
+    }
+    pre {
+      overflow-x: auto;
+      padding: 16px;
+      background: #f6f8fa;
+      border-radius: 6px;
+    }
+    code {
+      font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+    }
+    blockquote {
+      border-left: 4px solid #d0d7de;
+      margin-left: 0;
+      padding-left: 16px;
+      color: #57606a;
+    }
+    footer {
+      border-top: 1px solid #d8dee4;
+      margin-top: 40px;
+      padding-top: 20px;
+      color: #57606a;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Forecasting infection outbreaks</h1>
+    <p>I&#x27;ve built an MVP of a decision support system for epidemiological monitoring. The goal was technical: to test the full path from a time series per territory to risk calculation and output in a conversational interface. An important limitation: the epidemiological dynamics in this MVP are synthetic. The names of municipalities, area, population, density, and temperature from Yandex Weather were real. Vaccination rates, number of cases, incidence, and the target label were generated programmatically. Therefore, the presented metrics say nothing about the model&#x27;s ability to predict real ARVI outbreaks. On such data, it&#x27;s impossible to conclude that one architecture is better than another: the model primarily learns the patterns embedded in the synthetic series generator. Nevertheless, the setup proved useful. It allowed testing the construction of time windows, chronological splitting, normalization, training, inference, notification thresholds, and handling of a rare positive class. Read more</p>
+    <p class="source">
+      Machine-translated from Habr.
+      <a href="https://habr.com/ru/articles/1089990/?utm_campaign=1089990&amp;utm_source=habrahabr&amp;utm_medium=rss">Read the original Russian article</a>.
+      Sat, 03 Oct 2026 12:25:07 GMT
+    </p>
+  </header>
+  <main>
+<div><h2>MVP of ARVI Monitoring on Synthetic Data: The Pipeline Works, But No Conclusions About the Model Yet</h2><p>I've built an MVP of a decision support system for epidemiological monitoring. The goal was technical: to test the full path from a time series per territory to risk calculation and output in a conversational interface.</p><p>An important limitation: the epidemiological dynamics in this MVP are synthetic. The names of municipalities, area, population, density, and temperature from Yandex Weather were real. Vaccination rates, number of cases, incidence, and the target label were generated programmatically.</p><p>Therefore, the presented metrics say nothing about the model's ability to predict real ARVI outbreaks. On such data, it's impossible to conclude that one architecture is better than another: the model primarily learns the patterns embedded in the synthetic series generator.</p><p>Nevertheless, the setup proved useful. It allowed testing the construction of time windows, chronological splitting, normalization, training, inference, notification thresholds, and handling of a rare positive class.</p><h3>What I Wanted to Test</h3><p>In the future, the system should help epidemiologists and MIAC (Medical Information and Analytical Center) staff notice potentially dangerous dynamics earlier than they become apparent in reports and dashboards.</p><p>At the MVP level, the task was formulated as follows:</p><blockquote><p>Based on the history of indicators over eight weeks, estimate the probability that in two weeks, a territory will exceed a given model epidemic threshold.</p></blockquote><p>The system should not make diagnoses, automatically impose restrictions, or make decisions instead of a specialist. Its task is to show the calculated risk level and help draw attention to a territory that needs to be checked.</p><p>In the future, the real version should receive aggregated indicators from Rospotrebnadzor (Federal Service for Surveillance on Consumer Rights Protection and Human Wellbeing) sources. At the MVP stage, I only tested the engineering workflow.</p><h3>Data: Real Parameters and Synthetic Dynamics</h3><p>For the MVP, I needed a testbed to verify the complete ML pipeline before connecting real statistics sources.</p><p>As a geographical basis, I used municipalities in Adygea, Krasnodar Krai, and Rostov Oblast. This is a compact demonstration fragment of Southern Russia.</p><p>The following were real:</p><ul><li><p>municipality names;</p></li><li><p>territory area;</p></li><li><p>population size;</p></li><li><p>calculated population density;</p></li><li><p>average temperature from Yandex Weather.</p></li></ul><p>The remaining indicators were generated programmatically:</p><ul><li><p>vaccination coverage;</p></li><li><p>absolute number of cases;</p></li><li><p>incidence per 100,000 population;</p></li><li><p>target event label.</p></li></ul><p>For each municipality, a series of 260 weeks was generated. Temperature varied according to a seasonal sinusoid with added random noise. The number of cases was built using a Poisson distribution: its expected value depended on population, density, conditional vaccination coverage, and a seasonality coefficient.</p><p>The generator looked like this, simplified:</p><pre><code>seasonality_factor = (1.0 + 0.8 * np.sin((week - 10) / 52 * 2 * np.pi)) density_multiplier = (np.log10(max(current_density, 1)) / 2) susceptibility = ((1 - vaccination_rate) * density_multiplier) lambda_cases = ((population / 10000) * susceptibility * seasonality_factor * 10) cases_abs = np.random.poisson(max(lambda_cases, 1))</code><div><a href=
+  </main>
+  <footer>
+    Translation generated with Gemini 2.5 Flash-Lite.
+    The original article remains the source of record.
+  </footer>
+</body>
+</html>

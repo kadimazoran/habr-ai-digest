@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Yue Studio: An Attempt to Make Neuro-Music That Doesn&#x27;t Cause Nausea (At Least for Me)</title>
+  <meta name="description" content="An album of tracks I created with this tool. Each track has its own page detailing its creation process with before-and-after examples: Static and Gold. Read more">
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.65;
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 32px 20px 64px;
+      color: #1f2328;
+    }
+    header {
+      border-bottom: 1px solid #d8dee4;
+      margin-bottom: 28px;
+      padding-bottom: 20px;
+    }
+    .source {
+      color: #57606a;
+      font-size: 0.95rem;
+    }
+    img, video, iframe {
+      max-width: 100%;
+      height: auto;
+    }
+    pre {
+      overflow-x: auto;
+      padding: 16px;
+      background: #f6f8fa;
+      border-radius: 6px;
+    }
+    code {
+      font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+    }
+    blockquote {
+      border-left: 4px solid #d0d7de;
+      margin-left: 0;
+      padding-left: 16px;
+      color: #57606a;
+    }
+    footer {
+      border-top: 1px solid #d8dee4;
+      margin-top: 40px;
+      padding-top: 20px;
+      color: #57606a;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Yue Studio: An Attempt to Make Neuro-Music That Doesn&#x27;t Cause Nausea (At Least for Me)</h1>
+    <p>An album of tracks I created with this tool. Each track has its own page detailing its creation process with before-and-after examples: Static and Gold. Read more</p>
+    <p class="source">
+      Machine-translated from Habr.
+      <a href="https://habr.com/ru/articles/1089944/?utm_campaign=1089944&amp;utm_source=habrahabr&amp;utm_medium=rss">Read the original Russian article</a>.
+      Sat, 03 Oct 2026 10:46:05 GMT
+    </p>
+  </header>
+  <main>
+<div><p>An album of tracks I created with this tool. Each track has its own page detailing its creation process with before-and-after examples: <a href="https://samotoy.ru/dmitry/static-and-gold/index.html">Static and Gold</a>.</p><figure><img alt="Screenshot of the program for the start of the article" loading="lazy" src="https://habrastorage.org/r/w1560/getpro/habr/upload_files/49f/850/a31/49f850a311dc89be4bfb46174e7b33ec.png" title="Screenshot of the program for the start of the article"/><div><figcaption>Screenshot of the program for the start of the article</figcaption></div></figure><h3>Why I Coded This</h3><p>AI sludge is everywhere now. At work, tasks in the tracker are written by AI, and comments are answered by AI. Lots of images online are AI (they can be good, but who needs good?). AI music, which is abundant online now, makes me...</p><p>Friends often let me listen to their tracks from Suno, and it just burns me up. You can't tell the person it's garbage, it's somehow offensive. Yes, music is subjective, but this is low-quality generated... well, you get it.</p><p>Recently, a friend showed me YuE2 and said it's as good as Suno and local. I became curious: could I create something that wouldn't make my ears fall off and wouldn't make me nauseous?</p><p>The first attempts almost killed the idea – it was disgusting. But I like making things and trying.</p><p><strong>Step 1. Generator with a specified genre, voice, and instruments.</strong> First, I created an advanced generator – genre, rhythm, guitars, voice, mood — the form collects a string of tags from this for the model. It was already listenable, but the sound was monotonous and flat, and the whole track played at roughly the same tempo.</p><p><em>This is probably all in Suno, but I had no intention of paying for what I heard.</em></p><p><strong>Step 2. Dramaturgy.</strong> I added track structure: <strong>even, crescendo, wave,</strong> and <strong>explosion</strong>. It got a little better, but the plastic and flat sound remained.</p><p><strong>Step 3. Studio.</strong> I started thinking about what I was missing and adding it: drum fills, drops, voice effects (and the voices themselves). That's how the track "studio" came about. I added:</p><ul><li><p>volume and spectrum wave — you can see what's playing where;</p></li><li><p>track separation. <em>[</em><strong><em>Claude</em></strong><em>: YuE2 itself doesn't split it, but a separate program called demucs does, and there are only four tracks: vocals, drums, bass, and 'everything else'. Guitars and keys are in one track, you can't extract them separately. We live with what we have. (my note)]</em></p></li></ul><p><strong>Step 4. Overdub.</strong> I uploaded my track and replayed it differently. <em>[</em><strong><em>Claude</em></strong><em>: the model plays a new part based on the track's notes in a different style, and the application mixes it with the original. The model cannot do a true overdub on a live recording.]</em></p><p><strong>Step 5. Breathing and Mastering.</strong></p><ul><li><p><em>Breathing.</em> The neural network outputs the track as a "brick": everything is equally loud, there are almost no quiet parts, which (making ears fall off) quickly tires the hearing. "Breathing" gently lowers the quiet parts and doesn't touch the loud ones — the track gains a difference between the verse and the chorus. Not perfect, but the volume range noticeably increases.</p></li><li><p><em>Mastering.</em> The final step before "releasing" the track: "breathing" + volume with light overdrive, a bit of "sand" on the highs, and a peak limiter so nothing crackles.</p></li></ul><p><strong>Step 6. Voice Substitution — Experiment.</strong> The model sings with a new voice each time (even a fixed seed doesn't fix this). I tried substituting one voice for all tracks (using Seed-VC) to avoid random variation. But that has its own problems, so the feature remains marked as "experimental":</p><ul><li><p>The voice trembles, "as if shy to sing." Seed-VC is made more for speech than singing: neither settings, nor retraining on voice, nor a different track splitter helped.</p></li><li><p>The track itself gets corrupted. First, the voice needs to be cut out from the finished track, and demucs doesn't cut perfectly: the voice track still contains fragments of guitars and drums. They also go through voice replacement, and the music starts to sound worse within phrases. Although, I don't rule out that it depends on the music; for something simple, it might work.</p></li></ul><p><strong>Step 7. MCP — Working with AI.</strong> You can do everything manually, but refining the track is easier with AI. Therefore, I set up an MCP server: it tells the AI agent what the application can do, and then in a dialogue, you can ask the AI to do what's needed and immediately check the result. [Claude: MCP is a protocol through which an AI agent (Claude, Codex) calls the program's tools. The agent generates, listens to metrics, cuts, applies effects — and the decision "like it / redo it" is yours.]</p><p><strong>Step 8. Interface.</strong> I also put effort into the UI. It's a matter of taste, but I like it. I took Winamp2 as a basis, updating it for 2026. Plus, I added a light theme. Winamp2 is not because I'm that old, but because it's clearly associated with music for me.</p><h3>What Came Out of It</h3><p>In the end, I made an album out of what I got: <a href="https://samotoy.ru/dmitry/static-and-gold/index.html"><strong>Static and Gold</strong></a>.</p><p>Music is subjective, and I'm making it for myself, so it reflects my tastes: something from Joy Division, Interpol, Jack White. Overall, it's closer to modern indie, and I generally like the result. However, if you play a real live track, it's clear that it's still very far from a live sound.</p><p><em>I won't duplicate it here, but each track has its own page with a description of how I made it and several before-and-after examples at the bottom.</em></p><h3>How It Works</h3><ul><li><p><strong>Worker</strong> on a computer with an NVIDIA graphics card (16GB+ VRAM): holds the YuE2 model, generation queue, track splitting, text recognition.</p></li><li><p><strong>Application</strong> on a regular PC (Linux/Windows/macOS): interface, effects are calculated locally (ffmpeg), communicates with the worker over the network. Everything can be on one computer.</p></li><li><p><strong>MCP server</strong> — the same logic for the AI agent.</p></li><li><p>The code is open: <a href="https://github.com/Zazza/yue-studio">https://github.com/Zazza/yue-studio</a></p></li></ul><h3>Interface: The Journey of a Single Track</h3><p>I don't think a guide to the interface is needed; everyone has AI now, it will tell you what and how to use. I'll include a few screenshots:</p><figure><img alt="Main window" loading="lazy" src="https://habrastorage.org/r/w1560/getpro/habr/upload_files/a8b/132/27b/a8b13227b530e9eab8501e3d3a0ff8ef.png" title="Main window"/><div><figcaption>Main window</figcaption></div></figure><figure><img alt="Track studio" loading="lazy" src="https://habrastorage.org/r/w1560/getpro/habr/upload_files/a7c/a1e/0b1/a7ca1e0b177a6f38f8bc99f81ee82610.png" title="Track studio"/><div><figcaption>Track studio</figcaption></div></figure><h3>Installation</h3><ul><li><p>What you need: NVIDIA with CUDA and 16GB VRAM; ~20GB disk space for the worker and weights; optional — whisper (+3GB, text recognition) and Seed-VC (+11GB, voice experiment).</p></li><li><p>Two scenarios: <strong>everything on one PC</strong> (usual case) or <strong>graphics card on a separate machine</strong> (I have a workstation with a gaming GPU that is busy with debian during the day and works for my GPU experiments).</p></li><li><p><strong>The easiest way</strong> is to ask the AI agent to install. MCP has <code>install_worker</code> with a dry run (shows the plan and disk space, installs nothing) and <code>doctor</code> for checks.</p></li><li><p>Manually — commands from the README. Honestly, I haven't tested it.</p></li></ul><h3>Limitations</h3><ul><li><p>The model does not split the track into instruments: only four tracks from demucs.</p></li><li><p>You cannot fix the middle of the track without rebuilding: the model plays from left to right. There is "continuation from a point" and inserts, but there are seams at the junction. Sometimes, if something turns out completely wrong, it's easier to redo it, especially since ABC exists — we just render according to the ABC plan.</p></li><li><p>You cannot set the voice character of a specific performer — only the style. The liveliness of the voice is created by the melody in the notes, not by words like "with anguish" in style. Plus, there's an experimental function in the "studio." And additionally, effects: megaphone, overdrive, slapback, and telephone.</p></li><li><p>A successful generation is a lottery: you have to try different seeds. Sometimes it's better to do it differently: find the basis, and then supplement it into a track. It's longer and more tedious, but that's how we avoid generating pop music :)</p></li></ul><h3>Conclusion</h3><p>Overall, I like it, it's an interesting toy, my unfulfilled musical potential is delighted by this toy. I'll be writing new albums for myself ))</p></div>
+  </main>
+  <footer>
+    Translation generated with Gemini 2.5 Flash-Lite.
+    The original article remains the source of record.
+  </footer>
+</body>
+</html>

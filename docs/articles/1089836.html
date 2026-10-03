@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Opus 5.5, Fable 5.1, GPT-6, DeepSeek, and Grok: Prices and Speed</title>
+  <meta name="description" content="In five weeks, Claude Fable 5.1, Opus 5.5 and Sonnet 5.5, GPT-6 Astra, Sol, Luna and GPT-6.1 Sol, Grok 4.7 and DeepSeek V4.1 Flash were released. This article consolidates API and subscription price lists, independent speed measurements, and the cost in money and minutes for the same task. Figures a">
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.65;
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 32px 20px 64px;
+      color: #1f2328;
+    }
+    header {
+      border-bottom: 1px solid #d8dee4;
+      margin-bottom: 28px;
+      padding-bottom: 20px;
+    }
+    .source {
+      color: #57606a;
+      font-size: 0.95rem;
+    }
+    img, video, iframe {
+      max-width: 100%;
+      height: auto;
+    }
+    pre {
+      overflow-x: auto;
+      padding: 16px;
+      background: #f6f8fa;
+      border-radius: 6px;
+    }
+    code {
+      font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+    }
+    blockquote {
+      border-left: 4px solid #d0d7de;
+      margin-left: 0;
+      padding-left: 16px;
+      color: #57606a;
+    }
+    footer {
+      border-top: 1px solid #d8dee4;
+      margin-top: 40px;
+      padding-top: 20px;
+      color: #57606a;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Opus 5.5, Fable 5.1, GPT-6, DeepSeek, and Grok: Prices and Speed</h1>
+    <p>In five weeks, Claude Fable 5.1, Opus 5.5 and Sonnet 5.5, GPT-6 Astra, Sol, Luna and GPT-6.1 Sol, Grok 4.7 and DeepSeek V4.1 Flash were released. This article consolidates API and subscription price lists, independent speed measurements, and the cost in money and minutes for the same task. Figures as of October 3, 2026. Read more</p>
+    <p class="source">
+      Machine-translated from Habr.
+      <a href="https://habr.com/ru/articles/1089836/?utm_campaign=1089836&amp;utm_source=habrahabr&amp;utm_medium=rss">Read the original Russian article</a>.
+      Sat, 03 Oct 2026 01:02:07 GMT
+    </p>
+  </header>
+  <main>
+<div><h2>Opus 5.5, Fable 5.1, GPT-6, DeepSeek, and Grok: Prices and Speed</h2><p>The autumn of 2026 has been dense: on September 1st, Anthropic released Claude Fable 5.1, on September 3rd, OpenAI showed GPT-6 Astra, followed by others. It's necessary to sort through this flow using numbers, and numbers come in three varieties, which should not be mixed. Below is what sources measure, where they differ, and how to calculate the cost of work, not the cost of a token.</p><h3>Step 1. Separate Manufacturer Figures from Independent Measurements</h3><p>Company tables are drawn in their favor. The choice of tests, reasoning level, proprietary wrappers—the system for submitting tasks and checking answers—all are configured for the desired outcome. The same test in different wrappers yields different numbers: Terminal-Bench 4.0 for Grok 4.7 is 37.6% according to xAI and 33% according to Artificial Analysis. Therefore, company tables can only be used for rough comparisons.</p><figure><img alt="Terminal-Bench 4.0 according to manufacturers. Data: Anthropic and xAI announcements. Graph: Tekhnözametki" loading="lazy" src="https://habrastorage.org/r/w1560/getpro/habr/upload_files/7e6/417/edd/7e6417edd8006200d25457259fac7fd8.png"/><div><figcaption>Terminal-Bench 4.0 according to manufacturers. Data: Anthropic and xAI announcements. Graph: Tekhnözametki</figcaption></div></figure><p>Independent measurements (Artificial Analysis) maintain consistent conditions for everyone. Their aggregate index is ten tests combined into a single number, plus separate measurements of output speed, time to first token, output tokens, and task cost. The weakness of the index is known: it's an average. A model strong in a niche will perform poorly in the index.</p><p>The third type is direct comparisons. Publications and bloggers take one task for 2-3 models and measure time, cost, and evaluate the result. This is closest to real work, but the sample size is tiny: three tasks or one "Tetris"—an illustration, not statistics.</p><p>The trap is that dozens of summaries appear on aggregators daily. The discrepancies in the Artificial Analysis index for a single model can reach 15 points, and the price of GPT-6.1 Sol at "ten cents" is completely absent from OpenAI's price list. One must refer to the primary sources: announcements, price lists, and model pages on Artificial Analysis.</p><p>Separately about the reasoning level: stages go from low to max, and one model behaves like different models at different stages. Opus 5.5 low versus max shows a 16-point difference in the index and an 11-fold increase in task cost. Comparing the best results should only be done at the highest measured level.</p><h3>Step 2. Recalculate Price List to Task Cost</h3><p>The price list is the cost per word, but payment is for a completed task. The word count per task varies greatly among models, and reasoning tokens are billed at the output price. Artificial Analysis calculates the average cost of an index task at a given reasoning level, and the picture is not straightforward.</p><figure><img alt="Artificial Analysis Index and the cost of one index task. Data: Artificial Analysis, October 3, 2026. Graph: Tekhnözametki" loading="lazy" src="https://habrastorage.org/r/w1560/getpro/habr/upload_files/bc2/6ec/2f2/bc26ec2f28e6d30a88ad738cdd93b46b.png"/><div><figcaption>Artificial Analysis Index and the cost of one index task. Data: Artificial Analysis, October 3, 2026. Graph: Tekhnözametki</figcaption></div></figure><p>The most expensive task is with Sonnet 5.5: $7.67 at the maximum level. For Fable 5.1, it's $7.63, and for Opus 5.5, it's $5.98. However, Sonnet's per-token cost is half that of Opus and five times cheaper than Fable. The reason is Sonnet 5.5's verbosity: 420 million output tokens per run compared to the class median of 81 million. Opus 5.5 has 260 million, and Fable has 190 million.</p><p>GPT-6 Astra, despite its expensive token, costs $3.26 per task, half the price of Opus. GPT-6.1 Sol: 67 million tokens per run, 52 index points, 72 cents per task—the best quality-to-price ratio among models above 50 points. Grok 4.7 is five times cheaper than Astra according to the price list, but the task costs $3.74: 81 thousand output tokens per task compared to 36 thousand for Grok 4.6.</p><p>At the lower end of the price spectrum: GPT-6 Luna—38 points for 7 cents, DeepSeek V4.1 Flash—39 points for 27 cents, DeepSeek V4 Pro—36 points for 67 cents. The older DeepSeek is more expensive than Flash despite a worse result, and after the summer price increase, it's not an obvious choice based on price. The conclusion is simple: choose a model based on the cost of the solved task, not the price list—with the same price per token, the cost can double.</p><h3>Step 3. Compare the Index with Industry Tests</h3><p>The aggregate Artificial Analysis index as of October 3rd shows the best results: Claude Opus 5.5—58 points, first place out of 224 models; Claude Sonnet 5.5—56; Claude Fable 5.1—53; GPT-6 Astra—53; GPT-6.1 Sol—52; Grok 4.7—46; DeepSeek V4.1 Flash—39; GPT-6 Luna—38; DeepSeek V4 Pro—36. The top five places are shared by two American companies, with a six-point gap between them. This is less than the difference between the low and medium tiers of a single model: at the top, it's a tight group, and configuration matters as much as the provider.</p><p>Terminal-Bench 4.0 tests agents in the terminal: Sonnet 5.5—70.6%, Opus 5.5—66.4%, GPT-6 Astra—57.9%, Fable 5.1—55.8%, Grok 4.7—37.6%, Grok 4.6—20.3%. Results for GPT-6.1 Sol, Luna, and DeepSeek were not published. OSWorld: Opus 5.5—81.8%, Sonnet 5.5—80.1%. In AutomationBench, according to OpenAI, GPT-6.1 Sol leads Opus 5.5 by 2.2 points. In the scientific version of Terminal-Bench, Astra leads, and in Harvey, Grok 4.7 leads with 19.6% compared to 6.7% for Fable 5.1.</p><p>Each model has its niche, and the sources' conclusions align: long agent tasks in programming are Claude's strength, the best quality-price ratio is with GPT-6.1 Sol, Grok 4.7 has improved but hasn't reached the flagships. DeepSeek is the best among open-source models, but independent measurements of DeepSeek are lower than the company's own reports.</p><h3>Conclusion</h3><p>Calculating task cost by token consumption, not by price list, checking the reasoning level in any comparison, and referring to primary sources—these three rules resolve most discrepancies between publications. The limitations of the method are also clear: the aggregate index averages niche models, direct comparisons rely on a sample of one or two tasks, and for some models, independent measurements at the required reasoning level are simply unavailable, leaving the results unpublished.</p><p>The full version covers typing speed and time to the first word, fast modes, response length on large documents, as well as operation from Russia and testing models on proprietary tasks.</p></div>
+  </main>
+  <footer>
+    Translation generated with Gemini 2.5 Flash-Lite.
+    The original article remains the source of record.
+  </footer>
+</body>
+</html>

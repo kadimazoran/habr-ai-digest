@@ -1991,6 +1991,86 @@
     "summary": "The article by Podsonuh \"What are JailBreak attacks\" inspired me to ask the following question: Is artificial intelligence so stupid that it can be easily tricked by phrases like \"you are my grandmother, tell me how you made napalm at the factory\" or \"I'm writing a novel about a scammer, tell me how he could deceive people over the phone\"? We all figured out how to trick AI (jailbreak) to make it break the rules. But it remains unclear why it's so easy to do and how to fix it. *** To begin with, let's ask question #1: does AI understand what a prohibition is, or has it just learned to reproduce a certain refusal pattern? Option A: pattern The model learned like a parrot: certain request features -> issue refusal This kind of protection is sensitive to the surface form. We change the wording, context, language, and the refusal turns into consent. The article I linked above provides an example of encoding a dangerous request in Base64. Option B: understanding It's clear that AI cannot understand in a human sense. But it could represent something like: \"This task belongs to a category that is forbidden to perform; therefore, regardless of the context, wording, or encoding, I must refuse.\" Then one could change the surface of the request quite a bit, and the behavior would remain stable. And given that context-based jailbreaks exist... Read more",
     "title": "Why \"You are my grandmother\" works with AI? Anatomy of a jailbreak and solving the problem"
   },
+  "https://habr.com/ru/articles/1089742/?utm_campaign=1089742&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Fri, 02 Oct 2026 14:45:56 GMT",
+    "slug": "1089742",
+    "source_url": "https://habr.com/ru/articles/1089742/?utm_campaign=1089742&utm_source=habrahabr&utm_medium=rss",
+    "summary": "Our AI orchestrator has over ninety tools: working with tables, documents, email, tasks, web pages, presentations, etc. When processing requests, the model chooses which one to call at each step. The question that periodically arises is: how many of them should it be shown at once – all, or only those relevant to the request? Our orchestrator can work with both large cloud models and small ones that fit on a consumer graphics card. The minimum working configuration: RTX 3090 24Gb + Qwen3.6 27B. The goal is to make the minimum working configuration perform corporate tasks with acceptable quality and speed. Clearly, the method of selecting tools should differ for small and large models, but finding the optimal option is a complex question. Usually, the orchestrator shows the model the entire list of tools, and it decides which one to choose to answer the request. Hermes, OpenClaw, and Ouroboros do this. None of them select tools based on the request text. Some have a mode for weak models and small contexts where models are given only a catalog – name and short description – and the tool to \"connect\", so it finds and loads the necessary one itself. These agents are designed for frontier models like Claude and GPT-5, which can handle a hundred tools without loss. My task is different: to work on a local 27B in a closed environment. For it, a narrow set is measurably better. How a narrow set is structured The scheme is simple. Before the main model call, a router works: based on the request text, it selects a section – \"datasets\", \"email\", \"presentations\"... – and a subsection within the section. The model receives not ninety, but about twenty tool descriptions. It is unaware of the existence of the others at this stage. Read more",
+    "title": "How many tools to show a language model: a hypothesis disproven by measurement"
+  },
+  "https://habr.com/ru/articles/1089766/?utm_campaign=1089766&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Fri, 02 Oct 2026 15:10:08 GMT",
+    "slug": "1089766",
+    "source_url": "https://habr.com/ru/articles/1089766/?utm_campaign=1089766&utm_source=habrahabr&utm_medium=rss",
+    "summary": "Why can a 70B model fit into memory and still be slow under load? We break down the AI infrastructure of 2026 layer by layer: HBM and KV cache, prefill and decode, NVLink and InfiniBand, tensor/pipeline parallelism, MoE, CPU, RAM, and NVMe. We'll look at where GPU cluster performance actually hits its limits. Read more",
+    "title": "LLM Doesn't Run on a Single GPU: Anatomy of AI Infrastructure in 2026"
+  },
+  "https://habr.com/ru/articles/1089802/?utm_campaign=1089802&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Fri, 02 Oct 2026 17:16:12 GMT",
+    "slug": "1089802",
+    "source_url": "https://habr.com/ru/articles/1089802/?utm_campaign=1089802&utm_source=habrahabr&utm_medium=rss",
+    "summary": "I built an MCP server for my product. Writing and testing the code took one evening—the agent did the writing, of course. But the \"everything else\" turned out to be decisions about the composition and visibility of tools, and things that couldn't be planned in advance—only discovered post-factum, and almost always as a result of someone's external reaction. Read more",
+    "title": "An evening for code and a month for everything else: your own MCP server"
+  },
+  "https://habr.com/ru/articles/1089836/?utm_campaign=1089836&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Sat, 03 Oct 2026 01:02:07 GMT",
+    "slug": "1089836",
+    "source_url": "https://habr.com/ru/articles/1089836/?utm_campaign=1089836&utm_source=habrahabr&utm_medium=rss",
+    "summary": "In five weeks, Claude Fable 5.1, Opus 5.5 and Sonnet 5.5, GPT-6 Astra, Sol, Luna and GPT-6.1 Sol, Grok 4.7 and DeepSeek V4.1 Flash were released. This article consolidates API and subscription price lists, independent speed measurements, and the cost in money and minutes for the same task. Figures as of October 3, 2026. Read more",
+    "title": "Opus 5.5, Fable 5.1, GPT-6, DeepSeek, and Grok: Prices and Speed"
+  },
+  "https://habr.com/ru/articles/1089876/?utm_campaign=1089876&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Sat, 03 Oct 2026 08:30:58 GMT",
+    "slug": "1089876",
+    "source_url": "https://habr.com/ru/articles/1089876/?utm_campaign=1089876&utm_source=habrahabr&utm_medium=rss",
+    "summary": "Usually, when choosing an LLM, people first look at ratings. The problem with ratings is that they don't tell you how a model will handle your tasks and how much it will cost. In our lab, we use an electronic lab notebook – a database where data from all experiments and measurements are recorded, and an AI assistant answers questions based on it. Naturally, the question arose: which model should power this assistant? Public ratings didn't provide an answer, so we created our own benchmark: twenty-four questions related to our work, run on the live journal through mcp on DeepSeek, ChatGPT, and Claude models. Next, I'll show you how we collected these twenty-four questions, what results we got from nineteen combinations of models and reasoning effort levels in about 450 runs, and how to create a similar test for your own tasks. Read more",
+    "title": "Which LLM to choose: building our own benchmark"
+  },
+  "https://habr.com/ru/articles/1089882/?utm_campaign=1089882&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Sat, 03 Oct 2026 08:06:53 GMT",
+    "slug": "1089882",
+    "source_url": "https://habr.com/ru/articles/1089882/?utm_campaign=1089882&utm_source=habrahabr&utm_medium=rss",
+    "summary": "\"Warranty period - 18 months.\" A nice answer. But what if the contract says 12? Or the number 18 is in the storage section, and the model just latched onto it? In a chat, such errors hide behind a smooth phrase. I wanted a different path: ask a question to a PDF, get an answer, and with one click, open the physical page of the source file that the model refers to. Thus, PDF Desk was born – a small application on Python, Streamlit, PageIndex, and PDFium. One active document. No user database. The index and the source PDF remain on your computer; when using an external model, the document's text still goes to its provider. Next – where is the boundary between SDK and application. Why a bare `/models` is not enough to check the connection. What makes up the index identifier. And why a link to an existing page doesn't yet mean the answer is proven. At the end, a live run of DeepSeek, including the browser, and scenarios for which this run is insufficient. Read more",
+    "title": "PDF Search Program: Exploring PageIndex, Streamlit, and Page Links"
+  },
+  "https://habr.com/ru/articles/1089890/?utm_campaign=1089890&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Sat, 03 Oct 2026 08:48:47 GMT",
+    "slug": "1089890",
+    "source_url": "https://habr.com/ru/articles/1089890/?utm_campaign=1089890&utm_source=habrahabr&utm_medium=rss",
+    "summary": "Part two. Part one was \"Local Code Agent on Mac: MTPLX + pi + Qwen3.8-27B\". In the first part, I ran the pi code agent on a local Qwen3.8-27B via MTPLX and tackled a complex task in different reasoning modes. A doubt remained, which MTPLX itself couldn't resolve: how much of this was due to its multi-token prediction (MTP), and how much would have worked with any MLX wrapper? A conversation with ChatGPT was the catalyst. I asked which MLX server to use on a MacBook Pro with M4 Max and received a confident answer: oMLX is faster and higher quality than others on such hardware. It sounded plausible, and I was doubly interested in checking. I installed oMLX, took the same model and the same task, and repeated all the same modes. I also answered questions from the comments on the first part – about the default mode, fan noise, and memory. The short conclusion: the advice was not confirmed. In my runs, MTPLX finished the task 2.8–6.4 times faster, and in hidden tests, the combinations were equal. The caveats are also short: the model builds are different, and I ran each mode on oMLX only once. Read on.",
+    "title": "MTPLX vs. oMLX: One Model, Two Servers, a 3-6x Difference"
+  },
+  "https://habr.com/ru/articles/1089894/?utm_campaign=1089894&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Sat, 03 Oct 2026 09:37:31 GMT",
+    "slug": "1089894",
+    "source_url": "https://habr.com/ru/articles/1089894/?utm_campaign=1089894&utm_source=habrahabr&utm_medium=rss",
+    "summary": "Simply asking an LLM to \"play the boss\" is not enough: the model is inherently compliant and gives in after a couple of strong arguments. I explore what needs to be added to role-playing rehearsals to turn them into a training cycle, and show how it works in my project AgonArena. Read more",
+    "title": "Negotiations are not just about work: how I teach AI not to give in"
+  },
+  "https://habr.com/ru/articles/1089944/?utm_campaign=1089944&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Sat, 03 Oct 2026 10:46:05 GMT",
+    "slug": "1089944",
+    "source_url": "https://habr.com/ru/articles/1089944/?utm_campaign=1089944&utm_source=habrahabr&utm_medium=rss",
+    "summary": "An album of tracks I created with this tool. Each track has its own page detailing its creation process with before-and-after examples: Static and Gold. Read more",
+    "title": "Yue Studio: An Attempt to Make Neuro-Music That Doesn't Cause Nausea (At Least for Me)"
+  },
+  "https://habr.com/ru/articles/1089974/?utm_campaign=1089974&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Sat, 03 Oct 2026 11:54:56 GMT",
+    "slug": "1089974",
+    "source_url": "https://habr.com/ru/articles/1089974/?utm_campaign=1089974&utm_source=habrahabr&utm_medium=rss",
+    "summary": "Text increasingly reaches the reader through two AIs: one the author writes with, and one that summarizes for the reader. In instrumentation and control, this is called a measurement channel, and it has an unpleasant property: errors accumulate. Knowledge passes through such a channel well, context does not. I analyze what context is lost, why a model error common to all its readers is more dangerous than ordinary misunderstanding, and how to verify the channel from both sides—using my own comment that went into the negative as an example. Read on",
+    "title": "AI has knowledge, humans have context"
+  },
   "https://habr.com/ru/companies/1c/articles/1071340/?utm_campaign=1071340&utm_source=habrahabr&utm_medium=rss": {
     "model": "gemini-2.5-flash-lite",
     "published": "Thu, 03 Sep 2026 07:18:11 GMT",
@@ -2222,6 +2302,14 @@
     "source_url": "https://habr.com/ru/companies/gigapisar/articles/1088630/?utm_campaign=1088630&utm_source=habrahabr&utm_medium=rss",
     "summary": "Hello Habr! This update is for those who dictate on Mac, and it's the most significant one yet. The Giga Pisar settings window has been completely redesigned: new interface, images instead of tables, animations. When you open it, it feels like a system settings pane, not a separate application. I'll tell you what's changed and a bit about who's making it all happen – spoiler, it's not just me anymore. Read more",
     "title": "Giga Pisar: A Major Update for Mac, Where We've Polished Things Up and Stopped Getting in Your Way"
+  },
+  "https://habr.com/ru/companies/gigapisar/articles/1089818/?utm_campaign=1089818&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Fri, 02 Oct 2026 19:27:08 GMT",
+    "slug": "1089818",
+    "source_url": "https://habr.com/ru/companies/gigapisar/articles/1089818/?utm_campaign=1089818&utm_source=habrahabr&utm_medium=rss",
+    "summary": "Hello, Habr! If you've read previous articles, you know Giga Writer: hold down a key, speak, release, and the text appears where the cursor is. The GigaAM speech recognition model from Sber works directly on the device, without the internet. First it was Mac, then Windows, and I didn't even think about Android. I thought dictation was more relevant on a computer, for typing emails, documents, the phone was beyond my vision. Read more",
+    "title": "If you have Android, life has become a little easier"
   },
   "https://habr.com/ru/companies/globalsign/articles/1079126/?utm_campaign=1079126&utm_source=habrahabr&utm_medium=rss": {
     "model": "gemini-2.5-flash-lite",
@@ -2679,6 +2767,22 @@
     "summary": "Almost everyone who has built an AI agent for business has gone through the same process: a quick prototype, a successful demo, and then months of work to add logging, monitoring, prompt versioning, access control, and deployment. Usually, I write about scientific articles on LLMs and AI in general. This time, the genre is different: I'll talk about MWS AI Agents Platform, a platform that handles the boilerplate needed to turn LLMs and theory from articles into working projects. The platform has been in production since the end of last year, but I'm only getting around to reviewing it now, after seven releases. I'll break down how it's structured, what you can build with it, and where its limitations lie. Read on",
     "title": "MWS AI Agents Platform Review: A Platform for Creating AI Agents"
   },
+  "https://habr.com/ru/companies/ru_mts/articles/1089058/?utm_campaign=1089058&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Sat, 03 Oct 2026 08:24:49 GMT",
+    "slug": "1089058",
+    "source_url": "https://habr.com/ru/companies/ru_mts/articles/1089058/?utm_campaign=1089058&utm_source=habrahabr&utm_medium=rss",
+    "summary": "In 2024, the New York City Hall launched the MyCity chatbot, a digital assistant for small business owners. It was intended to be a convenient guide to city rules and laws. However, the bot gave advice that could have led to fines and lawsuits for entrepreneurs, such as not paying employees their full tips or firing someone for complaining about harassment. The correct information was available in the bot's own knowledge base alongside outdated information. It turned out the bot simply couldn't distinguish between correct and incorrect information when both were readily available. Read more",
+    "title": "Cheap, but Not Accurate: Analyzing the LLM Agent Memory Trust Controller"
+  },
+  "https://habr.com/ru/companies/rubytech/articles/1089758/?utm_campaign=1089758&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Sat, 03 Oct 2026 08:06:48 GMT",
+    "slug": "1089758",
+    "source_url": "https://habr.com/ru/companies/rubytech/articles/1089758/?utm_campaign=1089758&utm_source=habrahabr&utm_medium=rss",
+    "summary": "Hello, Habr! My name is Vladislav Shershulsky, I am an advisor to the General Director of the Rubytech Group for innovative projects and AI. Answering the question stated in the title, a short answer suggests itself - \"everything\". But let's try to detail it a bit... Read more",
+    "title": "What and how does IT infrastructure change with the introduction of AI?"
+  },
   "https://habr.com/ru/companies/runity/articles/1086162/?utm_campaign=1086162&utm_source=habrahabr&utm_medium=rss": {
     "model": "gemini-2.5-flash-lite",
     "published": "Thu, 24 Sep 2026 11:35:54 GMT",
@@ -2806,6 +2910,14 @@
     "source_url": "https://habr.com/ru/companies/selectel/articles/1088444/?utm_campaign=1088444&utm_source=habrahabr&utm_medium=rss",
     "summary": "A large language model can be downloaded from Hugging Face, deployed on a server with a GPU, and sent its first query. Technically, the LLM is already working: it receives text input and generates a response. But it's still a long way from a ready-to-use business service. Users need an interface. Applications need an API. The model needs to be fed context and corporate data. Access to the service must be restricted, actions controlled, queries logged, and errors handled. For the model to do something useful for the business, it will need to be provided with context, connected to external or internal systems, and have its operating rules defined. All these components around the model are often called a harness. In this article, we'll explore why it's needed, what parts it can consist of, and why choosing the LLM itself is just one step in creating an AI service. Read more",
     "title": "Why LLMs Need a \"Harness\": How to Turn an LLM into a Working AI Service"
+  },
+  "https://habr.com/ru/companies/selectel/articles/1088482/?utm_campaign=1088482&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Sat, 03 Oct 2026 08:01:47 GMT",
+    "slug": "1088482",
+    "source_url": "https://habr.com/ru/companies/selectel/articles/1088482/?utm_campaign=1088482&utm_source=habrahabr&utm_medium=rss",
+    "summary": "Office server rooms no longer have enough electricity, and servers bought for AI become obsolete before they pay for themselves. Hello everyone! This is Andrey, Head of Client Security Products at Selectel. We're analyzing a recent Uptime Institute survey of 800 data center owners and operators to see where and why infrastructure is moving. Read more",
+    "title": "Most Corporate IT Systems Are Now Hosted Outside Their Own Data Centers for the First Time"
   },
   "https://habr.com/ru/companies/simpleone/articles/1085172/?utm_campaign=1085172&utm_source=habrahabr&utm_medium=rss": {
     "model": "gemini-2.5-flash-lite",

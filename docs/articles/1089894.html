@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Negotiations are not just about work: how I teach AI not to give in</title>
+  <meta name="description" content="Simply asking an LLM to &quot;play the boss&quot; is not enough: the model is inherently compliant and gives in after a couple of strong arguments. I explore what needs to be added to role-playing rehearsals to turn them into a training cycle, and show how it works in my project AgonArena. Read more">
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.65;
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 32px 20px 64px;
+      color: #1f2328;
+    }
+    header {
+      border-bottom: 1px solid #d8dee4;
+      margin-bottom: 28px;
+      padding-bottom: 20px;
+    }
+    .source {
+      color: #57606a;
+      font-size: 0.95rem;
+    }
+    img, video, iframe {
+      max-width: 100%;
+      height: auto;
+    }
+    pre {
+      overflow-x: auto;
+      padding: 16px;
+      background: #f6f8fa;
+      border-radius: 6px;
+    }
+    code {
+      font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+    }
+    blockquote {
+      border-left: 4px solid #d0d7de;
+      margin-left: 0;
+      padding-left: 16px;
+      color: #57606a;
+    }
+    footer {
+      border-top: 1px solid #d8dee4;
+      margin-top: 40px;
+      padding-top: 20px;
+      color: #57606a;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Negotiations are not just about work: how I teach AI not to give in</h1>
+    <p>Simply asking an LLM to &quot;play the boss&quot; is not enough: the model is inherently compliant and gives in after a couple of strong arguments. I explore what needs to be added to role-playing rehearsals to turn them into a training cycle, and show how it works in my project AgonArena. Read more</p>
+    <p class="source">
+      Machine-translated from Habr.
+      <a href="https://habr.com/ru/articles/1089894/?utm_campaign=1089894&amp;utm_source=habrahabr&amp;utm_medium=rss">Read the original Russian article</a>.
+      Sat, 03 Oct 2026 09:37:31 GMT
+    </p>
+  </header>
+  <main>
+<div><p>Tomorrow is the conversation you dread: asking for a raise, refusing a discount to a client, telling the team that the deadline will be missed. You know the words by heart – and still, you replay them at night. At some point, you open a chat with a neural network and type: "Play my boss. I'm asking for a raise, you're against it."</p><p>My name is Stepan Martyanov, I'm an SRE engineer: on-call shifts, incidents, post-mortems, the eternal question of "how to tell the team what you don't want to say." And outside of work, I'm into music, art, creative projects, where there are no fewer negotiations: co-authorship, boundaries of "what's mine/what's ours," money for someone else's idea, agreements with people who are far more artistic than I am at evading direct answers. In both spheres, I've noticed the same thing: it's not the lack of words that fails you, but your state. Therefore, this text is about how to turn a conversation with AI into training, not a sedative.</p><p>The impetus was an article from the <a href="https://habr.com/ru/companies/studyai/articles/1022086/">StudyAI</a> blog about how Claude helps prepare for a difficult conversation. It answers well the question "how to ask a model to play the interlocutor." I became interested in the follow-up: what needs to be added to such a rehearsal to turn it into training – not a one-off run-through, but a repeatable cycle with feedback? The story of this experiment gradually grew into a simulator for difficult conversations, AgonArena – first on Telegram, and now on iOS. It will also be discussed below, with an honest disclaimer about where the analysis ends and my product begins.</p><h3>Why rehearse at all</h3><p>In a difficult conversation, it's often not the lack of words that fails you, but your state: fear, resentment, haste. Under their pressure, you either give up at the first "no" or resort to personal attacks. Rehearsal solves two problems:</p><ul><li><p><strong>Lower the cost of mistakes.</strong> In rehearsal, failure is free: you can lose an argument ten times and try a different approach on the eleventh.</p></li><li><p><strong>Hear your own patterns.</strong> From the outside, it's clear when you're making excuses where you should be negotiating, and negotiating where you should be listening.</p></li></ul><p>Scenarios repeat in the most diverse worlds. In my work: "the deadline is impossible, but we'll discuss it on Friday evening"; "the quarterly goal conflicts with reliability, and this needs to be stated aloud"; "an incident review without blaming – with people who expect retribution." In music and creative collaborations, there are their own eternal plays: a co-author divides income differently than agreed; a curator changes the concept two days before the exhibition; a friend asks to do something for free "as a favor" that costs money. In everyday life – repairs, rent, talking to relatives about money. Negotiations are not a negotiation room, but any conversation where parties have different interests and are afraid to say it directly.</p><h3>What works in a free role-playing conversation</h3><p>If you simply ask the model to "play the interlocutor," there is indeed value, and an honest article must admit it:</p><ul><li><p><strong>Choosing phrasing.</strong> You can try five versions of the same phrase and choose the one that sounds like you – only calmer. For example, instead of "well, I don't know, I think it's time..." – "I want to discuss a compensation review. When is a good time for you?"</p></li><li><p><strong>Preparing counterarguments.</strong> The model is good at generating typical objections – you can prepare responses to them in advance.</p></li><li><p><strong>Reducing tension.</strong> You go into a conversation that you have already "seen" once, rather than blindly.</p></li></ul><p>This is the honest minimum, and it's worth using. Problems arise when the rehearsal should train, not just calm you down.</p><h3>Where free conversation breaks down</h3><p><strong>1. The opponent gives in.</strong> Models are trained to be agreeable – this property has been measured separately, it even has a name: <a href="https://arxiv.org/abs/2310.13548">sycophancy</a>. Ask the "boss" not to give a raise – and they often soften after a couple of strong arguments, unless you specifically forbid them from yielding. A real interlocutor – a client, a co-author, a producer – can be significantly less accommodating. You are training against an opponent who goes easy on you, and you emerge with inflated confidence: such training reinforces the illusion of readiness, not skill.</p><p><strong>2. No structure or pressure.</strong> A live conversation is limited by time and agenda. A free chat, if not framed, can meander: discuss, complain, disperse. Without rounds and a timer, the most important thing – maintaining your line under pressure – is almost not trained.</p><p><strong>3. No evaluation.</strong> When asked "how did I do?" the model is more likely to respond with encouragement: "Great, try again." Praise is simply not diagnostic. Without scores and specific mistakes, it's hard to understand if you're improving or reinforcing bad habits.</p><p><strong>4. No perspective shift.</strong> One of the most useful techniques is to play the other side and hear your own arguments from their perspective. In a free conversation, you have to remember this yourself – usually, you don't.</p><p><strong>5. No training history.</strong> Memory is not training. There are no comparable scores, consistent criteria from run to run, and no comparison of "this time versus last time" – there is no answer to whether you are getting better or repeating the same thing.</p><h3>What turns a role-playing chat into a training cycle</h3><p>I don't claim to have the only correct methodology, but the set of features looks something like this:</p><ol><li><p><strong>A scenario with parties' interests.</strong> Not just "a boss," but a specific situation: goals, constraints, point of conflict.</p></li><li><p><strong>An opponent who resists seriously.</strong> They push, argue, yield reluctantly; the level of toughness can be chosen.</p></li><li><p><strong>Role reversal.</strong> You play the position of the other side and hear your own arguments from there.</p></li><li><p><strong>Independent judging.</strong> Evaluation not from the opponent who is "in the game," but from judges with different perspectives: economics, fairness, relationships.</p></li><li><p><strong>Scoring and repetition.</strong> A number, behind which lies specificity: where you gave in, where you pushed too hard, where you didn't negotiate enough. And the next run, with which there is something to compare.</p></li></ol><h3>How it works in AgonArena</h3><p>I'll state my interest upfront: my product starts here, and I'll try to describe only the mechanics, without evaluating my own coolness; whether AgonArena meets the list above is for you to decide.</p><ul><li><p><strong>Duel</strong> – the classic format: two rounds of three minutes each; in the second round, roles are swapped, and you play the side you just argued against. For warm-ups, there's a quick one-round format.</p></li><li><p><strong>AI opponent</strong> – doesn't deliver monologues, but argues and pressures; the toughness level is chosen before starting: easy, normal, or hard – from an accommodating interlocutor to a negotiator who yields only on substantive points.</p></li><li><p><strong>Three judges</strong> with different perspectives: the owner looks at sustainability and economics, the team at fairness and feasibility, the negotiator at progress and relationships. Each gives a score from 1 to 5 and explains it.</p></li><li><p><strong>Review and progress</strong> – after the duel: what worked, where you conceded too early, which mistakes are repeated.</p></li><li><p><strong>Scenarios</strong> – nine categories, from work and money to everyday life and studies; you can describe your own situation and share it via a link.</p></li><li><p><strong>"Negotiation Basics"</strong> – a program of five lessons with practice on real situations.</p></li></ul><p>Today, AgonArena exists in two places: a Telegram bot – the main and most mature one, and an iOS app – in open beta.</p><figure><img alt=
+  </main>
+  <footer>
+    Translation generated with Gemini 2.5 Flash-Lite.
+    The original article remains the source of record.
+  </footer>
+</body>
+</html>

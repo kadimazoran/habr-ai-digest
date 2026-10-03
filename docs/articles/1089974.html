@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>AI has knowledge, humans have context</title>
+  <meta name="description" content="Text increasingly reaches the reader through two AIs: one the author writes with, and one that summarizes for the reader. In instrumentation and control, this is called a measurement channel, and it has an unpleasant property: errors accumulate. Knowledge passes through such a channel well, context ">
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.65;
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 32px 20px 64px;
+      color: #1f2328;
+    }
+    header {
+      border-bottom: 1px solid #d8dee4;
+      margin-bottom: 28px;
+      padding-bottom: 20px;
+    }
+    .source {
+      color: #57606a;
+      font-size: 0.95rem;
+    }
+    img, video, iframe {
+      max-width: 100%;
+      height: auto;
+    }
+    pre {
+      overflow-x: auto;
+      padding: 16px;
+      background: #f6f8fa;
+      border-radius: 6px;
+    }
+    code {
+      font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+    }
+    blockquote {
+      border-left: 4px solid #d0d7de;
+      margin-left: 0;
+      padding-left: 16px;
+      color: #57606a;
+    }
+    footer {
+      border-top: 1px solid #d8dee4;
+      margin-top: 40px;
+      padding-top: 20px;
+      color: #57606a;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>AI has knowledge, humans have context</h1>
+    <p>Text increasingly reaches the reader through two AIs: one the author writes with, and one that summarizes for the reader. In instrumentation and control, this is called a measurement channel, and it has an unpleasant property: errors accumulate. Knowledge passes through such a channel well, context does not. I analyze what context is lost, why a model error common to all its readers is more dangerous than ordinary misunderstanding, and how to verify the channel from both sides—using my own comment that went into the negative as an example. Read on</p>
+    <p class="source">
+      Machine-translated from Habr.
+      <a href="https://habr.com/ru/articles/1089974/?utm_campaign=1089974&amp;utm_source=habrahabr&amp;utm_medium=rss">Read the original Russian article</a>.
+      Sat, 03 Oct 2026 11:54:56 GMT
+    </p>
+  </header>
+  <main>
+<div><p><strong>TL;DR.</strong> Text increasingly reaches the reader through two converters: an AI the author writes with, and an AI that creates a summary for the reader. In instrumentation and control, such a setup is called a measurement channel, and it has a known property: the errors of the links add up, and the channel must be verified as a whole. AI transmits knowledge through the channel well. Context — not. Below, I analyze what specific context is lost, why a model error common to all its readers is more dangerous than ordinary misunderstanding, and how authors and readers can verify such a channel.</p><h3>Two converters between author and reader</h3><p>Not long ago, text went from author to reader almost directly. The author wrote, the reader read. They understood differently, but read the same thing.</p><p>Now, two converters often stand between them. The first is on the author's side: AI helps assemble a draft, find wording, shorten. The second is on the reader's side: AI retells a long text, filters the feed, provides a summary tailored to the specific person's interests. The original text is seen less and less.</p><p>The very idea that texts now pass through AI on both sides is not new. I consider it neither a catastrophe nor progress. It's simply a new signal transmission scheme. And schemes for signal transmission are what I've been working with for 18 years in instrumentation and control, and my contribution here is a look at it through the eyes of a metrologist.</p><h3>How a measurement channel works</h3><p>In production, an operator almost never sees the physical quantity directly. The pressure in the pipe follows a path:</p><ol><li><p>A sensor converts pressure into an electrical signal.</p></li><li><p>A normalizing converter brings the signal to a standard format.</p></li><li><p>A communication line transmits it to a controller.</p></li><li><p>The controller recalculates the signal into pressure units.</p></li><li><p>A screen displays a number to the operator.</p></li></ol><p>Each link introduces its own error, and they accumulate. Therefore, in metrology, there are two ways to verify such a system: element by element, when each link is calibrated separately, and as a whole, when the entire channel is calibrated — from the sensor input to the number on the screen. The latter method catches what the former misses: line influence, interference, errors in unit conversion.</p><p>And one more rule that seems like bureaucracy. The measurement result is not just a number. It's a value, a unit, an error, and the conditions under which it was obtained. "Twenty degrees" without conditions means nothing: it's normal in a workshop, but an emergency in a furnace.</p><h3>Knowledge passes through the channel, context does not</h3><p>Text now has the same channel: author's thought → author's converter → text → reader's converter → summary. And the same rule applies here. A value without measurement conditions is meaningless, and AI transmits precisely the value best.</p><p>The model has a huge knowledge base. It often knows the subject better than the author. But knowledge is a value. The conditions under which it means something are brought by a human. And there are three types of context that almost do not pass through the channel.</p><p><strong>Unspoken context.</strong> What you know but don't think to say: who your audience is, what has already been said in this discussion, what is not customary to talk about here, what specialists consider common knowledge. The model won't ask because it doesn't know that it doesn't know.</p><p><strong>Context of consequences.</strong> What you risk, not the model. Reputation, relationship with a client, karma on a platform. The model calmly writes text for which you will be praised, and text for which you will be torn apart.</p><p><strong>Changing context.</strong> What happened after you set the task. A new comment in a thread, a fresh news item, a change in audience mood.</p><p>The objection is obvious: context can be provided in the prompt. It can, if you are aware of it. The problem is that the first two types of context are usually not realized until something goes wrong.</p><h3>Error common to all readers</h3><p>People, even without AI, understand the same text differently. One might say: so what has changed? The nature of the error has changed.</p><p>Each person has their own stable perceptual distortions — psychology calls them cognitive biases. But they differ among individuals. A hundred readers err in a hundred different directions, and in a discussion, the correct meaning usually emerges.</p><p>However, if many people read through the same model, its biases are the same for everyone. In metrology, this is called correlated error: it is common to many channels and does not decrease with averaging. No matter how many summaries made by the same tool you compare, the common shift is not visible. </p><p>In a workshop, this looks like this: if ten thermometers are calibrated against the same standard, which itself is off by half a degree, all ten will show half a degree more. By comparing them to each other, you won't find the error — they agree. You can only find it by checking against another, independent standard.</p><p>Personalization adds another layer. For each reader, the filter, by the very logic of personalization, shifts the meaning in its own direction — most likely, towards topics and views already familiar to that person. This is my hypothesis, but the mechanism suggests it. The reader themselves does not see the shift: the summary looks smooth and logical. The standard here is the original text. The only question is when it was last opened.</p><h3>Case study</h3><p>Recently, I left a comment in a discussion outside my usual field. AI helped assemble the draft. The analogy in it was beautiful. The comment went into the negative.</p><p>The analysis revealed a double error. The first was in knowledge: one of the statements turned out to be inaccurate for that field; specialists know the subject more deeply than the comment implied. The second was in context: the AI didn't know the discussion — what had already been said, what was considered common knowledge there, how strictly analogies from outsiders were treated.</p><p>The second error made the first one unnoticeable. Knowing the platform's context, I would have doubted the statement before publishing. This is unspoken context — the kind I didn't convey myself because I wasn't aware of it.</p><p>Comments in my field, assembled the same way, went through fine. There, I had the context: I immediately saw what was inaccurate in the draft and what the audience already knew. One case is not an experiment, but an illustration. But it shows the main point: without context, an author cannot even verify knowledge.</p><p>In this channel, there was a verification link — myself before publication. It didn't work that time: in an unfamiliar field, my knowledge wasn't enough to notice the inaccuracy, and I didn't check the platform's context.</p><h3>Channel verification</h3><p>If the channel now consists of two converters, it must be verified from both sides. Here is the procedure I use myself.</p><div><div><table><tbody><tr><th><p>Side</p></th><th><p>What to verify</p></th><th><p>How</p></th></tr><tr><td><p>Author</p></td><td><p>Will the main idea survive compression</p></td><td><p>Formulate it in one sentence and put it at the beginning. If it doesn't formulate, the summary will assemble it for you — and in its own way</p></td></tr><tr><td><p>Author</p></td><td><p>Unspoken context</p></td><td><p>Before publishing, read the discussion itself: what has been said, what is considered common knowledge here. If writing with AI, explicitly state this in the prompt</p></td></tr><tr><td><p>Author</p></td><td><p>Context of consequences</p></td><td><p>For each statement that might be questioned, check it against the primary source and provide a link. Especially in an unfamiliar field</p></td></tr><tr><td><p>Author</p></td><td><p>Is this your field</p></td><td><p>In an unfamiliar field — show the draft to a specialist or do not publish</p></td></tr><tr><td><p>Reader</p></td><td><p>Filter shift</p></td><td><p>Periodically compare the summary with the original: a few checkpoints instead of blind trust</p></td></tr><tr><td><p>Reader</p></td><td><p>Important decisions</p></td><td><p>Make them based on the original text, not the retelling</p></td></tr><tr><td><p>Reader</p></td><td><p>One-sidedness</p></td><td><p>Sometimes ask the filter not for what interests you, but for what contradicts your position</p></td></tr></tbody></table></div></div><p>There is nothing complicated here. It's the same logic as in a workshop: each link is calibrated, the entire channel is calibrated, the result has conditions under which it was obtained.</p><h3>Arguments against</h3><p><strong>Context can be provided in the prompt.</strong> Yes, and this is the main remedy. But you can only provide the context you are aware of. The most costly mistakes come from context you haven't considered.</p><p><strong>People distort meaning even without AI.</strong> Also true. Retellings, quotes out of context, headlines — all this existed long before models. The difference, in my opinion, is in the scale and nature of the error: different people's distortions are different, while readers of the same model have common ones.</p><p><strong>The metaphor is imprecise.</strong> The links in a measurement channel have a rated error. An AI summarizer has no rating, and its behavior changes from version to version. Therefore, the analogy explains why errors accumulate but does not allow them to be calculated. However, metrology has an answer for this too: unrated instruments are characterized empirically, using reference samples. For text, the reference is the source.</p><p><strong>Summaries save time.</strong> Absolutely, and there's no reason to give them up. A device also saves time compared to manual measurement. But a device is used along with calibration, not instead of it.</p><p><strong>Models are getting better.</strong> They are. They will have more knowledge, a wider context window. But unspoken context and the context of consequences remain with the human until they transmit them themselves. Improving the model does not transfer to it what the human has not said.</p><h3>Instead of a conclusion</h3><p>AI has knowledge, humans have context. Knowledge is a value. Context is the conditions under which that value means something. In metrology, measurements without conditions are not accepted. Text without context now passes through two converters and reaches the reader smoothly, confidently, and shifted.</p><p>The path by which meaning reaches the reader has already changed, and it's unlikely to return to direct transmission. The meaning itself may shift along this path — therefore, the path itself must be verified from both sides — and always by comparison with the source: a common shift for everyone cannot be caught by comparing summaries among themselves.</p><p>And how do you verify what AI writes for you or retells to you? Has there been a case where a summary turned out to be smooth, but the meaning in it shifted?</p></div>
+  </main>
+  <footer>
+    Translation generated with Gemini 2.5 Flash-Lite.
+    The original article remains the source of record.
+  </footer>
+</body>
+</html>

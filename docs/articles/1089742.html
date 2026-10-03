@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>How many tools to show a language model: a hypothesis disproven by measurement</title>
+  <meta name="description" content="Our AI orchestrator has over ninety tools: working with tables, documents, email, tasks, web pages, presentations, etc. When processing requests, the model chooses which one to call at each step. The question that periodically arises is: how many of them should it be shown at once – all, or only tho">
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.65;
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 32px 20px 64px;
+      color: #1f2328;
+    }
+    header {
+      border-bottom: 1px solid #d8dee4;
+      margin-bottom: 28px;
+      padding-bottom: 20px;
+    }
+    .source {
+      color: #57606a;
+      font-size: 0.95rem;
+    }
+    img, video, iframe {
+      max-width: 100%;
+      height: auto;
+    }
+    pre {
+      overflow-x: auto;
+      padding: 16px;
+      background: #f6f8fa;
+      border-radius: 6px;
+    }
+    code {
+      font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+    }
+    blockquote {
+      border-left: 4px solid #d0d7de;
+      margin-left: 0;
+      padding-left: 16px;
+      color: #57606a;
+    }
+    footer {
+      border-top: 1px solid #d8dee4;
+      margin-top: 40px;
+      padding-top: 20px;
+      color: #57606a;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>How many tools to show a language model: a hypothesis disproven by measurement</h1>
+    <p>Our AI orchestrator has over ninety tools: working with tables, documents, email, tasks, web pages, presentations, etc. When processing requests, the model chooses which one to call at each step. The question that periodically arises is: how many of them should it be shown at once – all, or only those relevant to the request? Our orchestrator can work with both large cloud models and small ones that fit on a consumer graphics card. The minimum working configuration: RTX 3090 24Gb + Qwen3.6 27B. The goal is to make the minimum working configuration perform corporate tasks with acceptable quality and speed. Clearly, the method of selecting tools should differ for small and large models, but finding the optimal option is a complex question. Usually, the orchestrator shows the model the entire list of tools, and it decides which one to choose to answer the request. Hermes, OpenClaw, and Ouroboros do this. None of them select tools based on the request text. Some have a mode for weak models and small contexts where models are given only a catalog – name and short description – and the tool to &quot;connect&quot;, so it finds and loads the necessary one itself. These agents are designed for frontier models like Claude and GPT-5, which can handle a hundred tools without loss. My task is different: to work on a local 27B in a closed environment. For it, a narrow set is measurably better. How a narrow set is structured The scheme is simple. Before the main model call, a router works: based on the request text, it selects a section – &quot;datasets&quot;, &quot;email&quot;, &quot;presentations&quot;... – and a subsection within the section. The model receives not ninety, but about twenty tool descriptions. It is unaware of the existence of the others at this stage. Read more</p>
+    <p class="source">
+      Machine-translated from Habr.
+      <a href="https://habr.com/ru/articles/1089742/?utm_campaign=1089742&amp;utm_source=habrahabr&amp;utm_medium=rss">Read the original Russian article</a>.
+      Fri, 02 Oct 2026 14:45:56 GMT
+    </p>
+  </header>
+  <main>
+<div><p>Our AI orchestrator has over ninety tools: working with tables, documents, email, tasks, web pages, presentations, etc.</p><p>When processing requests, the model chooses which one to call at each step. The question that periodically arises is: how many of them should it be shown at once – all, or only those relevant to the request?</p><p>Our orchestrator can work with both large cloud models and small ones that fit on a consumer graphics card. The minimum working configuration: RTX 3090 24Gb + Qwen3.6 27B.</p><p>The goal is to make the minimum working configuration perform corporate tasks with acceptable quality and speed.</p><p>Clearly, the method of selecting tools should differ for small and large models, but finding the optimal option is a complex question.</p><p>Usually, the orchestrator shows the model the entire list of tools, and it decides which one to choose to answer the request. Hermes, OpenClaw, and Ouroboros do this. None of them select tools based on the request text. Some have a mode for weak models and small contexts where models are given only a catalog – name and short description – and the tool to "connect", so it finds and loads the necessary one itself. These agents are designed for frontier models like Claude and GPT-5, which can handle a hundred tools without loss. My task is different: to work on a local 27B in a closed environment. For it, a narrow set is measurably better.</p><p><strong>How a narrow set is structured</strong></p><p>The scheme is simple. Before the main model call, a router works: based on the request text, it selects a section – "datasets", "email", "presentations"... – and a subsection within the section. The model receives not ninety, but about twenty tool descriptions. It is unaware of the existence of the others at this stage.</p><figure><img loading="lazy" src="https://habrastorage.org/r/w1560/getpro/habr/upload_files/84c/856/ba6/84c856ba6d1bbe2cc3aca04964a39a1f.png"/></figure><p><strong>Weak model: a narrow set wins</strong></p><p>For the local Qwen 27B on a single RTX 3090, I ran a measurement in August. A corpus of 49 user requests was prepared, two runs on the same day, only the length of the candidate list differed. With a narrow set – 43 correct choices out of 44, with a full set – 39. The context for the full set is 2.7 times larger, and the run is a third longer. Perhaps a more precise tool description could increase the number of correct choices to 100%, but this is what we have for now.</p><p>It's more interesting *where* those four choices were lost. They are all in the same family of tools with similar names: "merge datasets" went into "dataset management", "plot graph" and "rename columns" – into "dataset analysis", "extract from news sites" – into raw page loading instead of parsing.</p><figure><img loading="lazy" src="https://habrastorage.org/r/w1560/getpro/habr/upload_files/4dc/b01/e54/4dcb01e54dca49b700ae147b07abad39.png"/></figure><p>The weak model makes mistakes not randomly: it confuses similar items. A narrow set helps not because it's shorter, but because it contains fewer similar candidates.</p><p><strong>Hypothesis: a strong model needs a wide set</strong></p><p>In July, I ran a small exploratory measurement on eight requests – a local model versus gpt-4.1. The local model got 7 out of 8 on the narrow set and 6 out of 8 on the full set, while gpt-4.1 did the opposite: 7 out of 8 on the narrow set and 8 out of 8 on the full set. On the narrow set, it missed a request that involved two sections at once: the required tool was simply not among the candidates. A neat explanation suggested itself: a narrow set helps a weak model but limits a strong one. The sign of the effect changes with the model's strength. Based on this, I made a setting in the orchestrator: the routing mode is set separately for each model; switching to another model gets its routing profile.</p><p>Of course, eight requests are not proof, but they are a reason for measurement.</p><p><strong>Measurement: two cloud models, four modes</strong></p><p>In September, I ran the entire corpus on two cloud models – GigaChat-2-Max and gpt-oss 120B – in all four selection modes available in the product. The corpus is the same; the catalog has grown to 91 tools by then.</p><figure><img loading="lazy" src="https://habrastorage.org/r/w1560/getpro/habr/upload_files/541/503/284/541503284bd85814ddf246790aa53085.png"/></figure><p>On both models, the narrow set won – in terms of accuracy, context size, and latency. The hypothesis "wide set for strong model" was not confirmed on these two models.</p><figure><img loading="lazy" src="https://habrastorage.org/r/w1560/getpro/habr/upload_files/5e8/a7e/031/5e8a7e031fe8e2a72f57ed61a0981bf6.png"/></figure><p><strong>What was actually hidden in the failures</strong></p><p>When I started analyzing the failures one by one, it turned out that half of them were not selection errors. For GigaChat on the narrow set, all three failures were clarifying questions: "which project key?", "in which dataset slot?". If a reasonable clarifying question is considered an acceptable answer, the score becomes 44 out of 44. The corpus counts a clarification as a success in only one case out of 49 – and this was a separate decision about what constitutes correct behavior, not a model property. Perhaps with a different tool description, the result could have been better.</p><p><strong>The downside of a narrow set</strong></p><p>A narrow set has a failure that is worse than any incorrect choice. If the router doesn't find any section, the system decides it's a knowledge question, no tools are needed, and it invents an answer.</p><p>For "what is OKR", this is correct. But here's a live dialogue: "Identify which devices are currently on the network." The router found no section, the model was left without any tools – and wrote to the user "Scanning the network..." and outlined a work plan in text, without calling any tools. Two consecutive turns, zero calls, confident tone.</p><figure><img loading="lazy" src="https://habrastorage.org/r/w1560/getpro/habr/upload_files/aff/a74/b25/affa74b25a933c1b0f3dd97b37496eaa.png"/></figure><p>The correct answer to "find devices on the network", by the way, was not "scan": the executor of such commands is isolated from the agent, and the company network is intentionally inaccessible to it. The correct approach is to immediately and honestly state this and offer what can be done. But for the model to even be able to answer like that, instead of pretending to work, it first needs to not be left without options.</p><p>From this, an important lesson: first, make sure that the measurement follows the same path as the target product. Otherwise, you are accurately and reproducibly measuring something else.</p><p><strong>What I learned from this?</strong></p><p>The routing mode should be tied to the model, not the system. Therefore, it is configured separately for each model, and switching the model in the admin panel also switches its routing mode. For all three models that I measured on the full corpus, the narrow set turned out to be the best. The rule "wide for strong" remains a hypothesis for now: it can only be honestly tested with a full run on a frontier model, not on eight requests. Your results may differ. Tell me about your experience – it will be interesting to discuss.</p><p>If you are measuring on your end:</p><p>- Compare modes on the same corpus, on the same day, on the same model, and the corpus should be large.</p><p>- Record the corpus fingerprint: the tool catalog grows, and in a month, the same numbers might mean something different.</p><p>- Count clarifying questions separately from misses – they are different behaviors.</p><p>- Check the descriptions of tools and schemas that the model sees. They affect the quality of selection.</p><p>- Ensure that the evaluation follows the same path as the product, including the very last step.</p><p>opportunity to see.*</p></div>
+  </main>
+  <footer>
+    Translation generated with Gemini 2.5 Flash-Lite.
+    The original article remains the source of record.
+  </footer>
+</body>
+</html>

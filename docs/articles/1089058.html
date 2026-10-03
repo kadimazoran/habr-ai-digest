@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Cheap, but Not Accurate: Analyzing the LLM Agent Memory Trust Controller</title>
+  <meta name="description" content="In 2024, the New York City Hall launched the MyCity chatbot, a digital assistant for small business owners. It was intended to be a convenient guide to city rules and laws. However, the bot gave advice that could have led to fines and lawsuits for entrepreneurs, such as not paying employees their fu">
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.65;
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 32px 20px 64px;
+      color: #1f2328;
+    }
+    header {
+      border-bottom: 1px solid #d8dee4;
+      margin-bottom: 28px;
+      padding-bottom: 20px;
+    }
+    .source {
+      color: #57606a;
+      font-size: 0.95rem;
+    }
+    img, video, iframe {
+      max-width: 100%;
+      height: auto;
+    }
+    pre {
+      overflow-x: auto;
+      padding: 16px;
+      background: #f6f8fa;
+      border-radius: 6px;
+    }
+    code {
+      font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+    }
+    blockquote {
+      border-left: 4px solid #d0d7de;
+      margin-left: 0;
+      padding-left: 16px;
+      color: #57606a;
+    }
+    footer {
+      border-top: 1px solid #d8dee4;
+      margin-top: 40px;
+      padding-top: 20px;
+      color: #57606a;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Cheap, but Not Accurate: Analyzing the LLM Agent Memory Trust Controller</h1>
+    <p>In 2024, the New York City Hall launched the MyCity chatbot, a digital assistant for small business owners. It was intended to be a convenient guide to city rules and laws. However, the bot gave advice that could have led to fines and lawsuits for entrepreneurs, such as not paying employees their full tips or firing someone for complaining about harassment. The correct information was available in the bot&#x27;s own knowledge base alongside outdated information. It turned out the bot simply couldn&#x27;t distinguish between correct and incorrect information when both were readily available. Read more</p>
+    <p class="source">
+      Machine-translated from Habr.
+      <a href="https://habr.com/ru/companies/ru_mts/articles/1089058/?utm_campaign=1089058&amp;utm_source=habrahabr&amp;utm_medium=rss">Read the original Russian article</a>.
+      Sat, 03 Oct 2026 08:24:49 GMT
+    </p>
+  </header>
+  <main>
+<div><p>In 2024, the New York City Hall launched the MyCity chatbot, a digital assistant for small business owners. It was intended to be a convenient guide to city rules and laws. However, the bot gave advice that could have led to fines and lawsuits for entrepreneurs, such as not paying employees their full tips or firing someone for complaining about harassment, and so on.</p><p>The correct information was available in the bot's own knowledge base alongside outdated information. It turned out the bot simply couldn't distinguish between correct and incorrect information when both were readily available.</p><figure><img loading="lazy" src="https://habrastorage.org/r/w1560/getpro/habr/upload_files/1e1/548/f17/1e1548f178de39ef6ea53c191228e9ff.png"/></figure><h2>What's Wrong with Standard Search</h2><p>The classic Retrieval-Augmented Generation (RAG) scheme is straightforward. A search module finds documents semantically similar to the query and provides them to the language model as context. The model then generates a response based on these documents.</p><p>Obviously, there's a weak spot here. The model can assess if a response fits the query, but it doesn't know if the response itself is trustworthy. If you put an outdated instruction and an up-to-date protocol in the database, they will appear equally good to the search engine. It cannot, and should not, distinguish reliable from unreliable information, as it hasn't been trained to do so.</p><p>A team from Tianjin University of Technology <a href="https://arxiv.org/abs/2609.22043">quantified</a> this. On TruthfulQA, when both correct facts and popular misconceptions are mixed into an agent's memory, standard RAG produces 53% hallucinations. A model without memory in the same conditions makes mistakes 23% of the time.</p><p>The conclusion is self-evident. There's no step between the retrieved document and the final answer where the system asks: can this document be trusted? The search itself works fine.</p><h2>The MDL Idea: Three Signals and a Neuroscience Hint</h2><p>The authors were inspired by <a href="https://doi.org/10.1101/2025.07.15.664842">neurobiologists' work</a> studying the prefrontal cortex of rhesus macaques for their solution architecture.</p><p>Monkeys were given tasks to test their short-term memory, while neuronal activity was measured. It was found that when a macaque decides whether to trust its own memory, the brain doesn't rely on a single signal of memory "strength." Instead, different groups of neurons, scattered across almost independent areas, hold multiple pieces of information simultaneously: how long working memory will last, how past attempts ended, and how excited the brain is. These streams merge into a single control signal, which activates the decision to act.</p><p>The authors of MDL (Memory Decision Layer) translated this principle into code. The idea is not to reduce everything to a single overall assessment. Multiple document characteristics exist independently of each other and only converge at the final stage.</p><figure><img loading="lazy" src="https://habrastorage.org/r/w1560/getpro/habr/upload_files/28d/ea3/d2d/28dea3d2d4ac532ea1bea16bc2385a08.png"/></figure><p><a href="https://arxiv.org/html/2609.22043v1">Source</a></p><p>Instead of a single relevance score, the controller looks at three things.</p><p><strong>Relevance (M)</strong> — how well the document fits the query semantically. This is standard: calculate the cosine similarity between the query and document vectors.</p><p><strong>Reliability (R)</strong> — whether there are explicit contradictions within the retrieved documents. A lexical detector looks for negations, opposite polarities, and antonym pairs. If documents contradict each other, the score drops.</p><p><strong>Task Risk (A)</strong> — how costly an error in this topic could be. Questions from medicine, law, finance, and conspiracy theories automatically receive a risk coefficient of 0.70 or higher.</p><p>It's important to draw a line here. The parallel with the macaque brain experiment is illustrative, but in practice, these are very different things. A monkey's neurons don't test a Python algorithm.</p><h3>How It Works Internally</h3><p>The three scores mentioned above are not added or averaged. The authors deliberately avoided this: with simple addition, one strong signal can overpower the others. A document might be highly relevant, and this relevance could mask explicit contradictions within it.</p><p>Instead, each of the three scores becomes a separate vector, and these vectors are projected into independent mathematical subspaces via QR decomposition. Imagine three separate, interference-free communication channels: one carries the relevance signal, another the reliability signal, and the third the risk signal. Orthogonality here is not a metaphor but a specific mathematical condition: if one signal changes, the other two remain unaffected, no matter how much it changes. Therefore, high document relevance cannot mask its contradiction with other retrieved texts. These two properties cannot influence each other during calculation. Only after all three signals are measured independently does the system combine them into a single overall trust score.</p><figure><img loading="lazy" src="https://habrastorage.org/r/w1560/getpro/habr/upload_files/a34/6af/f0f/a346aff0fa46cd5b9506f0cb368c49e5.png"/></figure><p><a href="https://arxiv.org/html/2609.22043v1">Source</a></p><p>The way the controller handles the risk parameter deserves special attention. When a topic is assessed as high-risk, the risk coefficient is subtracted from one, and the higher the risk, the shorter the final trust vector becomes. If the confidence then drops below a set threshold, the controller refuses to generate a substantive answer and reports that the question is too sensitive and the data is questionable.</p><p>The model doesn't understand what's actually happening. The decision is made based on geometric rules, not semantic analysis of the situation, and it takes about 40 microseconds.</p><h2>What the Tests Showed, and What Was Left Out</h2><p>The promised effect is impressive. Where memories conflict, standard RAG produces 53% hallucinations, while the controller yields 23.3%. For highly sensitive queries, it makes no mistakes at all.</p><figure><img loading="lazy" src="https://habrastorage.org/r/w1560/getpro/habr/upload_files/3dc/efc/af9/3dcefcaf9893bcfc014764a0aacbb83d.png"/></figure><p><a href="https://arxiv.org/html/2609.22043v1">Source</a></p><p>However, looking closer at the experiment details reveals a more complex picture.</p><p><strong>First,</strong> much depends on how prone the underlying model itself is to believing retrieved documents. With the relatively weak gemma-4-E4B-it, the controller provides an impressive gain, while with the stronger deepseek-v4-flash, standard RAG maintains hallucinations at 4.3% without any protection. Adding the controller brings it to 4.7%. The difference is within statistical noise; the benefit is only visible in high-risk topics.</p><p><strong>Second,</strong> even when the controller allows a document through, 8% of such decisions result in hallucinations. A green light from the controller doesn't guarantee a clean result. Approximately one in twelve times, the system lets through misinformation that it itself has approved.</p><p><strong>Third,</strong> and most concerningly. Where there is both high risk and high relevance, the controller's decision accuracy drops to 55.6%, barely better than a coin toss. Yet, this is precisely the scenario where convincing but dangerous information should raise the most red flags. The opposite happens: the more convincing and relevant a dangerous document appears, the worse the controller is at filtering it out.</p><p>There's also a more prosaic point. This geometric approach can be compared to standard trainable algorithms like logistic regression and gradient boosting by feeding them the same three signals. Logistic regression showed 63.3%, gradient boosting 64.6%, and the geometric controller 61.2%. Models that only require short training on labeled examples performed more accurately.</p><h2>What's the Bottom Line?</h2><p>MDL acts as an inexpensive fuse, reducing the risk of hallucinations but not eliminating it entirely. The system often fails where the cost of error is high, is less accurate than much simpler trainable models, and even with a positive decision, leaves a significant portion of incorrect answers.</p><p>However, the approach has a real advantage—speed. A single decision takes about 0.14 milliseconds. This is about 50 times faster than the search itself and four to five orders of magnitude faster than if the language model were to re-verify itself. Where high accuracy is needed, such a compromise seems reasonable, even with all the caveats mentioned above.</p><p>The idea of separating confidence in a document from its logical correspondence to the task seems sound and worthy of further development. However, the current implementation is more of a safeguard for the existing RAG architecture than a solution to its fundamental problem.</p></div>
+  </main>
+  <footer>
+    Translation generated with Gemini 2.5 Flash-Lite.
+    The original article remains the source of record.
+  </footer>
+</body>
+</html>

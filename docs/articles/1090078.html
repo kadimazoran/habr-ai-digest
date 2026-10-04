@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Building a Raspberry Pi 5 Robot for My Daughter: More Than Just a Smart Speaker!</title>
+  <meta name="description" content="I wanted a robot that could help my child and talk without the internet. This led me to test nearly twenty local AI models, select a voice, add a camera to a bow, and teach its eyes and head to track people. In the first part, I detail how a sketch became a working prototype and what went wrong alon">
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.65;
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 32px 20px 64px;
+      color: #1f2328;
+    }
+    header {
+      border-bottom: 1px solid #d8dee4;
+      margin-bottom: 28px;
+      padding-bottom: 20px;
+    }
+    .source {
+      color: #57606a;
+      font-size: 0.95rem;
+    }
+    img, video, iframe {
+      max-width: 100%;
+      height: auto;
+    }
+    pre {
+      overflow-x: auto;
+      padding: 16px;
+      background: #f6f8fa;
+      border-radius: 6px;
+    }
+    code {
+      font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+    }
+    blockquote {
+      border-left: 4px solid #d0d7de;
+      margin-left: 0;
+      padding-left: 16px;
+      color: #57606a;
+    }
+    footer {
+      border-top: 1px solid #d8dee4;
+      margin-top: 40px;
+      padding-top: 20px;
+      color: #57606a;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Building a Raspberry Pi 5 Robot for My Daughter: More Than Just a Smart Speaker!</h1>
+    <p>I wanted a robot that could help my child and talk without the internet. This led me to test nearly twenty local AI models, select a voice, add a camera to a bow, and teach its eyes and head to track people. In the first part, I detail how a sketch became a working prototype and what went wrong along the way. Read on.</p>
+    <p class="source">
+      Machine-translated from Habr.
+      <a href="https://habr.com/ru/articles/1090078/?utm_campaign=1090078&amp;utm_source=habrahabr&amp;utm_medium=rss">Read the original Russian article</a>.
+      Sun, 04 Oct 2026 07:22:26 GMT
+    </p>
+  </header>
+  <main>
+<div><h2>I wanted to make a robot assistant for my daughter with local AI, so she wouldn't get distracted from her studies but would instead engage with them enthusiastically.</h2><p>But I had nothing to start with. I only had an idea: to create a robot for my daughter that she could talk to even without the internet. And I wanted it to not look like just another speaker with a clock or a black face with blue eyes. So, the first thing I did was create an animated face on my PC – a standard robotic one, without hair, a bow, or other embellishments; I wanted something appealing.</p><p>I showed it to my daughter. She looked at it and asked, "Can it be an anime catgirl?"</p><p>Thus, the initial robot began to transform into a character. I started asking her what exactly she liked: eyes, hairstyle, clothes, facial expressions. The first version wasn't enough. Her ideas were quite specific, and it turned out that just sticking ears onto a screen wasn't sufficient. As a result, two detailed sketches of the character emerged. One with dark hair and a pink kimono, the other in lighter colors. From that moment on, I was no longer building an abstract robot, but a little companion for my child.</p><p>She liked the first version for the kimono design:</p><figure><img alt="First character concept: dark hair, a bow, and a face on screen" loading="lazy" src="https://habrastorage.org/r/w1560/webt/b0/07/b0/b007b0bdaede2cc176c1c4cabe41cae2.png"/><div><figcaption>First character concept: dark hair, a bow, and a face on screen</figcaption></div></figure><p>and the second, which she ultimately preferred for its color scheme:</p><figure><img alt="Second character concept: light hair and a different color scheme" loading="lazy" src="https://habrastorage.org/r/w1560/webt/b2/ce/5b/b2ce5bc6fd63d8d79a2b13c722e27810.png"/><div><figcaption>Second character concept: light hair and a different color scheme</figcaption></div></figure><h3>From Image to a Living Face</h3><p>I started with what could be tested without hardware. I wrote a Python application with a screen-based face: eyes, pupils, eyebrows, mouth, blinking. I added a smile and several expressions. When the robot spoke a response, the mouth should move with the sound. If the program freezes for a long time between a question and an answer, no amount of pretty eyes can save it: the child will think it's broken or, worse, just ignoring them. So, gradually, the face acquired states like "listening," "thinking," and normal calm expressions. But I also kept the other, earlier faces, which can be changed in the settings.</p><figure><img alt="One of the liked working versions of the on-screen face that was further refined." loading="lazy" src="https://habrastorage.org/r/w1560/webt/6b/8c/4e/6b8c4ea91e21d316d4165f3e00e892c6.png"/><div><figcaption>One of the liked working versions of the on-screen face that was further refined.</figcaption></div></figure><p>For the interface, I used Python and Tkinter. I separated the face rendering from voice processing and model response: waiting for the network or text generation shouldn't stop the blinking. This separation later proved useful for head movement as well.</p><p>Concurrently, I realized that animation alone wasn't enough. The robot needed a brain, and a local one at that. But what should I build it on? Arduino wasn't suitable for this kind of dialogue. I looked for a single-board computer, compared capabilities, saw what people had already launched and on what, and found a Raspberry Pi 5 with 8GB of RAM on Avito at a reasonable price and ordered it. I wanted to run a model of about 4 billion parameters on it. While the package was en route, I continued writing the program on my PC and selecting a model.</p><h3>Twenty (!!!) Models and One Small Computer</h3><p>I downloaded about twenty LLM candidates. Some were quickly eliminated: some poorly maintained the assigned character, others gave unclear answers to simple questions or got confused in long responses. For the remaining ones, I assembled a set of tests – arithmetic, explanations, coherent speech, following instructions. The "smartest" answer in a separate test wasn't a victory: the child still had to wait to hear it aloud.</p><p>In the finals, I was left with four GGUF models. On the Pi 5, the primary choice became <strong>Qwen3-4B-Instruct-2507</strong>: in my set, it offered the best balance of quality and response time. <strong>Gemma_4_E2B</strong> responded faster and was useful for short conversations. <strong>Gemma_4_E4B</strong> performed better in some explanations but was slower. <strong>Qwen3.5_9B_DeepSeek_Distill</strong> I kept as a backup experiment: it's interesting, but for a small robot, its long responses seemed excessively time-consuming (I even thought it had frozen).</p><p>In one of the tests on the Pi itself, the generation speed was approximately <strong>4.3 tokens/s for Qwen3 4B</strong> and <strong>7.1 tokens/s for Gemma E2B</strong>. These are measurements from my specific task set and settings, not a universal model ranking. For a child, the difference is simply felt: they ask a question – they wait. Therefore, a fast answer is sometimes more useful than a slightly more detailed one.</p><p>I also kept the speech local. <strong>Vosk</strong> recognized the microphone input, and <strong>Piper</strong> voiced the response. The basic "Irina" voice was good, but my daughter's character needed a more cartoonish or even anime-like sound. I didn't train a separate voice model, as I didn't have the time: I slowed down the original synthesis and changed the pitch of the existing sound. In the preset, it looks like this:</p><pre><code>'anime_kawaii': ('irina', 1.38, 1.30)</code></pre><div><a href=
+  </main>
+  <footer>
+    Translation generated with Gemini 2.5 Flash-Lite.
+    The original article remains the source of record.
+  </footer>
+</body>
+</html>

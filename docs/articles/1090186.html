@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Local assistant for zooms, part 9: a week on Nemotron</title>
+  <meta name="description" content="On Thursday, there was a 57-minute call with eight people. Nemotron labeled the participants&#x27; voices in 7 seconds. My microphone was still labeling with sherpa at the time. Then I ran the same track through the same code again and timed it: eighteen and a half minutes. I posted the eighth part ">
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.65;
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 32px 20px 64px;
+      color: #1f2328;
+    }
+    header {
+      border-bottom: 1px solid #d8dee4;
+      margin-bottom: 28px;
+      padding-bottom: 20px;
+    }
+    .source {
+      color: #57606a;
+      font-size: 0.95rem;
+    }
+    img, video, iframe {
+      max-width: 100%;
+      height: auto;
+    }
+    pre {
+      overflow-x: auto;
+      padding: 16px;
+      background: #f6f8fa;
+      border-radius: 6px;
+    }
+    code {
+      font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+    }
+    blockquote {
+      border-left: 4px solid #d0d7de;
+      margin-left: 0;
+      padding-left: 16px;
+      color: #57606a;
+    }
+    footer {
+      border-top: 1px solid #d8dee4;
+      margin-top: 40px;
+      padding-top: 20px;
+      color: #57606a;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Local assistant for zooms, part 9: a week on Nemotron</h1>
+    <p>On Thursday, there was a 57-minute call with eight people. Nemotron labeled the participants&#x27; voices in 7 seconds. My microphone was still labeling with sherpa at the time. Then I ran the same track through the same code again and timed it: eighteen and a half minutes. I posted the eighth part in the evening of the release; there were no live meetings through the new engine yet. A week has passed. Read more</p>
+    <p class="source">
+      Machine-translated from Habr.
+      <a href="https://habr.com/ru/articles/1090186/?utm_campaign=1090186&amp;utm_source=habrahabr&amp;utm_medium=rss">Read the original Russian article</a>.
+      Sun, 04 Oct 2026 14:33:56 GMT
+    </p>
+  </header>
+  <main>
+<div><p>On Thursday, there was a 57-minute call with eight people. Nemotron labeled the participants' voices in 7 seconds. My microphone was still labeling with sherpa at the time. Then I ran the same track through the same code again and timed it: eighteen and a half minutes.</p><p>I posted the eighth part in the evening of the release; there were no live meetings through the new engine yet. A week has passed.</p><h3>Microphone</h3><p>During the call, my voice and echo from the speakers enter the microphone. The echo is filtered out, I wrote about it last time. After the filter, sherpa found four voices there, consumed 2.1 GB of memory, and the log remained with <em>owner: not assigned</em>.</p><p>Nemotron processed the same microphone in 8 seconds. However, I eventually stopped distinguishing voices there. On the call, everything that remains after the echo filter is now mine, if there are at least 15 seconds of speech. The model simply cuts it into pieces. I accepted the price: if a colleague sits next to me, their remarks will go under my name.</p><p>The entire analysis of that call — transcript, minutes, graph — took 29 minutes. On Friday, the microphone was moved to Nemotron, and a 37-minute call was processed in eight minutes. It's shorter, but not by three and a half times.</p><p>There were no rollbacks on sherpa due to failures in a week. The interlocutor channel is usually processed in 3–5 seconds. Once it took 10 seconds for a 26-minute call. I didn't investigate why.</p><h3>Feed</h3><p>During the call, there is a live feed: remarks with labels <em>Interlocutor 1</em>, <em>Interlocutor 2</em>, and so on. Hints are built based on it. The labels were set by a tracker on voice embeddings, eight slots per meeting.</p><p>While I was measuring streaming Nemotron against the tracker, something unpleasant emerged. When all eight slots were occupied, the tracker would discard windows of new voices, and they wouldn't reach recognition. On Tuesday, during a long call, 584 words made it into the feed. The transcript of the same call had 3795 words. It's assembled after the meeting by another pass, so everything was fine with it, which is why I didn't notice anything. And only about fifteen percent of what the interlocutors said was visible in the hints during that call.</p><p>I fixed the gap separately, and then put the stream itself into the feed.</p><p>Turned on Thursday at 12:35 PM. Turned off at 12:46 PM.</p><p>Before that, I compared the stream with the tracker on raw model slots, and it was winning by orders of magnitude. Different labels were displayed on the screen. A slot that was silent for more than a minute received a new name: the person fell silent, returned to the conversation — and they were already <em>Interlocutor 9</em>. On a 69-minute recording with six voices, 33 labels were generated.</p><p>I made one label per person, and 33 became 6. Turned it on again at 2:29 PM.</p><p>The DER for the labels visible on the screen during Thursday's calls ranged from 0.11 to 0.18. The tracker had a range of 0.26 to 0.97 on Tuesday's recordings — the recordings are different, but the gap is visible anyway.</p><p>The reference here is the post-meeting annotation, by Nemotron itself. I don't have human-annotated Russian. I compiled a second one, on sherpa, and on the same recordings, these two differed: 0.34 and 0.54. So, it's all engine versus engine.</p><h3>Green tests</h3><p>Before the feed, the stream lived in the shadows: it calculated nearby, but didn't output to the screen. On the production engine, the shadow was dead from the first launch; the process crashed immediately.</p><p>The code accessed the <code>fc_encoder_config</code> field. It exists for sortformer, but <code>nemotron_diarization</code> in mlx-audio 0.5.6 does not have it. The only test against the real library was behind <code>importorskip</code>, and mlx-audio only lives in the engine's separate environment, so the test was skipped everywhere, including CI. I wrote a model mock for the other tests based on my own assumption. With this field.</p><p>This was caught by a test I ran manually when I enabled the shadow. I fixed it that same evening.</p><p>Also, memory. The shadow process had an RSS of 312 MB, but physically held 8.6 GB, almost all of it cache from MLX. I set <code>mx.set_cache_limit</code> to 512 MB, and the process shrunk to 808 MB, with the same labels.</p><h3>Not done</h3><p>With the live stream, hints are slower: median 8.4 seconds versus 5.9. Whether the stream is to blame, I haven't proven yet.</p><p>The threshold of five seconds, below which speech is considered a fragment, I promised to recalculate after a week of live meetings. The week has passed. I haven't recalculated.</p><p>Code and releases: <a href="https://github.com/charoiteai/Charoite_audio">github.com/charoiteai/Charoite_audio</a>, Apache 2.0. Devlog in English: <a href="https://charoiteai.github.io/Charoite_audio/">charoiteai.github.io/Charoite_audio</a>. Part one — <a href="https://habr.com/ru/articles/1061864/">about the device and recording</a>, part two — <a href="https://habr.com/ru/articles/1078828/">about meeting graphs as memory</a>, part three — <a href="https://habr.com/ru/articles/1080942/">about diarization and three false diagnoses</a>, part four — <a href="https://habr.com/ru/articles/1081586/">about revision after the Stop button</a>, part five — <a href="https://habr.com/ru/articles/1083382/">about the cloud and what goes out</a>, part six — <a href="https://habr.com/ru/articles/1084114/">about half an hour of silence that wasn't in the log</a>, part seven — <a href="https://habr.com/ru/articles/1087172/">about seven packages in the plan and one in the code</a>, part eight — <a href="https://habr.com/ru/articles/1087790/">about the model that made me change diarization in one evening</a>.</p></div>
+  </main>
+  <footer>
+    Translation generated with Gemini 2.5 Flash-Lite.
+    The original article remains the source of record.
+  </footer>
+</body>
+</html>

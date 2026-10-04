@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>ERP: Buy, Suffer, or Vibe-Code?</title>
+  <meta name="description" content="AI is good at tasks like adding a column to an ERP print form or a parameter to a report. This raises the question: why buy someone else&#x27;s software if I can vibe-code my own? If you&#x27;ve also tasted the sweet fruit of vibe-coding, read my analysis of this idea, including some pitfalls from 1">
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.65;
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 32px 20px 64px;
+      color: #1f2328;
+    }
+    header {
+      border-bottom: 1px solid #d8dee4;
+      margin-bottom: 28px;
+      padding-bottom: 20px;
+    }
+    .source {
+      color: #57606a;
+      font-size: 0.95rem;
+    }
+    img, video, iframe {
+      max-width: 100%;
+      height: auto;
+    }
+    pre {
+      overflow-x: auto;
+      padding: 16px;
+      background: #f6f8fa;
+      border-radius: 6px;
+    }
+    code {
+      font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+    }
+    blockquote {
+      border-left: 4px solid #d0d7de;
+      margin-left: 0;
+      padding-left: 16px;
+      color: #57606a;
+    }
+    footer {
+      border-top: 1px solid #d8dee4;
+      margin-top: 40px;
+      padding-top: 20px;
+      color: #57606a;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>ERP: Buy, Suffer, or Vibe-Code?</h1>
+    <p>AI is good at tasks like adding a column to an ERP print form or a parameter to a report. This raises the question: why buy someone else&#x27;s software if I can vibe-code my own? If you&#x27;ve also tasted the sweet fruit of vibe-coding, read my analysis of this idea, including some pitfalls from 15 years of experience. Read more</p>
+    <p class="source">
+      Machine-translated from Habr.
+      <a href="https://habr.com/ru/articles/1090106/?utm_campaign=1090106&amp;utm_source=habrahabr&amp;utm_medium=rss">Read the original Russian article</a>.
+      Sun, 04 Oct 2026 09:44:45 GMT
+    </p>
+  </header>
+  <main>
+<div><figure><img alt="why buy someone else&#39;s software if I can vibe-code my own?" loading="lazy" src="https://habrastorage.org/r/w1560/getpro/habr/upload_files/b02/db6/d40/b02db6d409489d831630a4887f6d2959.png" title="why buy someone else&#39;s software if I can vibe-code my own?"/><figcaption>why buy someone else&#39;s software if I can vibe-code my own?</figcaption></figure><p>Hello everyone, my name is Marat, and for the past 15 years, I've been developing the SKIF warehouse management system. The system is hosted by the client, allowing them to make necessary modifications independently. Our system is primarily chosen for its customization capabilities.</p><p>I actively use AI as a coding assistant, and now clients are starting to vibe-code. AI is good at tasks like adding a column to a print form or a parameter to a report. This raises the question: "Why buy someone else's software if I can vibe-code my own?" If you've also tasted the sweet fruit of vibe-coding, read my analysis of this idea, including some pitfalls from 15 years of experience.</p><p><em>So, dear Claude, can you write a warehouse and financial accounting system that covers basic needs, and will it be of acceptable quality? </em></p><blockquote><p>I can write it, and the quality will be acceptable, but there are nuances.</p></blockquote><p>Yes, those nuances again…</p><blockquote><p>What will turn out well: a correct accounting core: balance register movements, documents, mutual settlements, audit log, reports. Where a human will still be needed:</p><ol><li><p>Decisions, not code. A dozen rules need to be fixed: whether to allow negative balances, what to do with retroactive changes, where VAT is rounded, what happens during stock discrepancies. I can offer defaults – but the choice is yours, and it determines whether the system will be "correct" or not.</p></li></ol></blockquote><p>Yes, you can write a system that is theoretically correct but works poorly in real life. I've worked in trading companies in all positions: salesperson-storekeeper-manager-analyst-auditor, and I know well where a correct algorithm breaks down due to an "imperfect" human.</p><p>Since programming has always been my hobby, in many positions, I combined this function as an additional one. Therefore, I had to work with what I programmed myself. And sometimes, you'd create an invoice form, look at it – it's beautiful! But then you sit down to fill out the invoice yourself and realize that no, it's crap, inconvenient, too many clicks.</p><p>It's important to note that this is not an AI problem. Long before AI appeared, when asked, "What didn't you like about the previous system?" new clients often replied, "You know, it seems smooth, but it feels like the programmers wrote the system for self-admiration, not for user work."
+  </main>
+  <footer>
+    Translation generated with Gemini 2.5 Flash-Lite.
+    The original article remains the source of record.
+  </footer>
+</body>
+</html>

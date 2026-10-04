@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Astra codes space</title>
+  <meta name="description" content="Lately, I&#x27;ve noticed that programmer acquaintances and strangers online are coding for fun. A friend recently sent me a link to a site with a 3D model of Earth and satellites, showing filters and orbits, using open-source data. He said he coded it in a couple of weeks. A few days later, he aske">
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.65;
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 32px 20px 64px;
+      color: #1f2328;
+    }
+    header {
+      border-bottom: 1px solid #d8dee4;
+      margin-bottom: 28px;
+      padding-bottom: 20px;
+    }
+    .source {
+      color: #57606a;
+      font-size: 0.95rem;
+    }
+    img, video, iframe {
+      max-width: 100%;
+      height: auto;
+    }
+    pre {
+      overflow-x: auto;
+      padding: 16px;
+      background: #f6f8fa;
+      border-radius: 6px;
+    }
+    code {
+      font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+    }
+    blockquote {
+      border-left: 4px solid #d0d7de;
+      margin-left: 0;
+      padding-left: 16px;
+      color: #57606a;
+    }
+    footer {
+      border-top: 1px solid #d8dee4;
+      margin-top: 40px;
+      padding-top: 20px;
+      color: #57606a;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Astra codes space</h1>
+    <p>Lately, I&#x27;ve noticed that programmer acquaintances and strangers online are coding for fun. A friend recently sent me a link to a site with a 3D model of Earth and satellites, showing filters and orbits, using open-source data. He said he coded it in a couple of weeks. A few days later, he asked me to test a game he made, featuring orbital missions where you control a satellite and its orbit based on a physical model with formulas. Gameplay, achievements (like minimum impulse), and stars. It reminded me he always dreamed of coding games. And it made me think – I had similar dreams. Playing the first Mafia, I imagined coding a city simulation where every resident lived their own life. Playing old space strategy games like Master of Orion or X-COM, I dreamed of rewriting them with new graphics. But these dreams always ended with the realization of the immense effort required for design and programming after my day job. Now, 15-20 years later, I seem to have hit a midlife crisis. So what now? Now I&#x27;m Tony Stark, and my code is Jarvis. Read more</p>
+    <p class="source">
+      Machine-translated from Habr.
+      <a href="https://habr.com/ru/articles/1089396/?utm_campaign=1089396&amp;utm_source=habrahabr&amp;utm_medium=rss">Read the original Russian article</a>.
+      Sun, 04 Oct 2026 13:27:39 GMT
+    </p>
+  </header>
+  <main>
+<div><p>Lately, I've noticed that programmer acquaintances and strangers online are coding for fun.</p><p>A friend recently sent me a link to a site with a 3D model of Earth and satellites, showing filters and orbits, using open-source data. He said he coded it in a couple of weeks. A few days later, he asked me to test a game he made, featuring orbital missions where you control a satellite and its orbit based on a physical model with formulas. Gameplay, achievements (like minimum impulse), and stars. It reminded me he always dreamed of coding games.</p><p>And it made me think – I had similar dreams. Playing the first Mafia, I imagined coding a city simulation where every resident lived their own life, took kids to school, went to work, had dinner, drove a car, saw a doctor. Playing old space strategy games like Master of Orion or X-COM UFO Defense, I admired their depth for the time and dreamed of rewriting them with new graphics.</p><p>But these dreams always ended with the realization of the immense effort required for design and programming after my day job (where I essentially did the same thing, but for business applications).</p><p>Now, 15-20 years later, I seem to have hit a midlife crisis.</p><p>So what now...? Now I'm Tony Stark, and my code is Jarvis.</p><h2>Idea</h2><p>Okay, if the secondary idea (from a technical standpoint) is clear even to a hedgehog – I'm the product owner, I have Agile, I assign tasks to the AI, and I don't care about the code itself. The focus is on the "product." Well... I'll just ask for "OOP, loose coupling, high cohesion, clean architecture, and all that." But I'm a programmer, so I'll probably still peek at the code and commits occasionally to see how this approach can be used in real work.</p><p>But with the primary idea – what do I actually want – it's more complicated. A city and resident simulation? Space with a research tree and economic model? Maybe a detective story? Ah!... maybe a city and resident simulation with detective stories? What next? What gameplay? Will it actually be fun to play? I haven't read any game design books (yet), so let's start with trial and error.</p><p>And as the title suggests – I chose space. And since I grew up on the science fiction of Arthur C. Clarke and Stanisław Lem (Invincible was one of the first novels I read, and I appreciated its scientific accuracy) – I wanted to bring elements of realism and science fiction into what I'm going to create. Well, let's go.</p><h2>Evening #1: Astra codes space</h2><p>In the beginning, there was vacuum.</p><p>In all the space strategy games I've played, the main screen was the space map. I'm not much of a game designer, so I decided not to deviate from this standard. But even here, I wanted realism. What if I found an open-source list of stars online, their coordinates, parameters, planets (this reminded me of the Kepler telescope) and... placed them in 2.5D / 3D space? Jarvis suggested where to look, but didn't shy away from clarifying that Kepler's mission is to find exoplanets around distant stars (<a href="https://astrobiology.nasa.gov/missions/kepler/">link - Mission name: Kepler</a>). As a result, I found two catalogs online – a catalog of stars within 100 parsecs of the Sun (<a href="https://www.cosmos.esa.int/web/gaia/edr3-gcns">link - Gaia Catalogue of Nearby Stars</a>) and a catalog of planets (<a href="https://exoplanet.eu/home">link - Catalogue of Exoplanets</a> or <a href="https://exoplanetarchive.ipac.caltech.edu">link - NASA Exoplanet Archive</a>).</p><p>Great, that's enough for a start. Astra also suggested limiting it to 30 light-years from the Sun for now. I didn't argue. I'll release DLCs with expansions later. We have 100,500 light-years in the Milky Way. I'll become a millionaire... in dollars (...dreams... ) 😌</p><p>Meanwhile, I was thinking about the gameplay.</p><p>I decided to start with it being a browser game (easier to launch), 2.5D, so the camera could be rotated. The unit of space is 1 light-year, with proportional distances to stars. Astra recommended TypeScript + React + Vite + Three.js. No problem, master's wish is my command.</p><p>So, what's next? I remembered an article, possibly from Igromania magazine from 2005-2010 (<a href="https://www.igromania.ru/article/20698/Igra_v_boga._Neveroyatnye_priklyucheniya_Pitera_Molinyo_v_mire_videoigr.html">maybe this one?</a>), about Peter Molyneux – he made a 3D engine, but hadn't figured out what the player would do inside it yet, which eventually led to Fable.</p><p>So, the gameplay. Surely smart books teach game design. For now, all I know from my own experience is that every game has a global goal or win condition (defeat the main boss, conquer the world, beat competitors), stretched over the plot and obstacles for the player, to make it challenging and not boring.</p><p>What fascinated me about games?</p><ul><li><p>Replayability – after all, chess has had the same board and pieces for fifteen hundred years, yet it's still played. The randomization and combinatorics in Master of Orion also provide an incredible number of game variations, even though the win conditions, research tree, and ship designer are always the same.</p></li><li><p>Atmosphere – I replayed Mafia (the first two parts and then the Definitive Edition) several times, even though the plot and sequence of events are fixed. But I liked feeling like I was in that era.</p></li></ul><p>While thinking, I jotted down thoughts in my notebook about how these aspects could influence gameplay:</p><ul><li><p>We'll equip expeditions to other stars. I don't know what will happen next. Maybe some kind of economic or population model. And the goal could be to colonize humanity across the cosmos, with achievements.</p></li><li><p>A research tree? For example, engines – starting with nuclear, then fusion, then, I don't know, photon, and finally warp. This could be factored into the economic or colonization model because of the speed difference.</p></li><li><p>There could be other research branches. For example, faster-than-light communication. Like that moment in the movie Passengers where the reply takes 55 years. I'm definitely inventing less hard science fiction here. But I'm already making a sci-fi game, so it's fine.</p></li></ul><p>Among all the neuro-slop, Jarvis gave me the insight that at a speed of <code>0.01c</code>, a 10 light-year journey takes about 1000 years, and at <code>0.1c</code>, about 100 years. Logically... and these numbers stuck in my head. Wait, a human barely lives to 100. So I decided to dive into this question.</p><details><summary>Just a little common sense, physics, calculus, and personal experience</summary><div><p>If we're flying to another star and want to arrive before we kick the bucket and have a little time to explore, we need to accelerate to very high speeds.</p><p>To accelerate to very high speeds and not be crushed by G-forces, we need to accelerate very slowly. For example, 1g. So, maybe 10 years of acceleration, 10 years of braking, and we're at Proxima Centauri. And as a pleasant bonus – the gravity is like Earth's throughout the flight.</p><p>(Can we do 2g or 4g? Yes, but not for long. I had the chance to fly as a passenger in a Yak-52 training aircraft with G-forces of about 4g. I don't think even a trained person could withstand such a load for 1-2 years straight, 24 hours a day. In the plane, breathing was difficult during G-forces, and they lasted about 5-10-15 seconds at a time depending on the turn, and even then with breaks. Plus, an unpleasant sensation in the head, like it was hurting, but not in the usual way. And after that, back on the ground, I took 3-5 days to recover, and something ached somewhere in my body.)</p><p>To accelerate and decelerate for 20 years, you need fuel for 20 years. The more fuel, the more the ship's mass, and the more the ship's mass, the more fuel you need.</p><p>This is the Tsiolkovsky rocket equation (version via effective exhaust velocity)</p><img alt=
+  </main>
+  <footer>
+    Translation generated with Gemini 2.5 Flash-Lite.
+    The original article remains the source of record.
+  </footer>
+</body>
+</html>

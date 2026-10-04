@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>How to get into AI Overviews: Google uses half of its sources from outside the top results for Russian queries</title>
+  <meta name="description" content="AI Overviews in Google are often seen as a Western phenomenon that doesn&#x27;t concern Russian websites. I collected over a thousand Russian queries from fifty niches and checked Google&#x27;s search results with the region set to Russia. AI Overviews appeared in 93% of cases, and half of their sou">
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.65;
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 32px 20px 64px;
+      color: #1f2328;
+    }
+    header {
+      border-bottom: 1px solid #d8dee4;
+      margin-bottom: 28px;
+      padding-bottom: 20px;
+    }
+    .source {
+      color: #57606a;
+      font-size: 0.95rem;
+    }
+    img, video, iframe {
+      max-width: 100%;
+      height: auto;
+    }
+    pre {
+      overflow-x: auto;
+      padding: 16px;
+      background: #f6f8fa;
+      border-radius: 6px;
+    }
+    code {
+      font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+    }
+    blockquote {
+      border-left: 4px solid #d0d7de;
+      margin-left: 0;
+      padding-left: 16px;
+      color: #57606a;
+    }
+    footer {
+      border-top: 1px solid #d8dee4;
+      margin-top: 40px;
+      padding-top: 20px;
+      color: #57606a;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>How to get into AI Overviews: Google uses half of its sources from outside the top results for Russian queries</h1>
+    <p>AI Overviews in Google are often seen as a Western phenomenon that doesn&#x27;t concern Russian websites. I collected over a thousand Russian queries from fifty niches and checked Google&#x27;s search results with the region set to Russia. AI Overviews appeared in 93% of cases, and half of their sources were not on the first page of regular search results. This means it&#x27;s possible to get into an overview without being in the top results. Read more</p>
+    <p class="source">
+      Machine-translated from Habr.
+      <a href="https://habr.com/ru/articles/1090034/?utm_campaign=1090034&amp;utm_source=habrahabr&amp;utm_medium=rss">Read the original Russian article</a>.
+      Sat, 03 Oct 2026 18:59:25 GMT
+    </p>
+  </header>
+  <main>
+<div><p>AI Overviews in Google are often considered a Western phenomenon that doesn't concern Russian websites. I collected 1,095 Russian queries from 55 sets of different niches and checked Google's search results with the region set to Russia. An AI Overview appeared above the results in 93% of cases. For four sets, I compared its sources with the first page of regular search results, and half of them were not there. This means it's possible to get into an overview without being in the top results, as long as the page is indexed by Google and answers one of the sub-questions.</p><h3>How many people in Russia search on Google and see AI Overviews</h3><p>According to <a href="https://gs.statcounter.com/search-engine-market-share/all/russian-federation">StatCounter</a>, in September 2026, Google accounted for 28% of transitions from search engines to Russian websites, while Yandex had 70%. Other trackers give Google slightly less, around a quarter. The monthly audience of Runet, according to Mediascope data from autumn 2025, is about 105 million people. Roughly translating the share of transitions to people, we get up to 25-30 million people searching on Google. This is an upper estimate: many use both search engines, and the share of transitions is not equal to the share of people.</p><p>Officially, overviews are available for Russia. In <a href="https://support.google.com/websearch/answer/14901683?hl=en">Google's help</a>, Russia is listed among the countries where AI Overviews work, and Russian is among the supported languages.</p><p>An overview captures attention from regular search results. <a href="https://www.pewresearch.org/short-reads/2025/07/22/google-users-are-less-likely-to-click-on-links-when-an-ai-summary-appears-in-the-results/">Pew Research</a> tracked nearly 69,000 searches by 900 users from the USA. When an overview appeared above the results, users clicked on a regular link in 8% of visits, compared to 15% without an overview. Links within the overview itself were clicked in only 1% of visits. It seems the overview primarily serves for visibility: a person sees who is mentioned in the answer, even if they don't click anywhere.</p><h3>How AI Overviews Select Sources</h3><p>Google describes the mechanism in the <a href="https://developers.google.com/search/docs/appearance/ai-features">Search AI Features documentation</a>. A user's query is divided into several sub-questions, a separate search is performed in the index for each, and an answer is compiled from the findings. Google calls this technique query fan-out.</p><figure><img alt="The overview divides the question into sub-questions, searches the Google index for each, and selects pages that can be displayed with a snippet" loading="lazy" src="https://habrastorage.org/r/w1560/getpro/habr/upload_files/351/916/386/351916386fbb66a33ad26078d02f8b17.png" title="Example from Google documentation: a question about lawn weeds breaks down into two sub-questions, and sources are searched for each."/><div><figcaption>Example from Google documentation: a question about lawn weeds breaks down into two sub-questions, and sources are searched for each.</figcaption></div></figure><p>The requirement for a page is simple: it must be in Google's index and eligible to appear in search results with a snippet, i.e., a short description below the link. Neither llms.txt nor special markup for overviews is needed.</p><p>Using my own data, I checked how much overviews rely on top results. I took four sets of Russian queries and compared the domains of the overview sources with the domains on the first page of regular search results for the same query. Out of 446 sources, 222 were from domains on the first page; the rest were not. It's not visible from the logs where they came from, but this aligns with the documentation: the overview searches based on sub-questions and therefore casts a wider net than the usual top ten.</p><figure><img alt="Half of the overview sources came from the first page of regular search results: from 38% to 73% for four sets of queries" loading="lazy" src="https://habrastorage.org/r/w1560/getpro/habr/upload_files/4c5/958/ccb/4c5958ccb67a02c65db65019a562f417.png" title="In one set, 73% of overview sources are on the first page of results, while in another, only 38%."/><div><figcaption>In one set, 73% of overview sources are on the first page of results, while in another, only 38%.</figcaption></div></figure><p>For Russian queries, 97% of overview sources have titles in Russian, meaning the overview serves the Runet audience, not just translated English articles. The most frequent sources are ru.wikipedia.org, vc.ru, and habr.com, but even Wikipedia has 44 links across 1,095 queries. Other sources are distributed across hundreds of websites, and no single entity has a guaranteed spot in the overview.</p><h3>What a website can do to get into Google Overviews</h3><ol><li><p><strong>Check indexing in Google.</strong> Many Russian websites operate solely through Yandex Webmaster for years. Open Search Console and check how many pages are indexed and whether Googlebot is blocked in robots.txt. Also, ask your developer to check templates: the <code>nosnippet</code>, <code>max-snippet</code>, and <code>noindex</code> directives, as well as the <code>data-nosnippet</code> attribute, limit what Google can show from a page, including in an overview. With <code>nosnippet</code> applied to the entire page, it becomes completely ineligible for snippet display.</p></li><li><p><strong>Identify sub-questions.</strong> Take five common client questions and ask them on Google in Russian. Sub-topics are visible within the overview itself: it's usually divided into sections with subheadings, and each section has its own links. If an overview doesn't appear for you, check your Google interface language and search region settings. Each sub-topic requires a section with a direct answer in the first paragraph after the subheading.</p></li><li><p><strong>Answer concisely and verifiably.</strong> The overview selects a paragraph that is understandable without surrounding text: a number, a deadline, a price, a condition. A paragraph like "it all depends on many factors" has nothing to quote.</p></li><li><p><strong>Appear on platforms cited by the overview.</strong> The list of platforms varies by niche. It's visible directly in the overview: identify the domains listed as sources for your queries, and aim to be featured there or included in a roundup.</p></li><li><p><strong>Verify for yourself.</strong> For English queries with the same region, my data showed only two .ru domains among 341 overview sources. Therefore, it's important to test in the language your clients speak.</p></li></ol><h3>How I measure brand visibility in overviews and other neural networks</h3><p>The thousand queries mentioned above were necessary to understand how overviews select sources. To measure the visibility of a specific brand, I maintain a short, fixed list of 20 queries that do not include the brand name. I collect Google Overviews via the search results API with Russian language and Russia region settings. For each answer, I save the overview text and its sources, then count whether the brand is mentioned and if its website is among the links.</p><p>It's more complex with other neural networks. Some of them lack the search functionality in their API that a user sees in the chat window, and the answer is based on training data without fresh sources. Therefore, I often use services for such measurements, like AIMonitor. It queries neural networks as a live person would in a chat window, rather than through an API where search, sources, and sometimes the answer itself get lost along the way. It also collects a history of real dialogues and checks the brand based on how people ask and follow up. I've compared their figures with my own runs, and the picture matched. It's more interesting to collect data yourself, but when juggling multiple tasks, this approach is more convenient.</p><h3>The region setting in a query and a live person from Russia might see different results</h3><p>I set the Russia region as a query parameter; I did not check search results from a Russian IP address, and a live user might see an overview less frequently. The queries were taken from client niches, not from search suggestions, so the proportion of overviews for random everyday queries will differ.</p><p>If you have data on traffic from Google Overviews to Russian websites, please share in the comments how much you get and in which niche. I'm interested in comparing it with my findings.</p></div>
+  </main>
+  <footer>
+    Translation generated with Gemini 2.5 Flash-Lite.
+    The original article remains the source of record.
+  </footer>
+</body>
+</html>

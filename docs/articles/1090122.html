@@ -1,0 +1,117 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Aquilum — a fast Obsidian alternative in Rust that consumes about 27MB of RAM</title>
+  <meta name="description" content="Aquilum is a fast, local-first note-taking app written in Rust for Windows, consuming around 27MB of RAM with an 11MB installer. It features a knowledge graph, backlinks, live Markdown preview, multiple knowledge bases, advanced tables, books and a reader, Dataview-like data analysis, fast search, c">
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.65;
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 32px 20px 64px;
+      color: #1f2328;
+    }
+    header {
+      border-bottom: 1px solid #d8dee4;
+      margin-bottom: 28px;
+      padding-bottom: 20px;
+    }
+    .source {
+      color: #57606a;
+      font-size: 0.95rem;
+    }
+    img, video, iframe {
+      max-width: 100%;
+      height: auto;
+    }
+    pre {
+      overflow-x: auto;
+      padding: 16px;
+      background: #f6f8fa;
+      border-radius: 6px;
+    }
+    code {
+      font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+    }
+    blockquote {
+      border-left: 4px solid #d0d7de;
+      margin-left: 0;
+      padding-left: 16px;
+      color: #57606a;
+    }
+    footer {
+      border-top: 1px solid #d8dee4;
+      margin-top: 40px;
+      padding-top: 20px;
+      color: #57606a;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Aquilum — a fast Obsidian alternative in Rust that consumes about 27MB of RAM</h1>
+    <p>Aquilum is a fast, local-first note-taking app written in Rust for Windows, consuming around 27MB of RAM with an 11MB installer. It features a knowledge graph, backlinks, live Markdown preview, multiple knowledge bases, advanced tables, books and a reader, Dataview-like data analysis, fast search, change history, and integration with MCP agents. A detailed review of its features and architecture is in the article. Learn more</p>
+    <p class="source">
+      Machine-translated from Habr.
+      <a href="https://habr.com/ru/articles/1090122/?utm_campaign=1090122&amp;utm_source=habrahabr&amp;utm_medium=rss">Read the original Russian article</a>.
+      Sun, 04 Oct 2026 09:55:16 GMT
+    </p>
+  </header>
+  <main>
+<div><p>The note-taking app supports backlinks and a knowledge graph, file tree, live preview, working with multiple knowledge bases, data analysis using a Dataview analog, instant search for related and similar notes, change history within each note, and much more, which I will cover in the article.</p><figure><img alt="Aquilum note-taking app homepage" loading="lazy" src="https://habrastorage.org/r/w1560/getpro/habr/upload_files/7f1/c4f/88f/7f1c4f88ffb381ffb5558f6ee84777a2.jpg" title="Aquilum note-taking app homepage"/><div><figcaption>Aquilum note-taking app homepage</figcaption></div></figure><p>I've attached the project description on <a href="https://github.com/Freaction/Aquilum">Github</a> and the <a href="https://github.com/Freaction/Aquilum/releases/tag/v0.18">release page</a> with an installer for Windows. Yes, you can only test it on Windows for now.</p><blockquote><p>Aquilum is not trying to replace Obsidian in all scenarios yet. It is an actively developing Windows prototype of a local-first note-taking app.</p></blockquote><h3>Why was the Aquilum note-taking app created?</h3><p>I'm a big fan of Obsidian, but I got incredibly tired of how much RAM it consumes. This is especially problematic when several heavy applications are open, and memory is particularly valuable.</p><p>On my computer, Obsidian noticeably increases the load upon startup and works particularly heavily with large vaults and several demanding applications.</p><blockquote><p>Below, I've included a screenshot comparing the resource consumption of <strong>Obsidian</strong> and <strong>Aquilum</strong>. I implemented analogs of Obsidian's familiar features in Rust: Dataview-like queries, graph, backlinks, history, tasks, and other functions, so the conditions in my case are as similar as possible.</p></blockquote><p>You can see that <strong>Obsidian</strong> can consume over a gigabyte of memory, while <strong>Aquilum</strong> only uses 27 megabytes! So, I even understated the figures in the article's title...</p><figure><img alt="Comparison of resource consumption between Obsidian and Aquilum" loading="lazy" src="https://habrastorage.org/r/w1560/getpro/habr/upload_files/5fd/170/9a1/5fd1709a16057a7c3ee6d946cdb1c42d.png" title="Comparison of resource consumption between Obsidian and Aquilum"/><div><figcaption>Comparison of resource consumption between Obsidian and Aquilum</figcaption></div></figure><p>The difference is that Obsidian pulls in a separate browser engine, which loads the system. I decided to do things differently and write the note-taking app using <strong>Tauri</strong>, so that resource consumption would be minimal. This allowed me to limit RAM usage to 27MB and pack the installer into 11MB of disk space.</p><p>Also, I don't like that all plugins in Obsidian have a disjointed visual design. I'm a designer myself, so this nuance constantly bothers me. I want a unified design system and control over tokens (indentations, sizes, and colors). Plus, developing a substantial product has been good practice for me, as I currently work in a design systems team.</p><blockquote><p>And I also wanted openness and portability, so that all my data is always with me! In Obsidian, some plugins don't always store data obviously (this is typical for table plugins). In Aquilum, however, all data is stored in notes, which means complete portability of the knowledge base.</p></blockquote><h3>Feature Overview</h3><p>Aquilum uses CodeMirror 6 — the same editing engine used in Obsidian. Therefore, the basic experience of editing Markdown will be familiar to Obsidian users.</p><p>Next, we'll look at all the application's functionality, broken down by section.</p><h4>Main Visual Elements:</h4><ol><li><p>List markers - with line highlighting using !, &amp;, ~, or $ symbols</p></li><li><p>Widgets - there are several in the app now, and I'll discuss them further</p></li><li><p>Quotes - you can add them directly from the reader, which I'll also cover below</p></li></ol><figure><img alt="Visual overview of the Aquilum editor" loading="lazy" src="https://habrastorage.org/r/w1560/getpro/habr/upload_files/006/eca/d59/006ecad598ffba010820ac6aad254625.png" title="Visual overview of the Aquilum editor"/><div><figcaption>Visual overview of the Aquilum editor</figcaption></div></figure><h4>Tables</h4><p>The editor has convenient Markdown tables with advanced capabilities. You can merge and split cells, manually reorder rows and columns, and use text formatting directly within cells.</p><p>The context menu allows you to quickly create tables, delete individual rows and columns, or delete the entire table. All basic operations — including merging and splitting cells — are available directly from this menu.</p><p>Below is an example table:</p><figure><img alt="Tables in the Aquilum editor" loading="lazy" src="https://habrastorage.org/r/w1560/getpro/habr/upload_files/bbd/fa4/f93/bbdfa4f939436ee258eee6884019795c.png" title="Tables in the Aquilum editor"/><div><figcaption>Tables in the Aquilum editor</figcaption></div></figure><p>Here's the code for the table from the screenshot above:</p><pre><code>| &lt;!--q-empty--&gt; | ываыва |  | &lt;!--q-empty--&gt; | ыав | &lt;!--q-empty--&gt; | &lt;!--q-empty--&gt; | &lt;!--q-empty--&gt; | &lt;!--q-empty--&gt; | 
+| --- | :---: | --- | --- | --- | --- | --- | --- | --- | 
+| ghbdtn | ыав |  | [[книга]] |  | &lt;!--q-empty--&gt; | &lt;!--q-empty--&gt; | &lt;!--q-empty--&gt; | &lt;!--q-empty--&gt; | 
+| **dsfsdываf** |  |  | ^^ | ^^ | &lt;!--q-empty--&gt; | ^^ | &lt;!--q-empty--&gt; | &lt;!--q-empty--&gt; | 
+| ^^ | ^^ | ^^ | &lt;!--q-empty--&gt; | &lt;!--q-empty--&gt; | &lt;!--q-empty--&gt; | ываываываыва | &lt;!--q-empty--&gt; | &lt;!--q-empty--&gt; | 
+| выа | ыав |  | kjhgkjhgkjhgk | &lt;!--q-empty--&gt; | &lt;!--q-empty--&gt; | &lt;!--q-empty--&gt; | &lt;!--q-empty--&gt; | &lt;!--q-empty--&gt; | 
+| ыва |  |  | &lt;!--q-empty--&gt; |  | &lt;!--q-empty--&gt; | &lt;!--q-empty--&gt; | &lt;!--q-empty--&gt; | &lt;!--q-empty--&gt; | 
+| &lt;!--q-empty--&gt; | &lt;!--q-empty--&gt; | &lt;!--q-empty--&gt; | &lt;!--q-empty--&gt; | &lt;!--q-empty--&gt; | &lt;!--q-empty--&gt; | &lt;!--q-empty--&gt; | &lt;!--q-empty--&gt; | &lt;!--q-empty--&gt; | 
+&lt;!--q-table:{"merges":[[0,1,0,2],[1,1,1,2],[1,3,2,4],[1,6,2,6],[2,0,3,2],[4,1,4,2],[5,0,5,2],[5,3,5,4]],"rows":[111,28,28,41,191,40,45],"cols":[123,60,141,120,100,65,145,60,60]}--&gt;</code><div><a href="https://sourcecraft.dev/"><span></span></a></div></pre><h4>Knowledge Base Search</h4><p>It was important for me that the search works instantly, even with a database of a million notes. This is the central part of the entire application, which must be reliable and lightning-fast. As a result, a thousand full notes are processed in 1-2 ms on my machine, and the search moment is completely unnoticeable to the eye. The search also supports hotkeys for quickly opening or creating notes.</p><p>At the same time, matches are highlighted, and the total number of matches is displayed in the upper right corner of the source card.</p><p>Below is a screenshot of what it looks like:</p><figure><img alt="Search window in Aquilum" loading="lazy" src="https://habrastorage.org/r/w1560/getpro/habr/upload_files/065/67b/c1b/06567bc1b581e80686c7817c5fce34c2.png" title="Search window in Aquilum"/><div><figcaption>Search window in Aquilum</figcaption></div></figure><h4>Media Display</h4><p>The application supports displaying photos and videos, as well as cropping and centering. You can copy an image from the desired source and then paste it onto the canvas, and the source will automatically be placed in the Files folder, and the image itself will appear on the canvas.</p><figure><img alt="Media display in the Aquilum note-taking app" loading="lazy" src="https://habrastorage.org/r/w1560/getpro/habr/upload_files/641/c81/cc7/641c81cc7ce6bf5461caff9844f7e04a.png" title="Media display in the Aquilum note-taking app"/><div><figcaption>Media display in the Aquilum note-taking app</figcaption></div></figure><p>All image settings are stored in <strong>Markdown</strong> format:</p><pre><code>![472|crop=0,0,93.3,91.8](&lt;Files/image 6.png&gt;)</code><div><a href="https://sourcecraft.dev/"><span></span></a></div></pre><h4>Widgets, Book Pages, and Reader</h4><p>The application supports widgets, within which, in the future, any information that needs to be visually arranged into a single block can be placed. For example, there are currently book widgets, which you can see in the screenshot below:</p><figure><img alt="Book widgets in the Aquilum note-taking app" loading="lazy" src="https://habrastorage.org/r/w1560/getpro/habr/upload_files/904/573/36d/90457336df728ef8c3f144d686b40581.png" title="Book widgets in the Aquilum note-taking app"/><div><figcaption>Book widgets in the Aquilum note-taking app</figcaption></div></figure><p>You can create a book note: upload a cover, enter the title, author, and attach the book file itself, then use the widget structure to form a table of read books. An example of such a structure can be seen below:</p><pre><code>&gt; [!book] [[📖 Победители недр]] 
+&gt; [!book] [[📖 Книга-тренажер для вашего мозга]] 
+&gt; [!book] [[📖 Как убедить кого угодно в чем угодно]] 
+&gt; [!book] [[📖 20 тысяч лье под водой]] 
+&gt; [!book] [[📖 Краткая история почти всего на свете]] 
+&gt; [!book] [[📖 Марсианские хроники]] 
+&gt; [!book] [[📖 Плененная вселенная]] 
+&gt; [!book] [[📖 Господин из Сан-Франциско]] 
+&gt; [!book] [[📖 Олеся]] 
+&gt; [!book] [[📖 Поединок]] 
+&gt; [!book] [[📖 Думай]]</code><div><a href="https://sourcecraft.dev/"><span></span></a></div></pre><p>I really wanted all my read books to be stored in a single file with progress, title, and author. This block is designed for that purpose.</p><p>And, yes, you can read a book without leaving the application!</p><figure><img alt="Reader in Aquilum" loading="lazy" src="https://habrastorage.org/r/w1560/getpro/habr/upload_files/de9/85f/785/de985f785ce00037f6586a3ccd8d519e.png" title="Reader in Aquilum"/><div><figcaption>Reader in Aquilum</figcaption></div></figure><p>You can read a book in any format and quote text by highlighting it. When quoting, the text immediately appears at the bottom of the note with a link to the specific passage in the book, and you can return to it at any time!</p><h4>Metadata, Frontmatter, and Templates</h4><p>The note-taking app also has a frontmatter block, where you can place various information.</p><p>For example, you can specify the creation date and time, display the cover of a page or book, tags, and book rating. There are also technical fields, such as reading progress, linked to the book's file size. This means you can open the book through Aquilum on any device, and reading will start exactly where you left off! Everything is done to ensure all data is with you!</p><figure><img alt="Frontmatter in the Aquilum note-taking app" loading="lazy" src="https://habrastorage.org/r/w1560/getpro/habr/upload_files/6c0/d7c/962/6c0d7c962f3b4ab24b64d8ee5450819c.png" title="Frontmatter in the Aquilum note-taking app"/><div><figcaption>Frontmatter in the Aquilum note-taking app</figcaption></div></figure><h4>Settings, Trash, and Vault Switching</h4><p>There are also application settings that allow you to customize the app flexibly.</p><p>Currently, basic settings for appearance, language, fonts, and the start page are available; an advanced theme system is under development.</p><figure><img alt="Aquilum Settings Panel" loading="lazy" src="https://habrastorage.org/r/w1560/getpro/habr/upload_files/668/60f/754/66860f754b299c894f8eafa61623d846.png" title="Aquilum Settings Panel"/><div><figcaption>Aquilum Settings Panel</figcaption></div></figure><p>There is also a trash bin where deleted files go. In Obsidian, I sometimes accidentally deleted very important notes, and they disappeared completely! In Aquilum, this problem is fixed - notes always go to the trash!</p><figure><img alt="Trash bin in the Aquilum app" loading="lazy" src="https://habrastorage.org/r/w1560/getpro/habr/upload_files/e50/2dd/88c/e502dd88cfde4c9fb54bd9aac9964466.png" title="Trash bin in the Aquilum app"/><div><figcaption>Trash bin in the Aquilum app</figcaption></div></figure><p>If you need to work with multiple vaults, you can add them and switch between them through a convenient modal window. Via MCP, there is a command to switch knowledge bases so that the model opens the desired note for you.</p><figure><img alt="Modal window for switching knowledge bases" loading="lazy" src="https://habrastorage.org/r/w1560/getpro/habr/upload_files/4e0/8f8/474/4e08f8474573e1f41d379cfc5f524a8d.png" title="Modal window for switching knowledge bases"/><div><figcaption>Modal window for switching knowledge bases</figcaption></div></figure><h4>MCP Server and Working with AI Models</h4><p>It was important for me to be able to automate work with notes through MCP, because sometimes you need to, for example, change the date format in all notes or move notes between knowledge bases, which automation greatly helps with, especially when there are many tasks at work.</p><figure><img alt="MCP server settings window in the Aquilum app" loading="lazy" src="https://habrastorage.org/r/w1560/getpro/habr/upload_files/509/e7a/d28/509e7ad28f2c2fb365c3107eef9a163e.png" title="MCP server settings window in the Aquilum app"/><div><figcaption>MCP server settings window in the Aquilum app</figcaption></div></figure><p>The application supports connections to Claude Code, Codex CLI, and Gemini Antigravity. Agents can search for information through instant BM25F search, view connections between notes, and even edit notes in multiple knowledge bases simultaneously!</p><p>This greatly speeds up work with project knowledge bases because all tools work out of the box and do not require additional setup or custom script writing.</p><h4>Note Change History</h4><p>Another advantage is the built-in versioning, which allows you to revert your edits and view the evolution of your thoughts. The same applies to edits made by AI agents, which might delete important information. Now you can always recover what was lost!</p><figure><img alt="Versioning panel in Aquilum" loading="lazy" src="https://habrastorage.org/r/w1560/getpro/habr/upload_files/82f/7e2/59e/82f7e259e8258eedd618cb52d9e5245c.png" title="Versioning panel in Aquilum"/><div><figcaption>Versioning panel in Aquilum</figcaption></div></figure><h4>Knowledge Graph</h4><p>I wanted to make the graph not just a decorative visualization but a working tool for navigating and analyzing the knowledge base.</p><p>It works with any number of notes instantly and also allows displaying a heatmap of note changes and creation within the knowledge base. This means you can now see which sections haven't been updated in a while and which ones you are currently working on.</p><p>Plus, you can filter notes by creation date, which can be useful for analysis.</p><figure><img alt="Knowledge graph in Aquilum" loading="lazy" src="https://habrastorage.org/r/w1560/getpro/habr/upload_files/b63/a8c/97b/b63a8c97bed53e56ad03dbf93d6f7881.png" title="Knowledge graph in Aquilum"/><div><figcaption>Knowledge graph in Aquilum</figcaption></div></figure><h4>Task Management</h4><p>Task management is still in its early stages but already supports basic Markdown checkboxes and queries based on their status.</p><figure><img alt="Tasks in Aquilum" loading="lazy" src="https://habrastorage.org/r/w1560/getpro/habr/upload_files/fe0/ca8/8cf/fe0ca88cff75e6e12f95b9480592c914.png" title="Tasks in Aquilum"/><div><figcaption>Tasks in Aquilum</figcaption></div></figure><h4>Dataview and Data Handling</h4><p>The application supports writing custom scripts directly within the note body to work with data. The syntax is very similar to what's in the Dataview plugin in Obsidian, but it has been redesigned for simplicity, extended for my tasks, and rewritten in Rust for instant responsiveness to system changes.</p><figure><img alt="Dataview tables in the Aquilum note-taking app" loading="lazy" src="https://habrastorage.org/r/w1560/getpro/habr/upload_files/778/bcb/204/778bcb204667f0ff1898c84260c18923.png" title="Dataview tables in the Aquilum note-taking app"/><div><figcaption>Dataview tables in the Aquilum note-taking app</figcaption></div></figure><p>Here's an example of all three blocks from the screenshot above:</p><p><strong>Latest Notes</strong></p><pre><code>```dataview 
+TABLE WITHOUT ID 
+    link(file.link, title) AS "Latest Notes", 
+    dateformat(file.ctime, "d MMM") AS "Date" 
+WHERE file.ctime &gt;= (date(today) - dur(1 week)) 
+SORT file.ctime DESC 
+LIMIT 10 
+```</code><div><a href="https://sourcecraft.dev/"><span></span></a></div></pre><p><strong>Note Stats</strong></p><pre><code>```dataview 
+TABLE WITHOUT ID 
+    item.name AS "Note Stats", 
+    count(rows.file.ctime, item.span) AS "Total", 
+    delta(count(rows.file.ctime, item.span), 
+          count(rows.file.ctime, previous(item.span))) AS "Dynamics" 
+FROM "" 
+GROUP BY "" 
+FLATTEN list( 
+    object("name", "Today", "span", span(today, now)), 
+    object("name", "Week", "span", span(today - dur(1 week), now)), 
+    object("name", "Month", "span", span(today - dur(1 month), now)), 
+    object("name", "Year", "span", span(today - dur(1 year), now)), 
+    object("name", "All Time", "span", ever) 
+) AS item 
+```</code><div><a href="https://sourcecraft.dev/"><span></span></a></div></pre><p><strong>Uncompleted Tasks</strong></p><pre><code>```dataview 
+TASK TITLE "Uncompleted Tasks" 
+WHERE !completed 
+SORT file.mtime DESC 
+LIMIT 10 
+```</code><div><a href="https://sourcecraft.dev/"><span></span></a></div></pre><h4>Live Preview and Ease of Use</h4><p>To be honest, I haven't launched Obsidian in a long time and genuinely enjoy working in my dream note-taking app. It's not perfect, but it already supports the functions I need, and live preview allows seamless work with script blocks and quick formatting edits in Markdown.</p><p>Where you place the caret (cursor), the formatting will be displayed, and you can edit bullet points, bold text symbols, code, heading levels, and anything that affects the text's appearance.</p><figure><img alt="Formatting display in live preview mode of the Aquilum note-taking app" loading="lazy" src="https://habrastorage.org/r/w1560/getpro/habr/upload_files/a1b/83b/88d/a1b83b88dd7faa828a0e4740c737349b.png" title="Formatting display in live preview mode of the Aquilum note-taking app"/><div><figcaption>Formatting display in live preview mode of the Aquilum note-taking app</figcaption></div></figure><h3>Technical Details</h3><ul><li><p>Rust + Tauri 2;</p></li><li><p>React + TypeScript;</p></li><li><p>CodeMirror 6;</p></li><li><p>Markdown as the primary storage format;</p></li><li><p>Yjs for the local document model;</p></li><li><p>SQLite for application state;</p></li><li><p>BM25F for full-text search;</p></li><li><p>Windows as the current platform.</p></li></ul><h3>Conclusion</h3><p>Aquilum is still under active development. Even now, it covers my primary workflow for a Markdown knowledge base: editing, searching, note connections, books, tasks, change history, and automation via MCP. In future versions, I plan to improve compatibility, add synchronization and multiplayer, and continue working on extensibility and performance.</p><blockquote><p>The project can be downloaded for Windows from the <a href="https://github.com/Freaction/Aquilum/releases/tag/v0.1.8">GitHub releases page</a>. I would appreciate feedback, especially from Obsidian users who work with large knowledge bases.</p><p>If you have any feedback, you can contact me <a href="https://t.me/dmitriy_yiu">on Telegram</a>.</p></blockquote></div>
+  </main>
+  <footer>
+    Translation generated with Gemini 2.5 Flash-Lite.
+    The original article remains the source of record.
+  </footer>
+</body>
+</html>

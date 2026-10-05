@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Knowledge Bundles for AI Agents: From AGENTS.md to Structured Context</title>
+  <meta name="description" content="The problem isn&#x27;t always the context size. Sometimes the issue is the organization of knowledge within that context. Let&#x27;s dive in.">
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.65;
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 32px 20px 64px;
+      color: #1f2328;
+    }
+    header {
+      border-bottom: 1px solid #d8dee4;
+      margin-bottom: 28px;
+      padding-bottom: 20px;
+    }
+    .source {
+      color: #57606a;
+      font-size: 0.95rem;
+    }
+    img, video, iframe {
+      max-width: 100%;
+      height: auto;
+    }
+    pre {
+      overflow-x: auto;
+      padding: 16px;
+      background: #f6f8fa;
+      border-radius: 6px;
+    }
+    code {
+      font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+    }
+    blockquote {
+      border-left: 4px solid #d0d7de;
+      margin-left: 0;
+      padding-left: 16px;
+      color: #57606a;
+    }
+    footer {
+      border-top: 1px solid #d8dee4;
+      margin-top: 40px;
+      padding-top: 20px;
+      color: #57606a;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Knowledge Bundles for AI Agents: From AGENTS.md to Structured Context</h1>
+    <p>The problem isn&#x27;t always the context size. Sometimes the issue is the organization of knowledge within that context. Let&#x27;s dive in.</p>
+    <p class="source">
+      Machine-translated from Habr.
+      <a href="https://habr.com/ru/articles/1090596/?utm_campaign=1090596&amp;utm_source=habrahabr&amp;utm_medium=rss">Read the original Russian article</a>.
+      Mon, 05 Oct 2026 14:05:46 GMT
+    </p>
+  </header>
+  <main>
+<div><p>Hello ladies and gentlemen. My name is Vasilyev Stas and I, like many members of this wonderful community, am trying to learn how to effectively use LLMs and AI Agents in development.</p><p>It would be ethical of me to say that this material was co-authored with an LLM. Who, if not an LLM, knows and understands how best to talk to and work with it. I see the work of a developer and an AI agent not as a replacement for one another, but as a symbiosis: the human sets the direction, experience, and responsibility, and the agent expands the developer's capabilities.</p><p>By 2026, the capabilities of Large Language Models had reached such heights that the surrounding context for development no longer fully matched them, or it became cluttered very quickly, and the quality of work began to significantly decline. Then, on <strong>June 12, 2026</strong>, a group of engineers from Google Cloud announced the open format <a href="https://cloud.google.com/blog/products/data-analytics/how-the-open-knowledge-format-can-improve-data-sharing">Open Knowledge Format</a> (OKF), in which they proposed the concept of <strong>LLM-wiki</strong> to the world:</p><blockquote><p><strong>Knowledge bundle</strong> — a catalog of Markdown documents with YAML frontmatter, where at the beginning of each file there is a short metadata block in YAML format, containing the structured context necessary for the agent to work with the project.</p></blockquote><p>The specification was so concise that it fit on a single page. The most important quality of this format was that the knowledge was equally readable by both Humans and LLMs.</p><blockquote><p>An OKF document bundle consists of:</p><ul><li><p><strong>Simple formatting</strong> — readable in any editor, displayed on GitHub, indexed by any search engine;</p></li><li><p><strong>Files only</strong> — can be sent as an archive, placed in any git repository, connected to any file system;</p></li><li><p><strong>YAML preamble only</strong> — for a small set of structured fields that should be accessible for queries: type, title, description, resource, tags, and timestamp;</p></li></ul></blockquote><p>On July 24, 2026, the same group of engineers proposed an update to this format <a href="https://cloud.google.com/blog/products/data-analytics/okf-v0-2-adds-trust-signals">OKF v0.2 tackles agentic trust</a>. OKF v0.2 introduced mechanisms that allow the agent to consider the origin, confirmation, and relevance of knowledge when using it. This does not eliminate hallucinations on its own, but it gives the agent additional signals by which it can evaluate the source.</p><blockquote><p>New optional fields were added to YAML:</p><ul><li><p><em>Provenance</em> — where the data came from;</p></li><li><p><em>Trust</em> — who created and who verified the information (human or algorithm);</p></li><li><p><em>Lifecycle &amp; Freshness</em> — document status and the date after which knowledge is considered outdated;</p></li><li><p>Attestation / Attested computations — whether the computation was performed in the declared manner;</p></li></ul></blockquote><p>When I was starting my journey into <strong>Agent Development</strong>, it often turned out like in the good old Soviet cartoon about <a href="https://www.youtube.com/watch?v=UJ84I0iKd_s">Vovka and the Two from the Chest</a>. The model performed all my tasks, but very often it performed them as it understood them. And this understanding was sometimes unexpected and non-obvious. All this does not mean that <strong>Models</strong> are bad and useless. It just means I don't know how to "cook" them correctly. And that means I need to learn how to do it. After numerous attempts to find a worthy recipe, I came across this very OKF, which greatly interested me.</p><p>I decided to create a small template for myself using the <strong>Open Knowledge Format</strong> methodology in the hope of keeping my projects clean and ensuring that the steam from burning tokens doesn't just go up the chimney, but also leads to higher quality, more productive work. In my current version, I practically don't use some of the v0.2 features, but I hope that further immersion into this specification will allow me to apply these ideas.</p><p>In my work, I use <a href="https://opencode.ai">Opencode</a>. I've tried various Agents, but settled on this one. And my template is primarily oriented towards Opencode's requirements, but adapting it for any other Agent will not be difficult. Over time, I plan to make the templates as universal as possible myself.</p><p>One of the main advantages of this approach to working with Agents is a clear information storage structure and <strong>Lazy-loaded</strong>. You don't store everything in memory; you get the information/data you need precisely when you need it. Google's own description of <strong>OKF</strong> directly includes the idea of <strong>progressive disclosure</strong>: an agent or human gets the ability to move through the knowledge tree gradually, without loading the entire bundle into context. And the very fact that project information is structured and recorded somewhere is half the battle.</p><h3>What does it all consist of:</h3><ul><li><p><code><strong>AGENTS.md</strong></code> — the entry point, a minimal project description, and workflow; it's not a knowledge base, it's a router to the knowledge base;</p></li><li><p><code><strong>_*.md</strong></code> — thematic reference files (architecture, setup, CI, codestyle, security, testing, API, performance, release, and much more) — loaded on demand;</p></li><li><p><strong>working directories</strong> — <code>issue/</code>, <code>playbook/</code>, <code>pr/</code>, <code>analysis/</code>, <code>runbooks/</code>, <code>archive/</code></p></li></ul><p>As a result of this approach, instead of one 500-line <strong>AGENTS.md</strong> file, we have a focused core of ~60 lines and over 25 thematic files that <strong>are intended to be loaded only when needed</strong>.</p><p>I tried to apply this idea in practice and create a separate knowledge bundle for Opencode. Its task is not to replace the project documentation, but to provide the agent with a structured project map and a set of specialized knowledge that can be accessed as needed.</p><p><code>root-project/</code><br/><code>├</code><br/><code>└── .opencode/             ← what gets copied into projects</code><br/><code>    ├── AGENTS.md          ← entry point, project context + workflow</code><br/><code>    ├── SPEC_REFERENCE.md  ← OKF v0.2 spec extract with trust signals</code><br/><code>    ├── index.md           ← bundle table of contents (no frontmatter per OKF v0.2)</code><br/><code>    ├── log.md             ← change history pointer</code><br/><code>    ├── WORK_LOG.md        ← chronological work sessions</code><br/><code>    ├── <em>_concepts.md       ← architecture, patterns, data flow</em></code><br/><code><em>    ├── </em>_setup.md          ← get the project running locally</code><br/><code>    ├── <em>_env.md            ← deployment environments map</em></code><br/><code><em>    ├── </em>_codestyle.md      ← linting, conventions, SPDX headers</code><br/><code>    ├── <em>_commands.md       ← build/test/run command reference</em></code><br/><code><em>    ├── </em>_files.md          ← key files navigation guide</code><br/><code>    ├── <em>_glossary.md       ← domain-specific terms</em></code><br/><code><em>    ├── </em>_security.md       ← secrets handling, vulnerability reporting (with sources)</code><br/><code>    ├── <em>_troubleshooting.md← local (non-CI) problem diagnostics</em></code><br/><code><em>    ├── </em>_decisions.md      ← ADR log for significant choices</code><br/><code>    ├── <em>_backlog.md        ← future work, tech debt, ideas</em></code><br/><code><em>    ├── </em>_worklog.md        ← work log entry format rules</code><br/><code>    ├── <em>_templates.md      ← issue/pr/playbook templates (v0.2 compatible)</em></code><br/><code><em>    ├── </em>_ci.md             ← CI workflows and failure patterns</code><br/><code>    ├── <em>_meta.md           ← bundle organization and template version</em></code><br/><code><em>    ├── </em>_testing.md        ← testing strategy, fixtures, mocking (with sources)</code><br/><code>    ├── <em>_api.md            ← endpoints, auth, CLI commands, versioning</em></code><br/><code><em>    ├── </em>_release.md        ← versioning, changelog, rollback procedures</code><br/><code>    ├── <em>_performance.md    ← profiling, benchmarks, SLA/SLO targets (with sources)</em></code><br/><code><em>    ├── analysis/</em></code><br/><code><em>    │   ├── index.md       ← analysis findings index (draft)</em></code><br/><code><em>    │   └── </em>_finding.md    ← individual finding template</code><br/><code>    └── runbooks/</code><br/><code>        ├── index.md       ← incident response index (draft)</code><br/><code>        └── _runbook.md    ← single runbook template</code><br/>Subdirectories contain findings/discoveries made during the work process: <strong>issue/</strong>, <strong>playbook/</strong>, <strong>pr/</strong>, <strong>archive/</strong> </p><p>Key principles:</p><ul><li><p>Lazy loading (<strong>Lazy‑loaded</strong>) <strong>AGENTS.md</strong> is a table of contents, not an encyclopedia: <em>the agent reads thematic files only when necessary;</em></p></li><li><p>Local file <code>.opencode/</code> — I prefer to keep this bundle separate from the project's source code so that the agent's knowledge and the production repository have independent lifecycles, but nothing prevents you from storing it in Git alongside the project code;</p></li><li><p>Compliance with <strong>OKF v0.2</strong> requirements: <strong>convenient</strong> Markdown + YAML frontmatter with trust signals (<code>generated</code>, <code>status</code>, <code>sources</code>);</p></li><li><p>Accessible to all. If you can view the file content, you can read <strong>OKF</strong>; if you can perform a git clone, you can distribute it.</p></li><li><p>Does not require additional tools. Does not require building, does not require a central registry. Consumers can add validators, but it is not mandatory;</p></li></ul><p>This article is an attempt to share my small experience working with an AI Agent with the esteemed community. In future articles, I will go into more detail about what is in each file of the template.</p><p>Thank you for your attention.</p><p>Sincerely,<br/>Vasilyev Stas</p></div>
+  </main>
+  <footer>
+    Translation generated with Gemini 2.5 Flash-Lite.
+    The original article remains the source of record.
+  </footer>
+</body>
+</html>

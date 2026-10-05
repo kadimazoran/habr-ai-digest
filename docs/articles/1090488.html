@@ -1,0 +1,161 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>One Brain for Two Computers: Claude Code&#x27;s Memory on Git and Hooks</title>
+  <meta name="description" content="I finished a piece of a project on my laptop in the evening, sat down at my PC in the morning, and started explaining to the assistant what was done yesterday. The second time this week. By then, it already had memory. A folder with notes on the disk, it writes to it and reads from it itself. The tr">
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.65;
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 32px 20px 64px;
+      color: #1f2328;
+    }
+    header {
+      border-bottom: 1px solid #d8dee4;
+      margin-bottom: 28px;
+      padding-bottom: 20px;
+    }
+    .source {
+      color: #57606a;
+      font-size: 0.95rem;
+    }
+    img, video, iframe {
+      max-width: 100%;
+      height: auto;
+    }
+    pre {
+      overflow-x: auto;
+      padding: 16px;
+      background: #f6f8fa;
+      border-radius: 6px;
+    }
+    code {
+      font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+    }
+    blockquote {
+      border-left: 4px solid #d0d7de;
+      margin-left: 0;
+      padding-left: 16px;
+      color: #57606a;
+    }
+    footer {
+      border-top: 1px solid #d8dee4;
+      margin-top: 40px;
+      padding-top: 20px;
+      color: #57606a;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>One Brain for Two Computers: Claude Code&#x27;s Memory on Git and Hooks</h1>
+    <p>I finished a piece of a project on my laptop in the evening, sat down at my PC in the morning, and started explaining to the assistant what was done yesterday. The second time this week. By then, it already had memory. A folder with notes on the disk, it writes to it and reads from it itself. The trouble is that the folder was on only one of the two computers. I didn&#x27;t want to set up cloud storage for this, and even less so pay for note synchronization. In the end, it all came down to a private repository and two hooks of twenty lines of bash. Below: why a cloud folder, Obsidian Sync, and a plugin didn&#x27;t work, how the script is structured, what broke along the way, and why a separate storage is needed at all if Claude Code has built-in memory. Read more</p>
+    <p class="source">
+      Machine-translated from Habr.
+      <a href="https://habr.com/ru/articles/1090488/?utm_campaign=1090488&amp;utm_source=habrahabr&amp;utm_medium=rss">Read the original Russian article</a>.
+      Mon, 05 Oct 2026 11:17:00 GMT
+    </p>
+  </header>
+  <main>
+<div><figure><img loading="lazy" src="https://habrastorage.org/r/w1560/getpro/habr/upload_files/d8a/eb5/b99/d8aeb5b994abc8a069dcb1d7290b92c0.png"/></figure><p>I finished a piece of a project on my laptop in the evening, sat down at my PC in the morning, and started explaining to the assistant what was done yesterday. The second time this week.</p><p>By then, it already had memory. A folder with notes on the disk, it writes to it and reads from it itself. The trouble is that the folder was on only one of the two computers.</p><p>I didn't want to set up cloud storage for this, and even less so pay for note synchronization. In the end, it all came down to a private repository and two hooks of twenty lines of bash.</p><p>Below: why a cloud folder, Obsidian Sync, and a plugin didn't work, how the script is structured, what broke along the way, and why a separate storage is needed at all if Claude Code has built-in memory.</p><h3>What is this brain and where did it come from</h3><p>I work in Claude Code. Two months ago, I allocated a folder for it and told it that it could write anything it needed for working with me there.</p><p>Now there are 114 notes and 367 links between them: profile, project cards with figures, infrastructure, daily log, workdays. The format is standard markdown, with Obsidian as a reader on top. The agent doesn't need Obsidian; files are enough for it.</p><p>Next, about what I had to do with this setup to make it work on two machines.</p><h3>Why a separate storage if there's built-in memory</h3><p>This is the first question I get asked, so I'll answer it right away.</p><p>Claude Code has built-in memory, located in <code>~/.claude/projects/&lt;project&gt;/memory/</code>, with a <code>MEMORY.md</code> index file and short notes nearby. The index is automatically loaded into each session.</p><p>There are three problems with it, all related to boundaries.</p><p>It's tied to the machine. The directory is in the user's system profile; it doesn't automatically transfer to the second computer.</p><p>It's tied to the project. A folder is created for a working directory, but my facts aren't about a single project. Where a disk is located, what was discussed on a call in August, what figures are in my resume, all this moves from task to task.</p><p>Its structure is limited. The index is loaded entirely into each session, meaning it has no room to grow. It's a table of contents, not a database.</p><p>Therefore, I use both. The built-in memory holds a few lines like "details are in such-and-such storage," while the storage itself lives in a separate repository and can be as large as needed. One doesn't replace the other.</p><h3>In storage, not volume, but routing is important</h3><figure><="lazy" src="https://habrastorage.org/r/w1560/getpro/habr/upload_files/a03/3ce/3f1/a033ce3f1e7d0ec519eac0d0f9113ff5.png"/></figure><p>The temptation is obvious: feed the agent everything it has. This should not be done, not because of limits, but because with a full context, the model starts confusing adjacent facts and latching onto things discussed five screens ago.</p><figure alt="My folder setup" loading="lazy" src="https://habrastorage.org/r/w1560/getpro/habr/upload_files/8f5/323/034/8f53230340d2a40156cea6305d4a4afc.png" title="My folder setup"/><div><figcaption>My folder setup</figcaption></div></figure><p>Therefore, the main file of the storage is not a table of contents, but a routing table. It looks like this:</p><div><div><table><tbody><tr><th><p>Query about</p></th><th><p>Open</p></th></tr><tr><td><p>who I am, experience, education</p></td><td><p><code>01 - Profile/Profile</code></p></td></tr><tr><td><p>my projects and their figures</p></td><td><p><code>02 - Projects/00 - Project Map</code></p></td></tr><tr><td><p>any text to send to people</p></td><td><p><code>04 - Resume and Texts/Anti-AI Style</code></p></td></tr><tr><td><p>what is where on disks, server</p></td><td><p><code>06 - Infrastructure/File Map</code></p></td></tr><tr><td><p>"what happened then"</p></td><td><p><code>07 - Log</code> by date</p></td></tr></tbody></table></div></div><p>The agent opens this file, finds the line for the task, follows it, and stops. Two notes instead of one hundred and fourteen.</p><figure alt="Then a huge list of queries and data" loading="lazy" src="https://habrastorage.org/r/w1560/getpro/habr/upload_files/e15/3e2/fdc/e153e2fdc2f6d1a74f972f4480801f13.png" title="Then a huge list of queries and data"/><div><figcaption>Then a huge list of queries and data</figcaption></div></figure><p>The rules for reading and writing are in the global <code>~/.claude/</code><a href="http://CLAUDE.md"><code>CLAUDE.md</code></a>, which is picked up in any session. There are three of them.</p><p><strong>Read selectively.</strong> Only what the routing points to. Do not read the entire storage, do not scan it with search unnecessarily.</p><p><strong>Do not ask what is already recorded.</strong> If a fact exists, use it silently. If it contradicts what the agent sees in the files right now, trust the files and correct the note.</p><figure alt="All cloud chats ask if I should write code for them? And explain all code blocks written by it." loading="lazy" src="https://habrastorage.org/r/w1560/getpro/habr/upload_files/211/014/d8a/211014d8a8f28a0fe1e1226f6c77724c.png" title="All cloud chats ask if I should write code for them? And explain all code blocks written by it."/><div><figcaption>All cloud chats ask if I should write code for them? And explain all code blocks written by it.</figcaption></div></figure><p><strong>Append after work.</strong> A new fact about a person to the profile, a project update to the card, a significant session to the log. Dates are absolute; "last week" cannot be deciphered a month later.</p><p>The third rule is the most fragile; without it, the database becomes stale in two weeks. I've made it an automatic process with a separate line in the config: at the end of the response, the agent states in one sentence exactly what it has recorded. This line is for me to see that it hasn't forgotten.</p><p>Another small thing that cost me an evening. Links between notes must be written as wiki-links, <code>[[02 - Projects/Name]]</code>. I used to use backticks for paths, and it looked fine until the day I opened the graph: out of 104 notes, 25 were hanging without a single link, including the routing file itself. The graph only sees wiki-links.</p><h3>What I tried for synchronization</h3><p><strong>Cloud folder.</strong> Inside, there are almost a thousand small files that are modified by automation several times per session. Cloud clients turn this into "START HERE (conflict copy).md". This was immediately discarded.</p><p><strong>Obsidian Sync.</strong> Paid and only works through Obsidian.</p><p><strong>Obsidian Git plugin.</strong> Free and does everything needed, but only works while Obsidian is open. I don't want to keep the editor running for background synchronization, especially on a laptop.</p><p><strong>Agent's own hooks.</strong> This is what I settled on. The logic is simple: the storage is needed precisely at the moments when I am talking to the agent. Therefore, synchronization should happen at the start of the session and after each response, and at other times, nothing needs to be done.</p><h3>Twenty lines of bash</h3><p>The storage was moved to a private repository on GitHub. First commit: 105 files, 0.86 MB.</p><p>Next is the script that is triggered by hooks.</p><pre><code>#!/usr/bin/env bash
+# sync.sh start - SessionStart hook: clone (if storage doesn't exist yet) or pull
+# sync.sh stop  - Stop hook: if there are changes, commit, pull --rebase, push
+
+BRAIN_DIR="${SECOND_BRAIN_DIR:-D:/Obsidian/Claude_brain}"
+REPO_URL="${SECOND_BRAIN_REPO:-https://github.com/USER/second-brain.git}"
+DEVICE="${SECOND_BRAIN_DEVICE:-$(hostname)}"
+
+# No interactive login prompts from the hook. Export GIT_TERMINAL_PROMPT=0 GCM_INTERACTIVE=never
+
+# The hook passes JSON to stdin, it's not needed, just read it.
+[ -t 0 ] || cat &gt;/dev/null
+
+g() { timeout 60 git -C "$BRAIN_DIR" "$@"; }
+system_message() { printf '{"systemMessage": "%s"}\n' "$1"; }
+
+start() {
+  local status last
+  if [ ! -d "$BRAIN_DIR/.git" ]; then
+    if timeout 180 git clone -q "$REPO_URL" "$BRAIN_DIR" &gt;/dev/null 2&gt;&amp;1; then
+      status="cloned from GitHub for the first time"
+    else
+      echo "[Second Brain] Not available yet: no repository or network."
+      return 0
+    fi
+  elif g pull -q --rebase --autostash &gt;/dev/null 2&gt;&amp;1; then
+    status="updated"
+  else
+    g rebase --abort &gt;/dev/null 2&gt;&amp;1
+    status="NOT updated (no network or conflict), working with local copy"
+  fi
+  last=$(g log -1 --format='%cd, %s' --date=format:'%Y-%m-%d %H:%M' 2&gt;/dev/null)
+  echo "[Second Brain] $status. Path: $BRAIN_DIR. Last commit: ${last:-none}."
+}
+
+stop() {
+  [ -d "$BRAIN_DIR/.git" ] || return 0
+  if [ -n "$(g status --porcelain 2&gt;/dev/null)" ]; then
+    g add -A &gt;/dev/null 2&gt;&amp;1
+    g commit -q -m "$DEVICE: autosync $(date '+%Y-%m-%d %H:%M')" &gt;/dev/null 2&gt;&amp;1
+  fi
+  local ahead
+  ahead=$(g rev-list --count '@{u}..HEAD' 2&gt;/dev/null) || return 0
+  [ "${ahead:-0}" -gt 0 ] || return 0
+  if ! g pull -q --rebase --autostash &gt;/dev/null 2&gt;&amp;1; then
+    g rebase --abort &gt;/dev/null 2&gt;&amp;1
+    system_message "Second Brain: failed to pull changes before sending."
+    return 0
+  fi
+  g push -q &gt;/dev/null 2&gt;&amp;1 ||
+    system_message "Second Brain: push failed, changes will go in the next sync."
+}
+
+case "$1" in
+  start) start ;; 
+  stop) stop ;; 
+  *) echo "usage: sync.sh start|stop" &gt;&amp;2; exit 2 ;; 
+esac
+exit 0
+</code><div><a href="https://sourcecraft.dev/"><span></span></a></div></pre><p>It is connected in <code>~/.claude/settings.json</code>:</p><pre><code>{
+  "hooks": {
+    "SessionStart": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "C:/Program Files/Git/bin/bash.exe",
+            "args": ["C:/Users/USER/.claude/second-brain/sync.sh", "start"],
+            "timeout": 200,
+            "statusMessage": "Syncing second brain…"
+          }
+        ]
+      }
+    ],
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "C:/Program Files/Git/bin/bash.exe",
+            "args": ["C:/Users/USER/.claude/second-brain/sync.sh", "stop"],
+            "timeout": 120,
+            "async": true
+          }
+        ]
+      }
+    ]
+  }
+}
+</code><div><a href="https://sourcecraft.dev/"><span></span></a></div></pre><p>Four places that seem minor, but each of them I added for a reason.</p><p><code>GIT_TERMINAL_PROMPT=0</code> and <code>GCM_INTERACTIVE=never</code>. The hook runs in the background; you won't see the login prompt window. You'll only see the session start hang and won't understand why. Also, <code>timeout</code> for each git call, so a dead network doesn't cost two minutes before each response.</p><p><code>--autostash</code>. I often edit a note manually in Obsidian and don't commit; without this flag, pull would fail.</p><p><code>[ -t 0 ] || cat &gt;/dev/null</code>. The agent passes JSON to the hook via stdin. If it's not read, the script risks catching SIGPIPE out of nowhere.</p><p>The output of <code>start</code> goes to stdout and directly into the model's context. This means the agent knows from the first tokens whether its database is fresh or if it's working with a local copy from two days ago. Errors in <code>stop</code>, on the other hand, are sent to me via <code>systemMessage</code> because I have to fix them anyway.</p><p>Commits are signed with the machine name: <code>DESKTOP-7RNA8QS: autosync 2026-09-29 22:28</code>. The history shows where I was sitting.</p><p>No configuration was needed on the laptop. The same script, the same config, the first session, and the storage downloaded itself.</p><h3>What broke</h3><p><strong>Two synchronization channels clashed.</strong> I didn't disable the Obsidian Git plugin, and both worked for some time. The plugin pulls changes by merging, the hook by rebasing. It ended with the plugin committing the agent's edits in the middle of a session, pulling lines from the laptop, and leaving <code>&lt;&lt;&lt;&lt;&lt;&lt;&lt;</code> markers inside the main routing file. I had to resolve it manually and necessarily with a merge commit, which had to be pushed immediately, otherwise the hook's <code>pull --rebase</code> would re-play the same conflict. The conclusion is banal: there should be only one channel.</p><p><strong>Absolute paths.</strong> Half of the infrastructure notes are lines like <code>D:\Obsidian\...</code> and <code>F:\ComfyUI\...</code>, but the laptop doesn't have D and F drives. I had to write directly in the routing file that the paths lead to the PC and create a separate note for the laptop.</p><p><strong>Commit after each response.</strong> Over a long evening, a dozen "autosync" commits accumulate. This suits me; the history is messy but honest. For those who find it bothersome, it's easy to add a condition for a minimum interval.</p><h3>What to check before putting personal data in a repository</h3><p>There were no keys or tokens inside, but there were lines like "bot tokens are in such-and-such file on the desktop." Formally, this is not a secret, but in practice, it's a map to secrets, and it's worth keeping it consciously.</p><p><code>.gitignore</code> includes <code>.obsidian/workspace*.json</code>, <code>.trash/</code>, system garbage, and most importantly, <code>.obsidian/plugins/*/data.json</code>. The latter is not obvious: Obsidian plugins store API keys from third-party services in these files.</p><p>Check the repository's privacy setting using the command, not by remembering which button you pressed.</p><h3>What it gives and what it doesn't</h3><p>It gives this. I sit down at my laptop, write to the same brain, and in the evening at my PC, it's already there. The agent doesn't ask my stack for the third time and remembers how a specific conversation ended on a specific day. The side effect turned out to be more pleasant than the main one: over two months, a database of facts about myself with figures has accumulated, and it's unexpectedly convenient to assemble a resume from it.</p><p>Now, you could say, Claude is collecting information for my resume. I don't need to calculate, study the stack, or recall decisions. Claude is aware of my project, which means information about it is already recorded in the second brain. One prompt "update resume," and the struggle with updating information has turned into an automated information collection system.</p><p>It doesn't give this. The model doesn't become smarter because of it. The quality of responses depends on the quality of notes, and the notes are written by the same agent under my supervision. If you let it go on its own, in a month it will be a dump where one question has three answers of varying freshness. Therefore, I consider the rule about selective reading and the rule about absolute dates no less important than the entire git.</p><p>And separately: this is not a place for work secrets. The repository is private, but a private repository is a locked door, not a safe.</p><h3>What's next</h3><p>I want to run the storage for contradictions and outdated facts once a month; I don't get around to it manually.</p><p>If you decide to repeat this, don't start with the script. Synchronization is twenty lines of bash, but deciding which query leads to which note is something no one can do for you.</p><p>In future posts, I'll also tell you how I gave Claude access to my interviews, and how it helps me analyze mistakes and grow.</p></div>
+  </main>
+  <footer>
+    Translation generated with Gemini 2.5 Flash-Lite.
+    The original article remains the source of record.
+  </footer>
+</body>
+</html>

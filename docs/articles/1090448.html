@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>How to get into GigaChat&#x27;s answers and why it links to different sites each time</title>
+  <meta name="description" content="I asked GigaChat questions from sports, finance, B2B, and marketing in two ways: through the GigaChat API and in the chat itself. In total, I collected about 430 answers, roughly evenly split between each method, and checked if each had links to sources. Links were found in 73% of chat answers and 4">
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.65;
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 32px 20px 64px;
+      color: #1f2328;
+    }
+    header {
+      border-bottom: 1px solid #d8dee4;
+      margin-bottom: 28px;
+      padding-bottom: 20px;
+    }
+    .source {
+      color: #57606a;
+      font-size: 0.95rem;
+    }
+    img, video, iframe {
+      max-width: 100%;
+      height: auto;
+    }
+    pre {
+      overflow-x: auto;
+      padding: 16px;
+      background: #f6f8fa;
+      border-radius: 6px;
+    }
+    code {
+      font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+    }
+    blockquote {
+      border-left: 4px solid #d0d7de;
+      margin-left: 0;
+      padding-left: 16px;
+      color: #57606a;
+    }
+    footer {
+      border-top: 1px solid #d8dee4;
+      margin-top: 40px;
+      padding-top: 20px;
+      color: #57606a;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>How to get into GigaChat&#x27;s answers and why it links to different sites each time</h1>
+    <p>I asked GigaChat questions from sports, finance, B2B, and marketing in two ways: through the GigaChat API and in the chat itself. In total, I collected about 430 answers, roughly evenly split between each method, and checked if each had links to sources. Links were found in 73% of chat answers and 4% of API answers. However, even in the chat, space is limited: there are usually two to three links under an answer, and some of them change when the question is repeated. Read more</p>
+    <p class="source">
+      Machine-translated from Habr.
+      <a href="https://habr.com/ru/articles/1090448/?utm_campaign=1090448&amp;utm_source=habrahabr&amp;utm_medium=rss">Read the original Russian article</a>.
+      Mon, 05 Oct 2026 11:08:57 GMT
+    </p>
+  </header>
+  <main>
+<div><p>I asked GigaChat twenty questions, five times each, that a company might ask when choosing who to commission for promotion in neural networks, and observed which sites it linked to. An answer with links usually has two or three, and when the question is repeated, half of them are different. Therefore, it's pointless to rank on the same page: you need to write for the questions GigaChat searches the internet for and appear in several places that it uses as sources.</p><h3>How GigaChat decides whether to search the internet for an answer</h3><p>Sber <a href="https://habr.com/ru/companies/sberbank/articles/773180/">described its search on Habr</a>: a classifier looks at the question and enables search if the question is factual. The model's prompt includes three documents from Sber's own search engine, and the answer is built based on them. This description is from 2023; how things work now is not publicly disclosed. Sources in the chat are visible as <a href="https://giga.chat/help/articles/faq">numbers in the text and badges under the answer</a>.</p><p>If search is not enabled, GigaChat answers from memory, and a website cannot be included in such an answer: there's no one to read the page. I couldn't find a description of Sber's crawler or advice for website owners.</p><h3>What questions about choosing a neural network promotion agency GigaChat searches the internet for</h3><p>I chose questions a marketer would ask: where to order, how much it costs, what reviews exist, who is the best. For questions about choosing, search was enabled almost always. "Best neural network promotion agencies, top" and "how to order a brand visibility audit" provided links in five out of five answers, "how much does it cost" and "reviews of agencies" in four.</p><p>GigaChat never answered two questions with links; it seems search was not enabled for them: "how to make neural networks recommend my brand" and "how to get into the top answers of neural networks in my niche." Both sound like requests for advice, without a market and without a choice. However, "how to make Alice recommend my company" always went to search. Perhaps search is enabled when a specific neural network is mentioned in the question, but Sber does not disclose the classifier's logic, and it cannot be restored from twenty questions.</p><figure><img alt="Table: in how many out of five repetitions GigaChat answered with links — for eight questions about neural network promotion" loading="lazy" src="https://habrastorage.org/r/w1560/getpro/habr/upload_files/245/b92/697/245b926973fcd94362e0fd427860042c.png"/><div><figcaption>GigaChat almost always searches the internet for questions about choosing a contractor, but not for requests for advice</figcaption></div></figure><h3>What pages GigaChat includes in its sources</h3><p>In total, 188 links were collected from the answers to these twenty questions. More than half lead to the companies' own websites, and most often they are not articles. There are 45 service pages about neural network promotion, 41 main pages, and only 27 articles in company blogs.</p><p>The rest are platforms. There are 54 articles on vc.ru, Sostav, Klerk, Forbes, Habr, and other media outlets, and another 21 links lead to ratings and selections of agencies on vc.ru, DTF, TenChat, and Workspace. Selections are particularly important: GigaChat uses them to get a ready-made list of companies when asked to recommend someone.</p><figure><img alt="Table: 188 links from GigaChat answers by page type — articles on platforms, service pages, homepages, company blog articles, selections" loading="lazy" src="https://habrastorage.org/r/w1560/getpro/habr/upload_files/b72/749/409/b7274940928637dbc88c4d2189b4360f.png"/><div><figcaption>More than half of the links lead to company websites, and more often to service pages than articles</figcaption></div></figure><h3>Why GigaChat links to different sites each time</h3><p>There is little space under the answer. In the last two runs, with 40 answers for each neural network, GigaChat had about 2.4 links per answer, Alice AI had about 7.4, and Perplexity had about 15. The three documents in the prompt from Sber's description align well with these two to three links.</p><p>And the spots are not fixed. When I asked the same question a second time immediately after the first, only 23% to 56% of the sites from the first answer remained in the second. After six weeks, only 15% remained, which is 7 sites out of 46.</p><p>Sber does not explain why this happens. My hypothesis: the model receives only the top three documents from the search results, and if the search results for a question shift slightly, the trio changes. Alice includes more pages in its answers, so the same shift in search results changes a smaller proportion of its links.</p><figure><img alt="Table: how many links on average are under one answer from Perplexity, Alice AI, Google AI Overviews, and GigaChat for the same 20 questions" loading="lazy" src="https://habrastorage.org/r/w1560/getpro/habr/upload_files/c5c/d56/956/c5cd569564dfe45dd2b33f4515180bb0.png"/><div><figcaption>Fewer sites fit under one GigaChat answer compared to other neural networks</figcaption></div></figure><h3>How to promote on GigaChat: what to do on your website and where to publish</h3><p>Sber <a href="https://habr.com/ru/news/1014306/">claims</a> over 23 million users per month. According to <a href="https://www.cnews.ru/news/line/2025-11-21_alisa_ai_oboshla_deepseek_i_drugih">Mediascope</a>, GigaChat's monthly reach is 4% of the population, while Alice AI's is 14.3%. The audience is smaller than Alice's, but according to Sber, it's tens of millions of people.</p><ol><li><p><strong>A service page for each commercial question.</strong> There are more such links than blog articles. The answer to the question itself should be in the first screen: what you do, for whom, how much it costs, deadlines. The model reads only a few documents, so the fact should be at the top, not in the fifth paragraph.</p></li><li><p><strong>A homepage that clearly explains what the company does.</strong> 41 out of 188 links lead to homepages. If the homepage only has a slogan, GigaChat has nothing to take from it.</p></li><li><p><strong>A place in selections and ratings.</strong> GigaChat most often takes a ready-made list of companies from these, so getting into someone else's selection on vc.ru, DTF, TenChat, or Workspace is more valuable than writing another article about yourself.</p></li><li><p><strong>Articles on platforms that it reads.</strong> In this topic, these are vc.ru, Sostav, Klerk, Forbes, and Habr, and on TenChat, it takes both articles and selections. I wouldn't have previously considered TenChat and Klerk as citation sources. The essence is the same everywhere, but the wording is different.</p></li><li><p><strong>Texts for customer and user questions, not for general advice.</strong> GigaChat doesn't search for "how to make neural networks recommend my brand," and a website won't be included in such an answer. For "where to order" and "how much it costs," it searches almost always.</p></li></ol><h3>How to check if GigaChat is linking to your site</h3><p>Only in the chat itself, because the search lives there. In GigaChat API, <a href="https://developers.sber.ru/portal/products/gigachat-api">according to Sber's documentation</a>, there is no out-of-the-box internet access: I received links in 8 out of 211 answers there, and an API monitoring service will show zero where the chat quotes you.</p><p>Take twenty questions that your clients ask, and ask each one three times on different days. That's 60 answers; you should repeat this every two to three weeks. Save the answers as files with a list of sources and calculate the proportion of answers with your site and the proportion of sites that survived repetition:</p><pre><code>import json, glob from collections import Counter def domains(answer): return {s[
+  </main>
+  <footer>
+    Translation generated with Gemini 2.5 Flash-Lite.
+    The original article remains the source of record.
+  </footer>
+</body>
+</html>

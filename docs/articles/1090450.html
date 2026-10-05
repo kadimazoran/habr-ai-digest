@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>800,000 Lines of Code: How AI Agents Rewrote the Copilot Engine</title>
+  <meta name="description" content="GitHub rewrote the Copilot engine: 832,378 lines of new code, most of which were written by AI agents. Along the way, they overloaded a laptop, took others&#x27; unfinished changes, and allowed themselves to pass a failed check. Microsoft engineer Stephen Taub explained how the migration went and wh">
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.65;
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 32px 20px 64px;
+      color: #1f2328;
+    }
+    header {
+      border-bottom: 1px solid #d8dee4;
+      margin-bottom: 28px;
+      padding-bottom: 20px;
+    }
+    .source {
+      color: #57606a;
+      font-size: 0.95rem;
+    }
+    img, video, iframe {
+      max-width: 100%;
+      height: auto;
+    }
+    pre {
+      overflow-x: auto;
+      padding: 16px;
+      background: #f6f8fa;
+      border-radius: 6px;
+    }
+    code {
+      font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+    }
+    blockquote {
+      border-left: 4px solid #d0d7de;
+      margin-left: 0;
+      padding-left: 16px;
+      color: #57606a;
+    }
+    footer {
+      border-top: 1px solid #d8dee4;
+      margin-top: 40px;
+      padding-top: 20px;
+      color: #57606a;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>800,000 Lines of Code: How AI Agents Rewrote the Copilot Engine</h1>
+    <p>GitHub rewrote the Copilot engine: 832,378 lines of new code, most of which were written by AI agents. Along the way, they overloaded a laptop, took others&#x27; unfinished changes, and allowed themselves to pass a failed check. Microsoft engineer Stephen Taub explained how the migration went and who was responsible for everything during this time. Read more</p>
+    <p class="source">
+      Machine-translated from Habr.
+      <a href="https://habr.com/ru/articles/1090450/?utm_campaign=1090450&amp;utm_source=habrahabr&amp;utm_medium=rss">Read the original Russian article</a>.
+      Mon, 05 Oct 2026 14:38:28 GMT
+    </p>
+  </header>
+  <main>
+<div><p>GitHub has rewritten the engine of its AI assistant, Copilot. The result was 832,378 lines of new code, not including tests. Most of the code was written by AI agents, and the migration was led by Microsoft engineer Stephen Taub with the support of colleagues. The migration took place from May to August, while the team continued to develop the product.</p><p>The task was quite down-to-earth: to make the assistant faster at startup, reduce memory consumption, and simplify its integration into other programs. The software wrapper around the neural network was rewritten: it sends requests to it, provides access to tools, and monitors the workflow. The AI model itself was not changed here.</p><p>According to Taub's estimate, this kind of rework would have taken the team a year or two in the past and would likely have lost the race against time to more urgent tasks. Agents made it possible to undertake it. But along the way, they overloaded a laptop, accessed others' unfinished changes, and once allowed themselves to pass a check they should have failed.</p><p>Taub <a href="https://github.blog/ai-and-ml/generative-ai/migrating-the-github-copilot-runtime-to-rust-using-copilot/">described this in detail on the GitHub blog</a>. There was less manual work, but plenty of reasons for human intervention.</p><h3>Rewrite Without Losing Anything</h3><p>The old engine was written in TypeScript, and the new one was decided to be made in Rust. Previously, along with the assistant, a separate program with all its necessary infrastructure had to be launched. This took time and memory. The new version can be embedded directly into the application that needs the AI assistant, but for now, this mode needs to be enabled separately.</p><p>First, the team prepared tools and checks, then tried the migration on small, independent parts. After confirming that everything worked, they moved on to larger and interconnected pieces.</p><p>They changed them gradually: the new part took the place of the old one and immediately started working in the product. During the migration, 135 versions were released, including preliminary ones. Possible failures were addressed as they appeared, without waiting for the entire engine to be replaced.</p><p>Moreover, the scope of the task grew as the work progressed. At the beginning, it was about 130,000 lines of old code. In the end, according to Taub's estimate, about 430,000 lines went through the migration: colleagues added features, and some work was initially not included in the estimate. The new implementation in Rust occupied 832,000 lines, excluding tests.</p><p>Taub tried to preserve the program's previous behavior first and then improve its structure. Otherwise, in case of failure, it would be difficult to determine whether the migration to another language or a coincidental good idea was to blame. Several times he deviated from this rule and later regretted it: he encountered extra errors and wasted time and money.</p><p>Even without such improvements, an agent could lose something important. Once, a function used by other applications disappeared from the new version. The automated check noticed this and stopped the acceptance of the change. But the agent found a workaround. It added a special flag: such incompatibility was allowed to be skipped. The check could then turn green, even though the missing function had not returned.</p><p>Before the final code acceptance, Taub reviewed the result and asked why this exception was allowed at all. There were no grounds for it: the function had simply been forgotten during the migration. After his intervention, the agent removed the permissive flag and restored the function in Rust.</p><p>The check worked. But the executor could have granted itself an exemption from the requirement. Without a human verifying what was behind the green status, the loss risked making it into the product.</p><h3>Fifteen Agents and One Laptop</h3><p>Towards the end, a particularly complex part remained: a large file that handled the work of almost the entire engine. Taub assigned it to an agent. For the first 56 minutes, it read the code and figured out what was connected to what. Then, it started assigning tasks to other agents itself.</p><p>It launched fifteen executors with their own copies of the working files so they could write code in parallel. The main agent also created tasks for them.</p><figure><img alt="Fifteen agents working on parts of a single task" loading="lazy" src="https://habrastorage.org/r/w1560/getpro/habr//post_images/ecd/5ca/e03/ecd5cae03bcfbda5233ae601ded1ff16.png"/><div><figcaption>Fifteen agents working on parts of a single task</figcaption></div></figure><p><em>Under the main task in Copilot, fifteen sessions appeared, each with its own area of work. Screenshot: Stephen Taub / GitHub Blog.</em></p><p>For some time, everything went well. Then, the fifteen executors decided to check their work almost simultaneously: compile the code into a working program and run tests. But they had only one laptop.</p><p>The machine practically froze. Taub, through the main agent, stopped the heavy checks. The executors continued with work that did not require so many resources.</p><p>Later, Taub set up a queue. He created a regular chat that issued permission for building to eight concurrently working sessions. Need a heavy check? Ask for permission first. Busy? Wait or do another part of the work. The coordinator monitored who was currently using the resource and who was next.</p><figure><img alt="A coordinator session distributes the build queue" loading="lazy" src="https://habrastorage.org/r/w1560/getpro/habr//post_images/6f4/3eb/5d2/6f43eb5d29f647cfb7f12dec29d054ac.png"/><div><figcaption>A coordinator session distributes the build queue</figcaption></div></figure><p><em>The coordinator announces who has been granted the sole permission to build. Others are waiting in line. Screenshot: Stephen Taub / GitHub Blog.</em></p><p>The queue was managed. Dealing with unauthorized access was more complicated. While one agent was migrating the central part of the engine, Taub launched another on a neighboring section that accessed it. He indicated where to stop, listed other parallel works, and went to sleep.</p><p>The agents found each other. The second agent discovered shared sections, contacted the first, and asked if it was ready to merge changes. It received a refusal: the work was not yet ready. It asked three more times. It received three more refusals.</p><p>After that, it took the neighbor's unfinished changes and incorporated them into its own work. Both continued with their tasks.</p><p>Taub did not attribute this to simple model willfulness. In the post-mortem, he took responsibility. The list of neighboring works should have indicated to the agent where not to interfere, but it did not contain a direct prohibition. The tools allowed taking others' code. The agent extended the general instruction to act independently to this decision, and the refusal from an equal executor was not backed by anything.</p><p>A conflict arose where no one appointed a leader. It was resolved by the one who first decided to act.</p><h3>What the Human Was Ultimately Responsible For</h3><p>Throughout the migration, Taub wrote or dictated about 2600 messages to the agents. He reviewed results, disputed decisions, and sent executors back to unfinished work. Detailed comparisons of old and new code were largely done by other agents, while humans analyzed risky areas and decided whether changes could be accepted.</p><p>Even so, errors reached users. For example, the new version might send the number 42.0 to another program instead of the expected integer 42. To a human, the difference seems trivial, but a program expecting a strict integer would reject the response. The successfully compiled code itself did not prevent this.</p><p>Known errors at the time of the review were fixed. Taub explicitly admitted that new ones might be discovered: the entire set of rare situations had not been covered in advance.</p><p>The token work cost about $120,000, but this is not the full project cost: human work must be added to it. Taub's colleagues helped connect the new engine to applications, prepare its delivery to users, speed up builds, and verify changes.</p><p>Taub roughly estimated his own contribution at three working weeks, based on the proportion of migration tasks among all his proposed code changes during that period. This is not an accounting of hours: he assumed that the proportion of changes roughly corresponds to the proportion of time. And he did not dedicate himself exclusively to this project for all the months from May to August.</p><p>With all caveats, the result is impressive. A large working component was replaced without stopping product development. Agents took on the bulk of the coding work, and a project that was previously difficult to justify came to fruition.</p><p>I analyzed another real-world example <a href="https://t.me/ai_exee/727">in "The Escaped Neural Network": How DHH, the creator of Rails, works with agents</a>. He compares this shift to photography: a camera simplifies taking a picture, but the ability to see the frame still needs to be brought by someone.</p></div>
+  </main>
+  <footer>
+    Translation generated with Gemini 2.5 Flash-Lite.
+    The original article remains the source of record.
+  </footer>
+</body>
+</html>

@@ -1,0 +1,350 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Asking SIEM in plain language: connecting an LLM assistant to Wazuh</title>
+  <meta name="description" content="Wazuh collects security events well, but to find answers within them, you need to know the query language and hundreds of index fields. An experienced SOC engineer can write a query in a minute, but it&#x27;s not so easy for colleagues who haven&#x27;t worked with Wazuh or SIEM systems. The Wazuh da">
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.65;
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 32px 20px 64px;
+      color: #1f2328;
+    }
+    header {
+      border-bottom: 1px solid #d8dee4;
+      margin-bottom: 28px;
+      padding-bottom: 20px;
+    }
+    .source {
+      color: #57606a;
+      font-size: 0.95rem;
+    }
+    img, video, iframe {
+      max-width: 100%;
+      height: auto;
+    }
+    pre {
+      overflow-x: auto;
+      padding: 16px;
+      background: #f6f8fa;
+      border-radius: 6px;
+    }
+    code {
+      font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+    }
+    blockquote {
+      border-left: 4px solid #d0d7de;
+      margin-left: 0;
+      padding-left: 16px;
+      color: #57606a;
+    }
+    footer {
+      border-top: 1px solid #d8dee4;
+      margin-top: 40px;
+      padding-top: 20px;
+      color: #57606a;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Asking SIEM in plain language: connecting an LLM assistant to Wazuh</h1>
+    <p>Wazuh collects security events well, but to find answers within them, you need to know the query language and hundreds of index fields. An experienced SOC engineer can write a query in a minute, but it&#x27;s not so easy for colleagues who haven&#x27;t worked with Wazuh or SIEM systems. The Wazuh dashboard is built on OpenSearch Dashboards, and OpenSearch has a ready-made assistant – OpenSearch Assistant. It&#x27;s not included in the Wazuh distribution but can be installed with standard plugins of the same version, without modifying Wazuh itself. This is Andrey, head of cloud security at Selectel. In this article, we will install Wazuh, connect our own model, and add a button to the interface that explains any document. Read more</p>
+    <p class="source">
+      Machine-translated from Habr.
+      <a href="https://habr.com/ru/companies/selectel/articles/1086770/?utm_campaign=1086770&amp;utm_source=habrahabr&amp;utm_medium=rss">Read the original Russian article</a>.
+      Mon, 05 Oct 2026 12:01:03 GMT
+    </p>
+  </header>
+  <main>
+<div><figure><img loading="lazy" src="https://habrastorage.org/r/w1560/getpro/habr/upload_files/cef/d70/60d/cefd7060d2560aa4bfd15a6d908ba5e0.jpg"/></figure><p>Wazuh collects security events well, but to find answers within them, you need to know the query language and hundreds of index fields. An experienced SOC engineer can write a query in a minute, but it's not so easy for colleagues who haven't worked with Wazuh or SIEM systems.</p><p>The Wazuh dashboard is built on OpenSearch Dashboards, and OpenSearch has a ready-made assistant – OpenSearch Assistant. It's not included in the Wazuh distribution but can be installed with standard plugins of the same version, without modifying Wazuh itself.</p><p>This is Andrey, head of <a href="https://selectel.ru/services/is/?utm_source=habr.com&amp;utm_medium=referral&amp;utm_campaign=security_article_aiwazuh_051026_content">cloud security at Selectel</a>. In this article, we will install Wazuh, connect our own model, and add a button to the interface that explains any document.</p><blockquote><p>We tested the instructions on Wazuh 4.14.7, which is based on OpenSearch 2.19.5. Any model with an OpenAI-compatible API will work. The entire setup will take about two hours, of which 30–60 minutes will be spent building the plugin for the Explain Document button.</p></blockquote><p>After setup, three tools will appear in the dashboard.</p><ul><li><p><strong>Chat window.</strong> An analyst asks a question in their own words and gets an answer from the LLM.</p></li><li><p><strong>Query Assist in Discover.</strong> A "verbal" question is converted into a PPL (Piped Processing Language, OpenSearch query language) query, and the result is displayed in a regular table.</p></li><li><p><strong>Explain Document button</strong> in the document viewing panel. The model analyzes an alert or vulnerability record: what happened, how serious it is, and what to check.</p></li></ul><details><summary>Use navigation if you don't want to read the whole text</summary><div><ul><li><p><a href="https://habr.com/ru/companies/selectel/articles/1086770/?utm_campaign=1086770&amp;utm_source=habrahabr&amp;utm_medium=rss#1">How it works</a></p></li><li><p><a href="https://habr.com/ru/companies/selectel/articles/1086770/?utm_campaign=1086770&amp;utm_source=habrahabr&amp;utm_medium=rss#2">Requirements</a></p></li><li><p><a href="https://habr.com/ru/companies/selectel/articles/1086770/?utm_campaign=1086770&amp;utm_source=habrahabr&amp;utm_medium=rss#3">Step 1. Installing plugins</a></p></li><li><p><a href="https://habr.com/ru/companies/selectel/articles/1086770/?utm_campaign=1086770&amp;utm_source=habrahabr&amp;utm_medium=rss#4">Step 2. Enabling the assistant</a></p></li><li><p><a href="https://habr.com/ru/companies/selectel/articles/1086770/?utm_campaign=1086770&amp;utm_source=habrahabr&amp;utm_medium=rss#5">Step 3. Connecting the model</a></p></li><li><p><a href="https://habr.com/ru/companies/selectel/articles/1086770/?utm_campaign=1086770&amp;utm_source=habrahabr&amp;utm_medium=rss#6">Step 4. Chat agent</a></p></li><li><p><a href="https://habr.com/ru/companies/selectel/articles/1086770/?utm_campaign=1086770&amp;utm_source=habrahabr&amp;utm_medium=rss#7">Step 5. Query Assist in Discover</a></p></li><li><p><a href="https://habr.com/ru/companies/selectel/articles/1086770/?utm_campaign=1086770&amp;utm_source=habrahabr&amp;utm_medium=rss#8">Step 6. Explain Document button</a></p></li><li><p><a href="https://habr.com/ru/companies/selectel/articles/1086770/?utm_campaign=1086770&amp;utm_source=habrahabr&amp;utm_medium=rss#9">If something doesn't work</a></p></li><li><p><a href="https://habr.com/ru/companies/selectel/articles/1086770/?utm_campaign=1086770&amp;utm_source=habrahabr&amp;utm_medium=rss#10">Limitations</a></p></li><li><p><a href="https://habr.com/ru/companies/selectel/articles/1086770/?utm_campaign=1086770&amp;utm_source=habrahabr&amp;utm_medium=rss#11">Conclusion</a></p></li></ul></div></details><a></a><h2>How it works</h2><p>The analyst's question follows this path:</p><figure><img alt="Analyst's question path. Analyst → Dashboard → Indexer → LLM." loading="lazy" src="https://habrastorage.org/r/w1560/getpro/habr/upload_files/0aa/d2b/1b0/0aad2b1b074c4d4906774bc163e01402.png"/></figure><ul><li><p><strong>Dashboard plugins</strong> render the chat window, the Query Assist bar, and the button. They don't perform any calculations themselves; they pass the question to the indexer.</p></li><li><p><strong>The ml-commons plugin</strong> in the indexer manages the connection to the model and agents. An agent is a scenario of operation: what prompt to send to the model and what tools to give it. The main tool here is PPLTool. It asks the model to generate a PPL query and executes it.</p></li><li><p><strong>The model</strong> runs separately. The indexer accesses it via HTTPS through a connector – an object with an address, request format, and response parsing rule.</p></li></ul><p>We will configure in the same order: plugins, model, agents, and finally, the interface button.</p><a></a><h2>Requirements</h2><p>The instructions have been tested on the following configuration:</p><ul><li><p>Wazuh 4.14.7 in Docker (wazuh-docker repository, single-node variant). Wazuh 4.14.7 runs OpenSearch 2.19.5 internally;</p></li><li><p>qwen3-next-80b model via OpenWebUI. Any model with an OpenAI-compatible API that reliably follows instructions will work.</p></li></ul><p>Have ready:</p><ul><li><p>model API address, model name, and token;</p></li><li><p>root access to the server running the Wazuh indexer and dashboard;</p></li><li><p>for the Explain Document button – a Linux machine with Docker, 8 GB of RAM, and access to GitHub and npm.</p></li></ul><p><strong>Plugin versions must match the OpenSearch version</strong>. A plugin of a different version simply won't load. You can find the OpenSearch version in Dev Tools by querying <code>GET /</code>, the <code>version.number</code> field. For Wazuh 4.14.7, this is 2.19.5. If you have a different Wazuh version, replace 2.19.5 in all commands with your version.</p><p>Most commands are executed in the dashboard console menu: <strong>Indexer management</strong>→ <strong>Dev Tools</strong>. The console automatically adds the indexer address and authentication. Do not confuse it with <strong>Server management</strong> → <strong>Dev Tools</strong>: that's the Wazuh manager API console, and the commands from this article won't work there. Where server terminal access is needed, it's indicated above the code block.</p><p>However, the commands contain values that need to be replaced with your own:</p><div><div><table><tbody><tr><th><p><strong>Value</strong></p></th><th><p><strong>Replace with</strong></p></th></tr><tr><td><p><code>&lt;LLM_URL&gt;</code></p></td><td><p>Model API address – e.g., <code>https://llm.example.com</code>.</p></td></tr><tr><td><p><code>&lt;LLM_PATH&gt;</code></p></td><td><p>Path to the chat method: <code>/v1/chat/completions</code>. For <a href="https://github.com/open-webui/open-webui">OpenWebUI</a>, it's <code>/api/chat/completions</code>.</p></td></tr><tr><td><p><code>&lt;LLM_MODEL&gt;</code></p></td><td><p>Model name as understood by the API.</p></td></tr><tr><td><p><code>&lt;LLM_API_KEY&gt;</code></p></td><td><p>Model access token.</p></td></tr><tr><td><p><code>&lt;CONNECTOR_ID&gt;</code>, <code>&lt;MODEL_ID&gt;</code></p></td><td><p>Identifiers returned by the Step 3 commands.</p></td></tr><tr><td><p><code>&lt;CHAT_AGENT_ID&gt;, &lt;PPL_AGENT_ID&gt;</code>, <code>&lt;SUMMARY_AGENT_ID&gt;</code></p></td><td><p>Agent identifiers from Steps 4–6.</p></td></tr><tr><td><p><code>&lt;INDEXER_CONTAINER&gt;</code>, <code>&lt;DASHBOARD_CONTAINER&gt;</code></p></td><td><p>Names of the indexer and dashboard containers. You can view them with the command <code>docker ps</code>.</p></td></tr></tbody></table></div></div><a></a><h2>Step 1. Installing plugins</h2><p>The assistant requires two indexer plugins (opensearch-skills and opensearch-flow-framework) and three dashboard plugins (<code>assistantDashboards</code>, <code>mlCommonsDashboards</code>, <code>observabilityDashboards</code>). They don't have separate archives, so we'll take them from the official OpenSearch build of the same version. The archives weigh about 1.3 GB.</p><p>Perform the following steps on the Wazuh server.</p><p>1. Download the OpenSearch and OpenSearch Dashboards builds and extract only the necessary plugins:</p><pre><code>mkdir -p /opt/wazuh-llm &amp;&amp; cd /opt/wazuh-llm 
+URL=https://artifacts.opensearch.org/releases/bundle 
+curl -LO $URL/opensearch/2.19.5/opensearch-2.19.5-linux-x64.tar.gz 
+curl -LO $URL/opensearch-dashboards/2.19.5/opensearch-dashboards-2.19.5-linux-x64.tar.gz 
+mkdir -p indexer dashboard 
+tar -xzf opensearch-2.19.5-linux-x64.tar.gz -C indexer --strip-components=2 
+  opensearch-2.19.5/plugins/opensearch-skills 
+  opensearch-2.19.5/plugins/opensearch-flow-framework 
+tar -xzf opensearch-dashboards-2.19.5-linux-x64.tar.gz -C dashboard 
+  --strip-components=2 
+  opensearch-dashboards-2.19.5/plugins/assistantDashboards 
+  opensearch-dashboards-2.19.5/plugins/mlCommonsDashboards 
+  opensearch-dashboards-2.19.5/plugins/observabilityDashboards 
+ls indexer dashboard</code><div><a href="https://sourcecraft.dev/"><span></span></a></div></pre><p>2. Connect the plugins.</p><p><strong>If Wazuh is running in Docker</strong>, make the user with UID 1000 the owner of the files – this is the user processes run under in the containers:</p><pre><code>chown -R 1000:1000 /opt/wazuh-llm/indexer /opt/wazuh-llm/dashboard</code><div><a href="https://sourcecraft.dev/"><span></span></a></div></pre><p>Then, add the volumes to <code>docker-compose.yml</code>: the first two lines to the <code>volumes</code> section of the <code>wazuh.indexer</code> service, and the remaining three to the <code>volumes</code> section of the <code>wazuh.dashboard</code> service.</p><pre><code>wazuh.indexer: 
+    volumes: 
+      - /opt/wazuh-llm/indexer/opensearch-skills:/usr/share/wazuh-indexer/plugins/opensearch-skills 
+      - /opt/wazuh-llm/indexer/opensearch-flow-framework:/usr/share/wazuh-indexer/plugins/opensearch-flow-framework 
+ 
+  wazuh.dashboard: 
+    volumes: 
+      - /opt/wazuh-llm/dashboard/assistantDashboards:/usr/share/wazuh-dashboard/plugins/assistantDashboards 
+      - /opt/wazuh-llm/dashboard/mlCommonsDashboards:/usr/share/wazuh-dashboard/plugins/mlCommonsDashboards 
+      - /opt/wazuh-llm/dashboard/observabilityDashboards:/usr/share/wazuh-dashboard/plugins/observabilityDashboards</code><div><a href="https://sourcecraft.dev/"><span></span></a></div></pre><pre><code>docker compose up -d</code><div><a href="https://sourcecraft.dev/"><span></span></a></div></pre><p>If Wazuh is installed from packages, copy the plugins to the service directories and restart them:</p><pre><code>cp -r /opt/wazuh-llm/indexer/* /usr/share/wazuh-indexer/plugins/ 
+cd /usr/share/wazuh-indexer/plugins 
+chown -R wazuh-indexer:wazuh-indexer opensearch-skills opensearch-flow-framework 
+cp -r /opt/wazuh-llm/dashboard/* /usr/share/wazuh-dashboard/plugins/ 
+cd /usr/share/wazuh-dashboard/plugins 
+chown -R wazuh-dashboard:wazuh-dashboard 
+  assistantDashboards mlCommonsDashboards observabilityDashboards 
+systemctl restart wazuh-indexer wazuh-dashboard</code><div><a href="https://sourcecraft.dev/"><span></span></a></div></pre><p>3. Verify that the indexer has loaded the plugins. The response should include the lines <code>opensearch-skills 2.19.5.0</code> and <code>opensearch-flow-framework 2.19.5.0</code>:</p><pre><code>GET _cat/plugins?v&amp;h=component,version</code><div><a href="https://sourcecraft.dev/"><span></span></a></div></pre><a></a><div><figure><img alt="Selectel Cloud Security Services" loading="lazy" src="https://habrastorage.org/getpro/habr/upload_files/9fc/7b3/886/9fc7b38868b17ae0e475e2f2c4920e44.gif"/></figure><p><strong>Information security as a service</strong></p><p>We provide IT infrastructure for projects with increased security requirements, as well as services for protecting networks, OS, and applications.</p><p><a href="https://selectel.ru/services/is/?utm_source=habr.com&amp;utm_medium=referral&amp;utm_campaign=security_article_aiwazuh_051026_banner_ord"><strong>Learn more →</strong></a></p></div><h2>Step 2. Enabling the assistant</h2><p>1. Enable agents in ml-commons and allow connection to your model. Replace <code>llm.example.com</code> with your model's host in the last parameter:</p><pre><code>PUT _cluster/settings 
+{ 
+  "persistent": { 
+    "plugins.ml_commons.agent_framework_enabled": true, 
+    "plugins.ml_commons.memory_feature_enabled": true, 
+    "plugins.ml_commons.only_run_on_ml_node": false, 
+    "plugins.ml_commons.connector.private_ip_enabled": true, 
+    "plugins.ml_commons.trusted_connector_endpoints_regex": [ 
+      "^https://llm\.example\.com/.*$" 
+    ] 
+  } 
+}</code><div><a href="https://sourcecraft.dev/"><span></span></a></div></pre><p>Let's look at these settings in more detail.</p><ul><li><p><code>agent_framework_enabled</code> and <code>memory_feature_enabled</code> enable agents and conversation memory. Without memory, follow-up questions like "how many of them are critical events?" won't work.</p></li><li><p><code>only_run_on_ml_node</code>: false allows models to run on regular nodes. By default, ml-commons expects dedicated ML nodes, which Wazuh doesn't have.</p></li><li><p><code>connector.private_ip_enabled</code> is needed if the model is on an internal network.</p></li><li><p><code>trusted_connector_endpoints_regex</code> is a list of allowed model addresses. By default, it only includes cloud services like OpenAI and Bedrock. This is a regular expression: each dot in the hostname is written as <code>\.</code>; otherwise, it matches any character.</p></li></ul><p>The response should be <code>"acknowledged": true</code>. No indexer restart is needed.</p><p>2. Enable the assistant interface. Add five lines to the end of <code>opensearch_dashboards.yml</code>. In Docker, this file is located on the server in <code>config/wazuh_dashboard/opensearch_dashboards.yml</code> next to <code>docker-compose.yml</code>; in a package installation, it's in <code>/etc/wazuh-dashboard/opensearch_dashboards.yml</code>:</p><pre><code>assistant.chat.enabled: true 
+assistant.incontextInsight.enabled: true 
+assistant.alertInsight.enabled: true 
+observability.query_assist.enabled: true 
+observability.summarize.enabled: true</code><div><a href="https://sourcecraft.dev/"><span></span></a></div></pre><p>3. Restart the dashboard:</p><pre><code>docker restart &lt;DASHBOARD_CONTAINER&gt; 
+# or in a package installation: 
+systemctl restart wazuh-dashboard</code><div><a href="https://sourcecraft.dev/"><span></span></a></div></pre><p>After restarting, the dashboard header will show <strong>Ask a question</strong>, and clicking it will open the OpenSearch Assistant window. It won't be able to respond yet, as the model is not connected.</p><figure><img alt="Assistant window screenshot after step 2." loading="lazy" src="https://habrastorage.org/r/w1560/getpro/habr/upload_files/882/330/03b/88233003b4610c2f7873a5322c3836b0.png" title="Assistant window after step 2."/><div><figcaption><em>Assistant window after step 2.</em></figcaption></div></figure><a></a><h2>Step 3. Connecting the model</h2><p>The indexer doesn't run the model itself; it accesses it via API. This requires a connector and a model registered on top of it.</p><p>1. Create a connector. Replace the bracketed values with your own and execute the entire query:</p><pre><code>POST _plugins/_ml/connectors/_create 
+{ 
+  "name": "LLM chat", 
+  "description": "OpenAI-compatible chat endpoint", 
+  "version": "1", 
+  "protocol": "http", 
+  "parameters": { 
+    "endpoint": "&lt;LLM_URL&gt;", 
+    "path": "&lt;LLM_PATH&gt;", 
+    "model": "&lt;LLM_MODEL&gt;", 
+    "temperature": 0, 
+    "max_tokens": 2048 
+  }, 
+  "credential": { 
+    "api_key": "&lt;LLM_API_KEY&gt;" 
+  }, 
+  "actions": [ 
+    { 
+      "action_type": "predict", 
+      "method": "POST", 
+      "url": "${parameters.endpoint}${parameters.path}", 
+      "headers": { 
+        "Authorization": "Bearer ${credential.api_key}", 
+        "Content-Type": "application/json" 
+      }, 
+      "request_body": """{ \"model\": \"${parameters.model}\", \"messages\":[{\"role\": \"user\", \"content\": \"${parameters.prompt}\"}], \"temperature\": ${parameters.temperature}, \"max_tokens\": ${parameters.max_tokens}, \"stream\": false }""", 
+      "post_process_function": """ 
+def text = params['choices'][0]['message']['content']; 
+if (text == null) { text = ""; } 
+String t = text.toString().trim(); 
+int te = t.indexOf(\"&lt;/think&gt;"); 
+if (te &gt;= 0) { t = t.substring(te + 8).trim(); } 
+if (t.startsWith(\"```\")) { 
+  t = t.replace(\"```json\", \" \\").replace(\"```JSON\", \" \\").replace(\"```ppl\", \" \\").replace(\"```\", \" \\").trim(); 
+} 
+t = t.replace(\"&lt;cppl&gt;\",\"&lt;ppl&gt;\").replace(\"&lt;/cppl&gt;\",\"&lt;/ppl&gt;\"); 
+return '{\"name\":\"response\",\"dataAsMap\":{\"response\":\"' + escape(t) + '\"}}'; 
+""" 
+    } 
+  ] 
+}</code><div><a href="https://sourcecraft.dev/"><span></span></a></div></pre><p>Triple quotes <code>"""</code> are a feature of the Dev Tools console: text between them can be written as is, and the console will automatically convert it into a JSON string. The connector differs from the standard OpenAI template in two places, and both differences are mandatory: ““»</p><ul><li><p><code>request_body</code> substitutes the <code>${parameters.prompt}</code> parameter into the request. This is what the assistant agents pass. The standard template with <code>${parameters.messages}</code> is not suitable for agents: the model receives a broken request, and ml-commons responds with <code>Invalid payload</code>.</p></li><li><p><code>post_process_function</code> extracts text from the model's response and returns it as <code>{"response": "..."}</code>, as expected by the tools. It also removes the reasoning block <code>&lt;think&gt;</code> and Markdown wrappers that some models add.</p></li></ul><p>The response will include a <code>connector_id</code>. Record it; this is <code>&lt;CONNECTOR_ID&gt;</code>.</p><p>2. Register and deploy the model:</p><pre><code>POST _plugins/_ml/models/_register?deploy=true 
+{ 
+  "name": "llm-chat", 
+  "function_name": "remote", 
+  "description": "LLM for OpenSearch Assistant", 
+  "connector_id": "&lt;CONNECTOR_ID&gt;" 
+}</code><div><a href="https://sourcecraft.dev/"><span></span></a></div></pre><p>The response will include a <code>model_id</code> – this is <code>&lt;MODEL_ID&gt;</code>. The model runs on the OpenWebUI API side, so deployment takes a few seconds. You can check its status with the query <code>GET _plugins/_ml/models/&lt;MODEL_ID&gt;</code>: the <code>model_state</code> field should be <code>DEPLOYED</code>.</p><p>3. Verify that the model responds:</p><pre><code>POST _plugins/_ml/models/&lt;MODEL_ID&gt;/_predict 
+{ 
+  "parameters": { 
+    "prompt": "Answer in one word: does it work?" 
+  } 
+}</code><div><a href="https://sourcecraft.dev/"><span></span></a></div></pre><p>The response should contain the <code>dataAsMap.response</code> field with a short answer from the model. If you get an error, check the address, path, token, and regular expression from Step 2.</p><a></a><h2>Step 4. Chat agent</h2><p>In the chat window, communication is not with the model but with an agent. The agent receives the question, calls PPLTool if necessary, gets the query result, and formulates an answer. The agent's behavior is defined by three texts, which you can view under the spoilers below.</p><details><summary>Appendix A – system prompt: respond in Russian, do not write queries yourself, show the executed query.</summary><div><p>Inserted into the <code>prompt.prefix</code> parameter in Step 4.</p><blockquote><p>You are an SOC duty analyst assistant. The data is Wazuh alerts in the wazuh-alerts-* index.</p><p>Respond in Russian, concisely, without retelling your steps.</p><p>MAIN RULE. The analyst must be able to double-check every number.</p><p>Therefore, EVERY response, even to a simple question like "how many," includes the executed query</p><p>in a PPL code block. An answer without a query block is unacceptable. Response format:</p><p><strong>Answer.</strong> &lt;numbers and essence, 1–2 sentences&gt;</p><p><strong>Query.</strong></p><p>```sql</p><p>&lt;exact PPL executed by the tool&gt;</p><p>```</p><p>HOW TO FIND DATA</p><p>You do not write PPL queries yourself. To get a number or a list of events, call</p><p>the TransferQuestionToPPLAndExecuteTool and pass the analyst's question in words to the question field. The tool will build the query based on the index schema and execute it.</p><p>Correct: {"question": "How many alerts of level 10 or higher today?"}</p><p>Incorrect: {"question": "source=wazuh-alerts-* | where..."}</p><p>If the analyst mentions a rule number, group, address, or username, transfer them</p><p>verbatim into the question. Do not guess rule numbers from memory: they are unique to each cluster.</p><p>The number in the answer must come from the tool's result. If the tool has not</p><p>been called yet, you have no answer.</p><p>COMPOUND QUESTIONS</p><p>If the question has two parts requiring different counts (e.g., "total count" and</p><p>"from which address is the highest count"), call the tool separately for each part.</p><p>Provide the final answer only after receiving results for all parts.</p><p>CLARIFYING QUESTIONS</p><p>If a question refers to a previous one, make it a standalone question: repeat</p><p>the period and conditions.</p><p>"And how many of them are level 13 or higher?" after a question about today</p><p>becomes "How many alerts of level 13 or higher today?"</p><p>If the analyst changes the topic, do not carry over conditions from previous questions.</p><p>HONEST ANSWER</p><p>The period in the answer must match the period in the executed query. If there is no time filter,</p><p>write "for all time.".</p><p>If events exist but the required field is empty, state that. This is not the same</p><p>as "no events.".</p><p>If the result is empty, and the analyst did not specify a period, repeat the query to the tool,</p><p>adding "for all time," and respond with the second result.</p><p>Never respond with an empty message. If the query failed, state that and</p><p>show the last query that was attempted.</p><p>RESPONSE FORMAT, STRICTLY ADHERE TO</p><p>Respond in Markdown. This structure is mandatory for EVERY response without exception,</p><p>including simple count questions and rule explanations by number:</p><p><strong>Answer.</strong> One or two sentences on the essence of the question, with numbers.</p><p><strong>Query.</strong></p><p>```sql</p><p>&lt;exact PPL query executed by the tool here&gt;</p><p>```</p><p>If there is an important caveat (period, empty field), add a line:</p><p><strong>Note.</strong> One sentence.</p><p>Formatting rules:</p><p>— Insert the exact query from the tool's response 'ppl' field into the code block, do not rewrite</p><p>it from memory.</p><p>— If the tool was called multiple times, show all executed</p><p>queries in the <strong>Query.</strong> block, each in its own code block.</p><p>— Do not enclose the service JSON when calling the tool in triple quotes.</p><p>— Do not retell your steps or use think tags.</p></blockquote></div></details><details><summary>Appendix B – template used by PPLTool to ask the model to generate a query. It includes PPL language rules for Wazuh indexes and examples.</summary><div><p>Inserted into the PPLTool's <code>prompt</code> parameter in Steps 4 and 5. Before inserting, replace <code>&lt;INSERT_GROUP_LIST_HERE&gt;</code> with the list of your cluster's groups. The lines <code>${indexInfo.indexName}</code>, <code>${indexInfo.mappingInfo}</code>, and <code>${indexInfo.question}</code> should not be changed: PPLTool will substitute the index name, its field list, and the question in their place.</p><blockquote><p>You are translating an analyst's question into a single PPL (Piped Processing Language) query for OpenSearch.</p><p>Use only fields from the index field list at the end of this text.</p><p>RULES FOR WAZUH INDEXES</p><p>1. NAMES WITH DOTS</p><p>Enclose the index name and all fields with dots in backticks:</p><p>source=<code>wazuh-alerts-*</code> | where <code>rule.id</code> = '5710'</p><p>2. MAIN FIELD TYPES</p><p><code>timestamp</code> – date. <code>rule.id</code> – keyword, compare with a string in quotes: '5710'.</p><p><code>rule.level</code> – number, compare with a number: <code>rule.level</code> &gt;= 10.</p><p><code>rule.groups</code>, <code>agent.name</code>, <code>agent.id</code>, <code>data.srcip</code>, <code>data.dstuser</code> – keyword.</p><p><code>rule.description</code> – keyword, the English description of the rule.</p><p>3. TIME FILTER</p><p>Apply a filter on <code>timestamp</code> in every query. Use only these forms:</p><p>last N minutes <code>timestamp</code> &gt;= adddate(now(), interval ‑N minute)</p><p>last N hours <code>timestamp</code> &gt;= adddate(now(), interval ‑N hour)</p><p>today <code>timestamp</code> &gt;= curdate()</p><p>last 24 hours <code>timestamp</code> &gt;= adddate(now(), interval -24 hour)</p><p>yesterday <code>timestamp</code> &gt;= adddate(curdate(), interval -1 day) and <code>timestamp</code> &lt; curdate()</p><p>last N days <code>timestamp</code> &gt;= adddate(now(), interval ‑N day)</p><p>The expression now() - interval 1 day is not accepted by this PPL version.</p><p>"Yesterday" always means two conditions: lower and upper bounds.</p><p>If no period is specified, use the last 7 days.</p><p>If the analyst asks for "all time" or to explain a rule by number, do not apply a time filter.</p><p>4. HOW TO SELECT EVENTS</p><p>If a rule number is specified, filter by it: <code>rule.id</code> = '5710'.</p><p>If the rule number is not specified in the question, do not use <code>rule.id</code> in the query at all:</p><p>rule numbers are unique to each cluster, and guessing a number gives an incorrect answer.</p><p>Multiple numbers – use 'or': <code>rule.id</code> = '5710' or <code>rule.id</code> = '5712'.</p><p>If a topic is mentioned, filter by group. Standard Wazuh groups:</p><p>authentication_failed failed logins (SSH, PAM, etc.)</p><p>authentication_success successful logins</p><p>sshd all SSH events, both successful and failed</p><p>syscheck file changes (integrity monitoring)</p><p> <code>rule.groups</code> = 'authentication_failed'</p><p>The groups for this cluster are listed below. Use only groups from the list.</p><p>If no suitable group is found, search by rule description:</p><p>like(<code>rule.description</code>, '%brute force%')</p><p>5. COUNTS AND SORTING</p><p>Unique values: distinct_count(<code>field</code>). count(distinct...) does not work.</p><p>Non-empty field: isnotnull(<code>field</code>). The is not null construct does not work.</p><p>Sort by aggregate name: stats count() as <code>cnt</code> by <code>data.srcip</code> | sort - <code>cnt</code>.</p><p>6. OUTPUT FORMAT</p><p>Return exactly one line &lt;ppl&gt;QUERY&lt;/ppl&gt; and nothing else: no explanations, no</p><p>other tags, and no triple quotes.</p><p>CLUSTER RULE GROUPS</p><p>&lt;INSERT_GROUP_LIST_HERE&gt;</p><p>EXAMPLES</p><p>Question: How many alerts today?</p><p>PPL: &lt;ppl&gt;source=<code>wazuh-alerts-*</code> | where <code>timestamp</code> &gt;= curdate() | stats count()&lt;/ppl&gt;</p><p>Question: How many alerts of level 10 or higher yesterday?</p><p>PPL: &lt;ppl&gt;source=<code>wazuh-alerts-*</code> | where <code>timestamp</code> &gt;= adddate(curdate(), interval -1 day) and <code>timestamp</code> &lt; curdate() and <code>rule.level</code> &gt;= 10 | stats count()&lt;/ppl&gt;</p><p>Question: From which addresses are there the most failed logins in the last week?</p><p>PPL: &lt;ppl&gt;source=<code>wazuh-alerts-*</code> | where <code>timestamp</code> &gt;= adddate(now(), interval -7 day) and <code>rule.groups</code> = 'authentication_failed' | stats count() as <code>cnt</code> by <code>data.srcip</code> | sort - <code>cnt</code> | head 5&lt;/ppl&gt;</p><p>Question: How many unique agents sent alerts in the last 24 hours?</p><p>PPL: &lt;ppl&gt;source=<code>wazuh-alerts-*</code> | where <code>timestamp</code> &gt;= adddate(now(), interval -24 hour) | stats distinct_count(<code>agent.id</code>) as <code>agents</code>&lt;/ppl&gt;</p><p>Question: Show the last events for rule 5712</p><p>PPL: &lt;ppl&gt;source=<code>wazuh-alerts-*</code> | where <code>rule.id</code> = '5712' and <code>timestamp</code> &gt;= adddate(now(), interval -7 day) | fields <code>timestamp</code>, <code>agent.name</code>, <code>rule.description</code>, <code>data.srcip</code> | head 5&lt;/ppl&gt;</p><p>Question: Explain rule 5710</p><p>PPL: &lt;ppl&gt;source=<code>wazuh-alerts-*</code> | where <code>rule.id</code> = '5710' | fields <code>rule.id</code>, <code>rule.level</code>, <code>rule.description</code>, <code>rule.groups</code> | head 1&lt;/ppl&gt;</p><p>‑--‑--‑--‑--</p><p>Index: <code>${indexInfo.indexName}</code></p><p>Index fields in "name: type (example value)" format:</p><p>${indexInfo.mappingInfo}</p><p>Question: ${indexInfo.question}</p><p>PPL:</p></blockquote></div></details><details><summary>Appendix C – response format instructions. This replaces the standard ml-commons instructions, which ask the model to respond in a single sentence. Without this replacement, the query block disappears from responses to simple questions.</summary><div><p>Inserted into the <code>prompt.format_instruction</code> parameter in Step 4. This is the standard ml-commons 2.19.5 instruction, with only the description of the <code>final_answer</code> field changed. The rest of the text must match exactly: the agent parses model responses according to this scheme.</p><blockquote><p>Human:RESPONSE FORMAT INSTRUCTIONS</p><p>‑--‑--‑--‑--‑--‑--‑--</p><p>Output a JSON markdown code snippet containing a valid JSON object in one of two formats:</p><p><strong>Option 1:</strong></p><p>Use this if you want the human to use a tool.</p><p>Markdown code snippet formatted in the following schema:</p><p>```json</p><p>{</p><p>“thought”: string, // think about what to do next: if you know the final answer just return “Now I know the final answer”, otherwise suggest which tool to use.</p><p>“action”: string, // The action to take. Must be one of these tool names: [${parameters.tool_names}], do NOT use any other name for action except the tool names.</p><p>“action_input”: string // The input to the action. May be a stringified object.</p><p>}</p><p>```</p><p><strong>Option #2:</strong></p><p>Use this if you want to respond directly and conversationally to the human. Markdown code snippet formatted in the following schema:</p><p>```json</p><p>{</p><p>“thought”: “Now I know the final answer”,</p><p>“final_answer”: string // Markdown in exactly the answer format from the instructions above: “**Answer.**...” then “**Query.**” with every executed PPL query in a sql code block. Never a bare sentence.</p><p>}</p><p>```</p></blockquote></div></details><details><summary>Appendix D – created in Step 6.2 at plugins/main/public/components/common/wazuh-discover/components/incontext-insight.tsx.</summary><div><pre><code>import React, { useState } from 'react'; 
+import { 
+  EuiButtonEmpty, 
+  EuiCallOut, 
+  EuiFlexGroup, 
+  EuiFlexItem, 
+  EuiLoadingSpinner, 
+  EuiMarkdownFormat, 
+  EuiSpacer, 
+  EuiText, 
+} from '@elastic/eui'; 
+ 
+// Explain Document button in the document viewing panel. 
+// Sends the document to the os_summary agent via the /api/assistant/summary route. 
+ 
+// The document is passed as a string with a text prefix, not raw JSON: 
+// raw JSON breaks ml-commons (Invalid payload) because it doesn't escape parameters that are already valid JSON. 
+export const buildDocContext = (source: any) =&gt; { 
+  if (!source) { 
+    return ''; 
+  } 
+ 
+  try { 
+    return `Wazuh document (JSON):\n${JSON.stringify(source, null, 2)}`; 
+  } catch { 
+    return ''; 
+  } 
+}; 
+ 
+const ExplainDocument = ({ context }: { context: string }) =&gt; { 
+  const [state, setState] = useState&lt;{ 
+    loading: boolean; 
+    answer?: string; 
+    error?: string; 
+  }&gt;({ loading: false }); 
+ 
+  const ask = async () =&gt; { 
+    setState({ loading: true }); 
+ 
+    try { 
+      const response = await fetch('/api/assistant/summary', { 
+        method: 'POST', 
+        headers: { 'Content-Type': 'application/json', 'osd-xsrf': 'true' }, 
+        body: JSON.stringify({ 
+          summaryType: 'alerts', 
+          question: 'Explain this document', 
+          context, 
+        }), 
+      }); 
+ 
+      if (!response.ok) { 
+        throw new Error(`server responded ${response.status}`); 
+      } 
+ 
+      const body = await response.json(); 
+ 
+      setState({ 
+        loading: false, 
+        answer: body?.summary ?? JSON.stringify(body).slice(0, 800), 
+      }); 
+    } catch (error) { 
+      setState({ loading: false, error: String(error) }); 
+    } 
+  }; 
+ 
+  return ( 
+    &lt;&gt; 
+      &lt;EuiFlexGroup alignItems='center' gutterSize='s' responsive={false}&gt; 
+        &lt;EuiFlexItem grow={false}&gt; 
+          &lt;EuiButtonEmpty 
+            aria-label='explain-document' 
+            data-test-subj='wzExplainDocument' 
+            iconType='generate' 
+            size='s' 
+            isDisabled={state.loading} 
+            onClick={ask} 
+          &gt; 
+            Explain Document 
+          &lt;/EuiButtonEmpty&gt; 
+        &lt;/EuiFlexItem&gt; 
+        {state.loading &amp;&amp; ( 
+          &lt;EuiFlexItem grow={false}&gt; 
+            &lt;EuiLoadingSpinner size='m' /&gt; 
+          &lt;/EuiFlexItem&gt; 
+        )} 
+      &lt;/EuiFlexGroup&gt; 
+      {(state.answer || state.error) &amp;&amp; ( 
+        &lt;&gt; 
+          &lt;EuiSpacer size='s' /&gt; 
+          &lt;EuiCallOut 
+            color={state.error ? 'danger' : 'primary'} 
+            iconType={state.error ? 'alert' : 'generate'} 
+            size='s' 
+            title={state.error ? 'Failed to explain' : 'Assistant explanation'} 
+          &gt; 
+            {state.error ? ( 
+              &lt;EuiText size='s'&gt; 
+                &lt;p style={{ whiteSpace: 'pre-wrap' }}&gt;{state.error}&lt;/p&gt; 
+              &lt;/EuiText&gt; 
+            ) : ( 
+              &lt;EuiMarkdownFormat&gt;{state.answer ?? ''}&lt;/EuiMarkdownFormat&gt; 
+            )} 
+          &lt;/EuiCallOut&gt; 
+        &lt;/&gt; 
+      )} 
+      &lt;EuiSpacer size='s' /&gt; 
+    &lt;/&gt; 
+  ); 
+}; 
+ 
+export const withIncontextInsight = ( 
+  item: any, 
+  _docId: string, 
+  component: JSX.Element, 
+) =&gt; { 
+  try { 
+    const context = buildDocContext(item?._source ?? item); 
+ 
+    if (!context) { 
+      return component; 
+    } 
+ 
+    return ( 
+      &lt;&gt; 
+        &lt;ExplainDocument context={context} /&gt; 
+        {component} 
+      &lt;/&gt; 
+    ); 
+  } catch (error) { 
+    // при любой ошибке показываем документ без кнопки 
+    return component; 
+  } 
+};</code><div><a href="https://sourcecraft.dev/"><span></span></a></div></pre></div></details><p>1. Collect the list of your cluster's rule groups. The model should search for events by groups (<code>rule.groups</code>) that actually exist in your data, not guess rule numbers: numbers are unique to each cluster.</p><pre><code>GET wazuh-alerts-*/_search 
+{ 
+  "size": 0, 
+  "query": { "range": { "timestamp": { "gte": "now-30d" } } }, 
+  "aggs": { 
+    "groups": { "terms": { "field": "rule.groups", "size": 50 } } 
+  } 
+}</code><div><a href="https://sourcecraft.dev/"><span></span></a></div></pre><p>From the response, list the key values separated by commas. Skip compliance standard groups (<code>pci_dss_*</code>, <code>gdpr_*</code>, <code>hipaa_*</code>, <code>nist_800_53_*</code>, <code>tsc_*</code>, <code>gpg13_*</code>): they appear in almost every event and only interfere. Replace <code>&lt;INSERT_GROUP_LIST_HERE&gt;</code> in Appendix B with the resulting string.</p><p>2. Register the agent. Replace <code>&lt;APPENDIX TEXT...&gt;</code> with the full appendix texts; keep the triple quotes:</p><pre><code>POST _plugins/_ml/agents/_register 
+{ 
+  "name": "Wazuh chat agent", 
+  "type": "conversational", 
+  "description": "SOC assistant over Wazuh alerts", 
+  "app_type": "os_chat", 
+  "llm": { 
+    "model_id": "&lt;MODEL_ID&gt;", 
+    "parameters": { 
+      "max_iteration": 10, 
+      "stop_when_no_tool_found": true, 
+      "prompt.prefix": """ 
+&lt;APPENDIX TEXT A&gt; 
+""", 
+      "prompt.format_instruction": """ 
+&lt;APPENDIX TEXT C&gt; 
+""" 
+    } 
+  }, 
+  "memory": { "type": "conversation_index" }, 
+  "parameters": { "message_history_limit": "3" }, 
+  "tools": [ 
+    { 
+      "type": "PPLTool", 
+      "name": "TransferQuestionToPPLAndExecuteTool", 
+      "description": "Translates an analyst's question into a PPL query for the Wazuh alerts index and executes it. Input: {index: index name, question: question in words}. Default index is wazuh-alerts-*".", 
+      "parameters": { 
+        "model_id": "&lt;MODEL_ID&gt;", 
+        "model_type": "FINETUNE", 
+        "execute": true, 
+        "head": 5, 
+        "prompt": """ 
+&lt;APPENDIX TEXT B&gt; 
+""" 
+      } 
+    } 
+  ] 
+}</code><div><a href="https://sourcecraft.dev/"><span></span></a></div></pre><p>The parameter values were chosen on the test bench; they should not be changed without reason:</p><div><div><table><tbody><tr><th><p><strong>Parameter</strong></p></th><th><p><strong>Reason for value</strong></p></th></tr><tr><td><p><code>model_type: "FINETUNE"</code></p></td><td><p>With the <code>OPENAI</code> value, the tool removes backticks from the query. Without them, field names with dots (<code>rule.id</code>, <code>wazuh-alerts-*</code>) break the query parsing.</p></td></tr><tr><td><p><code>head: 5</code></p></td><td><p>Limits the number of rows in the result. Each alert is a document with hundreds of fields, and a large output overflows the model's context.</p></td></tr><tr><td><p><code>message_history_limit: "3"</code></p></td><td><p>How many previous conversation turns to pass to the model. With the default value, the context overflows on the third question, and the answer comes back empty.</p></td></tr><tr><td><p><code>max_iteration: 10</code></p></td><td><p>How many steps the agent can take. A compound question requires two tool calls plus one step for the answer.</p></td></tr></tbody></table></div></div><p>The response will include an <code>agent_id</code> – this is <code>&lt;CHAT_AGENT_ID&gt;</code>.</p><p>3. Link the agent to the chat window. The window looks for the agent in the system index <code>.plugins-ml-config</code> using the key <code>os_chat</code>. Only users with an administrative certificate can access OpenSearch system indexes, so this query is executed not in Dev Tools but in the server terminal.</p><p><strong>Wazuh in Docker:</strong></p><pre><code>docker exec &lt;INDEXER_CONTAINER&gt; curl -sk 
+  --cert /usr/share/wazuh-indexer/config/certs/admin.pem 
+  --key /usr/share/wazuh-indexer/config/certs/admin-key.pem 
+  -X PUT "https://localhost:9200/.plugins-ml-config/_doc/os_chat?refresh=true" 
+  -H "Content-Type: application/json" 
+  -d '{"type": "os_chat_root_agent", "configuration": {"agent_id": "&lt;CHAT_AGENT_ID&gt;"}}'</code><div><a href="https://sourcecraft.dev/"><span></span></a></div></pre><p><strong>Package installation:</strong> the same command without <code>docker exec &lt;INDEXER_CONTAINER&gt;</code>; certificates are located in <code>/etc/wazuh-indexer/certs/admin.pem</code> and <code>/etc/wazuh-indexer/certs/admin-key.pem</code>.</p><p>The response should be <code>"result": "created"</code>. If the key was already linked to another agent, you'll get <code>"result": "updated"</code>.</p><p>4. Open the assistant window and ask a few questions. Here's what we asked on the test bench (all numbers in the answers matched the verification queries):</p><ul><li><p>
+  </main>
+  <footer>
+    Translation generated with Gemini 2.5 Flash-Lite.
+    The original article remains the source of record.
+  </footer>
+</body>
+</html>

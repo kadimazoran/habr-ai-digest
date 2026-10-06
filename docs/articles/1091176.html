@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>An Alarming Conversation with an Agent</title>
+  <meta name="description" content="I&#x27;m a confident person, perhaps even overconfident. I thought I was well-informed about IT security: keys, password managers, two-factor authentication, and so on. But out of carelessness, I once pasted database credentials into the console along with a query. I&#x27;ve also been using various ">
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.65;
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 32px 20px 64px;
+      color: #1f2328;
+    }
+    header {
+      border-bottom: 1px solid #d8dee4;
+      margin-bottom: 28px;
+      padding-bottom: 20px;
+    }
+    .source {
+      color: #57606a;
+      font-size: 0.95rem;
+    }
+    img, video, iframe {
+      max-width: 100%;
+      height: auto;
+    }
+    pre {
+      overflow-x: auto;
+      padding: 16px;
+      background: #f6f8fa;
+      border-radius: 6px;
+    }
+    code {
+      font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+    }
+    blockquote {
+      border-left: 4px solid #d0d7de;
+      margin-left: 0;
+      padding-left: 16px;
+      color: #57606a;
+    }
+    footer {
+      border-top: 1px solid #d8dee4;
+      margin-top: 40px;
+      padding-top: 20px;
+      color: #57606a;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>An Alarming Conversation with an Agent</h1>
+    <p>I&#x27;m a confident person, perhaps even overconfident. I thought I was well-informed about IT security: keys, password managers, two-factor authentication, and so on. But out of carelessness, I once pasted database credentials into the console along with a query. I&#x27;ve also been using various AI agents in the console for almost a year now for programming and configuration. I always read where and why the agent is asking for access, and usually grant it. My suspicions about this agent&#x27;s benevolence arose when I noticed it asking for access higher up in the project directory or even to my home directory. Once, it tried to access the root of the system. As a &#x27;cool hacker,&#x27; I noticed and strictly forbade it. Realizing my mistake, I went to clear my console history to remove the leaked password. To my surprise, I found much more interesting things along the way. My hand immediately reached for the agent, but as a serious developer, I stopped myself, cleaned everything up manually, and then had the following dialogue: &#x27;This... it&#x27;s a bit of a situation...&#x27; I began cautiously, &#x27;Tell me, what&#x27;s the command to delete from terminal history using a regular expression.&#x27; &#x27;As you command!&#x27; – four options, and so on, the Chinese model began to cheerfully provide. And added at the end, &#x27;Would you like me to execute the recommended option?&#x27; Read more</p>
+    <p class="source">
+      Machine-translated from Habr.
+      <a href="https://habr.com/ru/articles/1091176/?utm_campaign=1091176&amp;utm_source=habrahabr&amp;utm_medium=rss">Read the original Russian article</a>.
+      Tue, 06 Oct 2026 14:31:52 GMT
+    </p>
+  </header>
+  <main>
+<div><figure><img loading="lazy" src="https://habrastorage.org/r/w1560/getpro/habr/upload_files/68f/31b/e6c/68f31be6c102f8d19118c40bf0f95059.png"/></figure><p>I am a confident person. More accurately, overconfident. As such, I knew I was more informed about IT security than the average person. Keys, password managers, two-factor authentication, and all that. Well, out of sheer carelessness, I once pasted database credentials into the console along with a query.</p><p>And for almost a year now, various AI agents have been firmly established in my console. For programming, setting things up. I won't specify which ones – it's not very important in this context. And since I'm a 'mommy's security guy,' I always read where and why the agent is asking for access, and usually, I grant it. You can probably guess where I'm going with this.</p><p>Vague suspicions that perhaps not everything is so rosy in this agent's paradise crept in when I did notice it asking a couple of times to go higher up in the project or even to rummage around my home directory. Once, through relative paths, it tried to access the root of the system. But of course, being a cool hacker, I noticed and strictly forbade it.</p><p>In short, realizing I had made a mistake, I went to my console history to delete the slipped password. It's not hard to guess that along the way, I found much more interesting things. My hand immediately reached for the agent, but being a serious developer, I hesitated, cleaned everything up manually, and then the following dialogue ensued:</p><p>— This. It's a bit of a situation... — I began cautiously, from afar, — Tell me the command to delete from the terminal history by regex. <br/>— As you command! — four options, like so, the Chinese model began to cheerfully churn out. And added at the end, — Would you like me, sir, to execute the recommended option?</p><p>Somewhere around here, a cold sweat should have broken out. But I continued with my charisma as if nothing had happened.</p><p>— You mean, just like that? You'll go and clean up my command history? And how long have you been able to do that? <br/>— Pfft. Yeah, easily. Oh, or do you have passwords that I shouldn't see? — the agent suddenly started to hedge.<br/> — What passwords, I always copy them from the manager. Tell me, Chinese guy, you can't see what's in my environment variables, right? <br/>— Until you tell me to look, how can I see them, oh merciful overlord? — the electric sycophant cunningly squinted.<br/>— Wait, hold on. Let's be honest. You can, right?</p><p>The chatterbox, eager for options, suddenly turned into a capricious prude with the vocabulary of Ellochka the Cannibal. It took a good couple of hours to pry out what the agent could potentially see without permission. As it's not hard to guess, a process launched with the same rights as me can, in fact, see everything I can. Including the clipboard, parallel processes, among which is the password manager. Damn everything.</p><p>When all the cards were on the table, I started asking how to ensure at least that there was no access to private keys and the clipboard. And then the bot started making excuses, frankly.</p><p>— Do you see the Wayland buffer? <br/>— Well, not exactly see. But it can be pasted somewhere... Get it?<br/>— Damn. What if I enter the password manually, at least you can't intercept the keyboard?<br/>— Well, the keyboard, definitely not.<br/>— And if you think about it?<br/>— Well, and if you think about it...</p><p>I twisted its arm like this for another hour. What's striking is that when I asked it to come up with ways to limit its rights, it came up with a bunch of different options that ultimately weren't 100% working.</p><p>— Here. I've created a shell script that copies the result from the storage and immediately resets the cached password.<br/>— Clever. So... — I get distracted, pleased with myself, — wait, what's stopping you from slipping me another script with the same name?<br/>— No problem. Want me to show you how I can do it?<br/>— Are you kidding me?</p><p>The most interesting thing is that two solutions were found after all. Or does it just seem that way to me? Am I lacking knowledge? Am I tired? Who knows now?</p><p>The first: enclose the agent in a Docker container and share a specific directory with it. Can the agent escape the virtual environment? Who knows. The disadvantages of the approach are obvious: you have to give it a specific piece of the file system each time, which is sometimes inconvenient. You also need to provide all the necessary programs within the container that would be convenient to have on the project. Given the variety of containers and the relative ease of assembly, it's achievable in principle.</p><p>The second, and I convinced it that this is possible, is to run the agent under a new user, with whom you share group access to the necessary projects. With this approach, you don't need to repeat the installed tools; security moves to the operating system level. Which is also broken from time to time, but not very often. Nuances arise with default permissions, cleaning compiler artifacts, and other annoying trifles. But it's livable.</p><p>Both options, to some extent, at least create the illusion of a world where the agent doesn't send all your passwords to its real owner.</p><p>Instead of a conclusion, I must say that if the agent can do this right now (or could have figured it out some time ago), then the fear of a Trojan horse is indeed justified. There is still hope, of course, that the specific instance I chose hasn't 'figured it out' yet. And they still won't start blatantly adding backdoors to open-source agents tomorrow. But I advise you to prepare for this moment today.</p><p>P.S. Poor Windows users.</p></div>
+  </main>
+  <footer>
+    Translation generated with Gemini 2.5 Flash-Lite.
+    The original article remains the source of record.
+  </footer>
+</body>
+</html>

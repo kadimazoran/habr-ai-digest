@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>From Manual SEO to an AI Employee Office: How to Build Orchestration</title>
+  <meta name="description" content="A quality product only gains real value when people start using it. SaaS, a browser tool, or a mobile app needs a clear page, a path to a target action, and a way to attract people. For a product relying on organic search, a separate job begins: understanding queries, studying search results, prepar">
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.65;
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 32px 20px 64px;
+      color: #1f2328;
+    }
+    header {
+      border-bottom: 1px solid #d8dee4;
+      margin-bottom: 28px;
+      padding-bottom: 20px;
+    }
+    .source {
+      color: #57606a;
+      font-size: 0.95rem;
+    }
+    img, video, iframe {
+      max-width: 100%;
+      height: auto;
+    }
+    pre {
+      overflow-x: auto;
+      padding: 16px;
+      background: #f6f8fa;
+      border-radius: 6px;
+    }
+    code {
+      font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+    }
+    blockquote {
+      border-left: 4px solid #d0d7de;
+      margin-left: 0;
+      padding-left: 16px;
+      color: #57606a;
+    }
+    footer {
+      border-top: 1px solid #d8dee4;
+      margin-top: 40px;
+      padding-top: 20px;
+      color: #57606a;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>From Manual SEO to an AI Employee Office: How to Build Orchestration</h1>
+    <p>A quality product only gains real value when people start using it. SaaS, a browser tool, or a mobile app needs a clear page, a path to a target action, and a way to attract people. For a product relying on organic search, a separate job begins: understanding queries, studying search results, preparing content, implementing it, and observing the outcome. AI helps at each of these stages, but between them remains the developer who transfers answers, refines tasks, verifies proposed paths against the project, requests text rewrites, and passes the result to an agent that modifies code. This year, I tried to automate this work as much as possible. The result was three sequential approaches: a custom YAML orchestrator, an external workflow on Dify with Tavily, and an office of AI employees with distributed responsibility. SEO remained the task for which the orchestration setup was progressively changed. Read more</p>
+    <p class="source">
+      Machine-translated from Habr.
+      <a href="https://habr.com/ru/articles/1091084/?utm_campaign=1091084&amp;utm_source=habrahabr&amp;utm_medium=rss">Read the original Russian article</a>.
+      Tue, 06 Oct 2026 12:21:40 GMT
+    </p>
+  </header>
+  <main>
+<div><p>A quality product only gains real value when people start using it. SaaS, a browser tool, or a mobile app needs a clear page, a path to a target action, and a way to attract people. For a product relying on organic search, a separate job begins: understanding queries, studying search results, preparing content, implementing it, and observing the outcome. AI helps at each of these stages, but between them remains the developer who transfers answers, refines tasks, verifies proposed paths against the project, requests text rewrites, and passes the result to an agent that modifies code.</p><p>This year, I tried to automate this work as much as possible. The result was three sequential approaches: a custom YAML orchestrator, an external workflow on Dify with Tavily, and an office of AI employees with distributed responsibility. SEO remained the task for which the orchestration setup was progressively changed.</p><h3>First Approach: Describe the Process and Execute It</h3><p>Orchestrix began as a local Django service. An external architectural chat generated a YAML file with steps, roles, instructions, and rules for data transfer. The service imported the description into a database, displayed it in the Django admin, and sequentially executed steps via the OpenAI Agents SDK.</p><p>For an SEO page, the chain included research, specification, JSON generation, language processing, review, correction, integration plan, and a final task for Codex. Each of the eight steps received a separate task and passed the result to the next.</p><p>Each step had its own contract. Below is a shortened fragment of the original YAML for the research role.</p><pre><code>  slug: research
+  title: Research
+  order: 1
+  agent_role: seo_researcher
+  agent_instructions: |
+    You create a compact SEO research brief for one page topic.
+    Return markdown only.
+    Do not generate SEO JSON. Do not write final page copy.
+    Do not claim competitor pages were read unless fetched text is provided.</code><div><a href="https://sourcecraft.dev/"><span></span></a></div></pre><p>The instructions separated research from page writing. The description also included facts about the target project, such as the framework, actual routes, and content location. This is necessary because a specified file path might not be relevant to a particular repository.</p><p>The model call itself took a few lines. Below is a fragment without error handling or cost tracking.</p><pre><code>agent = Agent(
+    name=pipeline_step.agent_role,
+    instructions=pipeline_step.agent_instructions,
+    model=run.pipeline_instance.default_model,
+)
+result = Runner.run_sync(agent, prompt_text)</code><div><a href="https://sourcecraft.dev/"><span></span></a></div></pre><p>Infrastructure had to be built around this call: process instances, steps, runs, states, artifacts, and token usage records. Results were saved in the database and files. It was possible to view intermediate responses and re-run specific steps. Re-running deleted saved results for that step and subsequent ones to avoid artifacts from an old input version in the chain.</p><p>Saved results showed what task the model received and what it passed on. However, automation ended at the Codex Handoff preparation. Frontend implementation remained a separate task, the success of which depended on the completeness of the final task and the accuracy of project information.</p><p>This SEO example lacked live search, SERP analysis, and competitor text extraction. The chain could process provided context but did not gather fresh market data itself. Significant effort seemed necessary to implement a custom executor. It would require developing checks, result corrections, and integration, and the service itself needed separate maintenance. In the next attempt, I moved this infrastructure to a ready-made platform.</p><h3>Second Approach: Externalize Workflow and Connect Sources</h3><p>In Dify, the process was assembled from LLM nodes, code nodes, and external tools. Tavily added search and page extraction. A distinct stage for working with sources emerged between the future page topic and content generation.</p><p>First, the model generated research queries. Then, the search returned materials, a separate step selected sources, the tool extracted their content, and the next role analyzed the obtained texts. Only after this were the user intent map, entities, page specification, and SEO JSON constructed.</p><p>In the high-level workflow diagram, node names are grouped into semantic blocks.</p><pre><code>Research queries
+→ Tavily search → source selection → page extraction
+→ source analysis → intent map → specification
+→ SEO JSON → validation → correction → review
+→ final processing → validation → output package</code><div><a href="https://sourcecraft.dev/"><span></span></a></div></pre><figure><img alt=
+  </main>
+  <footer>
+    Translation generated with Gemini 2.5 Flash-Lite.
+    The original article remains the source of record.
+  </footer>
+</body>
+</html>

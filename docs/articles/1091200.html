@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>The Junior Model Outplayed the Seniors: How Claude Sonnet 5.5 Defeated Opus 5.5 and Fable 5.1 in a Turn-Based Strategy Game</title>
+  <meta name="description" content="We had Claude models play against each other in a turn-based strategy game involving economy building, warfare, diplomacy, and betrayal. We wanted to understand two things: how top language models handle such a game, and whether the power balance at the game table would match that shown by establish">
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.65;
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 32px 20px 64px;
+      color: #1f2328;
+    }
+    header {
+      border-bottom: 1px solid #d8dee4;
+      margin-bottom: 28px;
+      padding-bottom: 20px;
+    }
+    .source {
+      color: #57606a;
+      font-size: 0.95rem;
+    }
+    img, video, iframe {
+      max-width: 100%;
+      height: auto;
+    }
+    pre {
+      overflow-x: auto;
+      padding: 16px;
+      background: #f6f8fa;
+      border-radius: 6px;
+    }
+    code {
+      font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+    }
+    blockquote {
+      border-left: 4px solid #d0d7de;
+      margin-left: 0;
+      padding-left: 16px;
+      color: #57606a;
+    }
+    footer {
+      border-top: 1px solid #d8dee4;
+      margin-top: 40px;
+      padding-top: 20px;
+      color: #57606a;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>The Junior Model Outplayed the Seniors: How Claude Sonnet 5.5 Defeated Opus 5.5 and Fable 5.1 in a Turn-Based Strategy Game</h1>
+    <p>We had Claude models play against each other in a turn-based strategy game involving economy building, warfare, diplomacy, and betrayal. We wanted to understand two things: how top language models handle such a game, and whether the power balance at the game table would match that shown by established benchmarks. I am a developer of &#x27;Strategikon&#x27;, a turn-based online hex strategy game. From late August to early October, we conducted a series of LLM agent matches against each other. Here&#x27;s the methodology, two matches, the experiment&#x27;s limitations, and the conclusion we reached: a game engine can become a benchmark for LLM capabilities in general. Read the analysis.</p>
+    <p class="source">
+      Machine-translated from Habr.
+      <a href="https://habr.com/ru/articles/1091200/?utm_campaign=1091200&amp;utm_source=habrahabr&amp;utm_medium=rss">Read the original Russian article</a>.
+      Tue, 06 Oct 2026 15:12:00 GMT
+    </p>
+  </header>
+  <main>
+<div><p>We had Claude models play against each other in a turn-based strategy game where the objective was to build an economy, wage war, negotiate with neighbors, and decide when to break a treaty. We wanted to understand two things: how top language models cope with such a game, and whether the power balance at the game table would align with that shown by generally accepted benchmarks.</p><p>I am a developer of <a href="https://strategikon.cloud/">&#x201c;Strategikon&#x201d;</a>, a turn-based online hex strategy game. From late August to early October, we conducted <strong>a series of LLM agent matches against each other</strong>. Here—the methodology, two matches, the experiment's limitations, and the thought that led us to this point: a game engine can become a benchmark for LLM capabilities in general.</p><h2>TL;DR</h2><ul><li><p>The models play via an MCP server, which appears to the game as a regular network player. The map is visible, all calculations are handled by the game engine, and before finishing each turn, the model must leave a comment in the log. </p></li><li><p>In the analyzed match, Sonnet 5.5, the youngest and cheapest of the three models, won: 197:151:31 against Opus 5.5 and Fable 5.1. The game was decided by an early capture of the map center and an attack on the leader's cities in the same round Sonnet promised him peace. — Haiku 4.5, in a four-player match, stopped planning in the sixth round out of thirteen and finished with zero points. </p></li><li><p>The power balance turned out to be closer to agent benchmarks than to text-based rankings and price. The leap from Sonnet 5 to Sonnet 5.5 is visible both in the game and in public measurements. </p></li><li><p>There are few matches, this is not a ranking, and the conclusions are preliminary. However, the engine allows measuring individual skills within a single game, and we are considering how to turn it into a benchmark.</p></li></ul><h2>How the Experiment Was Set Up</h2><p>My game is a turn-based strategy with board game mechanics. A match lasts 13 rounds, each with three phases: supply, construction, and war. A few rules are sufficient for further understanding.</p><ul><li><p><strong>Cities and Points.</strong> A city is a group of hexes. Ruins and temples provide points; mines provide coins. The player with the most points after 13 rounds wins; two coins count as one point.</p></li><li><p><strong>Units—Dice.</strong> Infantry is a d6, heavy infantry is a d10. The unit size is the number on the top face: 'd10 (6)' means a ten-sided die showing a six. In combat, both attack: damage equals size plus two 'damage dice', which average -2. </p></li><li><p><strong>Capture.</strong> A city goes to the player whose unit occupies its hex at the end of the round, provided there are no enemy units on the hexes. The capturer gains points, and the former owner loses the same amount.</p></li><li><p><strong>Turns and Supply.</strong> A unit moves two hexes, or further along roads. A farm feeds one unit: a fed unit grows, a hungry one loses two size. An extra supply unit (a 'token' in logs) gives a unit an extra step for a round, for example.</p></li><li><p><strong>Policies.</strong> Cards from a common market that change the rules for the owner. 'Barbarism,' for instance, grants free infantry and +2 damage.</p></li><li><p><strong>Turn Order.</strong> Players take turns; the first turn advantage ('initiative') can be seized.</p></li><li><p><strong>Early End.</strong> If the leader is 50 points ahead of everyone else, the game ends.</p></li></ul><p><strong>There is no fog of war</strong>; the map is visible to all. In the <strong>general chat</strong>, promises are not backed by anything: the player instructions explicitly state that diplomatic cunning is part of the game, 'like in the board game Diplomacy.' Lying about facts is pointless; lying about plans is permissible.</p><p><strong>Setup:</strong> The model cannot see the screen, so we wrote an MCP server that, from the game server's perspective, acts as another network player. It provides the models with a text snapshot of the game and tools—the same actions available to a human in the interface. Each model operates as a separate agent in Claude Code (read the 'Setup' section for details).</p><p><strong>Log and Memory: </strong>Before finishing each turn, the agent must leave a short comment: what it's doing and why. Opponents don't see the log, and we later read it alongside the chat. Between matches, players remember what happened: each has memories, post-match interviews, and a 'persona'—their own conclusions about strategy and opponents.</p><h2>What We Expected: Price and Rankings</h2><p>The hierarchy by price is clear, and Anthropic's own descriptions generally agree: Fable 5.1 is the most capable model in the lineup, Opus 5.5 is the default model for complex tasks, and Sonnet 5.5 is its faster and cheaper complement. Haiku 4.5 is the smallest and also from the previous generation. Independent rankings also place Haiku at the very bottom, but they differ on Sonnet's position: far from the seniors or close to them.</p><div><div><table><tbody><tr><td><p><strong>Model</strong> </p></td><td><p><strong>Price, $ per 1 million tokens (input / output)</strong> </p></td><td><p><a href=
+  </main>
+  <footer>
+    Translation generated with Gemini 2.5 Flash-Lite.
+    The original article remains the source of record.
+  </footer>
+</body>
+</html>

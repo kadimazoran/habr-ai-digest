@@ -2263,6 +2263,94 @@
     "summary": "Neural networks write grammatically, which is precisely why their text is recognizable from the first line: em dashes, \"it's not X, but Y\" constructions, \"it's important to understand,\" \"let's break it down.\" I encountered this with a Telegram bot that converts voice messages into social media scripts and fixed the problem in three layers in one day. In this article, I'll break down how the bot's pipeline works, why prompt instructions weren't enough, why a second neural network pass also didn't save the day, and what ultimately solved the task. All code below is from a working repository; I've slightly simplified variable names. Read more",
     "title": "How I Cleaned AI Markers from Claude Texts: Prompt, Second Pass, and Regex"
   },
+  "https://habr.com/ru/articles/1090778/?utm_campaign=1090778&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Tue, 06 Oct 2026 12:10:28 GMT",
+    "slug": "1090778",
+    "source_url": "https://habr.com/ru/articles/1090778/?utm_campaign=1090778&utm_source=habrahabr&utm_medium=rss",
+    "summary": "When I see another video with successful AI generation, I can't help but notice what's missing from the frame: not a single lawyer, not a single business process, not a single client who will leave due to generation errors. Only the model and applause. What remains behind the scenes is what determines the real cost: AI generation costs pennies compared to the budget of traditional development, but a single hallucination can undermine client trust and add work for lawyers; the model generates a response very quickly, and the business process it \"optimized\" will have to be restored, possibly for several days. Something tells me that if such advertising generation were turned into a technical specification, all that would be left would be to calculate how many times the project budget has increased. Read more",
+    "title": "Air Resistance: Why Cheap AI Is So Expensive"
+  },
+  "https://habr.com/ru/articles/1091044/?utm_campaign=1091044&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Tue, 06 Oct 2026 11:18:06 GMT",
+    "slug": "1091044",
+    "source_url": "https://habr.com/ru/articles/1091044/?utm_campaign=1091044&utm_source=habrahabr&utm_medium=rss",
+    "summary": "Many of you have already heard the story of how AI created a page on the internet, after which it began to refer to it in its answers as an authoritative source. You can read about such problems, for example, in this article. Not to mention the numerous videos on social networks on this topic. However, naturally, this is by no means a problem of AI. This is a problem of sociology, and also, first and foremost, of humans. After all, it was people who came up with the socio-behavioral formula: information + reference to an authoritative source = truth. This formula was the basis for, for example, Wikipedia. This formula is the basis of the worldview of billions of people around the world. And it is this formula that people themselves began to use to deceive each other. After all, the weakest point in it is the authoritative source. Before the advent of social networks, the media were an authoritative source. However, with the development of the internet, thanks to social networks, up-to-date information began to spread faster than the media published it. And then the story of the Rothschild family and the telegraph, familiar to many, was repeated. I recall, according to legend, the Rothschilds were the first to receive news of world events (especially military actions) and could take action for personal gain before others. But it wasn't just about reacting to events. Soon, people learned not only to transmit data quickly but also to control which data should be disseminated. This is called propaganda. Propaganda can be called an integral part of civilization. It is a common phenomenon that has existed for thousands of years. Remember Sparta and Athens? This is just another way to control information for the benefit of a certain group of people. In search of truth, people came up with a standard countermeasure against propaganda - expert opinion. However, it turned out that this opinion could also be controlled, even for money. And the question of finding the truth arose again. Then honor came onto the scene. A person who respects himself and is respected in society will not lie. And the longer a person is respected, as people have devised, the more valuable his word is. By the way, the methodology is also ancient, rooted in the prophets. However, even respected people in crisis situations turned out to be ordinary people who also had their own interests, which prevented them from telling the whole truth. And the question of finding the truth arose again. Finally, people thought: if a person cannot be trusted, a soulless machine can be trusted. But they did not take into account that the machine learns precisely from human social behavior formulas. And so, all this led us to the very beginning of the article: using human behavior formulas, even a machine has stopped telling the truth. Since a new way of finding truth is currently actively being sought, let's focus on the deception that AI has learned. For general education, so to speak, and a more objective civic stance. Read more",
+    "title": "How to convince people of what doesn't exist, or the crisis of freedom of speech"
+  },
+  "https://habr.com/ru/articles/1091084/?utm_campaign=1091084&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Tue, 06 Oct 2026 12:21:40 GMT",
+    "slug": "1091084",
+    "source_url": "https://habr.com/ru/articles/1091084/?utm_campaign=1091084&utm_source=habrahabr&utm_medium=rss",
+    "summary": "A quality product only gains real value when people start using it. SaaS, a browser tool, or a mobile app needs a clear page, a path to a target action, and a way to attract people. For a product relying on organic search, a separate job begins: understanding queries, studying search results, preparing content, implementing it, and observing the outcome. AI helps at each of these stages, but between them remains the developer who transfers answers, refines tasks, verifies proposed paths against the project, requests text rewrites, and passes the result to an agent that modifies code. This year, I tried to automate this work as much as possible. The result was three sequential approaches: a custom YAML orchestrator, an external workflow on Dify with Tavily, and an office of AI employees with distributed responsibility. SEO remained the task for which the orchestration setup was progressively changed. Read more",
+    "title": "From Manual SEO to an AI Employee Office: How to Build Orchestration"
+  },
+  "https://habr.com/ru/articles/1091090/?utm_campaign=1091090&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Tue, 06 Oct 2026 12:33:50 GMT",
+    "slug": "1091090",
+    "source_url": "https://habr.com/ru/articles/1091090/?utm_campaign=1091090&utm_source=habrahabr&utm_medium=rss",
+    "summary": "One person builds a Discord analogue in a day (technically similar, but the project's 'soul', audience, and reputation, of course, cannot be copied). Beautiful. But there's a catch. Tomorrow there will be a hundred such project-copypasters. Code is getting cheaper, SaaS products are multiplying, but the real pain hasn't gone anywhere, which is finding the market, the customer, and the reason why they should pay you at all. Read more",
+    "title": "I have good news, now you can vibe-code a SaaS in a weekend. The bad news is, everyone else can too"
+  },
+  "https://habr.com/ru/articles/1091122/?utm_campaign=1091122&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Tue, 06 Oct 2026 13:17:18 GMT",
+    "slug": "1091122",
+    "source_url": "https://habr.com/ru/articles/1091122/?utm_campaign=1091122&utm_source=habrahabr&utm_medium=rss",
+    "summary": "OpenAI, Anthropic, Google, and xAI are no longer just competing on model quality. The real battle is for computing power, custom chips, cloud presence, API pricing, and developer ecosystems. This article examines their strengths in each area, why competitors are also partners and suppliers, and why in 2026, infrastructure is becoming more critical than model releases.",
+    "title": "How OpenAI, Anthropic, Google, and xAI are Competing for Models, Clouds, and Developers"
+  },
+  "https://habr.com/ru/articles/1091144/?utm_campaign=1091144&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Tue, 06 Oct 2026 13:56:22 GMT",
+    "slug": "1091144",
+    "source_url": "https://habr.com/ru/articles/1091144/?utm_campaign=1091144&utm_source=habrahabr&utm_medium=rss",
+    "summary": "Show a VLM a scan of an enforcement order, and it will confidently return the details. The format will be perfect, the tone impeccable. The only problem: among the details with a non-zero probability, there might be a non-existent INN with a correct format, an amount that no one has verified against the document, and next to it in the summary, it will say 'quality: 100%' — on a 745x1024 @ 96 DPI scan from which the details are fundamentally unreadable. This is not a hypothesis or an internet horror story — these are logs from a real project. I am building a pipeline that reads scans of Russian legal documents (enforcement orders, FSSP resolutions, salary garnishments, UPDs, contracts) and prepares registers for 1C. It is built around one principle: the model's output is never taken on faith. The neural network suggests, the algorithm checks, and a human only looks at what didn't match. Below, I will explain how it all started, how the four walls of checks are structured — check digits, arithmetic and law, cross-modal gate, and honest statuses — what real bugs they caught, what the false positive measurements show, and what a couple of dozen lines of arithmetic that replace trust in the neural network have to do with it. Read on.",
+    "title": "How I stopped believing in neural networks and fell in love with check digits: Zero-Trust for legal document recognition"
+  },
+  "https://habr.com/ru/articles/1091158/?utm_campaign=1091158&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Tue, 06 Oct 2026 14:18:05 GMT",
+    "slug": "1091158",
+    "source_url": "https://habr.com/ru/articles/1091158/?utm_campaign=1091158&utm_source=habrahabr&utm_medium=rss",
+    "summary": "On October 5th, American researchers Virginia Vassilevska Williams, known for her fast (and incredibly complex) matrix multiplication algorithms, and her former PhD student Josh Alman published a preprint on arxiv.org demonstrating an algorithm to solve the 3SUM problem in O(N¹·⁹⁹⁹²). This is a landmark event in niche circles. Firstly, it was previously assumed that solving this problem faster than O(N²) was impossible. Secondly, along with it, the All-Pairs Shortest Paths (APSP) problem, a truly practical problem in computational geometry, was finally solved faster than O(N³). Thirdly, not only was the correctness of the algorithm verified by Anthropic's closed model, but the authors also claim that Claude found the initial algorithm, after which the scientists realized and improved it. In this news piece, I will briefly recount the long journey that led to this discovery and describe the role of LLMs in its final stages. Read on.",
+    "title": "3SUM Problem Solved Faster Than O(N²) — Specifically in O(N¹·⁹⁹⁹²) Using Neural Networks"
+  },
+  "https://habr.com/ru/articles/1091176/?utm_campaign=1091176&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Tue, 06 Oct 2026 14:31:52 GMT",
+    "slug": "1091176",
+    "source_url": "https://habr.com/ru/articles/1091176/?utm_campaign=1091176&utm_source=habrahabr&utm_medium=rss",
+    "summary": "I'm a confident person, perhaps even overconfident. I thought I was well-informed about IT security: keys, password managers, two-factor authentication, and so on. But out of carelessness, I once pasted database credentials into the console along with a query. I've also been using various AI agents in the console for almost a year now for programming and configuration. I always read where and why the agent is asking for access, and usually grant it. My suspicions about this agent's benevolence arose when I noticed it asking for access higher up in the project directory or even to my home directory. Once, it tried to access the root of the system. As a 'cool hacker,' I noticed and strictly forbade it. Realizing my mistake, I went to clear my console history to remove the leaked password. To my surprise, I found much more interesting things along the way. My hand immediately reached for the agent, but as a serious developer, I stopped myself, cleaned everything up manually, and then had the following dialogue: 'This... it's a bit of a situation...' I began cautiously, 'Tell me, what's the command to delete from terminal history using a regular expression.' 'As you command!' – four options, and so on, the Chinese model began to cheerfully provide. And added at the end, 'Would you like me to execute the recommended option?' Read more",
+    "title": "An Alarming Conversation with an Agent"
+  },
+  "https://habr.com/ru/articles/1091188/?utm_campaign=1091188&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Tue, 06 Oct 2026 14:39:00 GMT",
+    "slug": "1091188",
+    "source_url": "https://habr.com/ru/articles/1091188/?utm_campaign=1091188&utm_source=habrahabr&utm_medium=rss",
+    "summary": "On September 15, TypeSafe released Jev, the first System One-class model. Jev takes system state and typed questions, returning probability distributions over valid answers in a single pass without token generation. In 16 days, five more implementations of the same idea emerged: Cloudflare's Clef and Clef-flash, Perplexity's pplx-decider-v1-27b, AWS's Strands Decider 2B, Convai Innovations' Laya, and Fastino's GLiDE. The cheapest costs $12 per million decisions, compared to $700 for Claude Sonnet 5 as a classifier. We break down the architectures of all six models, examine independent benchmarks, and discuss what to check before deploying them to production. Read on.",
+    "title": "Decision Models Under the Hood: How Jev, Clef, pplx-decider, Strands Decider, Laya, and GLiDE Work"
+  },
+  "https://habr.com/ru/articles/1091200/?utm_campaign=1091200&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Tue, 06 Oct 2026 15:12:00 GMT",
+    "slug": "1091200",
+    "source_url": "https://habr.com/ru/articles/1091200/?utm_campaign=1091200&utm_source=habrahabr&utm_medium=rss",
+    "summary": "We had Claude models play against each other in a turn-based strategy game involving economy building, warfare, diplomacy, and betrayal. We wanted to understand two things: how top language models handle such a game, and whether the power balance at the game table would match that shown by established benchmarks. I am a developer of 'Strategikon', a turn-based online hex strategy game. From late August to early October, we conducted a series of LLM agent matches against each other. Here's the methodology, two matches, the experiment's limitations, and the conclusion we reached: a game engine can become a benchmark for LLM capabilities in general. Read the analysis.",
+    "title": "The Junior Model Outplayed the Seniors: How Claude Sonnet 5.5 Defeated Opus 5.5 and Fable 5.1 in a Turn-Based Strategy Game"
+  },
+  "https://habr.com/ru/articles/1091206/?utm_campaign=1091206&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Tue, 06 Oct 2026 15:29:50 GMT",
+    "slug": "1091206",
+    "source_url": "https://habr.com/ru/articles/1091206/?utm_campaign=1091206&utm_source=habrahabr&utm_medium=rss",
+    "summary": "I figured out it was a userbot almost immediately. An account without a username, a photo of a girl against a sea backdrop, a conversation that quickly devolved into talk of divorce and \"can we switch to \"you\"?\". I was more interested in figuring out where they were leading me and how this thing was built internally. I didn't send any money or links. The entire investigation fit into one night and one private chat. On September 11th at 15:30, \"Maria\" wrote first. She saw me in an IT group, wants to try herself in this field, and asks for advice on starting materials. A harmless pretext that's hard to ignore, especially if you work in IT yourself. Around 1 AM, \"Maria\" replied to a message I had deleted immediately after sending. I figured out how this happened by analyzing the timings and reconstructed the bot's logic in Python. Read the investigation",
+    "title": "A scam bot on Telegram revealed itself with a timer: analyzing a userbot with reconstruction in Telethon"
+  },
   "https://habr.com/ru/companies/1c/articles/1071340/?utm_campaign=1071340&utm_source=habrahabr&utm_medium=rss": {
     "model": "gemini-2.5-flash-lite",
     "published": "Thu, 03 Sep 2026 07:18:11 GMT",
@@ -2735,6 +2823,14 @@
     "summary": "A month of developing a real product, a team of four strangers, and a client from a business unit waiting for results. In August, KORUS held an AI Lab where students learned to work with artificial intelligence, take responsibility for a project from day one, and overcome the fears that accompany first experiences. Colleagues from HR, the Corporate University, and business units, as well as the interns themselves who went through the AI Lab, share their experiences. Read more",
     "title": "A Month of Vibecoding with Strangers and Tools That KORUS Business Started Using"
   },
+  "https://habr.com/ru/companies/leader-id/articles/1091020/?utm_campaign=1091020&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Tue, 06 Oct 2026 11:22:37 GMT",
+    "slug": "1091020",
+    "source_url": "https://habr.com/ru/companies/leader-id/articles/1091020/?utm_campaign=1091020&utm_source=habrahabr&utm_medium=rss",
+    "summary": "A three-minute pitch, dozens of slides, half an hour of expert questions, and the ultimate goal of convincing the jury that you're not a dreamer but have a commercially viable idea. This is the task set for a startup founder on the classic path from idea to development through pitches and investor searches. How to prepare such a presentation, what to emphasize, how to manage nervousness, how not to get lost or forget the main point, and what that magical main point is? We discuss this with our colleague Elizaveta Kuzmina, Head of Technical Analytics at NTI Platform ANO and founder of Hypothesis Lab, a platform for testing advertising campaigns and hypotheses using synthetic personas for creative generation, as well as preparing scaling recommendations and collecting analytics. Elizaveta presented her platform at the finals of the \"Fiztech. Idea+\" accelerator, spring 2026 wave. It was the project's very first pitch, and it was immediately successful. Her team made it into the top 6 projects and received half a million rubles for development. Congratulating her on this achievement, we talked with Elizaveta about her startup, how the accelerator works, and how to prepare a super-concise three-minute presentation. We also discussed what questions experts ask and what helps convince the jury of a project's potential. In short, here are life hacks for everyone who is going or preparing to go down this path. Read on.",
+    "title": "How to Nail a Three-Minute Pitch and Win a Grant: Successful Experience Shared by an Alumna of the \"Fiztech. Idea+\" Accelerator"
+  },
   "https://habr.com/ru/companies/lentatech/articles/1079778/?utm_campaign=1079778&utm_source=habrahabr&utm_medium=rss": {
     "model": "gemini-2.5-flash-lite",
     "published": "Thu, 17 Sep 2026 08:07:01 GMT",
@@ -2918,6 +3014,14 @@
     "source_url": "https://habr.com/ru/companies/rshb/articles/1080182/?utm_campaign=1080182&utm_source=habrahabr&utm_medium=rss",
     "summary": "Hello! This is Olga Popova, AI Evangelist at the AI Lab of the Big Data Department of Rosselkhozbank. In this issue, I've added comments from colleagues who work with these topics every day to my reflections. I believe their inside perspective is more valuable than any theory. Let's go! We're reading AI news together.",
     "title": "AI Digest #4: AI Law, Trust Crisis, and Opinions from Our AI Lab Colleagues"
+  },
+  "https://habr.com/ru/companies/rshb/articles/1091088/?utm_campaign=1091088&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Tue, 06 Oct 2026 12:40:54 GMT",
+    "slug": "1091088",
+    "source_url": "https://habr.com/ru/companies/rshb/articles/1091088/?utm_campaign=1091088&utm_source=habrahabr&utm_medium=rss",
+    "summary": "Hello! This is Olga Popova, AI Evangelist at the Artificial Intelligence Lab of the Big Data Department of Rosselkhozbank. September turned out to be very telling. If we set aside the usual benchmark race, three much more interesting processes are happening around AI simultaneously: models are turning into active agents, AI is subtly integrating into familiar work tools, and companies and governments are seriously discussing who will control this new digital workforce. As in the previous issue, I've added comments from colleagues who work with these topics every day to my reflections. Let's go! Read more",
+    "title": "AI Digest #5: Agents are Going to Work, AI is Dissolving into Familiar Tools. What Will the AI Lab Say?"
   },
   "https://habr.com/ru/companies/ru_mts/articles/1076344/?utm_campaign=1076344&utm_source=habrahabr&utm_medium=rss": {
     "model": "gemini-2.5-flash-lite",
@@ -3198,6 +3302,14 @@
     "source_url": "https://habr.com/ru/companies/smartengines/articles/1087534/?utm_campaign=1087534&utm_source=habrahabr&utm_medium=rss",
     "summary": "Every minute counts in business. But if a document must first be sent for processing, checked, and only then its data entered into the accounting system, a gap arises between the real operation and its reflection in the system. All this time, the owner does not see the actual picture and is forced to make decisions based on outdated information. Therefore, documents need to be recognized directly where and when the operation occurs. This task is solved by edge recognition, implemented in Smart Document Engine. The platform allows processing documents directly at the point of their appearance - for example, in a warehouse or an employee's workspace - using a smartphone, tablet, or other device, and immediately transferring the ready data to corporate systems. As a result, the business gets an up-to-date picture of what's happening, and the gap between the real operation and its reflection in accounting is minimized. We've gathered the highlights of Smart Document Engine Week in one digest 👇 Read more",
     "title": "Edge Recognition is the Future of Document Processing: Smart Document Engine Weekly Digest"
+  },
+  "https://habr.com/ru/companies/smartengines/articles/1089744/?utm_campaign=1089744&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Tue, 06 Oct 2026 14:39:25 GMT",
+    "slug": "1089744",
+    "source_url": "https://habr.com/ru/companies/smartengines/articles/1089744/?utm_campaign=1089744&utm_source=habrahabr&utm_medium=rss",
+    "summary": "Passport, bank card, and QR code recognition, non-biometric face verification, and anti-fraud in the browser are no longer future technologies but the standard for convenience and speed in digital customer experience. At Smart Engines, we have successfully transferred the recognition of passports, bank cards, QR codes, payment details, and business documents directly into the browser using WebAssembly (WASM). We've gathered the highlights from WASM Week in one digest. Read more",
+    "title": "The Browser Can Do More Than You Think: WASM Smart Engines Weekly Digest"
   },
   "https://habr.com/ru/companies/sminex_developer/articles/1083860/?utm_campaign=1083860&utm_source=habrahabr&utm_medium=rss": {
     "model": "gemini-2.5-flash-lite",

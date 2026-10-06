@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Decision Models Under the Hood: How Jev, Clef, pplx-decider, Strands Decider, Laya, and GLiDE Work</title>
+  <meta name="description" content="On September 15, TypeSafe released Jev, the first System One-class model. Jev takes system state and typed questions, returning probability distributions over valid answers in a single pass without token generation. In 16 days, five more implementations of the same idea emerged: Cloudflare&#x27;s Cl">
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.65;
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 32px 20px 64px;
+      color: #1f2328;
+    }
+    header {
+      border-bottom: 1px solid #d8dee4;
+      margin-bottom: 28px;
+      padding-bottom: 20px;
+    }
+    .source {
+      color: #57606a;
+      font-size: 0.95rem;
+    }
+    img, video, iframe {
+      max-width: 100%;
+      height: auto;
+    }
+    pre {
+      overflow-x: auto;
+      padding: 16px;
+      background: #f6f8fa;
+      border-radius: 6px;
+    }
+    code {
+      font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+    }
+    blockquote {
+      border-left: 4px solid #d0d7de;
+      margin-left: 0;
+      padding-left: 16px;
+      color: #57606a;
+    }
+    footer {
+      border-top: 1px solid #d8dee4;
+      margin-top: 40px;
+      padding-top: 20px;
+      color: #57606a;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Decision Models Under the Hood: How Jev, Clef, pplx-decider, Strands Decider, Laya, and GLiDE Work</h1>
+    <p>On September 15, TypeSafe released Jev, the first System One-class model. Jev takes system state and typed questions, returning probability distributions over valid answers in a single pass without token generation. In 16 days, five more implementations of the same idea emerged: Cloudflare&#x27;s Clef and Clef-flash, Perplexity&#x27;s pplx-decider-v1-27b, AWS&#x27;s Strands Decider 2B, Convai Innovations&#x27; Laya, and Fastino&#x27;s GLiDE. The cheapest costs $12 per million decisions, compared to $700 for Claude Sonnet 5 as a classifier. We break down the architectures of all six models, examine independent benchmarks, and discuss what to check before deploying them to production. Read on.</p>
+    <p class="source">
+      Machine-translated from Habr.
+      <a href="https://habr.com/ru/articles/1091188/?utm_campaign=1091188&amp;utm_source=habrahabr&amp;utm_medium=rss">Read the original Russian article</a>.
+      Tue, 06 Oct 2026 14:39:00 GMT
+    </p>
+  </header>
+  <main>
+<div><p>On September 15, TypeSafe released Jev, calling it the first System One-class model. Jev receives the system state and a set of typed questions, returning a probability distribution over valid answers. The entire response is considered a single forward pass, without token generation.</p><p>In 16 days, five more implementations of the same idea were released: Clef and Clef-flash from Cloudflare, pplx-decider-v1-27b from Perplexity, Strands Decider 2B from AWS, Laya from Convai Innovations, and GLiDE from Fastino. They share a nearly common interface, but internally feature five different solutions: a frozen LLM with a trainable output layer, an LLM with a replaced LM head, a pointer mechanism, a 322 million parameter encoder, and on-demand reasoning. </p><p>Below is an analysis of the architectures, independent benchmarks, and what to check before launching such a model into production.</p><h3>Why Agents Need a Separate Model</h3><p>In many agent systems, an LLM is called at every step, even though text generation is unnecessary for most steps. The agent selects a tool, checks if the task is complete, or decides if a command can be executed. Full generation at such steps is more expensive and slower than required for selection, and the response still needs parsing and format validation.</p><p>TypeSafe proposed a separate, fast path for these steps, naming it System One, analogous to the fast, intuitive thinking Kahneman called System 1. The name Jev refers to Jevons paradox: the cheaper a resource, the more it is consumed. Jev itself costs $0.042 per million input tokens, with TypeSafe claiming a latency of 70–500 ms and a context window of 32K tokens.</p><p>Scenarios where such models have been tested:</p><ul><li><p><strong>Command validation before execution.</strong> An agent is about to execute <code>rm -rf /data/tmp</code>, and the model classifies the command into one of these categories: read-only, reversible change, or destructive action. LangChain integrated such a check into the middleware of its Jev integration.</p></li><li><p><strong>Model selection based on query.</strong> Simple queries go to a cheap LLM, complex ones to an expensive one.</p></li><li><p><strong>Agent evaluation.</strong> LangChain compared Jev with three LLMs acting as judges on 500 agent response evaluations. The results are in the table below. The test is narrow: one agent and five queries repeated 100 times each.</p></li><li><p><strong>Pentesting.</strong> A preprint on arXiv proposes placing Jev and Laya at four points in an autonomous pentest agent: confirming found vulnerabilities, re-evaluating their criticality, pruning redundant agents, and confirmation loops.</p></li></ul><div><div><table><tbody><tr><th><p>Judge</p></th><th><p>Agreement with Human Score, %</p></th><th><p>Call Cost, USD</p></th><th><p>Response Time, s</p></th></tr><tr><td><p>Jev</p></td><td><p>100</p></td><td><p>0.00035</p></td><td><p>0.44</p></td></tr><tr><td><p>GPT-5.6 Terra</p></td><td><p>99.8</p></td><td><p>0.00289</p></td><td><p>2.83</p></td></tr><tr><td><p>GPT-5.6 Luna</p></td><td><p>96.4</p></td><td><p>0.00039</p></td><td><p>2.50</p></td></tr><tr><td><p>Claude Sonnet 4.6</p></td><td><p>80.0</p></td><td><p>0.02811</p></td><td><p>2.16</p></td></tr></tbody></table></div></div><h3>Interface: State and Typed Questions</h3><p>A request consists of two parts. The state is text or JSON: a ticket, a page, an agent trace, or conversation history. Questions about it can be of three types:</p><ul><li><p>noul: probability of a "yes" answer;</p></li><li><p>choice: one option from a list; Jev supports up to 255 options;</p></li><li><p>score: a level on an ordered scale.</p></li></ul><p>The response provides a probability for each valid answer to each question. Schematically, the request looks like this (field names vary by provider; consult documentation):</p><pre><code>{<br>
+  </main>
+  <footer>
+    Translation generated with Gemini 2.5 Flash-Lite.
+    The original article remains the source of record.
+  </footer>
+</body>
+</html>

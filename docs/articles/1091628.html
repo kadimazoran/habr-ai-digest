@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>From Hardware to Custom VST Instruments</title>
+  <meta name="description" content="From Hardware to Custom VST Plugins. I&#x27;m a musician with no programming skills. I sold my hardware setup, couldn&#x27;t find plugins for live performance, and started making them myself with Claude Code. I&#x27;ll explain how my own synthesizers and a graph engine came to be, and why rules, not">
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.65;
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 32px 20px 64px;
+      color: #1f2328;
+    }
+    header {
+      border-bottom: 1px solid #d8dee4;
+      margin-bottom: 28px;
+      padding-bottom: 20px;
+    }
+    .source {
+      color: #57606a;
+      font-size: 0.95rem;
+    }
+    img, video, iframe {
+      max-width: 100%;
+      height: auto;
+    }
+    pre {
+      overflow-x: auto;
+      padding: 16px;
+      background: #f6f8fa;
+      border-radius: 6px;
+    }
+    code {
+      font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+    }
+    blockquote {
+      border-left: 4px solid #d0d7de;
+      margin-left: 0;
+      padding-left: 16px;
+      color: #57606a;
+    }
+    footer {
+      border-top: 1px solid #d8dee4;
+      margin-top: 40px;
+      padding-top: 20px;
+      color: #57606a;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>From Hardware to Custom VST Instruments</h1>
+    <p>From Hardware to Custom VST Plugins. I&#x27;m a musician with no programming skills. I sold my hardware setup, couldn&#x27;t find plugins for live performance, and started making them myself with Claude Code. I&#x27;ll explain how my own synthesizers and a graph engine came to be, and why rules, not prompts, were key to working with AI. Creating plugins without knowing how to code.</p>
+    <p class="source">
+      Machine-translated from Habr.
+      <a href="https://habr.com/ru/articles/1091628/?utm_campaign=1091628&amp;utm_source=habrahabr&amp;utm_medium=rss">Read the original Russian article</a>.
+      Wed, 07 Oct 2026 13:24:37 GMT
+    </p>
+  </header>
+  <main>
+<div><h2>Where It All Began</h2><h3>I'll Start by Telling You About Myself</h3><p>I'm someone who somehow ended up in IT. I'm not a programmer, I'm not an engineer. My experience is exclusively around projects and products. I worked for a software vendor for a long time and saw how projects should and, most importantly, shouldn't be done, across various types of businesses.<br/>I'm also a musician, I regularly perform my own material, and until January 2026, I performed with a pre-assembled, calibrated, and learned setup of hardware synthesizers.<br/>This is the so-called Dawless format, where you create music without using a computer.</p><p>My setup looked like this:</p><figure><img alt="Screenshot from one of the jams" loading="lazy" src="https://habrastorage.org/r/w1560/getpro/habr/upload_files/120/ab4/ae0/120ab4ae0e34bd64ce89a62573367394.JPG" title="Screenshot from one of the jams"/><div><figcaption>Screenshot from one of the jams</figcaption></div></figure><p>But in January 2026, I had to sell everything, for reasons not important, it just happened.<br/>And I started looking for solace in Ableton, thankfully I've been using it since I was 17, so getting back into it wasn't difficult.<br/>I bought an AKAI APC 40 MK1 controller and started trying to play live.</p><p>This is where I hit a snag. All the plugins I came across were mainly designed for mouse-based work in the studio. This means they clearly lack performability. Yes, you can set up the perfect sound, automate everything down to the smallest detail, and record a track. But for live performances, where you play or improvise, this is no longer suitable.</p><h2>Here We Get to the Main Topic. I Installed Claude Code</h2><h3>First Steps</h3><p>In short, my impressions in the first few days were: it felt like I was given a magic wand, and all I had to do was say the right spell to get the desired result. That's how impressed I was. Everything I had wanted to do before but couldn't due to lack of skills became accessible to me.</p><p>The first thing I made was a drone synthesizer, I immediately went all out—16 oscillators, mutual modulation of several types, modulation by incoming audio signal, an effects block.<br/>It was done in about a day. I tested it a bit, found a few bugs, but it didn't really grab me.</p><figure><img alt="First version of DroneMatrix" loading="lazy" src="https://habrastorage.org/r/w1560/getpro/habr/upload_files/dea/ca6/97b/deaca697b799d5e442f64d8741ed9f70.png" title="First version of DroneMatrix"/><div><figcaption>First version of DroneMatrix</figcaption></div></figure><p>Then I made a delay, then something else (I don't remember the exact chronological order anymore)</p><figure><img alt="Tape Delay" loading="lazy" src="https://habrastorage.org/r/w1560/getpro/habr/upload_files/878/c1d/327/878c1d327cc4f8b002b352edeb975b73.png" title="Tape Delay"/><div><figcaption>Tape Delay</figcaption></div></figure><h2>First Grand Idea</h2><p>And then I decided to create a super-ultimate synthesizer that generates any sound based on a text prompt to an LLM. But not just generating audio, but assembling a patch that would suit that description.<br/>When I somewhat grasped this idea, I realized I needed to create a specific set of modules for the synthesizer to build any sound from them. I needed oscillators, LFO generators, envelopes, filters, effects, and so on. The initial list came out to about 40 modules (I don't remember the exact number now).</p><p><br/><strong>My process looked like this:</strong></p><ol><li><p>Discussed the list of modules with DeepSeek, refined and expanded it. A rough plan was made on how to implement them. I perceive it as a very well-read, top-student: it does a lot of things correctly, but can make mistakes in some global aspects.</p></li><li><p>Claude criticizes everything written by other LLMs to shreds, saying it's clearly written by a dilettante: everything needs to be done differently.</p></li><li><p>The final technical specification is created, and we start working.</p></li></ol><h2>The Idea I Brought to This Task</h2><p>Before this, each of my plugins was a separate entity with its own hardcoded audio path. The modules inside were repeated, but you could only build something new from them by creating a new plugin from scratch.<br/>Here, I decided to flip the scheme. The sound is described not by code, but by a connection diagram: which blocks to use (oscillators, filters, saturation, delays, reverb), how to connect them, and what to modulate with what. The diagram is saved in a text format, a JSON patch. A language model can write text. This means the model can "assemble a synthesizer" from a phrase like "cold rusty drone at dawn," all that's left is to create an engine that executes this diagram.<br/>Later, a test plugin was even created that can interpret JSON:</p><figure><img alt="" loading="lazy" src="https://habrastorage.org/r/w1560/getpro/habr/upload_files/94c/cfe/7db/94ccfe7db3bc220a3bb48cdf3585f4b3.png"/></figure><p>In the end, all modules were assembled, the engine was written, and there was even an attempt to fine-tune a local LLM (I wanted it all to work autonomously).<br/>But the local LLM required further fine-tuning and a quality dataset (I had one collected, but it clearly needed validation and corrections). Therefore, I decided to postpone the local version and simply connected the DeepSeek API, which, with a pre-prompt, was good at creating patches.<br/>But it didn't turn out as rosy as I imagined. I must note here that it's still more interesting to tweak sound than to describe it. Nevertheless, the plugin exists and was even used in one of the recent live performances.<br/>Here it is:</p><figure><img alt="The LLM also assigned controls itself, and it was possible to refine the current prompt, as it was almost never possible to get what was needed on the first try." loading="lazy" src="https://habrastorage.org/r/w1560/getpro/habr/upload_files/59a/450/768/59a450768c215c8574e7f14b888b0951.png" title="The LLM also assigned controls itself, and it was possible to refine the current prompt, as it was almost never possible to get what was needed on the first try."/><div><figcaption>The LLM also assigned controls itself, and it was possible to refine the current prompt, as it was almost never possible to get what was needed on the first try.</figcaption></div></figure><h2>How the Other Plugins Came About</h2><p>Next, I decided not to bother with these super-ideas involving LLMs anymore, and at this point, I realized I had a universal constructor for any synthesizer or effect I needed.</p><h3>This is Where Work with Rules for Claude Began</h3><p>The main rule was maximum reuse of all components. My idea was that if we improve something in one synthesizer, it should improve in all of them. But then the question arose: if we break something somewhere, it breaks everywhere, so review rules were created—touched the common core—tests for all plugins.<br/>Then a separate sub-agent reviewer appeared, which accumulates tasks during the day and, on command, runs at night to perform a review—to avoid spending the daily token limit.</p><h3>Thus Began the Plugin Creation Marathon</h3><p>Everything was more or less done according to one scheme:</p><ol><li><p>Discussion</p></li><li><p>Writing the first version of the technical specification</p></li><li><p>Rewriting the technical specification</p></li><li><p>Implementation with preliminary verification:<br/>Each plugin was tested even before the interface was created, as one of the rules stated—the core does not depend on JUCE. Pure C++, which compiles with any compiler and is tested without VST wrapping. Essentially, several sound examples were generated; if everything was suitable, we moved on; if not, we refined it.<br/></p></li></ol><h2>Improving Sound Quality and Workflow</h2><p>When there were more than 10 plugins, I started to wonder—do they sound good? After all, they were made by AI, and I didn't want them to sound like the simplest plugins.<br/>Thus, the audit was born.<br/>It took about two weeks: the first week was for the audit itself, the second for fixing what was found. To properly guide the AI, I delved into the topic of "How to make plugins sound better."<br/><br/>As a result, the following plan was developed:</p><ol><li><p>First, investigate, don't fix anything. Until there are facts, don't touch the code.</p></li><li><p>Study how others do it. Claude analyzed 18 sources, from scientific articles to FabFilter's approaches: how to combat digital dirt in saturation and distortion.</p></li><li><p>Set up a measurement bench and take measurements "before" any edits. Now, these measurements are verified by CI.</p></li><li><p>Go through the entire core step by step. Each finding is recorded with numerical indicators, not with the word "seems."
+  </main>
+  <footer>
+    Translation generated with Gemini 2.5 Flash-Lite.
+    The original article remains the source of record.
+  </footer>
+</body>
+</html>

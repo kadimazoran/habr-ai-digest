@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>How many Telegram channels do you read?</title>
+  <meta name="description" content="Now almost everything has moved to Telegram: bloggers, authoritative resources, media – everyone has their own channel. Morning. I open Telegram – the unread counter is like a phone number. I scroll: repost, advertisement, &quot;good morning, friends&quot;, the same news item on five channels in a r">
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.65;
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 32px 20px 64px;
+      color: #1f2328;
+    }
+    header {
+      border-bottom: 1px solid #d8dee4;
+      margin-bottom: 28px;
+      padding-bottom: 20px;
+    }
+    .source {
+      color: #57606a;
+      font-size: 0.95rem;
+    }
+    img, video, iframe {
+      max-width: 100%;
+      height: auto;
+    }
+    pre {
+      overflow-x: auto;
+      padding: 16px;
+      background: #f6f8fa;
+      border-radius: 6px;
+    }
+    code {
+      font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+    }
+    blockquote {
+      border-left: 4px solid #d0d7de;
+      margin-left: 0;
+      padding-left: 16px;
+      color: #57606a;
+    }
+    footer {
+      border-top: 1px solid #d8dee4;
+      margin-top: 40px;
+      padding-top: 20px;
+      color: #57606a;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>How many Telegram channels do you read?</h1>
+    <p>Now almost everything has moved to Telegram: bloggers, authoritative resources, media – everyone has their own channel. Morning. I open Telegram – the unread counter is like a phone number. I scroll: repost, advertisement, &quot;good morning, friends&quot;, the same news item on five channels in a row. Somewhere in between – two things I really need. I pick them out after half an hour of scrolling. Or I miss them and find out last. I&#x27;ve tried everything you usually try. Folders – a neatly arranged mess. &quot;Saved&quot; – a graveyard where everything goes to die. I feel sorry to unsubscribe: what if the very thing comes out here. I subscribe to everything so as not to miss anything, and in the end, I don&#x27;t read anything. It takes more than an hour a day to &quot;stay informed&quot;, and I don&#x27;t feel informed. Someone might say here – &quot;brother, time management for news&quot;, but I thought that in our time, the flow of information can be simplified somehow. Read more</p>
+    <p class="source">
+      Machine-translated from Habr.
+      <a href="https://habr.com/ru/articles/1091568/?utm_campaign=1091568&amp;utm_source=habrahabr&amp;utm_medium=rss">Read the original Russian article</a>.
+      Wed, 07 Oct 2026 11:48:06 GMT
+    </p>
+  </header>
+  <main>
+<div><p>Now almost everything has moved to Telegram: bloggers, authoritative resources, media – everyone has their own channel.</p><p>Morning. I open Telegram – the unread counter is like a phone number. I scroll: repost, advertisement, "good morning, friends", the same news item on five channels in a row. Somewhere in between – two things I really need. I pick them out after half an hour of scrolling. Or I miss them and find out last.</p><p>I've tried everything you usually try. Folders – a neatly arranged mess. "Saved" – a graveyard where everything goes to die. I feel sorry to unsubscribe: what if the very thing comes out here.</p><p>I subscribe to everything so as not to miss anything, and in the end, I don't read anything. It takes more than an hour a day to "stay informed", and I don't feel informed. Someone might say here – "brother, time management for news", but I thought that in our time, the flow of information can be simplified somehow.</p><h3>Why did I collect all this?</h3><p>I wanted to try creating one place where the necessary information from different channels falls – and where you can see who has posted what. Not to invent a new feed, but on the contrary, to sort the content that is needed once a day in large quantities correctly.</p><p>I assembled a bot in Telegram. Clumsily, on the fly (thanks to neural networks), "just to make it work" – I didn't think anyone would need it besides me.</p><p>The first version ran on my home computer and died with every internet outage or new blockages: the digest simply wasn't sent, and no one knew about it, including me. Since then, the bot has been running on proper infrastructure and has survived a couple of stories that deserve a separate post. For example, Telegram once killed the bot's session because it was working from two IP addresses simultaneously. More on that later, otherwise the article won't fit.</p><p>Side effect: I got drawn into development more than I expected, and the desire to dig deeper appeared.</p><p>The result of a couple of months: I stopped opening the messenger "to check". Once in the morning, I read the summary and know what's going on. The background "what if I missed something" is gone: if it's important, it's in the digest; if it's not there, it was noise that wasn't worth knowing about or was just an advertisement.</p><p>I don't want to go back.</p><h3>Why did I share it with others?</h3><p>I told a couple of acquaintances – an entrepreneur, a marketer, a person from investments. I thought they would nod in response with a polite "interesting".</p><p>The answer from all three was roughly the same: they are drowning in channels, afraid to miss something. One even paid an assistant to manually compile summaries.</p><p>Since I built this thing for myself, it would be foolish to keep it only to myself.</p><h3>What is it essentially?</h3><p>A filter between you and the noise, not another feed that demands attention. You add channels you want to track (important: public ones), the bot filters out ads, reposts, and filler, and at the output gives a short human-readable summary. A link to the original is provided for each item: if the topic caught your eye, you click and read it in full; if not, you still didn't miss it.</p><figure><img alt="example of work" loading="lazy" src="https://habrastorage.org/r/w1560/getpro/habr/upload_files/987/2b9/f4b/9872b9f4ba21ba1919f0f4fe1aef14af.png" title="example of work"/><div><figcaption>example of work</figcaption></div></figure><p>It only works with channels, not chats. The bot monitors which posts have been published, the neural network sorts them, creates summaries, and sends them to you at a specified time.</p><p>The hardest part wasn't integrating the neural network – that's a technical matter. It was harder to decide to turn off channel notifications and not check them constantly. The brain resists: what if this particular post is important, what if I miss it. I had to force myself to trust the filter. And only when that "what if" feeling subsided, everything started working as it should.</p><h3>"I can write something like this in an evening"</h3><p>An honest conversation with those who write code – most of them are on this site.</p><p>You'll build it. I built it too, and an evening with a pet project is the best part of this story. A script that goes through channels once a day and sends summaries via some API can indeed be written in an evening.</p><p>Then comes what the evening doesn't warn you about:</p><ul><li><p><strong>The bot must run constantly.</strong> The digest is needed at 9 AM regardless of whether your computer is sleeping, the container has restarted, or the network has dropped. You need infrastructure with auto-restart and state storage, and this is more expensive than the script itself.</p></li><li><p><strong>Neural network on a credit card.</strong> One free provider runs out at the most inconvenient moment. I have a pool of free routes with auto-rotation: one hits its limit – the request silently goes to the next one. That's why the bot is free for me, not "another subscription".</p></li><li><p><strong>Access to Telegram from the infrastructure.</strong> In some places, it doesn't go directly, so the bot's traffic goes through a built-in MTProto proxy.</p></li><li><p><strong>Little things that take a week.</strong> Delivery to the end (posts are not lost if the connection breaks during sending), ad and repost filter, Telegram limits on request frequency, channels that behave dishonestly.</p></li></ul><p>I'm not saying "don't build it". Build it if you enjoy the process – it gave me more than any course. I'm saying that the first tenth of it can be built in an evening. If you just need a summary of your channels without all these adventures, I already have it ready. Link at the end.</p><h3>Under the hood (for the curious)</h3><p>A few words without being boring:</p><ul><li><p>The bot does not depend on a single protocol. If the Bot API is unavailable, the digest will still be sent via MTProto, the same way the messengers themselves work.</p></li><li><p>A channel is marked as "read" only after the digest has been actually delivered. If the connection breaks in the middle of sending. Posts will arrive next time, nothing will be lost.</p></li><li><p>The network is lost at night – the bot doesn't die with an error, but waits and revives itself when it returns. No "restart the bot" needed.</p></li></ul><p>All this is assembled from open-source parts in Python. If you want to discuss the implementation, you are welcome in the comments: I respond there.</p><h3>What about the money?</h3><p>There's no point in listing everything here. The main thing is: the bot is free. You can add up to 10 channels, which is enough for all active Telegram channel subscriptions; My neural network resources are not infinite, so the limit is fair, not "all tokens will burn out in 3 days." For those who need more, there is voluntary project support. In gratitude, I offer extended features: more channels, digest on demand, voice narration of digests, priority in the queue, etc.</p><p>Among other things: history and statistics for your channels, PDF export of digests, ad filter, channel grouping, and "hot" keywords: a post with the desired word comes out, and it arrives to you immediately. The rest is easier to try once than to read about.</p><h3>Security</h3><p>The bot only stores a list of public channels that you have added yourself – this is necessary to compile your summary, like a bookmark list. It does not read your personal messages, contacts, or chats – it has no access to them at all. Your channels are used only for your digest, they are not shared or sold to anyone. Any channel can be deleted with one click.</p><p>Return to the first question: how many channels do you read? And how many of them do you actually read?</p><p>I have closed this problem for myself. Tell us in the comments how you deal with it. And if you have already built your own bot, definitely write about it, I'm really interested in what you've achieved.</p><hr/><p>Try the bot: <a href="https://t.me/GptOriginal1_bot?start=habr">bot</a></p></div>
+  </main>
+  <footer>
+    Translation generated with Gemini 2.5 Flash-Lite.
+    The original article remains the source of record.
+  </footer>
+</body>
+</html>

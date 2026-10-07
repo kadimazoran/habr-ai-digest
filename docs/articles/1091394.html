@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Why We Combined Green Screen Shooting, 3D Renders, and Generative AI in One Video, and What We Achieved</title>
+  <meta name="description" content="Use the capabilities of neural networks or organize traditional video shooting? We explain how, upon receiving the task to create a corporate video, we combined the efforts of two teams, AI tools, and manual labor. As a result, we created a three-minute film in-house with actors and three-dimensiona">
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.65;
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 32px 20px 64px;
+      color: #1f2328;
+    }
+    header {
+      border-bottom: 1px solid #d8dee4;
+      margin-bottom: 28px;
+      padding-bottom: 20px;
+    }
+    .source {
+      color: #57606a;
+      font-size: 0.95rem;
+    }
+    img, video, iframe {
+      max-width: 100%;
+      height: auto;
+    }
+    pre {
+      overflow-x: auto;
+      padding: 16px;
+      background: #f6f8fa;
+      border-radius: 6px;
+    }
+    code {
+      font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+    }
+    blockquote {
+      border-left: 4px solid #d0d7de;
+      margin-left: 0;
+      padding-left: 16px;
+      color: #57606a;
+    }
+    footer {
+      border-top: 1px solid #d8dee4;
+      margin-top: 40px;
+      padding-top: 20px;
+      color: #57606a;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Why We Combined Green Screen Shooting, 3D Renders, and Generative AI in One Video, and What We Achieved</h1>
+    <p>Use the capabilities of neural networks or organize traditional video shooting? We explain how, upon receiving the task to create a corporate video, we combined the efforts of two teams, AI tools, and manual labor. As a result, we created a three-minute film in-house with actors and three-dimensional graphics. Three technologies in one film.</p>
+    <p class="source">
+      Machine-translated from Habr.
+      <a href="https://habr.com/ru/companies/sminex_developer/articles/1091394/?utm_campaign=1091394&amp;utm_source=habrahabr&amp;utm_medium=rss">Read the original Russian article</a>.
+      Wed, 07 Oct 2026 12:38:35 GMT
+    </p>
+  </header>
+  <main>
+<div><p>Use the capabilities of neural networks or organize traditional video shooting? We explain how, upon receiving the task to create a corporate video, we combined the efforts of two teams, AI tools, and manual labor. As a result, we created a three-minute film about perfectionism - with actors and three-dimensional graphics.</p><p><strong>Two Teams, Three Technologies, One Film</strong></p><p>The natural question is: why wasn't the task outsourced? Firstly, we proceeded from the idea that since the video should reflect the company's character, no one could do it better than the employees. Secondly, we needed to stay within the limits - deadlines, budgets. Therefore, the project was handled in-house from the very beginning by two teams: the photo and video production group and <a href="https://www.behance.net/sminex_3d_lab">Sminex 3D Lab</a>.</p><p>We started with the creative process of finding a concept: brainstorming, discussing. Then we realized that the best solution was obvious - to talk about our approach using the example of perfectionists in various fields, from gastronomy to art. We wrote and approved the script and started working. We used three technologies in the project:</p><ul><li><p>live-action shooting,</p></li><li><p>photorealistic 3D renders (an indispensable tool for a developer),</p></li><li><p>simulations (dynamic images, such as flowing water, which visualizers create using neural networks and manual labor).</p></li></ul><div></div><p>To select 24 actors, we organized a casting and reviewed 350 candidates so that each would perfectly fit the intended image. We launched the traditional shooting process: actors were filmed against a green screen (chroma key) without using any sets. The film crew had a clear vision of the future frame and adjusted accordingly. This approach allowed us to leverage the advantages of live-action shooting: genuine acting, real emotions, and a sense of presence - without the high costs of set construction.</p><figure><img loading="lazy" src="https://habrastorage.org/r/w1560/getpro/habr/upload_files/968/10b/e18/96810be1879bae0d4673ddbf574b037a.jpg"/></figure><p><strong>The Pipeline Foundation</strong> </p><p>After the shooting was completed, the visual effects creation process began, with the 3D studio taking over. Artists and visualizers create project renders daily, but many on the team were working with this approach for the first time. The main 3D pipeline was built on <strong>3ds Max + Corona Renderer</strong>. This is a basic combination that we use regularly, and it served as our starting point.</p><p><strong>Simulations</strong> - we selected tools based on the task:</p><ul><li><p><strong>Chaos Phoenix</strong> - a plugin for simulating liquids, smoke, and fire. The waterfall was created using this. </p></li></ul><figure><img loading="lazy" src="https://habrastorage.org/r/w1560/getpro/habr/upload_files/9f0/1b5/397/9f01b53978311f5fd97b9eba3e4e80c6.png"/></figure><ul><li><p><strong>tyFlow</strong> - a particle system for 3ds Max. <strong>Particles</strong> are thousands or millions of small objects whose behavior is defined by rules: gravity, collisions, forces. The balls in the children's room, the shattering stained glass fragments, and the furniture emerging from gravel were created using tyFlow.</p></li><li><p><strong>EmberGen</strong> - software for volumetric effects like smoke, fire, and clouds, which shows results in real-time. The clouds were created using this.</p></li><li><p><strong>GrowFX</strong> - a plugin for procedural plant creation. <strong>"Procedural"</strong> means that the plant's form is defined by growth rules, not modeled manually.</p></li></ul><p><strong>Animations</strong> - we also used the most relevant software:</p><ul><li><p>trees were animated in <strong>SpeedTree</strong> (the industry standard for vegetation),</p></li></ul><figure><img loading="lazy" src="https://habrastorage.org/r/w1560/getpro/habr/upload_files/ae5/91f/d8e/ae591fd8e60bb49ab339adf897741795.png"/></figure><ul><li><p>cars - in <strong>MadCar</strong>, a plugin for realistic car movement with suspension, wheel turns, and inertia.</p></li></ul><p><strong>How We Combined Shooting with Graphics and Achieved Realism</strong></p><p>It was necessary to integrate the 3D graphics into the filmed material in such a way that the computer-generated scenes and effects looked natural and were perceived as part of the actual shooting. We used a classic film and advertising pipeline.</p><p><strong>Step 1. Matchmoving</strong> - reconstructing the movement of the real camera from the filmed video. The software analyzes how points in the frame shift and calculates where the camera was, where it moved, and what lens it used. We did this in <strong>3DEqualizer</strong> - one of the most accurate tools for this task.</p><p><strong>Step 2. Camera Transfer to 3D.</strong> The reconstructed camera was imported into 3ds Max. This way, the virtual camera moves exactly like the real one, and the 3D environment "looks" at the world from the same point as the lens during shooting.</p><p><strong>Step 3. Keying and Compositing.</strong> The finished renders were combined with the footage in <strong>NukeX</strong> - a professional compositing program from Foundry.</p><ul><li><p><strong>Keying</strong> - removing the green background so that only the actor remains in the frame, making it look as if they were always there.</p></li><li><p><strong>Compositing</strong> - assembling the final frame from multiple layers: footage, 3D render, effects, color correction. This is where the image becomes cohesive.</p></li></ul><figure><img loading="lazy" src="https://habrastorage.org/r/w1560/getpro/habr/upload_files/b53/e28/a3e/b53e28a3ec4dface9414b722de9f1c23.png"/></figure><p>The video was ultimately assembled in <strong>Nuke Studio</strong>. This is a version of Nuke with a timeline, meaning a montage ruler: it allows you to view and assemble the entire film as a whole, not just individual shots.</p><p>A separate story is the <strong>realism of the images</strong>. The city in the background needed to look alive, but modeling it entirely would have been unacceptably time-consuming. Therefore, we assembled the city in the background from several layers: images were projected layer by layer onto 3D primitives using 2D projections, i.e., images of existing locations. As a result, the eye perceives the resulting picture as three-dimensional. Another example is the particle waterfall. We chose particle simulation in Chaos Phoenix: it provides more realistic water behavior and full control over the result. The volume of the flow, splashes, and interaction with the environment can be adjusted to the director's needs.</p><div></div><p>For tracking, we used <strong>Boris FX Mocha</strong>. This is a planar tracking tool: it tracks entire planes, not just individual points. In some tasks, Mocha provided a more stable and accurate result than Nuke's built-in trackers. Rotoscoping was done in <strong>Nuke and After Effects</strong>. For the most complex cases, such as hair and fine silhouette details, we used <strong>Roto Brush in After Effects</strong>. This is a machine learning tool: it automatically finds object boundaries and tracks the mask across frames, with the artist only making corrections.</p><ul><li><p><strong>Tracking</strong> - tracking the movement of an object or a part of an image from frame to frame. It is needed to "glue" graphics to a moving object or stabilize an element.</p></li><li><p><strong>Rotoscoping</strong> - manual or semi-automatic selection of an object in each frame. It is used where keying is insufficient, for example, in areas without a green background or with complex edges.</p></li></ul><p><strong>New Experience and In-House Developments</strong> </p><p>For part of the team, the project was an immersion into a new profession. Previously, artists worked mainly with a finished image that was entirely born in 3D. The new tools for them were <strong>Nuke</strong> and the entire compositing process: keying, rotoscoping, cleanup, and various image assembly techniques. Essentially, the artists mastered not only a different program but also a new approach - how to integrate 3D into live shooting so that the boundary between real and virtual is imperceptible.</p><ul><li><p><strong>Cleanup</strong> - "cleaning" the frame, removing extraneous elements like tracking markers, rigs, wires, random objects, and glare.</p></li></ul><p>Where the functionality of off-the-shelf tools was insufficient, we developed our own solutions specifically for the project.</p><p><strong>CXR → EXR Converter.</strong> CXR is Corona Renderer's proprietary format, which saves the render with all auxiliary layers. The standard for compositing is <strong>EXR (OpenEXR)</strong>. This format stores images with high dynamic range and multiple channels - separate light, reflections, depth, and so on. To transfer renders from 3ds Max to Nuke without loss, we wrote a converter plugin.</p><p><strong>Light Controller.</strong> In some scenes, there were too many light sources, and adjusting each one manually was time-consuming, and during edits, it was almost impossible. The Light Controller script allows you to assign any scene object as a controller. Through it, you can simultaneously control light intensity in the range from 0 to a specified value instead of numerous manual actions.</p><figure><img loading="lazy" src="https://habrastorage.org/r/w1560/getpro/habr/upload_files/fab/7bb/0a3/fab7bb0a3eb8704b929bbd17218206f8.png"/></figure><p><strong>What Neural Networks Couldn't Handle</strong></p><p>Generative AI helped us in individual scenes, but it has limitations that we encountered.</p><ul><li><p><strong>Growing plants in close-up.</strong> The neural network could not realistically generate the growth process in detail. It wouldn't be noticeable in a wide shot, but in a close-up, every unnatural element is visible. Therefore, the animation was done manually using the <strong>Morpher Modifier</strong>. This is a 3ds Max tool that smoothly transforms one object shape into another: the artist sets key plant states, and the program calculates the transitions between them.</p></li><li><p><strong>Complex directorial tasks.</strong> Neural networks currently struggle when it's necessary to preserve specific details in the frame and precisely control camera movement. For such tasks, meticulous manual work is indispensable.</p></li></ul><p>The project was a challenge not only in terms of technology. A separate aspect was the interaction between two different teams. We had to work together from the very beginning, negotiate, make decisions about which scenes to shoot live, which to assemble in 3D, and where to incorporate neural networks. The experiment was successful largely thanks to our approach. We test, learn new technologies, and openly share our experience. And now we are participating in an employer rating - <a href="https://rating.hh.ru/poll/?utm_source=hh.ru&amp;utm_medium=referral&amp;utm_campaign=article_34335">support us with your vote</a>.</p></div>
+  </main>
+  <footer>
+    Translation generated with Gemini 2.5 Flash-Lite.
+    The original article remains the source of record.
+  </footer>
+</body>
+</html>

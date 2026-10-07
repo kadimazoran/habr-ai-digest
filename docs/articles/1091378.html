@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>One Model, Different Results: How Infrastructure Affects AI Agent Benchmarks</title>
+  <meta name="description" content="This year, Anthropic published research on infrastructure noise in benchmarks for AI agents that write and run code. On Terminal-Bench 2.0, the difference between the strictest and unrestricted configurations reached six percentage points. This is more than the typical gap between adjacent positions">
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.65;
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 32px 20px 64px;
+      color: #1f2328;
+    }
+    header {
+      border-bottom: 1px solid #d8dee4;
+      margin-bottom: 28px;
+      padding-bottom: 20px;
+    }
+    .source {
+      color: #57606a;
+      font-size: 0.95rem;
+    }
+    img, video, iframe {
+      max-width: 100%;
+      height: auto;
+    }
+    pre {
+      overflow-x: auto;
+      padding: 16px;
+      background: #f6f8fa;
+      border-radius: 6px;
+    }
+    code {
+      font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+    }
+    blockquote {
+      border-left: 4px solid #d0d7de;
+      margin-left: 0;
+      padding-left: 16px;
+      color: #57606a;
+    }
+    footer {
+      border-top: 1px solid #d8dee4;
+      margin-top: 40px;
+      padding-top: 20px;
+      color: #57606a;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>One Model, Different Results: How Infrastructure Affects AI Agent Benchmarks</h1>
+    <p>This year, Anthropic published research on infrastructure noise in benchmarks for AI agents that write and run code. On Terminal-Bench 2.0, the difference between the strictest and unrestricted configurations reached six percentage points. This is more than the typical gap between adjacent positions at the top of the leaderboard. The work is interesting not only for its specific numbers; it highlights a more fundamental problem: benchmarks measure not the model in a vacuum, but the entire system in which the model operates. Read more</p>
+    <p class="source">
+      Machine-translated from Habr.
+      <a href="https://habr.com/ru/companies/cloud_ru/articles/1091378/?utm_campaign=1091378&amp;utm_source=habrahabr&amp;utm_medium=rss">Read the original Russian article</a>.
+      Wed, 07 Oct 2026 12:37:24 GMT
+    </p>
+  </header>
+  <main>
+<div><figure><img loading="lazy" src="https://habrastorage.org/r/w1560/getpro/habr/upload_files/b41/24a/ca1/b4124aca1bc10163efd70d08e32bc579.png"/></figure><p>The model didn't change, nor did the task set. But as soon as resource limits were removed, the result increased by six percentage points. Let's explore why CPU, memory, and timeouts become part of the evaluation in agent benchmarks – and what data should accompany a ranking position.</p><p>Imagine two AI agents using the same LLM score 54% and 57% in a benchmark. It seems the second is better: three percentage points is a noticeable difference. But what if one agent was run with a strict memory limit, while the other was allowed to briefly exceed the basic configuration boundaries?</p><p>This year, Anthropic published research on infrastructure noise in benchmarks for AI agents that write and run code. On Terminal-Bench 2.0, the difference between the strictest and unrestricted configurations reached six percentage points. This is more than the typical gap between adjacent positions at the top of the leaderboard.</p><p>The work is interesting not only for its specific numbers. It highlights a more fundamental problem: benchmarks measure not the model in a vacuum, but the entire system in which the model operates.</p><blockquote><p>For those who want to read the original. Author: Gian Segato, Anthropic. <a href="https://www.anthropic.com/engineering/infrastructure-noise">Quantifying infrastructure noise in agentic coding evals</a>.</p></blockquote><h2>Why a Regular Test and an Agent Test Are Not the Same</h2><p>In a static benchmark, the model receives a question and returns an answer. The environment does not affect the result: the answer is compared against a reference. An agent works differently; it:</p><ul><li><p>explores the repository,</p></li><li><p>edits files,</p></li><li><p>runs the compiler and tests,</p></li><li><p>installs dependencies,</p></li><li><p>creates child processes,</p></li><li><p>reads results and modifies the solution,</p></li><li><p>repeats this cycle until success or timeout.</p></li></ul><p>At each step, the agent depends on the environment. If there isn't enough memory, the package installation will fail. A slow CPU will delay compilation and tests, meaning the agent will complete fewer iterations within the allotted time. The environment here is not a passive shell but part of the problem-solving process.</p><p>Therefore, two agents with different limits are essentially taking different tests, even if they use the same model and tasks.</p><h2>What Anthropic Discovered</h2><p>Anthropic ran Terminal-Bench 2.0 on Google Kubernetes Engine and noticed two interesting things: the results did not match the official leaderboard, and up to 6% of tasks failed due to pod errors. Most of these failures were unrelated to the model's ability to solve the task.</p><p>The reason turned out to be the way limits were applied. Starting with version 2.0, Terminal-Bench specifies recommended CPU and RAM for each task. However, specifying resource limits and enforcing them uniformly are different things.</p><blockquote><p>What do I mean? A container has two separate parameters: guaranteed resources and a hard limit, exceeding which forcibly terminates the container. In Anthropic's configuration, both parameters were equal to the task specification.</p></blockquote><p>There was no buffer, and even a brief spike in memory consumption would kill the container due to OOM. However, the official Terminal-Bench leaderboard is calculated on a different sandbox provider. It is more lenient: it allows temporary exceeding of limits for stability. The same specification on different infrastructure yielded different results.</p><h2>Experiment: Six Configurations</h2><p>To assess the scale of the effect, the team ran Terminal-Bench 2.0 in six configurations: from a strict 1x, where the task specification serves as both guarantee and ceiling, to a variant with no limits at all. The model, agent, and task set were identical in all runs.</p><p>The results fall into two groups.</p><ul><li><p><strong>From 1x to 3x, environment reliability increased, not the result.</strong> The proportion of infrastructure errors decreased from 5.8% to 2.1% (p &lt; 0.001), but the overall success rate varied within the noise margin (p = 0.40). The data shows that most tasks that failed at 1x would have failed anyway: the agent hit the limit before finding the correct path to the solution.</p></li><li><p><strong>After 3x, resources began to help solve tasks.</strong> From 3x to the configuration without limits, infrastructure errors decreased by another 1.6%, and success rate increased by almost 4%. Success rate here grows faster than errors decrease: the agent gains the ability to use approaches that simply don't work without resource buffers.</p></li></ul><p>The outcome between the extreme points: +6% to success rate, and the proportion of infrastructure errors dropped from 5.8% to 0.5%.</p><figure><img alt="Anthropic experiment results" loading="lazy" src="https://habrastorage.org/r/w1560/getpro/habr/upload_files/325/d6f/a60/325d6fa60b77f9cb6acbbac59995f168.png" title="Anthropic experiment results"/><div><figcaption>Anthropic experiment results</figcaption></div></figure><p>The main finding was replicated on other Anthropic models: the effect recurred, only the magnitude differed. The picture for models from other companies is likely similar, but this has not been rigorously tested.</p><p>The effect was also tested on SWE-bench: 227 tasks, 10 runs each, memory up to 5x the base. Success rate again monotonically increased with RAM, but less so: the difference between 1x and 5x was 1.54%. This is expected, as SWE-bench tasks are generally less resource-intensive. However, resource allocation still affects the result here.</p><h2>Resources Change What the Benchmark Measures</h2><blockquote><p>The key takeaway is that not only the magnitude of the increase matters, but also its nature.</p></blockquote><p>Up to 3x, additional resources
+  </main>
+  <footer>
+    Translation generated with Gemini 2.5 Flash-Lite.
+    The original article remains the source of record.
+  </footer>
+</body>
+</html>

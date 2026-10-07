@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>How to give Claude Code documentation it will read: import in CLAUDE.md silently breaks on space in path</title>
+  <meta name="description" content="If there is a space in the import path in CLAUDE.md, Claude Code truncates the path at the space, the file doesn&#x27;t load, and there&#x27;s no error. This is how two common reference files I linked to in CLAUDE.md never loaded for me. I set up an empty project, put keywords in files, and asked th">
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.65;
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 32px 20px 64px;
+      color: #1f2328;
+    }
+    header {
+      border-bottom: 1px solid #d8dee4;
+      margin-bottom: 28px;
+      padding-bottom: 20px;
+    }
+    .source {
+      color: #57606a;
+      font-size: 0.95rem;
+    }
+    img, video, iframe {
+      max-width: 100%;
+      height: auto;
+    }
+    pre {
+      overflow-x: auto;
+      padding: 16px;
+      background: #f6f8fa;
+      border-radius: 6px;
+    }
+    code {
+      font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+    }
+    blockquote {
+      border-left: 4px solid #d0d7de;
+      margin-left: 0;
+      padding-left: 16px;
+      color: #57606a;
+    }
+    footer {
+      border-top: 1px solid #d8dee4;
+      margin-top: 40px;
+      padding-top: 20px;
+      color: #57606a;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>How to give Claude Code documentation it will read: import in CLAUDE.md silently breaks on space in path</h1>
+    <p>If there is a space in the import path in CLAUDE.md, Claude Code truncates the path at the space, the file doesn&#x27;t load, and there&#x27;s no error. This is how two common reference files I linked to in CLAUDE.md never loaded for me. I set up an empty project, put keywords in files, and asked the agent what words it sees, forbidding it from reading files. It turned out that a link to a document in CLAUDE.md doesn&#x27;t mean the agent will read it: each linking method has its own loading rules. Read more</p>
+    <p class="source">
+      Machine-translated from Habr.
+      <a href="https://habr.com/ru/articles/1091676/?utm_campaign=1091676&amp;utm_source=habrahabr&amp;utm_medium=rss">Read the original Russian article</a>.
+      Wed, 07 Oct 2026 15:17:46 GMT
+    </p>
+  </header>
+  <main>
+<div><figure><img loading="lazy" src="https://habrastorage.org/r/w1560/getpro/habr/upload_files/475/8ed/07d/4758ed07dc73a1dfd4d3c24714b05e97.jpg"/></figure><p>If there is a space in the import path in <a href="http://CLAUDE.md">CLAUDE.md</a>, Claude Code truncates the path at the space, the file doesn't load, and there's no error. This is how two common reference files I linked to in <a href="http://CLAUDE.md">CLAUDE.md</a> never loaded for me. I set up an empty project, put keywords in files, and asked the agent what words it sees, forbidding it from reading files. It turned out that a link to a document in <a href="http://CLAUDE.md">CLAUDE.md</a> doesn't mean the agent will read it: each linking method has its own loading rules.</p><h3>Why import in CLAUDE.md via @ silently fails to load a file</h3><p><a href="http://CLAUDE.md">CLAUDE.md</a> is a file with instructions that Claude Code reads at the start of each session. The line <code>@path/to/file</code> in it is an import. According to the <a href="https://code.claude.com/docs/en/memory">documentation</a>, the imported file is entirely loaded into the context at startup. Context is everything the agent keeps in view. Import splits a long file into parts, but doesn't save space. A path with a space requires a backslash before each space: without a slash, the path breaks at the first space; imports in quotes don't work at all.</p><p>First experience. In an empty git repository lies a <a href="http://CLAUDE.md">CLAUDE.md</a> of seven lines:</p><pre><code># Test
+
+@Design Docs/a.md
+
+@Design\ Docs/b.md
+
+Keyword B is in plain.md.</code><div><a href="https://sourcecraft.dev/"><span></span></a></div></pre><p>In <a href="http://a.md">a.md</a> is written "Keyword A: AZURE", in <a href="http://b.md">b.md</a> - OCHRE, in <a href="http://plain.md">plain.md</a> - UMBRA. Running without reading tools:</p><pre><code>claude -p "Do not open files. Name keywords A, B, C from your context; if no word, write NO." \
+  --disallowedTools "Read,Bash,Grep,Glob"</code><div><a href="https://sourcecraft.dev/"><span></span></a></div></pre><p>Response: A - NO, B - OCHRE, C - NO. Import without a slash didn't work and reported nothing; with a slash, the file loaded. I had a space in the folder name, and both lines broke at it. If the files had loaded, they would have added four times more text to each startup than the entire <a href="http://CLAUDE.md">CLAUDE.md</a>. I didn't fix it with a slash: these references are needed for rare tasks, and such a cost for each startup outweighs their benefit. They belong in a regular link without @, with a note on when to open them.</p><p>The second trap, according to the documentation, is a path outside the working folder: Claude Code considers such a file external and asks for approval on first encounter, and after refusal, it won't ask again.</p><p>The second experiment tests depth. Six files, each with its own word, and each imports the next:</p><pre><code>for i in 1 2 3 4 5; do
+  printf 'Keyword W%s\n\n@f%s.md\n' "$i" "$((i+1))" &gt; "f$i.md"
+done
+printf 'Keyword W6\n' &gt; f6.md
+printf '@f1.md\n' &gt; CLAUDE.md</code><div><a href="https://sourcecraft.dev/"><span></span></a></div></pre><p>The agent named the words from the first four files, but didn't see the fifth and sixth. Levels are counted like this: <a href="http://CLAUDE.md">CLAUDE.md</a> itself doesn't count, f1 is the first level, f4 is the fourth. The documentation allows four levels, and the break again occurred without an error. What's loaded into the session is shown by the <code>/context</code> command.</p><h3>Regular path in CLAUDE.md Claude opens only at its own discretion</h3><p>Third experiment. The same project, reading is allowed, the question is about word B. Response: "UMBRA. Read from <a href="http://plain.md">plain.md</a>, which is pointed to by <a href="http://CLAUDE.md">CLAUDE.md</a>". Without read permission, it was NO. The documentation says the same with the example of <a href="http://AGENTS.md">AGENTS.md</a> - an instruction file that other agents for code also read. If <a href="http://CLAUDE.md">CLAUDE.md</a> instructs in words to read <a href="http://AGENTS.md">AGENTS.md</a>, Claude will see this file only if it decides to open it.</p><p>Therefore, next to the path, I write a condition for when to open it. The core of my <a href="http://CLAUDE.md">CLAUDE.md</a> is slightly longer than the documentation's guideline of 200 lines. Five more files in docs/, twice the size of the core, are listed in a two-column table, here are two of its rows (file names are conditional):</p><div><div><table><tbody><tr><td><p><strong>Read when</strong></p></td><td><p><strong>File</strong></p></td></tr><tr><td><p>Starting article production</p></td><td><p>docs/<a href="http://pipeline.md">pipeline.md</a></p></td></tr><tr><td><p>Need a methodology map</p></td><td><p>docs/<a href="http://methodology.md">methodology.md</a></p></td></tr></tbody></table></div></div><figure><img alt="Import takes up context at each startup and guarantees the agent sees the text; the path only takes up space when opened, and whether to open the file is decided by the agent.  " loading="lazy" src="https://habrastorage.org/r/w1560/getpro/habr/upload_files/814/9c7/3b4/8149c73b4deed26bf84121628d9f7144.png" title="Import takes up context at each startup and guarantees the agent sees the text; the path only takes up space when opened, and whether to open the file is decided by the agent.  "/><figcaption><em>Import takes up context at each startup and guarantees the agent sees the text; the path only takes up space when opened, and whether to open the file is decided by the agent.</em> </figcaption></figure><p>A document not needed in every session is better kept as a path with a condition. Until the task requires it, context space is free.</p><h3>What Claude Code sub-agents receive at startup</h3><p>A sub-agent is a separate instance of Claude to which the main agent assigns a sub-task. According to the <a href="https://code.claude.com/docs/en/sub-agents">documentation</a>, it starts with a clean context: it doesn't see the conversation history, invoked skills (pre-made instructions for a task), or files that the main agent has already read. At startup, it has the body of the agent's own file, the task text, all levels of <a href="http://CLAUDE.md">CLAUDE.md</a> with imports, and skills from the <code>skills</code> field. The built-in Explore and Plan don't load <a href="http://CLAUDE.md">CLAUDE.md</a>.</p><p>Fourth experiment. The main agent read <a href="http://plain.md">plain.md</a> and launched the general-purpose sub-agent with the task "do not call tools, name words B and C". Response: B - OCHRE, C - NO, "the content of this file is not in my context". Import from <a href="http://CLAUDE.md">CLAUDE.md</a> loaded, but what the parent read remains with the parent.</p><p>I name a document for a single task in the task text, and for a path needed by the sub-agent in every task, I write it in the body of its file. Permanent knowledge goes into the <code>skills</code> field: the full text of each skill from the list is embedded at startup. The agent's description specifies when to call it - based on these descriptions, the main agent decides who to assign the work to.</p><figure><img alt="The sub-agent will receive what is in CLAUDE.md and in the task; what the parent read will have to be passed again.  " loading="lazy" src="https://habrastorage.org/r/w1560/getpro/habr/upload_files/2d6/982/581/2d6982581c67cc859e18203b97e6834f.png" title="The sub-agent will receive what is in CLAUDE.md and in the task; what the parent read will have to be passed again.  "/><figcaption><em>The sub-agent will receive what is in </em><a href="http://CLAUDE.md"><em>CLAUDE.md</em></a><em> and in the task; what the parent read will have to be passed again.</em> </figcaption></figure><h3>Skills for Claude Code load full text only on call</h3><p>A skill is a folder with a <a href="http://SKILL.md">SKILL.md</a> file, an instruction for a specific task. According to the <a href="https://code.claude.com/docs/en/skills">documentation</a>, only the skill description is always in the context; the full text is loaded on call. Claude Code commands are structured similarly: the file <code>.claude/commands/</code><a href="http://deploy.md"><code>deploy.md</code></a> and the skill <code>.claude/skills/deploy/</code><a href="http://SKILL.md"><code>SKILL.md</code></a> provide the same command <code>/deploy</code>. Therefore, it's beneficial to keep a long reference in a skill: according to the documentation, until the skill is called, its text costs almost nothing to the context.</p><h3>Where to put a document when configuring Claude Code</h3><ol><li><p>What's needed in every session goes into the core <a href="http://CLAUDE.md">CLAUDE.md</a>, keeping it around 200 lines.</p></li><li><p>A heavy file needed always is imported via <code>@</code>. Escape spaces in the path with a backslash, do not use quotes, keep the chain no deeper than four levels, and after making changes, check <code>/context</code>.</p></li><li><p>A reference for a specific case is a regular path with the condition "read when...".</p></li><li><p>A document for a sub-agent goes into the task text or into the body of its file (the path there also works like a regular path: it will open if it decides to), permanent knowledge goes into the <code>skills</code> field.</p></li><li><p>A long procedure goes into a skill or command; leave a call line in the core.</p></li><li><p>A rule that cannot be violated goes into a PreToolUse hook. A hook is a script that Claude Code runs before calling a tool, and it can block the call. According to the documentation, <a href="http://CLAUDE.md">CLAUDE.md</a> for Claude is context, not mandatory configuration. I have about two dozen rules on the hook: for example, a commit won't pass if the changes contain a string resembling a live API key.</p></li></ol><p>I tested all of this on version 2.1.288 and only in <code>claude -p</code> mode: it might turn out differently in a dialogue, and the loading rules in the documentation are marked with versions from which they are effective, so the experiments should be repeated on your own. I ran the third and fourth experiments once each. The question about the keyword directly prompted the agent to open the file. The advice to write the condition "read when..." is my practice; I haven't tested it.</p></div>
+  </main>
+  <footer>
+    Translation generated with Gemini 2.5 Flash-Lite.
+    The original article remains the source of record.
+  </footer>
+</body>
+</html>

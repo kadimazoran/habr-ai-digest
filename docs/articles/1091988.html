@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>FalangFlow: a new open-source business process constructor</title>
+  <meta name="description" content="I&#x27;ve previously written about Falang (friendly algorithmic language) – a universal solution for building flowcharts. Back then, I had several MVPs for different areas, but now I&#x27;m releasing a real product. Meet FalangFlow – a business process constructor. The code is open-source under the ">
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.65;
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 32px 20px 64px;
+      color: #1f2328;
+    }
+    header {
+      border-bottom: 1px solid #d8dee4;
+      margin-bottom: 28px;
+      padding-bottom: 20px;
+    }
+    .source {
+      color: #57606a;
+      font-size: 0.95rem;
+    }
+    img, video, iframe {
+      max-width: 100%;
+      height: auto;
+    }
+    pre {
+      overflow-x: auto;
+      padding: 16px;
+      background: #f6f8fa;
+      border-radius: 6px;
+    }
+    code {
+      font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+    }
+    blockquote {
+      border-left: 4px solid #d0d7de;
+      margin-left: 0;
+      padding-left: 16px;
+      color: #57606a;
+    }
+    footer {
+      border-top: 1px solid #d8dee4;
+      margin-top: 40px;
+      padding-top: 20px;
+      color: #57606a;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>FalangFlow: a new open-source business process constructor</h1>
+    <p>I&#x27;ve previously written about Falang (friendly algorithmic language) – a universal solution for building flowcharts. Back then, I had several MVPs for different areas, but now I&#x27;m releasing a real product. Meet FalangFlow – a business process constructor. The code is open-source under the APGL-3 license, and you can run it locally or on your own host. Read more</p>
+    <p class="source">
+      Machine-translated from Habr.
+      <a href="https://habr.com/ru/articles/1091988/?utm_campaign=1091988&amp;utm_source=habrahabr&amp;utm_medium=rss">Read the original Russian article</a>.
+      Thu, 08 Oct 2026 13:51:21 GMT
+    </p>
+  </header>
+  <main>
+<div><p>I've previously <a href="https://habr.com/ru/articles/814923/">written</a> about Falang (friendly algorithmic language) – a universal solution for building flowcharts. Back then, I had several MVPs for different areas, but now I'm releasing a real product.</p><p>Meet <a href="https://falang.ru/flow/">FalangFlow</a> – a business process constructor. The code is <a href="https://github.com/falang-io/falang">open-source</a> under the APGL-3 license, and you can install it locally or on your own host.</p><div></div><p>I believe everyone knows what a business process constructor is. The market for such applications is quite large now, with many solutions available. Therefore, I will focus on the main features.</p><h2>Key Features of FalangFlow</h2><h3>Strict Node Display Scheme</h3><p>In editors like n8n, users can place nodes anywhere on the canvas. As a result, diagrams with more than 20 nodes become difficult to read. In FalangFlow, you only control the algorithm; node positioning follows predefined strict rules. Complex algorithms remain readable. Falang allows implementing loops just as you would in real code. You can have any level of nesting. At any level, you can use break and continue to upper levels. The flow lines will accurately indicate where the algorithm is going, leaving no room for misinterpretation. Falang renders even complex diagrams correctly.</p><figure><img alt="Example of a diagram with loops" loading="lazy" src="https://habrastorage.org/r/w1560/webt/06/76/ae/0676ae601a500194a884343c3f213eab.png"/><div><figcaption>Example of a diagram with loops</figcaption></div></figure><h3>TypeScript Instead of a Custom Formula Editor</h3><p>Block fields are actual TypeScript expressions within the Monaco editor (the same one used in VSCode). The editor knows which variables are visible at that point in the schema. This enables autocompletion for fields and type checking directly within the block. Technically, it works by using Monaco editor's functionality to hide document lines. All type declarations remain in hidden lines, and the client only sees the line where a specific value needs to be entered.</p><figure><img alt="Example of autocompletion" loading="lazy" src="https://habrastorage.org/webt/39/05/24/39052413ff79423a7c908f497b603f19.gif"/><div><figcaption>Example of autocompletion</figcaption></div></figure><h3>All Information on the Diagram.</h3><p>Often, business process editors only show an integration icon and a brief description of the action. To see the parameters passed in a request, you need to open the icon's editing form. Falang follows the principle of “Everything should be on the diagram.” When viewing a diagram, you see all the information necessary to understand what is happening at a given node. The diagram can be exported to PDF and printed, and the printed version will display all the essential process information.</p><h3>Integrations</h3><p>There are over twenty built-in integrations: Telegram, OpenAI-compatible AI providers, HTTP requests and incoming webhooks, scheduling, PostgreSQL, MySQL, files, media processing via ffmpeg, human-in-the-loop tasks, and Russian services – 1C, Bitrix24, amoCRM, ЮKassa, Diadoc, MoiSklad, Ozon, Wildberries.</p><p>To avoid writing a vast number of integrations, I used a small trick: I created an adapter for the integration registry of the open-source ActivePieces engine. Currently, this method integrates an additional 62 services (Slack, Google Sheets, Notion, GitHub, Stripe, and others).</p><p>Not all integrations have been thoroughly tested yet, but that's a matter of time.</p><h3>Selecting Execution Branch with AI</h3><p>The AI-choice node, inherited from switch, allows you to ask an AI model a question and direct the algorithm's execution to the appropriate branch based on the AI's answer. You can also specify the data type that each branch will add to the context. This is achieved through structured output. The model returns an interface like <code>{ action: string, data: T }</code>, and execution proceeds along the correct path.</p><figure><img alt="Example of using the call-ai-choice node" loading="lazy" src="https://habrastorage.org/r/w1560/webt/ab/5b/bc/ab5bbc54fa282fd2229280704bef0acd.png"/><div><figcaption>Example of using the call-ai-choice node</figcaption></div></figure><h3>Editing Diagrams with AI.</h3><p>Falang has built-in support for an AI agent that modifies diagrams at the core level. This allows you to create and edit diagrams using simple text prompts, similar to how you would with code. You can write a request directly in an empty project, and the agent will create the automation you need.</p><h3>Dev/Prod</h3><p>On a dev environment, you can build the project and launch a dev version with test credentials. After publishing to production, all new processes start running on the latest algorithm version. A process that started on an older version will continue to run on that older version.</p><h3>Backend on Temporal</h3><p>Temporal is used as the backend (an open-source platform for reliable (durable) code execution that orchestrates distributed workflows and protects applications from failures). The compiler traverses the diagrams and generates two TypeScript modules:</p><ul><li><p><code>workflows.ts</code> – the process itself: branching, loops, function calls, waits. This is deterministic code that Temporal can replay from event history;</p></li><li><p><code>activities.ts</code> – everything that interacts with the external world: calls to Telegram, HTTP, LLM, databases. Each such action becomes a Temporal activity with its own timeouts and retry policies.</p></li></ul><p>Then, the entire project is type-checked by the TypeScript compiler and bundled by the Temporal bundler. At any moment, you can view the generated code and navigate from a line of code to the specific block it originated from.</p><h3>Working with Files</h3><p>FalangFlow supports working with media files. You can create images, videos, and audio using AI, as well as edit them with ffmpeg (a dedicated node is created for ffmpeg). The content of media files is never stored within the runner; instead, a File interface is provided: <code>{ id, name, size, mime }</code>. Files are stored in ObjectStorage. When sending a file for processing, for example, to an AI, you pass this interface, and the file is then uploaded from storage and sent to the model. Similarly, when you generate a file using AI, you receive not the file content but an object with a link to the file in object storage.</p><h2>Example: Creating an AI Bot in Telegram that Plays the Game “Guess the Celebrity”</h2><p>This example uses two integrations: a Telegram bot and an OpenAI-compatible provider. After creating the integrations and filling in the necessary tokens, the corresponding nodes become available in the diagram. Communication with the user occurs through buttons, which are converted into a switch node on the diagram.</p><figure><img alt="Displaying a question in Telegram on the diagram and in the bot" loading="lazy" src="https://habrastorage.org/r/w1560/webt/11/39/36/1139367ce8b51ea8139c7a12cc6e1ad8.png"/><div><figcaption>Displaying a question in Telegram on the diagram and in the bot</figcaption></div></figure><p>Requests to the AI are handled similarly. The model is provided with the user's question and answer history, and then the model either asks the next question or guesses the personality.</p><p>You can see the full process of creating the bot in the video:</p><div></div><h2>Cloud Version</h2><p>I have launched a cloud version in closed beta. User activation is done manually upon request. I plan to limit it to 30 users. During this phase, the application can be used for free. You can leave a request to participate in the beta test here: <a href="https://workflow.falang.ru/">https://workflow.falang.ru</a></p><h2>Do Visual Constructors Have a Future?</h2><p>In the new world of agent development, specialists with lower qualifications can create increasingly complex products. It's already possible to create quite complex projects without looking at the code. This is the inevitable future, but I am convinced that the critical path of a program should be accessible for human review and understanding. And one of the best ways for a non-specialist to understand algorithms is through a flowchart.</p><p>Thank you for your attention.</p></div>
+  </main>
+  <footer>
+    Translation generated with Gemini 2.5 Flash-Lite.
+    The original article remains the source of record.
+  </footer>
+</body>
+</html>

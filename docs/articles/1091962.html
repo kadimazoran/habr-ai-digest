@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>[Translation] Where did the AI agent break? How to debug multi-step workflows step by step</title>
+  <meta name="description" content="A multi-step AI agent can give a convincing answer, even though the error occurred at the very beginning of the investigation. It&#x27;s not easy to find it by the final result. We explain how step-by-step checks helped us localize failures and discover a bug in the evaluation mechanism itself. Let&">
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.65;
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 32px 20px 64px;
+      color: #1f2328;
+    }
+    header {
+      border-bottom: 1px solid #d8dee4;
+      margin-bottom: 28px;
+      padding-bottom: 20px;
+    }
+    .source {
+      color: #57606a;
+      font-size: 0.95rem;
+    }
+    img, video, iframe {
+      max-width: 100%;
+      height: auto;
+    }
+    pre {
+      overflow-x: auto;
+      padding: 16px;
+      background: #f6f8fa;
+      border-radius: 6px;
+    }
+    code {
+      font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+    }
+    blockquote {
+      border-left: 4px solid #d0d7de;
+      margin-left: 0;
+      padding-left: 16px;
+      color: #57606a;
+    }
+    footer {
+      border-top: 1px solid #d8dee4;
+      margin-top: 40px;
+      padding-top: 20px;
+      color: #57606a;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>[Translation] Where did the AI agent break? How to debug multi-step workflows step by step</h1>
+    <p>A multi-step AI agent can give a convincing answer, even though the error occurred at the very beginning of the investigation. It&#x27;s not easy to find it by the final result. We explain how step-by-step checks helped us localize failures and discover a bug in the evaluation mechanism itself. Let&#x27;s break down the approach.</p>
+    <p class="source">
+      Machine-translated from Habr.
+      <a href="https://habr.com/ru/companies/otus/articles/1091962/?utm_campaign=1091962&amp;utm_source=habrahabr&amp;utm_medium=rss">Read the original Russian article</a>.
+      Thu, 08 Oct 2026 14:18:34 GMT
+    </p>
+  </header>
+  <main>
+<div><p>Investigating an incident involves a chain of interconnected decisions. First, you need to determine when the problem started, then understand which systems it affected, verify the initial hypothesis using metrics, logs, or traces, and finally, bring together all the collected data to establish the most probable root cause.</p><p>We built an <a href="https://otus.pw/xCKA/">agent workflow</a> following the same pattern. Each step is responsible for its part of the investigation and passes the result to the next.</p><p>This structure works well until the final answer turns out to be incorrect. And then, it becomes almost impossible to understand at which stage everything went wrong. The first stage might have chosen the wrong time interval. The next might have prioritized the wrong suspect. And one of the subsequent stages might have missed a mandatory request and still produced a plausible summary.</p><p>This is exactly what we encountered when testing a multi-step agent workflow for incident investigation. A full pipeline run showed that a failure had occurred somewhere, but didn't reveal where. Furthermore, each such run took a long time, consumed tokens at all stages, and produced different results from run to run.</p><p>Therefore, we changed our testing approach, borrowing a principle from hardware bring-up: enable one stage, verify it with a clearly defined control check (gate), ensure it passes consistently, and only then connect the next one.</p><p>In this article, we will explain how this approach helped us localize failures to a specific stage, control the cost of each test run, and discover a problem where we least expected it – in the evaluation mechanism itself.</p><h2>Why the final answer doesn't reveal where the workflow broke</h2><p>The investigation pipeline consisted of a fixed sequence of stages:</p><ol><li><p>Determine the incident's time interval.</p></li><li><p>Identify the most likely suspect and assess their priority.</p></li><li><p>Corroborate the hypothesis with independent data from another data plane.</p></li><li><p>Consolidate the evidence and formulate the answer.</p></li></ol><figure><img loading="lazy" src="https://habrastorage.org/r/w1560/getpro/habr/upload_files/525/ef3/4a1/525ef34a123c49c5c8ad6f4635b532b5.jpeg"/></figure><p><em>Each stage receives the output of the previous one. Therefore, a flawed decision at the beginning of the workflow can affect all subsequent stages.</em></p><p>This is a typical compound AI architecture: the workflow itself is deterministic, but a non-deterministic model operates within each node.</p><p>If the final answer is incorrect, a full end-to-end run doesn't allow for a definitive cause. An early stage might have passed incorrect context forward. A later stage might have misinterpreted correct context. And the final answer might appear convincing while hiding an error in one of the intermediate stages.</p><p>Full runs also make the development cycle quite expensive:</p><ul><li><p>Each stage consumes tokens and can generate multiple tool calls.</p></li><li><p>A full run takes minutes, not seconds.</p></li><li><p>With the same input, the next run might produce a different result.</p></li></ul><p>The usual cycle of "run workflow, read execution log, change prompt, and run again" doesn't provide enough data for conclusions. A single successful result could mean the change worked, or it could be just a lucky outcome in a non-deterministic system.</p><p>We needed a way to localize failures without replacing the actual behavior of previous stages.</p><h2>Starting with one stage and gradually adding more</h2><p>The approach is built incrementally. At level N, we truly run stages 1 through N and stop before stage N+1.</p><figure><img loading="lazy" src="https://habrastorage.org/r/w1560/getpro/habr/upload_files/415/72b/de1/41572bde182846daf05fa63ec1d12068.jpeg"/></figure><p><em>Incremental approach. Step-by-step debugging is incremental. Previous stages at each level continue to execute live, while subsequent stages remain disabled until the current level consistently passes verification.</em></p><p>The cycle looks like this:</p><ol><li><p>Truncate the pipeline after the stage currently being tested.</p></li><li><p>Run it and verify against a predefined success criterion.</p></li><li><p>If the check fails, fix the current stage.</p></li><li><p>Repeat the run until the stage consistently passes verification.</p></li><li><p>Add the next stage and repeat the cycle.</p></li></ol><p>This is not the same as testing each stage with fixed test data. If stage 3 depends on stages 1 and 2, it must handle the real variability of their results. A cached ideal result from stage 2 would simplify testing stage 3, but wouldn't reflect the workflow it would encounter in production.</p><p>Therefore, previous stages continue to run live. We save time and resources by cutting off all stages after the one being tested, including the branching of tool calls they generate.</p><h3>What the control check verifies</h3><p>Before running a stage, we define what exactly it should guarantee. We call this condition a control check (gate).</p><p>For example:</p><pre><code>levels := []struct {&#10;&#10;name string&#10;&#10;gates []Gate&#10;&#10;}{&#10;&#10;{
+  </main>
+  <footer>
+    Translation generated with Gemini 2.5 Flash-Lite.
+    The original article remains the source of record.
+  </footer>
+</body>
+</html>

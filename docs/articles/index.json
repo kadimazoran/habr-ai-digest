@@ -2423,6 +2423,54 @@
     "summary": "If there is a space in the import path in CLAUDE.md, Claude Code truncates the path at the space, the file doesn't load, and there's no error. This is how two common reference files I linked to in CLAUDE.md never loaded for me. I set up an empty project, put keywords in files, and asked the agent what words it sees, forbidding it from reading files. It turned out that a link to a document in CLAUDE.md doesn't mean the agent will read it: each linking method has its own loading rules. Read more",
     "title": "How to give Claude Code documentation it will read: import in CLAUDE.md silently breaks on space in path"
   },
+  "https://habr.com/ru/articles/1091956/?utm_campaign=1091956&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Thu, 08 Oct 2026 10:49:06 GMT",
+    "slug": "1091956",
+    "source_url": "https://habr.com/ru/articles/1091956/?utm_campaign=1091956&utm_source=habrahabr&utm_medium=rss",
+    "summary": "Codey handles tasks from Jira to a working feature. We explain how our multi-agent AI system works and why a single powerful model isn't enough for AI implementation in development: clear requirements, prepared projects, and measurable checks are needed. Read more",
+    "title": "[Translation] How We Created and Implemented an AI Developer: EXANTE's Experience"
+  },
+  "https://habr.com/ru/articles/1091988/?utm_campaign=1091988&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Thu, 08 Oct 2026 13:51:21 GMT",
+    "slug": "1091988",
+    "source_url": "https://habr.com/ru/articles/1091988/?utm_campaign=1091988&utm_source=habrahabr&utm_medium=rss",
+    "summary": "I've previously written about Falang (friendly algorithmic language) – a universal solution for building flowcharts. Back then, I had several MVPs for different areas, but now I'm releasing a real product. Meet FalangFlow – a business process constructor. The code is open-source under the APGL-3 license, and you can run it locally or on your own host. Read more",
+    "title": "FalangFlow: a new open-source business process constructor"
+  },
+  "https://habr.com/ru/articles/1092000/?utm_campaign=1092000&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Thu, 08 Oct 2026 10:26:24 GMT",
+    "slug": "1092000",
+    "source_url": "https://habr.com/ru/articles/1092000/?utm_campaign=1092000&utm_source=habrahabr&utm_medium=rss",
+    "summary": "For the past couple of years, we've been using large language models in a rather peculiar way. Due to their versatility, we try to solve everything with them – request routing, moderation, evaluation, and much more. However, this setup is not very elegant from an engineering perspective: we have models that can hold conversations, code well, and write articles, but they spend a significant portion of their inference time answering relatively simple questions with two or three answer choices. This works, but it's like delivering a breakfast of syrniki using a huge truck, while the alternative is to train a separate model for each task. In September 2026, a distinct class of models emerged around this problem – Decision Models. On September 15th, TypeSafe introduced Jev, and since then, decision-making models have been appearing from all directions. I really like this class of models, which led to a simple question: how well does it work in real life, and can it be deployed to production? To answer this question, I constructed a benchmark to compare the quality, speed, and cost of decision-making. We will test both cloud and self-hosted models: Perplexity Decider 27B, TypeSafe Jev, Fastino GLiDE and GLiNER2.5-Decide, Cloudflare Clef 27B, OpenAI GPT-6 Luna Decisions, Liquid d1, Kev-9B, Cloudflare Clef-flash 9B, FRIDA-Decisions (and FRIDA Embedder), and Laya Typed Decisions. Let's go!",
+    "title": "Decision Makers: A Russian Benchmark for Jev-style Models"
+  },
+  "https://habr.com/ru/articles/1092010/?utm_campaign=1092010&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Thu, 08 Oct 2026 13:35:45 GMT",
+    "slug": "1092010",
+    "source_url": "https://habr.com/ru/articles/1092010/?utm_campaign=1092010&utm_source=habrahabr&utm_medium=rss",
+    "summary": "What happens if an AI programmer gets context not from its own chat, but from the project's functional and architectural model? ERP-Tools and Cursor are building a website and documenting the system. Read more",
+    "title": "Lab Work #4"
+  },
+  "https://habr.com/ru/articles/1092020/?utm_campaign=1092020&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Thu, 08 Oct 2026 11:11:43 GMT",
+    "slug": "1092020",
+    "source_url": "https://habr.com/ru/articles/1092020/?utm_campaign=1092020&utm_source=habrahabr&utm_medium=rss",
+    "summary": "Today, a Telegram bot for selling VPNs can be set up in an evening: use Cursor, a few prompts, and it's already accepting money. But the bot token is in config.py, Postgres is exposed externally, and .env was left in the git history, 'deleted later.' I wrote a SAST scanner for AI-generated code and ran it on 3,800 public repositories. I'll explain what I found, how 16,378 raw findings turned into about 30 real leaks, and why I didn't check any of the keys I found. Read on.",
+    "title": "I Wrote a Vulnerability Scanner for AI-Generated Code and Tested It on 3,800 Repositories"
+  },
+  "https://habr.com/ru/articles/1092034/?utm_campaign=1092034&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Thu, 08 Oct 2026 11:51:25 GMT",
+    "slug": "1092034",
+    "source_url": "https://habr.com/ru/articles/1092034/?utm_campaign=1092034&utm_source=habrahabr&utm_medium=rss",
+    "summary": "GigaChat 3.5 was released in July this year, and in early September, its open weights were published. Many are now wondering: how suitable is this model for business tasks? We conducted tests (AI agent runs) on our benchmark, comparing GigaChat 3.5 with other Chinese and Russian models. Read more",
+    "title": "We Tested GigaChat 3.5 on Real-World Cases: Results of a Large Test Drive"
+  },
   "https://habr.com/ru/companies/1c/articles/1071340/?utm_campaign=1071340&utm_source=habrahabr&utm_medium=rss": {
     "model": "gemini-2.5-flash-lite",
     "published": "Thu, 03 Sep 2026 07:18:11 GMT",
@@ -3055,6 +3103,14 @@
     "summary": "AI is increasingly limited not by prompt quality, but by what happens next: how to integrate models into workflows, monitor agents, control quality, and understand operational costs. This collection features open lessons on LLMs, AI agents, MLOps, Data Drift, and other practical challenges faced by developers and teams when AI moves beyond experimentation. Watch the collection",
     "title": "From Prompt to Production: Free October Lessons on LLMs, Agents, and MLOps"
   },
+  "https://habr.com/ru/companies/otus/articles/1091962/?utm_campaign=1091962&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Thu, 08 Oct 2026 14:18:34 GMT",
+    "slug": "1091962",
+    "source_url": "https://habr.com/ru/companies/otus/articles/1091962/?utm_campaign=1091962&utm_source=habrahabr&utm_medium=rss",
+    "summary": "A multi-step AI agent can give a convincing answer, even though the error occurred at the very beginning of the investigation. It's not easy to find it by the final result. We explain how step-by-step checks helped us localize failures and discover a bug in the evaluation mechanism itself. Let's break down the approach.",
+    "title": "[Translation] Where did the AI agent break? How to debug multi-step workflows step by step"
+  },
   "https://habr.com/ru/companies/piter/articles/1087530/?utm_campaign=1087530&utm_source=habrahabr&utm_medium=rss": {
     "model": "gemini-2.5-flash-lite",
     "published": "Mon, 28 Sep 2026 11:07:57 GMT",
@@ -3118,6 +3174,14 @@
     "source_url": "https://habr.com/ru/companies/rshb/articles/1091088/?utm_campaign=1091088&utm_source=habrahabr&utm_medium=rss",
     "summary": "Hello! This is Olga Popova, AI Evangelist at the Artificial Intelligence Lab of the Big Data Department of Rosselkhozbank. September turned out to be very telling. If we set aside the usual benchmark race, three much more interesting processes are happening around AI simultaneously: models are turning into active agents, AI is subtly integrating into familiar work tools, and companies and governments are seriously discussing who will control this new digital workforce. As in the previous issue, I've added comments from colleagues who work with these topics every day to my reflections. Let's go! Read more",
     "title": "AI Digest #5: Agents are Going to Work, AI is Dissolving into Familiar Tools. What Will the AI Lab Say?"
+  },
+  "https://habr.com/ru/companies/ru_mts/articles/1062176/?utm_campaign=1062176&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Thu, 08 Oct 2026 13:00:29 GMT",
+    "slug": "1062176",
+    "source_url": "https://habr.com/ru/companies/ru_mts/articles/1062176/?utm_campaign=1062176&utm_source=habrahabr&utm_medium=rss",
+    "summary": "A year ago, we released MWS AI Vision Bench, a benchmark for evaluating multimodal models on Russian-language documents. Since then, multimodal models have advanced significantly, VQA metrics have started to hit a ceiling, and we've added a crucial missing task to the benchmark: Anti-fraud. In this article, I'll detail how the benchmark has evolved and why tackling anti-fraud proved more complex than we initially anticipated.",
+    "title": "MWS AI Vision Bench: What Has Changed in a Year and Why We're Adding Anti-fraud"
   },
   "https://habr.com/ru/companies/ru_mts/articles/1076344/?utm_campaign=1076344&utm_source=habrahabr&utm_medium=rss": {
     "model": "gemini-2.5-flash-lite",
@@ -3294,6 +3358,14 @@
     "source_url": "https://habr.com/ru/companies/sberbank/articles/1089106/?utm_campaign=1089106&utm_source=habrahabr&utm_medium=rss",
     "summary": "The first CSS specification was released in 1996. Since then, for about thirty years, we've been trying to make interfaces beautiful: adding shadows, gradients, animations, flexboxes, and grids. But what did we get with the advent of LLMs? Back to text. Ironic, isn't it? :) Let's consider a relatively common scenario: you ask a model, 'Find me headphones in Megamarket.' The model enthusiastically tries to access the store and hits either sanctions restrictions or anti-bot protection. As a result, it sheepishly returns text: 'Well, there are such and such headphones, google it yourself, everything will be fine,' or, in the best case: 'Here's a list of links, but I'm not sure they're correct.' Thanks, of course, but we want more. And now we finally have the tools to provide that 'more.' Read on.",
     "title": "30 Years of Beautiful Interfaces — And Here We Go Back to Text Again"
+  },
+  "https://habr.com/ru/companies/sberbank/articles/1092056/?utm_campaign=1092056&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Thu, 08 Oct 2026 13:44:10 GMT",
+    "slug": "1092056",
+    "source_url": "https://habr.com/ru/companies/sberbank/articles/1092056/?utm_campaign=1092056&utm_source=habrahabr&utm_medium=rss",
+    "summary": "FRIDA Decisions is an open-source fast-thinking model for the Russian language. It selects an option from a list, assigns a score on a scale, answers 'yes' or 'no', and ranks candidates in a single encoder pass, without text generation, in tens of milliseconds on an RTX 5060 Ti. It can be used wherever LLMs currently function as classifiers or judges: ticket routing, moderation, data labeling, RAG ranking. On our razvilka benchmark, the model scores 0.893, on par with the commercial TypeSafe Jev API (0.897) and the LLM Qwen3.5-35B-A3B, which is 40 times larger. Read more",
+    "title": "FRIDA Decisions: Thinking Fast in Russian"
   },
   "https://habr.com/ru/companies/selectel/articles/1078306/?utm_campaign=1078306&utm_source=habrahabr&utm_medium=rss": {
     "model": "gemini-2.5-flash-lite",
@@ -3495,6 +3567,14 @@
     "summary": "For the past few years, tracking the development of generative AI has been like following a sports league table. OpenAI released GPT-4, Google responded with Gemini, Anthropic showcased its new Claude, and then the next round began. Each company presented a set of benchmarks and explained where its model was now leading. In 2026, this logic started to break down. Not because models stopped getting more powerful. On the contrary, on September 1st, Anthropic released Claude Fable 5.1, a new top-tier model for programming and complex intellectual work. The problem is different: the ability to build a stronger model no longer means that most clients will want to use it for most tasks. The Financial Times recently highlighted an illustrative example. Fable 5 was released on June 9, 2026, as one of Anthropic's most powerful models, but about two months later, it accounted for about 11% of Anthropic product spending among corporate clients tracked by Ramp. It's important to clarify here. This is not 11% of Anthropic's total revenue, but an indicator within a specific sample of corporate spending. Furthermore, Fable's initial launch was interrupted: on June 12, access to the model was disabled due to US export restrictions, and the global release was restored on July 1. Therefore, this figure cannot be used as a perfect measure of demand. But the trend itself is much more interesting than the specific 11%. Companies are increasingly choosing cheaper models if the additional quality of a frontier model does not affect the business outcome. Read more",
     "title": "The race for the most powerful AI model is nearing its end. Financial Times explains why businesses no longer need it"
   },
+  "https://habr.com/ru/companies/syntx_ai/articles/1091964/?utm_campaign=1091964&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Thu, 08 Oct 2026 10:13:45 GMT",
+    "slug": "1091964",
+    "source_url": "https://habr.com/ru/companies/syntx_ai/articles/1091964/?utm_campaign=1091964&utm_source=habrahabr&utm_medium=rss",
+    "summary": "Google released Nano Banana 2.1 and promises improvements \"across the board\": quality, text in the frame, character consistency with multiple edits, infographics. I ran three identical prompts through Nano Banana 2 and 2.1 and evaluated the results using a checklist. The new version won in unexpected areas. I'll clarify the scale right away: this is not a benchmark. Three tasks, one run per model, one evaluator. Such a run shows where to look for differences, not measure them. I provide Google's numbers separately, and note separately: there are no independent measurements as of October 8, 2026, all publications about the release refer to the developer's single table. Read more",
+    "title": "Nano Banana 2.1 vs Nano Banana 2: three identical prompts and what the pictures show"
+  },
   "https://habr.com/ru/companies/tbank/articles/1086714/?utm_campaign=1086714&utm_source=habrahabr&utm_medium=rss": {
     "model": "gemini-2.5-flash-lite",
     "published": "Sat, 26 Sep 2026 09:00:55 GMT",
@@ -3558,6 +3638,14 @@
     "source_url": "https://habr.com/ru/companies/timeweb/articles/1086958/?utm_campaign=1086958&utm_source=habrahabr&utm_medium=rss",
     "summary": "You open your feed, find an interesting video, and get hooked. Halfway through, you notice something's off. The voice is too even, the picture suspiciously smooth, the plot drags in places. Then it dawns on you that the whole clip was made by a neural network. And you still don't turn it off. Usually, AI slop is just criticized and scrolled past. They say it's cheap mass production, soulless, just for views. But if the video captivated you, did it really become worse because an AI made it? What exactly do we mean when we call content slop? An empty plot, lack of human labor, or the fact that feeds are clogged with similar videos? This calls for a discussion not only about quality but also about how we evaluate content created by neural networks. In this article, we'll explore how in just a couple of years we went from a funny Will Smith eating spaghetti to videos that are almost indistinguishable from real ones. We'll look at why AI content appears in posts, videos, and music, what makes Chinese AI series so engaging, and why businesses love AI slop. Read on",
     "title": "AI Slop: Is It Really That Bad?"
+  },
+  "https://habr.com/ru/companies/timeweb/articles/1090896/?utm_campaign=1090896&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Thu, 08 Oct 2026 12:05:33 GMT",
+    "slug": "1090896",
+    "source_url": "https://habr.com/ru/companies/timeweb/articles/1090896/?utm_campaign=1090896&utm_source=habrahabr&utm_medium=rss",
+    "summary": "The gaming industry has had a very complex development path: from something very local to mainstream for all ages, managing to almost die in 1983 and be revived by one company. And this path has always been accompanied by the evolution of development tools. Nowadays, the question of ethics in the use of AI for game creation is raised very often, and scandals sometimes erupt on this basis. In recent months, some truly incredible things have been created with the help of vibe coding and a little manual labor. Today we will talk about how AI accelerates game development, what it portends for the industry, and also look not only at how people create dream projects using verbal descriptions, but also how modern LLMs seem to have turned the homebrew scene upside down. Read more",
+    "title": "How the Use of Neural Networks Has Changed the Gaming Industry and the Homebrew Scene"
   },
   "https://habr.com/ru/companies/tn_digital/articles/1080052/?utm_campaign=1080052&utm_source=habrahabr&utm_medium=rss": {
     "model": "gemini-2.5-flash-lite",
@@ -3695,6 +3783,14 @@
     "summary": "Working with Linux often scares beginners, but it's unnecessary. Linux is not a difficult system; it's just different. To work with it comfortably, it needs to be configured. My name is Valery Linkov, I am an expert in security, clouds, and networks, and a mentor for cybersecurity courses at Yandex Practicum. In this article, I will explain how to turn a basic, inconvenient Linux into a powerful system that surpasses Windows 11 in performance and style. Don't believe me? Then follow me.",
     "title": "How to configure Arch Linux to outperform Windows 11 in performance and style"
   },
+  "https://habr.com/ru/companies/zdravcity_pro/articles/1091966/?utm_campaign=1091966&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Thu, 08 Oct 2026 09:43:34 GMT",
+    "slug": "1091966",
+    "source_url": "https://habr.com/ru/companies/zdravcity_pro/articles/1091966/?utm_campaign=1091966&utm_source=habrahabr&utm_medium=rss",
+    "summary": "In an era of pervasive automation, genuine human interaction, free from robotic scripts, is becoming a business advantage and a customer retention tool. Service leaders agree that quality service is no longer just for handling complaints but a profit generator. At the V All-Russian Forum \"Contact Center 2026\" in Moscow, experts discussed the transformation of customer service. The key market insight is that while robots should handle routine tasks, only humans can retain customers in critical moments. Sincere attention during a problem is more effective than any promo code. The communication standard is also changing, with a complete ban on шаблонные phrases becoming a business imperative. When operators communicate live, using scripts only as a flexible framework, brand trust grows. The health marketplace Zdravcity.ru exemplifies this strategy's viability. Yuri Onosovsky, Head of Customer Service, shared the results of implementing an empathetic approach in the platform's unified contact center. The company uses three support lines for load distribution. Automation handles basic queries, while complex issues are escalated to the second line for individual handling, with professional pharmacists available if needed. Consequently, 82% of customers reach an operator within 20 seconds, and 95% of problems are resolved during the first call. Read more",
+    "title": "The Word as Medicine: Zdravcity Turns Empathy into a Business Metric"
+  },
   "https://habr.com/ru/specials/1080998/?utm_campaign=1080998&utm_source=habrahabr&utm_medium=rss": {
     "model": "gemini-2.5-flash-lite",
     "published": "Fri, 11 Sep 2026 12:54:13 GMT",
@@ -3702,5 +3798,13 @@
     "source_url": "https://habr.com/ru/specials/1080998/?utm_campaign=1080998&utm_source=habrahabr&utm_medium=rss",
     "summary": "Artificial intelligence in IT has transformed from an experimental tool into a working one: it changes roles in teams and forces a re-evaluation of established approaches. Companies are discussing less whether AI is useful in software development and more about how to best integrate it into their processes. This is perhaps the most significant industry transformation in recent years, and we want to see it through the lens of your experience. Therefore, Habr, together with Sber, is launching a new season of \"Code of the Future\" articles, where you can share your practical experience using AI in software development and the relationship between AI and open source. The season runs from September 11 to November 11, 2026. Below are all the details: themes, deadlines, and rules. Read on.",
     "title": "Code of the Future: Habr and Sber Launch a New Season of Articles on the Role of AI in Software Development"
+  },
+  "https://habr.com/ru/specials/1091886/?utm_campaign=1091886&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Thu, 08 Oct 2026 09:36:36 GMT",
+    "slug": "8138b578375f",
+    "source_url": "https://habr.com/ru/specials/1091886/?utm_campaign=1091886&utm_source=habrahabr&utm_medium=rss",
+    "summary": "Sergey Lavrov visited Sber's Moscow Startup Summit. Not the Minister of Foreign Affairs. I am a former entrepreneur, co-investor in two projects, winner of the reality show \"Startup Battle,\" participant in Sber's accelerator for students, postgraduates, and university staff, and a graduate of \"School 21.\" Therefore, I was interested in looking at the summit from different angles and understanding how the startup and venture ecosystem is structured today. Spoiler: after two days, I wanted to return next year as a startup founder or investor. The Moscow Startup Summit took place on September 29-30 at SberCity, in the \"School 21\" campus. For two days, startup founders, investors, representatives of corporations, and government agencies gathered here—four categories of participants were indicated on the badges to make networking easier. The scale is impressive: over 4500 participants from different countries, 150 experts, more than 40 discussions in the business program, and 100 startups at the exhibition. I walked through the key activities and sessions, and in this article, I will tell you what I saw. Read the report",
+    "title": "How Technologies Are Changing Five Industries: A Report from the Moscow Startup Summit"
   }
 }

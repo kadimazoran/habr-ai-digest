@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>MWS AI Vision Bench: What Has Changed in a Year and Why We&#x27;re Adding Anti-fraud</title>
+  <meta name="description" content="A year ago, we released MWS AI Vision Bench, a benchmark for evaluating multimodal models on Russian-language documents. Since then, multimodal models have advanced significantly, VQA metrics have started to hit a ceiling, and we&#x27;ve added a crucial missing task to the benchmark: Anti-fraud. In ">
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.65;
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 32px 20px 64px;
+      color: #1f2328;
+    }
+    header {
+      border-bottom: 1px solid #d8dee4;
+      margin-bottom: 28px;
+      padding-bottom: 20px;
+    }
+    .source {
+      color: #57606a;
+      font-size: 0.95rem;
+    }
+    img, video, iframe {
+      max-width: 100%;
+      height: auto;
+    }
+    pre {
+      overflow-x: auto;
+      padding: 16px;
+      background: #f6f8fa;
+      border-radius: 6px;
+    }
+    code {
+      font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+    }
+    blockquote {
+      border-left: 4px solid #d0d7de;
+      margin-left: 0;
+      padding-left: 16px;
+      color: #57606a;
+    }
+    footer {
+      border-top: 1px solid #d8dee4;
+      margin-top: 40px;
+      padding-top: 20px;
+      color: #57606a;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>MWS AI Vision Bench: What Has Changed in a Year and Why We&#x27;re Adding Anti-fraud</h1>
+    <p>A year ago, we released MWS AI Vision Bench, a benchmark for evaluating multimodal models on Russian-language documents. Since then, multimodal models have advanced significantly, VQA metrics have started to hit a ceiling, and we&#x27;ve added a crucial missing task to the benchmark: Anti-fraud. In this article, I&#x27;ll detail how the benchmark has evolved and why tackling anti-fraud proved more complex than we initially anticipated.</p>
+    <p class="source">
+      Machine-translated from Habr.
+      <a href="https://habr.com/ru/companies/ru_mts/articles/1062176/?utm_campaign=1062176&amp;utm_source=habrahabr&amp;utm_medium=rss">Read the original Russian article</a>.
+      Thu, 08 Oct 2026 13:00:29 GMT
+    </p>
+  </header>
+  <main>
+<div><figure><img loading="lazy" src="https://habrastorage.org/r/w1560/extt/e2/5f/3a/e25f3afa02400036df05a64de7fd60fb.png"/></figure><p>Last autumn, we released the <a href="https://github.com/mts-ai/MWS-Vision-Bench">MWS AI Vision Bench</a> into the public domain – a benchmark for evaluating multimodal models on Russian-language documents. Since then, models have improved significantly, we've identified several issues in our own annotation, and added a task that we previously lacked.</p><p>In the winter, we clarified the wording of some VQA questions and acceptable answers. In the spring, we collected a dataset and a set of Anti-fraud tasks to test models on their ability to detect forged and generated documents. In the summer and early autumn, we ran the latest models again – most recently GPT-6.1 Sol, Claude Opus 5.5, and Qwen3.8 – and observed where the metrics were hitting a ceiling.</p><p>Anti-fraud turned out to be more complex than we initially thought. This is what I want to talk about.</p><h3>Where the Task Came From</h3><p>In the incoming stream of documents, we encounter scans that have been edited in a graphics editor. Names, dates, numbers, amounts, signatures are changed. Now, documents entirely recreated by a generative model have been added to these.</p><p>Professional anti-fraud systems use specialized models, rules, attribute verification, and external sources to detect these types of fraud. MWS AI Vision Bench does not replace them. We were interested in a more grounded question: if a developer builds document processing on a single universal multimodal LLM, will it notice even an obvious forgery and be able to explain what exactly made it suspicious.</p><p>We wanted to get a single score from 0 to 1. It should account for the correct class and the quality of the explanation.</p><h3>What's in the Dataset</h3><p>We collected 430 images and divided them into three classes:</p><ul><li><p><code>original</code> — 200 images considered original and unedited in the experiment;</p></li><li><p><code>edited</code> — 130 manually edited images using graphics editors like Photoshop;</p></li><li><p><code>ai_gen</code> — 100 documents entirely recreated by a generative model based on a reference.</p></li></ul><p>The Anti-fraud dataset has a separate research-only license. Its terms were formulated with the MWS AI legal department: the dataset can be used for research and model comparison, but not for developing document forgery tools, training forgery generators, or other illegal activities.</p><p>The model receives an image and returns a JSON:</p><pre><code>{<br/>
+  </main>
+  <footer>
+    Translation generated with Gemini 2.5 Flash-Lite.
+    The original article remains the source of record.
+  </footer>
+</body>
+</html>

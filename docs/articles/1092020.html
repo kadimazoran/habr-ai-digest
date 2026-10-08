@@ -1,0 +1,99 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>I Wrote a Vulnerability Scanner for AI-Generated Code and Tested It on 3,800 Repositories</title>
+  <meta name="description" content="Today, a Telegram bot for selling VPNs can be set up in an evening: use Cursor, a few prompts, and it&#x27;s already accepting money. But the bot token is in config.py, Postgres is exposed externally, and .env was left in the git history, &#x27;deleted later.&#x27; I wrote a SAST scanner for AI-gene">
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.65;
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 32px 20px 64px;
+      color: #1f2328;
+    }
+    header {
+      border-bottom: 1px solid #d8dee4;
+      margin-bottom: 28px;
+      padding-bottom: 20px;
+    }
+    .source {
+      color: #57606a;
+      font-size: 0.95rem;
+    }
+    img, video, iframe {
+      max-width: 100%;
+      height: auto;
+    }
+    pre {
+      overflow-x: auto;
+      padding: 16px;
+      background: #f6f8fa;
+      border-radius: 6px;
+    }
+    code {
+      font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+    }
+    blockquote {
+      border-left: 4px solid #d0d7de;
+      margin-left: 0;
+      padding-left: 16px;
+      color: #57606a;
+    }
+    footer {
+      border-top: 1px solid #d8dee4;
+      margin-top: 40px;
+      padding-top: 20px;
+      color: #57606a;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>I Wrote a Vulnerability Scanner for AI-Generated Code and Tested It on 3,800 Repositories</h1>
+    <p>Today, a Telegram bot for selling VPNs can be set up in an evening: use Cursor, a few prompts, and it&#x27;s already accepting money. But the bot token is in config.py, Postgres is exposed externally, and .env was left in the git history, &#x27;deleted later.&#x27; I wrote a SAST scanner for AI-generated code and ran it on 3,800 public repositories. I&#x27;ll explain what I found, how 16,378 raw findings turned into about 30 real leaks, and why I didn&#x27;t check any of the keys I found. Read on.</p>
+    <p class="source">
+      Machine-translated from Habr.
+      <a href="https://habr.com/ru/articles/1092020/?utm_campaign=1092020&amp;utm_source=habrahabr&amp;utm_medium=rss">Read the original Russian article</a>.
+      Thu, 08 Oct 2026 11:11:43 GMT
+    </p>
+  </header>
+  <main>
+<div><p>Today, a Telegram bot for selling VPNs can be set up in an evening. Open Cursor, type 'make a bot with Stars payment and a Marzban panel,' and after a couple of hours, it's already accepting money. But the bot token is in <code>config.py</code>, Postgres is exposed on <code>0.0.0.0:5432</code> in <code>docker-compose.yml</code>, and <code>.env</code>, which was 'deleted later,' remains in the git history.</p><p>I became curious about how bad the situation really is. I wrote my own SAST scanner for AI-generated code and ran it on 3,800 public repositories: from projects with three stars to platforms with tens of thousands.</p><p>The numbers at a glance:</p><div><div><table><tbody><tr><th><p></p></th><th><p></p></th></tr><tr><td><p>Repositories scanned</p></td><td><p>~3,800</p></td></tr><tr><td><p>Production Telegram bots (VPN, stores, Stars)</p></td><td><p>471</p></td></tr><tr><td><p>Raw high/critical findings in these bots in the first version</p></td><td><p>16,378</p></td></tr><tr><td><p>Of which turned out to be real leaks</p></td><td><p>~30</p></td></tr><tr><td><p>Rules in the scanner</p></td><td><p>21</p></td></tr><tr><td><p>Regression tests</p></td><td><p>193</p></td></tr><tr><td><p>External dependencies</p></td><td><p>0</p></td></tr><tr><td><p>Third-party keys I checked or used</p></td><td><p>0</p></td></tr></tbody></table></div></div><p>The last line is the most important, and I'll get back to it. The difference between 16,378 and 30 is essentially the entire project lifecycle: how to teach a scanner to find real vulnerabilities and ignore everything else.</p><h3>What is AigisSAST</h3><p><a href="https://github.com/jasperBLCK/AigisSAST">AigisSAST</a> is a console security scanner for AI-generated code. About 3,000 lines in pure Python, without a single dependency and without the cloud: your code never leaves your machine.</p><pre><code>pip install aigis-sast
+aigis scan
+</code><div><a href="https://sourcecraft.dev/"><span></span></a></div></pre><p>Inside:</p><ul><li><p><strong>Python is parsed using AST, not grep.</strong> This is why <code>cursor.execute(f"... {user_id}")</code> is different from a harmless f-string in a logger.</p></li><li><p><strong>21 rules for typical AI mistakes</strong>: tokens (OpenAI, Telegram, GitHub, AWS, Stripe, etc.), passwords, database connection strings, committed <code>.env</code>, SQL and shell injections, <code>eval</code>, <code>pickle</code>, JWT without signature verification, CORS <code>*</code>, <code>debug=True</code>, <code>verify=False</code>, tokens via <code>random</code>, FastAPI endpoints without authorization, XSS, secrets in <code>VITE_*</code>/<code>NEXT_PUBLIC_*</code>, root in Docker, exposed database ports.</p></li><li><p><strong>Each finding is explained in human-readable terms</strong>: its dangers, how to fix it, and ready-to-use code.</p></li><li><p><strong>Secrets are masked</strong> (<code>7312************</code>) to prevent keys from leaking again through CI logs.</p></li><li><p><strong>Russian and English</strong>: language is taken from the system, switchable via <code>--lang en</code>.</p></li></ul><pre><code>▌ bot/config.py
+   CRITICAL  AIG001  Token or API key directly in code (Telegram bot token)
+           bot/config.py:12
+           ↗ https://github.com/you/bot/blob/3f2c1ab.../bot/config.py#L12
+           │ BOT_TOKEN = "7312************"
+           dangers:
+             Anyone who sees the repository will gain access to your bot...
+           how to fix:
+             Revoke the token from @BotFather immediately and move it to .env...
+────────────────────────────────────────────────────────────────
+  ■ critical 1  ■ high 3  □ medium 0  ■ low 2
+  security score: 43/100   level  D
+  start with: AIG001 bot/config.py:12
+</code><div><a href="https://sourcecraft.dev/"><span></span></a></div></pre><p>Each finding has a clickable link to the file and line on GitHub, GitLab, or Bitbucket, so you can get to the relevant spot with one click.</p><h4>It Also Fixes Things</h4><pre><code>aigis fix --dry-run   # show diff
+aigis fix             # apply changes
+</code><div><a href="https://sourcecraft.dev/"><span></span></a></div></pre><p>It moves keys to <code>.env</code> and <code>.env.example</code>, adds <code>.env</code> to <code>.gitignore</code>, changes <code>verify=False</code> to <code>True</code>, <code>yaml.load</code> to <code>safe_load</code>, <code>random</code> to <code>secrets</code> for tokens, disables <code>debug</code>, hides database ports behind <code>127.0.0.1</code>, and adds necessary <code>import</code> statements. It doesn't automatically touch SQL injections or JWTs: without understanding the application logic, it's easy to break things.</p><h4>'But I Deleted the Key'</h4><p>The most common scenario: someone notices a token, deletes it in the next commit, and feels relieved. But the old version of the file lives on in the git history, visible to anyone who does a <code>git clone</code>.</p><pre><code>$ aigis history
+  [CRITICAL] AIG001  7312************  (Telegram bot token)
+      bot.py  ·  commit 402c92b from 2026-09-14  ·  deleted, but remains in history
+      ↗ https://github.com/you/bot/commit/402c92b...
+</code><div><a href="https://sourcecraft.dev/"><span></span></a></div></pre><p>In CI, it's integrated with a single command <code>aigis init</code>: findings appear in the Security → Code scanning tab and directly in pull request diffs.</p><h3>Round 1: 126 AI-Generated Projects and 2,012 'Passwords'</h3><p>I started with repositories that showed clear signs of AI generation: <code>.cursorrules</code>, <code>CLAUDE.md</code>, 'vibe coded,' 'built with Cursor/Bolt/Lovable.' The median was three stars, typical pet projects.</p><p>The first run was embarrassing: <strong>2,012 hardcoded passwords</strong>. I started analyzing them manually, and almost all of it turned out to be noise: test passwords, hashes in lock files, <code>your-key-here</code>, <code>${DB_PASSWORD}</code>, variables like <code>hashed_password</code> and <code>ACCESS_TOKEN_EXPIRE_MINUTES</code>, translations where <code>password</code> meant 'Пароль' (Password).</p><p>After refinement, <strong>138 findings</strong> remained, and real keys weren't lost: I added a test for each corrected case. Manual annotation showed a precision of about 60–70% for secrets. This is an honest figure, not a marketing one.</p><h3>Round 2: 49 Open Source Giants</h3><p>Then I moved on to the big players: 49 popular AI platforms, low-code services, and admin panels with thousands of stars.</p><div><div><table><tbody><tr><th><p>Rule</p></th><th><p>Before</p></th><th><p>After</p></th></tr><tr><td><p>All findings</p></td><td><p>3,709</p></td><td><p>1,422</p></td></tr><tr><td><p>AIG002 passwords</p></td><td><p>1,525</p></td><td><p>392</p></td></tr><tr><td><p>AIG003 DB URL with password</p></td><td><p>276</p></td><td><p>4</p></td></tr><tr><td><p>AIG021 FastAPI without authorization</p></td><td><p>299</p></td><td><p>71</p></td></tr><tr><td><p>AIG001 tokens of known formats</p></td><td><p>164</p></td><td><p>28</p></td></tr></tbody></table></div></div><p>Almost all of the remaining 28 'tokens' turned out to be test or example values. <strong>Large projects monitor their secrets.</strong> This also highlighted an evaluation problem: in a massive codebase, even a careful project accumulates hundreds of findings and gets an F. Recalculating with size adjustments is something I plan to do.</p><h3>Round 3: 2,292 Small Projects — Bots, AI, VPNs</h3><p>Next were small, recent projects: Telegram bots, AI applications, websites, VPN bots and panels (Marzban, 3x-ui, WireGuard, Xray). Both current code and the entire git history were scanned.</p><p>After manual filtering, about <strong>50 projects with access credentials resembling real ones</strong> remained: Google service account keys along with <code>.env</code>, passwords for cloud MongoDB and TiDB, committed <code>.env</code> files in VPN bots, dozens of bot tokens directly in the code, OpenAI and Google keys.</p><h3>Round 4: 471 Bots That Make Money</h3><p>I was no longer interested in educational projects. I was looking for bots that were actually in use: VPN stores, digital goods stores, bots with Stars payment, CryptoBot, and YooKassa. Filters: not a fork, commits within the last year, at least two signs of active use (link to a working bot, connected payment, deployed instance, admin panel), no tutorial/template.</p><div><div><table><tbody><tr><th><p>Step</p></th><th><p>Repositories</p></th></tr><tr><td><p>Candidates from 41 search queries</p></td><td><p>1,514</p></td></tr><tr><td><p>Passed the 'production bot' filter</p></td><td><p>473</p></td></tr><tr><td><p>Scanned (code + git history)</p></td><td><p>471</p></td></tr><tr><td><p>Resembling real leaks after manual review</p></td><td><p>31</p></td></tr><tr><td><p>— secret is currently in the code</p></td><td><p>10</p></td></tr><tr><td><p>— only in git history</p></td><td><p>22</p></td></tr></tbody></table></div></div><p>What I found: bot tokens directly in the code, a CryptoBot token along with a 3X-UI panel address and password in an example <code>.env</code> file, a GitHub token in history, a VPN panel config dump with private keys. And a popular open-source panel where the bot token is hardcoded into the source, so it's distributed to everyone who installs it.</p><p>The most valuable aspect of this round wasn't about other people's bots, but about my scanner. <strong>16,378 findings, with about 30 being real.</strong> The noise came from:</p><ul><li><p>translations in VPN panels: <code>"newPassword" = "Nueva Contraseña"</code> — this is a label for a field;</p></li><li><p>vendored <code>vue.js</code>, where <code>emptySlotScopeToken = "_empty_"</code> sounds like a token only by name;</p></li><li><p><code>example</code> values in OpenAPI (<code>"password": "secret"</code>);</p></li><li><p>tests, <code>.env.j2</code> templates, test PEM keys, <code>postgres://postgres:postgres@localhost</code>.</p></li></ul><p>I also found a real bug: <code>aigis history</code> loaded the entire <code>git log -p</code> into memory, crashed with OOM on large histories, and <strong>silently wrote an empty report with code 0</strong>. For a security scanner, there's no worse bug: seven repositories were almost marked as 'clean.'</p><p>I fixed everything. The history is now read as a stream, and in case of a git error, the scanner honestly exits with code 2. On one popular VPN panel, there were 37 findings, now 3; on another, there were 29, now 7. The actual embedded bot token remained in the report, which was the whole point.</p><h3>Round 5: 879 Projects Blindly</h3><p>The final check is the most honest: I ran the latest version on another 879 projects that the scanner hadn't seen before and that I hadn't specifically tuned it for. There were enough findings again: bot and API keys in code and git history, committed <code>.env</code> files, database connection strings with passwords.</p><p>Project names are not mentioned in any round in this article, and this was done intentionally.</p><h3>Why I Didn't Check Any Keys</h3><p>I was constantly asked: 'Why not just call <code>getMe</code> on Telegram and see if the token is alive?'</p><p>Because that would be using someone else's access. A request with someone else's token authenticates you as the bot owner, regardless of whether the method is 'read-only.' Normal security research works like this: find a key by format and context, inform the owner of the file and line (without the key itself), and leave the verification and revocation to them. Therefore, all the numbers above mean 'looks like a real key,' not 'the key works.'</p><p>I never accessed any third-party service, bot, database, or panel, nor did I use any found keys. The scanner only reads public code and masks secrets. I'm developing this project for the community's benefit: to get AI code into production with fewer vulnerabilities and for owners to learn about leaks before malicious actors do.</p><h3>What I Learned</h3><ol><li><p><strong>AI makes mistakes not randomly, but according to patterns.</strong> Secrets in code, f-strings in SQL, CORS <code>*</code>, <code>debug=True</code>, endpoints without <code>Depends(...)</code> — these are the same errors across thousands of projects.</p></li><li><p><strong>Finding is easy, staying silent is hard.</strong> Most of the time was spent not on making the scanner find things, but on preventing it from shouting about everything. Of the 193 tests, most are about what <strong>not</strong> to find.</p></li><li><p><strong>A deleted key is not a deleted key.</strong> If it got into a public repo, you need to revoke it, not just delete it with a commit.</p></li><li><p><strong>A silent failure is worse than a false alarm.</strong> A scanner that crashes and says 'all clear' is more dangerous than no scanner at all.</p></li></ol><h3>Try It Out</h3><p>Everything described above is available in version 0.5.0:</p><pre><code>pip install aigis-sast
+aigis help      # cheat sheet for all commands
+aigis scan      # current code
+aigis history   # secrets in git history
+aigis fix       # auto-fixing
+aigis init      # integrate with GitHub Actions
+</code><div><a href="https://sourcecraft.dev/"><span></span></a></div></pre><p>The code is open-source under MIT: <a href="https://github.com/jasperBLCK/AigisSAST">https://github.com/jasperBLCK/AigisSAST</a>. If the scanner makes a mistake on your project in either direction, please open an issue with an example: each false positive turns into a regression test for me.</p><p>I will continue to develop the project: new rules, fewer false positives, support for other languages. I would appreciate any support: a star on GitHub, an issue, a PR, or just feedback.</p><p>And a question for you: how useful did you find this development, and would you integrate it into your CI? Please write in the comments, it's truly important to me.</p></div>
+  </main>
+  <footer>
+    Translation generated with Gemini 2.5 Flash-Lite.
+    The original article remains the source of record.
+  </footer>
+</body>
+</html>

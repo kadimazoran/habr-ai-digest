@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>FRIDA Decisions: Thinking Fast in Russian</title>
+  <meta name="description" content="FRIDA Decisions is an open-source fast-thinking model for the Russian language. It selects an option from a list, assigns a score on a scale, answers &#x27;yes&#x27; or &#x27;no&#x27;, and ranks candidates in a single encoder pass, without text generation, in tens of milliseconds on an RTX 5060 Ti. ">
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.65;
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 32px 20px 64px;
+      color: #1f2328;
+    }
+    header {
+      border-bottom: 1px solid #d8dee4;
+      margin-bottom: 28px;
+      padding-bottom: 20px;
+    }
+    .source {
+      color: #57606a;
+      font-size: 0.95rem;
+    }
+    img, video, iframe {
+      max-width: 100%;
+      height: auto;
+    }
+    pre {
+      overflow-x: auto;
+      padding: 16px;
+      background: #f6f8fa;
+      border-radius: 6px;
+    }
+    code {
+      font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+    }
+    blockquote {
+      border-left: 4px solid #d0d7de;
+      margin-left: 0;
+      padding-left: 16px;
+      color: #57606a;
+    }
+    footer {
+      border-top: 1px solid #d8dee4;
+      margin-top: 40px;
+      padding-top: 20px;
+      color: #57606a;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>FRIDA Decisions: Thinking Fast in Russian</h1>
+    <p>FRIDA Decisions is an open-source fast-thinking model for the Russian language. It selects an option from a list, assigns a score on a scale, answers &#x27;yes&#x27; or &#x27;no&#x27;, and ranks candidates in a single encoder pass, without text generation, in tens of milliseconds on an RTX 5060 Ti. It can be used wherever LLMs currently function as classifiers or judges: ticket routing, moderation, data labeling, RAG ranking. On our razvilka benchmark, the model scores 0.893, on par with the commercial TypeSafe Jev API (0.897) and the LLM Qwen3.5-35B-A3B, which is 40 times larger. Read more</p>
+    <p class="source">
+      Machine-translated from Habr.
+      <a href="https://habr.com/ru/companies/sberbank/articles/1092056/?utm_campaign=1092056&amp;utm_source=habrahabr&amp;utm_medium=rss">Read the original Russian article</a>.
+      Thu, 08 Oct 2026 13:44:10 GMT
+    </p>
+  </header>
+  <main>
+<div><p>FRIDA Decisions is an open-source fast-thinking model for the Russian language. It selects an option from a list, assigns a score on a scale, answers 'yes' or 'no', and ranks candidates in a single encoder pass, without text generation, in tens of milliseconds on an RTX 5060 Ti. It can be used wherever LLMs currently function as classifiers or judges: ticket routing, moderation, data labeling, RAG ranking. On our razvilka benchmark, the model scores 0.893, on par with the commercial TypeSafe Jev API (0.897) and the LLM Qwen3.5-35B-A3B, which is 40 times larger.</p><p>In short, what's inside:</p><ul><li><p><strong>Speed.</strong> 28-34 ms per request on an RTX 5060 Ti. According to independent measurements, a commercial API responds in approximately 430 ms, including network latency.</p></li><li><p><strong>Cost.</strong> Nearly 20 times cheaper than a commercial API per request when using a rented card at full load.</p></li><li><p><strong>Hundreds of options in one request.</strong> All response options go into a single sequence; the text is encoded once. For a typical request with three questions, this uses 6 times fewer tokens than a naive approach, and a catalog of 243 intents is processed in 0.44s instead of 4.65s.</p></li><li><p><strong>Openness.</strong> Weights and inference code under MIT, razvilka benchmark (each task has its own license), ONNX version for CPU, Mac execution via MLX, vLLM server.</p></li></ul><p>We will explain how the model works under the hood and show you how to run it yourself.</p><h2>Why a model that doesn't generate anything?</h2><p>Any LLM product involves dozens of small decisions that don't require text output:</p><ul><li><p><strong>LLM Routing:</strong> deciding which model, index, or agent to send a request to.</p></li><li><p><strong>Guardrails:</strong> is it toxic, does it look like fraud, does it violate policy?</p></li><li><p><strong>Tool Calling:</strong> which of the hundreds of functions to invoke.</p></li><li><p><strong>Ticket Parsing:</strong> topic, urgency, tone — all at once.</p></li><li><p><strong>RAG:</strong> is the answer in the context, which passages are relevant (reranking).</p></li></ul><p>Typically, these decisions are offloaded to LLMs: prompt, generation, JSON parsing. This is expensive and slow, and a separate class of fast reasoning (decision) models has emerged for such tasks: input is text and a closed list of N options, output is the best option and probabilities for all N. For example, the commercial TypeSafe Jev API: according to TypeSafe's own estimates, it is 40-200 times faster and about 400 times cheaper than frontier LLMs for such tasks. TypeSafe calls these models "System 1" according to Kahneman: a fast, non-reasoning response, unlike the slow "System 2" of LLMs, which reasons and generates.</p><p>However, such a service is an external API: network latency, per-token costs, request limits, and data leaving your system. We have created such a model for the Russian language based on our own encoder and are releasing it as open-source; you can run it yourself. The model requires about 2 GB of VRAM, and it also works on CPU without a graphics card: the int8 ONNX version responds in about 0.9s on six threads.</p><h2>How does it work?</h2><p>The model receives text (state) and one or more questions about it as input. Each question relates to one of four types:</p><div><div><table><tbody><tr><th><p>Type</p></th><th><p>What it asks</p></th><th><p>What it returns</p></th></tr><tr><td><p>choice</p></td><td><p>Which of K options is correct?</p></td><td><p>Option key and distribution over all.</p></td></tr><tr><td><p>score</p></td><td><p>Where does the text fall on an ordinal scale?</p></td><td><p>A number from 0 to K-1.</p></td></tr><tr><td><p>noul</p></td><td><p>Is the statement true?</p></td><td><p>Probability of 'yes' (noul field).</p></td></tr><tr><td><p>ranking</p></td><td><p>How to order candidates by request?</p></td><td><p>Order and margin for each.</p></td></tr></tbody></table></div></div><p>The type names, including 'noul' for 'yes/no' questions, are taken from the Jev protocol, so requests in its format are compatible with ours.</p><p>The list of labels and their descriptions are passed as text directly in the request. A new taxonomy is a new JSON, not retraining:</p><pre><code>{
+  </main>
+  <footer>
+    Translation generated with Gemini 2.5 Flash-Lite.
+    The original article remains the source of record.
+  </footer>
+</body>
+</html>

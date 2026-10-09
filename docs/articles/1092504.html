@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Why NVIDIA! I launched Qwen on a $50 FPGA — and I&#x27;d call my own TPU &quot;KEDR&quot;. Part 1</title>
+  <meta name="description" content="I wanted to develop my own AI processor, found openTPU, bought an FPGA for $50 with 4GB of memory, connected it to a regular mini-PC, and ran a language model on it. Read more">
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.65;
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 32px 20px 64px;
+      color: #1f2328;
+    }
+    header {
+      border-bottom: 1px solid #d8dee4;
+      margin-bottom: 28px;
+      padding-bottom: 20px;
+    }
+    .source {
+      color: #57606a;
+      font-size: 0.95rem;
+    }
+    img, video, iframe {
+      max-width: 100%;
+      height: auto;
+    }
+    pre {
+      overflow-x: auto;
+      padding: 16px;
+      background: #f6f8fa;
+      border-radius: 6px;
+    }
+    code {
+      font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+    }
+    blockquote {
+      border-left: 4px solid #d0d7de;
+      margin-left: 0;
+      padding-left: 16px;
+      color: #57606a;
+    }
+    footer {
+      border-top: 1px solid #d8dee4;
+      margin-top: 40px;
+      padding-top: 20px;
+      color: #57606a;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Why NVIDIA! I launched Qwen on a $50 FPGA — and I&#x27;d call my own TPU &quot;KEDR&quot;. Part 1</h1>
+    <p>I wanted to develop my own AI processor, found openTPU, bought an FPGA for $50 with 4GB of memory, connected it to a regular mini-PC, and ran a language model on it. Read more</p>
+    <p class="source">
+      Machine-translated from Habr.
+      <a href="https://habr.com/ru/articles/1092504/?utm_campaign=1092504&amp;utm_source=habrahabr&amp;utm_medium=rss">Read the original Russian article</a>.
+      Fri, 09 Oct 2026 15:30:20 GMT
+    </p>
+  </header>
+  <main>
+<div><p><em>I wanted to develop my own AI processor, found openTPU, </em>bought an FPGA for ~$50 with 4GB of RAM, connected it to a regular mini-PC, and ran a large language model on it — and flew into space (in a positive, dopamine-fueled sense).  </p><p><strong>No NVIDIA. No graphics card. On an open architecture developed with the active participation of AI agents.   </strong></p><p><a href="https://github.com/FeSens/openTPU">openTPU</a> is an open AI accelerator by Felipe Sens Bonetto.</p><p>I became curious: is it really possible to take such a project from GitHub, load it onto a physical FPGA, and run actual LLM inference?</p><p>According to the project author's measurements on the same board:  <br/>→ Qwen3-0.6B — 31 tokens per second <br/>→ Qwen3.5-2B — 12 tokens per second <br/>→ LFM2.5-230M — 86 tokens per second <br/>→ Qwen3.5-35B — a 35 billion parameter model on a card with 4GB of memory, 4 tokens per second  </p><p><strong>And all this on an FPGA that is far from new.</strong></p><p>🔧 <strong>What I did:</strong></p><p>→ Bought a Xilinx Kintex-7 <a href="https://aliexpress.ru/item/1005012750282927.html?sku_id=12000059251410042&amp;spm=a2g2w.productlist.search_results.2.26fd28f8wjlvd3">XC7K480T</a> with 4GB of RAM on AliExpress (board information: <a href="https://github.com/sirmick/ypcb-00338-1p1">1</a> and <a href="https://www.tiferking.cn/index.php/2024/12/19/650/">2</a>)<br/>→ Connected the FPGA to MINISFORUM via PCIe<br/>→ Built the firmware (bitstream) in Vivado<br/>→ Configured drivers and PCIe DMA<br/>→ Prepared the software environment<br/>→ Loaded real neural network weights<br/>→ Launched inference, including Qwen</p><p><strong>And it all worked!</strong></p><figure><img loading="lazy" src="https://habrastorage.org/extt/07/7e/37/077e371e24fd03b6fbbb2a87d7ccd9a1.gif"/></figure><p>✅ FPGA is successfully detected by the system<br/>✅ PCIe DMA transmits data<br/>✅ Memory subsystem is working<br/>✅ Processor instruction tests pass  <br/>✅ Language model performs inference on FPGA</p><p>💡 <strong>Why is this more interesting than just running another neural network?</strong></p><p>Usually, we perceive GPUs as a ready-made platform: we buy a graphics card, install CUDA, and run models.</p><p>But what if we go in the opposite direction?</p><p>Instead of choosing hardware for a neural network, we <strong>create our own hardware for specific neural network computations</strong>.</p><p>This is precisely why specialized AI accelerators are developed, including TPUs — processors optimized for machine learning operations.</p><p>Of course, the current board is not yet a competitor to the NVIDIA H100. And a working prototype is still far from a mass-produced ASIC.</p><p>But now, we can not only discuss our own AI processor architecture but also experiment with it on physical hardware.</p><p><strong>🔬 What I'm thinking about next: </strong></p><p>→ Faster memory and a more powerful FPGA <br/>→ Evaluating the architecture for a custom inference chip  </p><p>We are already using AI to write programs. Now AI is designing the processors it will run on. Previously, having your own AI accelerator was a task for Google and NVIDIA — today, a prototype can be assembled and tested by a single engineer.  <br/><br/>In the second part, I will show all the results from my setup.  </p><p>Special thanks to Felipe Sens Bonetto for openTPU.</p><p>🔗 Original project: <a href="https://github.com/FeSens/openTPU">https://github.com/FeSens/openTPU</a></p></div>
+  </main>
+  <footer>
+    Translation generated with Gemini 2.5 Flash-Lite.
+    The original article remains the source of record.
+  </footer>
+</body>
+</html>

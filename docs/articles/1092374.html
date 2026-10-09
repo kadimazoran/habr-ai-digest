@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Analyst and AI: Three Tools That Turn Chaos into Requirements</title>
+  <meta name="description" content="We&#x27;re working on a large project with dozens of integrations, hundreds of business scenarios, Confluence documentation, and now AI-generated descriptions of business scenarios directly in repositories. This is great for getting acquainted with the project, but it doesn&#x27;t cover the whole pi">
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.65;
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 32px 20px 64px;
+      color: #1f2328;
+    }
+    header {
+      border-bottom: 1px solid #d8dee4;
+      margin-bottom: 28px;
+      padding-bottom: 20px;
+    }
+    .source {
+      color: #57606a;
+      font-size: 0.95rem;
+    }
+    img, video, iframe {
+      max-width: 100%;
+      height: auto;
+    }
+    pre {
+      overflow-x: auto;
+      padding: 16px;
+      background: #f6f8fa;
+      border-radius: 6px;
+    }
+    code {
+      font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+    }
+    blockquote {
+      border-left: 4px solid #d0d7de;
+      margin-left: 0;
+      padding-left: 16px;
+      color: #57606a;
+    }
+    footer {
+      border-top: 1px solid #d8dee4;
+      margin-top: 40px;
+      padding-top: 20px;
+      color: #57606a;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Analyst and AI: Three Tools That Turn Chaos into Requirements</h1>
+    <p>We&#x27;re working on a large project with dozens of integrations, hundreds of business scenarios, Confluence documentation, and now AI-generated descriptions of business scenarios directly in repositories. This is great for getting acquainted with the project, but it doesn&#x27;t cover the whole picture when working on a specific enhancement. Therefore, our analyst team has started creating our own AI agents: we gather relevant Git repositories, customer requirements documents (BFD), and meeting notes into a folder, and then design and analyze with the agent. In this article, we&#x27;ll break down the full pipeline: how we prepare data for the AI agent, provide it with context, and then transform the analysis results into a ready-to-use Technical Specification (ChTZ). Without proper input preparation, even the smartest agent will produce nonsense, and the Markdown output still needs to be formatted into a corporate .docx. Read on</p>
+    <p class="source">
+      Machine-translated from Habr.
+      <a href="https://habr.com/ru/companies/ppr/articles/1092374/?utm_campaign=1092374&amp;utm_source=habrahabr&amp;utm_medium=rss">Read the original Russian article</a>.
+      Fri, 09 Oct 2026 11:00:19 GMT
+    </p>
+  </header>
+  <main>
+<div><p>We are working on a large project with dozens of integrations, hundreds of business scenarios, Confluence documentation, and now AI-generated descriptions of business scenarios directly in repositories. This is great for getting acquainted with the project, but it doesn't cover the whole picture when working on a specific enhancement. Therefore, our analyst team has started creating our own AI agents: we gather relevant Git repositories, customer requirements documents (BFD), and meeting notes into a folder, and then design and analyze with the agent.</p><p>In this article, we'll break down the full pipeline: how we prepare data for the AI agent, provide it with context, and then transform the analysis results into a ready-to-use Technical Specification (ChTZ). Without proper input preparation, even the smartest agent will produce nonsense, and the Markdown output still needs to be formatted into a corporate .docx.</p><h3>What do we have as input?</h3><p>If we look at an analyst's workday, they are flooded with:</p><ul><li><p>Verbal agreements from calls. "We discussed this... need to fix the status processing logic, you know – Yeah, I get it.".</p></li><li><p>Formal customer requirements documents (.docx). Sometimes 10-20 pages with tables and nested lists.</p></li><li><p>The analyst's own notes, comments from documents, or just thoughts from their head.</p></li><li><p>Historical documentation in Confluence, last updated two or three years ago.</p></li><li><p>Descriptions of business scenarios in Git repositories – this is gold, which developers have recently started writing when creating and modifying code, and which we then review.</p></li></ul><p>Now imagine you open a project, and there's already a pile of repositories, an N-page requirements document, summaries of three meetings, and your own notes. How do you feed this to an AI agent so it can process everything correctly?</p><p>The answer is simple: you need a pipeline. Three tools we've built for ourselves:</p><h3>Tool 1. Transcriber: From Voice to Meaning</h3><p>First, what is a transcriber and why does an analyst need it? A transcriber is a tool that converts audio to text. There are cloud solutions: Otter.ai, Sonix, built-in engines in Zoom/Teams. There are local ones – and here's the main hero of the last couple of years: Whisper by OpenAI. It can process audio to text directly on your hardware, without the internet, and the transcription quality for Russian in the latest versions is very good.</p><p>We have regular meetings with clients, and often key details emerge there: "Let's add this functionality," "This scenario now works differently," "Can we display this parameter here?" This doesn't always make it into the minutes: someone writes something down, someone doesn't.</p><p>We are not allowed to use bots connected to meetings with our clients, so we took a different approach: we record the meeting audio (with the participants' consent, of course) and run it through a transcriber. There are now many options: from external AI tools to local models. The main thing is that you get a text file with the transcription.</p><p>To make the AI agent understand the essence, we take the second step – extracting the meaning. We take an LLM and ask: "Extract agreements, decisions, and requirements from this conversation, format it in Markdown." The output is a ready-made meeting summary with decisions and requirements.</p><p>Our company has its own AI tools that can do all this magic at once: convert a conversation to text, and then immediately extract the essence of that text. But even without corporate solutions, the Whisper + LLM combination can be assembled into a local prototype in half an hour.</p><p>So, we've dealt with meetings, now let's talk about documents.</p><h3>Tool 2. Pandoc: Converting Everything to Markdown</h3><p>Pandoc is a free, open-source console utility. It converts documents between many formats: from Word to Markdown, from Markdown to Word, from LaTeX to HTML, and so on. The easiest way to think of Pandoc is as a single command that can turn almost any document into Markdown – and back into the desired format.</p><p>Installation is simple: for Windows, download the installer from the official website; for Linux, use "sudo apt install pandoc" or via brew on macOS. And that's it, you're ready to go. By the way, there's an excellent Pandoc extension in VS Code (search by name, author – DougFinke) that allows you to convert documents directly from the editor with a right-click. Convenient if you don't like the terminal.</p><p>Clients send us requirements documents in .docx, sometimes in PDF, sometimes even Excel spreadsheets with requirements. Modern models can open these formats, but during extraction, tables, lists, images, and links between sections are often lost. The result is unstable – the agent might miss something important or draw incorrect conclusions.</p><p>Pandoc saves us here. We simply wrote a script, and our source file was successfully converted to the format required for the AI agent:</p><pre><code>bash </code>pandoc
+  </main>
+  <footer>
+    Translation generated with Gemini 2.5 Flash-Lite.
+    The original article remains the source of record.
+  </footer>
+</body>
+</html>

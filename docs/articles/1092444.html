@@ -1,0 +1,103 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>AI for Content Creation: Why Texts Converge to a Single Template and How to Measure It</title>
+  <meta name="description" content="AI for content creation produces similar texts: we analyze the origin of the template and show how to measure similarity using shingles, MinHash, and structural metrics. Read more">
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.65;
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 32px 20px 64px;
+      color: #1f2328;
+    }
+    header {
+      border-bottom: 1px solid #d8dee4;
+      margin-bottom: 28px;
+      padding-bottom: 20px;
+    }
+    .source {
+      color: #57606a;
+      font-size: 0.95rem;
+    }
+    img, video, iframe {
+      max-width: 100%;
+      height: auto;
+    }
+    pre {
+      overflow-x: auto;
+      padding: 16px;
+      background: #f6f8fa;
+      border-radius: 6px;
+    }
+    code {
+      font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+    }
+    blockquote {
+      border-left: 4px solid #d0d7de;
+      margin-left: 0;
+      padding-left: 16px;
+      color: #57606a;
+    }
+    footer {
+      border-top: 1px solid #d8dee4;
+      margin-top: 40px;
+      padding-top: 20px;
+      color: #57606a;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>AI for Content Creation: Why Texts Converge to a Single Template and How to Measure It</h1>
+    <p>AI for content creation produces similar texts: we analyze the origin of the template and show how to measure similarity using shingles, MinHash, and structural metrics. Read more</p>
+    <p class="source">
+      Machine-translated from Habr.
+      <a href="https://habr.com/ru/articles/1092444/?utm_campaign=1092444&amp;utm_source=habrahabr&amp;utm_medium=rss">Read the original Russian article</a>.
+      Fri, 09 Oct 2026 11:35:36 GMT
+    </p>
+  </header>
+  <main>
+<div><p>Anyone who has ever asked a language model to write a post or article has seen the same picture. An introductory paragraph with a general thesis, several subheadings, a list of advantages, a conclusion that retells the beginning. If many authors in the same niche use AI for content creation, the feed quickly fills up with texts that differ in topic but not in structure. The reader notices this before they can even articulate what exactly is wrong.</p><p>Below, I will break down why this similarity arises and show how to measure it with code: at the word level, at the corpus level, and at the structure level. Measurement is not for the sake of a report. As long as similarity cannot be calculated, the debate about whether a text is "template-based" remains a matter of taste, but with a number in hand, it can become a pre-publication check.</p><h3>Why Model Responses Converge to a Single Template</h3><p>The first reason lies in decoding. At each step, the model chooses the next word from a probability distribution, and with typical temperature and top-p settings, the most probable continuations win. For similar prompts, the most probable continuations are also similar, so two authors asking for "an article about social media promotion" receive texts of the same cut, even if the prompt wording slightly differed.</p><p>The second reason appears during fine-tuning. Models that are brought to a conversational mode through training on human preferences become more convenient and obedient, but they pay for this with a decrease in response diversity. This effect was specifically measured in the paper "Understanding the Effects of RLHF on LLM Generalisation and Diversity" (Kirk et al., 2023): such models show increased generalization and a noticeable decrease in output diversity compared to models after standard fine-tuning on examples.</p><p>The third reason is the users themselves. In the experiment "Does Writing with Language Models Reduce Content Diversity?" (Padmakumar and He, 2023), people wrote essays with the help of two models. Texts written with the model fine-tuned on preferences were statistically significantly less diverse among authors, while no such effect was found with the base model. In other words, uniformity arises not within a single text, but between texts by different people using the same tool.</p><figure><img alt="Different people, one tool - and the imprints come out the same" loading="lazy" src="https://habrastorage.org/r/w1560/getpro/habr/upload_files/e3d/d4f/ca8/e3dd4fca81ceef9a52c705ee17dc6ca7.jpg" title="Different people, one tool - and the imprints come out the same"/><div><figcaption><em>Different people, one tool — and the imprints come out the same</em></figcaption></div></figure><h3>How to Measure the Similarity of Two Texts</h3><p>The simplest and most honest method is shingles. A text is broken down into overlapping sequences of several words, and the similarity of two texts is calculated as the proportion of common sequences among all of them, i.e., the Jaccard coefficient. Five-word sequences are good at capturing recurring phrases and at the same time do not trigger on accidentally matched word pairs.</p><pre><code>import re
+def shingles(text: str, n: int = 5) -&gt; set[tuple[str, ...]]:
+    words = re.findall(r"[а-яёa-z0-9]+", text.lower())
+    return {tuple(words[i:i + n]) for i in range(len(words) - n + 1)}
+def jaccard(a: str, b: str, n: int = 5) -&gt; float:
+    sa, sb = shingles(a, n), shingles(b, n)
+    if not sa or not sb:
+        return 0.0
+    return len(sa &amp; sb) / len(sa | sb)
+</code><div><a href="https://sourcecraft.dev/"><span></span></a></div></pre><p>The threshold after which texts are considered too similar is best not taken from other articles, but calibrated on your own corpus. Take pairs of texts that you yourself consider different, and pairs that you consider rewritten from each other, look at the distribution of values, and draw a boundary between them. On short texts, the coefficient is noisier, so it makes sense to compare texts of comparable length.</p><h3>Similarity in a Corpus: MinHash Instead of Pairwise Comparison</h3><p>Pairwise comparison quickly becomes unworkable: the number of pairs grows quadratically, and checking a fresh batch against a large archive turns into a long task. MinHash helps here: each text is folded into a short signature of fixed length, by which the Jaccard coefficient is approximately estimated, and the LSH index immediately returns candidate twins without iterating through all pairs.</p><pre><code>from datasketch import MinHash, MinHashLSH
+def signature(text: str, num_perm: int = 128) -&gt; MinHash:
+    m = MinHash(num_perm=num_perm)
+    for sh in shingles(text):
+        m.update(" ".join(sh).encode("utf-8"))
+    return m
+lsh = MinHashLSH(threshold=0.3, num_perm=128)
+for doc_id, text in archive.items():
+    lsh.insert(doc_id, signature(text))
+suspects = lsh.query(signature(new_text))
+</code><div><a href="https://sourcecraft.dev/"><span></span></a></div></pre><p>The threshold in the index here serves as a rough filter: candidates it returns should be re-checked with the exact coefficient from the previous section. It makes sense to compute the archive signatures once and store them alongside the texts; then, checking new material takes fractions of a second.</p><h3>The Template is Visible Not Only in Words</h3><p>Shingles capture matching phrasing but miss matching structure. Two texts may not have a single common five-word sequence and yet read like twins: the same rhythm of short paragraphs, the same first words of sentences, a list wherever there is reasoning. This can also be calculated.</p><pre><code>from collections import Counter
+from statistics import pstdev
+def structure(text: str) -&gt; dict:
+    paras = [p.strip() for p in text.split("\n\n") if p.strip() and not p.startswith(("#", "-", "*"))]
+    sents = [s for p in paras for s in re.split(r"(?&lt;=[.!?])\s+", p) if s]
+    lengths = [len(s.split()) for s in sents]
+    starts = Counter(s.split()[0].lower() for s in sents if s.split())
+    return {
+        "one_sentence_paragraphs": sum(len(re.split(r"(?&lt;=[.!?])\s+", p)) == 1 for p in paras) / max(1, len(paras)),
+        "sentence_length_spread": pstdev(lengths) if len(lengths) &gt; 1 else 0.0,
+        "repeated_openers": sum(n for w, n in starts.items() if n &gt;= 3 and len(w) &gt; 3),
+    }
+</code><div><a href="https://sourcecraft.dev/"><span></span></a></div></pre><p>The spread of sentence lengths by a human author is usually noticeably larger than in a text that the model produced in one go: a person alternates long periods and short remarks, while the model tends towards an average length. The proportion of single-sentence paragraphs and repeated openers indicate a choppy rhythm that readers have long learned to recognize. Absolute values here are also best compared with benchmarks from your own niche, rather than universal norms.</p><p>There is a third level — matching ideas, retold in different words. Neither shingles nor structural metrics can detect this, and it requires vector representations of texts and cosine similarity. The idea is to find articles where the same argument is repeated in different expressions: this is how uniformity infiltrates the feed when the formal uniqueness of each text is high.</p><h3>What Changes the Input Result</h3><p>Measurement reveals the problem, but the solution lies at the input stage. The author's own material has the strongest impact on diversity: transcripts of conversations, notes from real tasks, specific figures and cases. When the model receives such factual material, it has to rely on it, rather than on the most probable continuation of the general topic.</p><p>Abandoning rigid prompt templates also helps. If every article is requested with the words "write an expert article with subheadings and a conclusion," the model dutifully reproduces exactly that form. It's better to describe the reader's task and the material, leaving the structure open and checking it with ready-made metrics. The final layer is human editing, which removes what the metrics only highlight.</p><h3>What These Metrics Won't Tell You</h3><p>High uniqueness does not make a text good, and a low sentence length variation does not prove that a text was written by a model. These are signals for an editor, not a verdict, and they should be used as a pre-publication check: a text that is noticeably similar to the archive or deviates in structure from niche benchmarks is sent for revision, and a human makes the final decision. This process provides the main thing that is lacking with the mass use of AI for content creation — the ability to notice uniformity before readers do.</p></div>
+  </main>
+  <footer>
+    Translation generated with Gemini 2.5 Flash-Lite.
+    The original article remains the source of record.
+  </footer>
+</body>
+</html>

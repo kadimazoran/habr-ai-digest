@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Centralizing AI Usage with Agentgateway</title>
+  <meta name="description" content="Hello everyone! My name is Vanya, a system architect by calling at RED Security. I want to introduce you to an open-source solution for controlling and centralizing work with AI — Agentgateway. Read more">
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.65;
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 32px 20px 64px;
+      color: #1f2328;
+    }
+    header {
+      border-bottom: 1px solid #d8dee4;
+      margin-bottom: 28px;
+      padding-bottom: 20px;
+    }
+    .source {
+      color: #57606a;
+      font-size: 0.95rem;
+    }
+    img, video, iframe {
+      max-width: 100%;
+      height: auto;
+    }
+    pre {
+      overflow-x: auto;
+      padding: 16px;
+      background: #f6f8fa;
+      border-radius: 6px;
+    }
+    code {
+      font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+    }
+    blockquote {
+      border-left: 4px solid #d0d7de;
+      margin-left: 0;
+      padding-left: 16px;
+      color: #57606a;
+    }
+    footer {
+      border-top: 1px solid #d8dee4;
+      margin-top: 40px;
+      padding-top: 20px;
+      color: #57606a;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Centralizing AI Usage with Agentgateway</h1>
+    <p>Hello everyone! My name is Vanya, a system architect by calling at RED Security. I want to introduce you to an open-source solution for controlling and centralizing work with AI — Agentgateway. Read more</p>
+    <p class="source">
+      Machine-translated from Habr.
+      <a href="https://habr.com/ru/companies/ru_mts/articles/1090498/?utm_campaign=1090498&amp;utm_source=habrahabr&amp;utm_medium=rss">Read the original Russian article</a>.
+      Fri, 09 Oct 2026 09:59:01 GMT
+    </p>
+  </header>
+  <main>
+<div><p>Hello everyone! My name is Vanya, a system architect by calling at RED Security. I want to introduce you to an open-source solution for controlling and centralizing work with AI — <strong>Agentgateway</strong>. </p><figure><img loading="lazy" src="https://habrastorage.org/r/w1560/getpro/habr/upload_files/69e/4b1/ebc/69e4b1ebc3a519f9aae37d80c77333de.png"/></figure><p>I encountered it not so long ago. It was a weekday, I was calmly working when suddenly the AI team lead burst in:</p><blockquote><p>— We need a gateway!</p><p>— A gateway? — I asked?</p><p>— Yes, for AI! Through which users could connect to LLM providers, various MCPs, and we could set limits on token consumption and restrict dangerous MCP commands!</p></blockquote><p>As you might have guessed, we succeeded. And I will now tell you about the product we used. I hope you enjoy it. Let's go!</p><h2>What is this Pokémon?</h2><p>“First things first” — let's start with a brief overview of the product itself. <a href="https://agentgateway.dev">Agentgateway</a> (I'll shorten it to AGW) is a master orchestrator for AI. It's written in Rust by <a href="http://Solo.io">Solo.io</a> and is part of the Linux Foundation. The first release was v0.0.2 in March 2025. Now, a year and a half later, the project has reached tag v1.6.0. One of its features, which I believe is super, is that the project is open-source on <a href="https://github.com/agentgateway/agentgateway">GitHub</a>.</p><h2>AGW Usage Diagram. From Official Documentation</h2><figure><img loading="lazy" src="https://habrastorage.org/r/w1560/extt/c4/96/eb/c496eb084f882f8b4835ee2e60e1b7a5.png"/></figure><p>AGW, as you can see in the diagram above, performs the following functions:</p><p>— Gateway to LLM providers;</p><p>— Gateway for MCP/A2A (Agent-to-Agent);</p><p>— Traffic management;</p><p>— Inference routing.</p><p>Traffic management implies:</p><p>— Controlling the number of tokens consumed and setting limits;</p><p>— Adding or removing headers in requests;</p><p>— Validating request content.</p><p>There are two ways to deploy this product: standalone and Kubernetes.</p><figure><img loading="lazy" src="https://habrastorage.org/r/w1560/getpro/habr/upload_files/3a0/70c/213/3a070c213ddd49e050692963eed1a5e8.png"/></figure><h2>Why AGW Specifically</h2><p>A reasonable question might arise for the reader: “Did you consider other products?” — “Yes,” I would answer. And now I'll explain why we settled on AGW. Before we got to the <a href="http://Solo.io">Solo.io</a> project, we also considered <a href="http://lunar.dev">lunar.dev</a> and MCPJungle.</p><figure><img loading="lazy" src="https://habrastorage.org/r/w1560/getpro/habr/upload_files/ca0/a3d/fd3/ca0a3dfd313a0c9655762b979320beb4.png"/></figure><p>After researching the Docker images of these products, deploying them, testing core functionalities, and evaluating ease of use and availability of necessary features, it turned out that either the product configuration was too complex and unclear out-of-the-box, or they couldn't work without internet access. Moreover, one of the images had variables with credentials and an external host for sending logs (which, of course, we <strong>disliked</strong>).</p><p>We didn't come to using AGW on our own — thanks to recommendations from colleagues in another department. We later had meetings with them to adopt their best practices and avoid additional mistakes.</p><h2>How to Run</h2><p>I think there's enough theory — it's time for practice. Here's an example of setting up the standalone version 1.5.0. We'll need Docker installed and the AGW Docker image.</p><p>1) Pull the image:</p><p><code>docker pull cr.agentgateway.dev/agentgateway:v1.5.0 </code><br/></p><p>2) Create a directory for mapping into the container, which will contain the AGW configuration (config.yaml) and the SQLite database file:</p><p><code>mkdir agw-config </code></p><p>3) Run AGW (in this command, I specifically specified 127.0.0.1 so that the UI is not accessible to everyone from the internet, as we haven't configured authorization for it yet):</p><pre><code>docker run -d 
+  --name agentgateway 
+  --user "$(id -u):$(id -g)" 
+  -v "$PWD/agw-config:/config" 
+  -p 127.0.0.1:4000:4000 
+  cr.agentgateway.dev/agentgateway:v1.5.0
+</code><div><a href="https://sourcecraft.dev/"><span></span></a></div></pre><p>After successful launch, you can see the following logs:</p><pre><code>2026-09-27T13:48:59.369007Z	info	state_manager	loaded config from File("/config/config.yaml")
+2026-09-27T13:48:59.371219Z	info	state_manager	Watching config file: /config/config.yaml
+2026-09-27T13:48:59.374769Z	info	agent_core::readiness	Task 'state manager' complete (39.383334ms), still awaiting 1 tasks
+2026-09-27T13:48:59.375171Z	info	app	serving UI at http://localhost:4000/ui
+2026-09-27T13:48:59.375186Z	info	agent_core::readiness	Task 'agentgateway' complete (39.800792ms), marking server ready
+2026-09-27T13:48:59.375190Z	info	management::hyper_helpers	listener established	address=127.0.0.1:15000 component="admin"
+2026-09-27T13:48:59.375195Z	info	management::hyper_helpers	listener established	address=[::1]:15000 component="admin"
+2026-09-27T13:48:59.375204Z	info	management::hyper_helpers	listener established	address=[::]:15020 component="stats"
+2026-09-27T13:48:59.375297Z	info	proxy::gateway	started bind	bind="bind/4000"
+</code><div><a href="https://sourcecraft.dev/"><span></span></a></div></pre><p>Now you can open the UI by navigating to <a href="http://localhost:4000/ui">http://localhost:4000/ui</a> in your browser.</p><p>Enable settings for LLM and MCP by clicking on them:</p><figure><img loading="lazy" src="https://habrastorage.org/r/w1560/getpro/habr/upload_files/04e/8b2/28f/04e8b228f8700193b29151bfb4bd2a2d.png"/></figure><p>The rectangles should change color:</p><figure><img loading="lazy" src="https://habrastorage.org/r/w1560/getpro/habr/upload_files/73b/6b5/f53/73b6b5f53e556d68e6e16edb26b3d727.png"/></figure><p>After clicking <em>Continue</em>, you will see this page:</p><figure><img loading="lazy" src="https://habrastorage.org/r/w1560/getpro/habr/upload_files/fab/1bf/593/fab1bf5934bd989f23dc3becbd8810fe.png"/></figure><p>We have launched and enabled all settings for further work. Excellent!</p><p>Let's return to theory for a moment.</p><h2>Core AGW Concepts</h2><h3>Gateways</h3><p>A gateway is an entity responsible for entering our proxy. It represents a named port and endpoints through which traffic passes. In addition to the port, you can also select the protocol (HTTP, HTTPS, TCP, TLS) and attach certificates.</p><figure><img loading="lazy" src="https://habrastorage.org/r/w1560/getpro/habr/upload_files/1ac/190/592/1ac190592f8d588a040d1279a545156b.png"/></figure><p>Each gateway object has one or more listeners. Multiple listeners might be needed when AGW has multiple hostnames.</p><h3>Listeners</h3><p>Listeners can “split” gateways. As written above, they are needed when a gateway has multiple hostnames assigned and, consequently, different TLS certificates are used. The gateway always has one listener under the hood.</p><h3>Routes</h3><p>Routes handle the processing and redirection of traffic entering the gateway. They are defined at the top level and are bound to gateways by name (one route can be used by multiple gateways).</p><figure><img loading="lazy" src="https://habrastorage.org/r/w1560/extt/b2/13/86/b21386df9af13c6272ec8776b6f28b95.png"/></figure><p><br/>Here's a diagram showing how these three concepts are related:</p><figure><img loading="lazy" src="https://habrastorage.org/r/w1560/getpro/habr/upload_files/298/500/001/298500001ad701ae2c15e7b17f9b3963.png"/></figure><h3>Backends</h3><p>Responsible for redirecting traffic to an IP address, hostname, LLM provider, or MCP server.<br/></p><figure><img loading="lazy" src="https://habrastorage.org/r/w1560/getpro/habr/upload_files/da8/086/712/da8086712a6647c07afdb5e743ce1c13.png"/></figure><h3>Policies</h3><p>Policies are used for traffic management, monitoring configuration, and setting security rules.</p><p><br/></p><figure><img loading="lazy" src="https://habrastorage.org/r/w1560/getpro/habr/upload_files/20e/2b3/a45/20e2b3a45d94b8113b3ac985ac103f86.png"/></figure><p>There are different policies for different objects:</p><div><div><table><tbody><tr><td><p><strong>No.</strong></p></td><td><p><strong>Object</strong></p></td><td><p><strong>Available Policies</strong></p></td><td><p><strong>Execution Point</strong></p></td></tr><tr><td><p>1</p></td><td><p>Gateway or Listener</p></td><td><p>JWT</p><p>External Authorization</p><p>Side Processing</p><p>Transformation</p><p>Basic Authentication</p><p>API Key Authorization</p></td><td><p>Executes before route selection</p></td></tr><tr><td><p>2</p></td><td><p>Route</p></td><td><p>All</p></td><td><p>Executes after route determination, but before backend selection</p></td></tr><tr><td><p>3</p></td><td><p>Backend</p></td><td><p>Backend TLS</p><p>Backend Authorization</p><p>Backend HTTP</p><p>Backend TCP</p><p>AI/LLM</p><p>MCP Authorization</p><p>External Authorization</p><p>Request Header Modification</p></td><td><p>Executes after backend determination</p></td></tr></tbody></table></div></div><p><br/></p><p>Let's see how it is with LLM providers.</p><h2>Connecting and Configuring an LLM Provider</h2><p>Adding a new provider is quite simple. To do this, go to the Providers section and click <em>Add provider</em>:</p><figure><img loading="lazy" src="https://habrastorage.org/r/w1560/getpro/habr/upload_files/1b9/789/808/1b97898080f0cc8d0ac0e4b7ed99cdec.png"/></figure><p>After clicking the button, the following window will open:</p><figure><img loading="lazy" src="https://habrastorage.org/r/w1560/getpro/habr/upload_files/489/284/4b1/4892844b152c5a465a35286807ba3450.png"/></figure><p>You can see many different providers:<br/></p><figure><img loading="lazy" src="https://habrastorage.org/r/w1560/getpro/habr/upload_files/7a5/1f2/c98/7a51f2c98de55f7497c040b72bd6e5db.png"/></figure><p>After that, add models (Models section):<br/></p><figure><img loading="lazy" src="https://habrastorage.org/r/w1560/getpro/habr/upload_files/754/d93/3ec/754d933ecf8ab26ed7377a77a933433b.png"/></figure><p>In the Provider field, I will select the provider I created in the previous step:</p><figure><img loading="lazy" src="https://habrastorage.org/r/w1560/extt/87/00/e8/8700e864b461a45a0f6bf3c60ce4e26b.png"/></figure><h2>Connecting and Configuring MCP</h2><p>You can add MCPs to the gateway. Three transport protocols are supported: Streamable HTTP, SSE (considered legacy), and Command Line.</p><figure><img loading="lazy" src="https://habrastorage.org/r/w1560/getpro/habr/upload_files/05b/856/310/05b8563103da873a68deb2fef9d3ba8e.png"/></figure><h2>Best Practices</h2><p>To conclude this overview, I'd like to share some best (or production-ready) practices that my team and I learned while studying AGW.</p><h3>Admin Panel Authorization using OIDC</h3><p>Ideally, authorization in the AGW UI should only be available to gateway administrators. Why? Because users have endpoints for connection and MCP; they likely won't need more. This also protects against users accessing settings.</p><p>If you have a GitLab system or something similar, you can configure authorization using the OIDC protocol. This setting in AGW is located in Settings → OIDC.</p><figure><img loading="lazy" src="https://habrastorage.org/r/w1560/extt/09/b4/04/09b4047b12c9170e6a0e8f6b2c1e521e.png"/></figure><p>In the gateway policies, you can specify which specific users have access to Settings → Authorization:</p><p><br/></p><figure><img loading="lazy" src="https://habrastorage.org/r/w1560/getpro/habr/upload_files/371/17b/bc7/37117bbc77f7b8b59a1bbd9841eca5b4.png"/></figure><p><br/>This way, we separate access zones and increase peace of mind.</p><h3>Immutable Config</h3><p>When working in the AGW UI and changing any settings, the config (config.yaml) is edited. It's available in the Tools → Raw configuration section:</p><figure><img loading="lazy" src="https://habrastorage.org/r/w1560/getpro/habr/upload_files/251/956/e6b/251956e6b19758f5d1a3da15d5d6d010.png"/></figure><figure><img loading="lazy" src="https://habrastorage.org/r/w1560/getpro/habr/upload_files/083/7fa/158/0837fa1584d439f622ad7486ddee954c.png"/></figure><p>However, this might be inconvenient for some. In such cases, you can change the file permissions (make it read-only) so that AGW cannot edit it.</p><h3>HTTPS</h3><p>The gateway allows configuring HTTPS connections and attaching certificates. This is more secure than HTTP. I recommend it.</p><figure><img loading="lazy" src="https://habrastorage.org/r/w1560/getpro/habr/upload_files/c22/184/7eb/c221847eb5b7f8ba49e59e42de3e1d1f.png"/></figure><h3>Sensitive Headers</h3><p>During the gateway's processing of various requests, HTTP headers with sensitive data might end up in the logs. The gateway can mask the necessary headers, but you need to specify them in the sensitiveHeaders field:</p><pre><code># yaml-language-server: $schema=https://agentgateway.dev/schema/config
+config:
+  sensitiveHeaders:
+  - x-api-key
+  - cookie
+  - x-tenant-secret
+</code><div><a href="https://sourcecraft.dev/"><span></span></a></div></pre><p>This field is in the config (config.yaml), so the gateway only reads its values upon startup. You need to restart AGW after changing the sensitiveHeaders field.</p><p>AGW masks the specified headers when a request is received and again after request transformations and CEL (Common Expression Language, used in policies, transformations, and monitoring rules) backend execution. </p><p>Thus, not only the header sent by the client is edited, but also the header created as a result of the transformation.</p><p>Editing only affects the trace and debug output. The gateway still forwards the actual header value to the backend, and this value remains readable in the CEL expression, so policies or custom logging fields that read the header continue to work.</p><h2>API Key Authorization</h2><p>API key authorization is available in AGW. This means that if a user wants to use the gateway, they contact the AGW administrator, who in turn issues a key. For each key, you can set token consumption limits and specify allowed models to call:</p><figure><img loading="lazy" src="https://habrastorage.org/r/w1560/extt/02/63/20/0263201fe2451af4ec8cdf79f372b806.png"/></figure><h3>Configuring Token Pricing</h3><p>For each model, you can set its own pricing (in USD) per token (input, output, cache read, cache write) by editing the config or overriding values in the UI:</p><figure><img loading="lazy" src="https://habrastorage.org/r/w1560/getpro/habr/upload_files/f1a/900/90e/f1a90090eb561314e548e2cc2814e10c.png"/></figure><p>Why is this needed?<br/><br/>Firstly, to fully leverage the benefits of API keys. Setting prices allows the gateway to understand the cost of consumed tokens and correctly work with the limits set on the keys.</p><p>Secondly, you can build token consumption graphs directly within AGW (yes, it has that too!):</p><p> </p><figure><img loading="lazy" src="https://habrastorage.org/r/w1560/getpro/habr/upload_files/703/1c0/956/7031c095650e9c15414f5d46dedf2d5a.jpeg"/></figure><p>That's all. Thank you for reading to the end! I want to thank my colleagues Nikita Polosukhin and Anatoly Zotov, thanks to whom I learned about Agentgateway and was able to tell you about it.</p><p>We've covered the core concepts of the gateway and its capabilities. We also looked at best practices. I hope you found it interesting! Please share your impressions of the product and whether you've worked with it. Perhaps there's an alternative you'd recommend?</p></div>
+  </main>
+  <footer>
+    Translation generated with Gemini 2.5 Flash-Lite.
+    The original article remains the source of record.
+  </footer>
+</body>
+</html>

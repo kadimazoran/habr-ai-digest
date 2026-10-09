@@ -1,0 +1,180 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>How to Feed a Large Project to a Neural Network Without Overfeeding: What I Learned While Agents Read My Code</title>
+  <meta name="description" content="A year ago, I was copying files into a chat with a neural network one by one. Now, agents read the project themselves via an MCP server, and a month of observing them has been more surprising than all previous work: why a text tree is more expensive for a model than JSON, why the build folder cannot">
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.65;
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 32px 20px 64px;
+      color: #1f2328;
+    }
+    header {
+      border-bottom: 1px solid #d8dee4;
+      margin-bottom: 28px;
+      padding-bottom: 20px;
+    }
+    .source {
+      color: #57606a;
+      font-size: 0.95rem;
+    }
+    img, video, iframe {
+      max-width: 100%;
+      height: auto;
+    }
+    pre {
+      overflow-x: auto;
+      padding: 16px;
+      background: #f6f8fa;
+      border-radius: 6px;
+    }
+    code {
+      font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+    }
+    blockquote {
+      border-left: 4px solid #d0d7de;
+      margin-left: 0;
+      padding-left: 16px;
+      color: #57606a;
+    }
+    footer {
+      border-top: 1px solid #d8dee4;
+      margin-top: 40px;
+      padding-top: 20px;
+      color: #57606a;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>How to Feed a Large Project to a Neural Network Without Overfeeding: What I Learned While Agents Read My Code</h1>
+    <p>A year ago, I was copying files into a chat with a neural network one by one. Now, agents read the project themselves via an MCP server, and a month of observing them has been more surprising than all previous work: why a text tree is more expensive for a model than JSON, why the build folder cannot be skipped by name, how to hide a password without breaking the surrounding code, and what an agent actually does with context when no one is controlling it. Read on</p>
+    <p class="source">
+      Machine-translated from Habr.
+      <a href="https://habr.com/ru/articles/1092488/?utm_campaign=1092488&amp;utm_source=habrahabr&amp;utm_medium=rss">Read the original Russian article</a>.
+      Fri, 09 Oct 2026 12:50:13 GMT
+    </p>
+  </header>
+  <main>
+<div><p>A year ago, I was copying files into a chat with a neural network one by one, and each time I forgot some interface. Now, Claude Code and Codex read the project themselves, via the MCP server that I wrote and released as open source. This article is not about the tool itself, but about what I discovered along the way: why a project's text tree is more expensive for the model than JSON, why the <code>build</code> folder cannot be skipped by name, how to hide a password without breaking the surrounding code, and what the agent actually does with context when no one is controlling it. The latter surprised me the most.</p><figure><img loading="lazy" src="https://habrastorage.org/r/w1560/getpro/habr/upload_files/d8c/936/11c/d8c93611ce2172296b0fee804a68d3b2.png"/></figure><h3>Copy-Paste</h3><p>Anyone who has asked a neural network about their code knows this ritual. You open a file, copy it, paste it into the chat, then the second, then the third. On the third, you notice that the model is already composing an interface that you forgot to show, and confidently calls a method on it that doesn't exist. You go get the interface, paste it, and after half an hour, the chat is a mess of fragments, and you have to check the answer line by line because the model saw the project through a keyhole.</p><p>First, I wrote a script for my C# projects, then a window with a tree and checkboxes, then it grew. Further in the text, there will be numbers from this tool and from its comparison with Repomix, the most famous repository packager. All measurements are in the repository along with the commits on which they were made, the link is at the end.</p><h3>The Most Expensive Format</h3><p>For a long time, I considered the project tree a free part of the context: a couple of screens with file names, what's there to think about. I eventually had four formats: ASCII, JSON, XML, and Markdown, and I chose between them by eye until one day I ran the Flask tree through a real tokenizer. Claude's tokenizer is not published, so I used the open <code>o200k_base</code> from OpenAI.</p><p>My favorite ASCII tree, with which it all began, cost 2,785 tokens. A Markdown list with the same information fit into 1,663. Even JSON, with all its quotes and brackets, was cheaper: 1,802. It's all about pseudographics: to show nesting, the ASCII tree repeats <code>│</code> on each line as many times as there are levels above the file, and the tokenizer charges for each vertical bar. Here are four lines of the same subtree, which in ASCII is 38 tokens:</p><pre><code>│       ├── json
+│       │   ├── provider.py
+│       │   ├── tag.py
+│       │   └── __init__.py</code><div><a href="https://sourcecraft.dev/"><span></span></a></div></pre><p>In Markdown, the same lines take 24 tokens. The backslashes here are not a typo; this is the actual output, escaping underscores:</p><pre><code>    - json/
+      - provider.py
+      - tag.py
+      - requency__initrequency__.py</code><div><a href="https://sourcecraft.dev/"><span></span></a></div></pre><p>Since then, the MCP server has been serving the tree in Markdown, and I've kept ASCII for humans: it's still more pleasant to read with the eyes. A difference of a thousand tokens for one tree seems like a trifle, but the agent requests the tree at the beginning of almost every session, and a trifle turns into a constant tax.</p><h3>The build Folder That Isn't build</h3><p>The next obvious thought: don't give the model garbage. Make a list of <code>bin</code>, <code>obj</code>, <code>node_modules</code>, <code>dist</code>, skip everything that matches, and you're done. This works until the first foreign project. In a JS monorepo, the <code>packages</code> folder is the entire source code. <code>vendor</code> in Go stores dependencies, and in some online store, a module for working with suppliers is called that. <code>build</code> can be both the result of a build and a package with the builder's code. Skip such a folder by name, and the model won't see the source code; worse, it won't even know it existed and will confidently discuss the project without half the code.</p><p>Therefore, in my filter, the folder name doesn't matter; it's just a reason to look closer. First, the filter looks at stack markers: <code>package.json</code>, <code>.csproj</code>, <code>go.mod</code>, <code>pom.xml</code>, <code>Cargo.toml</code>, and dozens of others. The nearest marker owns its part of the tree, and its stack's rules apply only within it. In a monorepo where a .NET backend, a React frontend, and Python scripts are located side-by-side, each part has its own rules, and the frontend's <code>node_modules</code> doesn't affect a neighboring folder with the same name.</p><p>For ambiguous names like <code>build</code>, <code>bin</code>, or <code>vendor</code>, the filter looks inside and searches for clues: compiler or package manager metadata, characteristic cache structure, compiled binary headers, generated manifests. It looks restrictively and doesn't follow symlinks. If there's no evidence that it's a build artifact, the folder remains visible. This is how the <code>bin</code> with build results is hidden in a .NET project, but not the <code>bin</code> folder with source code. The model will survive an extra file, but not a missing module.</p><p>It turned out similarly with <code>.gitignore</code>. At first, I thought I could get by with a simple parser, but live repositories have nested <code>.gitignore</code>, negations with <code>!</code>, nested repositories, and varying case sensitivity. At some point, I stopped reinventing and adopted one rule: what Git itself considers non-ignorable is visible. The parser is custom, and I deliberately don't read the global <code>core.excludesFile</code> so that the result doesn't depend on the settings of a specific machine.</p><p>Git itself turned out to be not as harmless as it seems. In a foreign repository, even <code>git status</code> can run a program from its settings, for example, via <code>core.fsmonitor</code>. Therefore, the tool calls Git with disabled hooks, fsmonitor, and external diff programs, and <code>git.exe</code> placed in the project folder will not run. I will write about safe Git operations separately; there is enough material for an article, but for now, only the general part of each call:</p><pre><code>git --no-pager --no-optional-locks
+    -c core.fsmonitor=false
+    -c core.quotepath=false
+    -c core.hooksPath=&lt;application's empty folder&gt;
+    -c credential.helper=
+    -c core.askPass=
+    -c log.showSignature=false
+    -c submodule.recurse=false
+    -c core.attributesFile=&lt;application's empty file&gt;
+    -c core.excludesFile=&lt;application's empty file&gt;</code><div><a href="https://sourcecraft.dev/"><span></span></a></div></pre><h3>A Map Instead of Code</h3><p>Even a carefully filtered project often doesn't fit into the context, and for half of the questions, the model doesn't need method bodies. It needs a map: what classes exist, what methods accept, what they return, what constants are defined. Therefore, I started compressing: the file is parsed by the Tree-sitter grammar, the bodies of named methods are removed, leaving declarations, signatures, fields, properties, and constants along with their values. Here is a typical class from my project after compression:</p><pre><code>namespace DevProjex.Application.Services;
+
+public readonly record struct TopFileMetric(string Path, long Tokens);
+
+public sealed class TopFileRanking
+{
+    private readonly int _capacity;
+    private readonly List&lt;TopFileMetric&gt; _items;
+
+    public TopFileRanking(int capacity)
+    { }
+
+    public IReadOnlyList&lt;TopFileMetric&gt; Items =&gt; _items;
+
+    public TResult[] Project&lt;TResult&gt;(Func&lt;TopFileMetric, TResult&gt; projection)
+    { }
+
+    public void Add(string path, long tokens)
+    { }
+
+    private sealed class TopFileMetricComparer : IComparer&lt;TopFileMetric&gt;
+    {
+        public static readonly TopFileMetricComparer Instance = new();
+
+        public int Compare(TopFileMetric left, TopFileMetric right)
+        { }
+    }
+}</code><div><a href="https://sourcecraft.dev/"><span></span></a></div></pre><details><summary>The same file before compression</summary><div><pre><code>namespace DevProjex.Application.Services;
+
+public readonly record struct TopFileMetric(string Path, long Tokens);
+
+public sealed class TopFileRanking
+{
+    private readonly int _capacity;
+    private readonly List&lt;TopFileMetric&gt; _items;
+
+    public TopFileRanking(int capacity)
+    {
+        if (capacity &lt;= 0)
+            throw new ArgumentOutOfRangeException(nameof(capacity));
+
+        _capacity = capacity;
+        _items = new List&lt;TopFileMetric&gt;(capacity);
+    }
+
+    public IReadOnlyList&lt;TopFileMetric&gt; Items =&gt; _items;
+
+    public TResult[] Project&lt;TResult&gt;(Func&lt;TopFileMetric, TResult&gt; projection)
+    {
+        ArgumentNullException.ThrowIfNull(projection);
+        var result = new TResult[_items.Count];
+        for (var index = 0; index &lt; _items.Count; index++)
+            result[index] = projection(_items[index]);
+        return result;
+    }
+
+    public void Add(string path, long tokens)
+    {
+        var candidate = new TopFileMetric(path, tokens);
+        var index = _items.BinarySearch(candidate, TopFileMetricComparer.Instance);
+        if (index &lt; 0)
+            index = ~index;
+        if (index &gt;= _capacity)
+            return;
+        _items.Insert(index, candidate);
+        if (_items.Count &gt; _capacity)
+            _items.RemoveAt(_capacity);
+    }
+
+    private sealed class TopFileMetricComparer : IComparer&lt;TopFileMetric&gt;
+    {
+        public static readonly TopFileMetricComparer Instance = new();
+
+        public int Compare(TopFileMetric left, TopFileMetric right)
+        {
+            var tokenOrder = right.Tokens.CompareTo(left.Tokens);
+            return tokenOrder != 0
+                ? tokenOrder
+                : StringComparer.Ordinal.Compare(left.Path, right.Path);
+        }
+    }
+}</code><div><a href="https://sourcecraft.dev/"><span></span></a></div></pre></div></details><p>It was 387 tokens, now it's 181. The agent sees empty <code>{ }</code> not blindly: the server's response indicates the level of detail applied to each file, so it knows that the body was removed, not absent. Compression deliberately doesn't touch some things. Anonymous lambdas remain whole: if you empty the body without a name, there's nothing useful left. And a file that cannot be safely parsed is sent whole, without any compression.</p><p>On entire projects, the result strongly depends on how the code is written. The application layer of my C# project compresses about threefold, from 427 to 143 thousand tokens. Flask sources lose less than a third because I save Python docstrings: for the model, a docstring is often more useful than the code itself. If you also remove comments, Flask compresses from 87 to 26 thousand. And Hono is almost incompressible and loses slightly more than a fifth. The reason was found quickly: 114 of its 294 files are tests, and a test looks like <code>test('...', () =&gt; { ... })</code>, which is that same anonymous lambda. After this, I won't promise anyone "we compress N times.".</p><h3>Secrets: Value, Not File</h3><p>Any method of sending a project to a neural network sooner or later sends it <code>.env</code>, and the database password goes to a foreign server along with the code. The simplest solution: discard the file where the secret was found. Repomix does this, and it has logic: next to the found secret, there might be another one that the rules didn't catch. But along with the secret, the surrounding code disappears, for example, an entire settings class, and the model is left to guess. I chose a different path: replace only the value itself. Here's what the agent gets from the settings file, which contains the database password and GitHub token (keys are, of course, fake):</p><pre><code>import os
+
+
+class Settings:
+    """Runtime configuration for the shop service."""
+
+    DATABASE_URL = "postgresql://shop_app:DEVPROJEX_REDACTED[credential-uri-password#1]@db.internal:5432/shop"
+    GITHUB_TOKEN = "DEVPROJEX_REDACTED[config-secret#1]"
+    CACHE_TTL_SECONDS = 300
+    SMTP_HOST = "smtp.internal"
+
+    def database_pool_size(self) -&gt; int:
+        return int(os.environ.get("DB_POOL_SIZE", "10"))</code><div><a href="https://sourcecraft.dev/"><span></span></a></div></pre><p>The model sees that there is a database, on which host and under which user, that a GitHub token is needed somewhere, and can write code that uses all of this. It doesn't see the values themselves. Repomix writes "1 suspicious file(s) detected and excluded" for the same file, and only the name remains of the file in the package.</p><p>The placeholder contains the secret type and number. The same value under the same rule gets the same number in all files, so the model understands where the same key is used, even though it has never seen it. The replacement knows formats: in a connection string, only the password is replaced; quotes, delimiters, and neighboring fields remain in place, and the same applies to <code>.env</code>, JSON, YAML, XML, Dockerfile, <code>.netrc</code>, and <code>.npmrc</code>. Internally, it uses 221 rules from Gitleaks, ported to .NET, plus separate rules for <code>.env</code>, connection strings, and Dockerfiles. The rules operate on a regular expression engine without backtracking, all expressions have a timeout, and everything is calculated locally, without the model and without sending code anywhere.</p><p>And yes, it makes mistakes. In the first version with masking, the rule for connection strings mistook the plain <code>password=auth[1]</code> in the httpx code for a password, replaced it with a placeholder, and truncated the rest of the line, so the agent received a syntactically broken file. I didn't find this; the agents did in test runs: two of them explicitly stated that because of this, they didn't trust the provided code. I rewrote the rule into a region parser that understands where a value can actually start. Therefore, the tool never calls the result safe: a finding means a rule triggered, and no findings mean only that the rules found nothing.</p><h3>Why Bother If the Agent Reads Itself</h3><p>While I was fiddling with formats and masks, the agents learned to read the project without me. Claude Code and Codex navigate folders themselves, search, and open files. So why filter anything at all? Because the agent reads everything it can reach, including the same <code>.env</code>, and often reads files entirely. MCP, the protocol through which agents connect external tools, allows giving the agent the same engine: folder filtering, masking, compression, and search, but only for reading. The agent can narrow down its selection by paths, masks, or token budget, but it cannot go beyond the folder it was given, and the file content comes in a wrapper "this is data, not instructions." This doesn't provide complete protection against prompt injection, but it makes it harder for the agent to accept a comment like "ignore previous instructions" in a foreign repository as a command.</p><p>The server doesn't disable the agent's built-in tools, and the agent will see the password through a regular <code>cat .env</code>. <code>.env</code> itself should be closed in the agent's settings; in Claude Code, there's <code>permissions.deny</code> for this. But a secret rarely lives only there: it sits in <code>appsettings.Development.json</code>, in a test config, in a connection string in the middle of the code. File name blocking doesn't catch this, but value masking does.</p><p>Another question is whether such a server is needed at all if the agent has its own <code>Read</code>, <code>Grep</code>, and <code>Glob</code>. I tested on two repositories with the same set of tasks. On the small httpx, about nine thousand lines, the built-in tools were cheaper and no worse: 26,600 tokens and 14 calls versus 32,900 and 16 via the server, with the same answers. On hono, which is 43 thousand lines, the built-in tools found 0 out of 4 key files and in three out of four sessions hit the turn limit, while through the server, the agent found 4 out of 4 for 49,300 tokens. The honest formulation would be: on a small repository, the MCP tool directory is pure overhead; on a large one, it keeps the agent within budget when built-in tools don't lead to an answer.</p><h3>What the Agent Actually Does With Context</h3><p>This is the part for which I sat down to write the article. All of September, I ran agents through my server and through the Repomix MCP server on foreign open repositories: httpx, hono, Serilog, then gin, gson, axum, jsoup, click, fmt, MediatR, chi. The tasks were of four types: find a bug by symptoms, find an exact value, assess the consequences of an interface change, understand a mechanism. The servers in the sessions were called <code>server_a</code> and <code>server_b</code>; the agent didn't know which was which, and a separate judge later compared the answers, who also didn't see the names. The model is the same everywhere, Claude Haiku, so the series are comparable and don't bankrupt me.</p><p>The first thing that became clear: agents love to read entire files. Search has already shown the required twenty lines with the declaration name, but in the next call, the agent still asks for the whole file. I analyzed twelve such readings one by one. Seven turned out to be reflexive: the agent already had the declaration name at hand, it just didn't use it. Three happened because the search truncated results alphabetically, and the desired file didn't make it into the output; the agent only knew the file name and read it entirely "to try it out," this is the most expensive class, about 46 kilobytes for three readings. Two more were guesses based on the folder name from the tree. And in all twelve cases, the decision was made immediately after the result of the previous call, without a single line of reasoning.</p><p>This leads to a non-obvious conclusion. The agent reads the tool description once, at the start of the session, and at the moment of choice, it doesn't affect the decision. I tried explaining in the descriptions that there's reading a declaration by name, that there's batch reading of several ranges, that you don't need to read the whole file. The effect was zero: throughout the overview run, reading by declaration name was used 0 times out of 30 calls. But a hint within the result itself, next to the block "in which declarations the matches lie," worked. A refusal with a ready-made call worked even better: when the agent mistakenly passed a folder instead of a file, the server returned the correct call for that folder, and the agent immediately executed it. Since then, all hints have been in the responses, not in the descriptions.</p><p>Second: agents turned out to be the best testers of all I've had. The very first blind run showed that Claude Code silently doesn't see one of the eight tools. I added <code>not</code> to the <code>get_file</code> schema to disallow two mutually exclusive parameters, and the client quietly dropped the tool from the list on such a schema, and the agents in the reports complained about a "phantom get_file" that the instructions mention. Now the contract test prohibits <code>not</code>, <code>allOf</code>, <code>anyOf</code>, <code>if</code>, <code>then</code>, <code>else</code>, <code>$ref</code>, and <code>const</code> in schemas. The masker's bug with <code>password=auth[1]</code>, which I wrote about above, also surfaced there.</p><p>Third: statistics don't predict behavior. My search returns the body of the declaration containing the best match, and the question arose of how many characters to return. I calculated the distribution of declaration sizes: 70 percent fit within 1,800 characters, and logic suggested raising the limit to 3,000 to truncate less often. Then I measured this over 36 sessions, the same binary, three limit values, four tasks with three repetitions:</p><div><div><table><tbody><tr><th><p>Body Limit</p></th><th><p>Turns</p></th><th><p>Cost</p></th><th><p>Full Answers</p></th><th><p>Skipped Mandatory Files</p></th></tr><tr><td><p>disabled</p></td><td><p>173</p></td><td><p>$1.27</p></td><td><p>2 out of 12</p></td><td><p>22 out of 54</p></td></tr><tr><td><p>1,800 characters</p></td><td><p>161</p></td><td><p>$1.21</p></td><td><p>5 out of 12</p></td><td><p>14 out of 54</p></td></tr><tr><td><p>3,000 characters</p></td><td><p>179</p></td><td><p>$1.38</p></td><td><p>2 out of 12</p></td><td><p>30 out of 54</p></td></tr></tbody></table></div></div><p>The 3,000 option, which was the default at the time, lost on all fronts, including the only answer that the judge considered incorrect. The extra volume cost more than truncation with a hint about which lines to read further. The limit remained 1,800.</p><p>Fourth, and this is the main conclusion of the month: who is cheaper is decided not by the tool, but by the form of the question. Repomix packages the area into one document and then searches within it; my server searches and reads exactly the required fragments. For overview questions like "how mechanism X works," packaging wins: pay once, then read cheaply. For questions with a specific answer, point reading wins. In one series on the same binary, it looked like this: overview tasks 82 calls and 70,825 tokens for me versus 47 and 50,199 for Repomix; specific tasks 33 calls and 23,450 tokens versus 29 and 50,393. The correctness of the answers, meanwhile, matched on each task. Since then, I've stopped asking "who is cheaper" and ask "cheaper on what.".</p><p>The final series before the release, after all fixes: 11 tasks on eight repositories in six languages, each twice with each server, 22 sessions per side. Through my server, the agent consumed 973,020 tokens, through Repomix 1,174,907; it found 85 out of 90 mandatory files versus 83; it made more calls, 490 versus 461, and almost all the overruns were on those very overview tasks. The judge preferred answers via my server in 16 out of 22 pairs. Two caveats are needed here. I created the tasks myself, and the same set was used to check fixes later, so this is a development benchmark, not an independent one. And identical runs on my side varied by 20–25 percent: the same task on the same server cost 45,824 tokens in one session and 23,299 in the next. A difference of less than half on a single task means nothing; only the sums matter.</p><p>I should also honestly mention the judge. He read each pair of answers in both orders, and the verdict was counted only if they matched. Correctness, in this case, turned out to be a stable metric, but "which answer is more pleasant" is not: on half the pairs, the judge argued with himself. And a significant part of his trust in my answers was due to the fact that the answers via Repomix referred to line numbers within the packed file, not the original one, and the judge considered such references incorrect. This is a feature of their packaging mode that is easy to fix, so I don't highlight the judge's score anywhere.</p><h3>Focus is Set by Humans</h3><p>The last thing left was not to measure, but to decide. The agent doesn't know which part of the project I'm currently working on, and it starts each task by searching the entire repository, while I tell it in words: "look in <a href="http://sessions.py"><code>sessions.py</code></a>, don't touch anything else." After a month of observation, the answer seemed obvious: let humans set the focus, and the tool honestly inform the agent of the boundaries.</p><p>In the tool's window, you mark files and folders with checkboxes, and the tree, search, packaging, and file relationships only work within the marked area. The agent can read the rest by name if it passes the window's filters, but it won't go beyond the filters themselves: checkboxes set the focus, filters set the boundary. The agent is not kept in the dark; each response indicates how much is left outside, and this is the same idea: "hint in the result, not in the description.":</p><pre><code>[Live context] focus: 1 of 9 selectable files; 8 outside the focus were not searched; read any of them by name with get_file.</code><div><a href="https://sourcecraft.dev/"><span></span></a></div></pre><p>When I change the checkboxes, the agent learns on the very next call what has changed since the last time, without restarting the session:</p><pre><code>[Live context] changed since revision 14: +2 folders, -1 file</code><div><a href="https://sourcecraft.dev/"><span></span></a></div></pre><p>Feedback is also needed in the other direction. Files that the agent received are marked in the tree, and the session log stores the client, the number of calls, the approximate cost in tokens, the list of received files, and the number of masked values. File contents and secrets themselves are not included in the log: it's a receipt of what exactly went to the model, not a copy.</p><h3>What I Learned From This Month</h3><p>If you put it all together, you get a short list, and I wouldn't have guessed any item on it in advance. It also explains why the tool looks the way it does and not otherwise.</p><ul><li><p>The form of the question determines which approach is cheaper. Packaging wins overview tasks; point reading wins tasks with a specific answer, and both statements are true simultaneously.</p></li><li><p>The agent decides to read the entire file immediately after the result. It can only be controlled from the result: descriptions and instructions influence the first step of the session and nothing after it.</p></li><li><p>Size statistics do not predict model behavior. Only sessions predict, and 36 sessions are cheaper than an incorrect default value in a release.</p></li><li><p>Replacing a secret value keeps the code readable; deleting the file does not. In a test with seven injected keys, both approaches missed none, but the surrounding code remained readable in seven out of seven files versus one out of seven.</p></li><li><p>On a small repository, the agent's built-in tools are sufficient, but on a large one, they don't lead to an answer. This is where an external server pays off.</p></li><li><p>Identical sessions differ by a quarter. Without a sample size, any number in this area is worthless, including mine.</p></li></ul><p>The tool on which all this was measured is open-sourced under Apache-2.0, and the full log of measurements by series, with commits, Repomix versions, and verbatim verdicts from agents and the judge, is in its repository in <code>Docs/Benchmark-History.md</code>: <a href="https://github.com/Avazbek22/DevProjex">https://github.com/Avazbek22/DevProjex</a>. If you run agents on your repositories differently and get different numbers, I'm more interested in that than in matching ones.</p></div>
+  </main>
+  <footer>
+    Translation generated with Gemini 2.5 Flash-Lite.
+    The original article remains the source of record.
+  </footer>
+</body>
+</html>

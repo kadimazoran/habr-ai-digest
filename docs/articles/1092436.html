@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>One and a Half Months of Accelerating MoE on a GTX 1660 SUPER: The Native llama.cpp Flag Won</title>
+  <meta name="description" content="I&#x27;m a thermomechanic, head of a department in a design organization, not a programmer. Since August, I&#x27;ve been tinkering with a llama.cpp fork: I want large MoE models to run properly on a regular home PC with a 6GB graphics card, 24GB of RAM, and a SATA drive. The testbed was gpt-oss-20b.">
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.65;
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 32px 20px 64px;
+      color: #1f2328;
+    }
+    header {
+      border-bottom: 1px solid #d8dee4;
+      margin-bottom: 28px;
+      padding-bottom: 20px;
+    }
+    .source {
+      color: #57606a;
+      font-size: 0.95rem;
+    }
+    img, video, iframe {
+      max-width: 100%;
+      height: auto;
+    }
+    pre {
+      overflow-x: auto;
+      padding: 16px;
+      background: #f6f8fa;
+      border-radius: 6px;
+    }
+    code {
+      font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+    }
+    blockquote {
+      border-left: 4px solid #d0d7de;
+      margin-left: 0;
+      padding-left: 16px;
+      color: #57606a;
+    }
+    footer {
+      border-top: 1px solid #d8dee4;
+      margin-top: 40px;
+      padding-top: 20px;
+      color: #57606a;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>One and a Half Months of Accelerating MoE on a GTX 1660 SUPER: The Native llama.cpp Flag Won</h1>
+    <p>I&#x27;m a thermomechanic, head of a department in a design organization, not a programmer. Since August, I&#x27;ve been tinkering with a llama.cpp fork: I want large MoE models to run properly on a regular home PC with a 6GB graphics card, 24GB of RAM, and a SATA drive. The testbed was gpt-oss-20b. The result so far is disappointing: the native -fit flag won, being 2.44 times faster than the usual -ngl 99 on a long prompt, and my own optimizations on top of it yielded nothing. However, along the way, I&#x27;ve collected a good set of ways speed measurements can be misleading, and a couple of settings that will be useful for any owner of a small graphics card. Read on</p>
+    <p class="source">
+      Machine-translated from Habr.
+      <a href="https://habr.com/ru/articles/1092436/?utm_campaign=1092436&amp;utm_source=habrahabr&amp;utm_medium=rss">Read the original Russian article</a>.
+      Fri, 09 Oct 2026 11:30:08 GMT
+    </p>
+  </header>
+  <main>
+<div><p>I'm a thermomechanic, head of a department in a design organization, not a programmer. Since August, I've been tinkering with a llama.cpp fork: I want large MoE models to run properly on a regular home PC with a 6GB graphics card, 24GB of RAM, and a SATA drive. The testbed was gpt-oss-20b. The result so far is disappointing: the native -fit flag won, being 2.44 times faster than the usual -ngl 99 on a long prompt, and my own optimizations on top of it yielded nothing. However, along the way, I've collected a good set of ways speed measurements can be misleading, and a couple of settings that will be useful for any owner of a small graphics card.</p><figure><img loading="lazy" src="https://habrastorage.org/r/w1560/getpro/habr/upload_files/4e3/9d5/22b/4e39d522b2c015118875ccc4ae3f73a4.png"/></figure><h3>Why I Need This</h3><p>I have one goal for all my experiments: to make AI useful without a high-end graphics card and without a subscription. Along this path, I'm working with llama.cpp, and on another path, I'm running a swarm of small models, but that's a separate story. AI agents write the code; I set the tasks and nitpick the numbers.</p><p>The logic is as follows. In an MoE model, only a small subset of experts works for each token. Gpt-oss-120b has over 60GB of weights, and my system has about 30GB of fast memory: 6GB on the card and 24GB of RAM. This means roughly half the model will constantly be read from disk, and the whole question is how to read less and do it promptly. This is what I was developing my fork for: custom layouts, swapping, pushing the router towards experts already in memory.</p><p>I haven't measured 120b yet. First, I ran everything on the smaller gpt-oss-20b, and to put it in the same situation, I locked a portion of RAM with a separate program. 45-48% of the model remained in fast memory; the rest came from the SSD.</p><p>Yes, gpt-oss is no longer trendy; it was recently called a dead donkey not worth kicking. I took it in August as a testbed because it has a larger sibling perfectly suited for my task. The llama.cpp mechanics, which I'll discuss further, are model-independent. Specific numbers depend on the model, and that's where I tripped up; the example will be about KV cache.</p><h3>The Rig</h3><p>Ryzen 5 1600 (six Zen 1 cores), 24GB DDR4, GTX 1660 SUPER 6GB, SATA SSD, Windows 10. Gpt-oss-20b model in native MXFP4, file size 11.3 GiB. I measured speed with llama-bench, like everyone else, and I'll explain below why this method is not recommended. The main mode is a 16,000-token prompt and a full 256-token response. This is how real-world usage looks when code or documents are fed into the model.</p><h3>The Main Point: Don't Use -ngl 99</h3><p>Many llama.cpp guides recommend setting -ngl 99, meaning all layers on the GPU. For a model that doesn't fit into VRAM, this is the worst option on Windows:</p><div><div><table><tbody><tr><th><p>layout</p></th><th><p>t/s</p></th><th><p>vs -ngl 99</p></th></tr><tr><td><p>-ngl 99</p></td><td><p>3.55</p></td><td><p>1.00</p></td></tr><tr><td><p>-fit</p></td><td><p>8.67</p></td><td><p>2.44</p></td></tr><tr><td><p>-fit + my tweak</p></td><td><p>8.50</p></td><td><p>2.39</p></td></tr><tr><td><p>-ncmoe 25 + my tweak</p></td><td><p>6.46</p></td><td><p>1.82</p></td></tr></tbody></table></div></div><p>16,000-token prompt, 256-token response, 46% of the model in fast memory, two passes, shuffled order.</p><p>The reason for this is evident from how much VRAM each layout requests, with only 6143 MiB available:</p><pre><code>              on card
+-ngl 99      10949 MiB    1.8x oversubscription
+-ncmoe 25     1242 MiB    card 80% empty
+--fit         4747 MiB    card 77% full
+</code><div><a href="https://sourcecraft.dev/"><span></span></a></div></pre><p>-ngl 99 requests almost twice the VRAM it has. On Linux, as far as I know, this simply won't load; I don't have Linux, so I haven't tested it. The Windows driver silently moves the excess to shared memory, and then everything shuttles back and forth over the bus. The speed fluctuates between 3.3 and 5.2 t/s between runs, and about 25 GiB is read from disk per run, twice as much as with -fit.</p><p>-fit does a simple thing: it keeps attention and as many experts as fit on the card, and places the remaining experts in RAM. All layers are formally on the card, the difference is in which tensors go where. As the context grows, the KV cache occupies VRAM, and -fit itself moves experts to RAM. With an empty context, 16 out of 24 layers reside in RAM; with 16,000 tokens, 18; with 65,000, 21.</p><p>When the entire model fits into RAM, the picture is the same. In a short benchmark, -ngl 99 yielded 4.54 t/s, almost like the bare CPU (4.67), while the layout where 14 layers reside in RAM gave 10.0 t/s.</p><p>The trap is that -fit is enabled by default in llama-server and llama-cli, but it only adjusts what you haven't specified yourself. If you write -ngl, -ot, or -ncmoe, it gives up, logging a single line. In the upstream code, it looks like this:</p><pre><code>if (mparams-&gt;n_gpu_layers != default_mparams.n_gpu_layers) {
+    throw common_params_fit_exception("n_gpu_layers already set by user to " + std::to_string(mparams-&gt;n_gpu_layers) + ", abort");
+}
+<div><a href="https://sourcecraft.dev/"><span></span></a></div></code></pre><p>This means the advice
+  </main>
+  <footer>
+    Translation generated with Gemini 2.5 Flash-Lite.
+    The original article remains the source of record.
+  </footer>
+</body>
+</html>

@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>[Translation] Jeffrey Huntley: An agent has enough --help if the CLI is well-made</title>
+  <meta name="description" content="Jeffrey Huntley on the &quot;MCP vs. CLI&quot; debate. In his opinion, companies with developer tools are divided into S-tier and F-tier, and model weights decide this. With GitHub, models work through gh CLI without any skills or MCP. For newcomers, he advises polishing --help for agents, optimizin">
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.65;
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 32px 20px 64px;
+      color: #1f2328;
+    }
+    header {
+      border-bottom: 1px solid #d8dee4;
+      margin-bottom: 28px;
+      padding-bottom: 20px;
+    }
+    .source {
+      color: #57606a;
+      font-size: 0.95rem;
+    }
+    img, video, iframe {
+      max-width: 100%;
+      height: auto;
+    }
+    pre {
+      overflow-x: auto;
+      padding: 16px;
+      background: #f6f8fa;
+      border-radius: 6px;
+    }
+    code {
+      font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+    }
+    blockquote {
+      border-left: 4px solid #d0d7de;
+      margin-left: 0;
+      padding-left: 16px;
+      color: #57606a;
+    }
+    footer {
+      border-top: 1px solid #d8dee4;
+      margin-top: 40px;
+      padding-top: 20px;
+      color: #57606a;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>[Translation] Jeffrey Huntley: An agent has enough --help if the CLI is well-made</h1>
+    <p>Jeffrey Huntley on the &quot;MCP vs. CLI&quot; debate. In his opinion, companies with developer tools are divided into S-tier and F-tier, and model weights decide this. With GitHub, models work through gh CLI without any skills or MCP. For newcomers, he advises polishing --help for agents, optimizing documentation for agent web search, and negotiating with labs to include documentation in training. Read more &amp;rarr;</p>
+    <p class="source">
+      Machine-translated from Habr.
+      <a href="https://habr.com/ru/articles/1092348/?utm_campaign=1092348&amp;utm_source=habrahabr&amp;utm_medium=rss">Read the original Russian article</a>.
+      Sat, 10 Oct 2026 13:39:47 GMT
+    </p>
+  </header>
+  <main>
+<div><figure><img alt="On the left, a lamp is plugged directly into the outlet; on the right, two people are pulling a tower of adapters to the outlet" loading="lazy" src="https://habrastorage.org/r/w1560/webt/79/20/1f/79201f02468346ed021a37afc1bb4508.jpg" title="S-tier on the left, F-tier on the right"/><div><figcaption>S-tier on the left, F-tier on the right</figcaption></div></figure><p>I've been meaning to write about this for a long time. Yes, it's a bit late, but I'll still jump into the "MCP vs. CLI" debate. There's a thought that might be interesting to some.</p><p>How is an MCP server actually different from a regular CLI with the <code>--help</code> flag? In my opinion, not at all. A CLI designed with agents in mind covers the same tasks, and there's no need to invent anything new for it. Or am I missing something? (By the way, here's <a href="https://x.com/adamwathan/status/1968738637358522629">Adam Wathan's tweet</a> on the topic.)</p><p>Companies that make developer tools are of two kinds: S-tier and F-tier. The first win, the second lose. And which tier you fall into is entirely decided by model weights.</p><p>An S-tier company is already in the weights. Let's take GitHub. You can criticize it all you want, but models know how to work with it because this ability is hardcoded directly into the weights. They don't need any skills or MCP; the regular CLI is enough.</p><p>It's easy to check. If a prompt like this works, you're in the S-tier:</p><pre><code>Use the GH cli to create a repository, commit the changes, push to origin, set the reposistory to public and update the repository description.</code><div><a href="https://sourcecraft.dev/"><span></span></a></div></pre><p>("Use the GH cli to create a repository, commit the changes, push to origin, make the repository public, and update the repository description.")</p><p>And if you're a young company and not yet in the weights, you have few options. First, you'll have to persuade users to download some kind of skills package, or even install the CLI itself. This is extra hassle that S-tier companies don't have at all.</p><p>So what should you do? Nothing tricky.</p><p>First, make a truly good CLI and polish its <code>--help</code>. See if the model reaches the result just by reading the <code>--help</code> for all subcommands. Then tweak the wording and keep the versions that require a minimum of tool calls for it. All this can be automated, whether by a simple loop or an auto-exploration loop.</p><p>When the foundation is ready, make your CLI documentation publicly available and focus on ASEO (Agentic Search Engine Optimization, i.e., SEO for agents) for their <code>web_search_tool</code>. The task is the same. See how the agent navigates, and ensure it finds everything it needs in one web search call. If it has to wander through your documentation, it means there's still something to refine.</p><p>Next, you'll need a commercial deal with the labs. Perhaps you already have an inference contract with them. Then, push to have your CLI documentation included in the next training run.</p><p>If all goes well, you'll be on your way to S-tier. And the best part is that users won't have to download and install skill packages, configure an MCP server, or mess with all that nonsense.</p></div>
+  </main>
+  <footer>
+    Translation generated with Gemini 2.5 Flash-Lite.
+    The original article remains the source of record.
+  </footer>
+</body>
+</html>

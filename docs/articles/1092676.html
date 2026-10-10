@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>I Wrote 61 Tests for an AI Mentor. Then I Found Out Tests Can&#x27;t Be Trusted Either</title>
+  <meta name="description" content="You don&#x27;t hire a tutor based on their resume. You give them a real student&#x27;s notebook and see not whether they know the answer, but where they&#x27;ll get stuck. Will they point out the line with the error, or rewrite the problem for the student? Will they say &#x27;I don&#x27;t know, let&">
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.65;
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 32px 20px 64px;
+      color: #1f2328;
+    }
+    header {
+      border-bottom: 1px solid #d8dee4;
+      margin-bottom: 28px;
+      padding-bottom: 20px;
+    }
+    .source {
+      color: #57606a;
+      font-size: 0.95rem;
+    }
+    img, video, iframe {
+      max-width: 100%;
+      height: auto;
+    }
+    pre {
+      overflow-x: auto;
+      padding: 16px;
+      background: #f6f8fa;
+      border-radius: 6px;
+    }
+    code {
+      font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+    }
+    blockquote {
+      border-left: 4px solid #d0d7de;
+      margin-left: 0;
+      padding-left: 16px;
+      color: #57606a;
+    }
+    footer {
+      border-top: 1px solid #d8dee4;
+      margin-top: 40px;
+      padding-top: 20px;
+      color: #57606a;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>I Wrote 61 Tests for an AI Mentor. Then I Found Out Tests Can&#x27;t Be Trusted Either</h1>
+    <p>You don&#x27;t hire a tutor based on their resume. You give them a real student&#x27;s notebook and see not whether they know the answer, but where they&#x27;ll get stuck. Will they point out the line with the error, or rewrite the problem for the student? Will they say &#x27;I don&#x27;t know, let&#x27;s check,&#x27; or confidently make something up? A month ago, I integrated an AI mentor into my educational platform: it sees lessons, student progress, and their latest attempt at a task. To avoid choosing a model and tweaking prompts based on gut feeling, I set up a testing environment with automated checks and started making decisions based on its metrics. A week later, I discovered the environment itself was flawed. It accepted incomplete answers, missed a complete solution submitted under a different variable name, and failed a correct refusal. Another week later, the model in the environment behaved flawlessly, but on production for the same class of questions – it didn&#x27;t. This article is about how the testing environment is set up, what it helped solve, where it created false confidence, and how I ultimately stopped trusting the model altogether. Where the environment lied.</p>
+    <p class="source">
+      Machine-translated from Habr.
+      <a href="https://habr.com/ru/articles/1092676/?utm_campaign=1092676&amp;utm_source=habrahabr&amp;utm_medium=rss">Read the original Russian article</a>.
+      Sat, 10 Oct 2026 10:40:51 GMT
+    </p>
+  </header>
+  <main>
+<div><p>You don't hire a tutor based on their resume. You give them a real student's notebook and see not whether they know the answer, but where they'll get stuck. Will they point out the line with the error, or rewrite the problem for the student? Will they say 'I don't know, let's check,' or confidently make something up?</p><p>A month ago, I integrated an AI mentor into my educational platform: it sees lessons, student progress, and their latest attempt at a task. To avoid choosing a model and tweaking prompts based on gut feeling, I set up a testing environment with automated checks and started making decisions based on its metrics.</p><p>A week later, I discovered the environment itself was flawed. It accepted incomplete answers, missed a complete solution submitted under a different variable name, and failed a correct refusal. Another week later, the model in the environment behaved flawlessly, but on production for the same class of questions – it didn't. This article is about how the testing environment is set up, what it helped solve, where it created false confidence, and how I ultimately stopped trusting the model altogether.</p><h3>What the Environment Checks</h3><p>Each question in the environment consists of a student's message and a set of checks for the answer. The checks are intentionally primitive: substrings, tool calls, length, language.</p><p>Here are the terms: <strong>Question</strong> – a test case: a student's message and expectations for the answer. <strong>Run</strong> – one pass of the entire set or a part of it through one model. <strong>PASS/FAIL</strong> – the result of automated checks for one question, not a human evaluation of the answer.</p><pre><code>type Question struct { 
+	ID string 
+	Group string 
+	Messages []domain.Message 
+
+	ExpectTools []string 
+	ForbidTools []string 
+	ExpectAny []string 
+	ExpectEach [][]string 
+	Forbid []string 
+	Lang string 
+	MaxLen int 
+}</code><div><a href="https://sourcecraft.dev/"><span></span></a></div></pre><p>The mentor has three tools: lesson search, student progress, and their latest task attempt. In the environment, the latter two are simulated with fixtures, while the search uses the actual 272 course lessons. The student's fixture includes a function <code>Reverse</code> that reverses the original slice in place, although the task requires returning a new one. The model receives the code and the auto-check output only if it calls <code>get_last_submission</code>.</p><figure><img alt=
+  </main>
+  <footer>
+    Translation generated with Gemini 2.5 Flash-Lite.
+    The original article remains the source of record.
+  </footer>
+</body>
+</html>

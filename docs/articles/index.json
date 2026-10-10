@@ -2479,6 +2479,14 @@
     "summary": "Nathan Lambert (Interconnects) on why the debate over banning open-weight models leads to a lose-lose situation. Most documented attacks so far have been via closed models, Anthropic's report on GLM-5.3 sidesteps the main issue, and Chinese labs assess risks differently. The author's conclusion: those who want to ban open weights for safety must also be prepared to ban public APIs of frontier models. Read more &rarr;",
     "title": "The Debate Over Open Model Cyber-Risks is Broken"
   },
+  "https://habr.com/ru/articles/1092348/?utm_campaign=1092348&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Sat, 10 Oct 2026 13:39:47 GMT",
+    "slug": "1092348",
+    "source_url": "https://habr.com/ru/articles/1092348/?utm_campaign=1092348&utm_source=habrahabr&utm_medium=rss",
+    "summary": "Jeffrey Huntley on the \"MCP vs. CLI\" debate. In his opinion, companies with developer tools are divided into S-tier and F-tier, and model weights decide this. With GitHub, models work through gh CLI without any skills or MCP. For newcomers, he advises polishing --help for agents, optimizing documentation for agent web search, and negotiating with labs to include documentation in training. Read more &rarr;",
+    "title": "[Translation] Jeffrey Huntley: An agent has enough --help if the CLI is well-made"
+  },
   "https://habr.com/ru/articles/1092436/?utm_campaign=1092436&utm_source=habrahabr&utm_medium=rss": {
     "model": "gemini-2.5-flash-lite",
     "published": "Fri, 09 Oct 2026 11:30:08 GMT",
@@ -2534,6 +2542,70 @@
     "source_url": "https://habr.com/ru/articles/1092546/?utm_campaign=1092546&utm_source=habrahabr&utm_medium=rss",
     "summary": "In the spring, a $100 subscription was enough for all my pet project tasks. The idea of fully exhausting the five-hour token limit seemed like a challenge. By early summer, I was managing it well, but by August, limits were only sufficient for technical design, delaying implementation until the next week. I'd start tasks and use up the weekly limit in about 3 days. In September, I had a $200 subscription, but even its limits weren't insurmountable. Friends and colleagues mentioned they were already on maximum Claude and GPT subscriptions and planning to get a third! Pouring more money seemed like a dead end, so I started looking into optimizing token consumption. The main reason wasn't the complexity of tasks or code volume, but simple daily convenience. Read more",
     "title": "Why I Returned to a 200K Context Window with Claude"
+  },
+  "https://habr.com/ru/articles/1092578/?utm_campaign=1092578&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Fri, 09 Oct 2026 16:56:39 GMT",
+    "slug": "1092578",
+    "source_url": "https://habr.com/ru/articles/1092578/?utm_campaign=1092578&utm_source=habrahabr&utm_medium=rss",
+    "summary": "In the first article of the series, there was a table showing how a synthesized voice read an entire book: Shamil Aladin's novel \"Merdiven\" (\"The Staircase\"), 16 chapters, 15,444 words, 1 hour 58 minutes of playback. In the second, I promised to explain in detail what broke down over the long haul. Here it is. In short, the voice held up steadily for the entire two hours. Almost everything that broke was not in the model itself, but in the surrounding pipeline: text segmentation into sentences, stitching short phrases, trimming breaths, extracting text from the book file, and time-stamping. The test set of 14 phrases, which I previously used to compare model versions, didn't catch any of these problems, and in one case, couldn't distinguish a good edit from a harmful one. A disclaimer, as in previous articles in the series: model names, data sources, internal scripts, and training/decoding parameters will not be mentioned here. There will be metrics, testing methodology, and pitfalls. Read on.",
+    "title": "Speech Synthesis at Long Distance: A 1h 58m Novel vs. 14 Test Phrases"
+  },
+  "https://habr.com/ru/articles/1092588/?utm_campaign=1092588&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Sat, 10 Oct 2026 04:00:07 GMT",
+    "slug": "1092588",
+    "source_url": "https://habr.com/ru/articles/1092588/?utm_campaign=1092588&utm_source=habrahabr&utm_medium=rss",
+    "summary": "As is well known, internet connectivity on the go has been quite unstable lately, with certain regions facing critical issues. While usual services are out of the question, asking an AI a question is a regular occurrence. Sometimes, urgent answers are needed. But when your smartphone becomes a mere calling device, your options are limited to calls and SMS. We'll be working with the latter. Paid, with registration and SMS.",
+    "title": "Communicating with AI via SMS"
+  },
+  "https://habr.com/ru/articles/1092636/?utm_campaign=1092636&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Sat, 10 Oct 2026 08:32:03 GMT",
+    "slug": "1092636",
+    "source_url": "https://habr.com/ru/articles/1092636/?utm_campaign=1092636&utm_source=habrahabr&utm_medium=rss",
+    "summary": "I've broken down 12 signs of AI slop, i.e., text generated by a neural network and not proofread, into checks for my AI text detector. Five are caught by code, two of which are partially. The remaining seven rely solely on editor rules. Two typical introductory phrases, 'In this article, we will consider' and 'The conclusion is simple:' were missed by the script. Online detectors respond with a percentage and don't specify what to fix. The percentage itself is also unreliable: in the work of Liang et al., seven detectors on average classified 61% of TOEFL essays written by non-native English speakers as machine-generated. OpenAI closed its classifier in the summer of 2023 due to low accuracy. A narrow check works differently: it names the phrase and the rule, and each trigger can be disputed separately. Wikipedia editors maintain an open list of AI text indicators and explicitly state that an indicator points to a potential problem and proves nothing on its own. My script operates on the same principle: it looks for traces of unedited text, it does not determine authorship. The overall score of this detector has already been discussed on Habr. Read more",
+    "title": "DIY AI Text Detector: What AI Slop Code Catches and What's Left for a Human Editor"
+  },
+  "https://habr.com/ru/articles/1092666/?utm_campaign=1092666&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Sat, 10 Oct 2026 09:58:54 GMT",
+    "slug": "1092666",
+    "source_url": "https://habr.com/ru/articles/1092666/?utm_campaign=1092666&utm_source=habrahabr&utm_medium=rss",
+    "summary": "In February of this year, I, Alex Gusev, handed over @teqfw/di to a Codex agent for rewriting — a library I had been developing since 2019 and had meticulously crafted line by line. I wrote about this on Habr at the time. Since then, I haven't written program code manually. Not because I forgot how. It's just that agents do this work now. At the same time, Pull Requests have almost disappeared from my development process. I haven't stopped using GitHub or abandoned result verification. I simply no longer need the procedure where someone prepares a code change, and I decide whether to accept it or not. I didn't arrive at this conclusion immediately. Read more",
+    "title": "Why I No Longer Use Pull Requests"
+  },
+  "https://habr.com/ru/articles/1092676/?utm_campaign=1092676&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Sat, 10 Oct 2026 10:40:51 GMT",
+    "slug": "1092676",
+    "source_url": "https://habr.com/ru/articles/1092676/?utm_campaign=1092676&utm_source=habrahabr&utm_medium=rss",
+    "summary": "You don't hire a tutor based on their resume. You give them a real student's notebook and see not whether they know the answer, but where they'll get stuck. Will they point out the line with the error, or rewrite the problem for the student? Will they say 'I don't know, let's check,' or confidently make something up? A month ago, I integrated an AI mentor into my educational platform: it sees lessons, student progress, and their latest attempt at a task. To avoid choosing a model and tweaking prompts based on gut feeling, I set up a testing environment with automated checks and started making decisions based on its metrics. A week later, I discovered the environment itself was flawed. It accepted incomplete answers, missed a complete solution submitted under a different variable name, and failed a correct refusal. Another week later, the model in the environment behaved flawlessly, but on production for the same class of questions – it didn't. This article is about how the testing environment is set up, what it helped solve, where it created false confidence, and how I ultimately stopped trusting the model altogether. Where the environment lied.",
+    "title": "I Wrote 61 Tests for an AI Mentor. Then I Found Out Tests Can't Be Trusted Either"
+  },
+  "https://habr.com/ru/articles/1092680/?utm_campaign=1092680&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Sat, 10 Oct 2026 10:57:25 GMT",
+    "slug": "1092680",
+    "source_url": "https://habr.com/ru/articles/1092680/?utm_campaign=1092680&utm_source=habrahabr&utm_medium=rss",
+    "summary": "I am a thermal engineer, head of a department in a design organization, with fourteen years in design. I've never been a programmer, and I've been tinkering with neural networks for less than a year. This spring, I set out to grow a swarm from weak local models that would be smarter than the strongest one. The swarm didn't get smarter. However, along the way, I broke down six small models according to the scheme that any design institute works by, and measured what this scheme can handle under load. Only sectioning holds up, and it benefits a weak model more than a strong one. Read more",
+    "title": "I Set Up a Project Institute for Small Models: Weak Sectioning Gave Fourfold Improvement, a Swarm Five Points"
+  },
+  "https://habr.com/ru/articles/1092726/?utm_campaign=1092726&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Sat, 10 Oct 2026 13:23:42 GMT",
+    "slug": "1092726",
+    "source_url": "https://habr.com/ru/articles/1092726/?utm_campaign=1092726&utm_source=habrahabr&utm_medium=rss",
+    "summary": "In the first part, the Frog learned to look at people, talk, and turn its head. Now I'm adding familiar faces, conversation memory, photo questions, on-screen explanations, and help with poems. Along the way, the robot skips its own commands, recognizes its \"Creator,\" and sends a drawing to the printer. It also turned out that the Frog's biggest bottleneck was... Read more",
+    "title": "I'm building a Raspberry Pi 5 robot for my daughter. But a talking speaker won't cut it! Challenge accepted, let's go. (Part 2)"
+  },
+  "https://habr.com/ru/articles/1092738/?utm_campaign=1092738&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Sat, 10 Oct 2026 14:12:28 GMT",
+    "slug": "1092738",
+    "source_url": "https://habr.com/ru/articles/1092738/?utm_campaign=1092738&utm_source=habrahabr&utm_medium=rss",
+    "summary": "What solves it: expensive and lengthy fine-tuning of a narrow model, or a good wrapper around a standard cloud one? At first glance, a vendor model with unlimited and privileged access to 1C materials leaves no chance for competitors. Is there a practical advantage? We assembled an interactive assistant on an open-source stack and compared it with 1C-Partner on seven questions from the daily work of users and developers. Read more",
+    "title": "1C Partner. Is it worth it?"
   },
   "https://habr.com/ru/companies/1c/articles/1071340/?utm_campaign=1071340&utm_source=habrahabr&utm_medium=rss": {
     "model": "gemini-2.5-flash-lite",
@@ -3191,6 +3263,14 @@
     "summary": "A multi-step AI agent can give a convincing answer, even though the error occurred at the very beginning of the investigation. It's not easy to find it by the final result. We explain how step-by-step checks helped us localize failures and discover a bug in the evaluation mechanism itself. Let's break down the approach.",
     "title": "[Translation] Where did the AI agent break? How to debug multi-step workflows step by step"
   },
+  "https://habr.com/ru/companies/otus/articles/1092466/?utm_campaign=1092466&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Sat, 10 Oct 2026 13:36:46 GMT",
+    "slug": "1092466",
+    "source_url": "https://habr.com/ru/companies/otus/articles/1092466/?utm_campaign=1092466&utm_source=habrahabr&utm_medium=rss",
+    "summary": "Local Qwen3.8 27B outperformed GPT-5.6 in an SQL benchmark, and it ran on a regular MacBook. The cost of queries was almost zero, but there's a catch: it took several minutes for a single response. Let's explore what such an SQL agent can do, where local execution is truly beneficial, and how to set up Qwen with DuckDB on your laptop. Read more",
+    "title": "[Translation] Qwen3.8 27B Outperformed GPT-5.6 in SQL Benchmark. And All This — Locally on a Laptop"
+  },
   "https://habr.com/ru/companies/piter/articles/1087530/?utm_campaign=1087530&utm_source=habrahabr&utm_medium=rss": {
     "model": "gemini-2.5-flash-lite",
     "published": "Mon, 28 Sep 2026 11:07:57 GMT",
@@ -3535,6 +3615,14 @@
     "summary": "Prices are falling. On September 22, Anthropic and OpenAI, within about an hour and a half of each other, released models cheaper than their predecessors, and DeepSeek offered cached input for $0.003 per million tokens. And this is not \"generosity.\" Retail DDR5 has increased by another ~9% in six weeks, and H100 rentals have risen by 15% in a year. Something else has changed – who and how pays for this cost. Part of the cost reduction is engineering: it's the use of cache, KV-cache compression, and the emergence of models that spend fewer tokens on the same task. Another part is financial, and in September, its scale became visible in numbers for the first time. Let's figure out who lowered prices and on what, which models are now only available by permission, and what's happening with open weights and hardware. Details inside. Read more",
     "title": "AI is getting cheaper, and your computer is getting more expensive: how OpenAI and Anthropic started a price war"
   },
+  "https://habr.com/ru/companies/selectel/articles/1092382/?utm_campaign=1092382&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Sat, 10 Oct 2026 08:01:23 GMT",
+    "slug": "1092382",
+    "source_url": "https://habr.com/ru/companies/selectel/articles/1092382/?utm_campaign=1092382&utm_source=habrahabr&utm_medium=rss",
+    "summary": "2027 promises to be a significant year for the server industry. New GPUs, processors, open interconnects, a new memory architecture, and other innovations will emerge. However, this is just part of hardware evolution. This is Sergey Kovalyov, Product Manager at Selectel! Today, we'll break down key innovations and explore the computing opportunities that will soon open up to us. Read more",
+    "title": "Server Hardware 2027: What New Developments Can We Expect"
+  },
   "https://habr.com/ru/companies/simpleone/articles/1085172/?utm_campaign=1085172&utm_source=habrahabr&utm_medium=rss": {
     "model": "gemini-2.5-flash-lite",
     "published": "Tue, 22 Sep 2026 12:09:40 GMT",
@@ -3638,6 +3726,14 @@
     "source_url": "https://habr.com/ru/companies/studyai/articles/1089090/?utm_campaign=1089090&utm_source=habrahabr&utm_medium=rss",
     "summary": "Continuing our experiments with 3D modeling. In today's experiment, we'll recruit the talents of ChatGPT 5 to write ready-made scripts for Blender. Read more",
     "title": "Creating 3D Assets: ChatGPT + Blender"
+  },
+  "https://habr.com/ru/companies/studyai/articles/1092428/?utm_campaign=1092428&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Sat, 10 Oct 2026 06:01:15 GMT",
+    "slug": "1092428",
+    "source_url": "https://habr.com/ru/companies/studyai/articles/1092428/?utm_campaign=1092428&utm_source=habrahabr&utm_medium=rss",
+    "summary": "In today's experiment, we'll try to create conditional web design assets for five different themes: gaming, fintech, Web 1.0 style?, ecological, and neuro-service. Read more",
+    "title": "Creating Web Design References with AI"
   },
   "https://habr.com/ru/companies/svoi_ru/articles/1078124/?utm_campaign=1078124&utm_source=habrahabr&utm_medium=rss": {
     "model": "gemini-2.5-flash-lite",

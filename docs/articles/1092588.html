@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Communicating with AI via SMS</title>
+  <meta name="description" content="As is well known, internet connectivity on the go has been quite unstable lately, with certain regions facing critical issues. While usual services are out of the question, asking an AI a question is a regular occurrence. Sometimes, urgent answers are needed. But when your smartphone becomes a mere ">
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.65;
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 32px 20px 64px;
+      color: #1f2328;
+    }
+    header {
+      border-bottom: 1px solid #d8dee4;
+      margin-bottom: 28px;
+      padding-bottom: 20px;
+    }
+    .source {
+      color: #57606a;
+      font-size: 0.95rem;
+    }
+    img, video, iframe {
+      max-width: 100%;
+      height: auto;
+    }
+    pre {
+      overflow-x: auto;
+      padding: 16px;
+      background: #f6f8fa;
+      border-radius: 6px;
+    }
+    code {
+      font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+    }
+    blockquote {
+      border-left: 4px solid #d0d7de;
+      margin-left: 0;
+      padding-left: 16px;
+      color: #57606a;
+    }
+    footer {
+      border-top: 1px solid #d8dee4;
+      margin-top: 40px;
+      padding-top: 20px;
+      color: #57606a;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Communicating with AI via SMS</h1>
+    <p>As is well known, internet connectivity on the go has been quite unstable lately, with certain regions facing critical issues. While usual services are out of the question, asking an AI a question is a regular occurrence. Sometimes, urgent answers are needed. But when your smartphone becomes a mere calling device, your options are limited to calls and SMS. We&#x27;ll be working with the latter. Paid, with registration and SMS.</p>
+    <p class="source">
+      Machine-translated from Habr.
+      <a href="https://habr.com/ru/articles/1092588/?utm_campaign=1092588&amp;utm_source=habrahabr&amp;utm_medium=rss">Read the original Russian article</a>.
+      Sat, 10 Oct 2026 04:00:07 GMT
+    </p>
+  </header>
+  <main>
+<div><p>As is well known, internet connectivity on the go has been quite unstable lately, with certain regions facing critical issues. While usual services are out of the question, asking an AI a question is a regular occurrence. Sometimes, urgent answers are needed. But when your smartphone becomes a mere calling device, your options are limited to calls and SMS. We'll be working with the latter.</p><p>In a nutshell, the scheme is simple: send an SMS, get a reply from the AI.</p><figure><img loading="lazy" src="https://habrastorage.org/r/w1560/extt/d2/73/95/d2739577113007dfe445cdab6f1b71a1.png"/></figure><p>Nowadays, with the advancement of AI, when an idea emerges, the research process is straightforward. Ask the AI if such a product already exists. If not, find out how difficult it would be to implement. And if the ratio of complexity to profit (or just interest) exceeds certain subjective thresholds, then it gets implemented. That's how it happened here. The first step, of course, was the idea. After the agent made it clear that it was quite feasible to implement, we outlined the architecture and plan.</p><p>By the way, such services already exist, for example <a href="https://voxie.textmei.com">Voxie AI</a>. But it's in the USA, and sending SMS there would be too expensive. Plus, it's unknown how well the model handles the Russian language. But if you have the opportunity, it would be interesting to read about your experience in the comments.</p><p>This article contains no advertising for any service, but I will still mention what I used. You can use any similar alternative. I'll admit upfront that most of the work was done with the help of an AI agent. The project and its implementation do not claim to be technically perfect or secure. It was created more for research purposes.</p><h3>What we will need</h3><ol><li><p>A second Android smartphone running version 5+, ideally 8 - 11</p></li><li><p>A second SIM card that will receive SMS from you and send you replies from the AI</p></li><li><p>A VPS in the Russian Federation (KVM virtualization, 2 vCPUs / 2-4 GB RAM / 20 GB SSD, Ubuntu 22 / 24)</p></li><li><p>A domain name</p></li><li><p>Internet access on the phone from point 1</p></li><li><p>GigaChat LLM (free)</p></li></ol><p>What I used:</p><p>For point 1, I had an old Nokia 7 TA-1041, Android 7.1.1, lying around, so I used that. You can find a suitable smartphone on Avito for 1-2 thousand rubles.</p><figure><img alt="Nokia, but not the same anymore" loading="lazy" src="https://habrastorage.org/r/w1560/extt/f7/ce/b2/f7ceb24993dcbd0b09cb5c4a6a87f057.jpg" title="Nokia, but not the same anymore"/></figure><div><figcaption>Nokia, but not the same anymore</figcaption></div><p>I got a SIM card from T-Mobile. If you order through their website, they have a tariff constructor. 0 minutes, 0 GB, just an unlimited SMS package for 49 rubles/month. I had to sweat a bit to get this tariff, but I managed in the end.</p><figure><img loading="lazy" src="https://habrastorage.org/r/w1560/extt/96/72/58/967258826d2bf6df8e051cd1b3e6a430.png"/></figure><p>I rented a VPS from Selectel - 2 vCPUs - 2 GB RAM - 40 GB for 400 rubles/month.</p><figure><img loading="lazy" src="https://habrastorage.org/r/w1560/extt/12/3d/85/123d854eb5d44b64c37457edcb4ca612.png"/></figure><p>I already had a domain, purchased last year for my personal VPN. Any cheapest one will do - 100-200 rubles/year.</p><p>Internet - home Wi-Fi.</p><p>For the LLM, I chose Sber's GigaChat based on the agent's recommendation. Free 250 million tokens per year. - 0 rubles.</p><h3>Application</h3><p>Our architecture looks like this.</p><figure><img loading="lazy" src="https://habrastorage.org/r/w1560/extt/fd/fe/5d/fdfe5d15d0b5dce5bc17781aa26709ab.png"/></figure><p>The code was written over several iterations: code - test - fix - test - ... until testing yielded positive results. After completion, the entire project was reviewed using the same process. The stack turned out to be approximately: Python, FastAPI, SQLite, Caddy.</p><p>The application is configured to work specifically with Sber's GigaChat. My main goal was to verify its functionality. The essence is that upon registration, you receive a token. A request is sent with this token, and in response, you get an access token, which you can then use to send requests to the AI. This token is valid for 30 minutes. After it expires, we don't request a new one until an SMS arrives.</p><h3>Configs</h3><p>One SMS in Cyrillic has a maximum of 70 characters. But if it's, for example, 80 characters, the message is concatenated into one, but you pay for two. With an unlimited SMS tariff, this doesn't bother me much, but keep it in mind. I believe the maximum number of concatenated messages is 10. And then we get to the configs.</p><p><strong>system_prompt</strong> - "Respond in Russian briefly, up to 200 characters, without emojis or markdown." This 200-character limit is a conditional one that the model might ignore and output slightly more.</p><p><strong>max_reply_units</strong> = 201 This is a hard limit. The message is concatenated from parts of 67 characters, as the concatenation header consumes 3 characters.</p><p><strong>max_tokens</strong> = 500 - GigaChat's response limit. Theoretically, there's no limit here, but this is to ensure it finishes its thought and stays within our 200 characters. By the way, our GigaChat has a context limit of about 8k.</p><p><strong>max_sessions</strong> = 10 - limit of active sessions. This is built into our code. Each session lasts 24 hours without activity. There's not much point in detailing the advantages of different sessions. If we want to switch to another session, we just type "#2 " immediately followed by our request. When the 11th session appears, the least recently active one is overwritten, and so on.</p><p><strong>history_messages</strong> = 10 - message limit per session. Here, as everywhere else, the model remembers nothing about our past messages. Therefore, we send it the last 10 messages (ours and the model's) to remind it of the context.</p><h3>Next steps</h3><p><strong>GigaChat</strong>. Register for GigaChat API. Go to API settings, get your authorization key. Save it somewhere, you'll need it later.</p><figure><img loading="lazy" src="https://habrastorage.org/r/w1560/extt/ec/56/12/ec5612faaa1c8a76f4ff6c5cb34de6d3.png"/></figure><p><strong>Domain</strong>. We will need to set up 2 DNS records. If you already had a domain before, you can add to it. I did exactly that, and they were set up immediately, without waiting several hours. Mine is registered on Cloudflare. What's important is Type - A (A record maps a subdomain to the VPS's IPv4 address), Proxy status - DNS only (proxy interferes with Let's Encrypt and the phone's SSE connection), TTL - Auto. For the domain domain.ru, set up app.domain.ru and sms.domain.ru. And of course, the IP address of your VPS.</p><figure><img loading="lazy" src="https://habrastorage.org/r/w1560/extt/56/02/b4/5602b484b6dae2bc60eca982218dc147.png"/></figure><p><strong>VPS</strong>. After purchase, log in to the server. Update the system, install Docker.</p><pre><code>apt update &amp;&amp; apt upgrade -y
+curl -fsSL https://get.docker.com | sh</code><div><a href="https://sourcecraft.dev/"><span></span></a></div></pre><p>Next, configure the firewall.</p><pre><code>ufw allow ssh &amp;&amp; ufw default deny incoming  # Allow incoming SSH (22) and deny all other incoming by default. Only SSH, 80, and 443 will be accessible from outside.
+ufw default allow outgoing        			# Allow outgoing (deny would break apt/docker pull/GigaChat)
+ufw allow 80/tcp &amp;&amp; ufw allow 443/tcp  		# We need 80 for issuing and renewing Let's Encrypt certificates, and 443 for everything else.
+ufw --force enable						# Apply
+timedatectl set-ntp true          			# Enable NTP. Each webhook is signed with a timestamp, the receiver only accepts within a ±5 minute window from the server's clock. If the drift is larger, all webhooks will be rejected with 401.</code><div><a href="https://sourcecraft.dev/"><span></span></a></div></pre><p>Install the project, which the agent kindly wrote, and fill in the credentials.</p><pre><code>git clone https://github.com/VladSmr/sms-ai-gateway.git /opt/sms-ai-gateway
+cd /opt/sms-ai-gateway
+cp config.example.yaml config.yaml
+cp .env.example .env &amp;&amp; nano .env</code><div><a href="https://sourcecraft.dev/"><span></span></a></div></pre><p>More details are in the project's README, linked at the end of the article.</p><p>Start it.</p><p>! Replace domain with your domain here and below</p><pre><code>docker compose up -d --build &amp;&amp; docker compose ps
+# 3 healthy + caddy running; app restarts - this is okay (waiting for credentials from the phone)
+curl https://sms.domain.ru/api/3rdparty/v1/health</code><div><a href="https://sourcecraft.dev/"><span></span></a></div></pre><p><strong>Phone</strong>. We will need the APK for <a href="https://github.com/capcom6/android-sms-gateway">SMS Gateway for Android</a>. If anything, I have no relation to it. And here's the download link directly from the phone - <a href="https://github.com/capcom6/android-sms-gateway/releases/download/v1.77.1/app-release.apk">https://github.com/capcom6/android-sms-gateway/releases/download/v1.77.1/app-release.apk</a> (latest version at the time of writing this article). You need app-release.apk, not app-insecure.apk, because the latter serves over HTTP.</p><p>Install it, go to settings, cloud server, fill in the credentials. API URL - https://sms.domain.ru/api/mobile/v1 Private token - GATEWAY_PRIVATE_TOKEN from .env Connect, and immediately after, a username and password will be generated. Save them somewhere.</p><p>Go back to the application settings. Webhooks, signature key - enter GATEWAY_HMAC_SECRET (the same as in .env). Ping, interval - 14 min (840 sec). System, battery optimization - off. Messages, processing - FIFO (mine was LIFO by default).</p><p>Return to our <strong>VPS</strong>.</p><p>Add the remaining credentials.</p><pre><code>nano .env        # GATEWAY_USERNAME and GATEWAY_PASSWORD from the previous step
+docker compose up -d app 
+docker compose ps
+# all 5 started, the application no longer restarts
+curl https://app.domain.ru/healthz
+# should show {“status”:“ok”, …}</code><div><a href="https://sourcecraft.dev/"><span></span></a></div></pre><p>Register webhooks.</p><pre><code>set -a; source .env; set +a
+for EVENT in "sms:received" "sms:delivered" "sms:failed" "system:ping" "app:started"; do
+  curl -X POST -u "$GATEWAY_USERNAME:$GATEWAY_PASSWORD" \
+    -H "Content-Type: application/json" \
+    -d "{\"url\": \"https://app.domain.ru/webhook\", \"event\": \"$EVENT\"}" \
+    https://sms.domain.ru/api/3rdparty/v1/webhooks
+done</code><div><a href="https://sourcecraft.dev/"><span></span></a></div></pre><p>Check that everything is working. It should show all 5 events.</p><pre><code>curl -u “GATEWAY_PASSWORD” \ https://sms.domain.ru/api/3rdparty/v1/webhooks</code><div><a href="https://sourcecraft.dev/"><span></span></a></div></pre><p><strong>Whitelist</strong>. In config.yaml, under whitelist, enter your primary number from which you will send SMS. We don't want to spend tokens to reply to emergency services. Additionally, if we store personal data of third parties, we must notify Roskomnadzor about it.</p><p>First SMS.</p><p>Of course, it wasn't my first, but surprisingly, the first one was processed successfully.</p><details><summary>Communicating with AI</summary><div><figure><img alt="I would have answered differently, of course" loading="lazy" src="https://habrastorage.org/r/w1560/extt/23/ec/da/23ecda42b728b15ee631436836330181.jpg" title="I would have answered differently, of course"/></figure><div><figcaption>I would have answered differently, of course</figcaption></div><figure><img alt="This is what the logs look like" loading="lazy" src="https://habrastorage.org/r/w1560/extt/2d/34/fa/2d34fa0524c23dfb9adbf8627174d2d6.png" title="This is what the logs look like"/></figure><div><figcaption>This is what the logs look like</figcaption></div></div></details><p>And here is some small statistics from all the testing time.</p><figure><img loading="lazy" src="https://habrastorage.org/r/w1560/extt/26/a1/63/26a1639d4d7ced6045145fbdd7e2e464.png"/></figure><h3>What were the difficulties</h3><p>Actually, there weren't many significant ones.</p><p>The first one: I went out on business, sent an SMS, no reply. I don't know about other Android versions, but on mine, the sleep mode activates after 30 minutes - the maximum setting. After that, messages go into a buffer, and the app retries them with increasing intervals (14 attempts over 45 hours). It was solved easily and simply: in developer options, I checked the "don't turn off screen" box. A nuance: this only works while charging. That is, to leave the phone unattended, it must be left charging. If you leave it for a few hours, there are no problems. If you leave it for several days or weeks, it's unclear what will happen to the phone, especially the battery.</p><p>The second problem: I sent an SMS, it was received, the phone sent a reply, but I didn't receive it. I wrote to support, they said everything was fine on their end. I googled it, and there's a possibility that a new, "unwarmed" SIM card might do this due to the operator's anti-fraud filters, and the messages got stuck with the operator. But this is just a hypothesis, the exact reason remains a mystery. It hasn't happened again since.</p><details><summary>Second problem</summary><div><figure><img alt="Here I start to get nervous" loading="lazy" src="https://habrastorage.org/r/w1560/extt/0a/af/f4/0aaff4abf3129a9515ebcc342c5a053f.jpg" title="Here I start to get nervous"/></figure><div><figcaption>Here I start to get nervous</figcaption></div><figure><img alt="And it doesn't understand what's wrong with me" loading="lazy" src="https://habrastorage.org/r/w1560/extt/dc/28/6d/dc286d3c5cedd92d530aa09ba1b12bb1.jpg" title="And it doesn't understand what's wrong with me"/></figure><div><figcaption>And it doesn't understand what's wrong with me</figcaption></div></div></details><h3>In conclusion</h3><p>This project is essentially a trial version. Its entire purpose is just to test its functionality. And it passed that test. One could, for example, integrate RAG and internet search. It could be adapted to work with a different AI. Or one could simply set it up for their own number, change the prompt, and redirect communication with someone annoying. Ideas for development are limited only by your imagination and the laws of the country you live in. And don't forget that your operator can read all your SMS messages.</p><p>The project itself is located here - <a href="https://github.com/VladSmr/sms-ai-gateway">https://github.com/VladSmr/sms-ai-gateway</a></p><p>Thank you for reading, I look forward to your feedback.</p></div>
+  </main>
+  <footer>
+    Translation generated with Gemini 2.5 Flash-Lite.
+    The original article remains the source of record.
+  </footer>
+</body>
+</html>

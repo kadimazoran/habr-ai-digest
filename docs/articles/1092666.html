@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Why I No Longer Use Pull Requests</title>
+  <meta name="description" content="In February of this year, I, Alex Gusev, handed over @teqfw/di to a Codex agent for rewriting — a library I had been developing since 2019 and had meticulously crafted line by line. I wrote about this on Habr at the time. Since then, I haven&#x27;t written program code manually. Not because I forgot">
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.65;
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 32px 20px 64px;
+      color: #1f2328;
+    }
+    header {
+      border-bottom: 1px solid #d8dee4;
+      margin-bottom: 28px;
+      padding-bottom: 20px;
+    }
+    .source {
+      color: #57606a;
+      font-size: 0.95rem;
+    }
+    img, video, iframe {
+      max-width: 100%;
+      height: auto;
+    }
+    pre {
+      overflow-x: auto;
+      padding: 16px;
+      background: #f6f8fa;
+      border-radius: 6px;
+    }
+    code {
+      font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+    }
+    blockquote {
+      border-left: 4px solid #d0d7de;
+      margin-left: 0;
+      padding-left: 16px;
+      color: #57606a;
+    }
+    footer {
+      border-top: 1px solid #d8dee4;
+      margin-top: 40px;
+      padding-top: 20px;
+      color: #57606a;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Why I No Longer Use Pull Requests</h1>
+    <p>In February of this year, I, Alex Gusev, handed over @teqfw/di to a Codex agent for rewriting — a library I had been developing since 2019 and had meticulously crafted line by line. I wrote about this on Habr at the time. Since then, I haven&#x27;t written program code manually. Not because I forgot how. It&#x27;s just that agents do this work now. At the same time, Pull Requests have almost disappeared from my development process. I haven&#x27;t stopped using GitHub or abandoned result verification. I simply no longer need the procedure where someone prepares a code change, and I decide whether to accept it or not. I didn&#x27;t arrive at this conclusion immediately. Read more</p>
+    <p class="source">
+      Machine-translated from Habr.
+      <a href="https://habr.com/ru/articles/1092666/?utm_campaign=1092666&amp;utm_source=habrahabr&amp;utm_medium=rss">Read the original Russian article</a>.
+      Sat, 10 Oct 2026 09:58:54 GMT
+    </p>
+  </header>
+  <main>
+<div><p>In February of this year, I, Alex Gusev, handed over <code>@teqfw/di</code> to a Codex agent for rewriting — a library I had been developing since 2019 and had meticulously crafted line by line. I wrote about this on Habr at the time. Since then, I haven't written program code manually. Not because I forgot how. It's just that agents do this work now.</p><figure><img alt="Agents write code, and I smile. For now." loading="lazy" src="https://habrastorage.org/r/w1560/extt/28/9d/7d/289d7dd1fb1e0749add4030327632f21.png" title="Agents write code, and I smile. For now."/><figcaption>Agents write code, and I smile. For now.</figcaption></figure><p>At the same time, Pull Requests have almost disappeared from my development process. I haven't stopped using GitHub or abandoned result verification. I simply no longer need the procedure where someone prepares a code change, and I decide whether to accept it or not.</p><p>I didn't arrive at this conclusion immediately.</p><h3>How I Automated Development, and Then Changed My Mind</h3><p>Initially, I wanted to build a full-fledged pipeline on GitHub infrastructure. I connected webhooks and taught agents to publish my website pages based on user tickets. In May, I wrote about this experiment: a user opens an Issue, the system selects the appropriate agent profile, runs it in a Docker container, and the output might be a website page published via GitHub Actions. There were eight agent profiles with different starting prompts.</p><p>Then the <a href="https://github.com/viktor-gusev/github-flows">GitHub Flows</a> application appeared, which allowed building such chains based on GitHub events: with branching, retries, analysis of comments and Pull Requests. In short, I tried to organize the usual "human" development for agents, but without people in the intermediate stages.</p><p>It worked. But the cost of this organization surprised me unpleasantly. Processing one simple ticket could take fifteen minutes and about 20% of the five-hour model usage limit. Webhooks sent a lot of events, but not all of them turned out to be truly useful. Even publishing rather primitive website pages using the lightest model consumed significant resources.</p><p>I haven't conducted precise measurements; this is a subjective observation. But when run directly, an agent performed comparable work, in my opinion, an order of magnitude faster and cheaper. It turned out that a significant portion of the effort went into simulating the workflow, not the work itself.</p><p>Now I run agents manually or on a schedule. You can let them run unsupervised when the infrastructure and procedures are already fine-tuned. While I'm exploring them, uncontrolled automation too easily turns into paying for work that no one asked to be done.</p><h3>Now Agents Have a Server</h3><p>My platform, <a href="https://teqfw.com/">Tequila Framework</a>, is initially designed for a modular monolith. This is a consequence of many years of working with Magento and familiarity with systems like Spring, Symfony, Laravel, Drupal, and WordPress. Separate packages, dependencies between them, late binding via DI — this architecture has been familiar to me long before the advent of LLM agents.</p><p>The platform's core consists of seven npm packages: <code>@teqfw/di</code>, <code>cfg</code>, <code>log</code>, <code>cli</code>, <code>db</code>, <code>web</code>, and <code>email</code> (all with the <code>@teqfw/</code> prefix). Their current code is written by agents. On top of that, there are two more packages for CMS — <code>@flancer32/teq-cms</code> and <code>.../teq-tmpl</code>.</p><p>My current project is called <strong>Personal Digital Embassy</strong>. It includes two web applications — on 11 and 5 packages, 4 shared modules (sdk), and (for now) six plugins. A total of 26 npm packages, not counting the platform ones (teqfw). All of this continues to develop, and agents still write the code.</p><p>On the VPS are repositories with code and repositories with their cognitive contexts. Agents work in a single file space. They can modify independent packages in parallel, or they can exclusively work with several simultaneously if the task involves them jointly. If necessary, they clone repositories themselves. They have access to GitHub, npm, and deployment tools.</p><p>They also have the ability to verify what they've written. An agent can create a real database — SQLite, PostgreSQL, or MariaDB, launch a web application, access it via HTTP, perform integration tests, and rework what doesn't work. DI allows substituting the environment at different levels, but it doesn't obligate you to limit yourself to mocks. You can also test with real components.</p><p>This is precisely why I don't need PRs as a separate meeting point for the code author and the reviewer. An agent can go through the entire technical cycle within its working context. This, of course, is not a guarantee of error-free operation. Tests verify what we've managed to anticipate, and the ultimate test of a program remains its use by the end consumer.</p><h3>I Stand at the Beginning and the End</h3><p>Gradually, I've developed a fairly simple division of labor. At the beginning, I write specifications and define the desired outcome. At the end, I look at what has been achieved. In between, agents work.</p><p>This is how I apply my ADSM methodology: first specifications and cognitive context, then code. Moreover, the source code of my Open Source packages is public, while the specifications are intentionally placed in private repositories. You can see how the program is structured, modify it, make a fork. But the context that defines its development direction is mine.</p><p>This approach has an unpleasant consequence. The weakest link in the system turned out to be me. Agents can make changes faster than I can understand what they've done. Launching another agent is easier than finding time to study the results of the previous one's work.</p><p>And here I had to reconsider the very subject of my attention. It's no longer so important for me to know exactly how an agent implemented every little detail. I need to understand what problem it is solving, whether it needs to be solved at all, and whether the final result meets my expectations.</p><p>Verification hasn't disappeared. There's simply no point in forcing a person to participate in all intermediate operations if the agent has the context, tools, and ability to verify the implementation independently. A programmer in such a system is more of a tool configurator than a transmission gear between a user request and the code.</p><h3>I Need a Problem, Not a Ready-Made Fix</h3><p>In Personal Digital Embassy, it's constantly discovered that some basic TeqFW package lacks functionality. Then I use GitHub Issues. An agent working on an application describes the problem and the expected behavior in the repository of the corresponding package. Another agent, already in the context of that package, handles the solution.</p><p>For example, during the deployment of PDE Hub, it turned out that the <a href="https://github.com/teqfw/db/issues/11">PostgreSQL connection log could report the SQLite file name</a>. The ticket in <code>teqfw/db</code> describes how to reproduce the error, why the confusion arises, and what needs to be checked after the fix. In another <a href="https://github.com/teqfw/db/issues/8">ticket</a>, there was a need to extract a record identifier before inserting it into the database. Here, requirements for transactions, cross-DBMS portability, and compatibility with existing behavior had to be described. Both the problem statement and the solution were handled by agents.</p><p>Both cases are important to me precisely as problem statements. If I were presented with a ready-made patch, I would first have to understand the proposed implementation. And then, I would still have to figure out if it conforms to the architecture and if it's needed at all in that form.</p><p>Previously, a PR was a great gift to an Open Source project maintainer. Someone studied the code, found a bug, and spent their time fixing it. Now, the cost of producing code has sharply decreased, while the cost of understanding it has not particularly. Especially when an external developer doesn't have the specifications and the history of architectural decisions.</p><p>This doesn't mean that every Issue is useful, or every PR is useless. It costs an agent nothing to generate a meaningless ticket. And there are changes where an external contributor brings invaluable expertise. But in my daily development, a description of a real problem has become more valuable than an attempt to solve it for me in advance.</p><p>It seems to me that over time, this could also change the culture of Open Source. We are used to considering ready-made code as the main form of participation in someone else's project. But what if code ceases to be a deficit? Perhaps the main contribution will be the ability to identify a problem, reproduce it, and explain what the user is missing.</p><h3>Who is Responsible for the Result?</h3><p>There is another reason why I prefer to receive a problem rather than someone else's implementation. Responsibility.</p><p>The author of a PR is, of course, responsible for the quality of the proposed change. But after the PR is accepted, the project maintainer will have to support it. The user will come with an error to the one who released the product, not to the one who once sent a patch. With agents, this division has become completely clear: the agent wrote the code, and I am responsible for its work.</p><p>The author of a software product no longer necessarily has to be the author of its program code. Code can be written by agents. But the responsibility for the result still lies with the person who decides to publish it.</p><p>Therefore, I need your bug reports, your comments, and your suggestions. But not your Pull Requests.</p><p>After all, every accepted PR is my responsibility for someone else's code. And I now have so much of this code...</p></div>
+  </main>
+  <footer>
+    Translation generated with Gemini 2.5 Flash-Lite.
+    The original article remains the source of record.
+  </footer>
+</body>
+</html>

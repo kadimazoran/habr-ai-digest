@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>I&#x27;m building a Raspberry Pi 5 robot for my daughter. But a talking speaker won&#x27;t cut it! Challenge accepted, let&#x27;s go. (Part 2)</title>
+  <meta name="description" content="In the first part, the Frog learned to look at people, talk, and turn its head. Now I&#x27;m adding familiar faces, conversation memory, photo questions, on-screen explanations, and help with poems. Along the way, the robot skips its own commands, recognizes its &quot;Creator,&quot; and sends a draw">
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.65;
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 32px 20px 64px;
+      color: #1f2328;
+    }
+    header {
+      border-bottom: 1px solid #d8dee4;
+      margin-bottom: 28px;
+      padding-bottom: 20px;
+    }
+    .source {
+      color: #57606a;
+      font-size: 0.95rem;
+    }
+    img, video, iframe {
+      max-width: 100%;
+      height: auto;
+    }
+    pre {
+      overflow-x: auto;
+      padding: 16px;
+      background: #f6f8fa;
+      border-radius: 6px;
+    }
+    code {
+      font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+    }
+    blockquote {
+      border-left: 4px solid #d0d7de;
+      margin-left: 0;
+      padding-left: 16px;
+      color: #57606a;
+    }
+    footer {
+      border-top: 1px solid #d8dee4;
+      margin-top: 40px;
+      padding-top: 20px;
+      color: #57606a;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>I&#x27;m building a Raspberry Pi 5 robot for my daughter. But a talking speaker won&#x27;t cut it! Challenge accepted, let&#x27;s go. (Part 2)</h1>
+    <p>In the first part, the Frog learned to look at people, talk, and turn its head. Now I&#x27;m adding familiar faces, conversation memory, photo questions, on-screen explanations, and help with poems. Along the way, the robot skips its own commands, recognizes its &quot;Creator,&quot; and sends a drawing to the printer. It also turned out that the Frog&#x27;s biggest bottleneck was... Read more</p>
+    <p class="source">
+      Machine-translated from Habr.
+      <a href="https://habr.com/ru/articles/1092726/?utm_campaign=1092726&amp;utm_source=habrahabr&amp;utm_medium=rss">Read the original Russian article</a>.
+      Sat, 10 Oct 2026 13:23:42 GMT
+    </p>
+  </header>
+  <main>
+<div><h2>Frog, do you recognize me?</h2><p>You can see "Part 1" <a href="https://habr.com/ru/articles/1090078/">here</a>.</p><figure><img alt="Daughter moves sideways and stands up - the Frog turns its head and raises its gaze." loading="lazy" src="https://habrastorage.org/webt/df/5f/cf/df5fcf0fd309292fd73b424ed38f585b.gif"/><div><figcaption>Daughter moves sideways and stands up - the Frog turns its head and raises its gaze.</figcaption></div></figure><p>In the <a href="https://habr.com/ru/articles/1090078/">previous part</a>, I was happy that the Frog finally looked at people and turned its head to follow them. Then my daughter showed it an object and asked, "What is this?" The Frog replied that it couldn't see.</p><p>The camera is located right in the center of its bow. It's like I put on glasses and said, "Sorry, I don't have eyes." The Frog could already find a person in front of it, but the object in their hands didn't exist for it.</p><p>In short, it's not enough to attach a camera to its head. You also need to explain to the program why it's there. This part will cover photos by voice command, meeting its own creator, remembering conversations, attempting to learn a poem, and a face that was a bigger bottleneck than its brain. All of this needs to be integrated with the existing hardware and fit into the current case: there's almost no free space there. Therefore, in this version, I'm trying to get more out of what's already installed.</p><h3>I have a camera. How do I show it an object?</h3><p>The program only extracted the coordinates of the face from the frame. The actual image wasn't included in the regular question. I separated requests like "take a picture" and "look at the task" from normal conversation: here, the Frog needs to take a picture and look at what's in it.</p><p>Sending the first frame that comes along would be easier, but the result is predictable: the child moves their hand, the autofocus is still trying to find the position, and the Frog confidently discusses a blurry smudge. It might even compare it to some blur art. Artistic value increases, usefulness - not so much. I implemented a preview. It asks to hold the object steady for a moment, suggests moving it or adding light if necessary. I see the picture and can say "the frame is suitable" or retake it. If the picture needs text, it can be added and sent along with the photo.</p><figure><img alt="Daughter shows the Frog a walkie-talkie in front of the camera" loading="lazy" src="https://habrastorage.org/r/w1560/webt/91/b6/e4/91b6e439427b755daddf27ef2bcb968a.jpg"/><div><figcaption>Daughter shows the Frog a walkie-talkie in front of the camera</figcaption></div></figure><p><em>My daughter shows the walkie-talkie and asks, "What is this?" The Frog opens the picture preview. The camera finally proved useful for more than just finding a face.</em></p><p>During the first live test, all of this broke down successfully. The "Frame is suitable" button didn't work, and the Frog also skipped voice commands. At first, I didn't even understand if it could hear me or if it was just busy explaining something. I sorted out the order of prompts and waiting for a response; then both the button and the voice started working.</p><p>One frame is also not always enough: the task might be on one page, and the example for it - on another. I added "More photos": you can collect <strong>up to four pictures</strong>, review them as thumbnails, and send them with one question. Retaking a photo only replaces the selected frame. So far, I've tested this path programmatically and with a real request with two test pictures; taking photos of multiple pages by hand still needs to be tested.</p><p>But the Frog immediately showed another extreme: to a simple question about a picture, it would verbally list almost all the window commands. The child stands there with an object in hand, and the robot reads them the menu. I ended up leaving only a short prompt for the next action, and the full help - on the screen.</p><p>A little later, my daughter wanted to photograph an object in front of the camera and print the picture. I cropped the frame so that only the object itself remained on the sheet, not half the table. The Frog suggested saying "print." I said "print," and got nothing in response. I pressed the button - a photo came out of the printer in the center of the page. A good demonstration of how the voice interface suggests a command and then pretends not to know it.</p><p>Now all that remained was to go through the entire process by voice - from the cropped image to paper. I corrected the command processing: for a photo, the first "print" opens the page preview, the second confirms sending it to the printer. I added the option to choose the color and size of the picture on the page in the menu. Everything worked. The picture finally made it to paper without finger help.</p><figure><img alt="Cropping a picture with a drawing on the Frog's screen" loading="lazy" src="https://habrastorage.org/r/w1560/webt/a0/b1/fe/a0b1fe6d02ab4ee2599f593d848a53db.png"/><div><figcaption>Cropping a picture with a drawing on the Frog's screen</figcaption></div></figure><p><em>We crop the picture with the drawing right on the Frog's screen. The result is visible on the right. The background and face above the drawing are blurred for publication.</em></p><figure><img alt="Paper printout next to the Frog and the same picture on the screen" loading="lazy" src="https://habrastorage.org/r/w1560/webt/ce/82/70/ce8270fce2ecb5fac51417505cb65e0d.png"/><div><figcaption>Paper printout next to the Frog and the same picture on the screen</figcaption></div></figure><p><em>The drawing on the screen and its paper copy. This is why the "Print" button was needed.</em></p><h3>Frog, can you even hear me?</h3><p>One day, it started a long story. I waited until the voice actually came out of the speaker and said over it, "Frog, what is two plus three?" It continued as if nothing had happened. I repeated louder - it stopped and answered, "Five."
+  </main>
+  <footer>
+    Translation generated with Gemini 2.5 Flash-Lite.
+    The original article remains the source of record.
+  </footer>
+</body>
+</html>

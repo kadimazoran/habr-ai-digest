@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>1C Partner. Is it worth it?</title>
+  <meta name="description" content="What solves it: expensive and lengthy fine-tuning of a narrow model, or a good wrapper around a standard cloud one? At first glance, a vendor model with unlimited and privileged access to 1C materials leaves no chance for competitors. Is there a practical advantage? We assembled an interactive assis">
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.65;
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 32px 20px 64px;
+      color: #1f2328;
+    }
+    header {
+      border-bottom: 1px solid #d8dee4;
+      margin-bottom: 28px;
+      padding-bottom: 20px;
+    }
+    .source {
+      color: #57606a;
+      font-size: 0.95rem;
+    }
+    img, video, iframe {
+      max-width: 100%;
+      height: auto;
+    }
+    pre {
+      overflow-x: auto;
+      padding: 16px;
+      background: #f6f8fa;
+      border-radius: 6px;
+    }
+    code {
+      font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+    }
+    blockquote {
+      border-left: 4px solid #d0d7de;
+      margin-left: 0;
+      padding-left: 16px;
+      color: #57606a;
+    }
+    footer {
+      border-top: 1px solid #d8dee4;
+      margin-top: 40px;
+      padding-top: 20px;
+      color: #57606a;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>1C Partner. Is it worth it?</h1>
+    <p>What solves it: expensive and lengthy fine-tuning of a narrow model, or a good wrapper around a standard cloud one? At first glance, a vendor model with unlimited and privileged access to 1C materials leaves no chance for competitors. Is there a practical advantage? We assembled an interactive assistant on an open-source stack and compared it with 1C-Partner on seven questions from the daily work of users and developers. Read more</p>
+    <p class="source">
+      Machine-translated from Habr.
+      <a href="https://habr.com/ru/articles/1092738/?utm_campaign=1092738&amp;utm_source=habrahabr&amp;utm_medium=rss">Read the original Russian article</a>.
+      Sat, 10 Oct 2026 14:12:28 GMT
+    </p>
+  </header>
+  <main>
+<div><p>What solves it: expensive and lengthy fine-tuning of a narrow model, or a good wrapper around a standard cloud one?</p><p>At first glance, it seems obvious that a model from a vendor with privileged and unlimited access to materials will leave no stone unturned by competitors. But perhaps we have reached a point where the difference in the quality of answers from general and specialized models does not justify the costs of fine-tuning?</p><p>Let's try to compare <a href="https://aether-lab.ru/spravochnik-1c/obschiy/">our</a> interactive assistant on an open-source stack and <a href="https://portalchat.1c.ai/">Partner</a> on common questions that 1C users and developers face daily.</p><h2>What the agent is made of</h2><p>We will leave the choice of a specific LLM out of scope. All top models work well with tool calls and have a decent context window. Tested on models like deepseek-v4-flash, gpt-6.1-sol, glm-5.3-flash.</p><ul><li><p>Agent wrapper — <a href="https://github.com/langchain-ai/deepagents">Deep Agents</a> based on LangGraph. Out-of-the-box, we get task planning, delegation to sub-agents with isolated context, and context window management through history summarization.</p></li><li><p>The foundation of everything is a well-structured knowledge base index tree on RAG indexes. We use hybrid search. The full-text branch is built on FTS PostgreSQL with a Russian dictionary, and the vector branch is on the pgvector extension with an HNSW index. We merge the results of both branches using Reciprocal Rank Fusion — candidates with high rankings in each output are boosted in the final list.</p></li><li><p>For the source code of standard configurations, we use fast search. Five dumps of standard configurations contain about 236 thousand files and 193 thousand directories. With good algorithms and modern hardware, this volume is not a problem. To navigate thousands of modules, we wrote a configuration metadata parser that collects objects, attributes, and relationships between them.</p></li><li><p>For internet search, we use the Yandex API, which provides much more relevant results for Russia than the search engines built into LLM chats. We aggregate and summarize information from all found sources.</p></li></ul><h2>Testing with practical questions</h2><p>All examples are collected from real tasks of colleagues in the 1C field.</p><h3>1. How to configure the technological journal to find the cause of managed lock timeouts?</h3><p><strong>Agent</strong> provided a journal configuration with a filter for long waits, explained how to find the blocking connection, and suggested additional events to find the cause of a long transaction.</p><details><summary>Full agent response</summary><div><p>For <strong>managed lock</strong> timeouts, you need to log not only the error but also the <strong>connection that held the lock</strong>. Start with events <code>TTIMEOUT</code>, <code>TDEADLOCK</code>, and waits <code>TLOCK</code>.</p><h4>1. Enable collection on the 1C server</h4><p>In <code>logcfg.xml</code> in the <code>conf</code> directory of the platform installation, set the following configuration. Below is the XML content.</p><pre><code>&lt;?xml version=
+  </main>
+  <footer>
+    Translation generated with Gemini 2.5 Flash-Lite.
+    The original article remains the source of record.
+  </footer>
+</body>
+</html>

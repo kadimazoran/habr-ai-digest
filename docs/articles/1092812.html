@@ -1,0 +1,106 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>How Google Taught a Tiny Model to Understand Text, Images, Video, and Audio: A Deep Dive into EmbeddingGemma 2</title>
+  <meta name="description" content="On October 6, 2026, Google DeepMind released EmbeddingGemma 2, an open-source embedding model that converts text, code, images, video, and audio into vectors. All these vectors reside in a single, shared 768-dimensional space, enabling cross-modal comparisons, such as searching for videos using text">
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.65;
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 32px 20px 64px;
+      color: #1f2328;
+    }
+    header {
+      border-bottom: 1px solid #d8dee4;
+      margin-bottom: 28px;
+      padding-bottom: 20px;
+    }
+    .source {
+      color: #57606a;
+      font-size: 0.95rem;
+    }
+    img, video, iframe {
+      max-width: 100%;
+      height: auto;
+    }
+    pre {
+      overflow-x: auto;
+      padding: 16px;
+      background: #f6f8fa;
+      border-radius: 6px;
+    }
+    code {
+      font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+    }
+    blockquote {
+      border-left: 4px solid #d0d7de;
+      margin-left: 0;
+      padding-left: 16px;
+      color: #57606a;
+    }
+    footer {
+      border-top: 1px solid #d8dee4;
+      margin-top: 40px;
+      padding-top: 20px;
+      color: #57606a;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>How Google Taught a Tiny Model to Understand Text, Images, Video, and Audio: A Deep Dive into EmbeddingGemma 2</h1>
+    <p>On October 6, 2026, Google DeepMind released EmbeddingGemma 2, an open-source embedding model that converts text, code, images, video, and audio into vectors. All these vectors reside in a single, shared 768-dimensional space, enabling cross-modal comparisons, such as searching for videos using text queries. A key feature is its size: Google reports that on a Pixel 11 Pro, the text-only component uses about 191 MB of RAM, while the full multimodal version requires around 567 MB. This allows search functionalities to run directly on the device, eliminating the need to send data to a server. This article explores the model&#x27;s architecture, its compact design, how to work with it, and potential pitfalls to be aware of.</p>
+    <p class="source">
+      Machine-translated from Habr.
+      <a href="https://habr.com/ru/articles/1092812/?utm_campaign=1092812&amp;utm_source=habrahabr&amp;utm_medium=rss">Read the original Russian article</a>.
+      Sat, 10 Oct 2026 22:36:05 GMT
+    </p>
+  </header>
+  <main>
+<div><figure><img loading="lazy" src="https://habrastorage.org/r/w1560/extt/6f/3c/51/6f3c514e198452b528bbb359d5aa9dfe.png"/></figure><p>On October 6, 2026, Google DeepMind released EmbeddingGemma 2 — an open-source embedding model that converts text, code, images, video, and audio into vectors. All of them fall into a single, shared 768-dimensional space, allowing them to be compared with each other, for example, to search for videos by a text query.</p><p>The main feature of the model is its size. According to Google, on a Pixel 11 Pro, the text part occupies about 191 MB of RAM, and the full multimodal version — about 567 MB. Therefore, such a search can be run directly on the device, rather than sending data to a server.</p><p>In this article, we will break down how the model is structured, how it achieves its compactness, how to work with it, and what pitfalls are best to be aware of in advance.</p><h3>▍ Embeddings in a Minute</h3><p>An embedding is a list of numbers (a vector) that describes the meaning of content. Items with similar meanings get close vectors. The phrases "The weather is wonderful today" and "It's so sunny outside!" will be close to each other, while "He drove to the stadium" will be far from them.</p><p>Then it's simple: calculate the vector for the query, calculate the vectors for the documents, and find the closest ones using cosine similarity. This is how semantic search, RAG, clustering, duplicate detection, and recommendations work.</p><p>The main problem before was that each data type required its own model, and vectors from different models were incomparable. A text vector could not be placed next to an image vector. EmbeddingGemma 2 solves exactly this: all modalities fall into <strong>one common 768-dimensional space</strong>.</p><h3>▍ What's New</h3><p>The first EmbeddingGemma was released in September 2025, capable of handling only text, and according to the Japanese publication livedoor, it garnered over 20 million downloads. The second version looks like this:</p><ul><li><p>built on the Gemma 4 architecture;</p></li><li><p>740M parameters, but modular: 270M text + 170M vision + 300M audio;</p></li><li><p>Apache 2.0 license;</p></li><li><p>understands 100+ languages, and performs about 14% better than its predecessor on code tasks;</p></li><li><p>8192 token context window, 4 times larger than the first version;</p></li><li><p>Matryoshka vectors: 768, 512, 256, or 128 dimensions;</p></li><li><p>optimized for phones and laptops.</p></li></ul><h3>▍ What's Inside</h3><p>The text part is a compact transformer. Here's what the model card says:</p><div><div><table><tbody><tr><th><p>Parameter</p></th><th><p>Value</p></th></tr><tr><td><p>Layers</p></td><td><p>24</p></td></tr><tr><td><p>Model dimension</p></td><td><p>512</p></td></tr><tr><td><p>FFN hidden dimension</p></td><td><p>2048</p></td></tr><tr><td><p>Attention heads</p></td><td><p>4 (KV heads: 2 local / 1 global)</p></td></tr><tr><td><p>Sliding window</p></td><td><p>1024 tokens</p></td></tr><tr><td><p>Local:global ratio</p></td><td><p>5:1</p></td></tr><tr><td><p>Vocabulary size</p></td><td><p>262,144</p></td></tr><tr><td><p>Pooling</p></td><td><p>Mean Pooling</p></td></tr><tr><td><p>Projection</p></td><td><p>512 → 768</p></td></tr></tbody></table></div></div><p>What's interesting here.</p><p><strong>Local and global attention.</strong> Five out of six layers look only at a window of 1024 tokens, and only every sixth layer sees the entire sequence. This significantly saves memory and computation for long inputs.</p><p><strong>Huge vocabulary.</strong> 262,144 tokens is a lot. The model's parameters are divided into "backbone" (130M) and "embedder" (140M). Judging by the numbers, the embedder is mainly a token table: 262,144 × 512 ≈ 134M. This is simply a lookup of a string by index, not computation, so only the transformer with 130M parameters actually "works". Hence the modest demands on speed and memory. (This is my estimate based on the numbers in the card; Google has not published such a breakdown.)</p><p><strong>Pooling.</strong> The outputs of all tokens are averaged into a single 512-dimensional vector, then a linear layer expands it to 768.</p><h3>▍ Pay Only for What You Use</h3><p>Vision (170M) and audio (300M) are separate encoders that can be optionally loaded. Need only text search? Load 270M. Need images too? Add vision.</p><div><div><table><tbody><tr><th><p>Active modalities</p></th><th><p>Effective size</p></th></tr><tr><td><p>Text only</p></td><td><p>270M</p></td></tr><tr><td><p>Text + images</p></td><td><p>440M</p></td></tr><tr><td><p>Text + audio</p></td><td><p>570M</p></td></tr><tr><td><p>All together</p></td><td><p>740M</p></td></tr></tbody></table></div></div><p>Google also provides RAM figures for the Pixel 11 Pro: about 191 MB for the text part and about 567 MB for the full multimodal model. For comparison, a regular browser with a couple of tabs consumes more.</p><h3>▍ One Vector for Everything: Token Budget</h3><p>All modalities share a common window of 8192 tokens, and each consumes it according to its "tariff":</p><div><div><table><tbody><tr><th><p>Modality</p></th><th><p>Cost</p></th><th><p>Maximum input</p></th></tr><tr><td><p>Text</p></td><td><p>1 token per subword</p></td><td><p>8192 tokens</p></td></tr><tr><td><p>Image</p></td><td><p>280 tokens</p></td><td><p>~29 images</p></td></tr><tr><td><p>Video</p></td><td><p>140 tokens per frame (default 1 frame per second)</p></td><td><p>~58 frames</p></td></tr><tr><td><p>Audio</p></td><td><p>25 tokens per second</p></td><td><p>~327 seconds (about 5.5 minutes)</p></td></tr></tbody></table></div></div><p>The arithmetic adds up: 280 × 29 ≈ 8120, 140 × 58 ≈ 8120, 25 × 327 ≈ 8175.</p><p>If images are needed more cheaply, you can reduce the budget per image (from 70 to 1120 "soft" tokens). Then up to ~114 images or frames will fit into the window, but details will be conveyed less effectively.</p><p>The most interesting part is <strong>interleaving</strong>. You can mix text, images, video, and audio into a single input, marking the media position with special tokens <code>&lt;|image|&gt;</code>, <code>&lt;|video|&gt;</code>, and <code>&lt;|audio|&gt;</code>. The output will be a single vector for the entire description. For example, a product card from a store: text, photos, and video review are converted into a single embedding that can be compared with a regular text query "waterproof trail running shoes.".</p><h3>▍ Matryoshka in a Vector</h3><p>The model is trained using the Matryoshka Representation Learning (MRL) method. The idea is that important information is packed into the first dimensions of the vector, like Matryoshka dolls nesting within each other. Therefore, a 768-dimensional vector can simply be truncated to 512, 256, or 128 dimensions.</p><p>Why? To save space and speed up search. If you have a million documents in float32, at 768 dimensions, this is about 3 GB of vectors, and at 128 — about 0.5 GB. A 6x difference.</p><p>What happens to the quality in this case (data from the model card):</p><div><div><table><tbody><tr><th><p>Dimensionality</p></th><th><p>Compression</p></th><th><p>MTEB multilingual</p></th><th><p>MTEB code</p></th><th><p>MIEB lite</p></th><th><p>MMEB v2</p></th><th><p>MSEB</p></th><th><p>MAEB</p></th></tr><tr><td><p>768</p></td><td><p>1:1</p></td><td><p>61.36</p></td><td><p>78.68</p></td><td><p>64.64</p></td><td><p>59.01</p></td><td><p>69.54</p></td><td><p>49.39</p></td></tr><tr><td><p>512</p></td><td><p>1:1.5</p></td><td><p>61.17</p></td><td><p>77.24</p></td><td><p>64.32</p></td><td><p>58.38</p></td><td><p>69.18</p></td><td><p>49.21</p></td></tr><tr><td><p>256</p></td><td><p>1:3</p></td><td><p>60.41</p></td><td><p>76.18</p></td><td><p>63.13</p></td><td><p>56.24</p></td><td><p>66.76</p></td><td><p>48.91</p></td></tr><tr><td><p>128</p></td><td><p>1:6</p></td><td><p>57.89</p></td><td><p>71.41</p></td><td><p>59.06</p></td><td><p>45.65</p></td><td><p>56.71</p></td><td><p>46.92</p></td></tr></tbody></table></div></div><p>Up to 256 dimensions, the loss is small. At 128, text still holds up, but multimodal tasks noticeably degrade: in MMEB v2, a drop from 59.01 to 45.65. Google explicitly recommends 128d only for text scenarios and advises testing on your own data.</p><h3>▍ What About Quality</h3><p>Main results of the full model (768d) compared to the first EmbeddingGemma:</p><div><div><table><tbody><tr><th><p>Modality</p></th><th><p>Benchmark</p></th><th><p>EmbeddingGemma 2</p></th><th><p>EmbeddingGemma 1</p></th></tr><tr><td><p>Text</p></td><td><p>MTEB multilingual v2</p></td><td><p>61.36</p></td><td><p>61.15</p></td></tr><tr><td><p>Code</p></td><td><p>MTEB code v1 (NDCG@10)</p></td><td><p>78.68</p></td><td><p>68.76</p></td></tr><tr><td><p>Images</p></td><td><p>MIEB lite</p></td><td><p>64.64</p></td><td><p>—</p></td></tr><tr><td><p>Images</p></td><td><p>MMEB v2, Image (Hit@1)</p></td><td><p>57.28</p></td><td><p>—</p></td></tr><tr><td><p>Document images</p></td><td><p>MMEB v2, VisDoc (NDCG@5)</p></td><td><p>67.84</p></td><td><p>—</p></td></tr><tr><td><p>Video</p></td><td><p>MMEB v2, Video (Hit@1)</p></td><td><p>50.67</p></td><td><p>—</p></td></tr><tr><td><p>Audio</p></td><td><p>MSEB Retrieval (MRR@10)</p></td><td><p>69.54</p></td><td><p>—</p></td></tr><tr><td><p>Audio</p></td><td><p>MAEB</p></td><td><p>49.39</p></td><td><p>—</p></td></tr></tbody></table></div></div><p>An honest conclusion from the table: for multilingual text, the model has hardly progressed (61.36 vs. 61.15). However, code performance has improved by 10 points, and most importantly, images, video, and audio have been added, which were completely absent in the predecessor. Google, however, calls the model one of the strongest multimodal embedders under 1 billion parameters, but all the figures above are Google's own measurements; independent comparisons should be reviewed separately.</p><h3>▍ Code</h3><p>The simplest scenario is text search using <code>sentence-transformers</code>:</p><pre><code>from sentence_transformers import SentenceTransformer
+
+model = SentenceTransformer('google/embeddinggemma-2')
+
+query = 'What causes the northern lights?'
+document = 'The northern lights are caused by charged particles from the sun.'
+
+query_emb = model.encode(query, prompt_name='SearchQuery')
+doc_emb = model.encode(document, prompt_name='Document')
+
+print(model.similarity(query_emb, doc_emb))</code><div><a href="https://sourcecraft.dev/"><span></span></a></div></pre><p>Note the <code>prompt_name</code>. The model is trained with short instruction prefixes like <code>task: search result | query: ...</code> for queries and <code>title: ... | text: ...</code> for documents. It works without them, but accuracy is lower. If a document has a title, you need to format it manually:</p><pre><code>doc_emb = model.encode(f'title: {title} | text: {content}')</code><div><a href="https://sourcecraft.dev/"><span></span></a></div></pre><p>Prefixes are available for search, question answering, fact-checking, code search, classification, clustering, and sentence comparison. Important: they are applied only to text; images, video, and audio are provided without prefixes.</p><p>Truncating the vector using the library's tools:</p><pre><code>query_emb = model.encode(
+    query,
+    prompt_name='SearchQuery',
+    truncate_dim=256,
+    normalize_embeddings=True,
+)</code><div><a href="https://sourcecraft.dev/"><span></span></a></div></pre><p>And if you truncate manually, don't forget to normalize the result:</p><pre><code>import numpy as np
+
+v = emb[:256]
+v = v / np.linalg.norm(v)</code><div><a href="https://sourcecraft.dev/"><span></span></a></div></pre><p>Loading only the text part with correct precision:</p><pre><code>import torch
+from sentence_transformers import SentenceTransformer
+
+dtype = torch.bfloat16 if torch.cuda.is_bf16_supported() else torch.float32
+
+model = SentenceTransformer(
+    'google/embeddinggemma-2',
+    model_kwargs={'torch_dtype': dtype},
+    config_kwargs={'vision_config': None, 'audio_config': None},
+)</code><div><a href="https://sourcecraft.dev/"><span></span></a></div></pre><p>And multimodal interleaving, one vector for the entire product description:</p><pre><code>model = SentenceTransformer('google/embeddinggemma-2')
+
+emb = model.encode({
+    'text': 'Waterproof running shoes. &lt;|image|&gt; Breathable mesh upper. &lt;|image|&gt; Grip test on wet rock: &lt;|video|&gt;',
+    'image': ['shoe.jpg', 'mesh.jpg'],
+    'video': 'demo.mp4',
+})
+</code><div><a href="https://sourcecraft.dev/"><span></span></a></div></pre><p>Each placeholder in the text is filled with the corresponding key in order. The resulting vector is directly compared with any other EmbeddingGemma 2 vector, including a text query.</p><h3>▍ Pitfalls</h3><p><strong>float16 breaks the model.</strong> Model activations exceed the float16 range, and you'll get NaN or silently corrupted embeddings, without an error. Use bfloat16 or float32. On most CPUs, this is float32.</p><p><strong>Truncated vector but not normalized.</strong> A slice of a unit vector is no longer a unit. Ranking degrades silently: the numbers look plausible, but the results are worse.</p><p><strong>Different dimensions for queries and documents.</strong> A 768-dimensional query cannot be compared with a 128-dimensional corpus.</p><p><strong>Prefixes forgotten.</strong> The model won't break, but it will lose accuracy.</p><p><strong>Languages are not equal.</strong> 100+ languages are declared, but Google itself states that quality may vary between them. For Russian, test on your own data.</p><p><strong>No safety mechanisms.</strong> This is a pre-trained embedder without post-training for safety. Filtering of output and checks for bias must be done at your application level.</p><h3>▍ Where to Get and How to Run</h3><p>Weights are available on Hugging Face and Kaggle. For local execution, there are GGUF versions from Unsloth, and support is declared by MediaPipe, LiteRT, vLLM, and Ollama. For server deployment, there's a recipe in the SGLang documentation: the model in BF16 weighs about 1.5 GB, so almost any server GPU will suffice.</p><p>And if you want to try it without installation, on Hugging Face there's a demo <code>webml-community/embeddinggemma-2-webgpu</code>, where the model calculates embeddings directly in the browser using WebGPU.</p><h3>▍ Conclusion</h3><p>EmbeddingGemma 2 is not a record-breaker in absolute quality nor a revolution in text search. It's an engineering compromise, and a very successful one: a common space for five data types, modular loading, flexible vector truncation, and appetites that allow you to keep the model right in your pocket.</p><p>Whether on-device embeddings will become as standard as on-device speech recognition remains to be seen.</p><p><a href="https://huggingface.co/spaces/webml-community/embeddinggemma-2-webgpu">Addictive DEMO</a></p></div>
+  </main>
+  <footer>
+    Translation generated with Gemini 2.5 Flash-Lite.
+    The original article remains the source of record.
+  </footer>
+</body>
+</html>

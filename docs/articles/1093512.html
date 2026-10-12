@@ -1,0 +1,107 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>How I Put a Cheap Filter Model in Front of Claude and What the First Two Weeks Showed</title>
+  <meta name="description" content="I save everything to Telegram, and Claude Sonnet writes a blog post analysis for each item daily. Almost half of the saved items are unnecessary for the blog, and each requires a full analysis. I explain how I placed the cheap Jev model, which responds with probabilities, before Sonnet, why the ques">
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.65;
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 32px 20px 64px;
+      color: #1f2328;
+    }
+    header {
+      border-bottom: 1px solid #d8dee4;
+      margin-bottom: 28px;
+      padding-bottom: 20px;
+    }
+    .source {
+      color: #57606a;
+      font-size: 0.95rem;
+    }
+    img, video, iframe {
+      max-width: 100%;
+      height: auto;
+    }
+    pre {
+      overflow-x: auto;
+      padding: 16px;
+      background: #f6f8fa;
+      border-radius: 6px;
+    }
+    code {
+      font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+    }
+    blockquote {
+      border-left: 4px solid #d0d7de;
+      margin-left: 0;
+      padding-left: 16px;
+      color: #57606a;
+    }
+    footer {
+      border-top: 1px solid #d8dee4;
+      margin-top: 40px;
+      padding-top: 20px;
+      color: #57606a;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>How I Put a Cheap Filter Model in Front of Claude and What the First Two Weeks Showed</h1>
+    <p>I save everything to Telegram, and Claude Sonnet writes a blog post analysis for each item daily. Almost half of the saved items are unnecessary for the blog, and each requires a full analysis. I explain how I placed the cheap Jev model, which responds with probabilities, before Sonnet, why the question formulation turned out to be more important than the model (AUC 0.46 vs. 0.95), what safeguards are in the code, and what the logs showed over two weeks. Read on</p>
+    <p class="source">
+      Machine-translated from Habr.
+      <a href="https://habr.com/ru/articles/1093512/?utm_campaign=1093512&amp;utm_source=habrahabr&amp;utm_medium=rss">Read the original Russian article</a>.
+      Mon, 12 Oct 2026 16:28:40 GMT
+    </p>
+  </header>
+  <main>
+<div><p>I have a small pipeline that I call The Lab. I save everything interesting of the day (reels, posts, links to repositories) to Telegram. Once a day, a script fetches new items, and Claude Sonnet writes an analysis-instruction for each material. Then a second pass, in the role of an editor, decides whether to publish the analysis or send it to the archive.</p><p>The problem is that I save everything. My Favorites are a mix of useful guides, my work messages, personal items, and pictures without a single word. When I labeled 67 items, 28 turned out to be unnecessary for the blog. And for each of these, Sonnet honestly wrote a full analysis, which the editor then discarded.</p><p>I use Sonnet through the Claude Code subscription, so I'm not saving money as much as my weekly limit. Once it ran out mid-week, and everything that depended on it silently stopped. Therefore, I wanted to cheaply filter out obvious junk before the large model.</p><h3>What is Jev</h3><p>Jev was released by the startup TypeSafe on September 15, 2026. It's a model for closed-ended questions: you send text and a dictionary of questions, and you get back values with probabilities instead of a paragraph of text. There are three types of questions:</p><ul><li><p><code>noul</code> returns the probability of "yes" from 0 to 1;</p></li><li><p><code>choice</code> selects from your list (up to 255 options) and returns the probability of each option plus <code>confidence</code>;</p></li><li><p><code>score</code> evaluates on an ordered scale.</p></li></ul><p>All questions about one text are counted as one pass. Input costs $0.042 per million tokens, output is free because there is no text output.</p><p>The main thing for me is this: the answer is always from my list, it doesn't need to be parsed with regex, and the probability can be compared to a threshold with a simple <code>if</code>. The correctness of the answer is not guaranteed.</p><h3>How I Connected to It</h3><p>When I tried it, TypeSafe was not registering new users. However, Jev is available in Cloudflare Workers AI under the name <code>typesafe/jev</code>, with the note Zero data retention. There are two peculiarities:</p><ul><li><p>You can only pay with a prepaid AI Gateway balance: the free Workers AI limit does not apply to partner models, and without a balance, you get <code>Insufficient balance</code> with code 2021;</p></li><li><p>The response is one level deeper than in the TypeSafe documentation: <code>result.result.answers</code>.</p></li></ul><p>The call looks like this:</p><pre><code>curl https://api.cloudflare.com/client/v4/accounts/$CLOUDFLARE_ACCOUNT_ID/ai/run 
+  -H "Authorization: Bearer $CLOUDFLARE_API_TOKEN" 
+  -H "Content-Type: application/json" 
+  -d '{ 
+    "model": "typesafe/jev", 
+    "input": { 
+      "state": "material text", 
+      "questions": { 
+        "urgency": {"type": "noul", "instructions": "Is the message urgent?"} 
+      } 
+    } 
+  }' 
+</code><div><a href="https://sourcecraft.dev/"><span></span></a></div></pre><p>Jev understands Russian fine; I write the questions and options in Russian.</p><h3>First Lesson: Formulation is More Important Than the Model</h3><p>Before The Lab, I tried Jev on a different task: filtering facts for my knowledge base. The first question was general, something like "is this a useful fact?". On the labeled dataset, it gave an AUC of 0.46, which is worse than a coin flip.</p><p>Then I rephrased the question to include the real reason why I didn't need the fact: "is this about the real world, not a documentation edit or technical details?". The same model, the same texts, and the AUC increased to 0.95.</p><p>However, for subjective decisions (which of my edits should be remembered as a rule), I couldn't get above 0.72–0.77. Jev is only useful there as a very cautious pre-filter.</p><p>Hence, the rule I transferred to The Lab: don't ask the model about "usefulness" in general, but list the actual reasons why the material goes to the archive.</p><h3>The Question for The Lab</h3><p>Instead of several "yes/no" questions, here there is one <code>choice</code> where options are mutually exclusive. They repeat the real reasons for rejection from the editor's log (text shortened):</p><pre><code>"worth": { 
+    "type": "choice", 
+    "instructions": "This is a saved item from Telegram. Choose what kind of material this is " 
+                    "for an external blog about AI tools, automation, content, and design.", 
+    "criteria": { 
+        "guide": "A specific tool, service, repository, prompt, skill, setting, or workflow that the reader can find and replicate is shown or named. " 
+                 "This counts even if it's an advertisement or a "write a word in the comments" lure", 
+        "idea": "A scheme, framework, formula, or step-by-step model that can be broken down " 
+                "for the reader, even if the tool is not named", 
+        "no_text": "There is almost no text or speech: only a link, image, or photo", 
+        "owner_work": "Owner's own work: their message to a colleague, a question about payment, " 
+                      "a draft of their post, a link to their own product", 
+        "personal": "Personal, not about working with AI: sports, family, health, daily life", 
+        "no_method": "Opinion, thesis, advertisement, or news without a tool, method, or scheme", 
+    }, 
+}, 
+</code><div><a href="https://sourcecraft.dev/"><span></span></a></div></pre><p>The disclaimer "this counts even if it's an advertisement" is needed because much useful content on social media is packaged as a "write a word in the comments, I'll send a guide" lure. In form, it's advertising, but in essence, it's a tool the reader can replicate.</p><p>The probability of "keeping" is calculated as the sum of probabilities of two options:</p><pre><code>def p_keep(worth: dict) → float: 
+    if not has_answer(worth):        # empty answer = keep, not discard 
+        return 1.0 
+    probs = worth.get("probabilities") or {} 
+    if probs: 
+        return sum(float(probs.get(k, 0) or 0) for k in ("guide", "idea")) 
+    return 1.0 if worth.get("choice") in ("guide", "idea") else 0.0 
+</code><div><a href="https://sourcecraft.dev/"><span></span></a></div></pre><p>If <code>p_keep</code> is below the threshold, the material does not reach Sonnet.</p><h3>How I Chose the Threshold</h3><p>First, I checked the threshold on the same 67 labeled items. At a threshold of 0.2, Jev did not discard any good items and filtered out 10 out of 28 unnecessary ones. This is only a third of the junk, but I deliberately kept the threshold this way. The discarded junk costs one extra analysis, the editor will discard it anyway. A discarded good item, I will simply never see and won't even know it existed.</p><p>Then, for a week, Jev worked in the background: it responded and wrote the answer to the log, but didn't filter anything. From September 26 to October 3, 19 new items arrived. Jev would have filtered nine. Eight of them Sonnet discarded anyway (affirmations, test messages, service dumps), the ninth just hadn't been processed yet. All five good items received at least 0.73 from Jev.</p><p>From October 4, filtering is truly enabled.</p><h3>Safeguards</h3><p>The filtering is set up so that in case of any failure, the material goes to the large model:</p><ul><li><p>No answer: the material is kept;</p></li><li><p>Jev timeout or error: no filtering, everything goes to Sonnet;</p></li><li><p>Threshold outside the 0 to 0.4 range is not accepted by the code, and an alert is sent so that an accidental config change doesn't start cutting everything;</p></li><li><p>If an abnormally large number of materials arrive, filtering doesn't trigger at all: such a surge usually indicates a failure somewhere higher up the pipeline;</p></li><li><p>Responses are cached by text hash and question version, so you don't have to pay for reprocessing the same material;</p></li><li><p>Filtered material can be restored with a single command.</p></li></ul><h3>What the Log Showed</h3><p>From September 26 to October 6, there were 26 calls in the log. All together they cost $0.0028, which is about a hundredth of a cent per call, for texts from 90 to 3100 characters.</p><p>From Moscow, the response is noticeably longer than the advertised 70–500 ms (TypeSafe measured from laptops on the US West Coast). My median is 1.3 seconds. The first call in each run takes 2 to 9 seconds, subsequent ones usually take up to 1.5 seconds. This is not important for the nightly pipeline, but for interactive scenarios, I would measure it separately.</p><p>In the first production run on October 5, Jev filtered one item, a media file with almost no text, with a probability of 0.01 (the response was taken from the shadow log, it wasn't paid for a second time). The money saved is negligible, but the limit saving is significant: previously, each such item consumed a full Sonnet analysis and another editor pass.</p><h3>Where Jev is Not Suitable</h3><ul><li><p>Open-ended tasks and anything that requires explanation in human language. This is still the job of LLMs.</p></li><li><p>Subjective decisions without clear criteria. My AUC of 0.72–0.77 is an example.</p></li><li><p>Scores, dates, and long, noisy text. The official page explicitly lists these as weaknesses: the model reads questions literally, has poor calculation abilities, and gets confused by dates.</p></li><li><p>Sensitive data. Texts are sent to a US service, even when going through Cloudflare, so it's best to decide in advance what to send there.</p></li></ul><p>In general, Jev is good where the same small fork in the road repeats many times, has clear indicators, and an error in one direction is cheaper than in the other. For me, it's filtering before an expensive model. In a couple of weeks, I'll recalculate the threshold on fresh annotations, and we'll see if it can be raised.</p></div>
+  </main>
+  <footer>
+    Translation generated with Gemini 2.5 Flash-Lite.
+    The original article remains the source of record.
+  </footer>
+</body>
+</html>

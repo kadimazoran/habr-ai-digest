@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>How I Get a Good Response Rate on My Mailings</title>
+  <meta name="description" content="My mailing conversion rates. I&#x27;m showing a random sample, but the statistics reflect reality. Read more">
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.65;
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 32px 20px 64px;
+      color: #1f2328;
+    }
+    header {
+      border-bottom: 1px solid #d8dee4;
+      margin-bottom: 28px;
+      padding-bottom: 20px;
+    }
+    .source {
+      color: #57606a;
+      font-size: 0.95rem;
+    }
+    img, video, iframe {
+      max-width: 100%;
+      height: auto;
+    }
+    pre {
+      overflow-x: auto;
+      padding: 16px;
+      background: #f6f8fa;
+      border-radius: 6px;
+    }
+    code {
+      font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+    }
+    blockquote {
+      border-left: 4px solid #d0d7de;
+      margin-left: 0;
+      padding-left: 16px;
+      color: #57606a;
+    }
+    footer {
+      border-top: 1px solid #d8dee4;
+      margin-top: 40px;
+      padding-top: 20px;
+      color: #57606a;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>How I Get a Good Response Rate on My Mailings</h1>
+    <p>My mailing conversion rates. I&#x27;m showing a random sample, but the statistics reflect reality. Read more</p>
+    <p class="source">
+      Machine-translated from Habr.
+      <a href="https://habr.com/ru/articles/1093374/?utm_campaign=1093374&amp;utm_source=habrahabr&amp;utm_medium=rss">Read the original Russian article</a>.
+      Mon, 12 Oct 2026 15:56:37 GMT
+    </p>
+  </header>
+  <main>
+<div><p>Let's start with the simple stuff. I have a list of people I want to write to: engineers, investors, startup founders, founders of specialized services, and so on. Since I need to get a higher number of responses, I send information to a larger number of targeted leads.</p><p>I have a multi-year CRM, the database of which is constantly being updated (I wrote about it in one of my articles).</p><p>Initially, I sent out my texts quite simply: Card, handle, text, send, mark in the log.</p><p>Then, after some time, I started analyzing and counting more. To understand the real conversion, where each contact has the date of sending and the result, not just based on my feelings. Then I changed the mailing texts, forms, sequence, and so on.</p><p>I'll show a statistics example for a test sample: For example, I'm taking a random 54 lead cards, July-October, four channels (Telegram, GitHub, email, messenger). In all these social networks, I have mailings set up, response collection, auto-replies, etc.</p><p>I divided the cards (leads) <u>by one criterion</u>: whether I had a specific reason to write to this particular person right now. The reason shouldn't just be that, for example, the lead "writes about architecture." The reason is specificity, for example, "here is his pull request number such-and-such, here is the line where I found the problem." Or the lead responded something specific in a particular community, and you can build on that, etc.</p><p>Out of the sample of <strong>54</strong> contacts, there were <strong>23</strong> contacts <strong>without</strong> such a <strong>reason</strong>.</p><h4>Measurement 1: Cold outreach barely works</h4><p>I created the text, making it personalized, mentioning the lead's work or context: "still writing about architecture? You wrote about this and that... look at what I've gathered." Everything I know about the lead is collected from various sources. As a result, a small personal file is created for each, including those with whom I have never interacted before.</p><p>After such a template question to a lead I don't know, the statistics are corresponding: One person out of 23 responded. That's 4%.</p><p>Standard error. All the texts I sent to such leads are soulless. You can substitute another name and another link, and send the letter to the next person. The person on the other side sees it the same way – there are smart, experienced guys on the other side who quickly detect bot communication.</p><p>I rewrote the texts and incorporated rewrite options from an agent.</p><h4>Measurement 2: Follow-up slightly improves statistics</h4><p>Next, I have follow-ups. If a person doesn't respond, a second message is sent after 4-5 days. Not "reminding you about me," but simply a different message, an opportunity to emphasize another fact that I might know about this lead.</p><p>11 people received a second touch. Two responded. I don't bother the remaining nine leads after two unanswered attempts (I'll return to them later).</p><p>18% instead of 4%, so there is a point in follow-ups.</p><p>I send a third message to a lead who hasn't responded, but much later. And, yes, there are those who block me.</p><h4>How to work with a group where there was a reason to communicate.</h4><p>I have <strong>31</strong> such leads in my test sample.</p><p>For each contact, it's recorded what the person did: sent a pull request, opened an issue, found a bug in my code, re-ran my benchmarks on their system, forked and committed to it.</p><p>I received responses to my messages from 11 out of 31.</p><p>And the quality of the answers is, of course, different. A maintainer from OpenAI closed my issue and included the fix in their release. A maintainer from Microsoft, after my comparison, opened a task in their tracker. The author of a third-party library included my benchmarks in the body of their pull request and indicated their source.</p><p>None of these emails started with me. All started with their lines of code.</p><p>I also have a <strong>"doping" function</strong> – this is when I send a message, but the lead doesn't read it, and the message immediately sinks to the bottom – goes far down in their message list.</p><h3>How my follow-up works</h3><p>Doping is needed so that the lead sees my message and reads it. Underneath this lies one table and a schedule.</p><pre><code>CREATE TABLE IF NOT EXISTS doping( 
+    handle      TEXT PRIMARY KEY, 
+    account     TEXT NOT NULL, 
+    channel     TEXT NOT NULL DEFAULT 'telegram', 
+    address     TEXT, 
+    text        TEXT NOT NULL, 
+    msg_id      INTEGER, 
+    started     TEXT NOT NULL, 
+    last_tick   TEXT, 
+    touches     INTEGER NOT NULL DEFAULT 0, 
+    status      TEXT NOT NULL DEFAULT 'active', 
+    priority    INTEGER NOT NULL DEFAULT 0 
+); 
+</code><div><a href="https://sourcecraft.dev/"><span></span></a></div></pre><p>Four statuses, and nothing more: active, replied, expired, stopped manually.</p><p><strong>Schedule: days 1, 3, 7, 14, and 28.</strong> Five touches per person, and the queue closes forever on the thirty-first day.</p><p>Initially, I set ten touches: every day for the first week, and then three times a week. I halved it. The pressure on the person became half as much, and twice as many people fit into the same daily capacity of the account.</p><p><strong>Before each touch, the program re-reads the correspondence.</strong> Any incoming message from the person stops the queue immediately.</p><h3>Two different follow-ups, and this is important</h3><p>First: <strong>the exact same text</strong>. In Telegram, my old message is deleted and sent again. It becomes unread again and appears at the top of the list. The person receives no new words; they receive the same thing they've already seen.</p><p>There is no deletion in email; it's just a repeat in the same email. The thread is maintained by the standard reply header, and I have my own thread tag, which doesn't go outside.</p><p>Second: <strong>a new message with a new reason</strong>. This is no longer a revival of the old one, but a separate touch, and it's written anew for the person.</p><p>The first method is good when there's nothing more to say, and the message has simply drowned. The second is needed when I have a new reason to write.</p><h3>What guards the sending</h3><p><strong>Own daily limit for each channel.</strong> Telegram - 50 people per day per account, WhatsApp 20, email 50. Regular live correspondence is not included in these limits at all; they are only for the queue.</p><p><strong>The pause between sends is random, from forty to one hundred and ten seconds.</strong> If you use a consistently uniform interval, it's immediately noticeable, which carries risks.</p><p><strong>Queue by priority.</strong> People with a higher value score go first. Someone who is bumped is moved to tomorrow, not lost. I previously wrote about how I rank leads.</p><h4>My 3 rules for contacting leads:</h4><p><strong>First</strong>: Do not send anything – stop sending – if there is an unanswered message from my side. If a person wrote to me and I didn't reply, they won't receive anything new from me until I reply to their message.</p><p>It's understandable that when I was just building this system, there were times when people wrote to me, and I continued sending my mailings on schedule without replying to what was written to me.</p><p><strong>Second</strong>: I maintain the timeframe, the number of days after which it's time to write. What I will write is formed based on automatically collected context: the lead's latest commit, fixing their bug, new comments somewhere I'm monitoring them.</p><p><strong>Third</strong>: the reason for contact is only what I know about the lead. Not what I invented myself, wrote down, and want to tell everyone. But first, connect through what the lead did, what they wrote, and what their product is, etc. The difference between "I've compiled a benchmark, take a look" and "I ran your benchmark on my data and got this discrepancy" is the difference between 4% and 35%.</p><p>I record all data – what I sent to whom, when, at what time, what I received from whom, when, and at what time. All my conversions are calculated automatically and highlighted if the data differs from what I desire (e.g., I've stopped receiving replies from cold mailings, or stopped receiving replies in the desired quantity to my second messages, etc.).</p><p>The sample is small and not randomized. 54 cards, of which 23 and 31 participate in the comparison.</p><p>But this is just a test sample.</p><p>In reality, everything is scaled for me. For some time, I had such mailings, data collection, dialogues with a whole factory of my accounts. But this was relevant when I was actively forming regional communities. I needed local channels and chats where I invited real leads who were warmed up by my accounts. I ended up having 19 such chats, with about 1-2K leads each, and some even almost 20K. Now I don't need such scales, so I only send mailings from my main accounts. I invite AI engineers interested in exchanging life hacks to a group, a community where I myself learn a lot. And doping is still relevant in my work with investors. I am attracting investments for several projects. If any of this is relevant to you, write to me.</p></div>
+  </main>
+  <footer>
+    Translation generated with Gemini 2.5 Flash-Lite.
+    The original article remains the source of record.
+  </footer>
+</body>
+</html>

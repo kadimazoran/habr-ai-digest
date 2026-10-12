@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Dictation without &quot;uh&quot; and &quot;like&quot;: Whisper on your computer and a small intermediary for LLMs</title>
+  <meta name="description" content="I write books, and besides the books themselves, a lot of other text accumulates during the day: messages, letters, tasks for neural networks. Speaking is faster than typing, so I dictate most of it. Only live speech, transcribed word for word, reads poorly. Here is a phrase that Whisper recognized ">
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.65;
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 32px 20px 64px;
+      color: #1f2328;
+    }
+    header {
+      border-bottom: 1px solid #d8dee4;
+      margin-bottom: 28px;
+      padding-bottom: 20px;
+    }
+    .source {
+      color: #57606a;
+      font-size: 0.95rem;
+    }
+    img, video, iframe {
+      max-width: 100%;
+      height: auto;
+    }
+    pre {
+      overflow-x: auto;
+      padding: 16px;
+      background: #f6f8fa;
+      border-radius: 6px;
+    }
+    code {
+      font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+    }
+    blockquote {
+      border-left: 4px solid #d0d7de;
+      margin-left: 0;
+      padding-left: 16px;
+      color: #57606a;
+    }
+    footer {
+      border-top: 1px solid #d8dee4;
+      margin-top: 40px;
+      padding-top: 20px;
+      color: #57606a;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Dictation without &quot;uh&quot; and &quot;like&quot;: Whisper on your computer and a small intermediary for LLMs</h1>
+    <p>I write books, and besides the books themselves, a lot of other text accumulates during the day: messages, letters, tasks for neural networks. Speaking is faster than typing, so I dictate most of it. Only live speech, transcribed word for word, reads poorly. Here is a phrase that Whisper recognized without a single error: Read more</p>
+    <p class="source">
+      Machine-translated from Habr.
+      <a href="https://habr.com/ru/companies/miip/articles/1093468/?utm_campaign=1093468&amp;utm_source=habrahabr&amp;utm_medium=rss">Read the original Russian article</a>.
+      Mon, 12 Oct 2026 16:21:33 GMT
+    </p>
+  </header>
+  <main>
+<div><p>I write books, and besides the books themselves, a lot of other text accumulates during the day: messages, letters, tasks for neural networks. Speaking is faster than typing, so I dictate most of it. Only live speech, transcribed word for word, reads poorly. Here is a phrase that Whisper recognized without a single error:</p><blockquote><p>So, like, I, uh, wanted to say that, uh, tomorrow... the call tomorrow is postponed, uh, to three o'clock, no, to four.</p></blockquote><p>And this is what I wanted to send:</p><blockquote><p>I wanted to say that the call tomorrow is postponed to four.</p></blockquote><p>The second option is the actual response from the program this article is about. From the moment I released the key to the text being inserted, less than two seconds passed. I'll tell you how it works and what pitfalls I stumbled into, and at the end, I'll provide a link to the code: it's open-source and free.</p><h3>Recognition: Handy and Whisper</h3><p>For the dictation itself, I used <a href="https://github.com/cjpais/Handy">Handy</a>, an open-source program (MIT) based on Tauri. You hold down a hotkey, speak, release it, and the text appears wherever the cursor is, in any window. Speech is recognized by Whisper directly on the computer; the audio doesn't go anywhere.</p><p>The model is Whisper Large v3 Turbo. On an RTX 4080 Super, eight seconds of speech are recognized in 0.17 seconds, and forty-two seconds in 0.45 seconds. It will be noticeably slower without a graphics card.</p><p>For Russian, there's a build called <a href="https://github.com/egsok/klava-nevinovata">klava-nevinovata</a>: it includes a pre-trained Whisper model for Russian and protection against looping on silence – that's when the model, instead of a pause, writes "and I want and I want and I want...".</p><p>One tip right away: in the settings, set "Unload model" to "Never". Otherwise, after a period of inactivity, the first dictation will wait for the model to load into memory again.</p><h3>Why Regex Isn't Enough</h3><p>The first thought is to clean up "uh" and "like" with a list of replacements. It won't work:</p><ul><li><p>"This course" becomes "course", and "Like, great" becomes "Great". The word is the same, but in the second case, you also need to remove the comma and capitalize the first letter. And sometimes "like" is necessary and cannot be removed.</p></li><li><p>"To three o'clock, no, to four" becomes "to four". Self-correction cannot be described by a rule.</p></li><li><p>The same applies to repetitions, cut-off words, "you know" and "listen" in the middle of a phrase.</p></li></ul><p>This requires a model that understands meaning. Handy has post-processing for this: the recognized text is sent to any OpenAI-compatible API, and the model's response is inserted into the window. I use Claude Sonnet 5.5; cleaning takes from one and a half to three seconds.</p><h3>Why an Intermediary?</h3><p>You can configure Handy with the API address, key, and prompt, and it will work. I started that way, but I quickly created a layer in between and called it Chistovik (Clean-up). It's a single Python file using only the standard library. It listens on <code>localhost:8765</code>, and Handy sees it as a regular API. In Handy's settings, instead of a prompt, there's just one line <code>${output}</code>, and the intermediary does the rest:</p><ol><li><p><strong>The prompt and dictionary are in two text files and are re-read with each dictation.</strong> Correct a line, dictate again – without restarting and without going into settings. I corrected the prompt dozens of times in the first few days, so this is the main convenience.</p></li><li><p><strong>One warm connection.</strong> Handy creates a new HTTP client for each request, meaning it goes through TCP and TLS anew each time. The intermediary maintains a single connection and refreshes it if there haven't been any dictations for a while.</p></li><li><p><strong>The API key is not stored in Handy's settings</strong> but in a separate file or environment variable.</p></li><li><p><strong>10-second timeout.</strong> If the API is silent, Handy inserts the raw text instead of freezing.</p></li></ol><p>The main substitution looks like this:</p><pre><code>def rewrite(payload): 
+    msgs = payload.get("messages") or []
+    if not msgs or not isinstance(msgs[-1].get("content"), str):
+        return False
+    tmpl = here(CFG["prompt_file"]).read_text(encoding="utf-8-sig")
+    text = msgs[-1]["content"].strip()
+    msgs[-1]["content"] = tmpl.replace("${dictionary}", dictionary() or "(empty)").replace("${output}", text)
+    return True</code><div><a href="https://sourcecraft.dev/"><span></span></a></div></pre><h3>A Dictionary That Understands Context</h3><p>Whisper confuses rare words, names, and slang. For me, for example, "ИИшный" (AI-ish): Whisper hears it as "яичный" (egg-related). Handy has a built-in dictionary, but judging by the description in the program itself, fuzzy correction only works for words with Latin characters and numbers, so it doesn't help with Russian words.</p><p>Moreover, simple replacement is harmful here: "яичный" can also be literal... perhaps... someone has such a word in their correspondence. However, you can explain the condition to the model in words. A dictionary entry looks like this: on the left is how to write it, on the right is how the recognition hears it, and in parentheses is when to replace it.</p><pre><code>ИИшный, ИИшные, ИИшно ← иишный, яичный (replace «яичный» only when the text is not about eggs or food)
+Claude (always written Claude, in any grammatical case) ← Клод, Клоду, Клода, Clod, Clot</code><div><a href="https://sourcecraft.dev/"><span></span></a></div></pre><p>The explanations in the repository are in English, but the model understands them equally well in Russian. Test:</p><blockquote><p>Suggest, uh, a recipe for an egg salad, like, something quick.</p><p>→ Suggest a recipe for an egg salad, something quick.</p></blockquote><blockquote><p>Listen, the text turned out kind of egg-related, like, you can really feel that a neural network wrote it.</p><p>→ Listen, the text turned out kind of AI-ish, you can really feel that a neural network wrote it.</p></blockquote><p>The salad remained salad.</p><h3>Prompt Pitfalls</h3><h4>The Model Responds to Dictation</h4><p>I dictated "write a letter to the boss saying I won't come tomorrow" and got a letter. The model took the dictation as a request to itself. Two things helped: the transcription is enclosed in a <code>&lt;dictation&gt;</code> tag, and the rules explicitly state that questions and requests from the text are not executed; it's just text for cleaning.</p><blockquote><p>Write, please, uh, a letter to the boss, that I, uh, won't come tomorrow, I'm sick.</p><p>→ Write, please, a letter to the boss, that I won't come tomorrow, I'm sick.</p></blockquote><h4>The Model "Ennobles" Speech</h4><p>Models like to replace colloquial words with "proper" ones: "прикольно" (cool) becomes "интересно" (interesting), "пофигу" (don't care) becomes "неважно" (unimportant), "чё" (what) becomes "что" (what). Messages start to sound like someone else's voice. Rule: colloquial remains colloquial; do not replace a person's words. Examples directly in the rule work better than general statements.</p><blockquote><p>Well, that's cool, I really don't care, what they say.</p><p>→ That's cool, I really don't care, what they say.</p></blockquote><h4>The Model Comments</h4><p>When I dictated about recognition errors themselves ("instead of Claude, it wrote me some Clot, Silod"), the model added an explanation: here, the person is talking about recognition. But the response is inserted directly into the window where I'm typing. The last rule in the prompt helped: the response is inserted where the person is typing, so it should only contain the finished text. And a separate rule: if the person provides examples of recognition errors, leave those examples as they are.</p><h4>"Вот" (Like/Here) Can Be Necessary</h4><p>If "вот" is in the list of filler words, the model cleans it out entirely, but sometimes it carries meaning. Examples in the rule itself helped:</p><blockquote><p>Like, great, like this course, uh, and we'll take it.</p><p>→ Great, this course and we'll take it.</p></blockquote><h4>Personal Rules</h4><p>My short "чё" (what) Whisper hears as "чёрт" (devil), although I don't say that word. Such a rule lives only in my prompt; it's not in the public version: everyone has their own peculiarities, and it's convenient to add them yourself.</p><h3>Integration Pitfalls</h3><p><strong>Post-processing errors are not visible.</strong> With any error, Handy silently inserts the raw text. For several days, my dictations went through without cleaning, and I thought the model was just performing poorly. Therefore, the intermediary writes a log for each dictation: time, status, and duration, without the text itself. It's also better to check through the program itself, not with a separate console request.</p><p><code><strong>localhost</strong></code><strong> may first go to </strong><code><strong>::1</strong></code><strong>.</strong> Windows often assigns the IPv6 address for <code>localhost</code>, so the intermediary listens to both <code>127.0.0.1</code> and <code>::1</code>.</p><h3>The Numbers</h3><div><table><tbody><tr><th><p></p></th><th><p>8 sec of speech</p></th><th><p>42 sec of speech</p></th></tr><tr><td><p>Recognition (Whisper Large v3 Turbo, RTX 4080 Super)</p></td><td><p>0.17 s</p></td><td><p>0.45 s</p></td></tr><tr><td><p>Cleaning (Claude Sonnet 5.5)</p></td><td><p>~1.7 s</p></td><td><p>~3 s</p></td></tr><tr><td><p>Total, from key press to insertion</p></td><td><p>~2 s</p></td><td><p>~3.5 s</p></td></tr></tbody></table></div><p>The request is about 1100 tokens, almost all of which are rules and the dictionary. The response is based on the length of the text.</p><h3>What's the Result?</h3><p>The code is open-source (MIT): <a href="https://github.com/Tataut/chistovik">github.com/Tataut/chistovik</a>. On Windows, it's installed with a single PowerShell script; then you need to fill in a couple of fields in Handy's settings; everything is described step-by-step in the README. The intermediary itself is cross-platform, and Handy is also available for macOS and Linux.</p><p>I only tested with Claude Sonnet 5.5. Any OpenAI-compatible API will work: OpenAI, OpenRouter, local models via Ollama or LM Studio – with a local model from your computer, nothing goes out at all. But I haven't tested how well small local models handle such rules. If you've tried, please share in the comments which one performs well.</p><p>Most of all, this helps me communicate in Telegram and other messengers. It's an invaluable time saver, so I decided to share it publicly. Perhaps it will be useful to someone else.</p></div>
+  </main>
+  <footer>
+    Translation generated with Gemini 2.5 Flash-Lite.
+    The original article remains the source of record.
+  </footer>
+</body>
+</html>

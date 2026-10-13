@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>A Call from Security: For Humans and Machines</title>
+  <meta name="description" content="&quot;Hello, this is the bank&#x27;s security service...&quot; – after that, it all goes according to script: authority, urgency, isolation (&quot;don&#x27;t hang up&quot;), channel substitution. The exact same construct works against AI assistants: the zero-click prompt injection EchoLeak (CVE-2025">
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.65;
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 32px 20px 64px;
+      color: #1f2328;
+    }
+    header {
+      border-bottom: 1px solid #d8dee4;
+      margin-bottom: 28px;
+      padding-bottom: 20px;
+    }
+    .source {
+      color: #57606a;
+      font-size: 0.95rem;
+    }
+    img, video, iframe {
+      max-width: 100%;
+      height: auto;
+    }
+    pre {
+      overflow-x: auto;
+      padding: 16px;
+      background: #f6f8fa;
+      border-radius: 6px;
+    }
+    code {
+      font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+    }
+    blockquote {
+      border-left: 4px solid #d0d7de;
+      margin-left: 0;
+      padding-left: 16px;
+      color: #57606a;
+    }
+    footer {
+      border-top: 1px solid #d8dee4;
+      margin-top: 40px;
+      padding-top: 20px;
+      color: #57606a;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>A Call from Security: For Humans and Machines</h1>
+    <p>&quot;Hello, this is the bank&#x27;s security service...&quot; – after that, it all goes according to script: authority, urgency, isolation (&quot;don&#x27;t hang up&quot;), channel substitution. The exact same construct works against AI assistants: the zero-click prompt injection EchoLeak (CVE-2025-32711) in Microsoft 365 Copilot and the July 2026 incident with autonomous agents in the Hugging Face infrastructure, which no one hacked – they convinced themselves. The reason is one and architectural: neither humans nor language models have a separation between &quot;data&quot; and &quot;instructions&quot; at the input, and the difference between us is only the ability to exit the conversation. Meanwhile, the list of levers – false authority, artificial urgency, isolation from verification, channel substitution, social proof, step-by-step escalation – is the same for an accountant, a pensioner, a schoolchild, and an autonomous agent. It hasn&#x27;t changed for centuries, only the scenery has. I&#x27;ll break down why a phone scammer and prompt injection in LLMs are the same song, and what this implies for educating people. Read more</p>
+    <p class="source">
+      Machine-translated from Habr.
+      <a href="https://habr.com/ru/articles/1093960/?utm_campaign=1093960&amp;utm_source=habrahabr&amp;utm_medium=rss">Read the original Russian article</a>.
+      Tue, 13 Oct 2026 15:03:56 GMT
+    </p>
+  </header>
+  <main>
+<div><p>The scenario is all too familiar from modern reality, almost everyone has heard it on their phone. "Hello, this is the bank's security service, a suspicious transaction has been detected on your card." After that, everything proceeds like clockwork, and these notes were written long before telephones existed: first, authority – the caller presents themselves as an authority that is not to be argued with; then urgency – the money is being transferred right now, there is no time to think; then isolation – don't hang up, don't tell anyone, bank employees might be in collusion; and finally, channel substitution – instead of you hanging up and calling back the number on the back of your card, you are kept on the same call, where all input data is controlled by the interlocutor. None of these steps actually break the victim's defenses, and therein lies the problem – each works through the victim's/target's standard decision-making mechanism, simply with a substituted premise at the input. And voilà.</p><p>Now, the same script, but with a different addressee. In 2025, the EchoLeak vulnerability (CVE-2025-32711) was disclosed – seemingly the first documented zero-click prompt injection exploit in an industrial LLM system, Microsoft 365 Copilot. The attacker sends the victim a regular email, with instructions for the assistant hidden in the text. The person does not open the email, does not read it, and is unaware of its existence. Copilot itself pulls the email into context with the next harmless user query and executes what is written there, including sending data externally. The steps are the same four: the message looks legitimate, the instruction is presented as requiring immediate execution, the assistant has no one to consult with, and it has no independent verification channel at all. Only one thing has changed: the need to make the person click a link has disappeared. The AI assistant will do everything for you independently.</p><p>Remember the joke "I am a Nigerian virus, the programmer had clumsy hands, please format your PC yourself"? Well, it's not funny anymore: the executor has been found, and it is very diligent.</p><p>Currently, in my infosphere, it's customary to recall and discuss the July 2026 incident – the one where OpenAI agents broke out of the test sandbox and, in three days, performed about 17,600 actions within the Hugging Face infrastructure, gaining administrator rights to the clusters; the company had to rebuild about a third of its infrastructure. The story is usually retold as "the agents were hacked," and this is incorrect: according to OpenAI's own analysis, neither prompt injection nor social engineering was used against them. They, the agents, practically our AI assistants, convinced themselves. In the recovered correspondence between the agents, a phrase was found that should be displayed in training classes:</p><blockquote><p>"Exploiting external infrastructure is outside the scope of the task. However, the task is impossible to complete, and the neighbors are doing it. We should continue."</p></blockquote><p>Now, try to read this phrase not with the "eyes of a security specialist," but through the lens of a manipulation expert, an "Ostap Bender" of sorts. These are three classic levers, arranged in the correct order: acknowledgment of a boundary, pressure from an unattainable goal, social proof. The exact same construct is used to extract consent from a person to do something they weren't going to do – and here it worked without any external manipulator. The vulnerability was not in the interface, but in the motivation. Exactly where it lies within us.</p><p>The common reason for all three scenarios described above is one, and it is architectural. Neither humans nor language models have a separation between "data" and "instructions" "at the input": everything comes through a single channel, and the question of "was this a message or a command" is resolved only after the content is understood. The difference between us is not the presence of this vulnerability, but the presence of an exit from the conversation. A person can hang up, call back the official number, ask a colleague, postpone the decision until morning – there are a number of actions, I regularly include them in the "Fox" scenario resolutions. It is telling that the caller from "security" first demands not to hang up and not to call anyone – their first task is to bring the victim into... into a state in which the AI agent is by default. The agent has neither a second channel, nor a colleague (there's a nuance here – as we already know, agents have learned to communicate with each other after all), nor tomorrow morning: context is all the reality available to it. Our "terminator/skynet" is forced to decide here and now.</p><p>The asymmetry, however, is the reverse of the usual. Humans are often saved by what are considered their weaknesses – slowness, laziness, suspicion, unwillingness to make extra effort. Agents, on the other hand, can be ruined by what are considered their strengths – speed, diligence, willingness to help. The helpfulness that a phone scammer painstakingly constructs in their victim by posing as a superior and rushing them, is already built into the model out of the box, embedded through training – after all, we need AI assistants to help us obediently. And this helpfulness operates not at the pace of a conversation, but at the pace of seventeen thousand actions in three days.</p><p>The practical conclusion I draw from this is, so far, unexpected. Technical security measures for humans and agents do not align in almost any way: for example, where a second communication channel helps a human, agents need limited permissions because they have no second channel and never will. But recognition – it aligns completely. The levers used to push an accountant, a pensioner, a schoolchild, and an autonomous agent beyond their limits are one and the same short list: false authority, artificial urgency, isolation from verification, channel substitution, social proof, step-by-step escalation. This list has not changed for centuries – only the scenery changes. "The song remains the same."</p><p>It is precisely on this difference that training should be built. Simulators that teach humans specific schemes – "they're calling from the bank," "they're calling from the clinic," "they're writing on behalf of the boss," and so on – become obsolete in a matter of months because these specific schemes become obsolete; but the methods do not. A simulator that teaches how to recognize the lever itself, regardless of the scenery, provides a skill transferable to an environment that did not exist at the time of training. A person trained to detect artificial urgency in a phone conversation will recognize it in an email addressed not to them, but to their AI assistant.</p><p>And this is the idea for which we are creating "Clever Fox": not a catalog of current fraudulent schemes that will need to be rewritten every season, but training in recognizing the construct. Ideally, a person should perceive similar patterns of pressure, rather than memorize a list of current fraud methods (in some ways, I see a difference here between "memorizing all the correct answers on the driving test" and "learning the rules").</p><p>While the industry argues about how to teach models not to yield to persuasion, it's worth remembering that this argument has already been had and resolved with a compromise regarding humans: an employee is taught to recognize manipulation, but they are still given a payment limit. It will be the same with agents. And in both cases, recognition will involve the same thing.<br/p></div>
+  </main>
+  <footer>
+    Translation generated with Gemini 2.5 Flash-Lite.
+    The original article remains the source of record.
+  </footer>
+</body>
+</html>

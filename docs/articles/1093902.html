@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Techno-Aquarium in the Style of the Infernal Abode: Launching a Local LLM Qwen 2.5 14B on a Home PC for an Interactive Website</title>
+  <meta name="description" content="Today, no one is surprised by neural networks anymore – they are all anyone talks about. Whether it&#x27;s video, text, or code generation. You have to look closely at the screen to understand: is this a real photo or AI work? People are actively setting up local neural networks at home and at work.">
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.65;
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 32px 20px 64px;
+      color: #1f2328;
+    }
+    header {
+      border-bottom: 1px solid #d8dee4;
+      margin-bottom: 28px;
+      padding-bottom: 20px;
+    }
+    .source {
+      color: #57606a;
+      font-size: 0.95rem;
+    }
+    img, video, iframe {
+      max-width: 100%;
+      height: auto;
+    }
+    pre {
+      overflow-x: auto;
+      padding: 16px;
+      background: #f6f8fa;
+      border-radius: 6px;
+    }
+    code {
+      font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+    }
+    blockquote {
+      border-left: 4px solid #d0d7de;
+      margin-left: 0;
+      padding-left: 16px;
+      color: #57606a;
+    }
+    footer {
+      border-top: 1px solid #d8dee4;
+      margin-top: 40px;
+      padding-top: 20px;
+      color: #57606a;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Techno-Aquarium in the Style of the Infernal Abode: Launching a Local LLM Qwen 2.5 14B on a Home PC for an Interactive Website</h1>
+    <p>Today, no one is surprised by neural networks anymore – they are all anyone talks about. Whether it&#x27;s video, text, or code generation. You have to look closely at the screen to understand: is this a real photo or AI work? People are actively setting up local neural networks at home and at work. So, I decided not to fall behind. Why? Because I can. Or I want to see if I can. For some kind of self-realization, it&#x27;s interesting to go through this path. Just setting up a local AI on a PC is not interesting. I wanted to create something tangible, something different from a simple chatbot. The idea arose to &#x27;settle&#x27; a neural network on a website, give it a character, grant it authority within the site. To simulate a real digital pseudo-life, a kind of digital aquarium, in which the Mistress of the INFERNUM project lives. Read more</p>
+    <p class="source">
+      Machine-translated from Habr.
+      <a href="https://habr.com/ru/articles/1093902/?utm_campaign=1093902&amp;utm_source=habrahabr&amp;utm_medium=rss">Read the original Russian article</a>.
+      Tue, 13 Oct 2026 13:30:42 GMT
+    </p>
+  </header>
+  <main>
+<div><h2>Prologue. Why Does the Creator Create?</h2><p>Today, no one is surprised by neural networks anymore – they are all anyone talks about. Whether it's video, text, or code generation. You have to look closely at the screen to understand: is this a real photo or AI work? People are actively setting up local neural networks at home and at work. So, I decided not to fall behind.</p><p><strong>And why?</strong> Because I can. Or I want to see if I can. For some kind of self-realization, it's interesting to go through this path.</p><p>Just setting up a local AI on a PC is not interesting. I wanted to create something tangible, something different from a simple chatbot. The idea arose to 'settle' a neural network on a website, give it a character, grant it authority within the site. To simulate a real digital pseudo-life, a kind of digital aquarium, in which the Mistress of the INFERNUM project lives.</p><figure><img alt="Digital art object INFERNUM assembled" loading="lazy" src="https://habrastorage.org/r/w1560/getpro/habr/upload_files/3e0/ec4/88d/3e0ec488d4d65bea348bdd2a20f2f93e.jpg" title="Digital art object INFERNUM assembled"/><div><figcaption>Digital art object INFERNUM assembled</figcaption></div></figure><h2>Assembling the Physical Body and Cable Management</h2><p>First of all, I needed to get the hardware for the AI's future body. My budget is very limited. I know that the speed of a neural network directly depends on the amount and bandwidth of video memory – VRAM. I already had one Nvidia GTX 1660 Super with 6 GB. Buying a hypothetical RTX 3060 or 4060 is expensive. I decided to buy another identical 1660 Super on the used market and combine their resources.</p><p>For such an architecture, a platform is needed that can handle two cards at full PCIe x16 / x16 speed. Initially, I was looking at Chinese platforms (like Huananzhi) – marketplaces are full of them, and the price around 5000 rubles was tempting. I could even get a bundle: an X99 motherboard, RAM + CPU for a reasonable price. But then I stumbled upon a real artifact on a classifieds board, damn it all – a Gigabyte GA-X79-UP4. It has an LGA2011 socket and a whole 4 PCI Express slots, two of which operate at full x16 speed. Exactly what I needed. I got the board along with a six-core Intel Core i7-3930k processor for a modest 7,500 rubles. Well, that's the deal of the century.</p><figure><img alt="Gigabyte GA-X79-UP4 takes its place" loading="lazy" src="https://habrastorage.org/r/w1560/getpro/habr/upload_files/5a2/da2/567/5a2da2567ccd307e52d7c7e0bf348536.jpg" title="Gigabyte GA-X79-UP4 takes its place"/><div><figcaption>Gigabyte GA-X79-UP4 takes its place</figcaption></div></figure><p>Yes, yes, yes, the X79 platform has a significant drawback – it only supports the ancient DDR3. But since I planned to run the AI exclusively within the VRAM of the graphics cards, I didn't care about the system memory speed. I installed the memory in quad-channel mode for 32 GB. I didn't expand to 64 GB – there's no practical point in doing so.</p><p>Final setup:</p><ul><li><p><strong>CPU</strong>: Intel Core i7-3930k (6 cores / 12 threads)</p></li><li><p><strong>MBD</strong>: Gigabyte GA-X79-UP4</p></li><li><p><strong>GPU</strong>: 2 x Nvidia GTX 1660 Super (6 GB + 6 GB = 12 GB VRAM)</p></li><li><p><strong>RAM</strong>: 32 GB DDR3 (4 sticks of 8 GB)</p></li><li><p><strong>PSU</strong>: Chieftec 700W (enough for two 1660S with a margin)</p></li><li><p><strong>SSD</strong>: NETAC 120 GB (just enough for the OS and a couple of models)</p></li><li><p><strong>Case</strong>: ARDOR TURBO T1</p></li></ul><figure><img alt="Two 1660 Supers squeezed in tightly" loading="lazy" src="https://habrastorage.org/r/w1560/getpro/habr/upload_files/810/0db/bcc/8100dbbcc6f056b6472dcb4fab184452.jpg" title="Two 1660 Supers squeezed in tightly"/><div><figcaption>Two 1660 Supers squeezed in tightly</figcaption></div></figure><p>OS – <strong>Ubuntu 24.04</strong>. Disable the graphical shell. Install proprietary Nvidia drivers and monitoring utilities.</p><p>Both cards were detected perfectly in the system, and the <strong>Ollama</strong> utility will distribute the load between them. It's time to choose and install the model itself...</p><h2>Struggling with PCIe Lanes and the Mistress's First Launch</h2><p>The nvtop utility shows two GTX 1660 Supers. But the joy ended when I saw that the first card was running in PCIe x16 mode, while the second was stuck at x8. Damn it... I bought the board solely to run the cards at full speed. I scoured the board's BIOS settings – nothing. I had a thought that perhaps the operating system, without load, simply reduces the bus bandwidth for power saving. I decided to proceed for now, keeping this issue in mind, and move on to the software.</p><p>The main task of the AI on my website is live dialogue, text communication, and maintaining the lore of the Abode. It doesn't need to write code or generate images. The main thing is to adequately understand Russian, recognize context, sarcasm, and respond in accordance with its role. I chose Qwen 2.5 7B. It was said that this model is excellently trained in Russian, and it should easily fit into my total 12 GB of video memory, leaving room for context and other needs.</p><pre><code>ollama run qwen2.5:7b</code><div><a href=
+  </main>
+  <footer>
+    Translation generated with Gemini 2.5 Flash-Lite.
+    The original article remains the source of record.
+  </footer>
+</body>
+</html>

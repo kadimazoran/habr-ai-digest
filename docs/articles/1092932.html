@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Half a year without writing code by hand. I calculated what happened to bugs</title>
+  <meta name="description" content="My name is Igor Simakov, I am a team lead, I manage two teams. These are two classic product teams that have everyone needed for the full development cycle, from discovery to delivery. I myself am a backend developer with ten years of experience and have not written code by hand since March 2026. Th">
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.65;
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 32px 20px 64px;
+      color: #1f2328;
+    }
+    header {
+      border-bottom: 1px solid #d8dee4;
+      margin-bottom: 28px;
+      padding-bottom: 20px;
+    }
+    .source {
+      color: #57606a;
+      font-size: 0.95rem;
+    }
+    img, video, iframe {
+      max-width: 100%;
+      height: auto;
+    }
+    pre {
+      overflow-x: auto;
+      padding: 16px;
+      background: #f6f8fa;
+      border-radius: 6px;
+    }
+    code {
+      font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+    }
+    blockquote {
+      border-left: 4px solid #d0d7de;
+      margin-left: 0;
+      padding-left: 16px;
+      color: #57606a;
+    }
+    footer {
+      border-top: 1px solid #d8dee4;
+      margin-top: 40px;
+      padding-top: 20px;
+      color: #57606a;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Half a year without writing code by hand. I calculated what happened to bugs</h1>
+    <p>My name is Igor Simakov, I am a team lead, I manage two teams. These are two classic product teams that have everyone needed for the full development cycle, from discovery to delivery. I myself am a backend developer with ten years of experience and have not written code by hand since March 2026. Then I implemented practices in the teams and switched everyone to agent development: QA, backend, and frontend. So my teams have not been writing code by hand for six months. I decided to dig into what&#x27;s happening and analyzed all the bugs of the two teams over the year, 268 of them. As it turned out, the bugs are not new, they existed before the agents. But now it has become more noticeable: we have started delivering three times more code, and noticeably more defects have started slipping through. Mostly these are under-the-hood, engineering, i.e., technical defects. Read more</p>
+    <p class="source">
+      Machine-translated from Habr.
+      <a href="https://habr.com/ru/articles/1092932/?utm_campaign=1092932&amp;utm_source=habrahabr&amp;utm_medium=rss">Read the original Russian article</a>.
+      Tue, 13 Oct 2026 16:00:50 GMT
+    </p>
+  </header>
+  <main>
+<div><figure><img loading="lazy" src="https://habrastorage.org/r/w1560/extt/b4/0a/62/b40a623e0c2ba3207b07901ee939cd4c.png"/></figure><p>My name is Igor Simakov, I am a team lead, I manage two teams. These are two classic product teams that have everyone needed for the full development cycle, from discovery to delivery. I myself am a backend developer with ten years of experience and have not written code by hand since March 2026, I have a <a href="https://habr.com/ru/articles/1041296/">separate article</a> about this. Then I implemented practices in the teams and switched everyone to agent development: QA, backend, and frontend. So my teams have not been writing code by hand for six months.</p><p>My workday now consists of a bunch of meetings: interviews, one-on-ones, project syncs, architecture committees, groomings, dailies, planning, retrospectives, all as usual. And in parallel, my little agents are spinning around. They handle technical and product tasks: write code, test, review, work on discovery, architectural decisions and RFCs, gather project information, search for things in Slack, help fill out documentation. My job now is to manage and orchestrate these agents. Development happens in the background, and I can calmly conduct interviews during meetings.</p><p>Our stack is Java and Spring, Kafka, PostgreSQL, Kubernetes. The agent is Claude Code with the Opus model; the rules for it are located directly in the repositories. There are three testers: one in one team is half manual, half automation, and in the other, there is one manual and one automation tester.</p><h3>What gets to production and what doesn't</h3><p>When I was assigned the second team, I started managing through metrics. I <a href="https://habr.com/ru/articles/1032902/">wrote about this on Habr</a>; it was essentially a story about my SaaS project, which I soon closed: Claude solves the same problem, and there's no need to develop anything extra, it easily compiles this into a dashboard. So I built a similar dashboard for my teams once. Managing through metrics is convenient: you can see who, where, how, and how much.</p><p>On such a dashboard, I saw that the defect leakage to production had indeed increased, and significantly, with the growth comparable to the volume of code we started delivering. This is clearly visible when you place the graphs side by side. Plus, there was feedback from the head of QA during the performance review, and we started looking into it.</p><p>I decided to dig into what was happening and analyzed all the bugs of the two teams over the year, 268 of them. As it turned out, the bugs are not new; they existed before the agents. But now it has become more noticeable: we have started delivering three times more code, and noticeably more defects have started slipping through. Mostly these are under-the-hood, engineering, i.e., technical defects:</p><ul><li><p>contracts</p></li><li><p>errors from neighbors, for example, due to throttling in a neighboring service or incorrect handling of these errors on our end</p></li><li><p>load, when clients request a lot of orders through an open API or hit an endpoint with high load</p></li><li><p>data between services and its transfer</p></li><li><p>deployments without backward compatibility, when a migration changed the database structure or the data itself, for example, a column was updated, and the release could no longer be rolled back. Or an index was created incorrectly, and it blocked the table under load</p></li><li><p>race conditions and concurrent updates that overwrite data</p></li></ul><figure><img loading="lazy" src="https://habrastorage.org/r/w1560/extt/f6/a5/b6/f6a5b6a6831e3bf2af8dc4d372254972.png"/></figure><p>All of this is very difficult to catch manually during testing, and sometimes even functional tests struggle. Our testers catch functional defects brilliantly: one in six makes it to production. Of the technical ones, two out of three make it to production.</p><h3>What happens when there's three times more code</h3><figure><img loading="lazy" src="https://habrastorage.org/r/w1560/extt/43/c0/ae/43c0ae60ddff7e308e33e0606a566fa7.png"/></figure><p>Over the year, merge requests have almost doubled, from 199 to 351 per quarter, and the average merge request itself has almost doubled, from 160 to 280 lines. Together, this is three times more code, from 32 to 97 thousand lines per quarter.</p><figure><img loading="lazy" src="https://habrastorage.org/r/w1560/extt/b7/b4/37/b7b437e6c71ce2f034d5d195c2338b68.png"/></figure><p>The number of testers remains the same. Technical bugs in production have quadrupled since the end of 2025. The team manages to catch functional defects; we have e2e tests on Playwright and manual testing. But engineering defects used to be rare, and now there are about thirty per quarter, hence the hotfixes.</p><p>One might say: since there's three times more code, we need to hire more testers. But the number of functional defects hasn't increased; it's the ones we weren't catching before that have grown. New testers will continue to cover functional defects, the percentage of leakage to production will slightly decrease, but the effect will be incomparable to the number of people we add. Therefore, the focus should be on engineering testing. I'll talk about it a bit later, but it mainly involves agent testing, plus various functional tests, including contract tests, analyzers, and so on.</p><h3>Who finds bugs in production</h3><figure><img loading="lazy" src="https://habrastorage.org/r/w1560/extt/d4/57/e6/d457e626f382a81f88db44a58950fd85.png"/></figure><p>Bugs in production are found either by alerts or by people. Alerts and monitoring find 30%, users and neighboring teams 25%, and the team itself 38%: we have alerts, logs, and from them, we create tasks or defects. For comparison, in the analysis of 152 serious incidents of Microsoft Teams (<a href="https://www.microsoft.com/en-us/research/wp-content/uploads/2022/09/3542929.3563482.pdf">Ghosh et al., SoCC 2022</a>), 55% were found by monitors and only 6% by the team itself.</p><h3>Why
+  </main>
+  <footer>
+    Translation generated with Gemini 2.5 Flash-Lite.
+    The original article remains the source of record.
+  </footer>
+</body>
+</html>

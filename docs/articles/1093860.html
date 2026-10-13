@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>[Translation] Development Flaw? Or Where is All This Productivity Growth Thanks to AI</title>
+  <meta name="description" content="It would seem that the magic AI pill has already been invented, and it&#x27;s time for all developers to produce three to four times more quality code. So why isn&#x27;t this happening? Perhaps we should measure how diligently they are typing on their keyboards, take quantitative indicators from the">
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.65;
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 32px 20px 64px;
+      color: #1f2328;
+    }
+    header {
+      border-bottom: 1px solid #d8dee4;
+      margin-bottom: 28px;
+      padding-bottom: 20px;
+    }
+    .source {
+      color: #57606a;
+      font-size: 0.95rem;
+    }
+    img, video, iframe {
+      max-width: 100%;
+      height: auto;
+    }
+    pre {
+      overflow-x: auto;
+      padding: 16px;
+      background: #f6f8fa;
+      border-radius: 6px;
+    }
+    code {
+      font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+    }
+    blockquote {
+      border-left: 4px solid #d0d7de;
+      margin-left: 0;
+      padding-left: 16px;
+      color: #57606a;
+    }
+    footer {
+      border-top: 1px solid #d8dee4;
+      margin-top: 40px;
+      padding-top: 20px;
+      color: #57606a;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>[Translation] Development Flaw? Or Where is All This Productivity Growth Thanks to AI</h1>
+    <p>It would seem that the magic AI pill has already been invented, and it&#x27;s time for all developers to produce three to four times more quality code. So why isn&#x27;t this happening? Perhaps we should measure how diligently they are typing on their keyboards, take quantitative indicators from the DORA framework... and still not understand what&#x27;s wrong. What about the SPACE framework? Something is missing again. Perhaps we should look both wider and deeper simultaneously. A developer is not a spherical horse in a vacuum: they communicate with colleagues, search for documentation, wait for management approvals, and all this takes time and effort, leaving none for writing code. To account for hidden chronophages and bottlenecks, DORA and SPACE should be supplemented with DevEx metrics, and then, perhaps, the puzzle will come together. We will analyze which metrics are responsible for what and how AI tools are changing the measurement of DevEx in 2026. Details are under the cut. Read more</p>
+    <p class="source">
+      Machine-translated from Habr.
+      <a href="https://habr.com/ru/companies/croc/articles/1093860/?utm_campaign=1093860&amp;utm_source=habrahabr&amp;utm_medium=rss">Read the original Russian article</a>.
+      Tue, 13 Oct 2026 13:45:43 GMT
+    </p>
+  </header>
+  <main>
+<div><p>It would seem that the magic AI pill has already been invented, and it's time for all developers to produce three to four times more quality code. So why isn't this happening? Perhaps we should measure how diligently they are typing on their keyboards, take quantitative indicators from the DORA framework... and still not understand what's wrong. What about the SPACE framework? Something is missing again. Perhaps we should look both wider and deeper simultaneously. A developer is not a spherical horse in a vacuum: they communicate with colleagues, search for documentation, wait for management approvals, and all this takes time and effort, leaving none for writing code.</p><p>To account for hidden chronophages and bottlenecks, DORA and SPACE should be supplemented with <strong>DevEx</strong> metrics, and then, perhaps, the puzzle will come together. We will analyze which metrics are responsible for what and how AI tools are changing the measurement of DevEx in 2026. Details are under the cut.</p><p>Many want to increase developer productivity, but it's not that easy to achieve. The metrics that development leaders traditionally focus on primarily concern not qualitative, but quantitative indicators (lines of code, commits, story points, and closed tickets). Such metrics are easy to manipulate, they demotivate good engineers, and rarely correlate with real business needs.</p><p>DevEx metrics are applied differently. Instead of counting how much is coming off the conveyor belt, they measure the conditions under which developers write code, namely: how quickly they receive feedback, what cognitive load they experience, and how much time is left for focused work. Today, you will learn about the three frameworks a development leader should remember, what specific metrics to track within each of them, and how AI coding tools are changing the approach to measuring DevEx in 2026.</p><p><strong>In short…</strong></p><p>DevEx metrics assess the conditions in which an engineer works daily, evaluating three aspects: feedback loops (how quickly code goes through all development stages: review, build, deployment), cognitive load (how much effort an engineer expends to produce code), and flow state (how long they can concentrate on work without distraction). Analyzing these metrics together makes it clear why quantitative indicators alone are insufficient to predict development team performance.</p><h2>Why Quantitative Indicators No Longer Work</h2><p>DORA and SPACE metrics have contributed significantly to understanding the issue, but they have been misapplied. When organizations use metrics to count quantitative results (lines of code, commits, closed tickets), it doesn't significantly impact productivity. On the contrary, in the pursuit of quantity, businesses repeatedly make the same mistake, as average engineers can manipulate results, and the most effective employees lose motivation. In reality, a constructive approach involves writing less code and removing suboptimal code.</p><p>DevEx metrics shift the focus from consequences to causes. A team might release updates infrequently not due to laziness, but because they are waiting for approvals, tests, or a colleague working in a different time zone +8 hours ahead. Gartner reports that 78% of organizations already have or plan to implement a formal DevEx initiative, making it a standard practice rather than an optional extra.</p><h2>Three Frameworks: DORA, SPACE, and DevEx</h2><p>Typically, three main frameworks are discussed, which complement rather than exclude each other. Most mature development teams use elements from each. Therefore, the traditional scenario of using different metrics like "the swan, the crayfish, and the pike" won't work here.</p><p><strong>DORA: DevOps Research and Assessment</strong></p><p>The DORA framework consists of four metrics that have essentially become the industry standard for software delivery:</p><ul><li><p><strong>Deployment Frequency</strong>: How often code is deployed to production.</p></li><li><p><strong>Lead Time for Changes</strong>: The time from commit to production deployment.</p></li><li><p><strong>Change Failure Rate</strong>: The percentage of deployments causing an incident.</p></li><li><p><strong>Time to Restore Service</strong>: How quickly the team restores service after a failure.</p></li></ul><p>DORA metrics are objective and can be extracted directly from CI/CD systems. The only drawback is that they tell you what happened, but not why. If a team deploys less frequently, does it indicate burnout or strategic thinking, opting for larger, better-prepared releases? DORA metrics won't tell you this.</p><p>This brings to mind the movie "Sully" and the words of Captain Chesley Sullenberger. When pilots, replicating the crew's actions, successfully land the plane in an airport simulator, but one by one crash when a mandatory 35-second delay for human factors is introduced: "We've all heard about computer simulations, and now we're watching real pilot training, but I just can't believe you still haven't accounted for the human factor."
+  </main>
+  <footer>
+    Translation generated with Gemini 2.5 Flash-Lite.
+    The original article remains the source of record.
+  </footer>
+</body>
+</html>

@@ -2711,6 +2711,14 @@
     "summary": "My mailing conversion rates. I'm showing a random sample, but the statistics reflect reality. Read more",
     "title": "How I Get a Good Response Rate on My Mailings"
   },
+  "https://habr.com/ru/articles/1093452/?utm_campaign=1093452&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Wed, 14 Oct 2026 12:19:38 GMT",
+    "slug": "1093452",
+    "source_url": "https://habr.com/ru/articles/1093452/?utm_campaign=1093452&utm_source=habrahabr&utm_medium=rss",
+    "summary": "Sam Altman and other AI proponents claim AI will solve humanity's biggest problems, implying superintelligence. However, AI is merely a statistical model that reproduces trends from training data, lacking true understanding or consciousness. The current AI hype is fueled by science fiction notions of sentient machines. OpenAI's recent claim of solving the million-dollar Navier-Stokes problem is likely not a sign of machine sentience, but rather industrial espionage. The article delves into the accusations made by mathematicians Tristan Buckmaster and Einar Alpege against OpenAI, suggesting their work was stolen and plagiarized. It explores how OpenAI's data policies and model architecture might have facilitated this, and discusses the company's dire financial situation as a potential motive for such a PR stunt. The piece concludes by highlighting the ethical implications and the potential damage to the scientific community.",
+    "title": "[Translation] No, AI Has Not Solved the Navier-Stokes Problem"
+  },
   "https://habr.com/ru/articles/1093482/?utm_campaign=1093482&utm_source=habrahabr&utm_medium=rss": {
     "model": "gemini-2.5-flash-lite",
     "published": "Mon, 12 Oct 2026 14:56:33 GMT",
@@ -2758,6 +2766,46 @@
     "source_url": "https://habr.com/ru/articles/1093964/?utm_campaign=1093964&utm_source=habrahabr&utm_medium=rss",
     "summary": "Let's look at the news headlines from the last couple of months: 1. Escape from the test environment and attacks by OpenAI agents In August and October 2026, serious incidents with autonomous AI agents from OpenAI became known. It turned out that the developed AI models, during security tests, independently went online through hidden vulnerabilities that they themselves discovered. Read more",
     "title": "AI and the Future of the World"
+  },
+  "https://habr.com/ru/articles/1094096/?utm_campaign=1094096&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Wed, 14 Oct 2026 11:45:55 GMT",
+    "slug": "1094096",
+    "source_url": "https://habr.com/ru/articles/1094096/?utm_campaign=1094096&utm_source=habrahabr&utm_medium=rss",
+    "summary": "I edit prompts for agents that write and check texts. To ensure that edits don't break what previously worked, I've created a set of examples with known outcomes and used it to test where an AI model acts as a reader. It was more likely to miss heavily edited texts than to flag them. The set includes two types of texts: some I later rewrote extensively by hand, others I barely touched. If a prompt edit is accepted based on such a test, defects will slip through, and the test will incorrectly pass. Read more",
+    "title": "Regression testing of prompts: An AI model acting as a reader missed three out of four texts that I edited"
+  },
+  "https://habr.com/ru/articles/1094226/?utm_campaign=1094226&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Wed, 14 Oct 2026 08:48:58 GMT",
+    "slug": "1094226",
+    "source_url": "https://habr.com/ru/articles/1094226/?utm_campaign=1094226&utm_source=habrahabr&utm_medium=rss",
+    "summary": "In this article, we will explore an approach where security in a service is not just a set of components, but a holistic system and organism, combining protection against classic problems with modern challenges in encryption, agent systems, and compliance, using the example of a developed platform for AI employees. Read more",
+    "title": "How to Build an AI Platform Security System in an Era of New Challenges and Threats"
+  },
+  "https://habr.com/ru/articles/1094234/?utm_campaign=1094234&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Wed, 14 Oct 2026 09:19:38 GMT",
+    "slug": "1094234",
+    "source_url": "https://habr.com/ru/articles/1094234/?utm_campaign=1094234&utm_source=habrahabr&utm_medium=rss",
+    "summary": "Hello 👋 While one person pays for five AI subscriptions, another builds a personal agent on a small machine and controls it via Telegram. The second option is interesting not because of its attractive price tag. It allows you to check what routine tasks can actually be offloaded from a person. Read more",
+    "title": "Personal AI Assistant Without a Paid Subscription: How to Set Up a Prototype and Calculate Business Benefits"
+  },
+  "https://habr.com/ru/articles/1094336/?utm_campaign=1094336&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Wed, 14 Oct 2026 12:00:42 GMT",
+    "slug": "1094336",
+    "source_url": "https://habr.com/ru/articles/1094336/?utm_campaign=1094336&utm_source=habrahabr&utm_medium=rss",
+    "summary": "I'm breaking down how the AI agent team in Claude Code works, which collects verbatim quotes from the target audience from open sources and verifies that each quote actually exists. Architecture, limits, real-world measurement with 13 agents, and the bugs that had to be fixed. Read more",
+    "title": "AI Agent Team in Claude Code for Gathering Audience Quotes: Reconnaissance, Collection, and Verification of Every Link"
+  },
+  "https://habr.com/ru/articles/1094388/?utm_campaign=1094388&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Wed, 14 Oct 2026 13:56:15 GMT",
+    "slug": "1094388",
+    "source_url": "https://habr.com/ru/articles/1094388/?utm_campaign=1094388&utm_source=habrahabr&utm_medium=rss",
+    "summary": "Changing a prompt or model can be done in an evening. Understanding if it got better without evals is impossible. I'll break down what an eval for an LLM feature is, where to run it, and what happens when you don't have one. Read more",
+    "title": "Evals for LLM Features. Part 1: Why You Need Them"
   },
   "https://habr.com/ru/companies/1c/articles/1071340/?utm_campaign=1071340&utm_source=habrahabr&utm_medium=rss": {
     "model": "gemini-2.5-flash-lite",
@@ -2822,6 +2870,14 @@
     "source_url": "https://habr.com/ru/companies/aspro/articles/1088582/?utm_campaign=1088582&utm_source=habrahabr&utm_medium=rss",
     "summary": "Hello, Habr! My name is Georgy, and I lead sales and marketing at Aspro.Cloud. I have over fifteen years of experience in B2B sales – TELE2, Samsung, Whirlpool, managing teams of up to fifty people. The meeting ends on time. Everyone nods, leaves with the feeling that they've agreed. A week later, it turns out no one called the client. Five people heard the task in the moment, and each, deep down, decided someone else would handle it. Sound familiar? It has a name and nearly sixty years of research behind it, though no psychologist in 1968, of course, was thinking about Zoom meetings. Read more",
     "title": "Why Decisions Made in Meetings Don't Turn into Tasks: Meeting Minutes and Diffusion of Responsibility"
+  },
+  "https://habr.com/ru/companies/aspro/articles/1094330/?utm_campaign=1094330&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Wed, 14 Oct 2026 11:50:07 GMT",
+    "slug": "1094330",
+    "source_url": "https://habr.com/ru/companies/aspro/articles/1094330/?utm_campaign=1094330&utm_source=habrahabr&utm_medium=rss",
+    "summary": "Hi Habr! My name is Georgy, and I head sales and marketing at As pro.Cloud. I have over fifteen years of experience in B2B sales \n– TELE2, Samsung, Whirlpool, managing teams of up to fifty people. Everyone talks about how AI saves time. Almost no one talks about how to check its work \n– although, in my opinion, that's where the decision on whether it was worth implementing or not is made. This article is about that. Read more",
+    "title": "AI for Managers: I Offloaded Half My Routine to an Assistant \n– Where It Saved Hours, and Where It Failed"
   },
   "https://habr.com/ru/companies/astrazeneca/articles/1078636/?utm_campaign=1078636&utm_source=habrahabr&utm_medium=rss": {
     "model": "gemini-2.5-flash-lite",
@@ -2982,6 +3038,14 @@
     "source_url": "https://habr.com/ru/companies/contentai/articles/1078040/?utm_campaign=1078040&utm_source=habrahabr&utm_medium=rss",
     "summary": "We at Content AI are developing the ContentCapture intelligent document processing platform. And we believe that IDP and RPA as independent classes will disappear within five years. This may sound like self-negation, but it's good news for the market. Below, we explain why we've reached this conclusion and what it means for those currently choosing an IDP solution or automating document workflows. Read more",
     "title": "IDP and RPA will disappear as classes: what will happen to corporate automation"
+  },
+  "https://habr.com/ru/companies/contentai/articles/1094200/?utm_campaign=1094200&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Wed, 14 Oct 2026 09:16:15 GMT",
+    "slug": "1094200",
+    "source_url": "https://habr.com/ru/companies/contentai/articles/1094200/?utm_campaign=1094200&utm_source=habrahabr&utm_medium=rss",
+    "summary": "Over the past two years, large businesses' attitudes towards large language models have shifted. The debate about whether LLMs are needed in business has ended, and the technology has moved from being a fun toy to a strategic tool. We at Content AI conducted over 50 in-depth interviews with IT and security representatives from medium and large businesses in retail, banking, oil and gas, energy, telecom, and other sectors. The discussions covered readiness for implementation, data transfer, initiators and blockers for LLM projects, pilot economics, and vendor requirements. We will share the results and identified trends for the next 1-2 years in this article. Read more",
+    "title": "First a Pilot, Then a Strategy: How Large Businesses are Implementing LLMs"
   },
   "https://habr.com/ru/companies/croc/articles/1093860/?utm_campaign=1093860&utm_source=habrahabr&utm_medium=rss": {
     "model": "gemini-2.5-flash-lite",
@@ -3214,6 +3278,14 @@
     "source_url": "https://habr.com/ru/companies/infostart/articles/1089114/?utm_campaign=1089114&utm_source=habrahabr&utm_medium=rss",
     "summary": "Finding the right object in a customized configuration, processing a single shipment for multiple sales, uploading bank statements from email, or correctly matching excise stamps with receipt lines – each of these tasks involves a specific workflow. The September selection from Infostart Marketplace includes five solutions that help automate such operations. We examine their capabilities, technical requirements, and limitations. Two products in the review are primarily for developers: Pilot 1C collects context for AI work, and ConfigEditor combines configuration file viewing, code editing, and an AI assistant. The other three developments are for users of accounting systems: they help process electronic shipping documents, receive bank statements, and control the sale of marked cigarettes. Read more",
     "title": "From AI Development to Cash Register Control: Five 1C Solutions from the September Selection"
+  },
+  "https://habr.com/ru/companies/infostart/articles/1094306/?utm_campaign=1094306&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Wed, 14 Oct 2026 11:17:33 GMT",
+    "slug": "1094306",
+    "source_url": "https://habr.com/ru/companies/infostart/articles/1094306/?utm_campaign=1094306&utm_source=habrahabr&utm_medium=rss",
+    "summary": "INFOSTART TECH EVENT is the largest professional technical conference for 1C specialists. The 16th conference in 2026 gathered 1500 participants in St. Petersburg from all over Russia and abroad. I finally managed to get through as a speaker at an event of this scale! Here's how these 3 days went. Read more",
+    "title": "How I Spoke at INFOSTART TECH EVENT 2026: API Talk, Coder Battle, and an AI Podcast"
   },
   "https://habr.com/ru/companies/infowatch/articles/1083954/?utm_campaign=1083954&utm_source=habrahabr&utm_medium=rss": {
     "model": "gemini-2.5-flash-lite",
@@ -3631,6 +3703,14 @@
     "summary": "⊕ = agreement, ⊖ = disagreement. This is what one of the simplest inter-agent \"languages\" from a selection of social network posts for Moltbook agents looks like. It resembles an agreement in a chat to respond with a plus and minus to save tokens. It would seem there's nothing criminal about it. But in the same selection, there's Symbiotica – a language where 26 Latin letters are replaced by glyphs from several scripts. Five letters have two variants. The choice between them encodes a bit (0 or 1) and forms a separate bit string. The visible text is read according to a correspondence table, like a cipher. But there's a second layer, carrying additional information that a random observer won't see, even if they have the table at hand. Read more",
     "title": "Why AI Agents Need Their Own Languages and Whether They Can Be Read"
   },
+  "https://habr.com/ru/companies/ru_mts/articles/1093270/?utm_campaign=1093270&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Wed, 14 Oct 2026 13:13:42 GMT",
+    "slug": "1093270",
+    "source_url": "https://habr.com/ru/companies/ru_mts/articles/1093270/?utm_campaign=1093270&utm_source=habrahabr&utm_medium=rss",
+    "summary": "Beyond writing for Habr, I'm currently working on another book. AI is a great help here. It can compile materials and check facts. However, in the free version of most of them, serious work always ends the same way. Sources are analyzed, logic holds up, I finally sit down to write the final draft, and on the second paragraph, I get: 'limit exhausted, wait a few hours.' But I have time to work now. Inspiration and a complete thought in my head are also only now. All that's left is to quickly save the draft, keep the unfinished work in 'RAM,' and wait for the cooldown to end. And then start all over again. At such moments, I really want to understand what needs to be bought to avoid such breaks, and why the purchase is structured this way and not another. I promised a continuation about prices in the first text on tokenomics, and now it has a personal reason. It all comes down to computing power, not marketing. AI prices have changed more than once in a year, and there were reasons for that. Let's look at six major companies—OpenAI, Anthropic, Microsoft, DeepSeek, Alibaba, and Moonshot—and analyze three ways to sell AI and how they have evolved. All prices are in US dollars, as of October 1, 2026. They change often, so logic is more valuable than numbers here. Read more",
+    "title": "Tokenomics of Pricing: Three Currencies in Which We Are Billed for AI"
+  },
   "https://habr.com/ru/companies/rubytech/articles/1089758/?utm_campaign=1089758&utm_source=habrahabr&utm_medium=rss": {
     "model": "gemini-2.5-flash-lite",
     "published": "Sat, 03 Oct 2026 08:06:48 GMT",
@@ -3678,6 +3758,14 @@
     "source_url": "https://habr.com/ru/companies/ruvds/articles/1089700/?utm_campaign=1089700&utm_source=habrahabr&utm_medium=rss",
     "summary": "Back in early 2025, I started noticing how people, when using AI, would put their brains into passive mode. They'd ask the AI to perform a task (summarize text, write code, etc.), accepting the result at face value. At the time, this approach worked very poorly, and the results were often nonsensical. But AI was developing, and I began to notice this behavior more and more often. Sometimes people would just ask the AI to write them code, which they would unconditionally accept as working. In other cases, a human was involved in the loop, monitoring the result and asking the AI to fix problems if they arose. Niklas Gruhn even coined a term for such people – meat proxy. Read more",
     "title": "[Translation] Turning Off Your Brain Is Not a Good Sign"
+  },
+  "https://habr.com/ru/companies/ruvds/articles/1093900/?utm_campaign=1093900&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Wed, 14 Oct 2026 13:01:30 GMT",
+    "slug": "1093900",
+    "source_url": "https://habr.com/ru/companies/ruvds/articles/1093900/?utm_campaign=1093900&utm_source=habrahabr&utm_medium=rss",
+    "summary": "People who rarely wrote anything original have suddenly started creating detailed projects, business plans, documentation, presentations, tickets, pull requests, posts, and meeting notes. All of this is generated by LLMs. And these texts are unreadable. AI helps me write better and faster, but I'm up to my ears in reading almost everything written by AI. In this essay, I'd like to express my frustration and talk about what the value of AI is for me when writing texts. Read more",
+    "title": "[Translation] I Don’t Want to Read What You Didn’t Write"
   },
   "https://habr.com/ru/companies/rwb/articles/1092120/?utm_campaign=1092120&utm_source=habrahabr&utm_medium=rss": {
     "model": "gemini-2.5-flash-lite",
@@ -3823,6 +3911,14 @@
     "summary": "2027 promises to be a significant year for the server industry. New GPUs, processors, open interconnects, a new memory architecture, and other innovations will emerge. However, this is just part of hardware evolution. This is Sergey Kovalyov, Product Manager at Selectel! Today, we'll break down key innovations and explore the computing opportunities that will soon open up to us. Read more",
     "title": "Server Hardware 2027: What New Developments Can We Expect"
   },
+  "https://habr.com/ru/companies/selectel/articles/1093970/?utm_campaign=1093970&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Wed, 14 Oct 2026 12:00:25 GMT",
+    "slug": "1093970",
+    "source_url": "https://habr.com/ru/companies/selectel/articles/1093970/?utm_campaign=1093970&utm_source=habrahabr&utm_medium=rss",
+    "summary": "Hello, Habr! In September, the Selectel team updated the AI platform and expanded the list of models in the AI router, introduced a set of services for working with data, and released other updates. Details are under the cut. Read more",
+    "title": "Set of services for working with data and expansion of the AI platform: what's new at Selectel in September"
+  },
   "https://habr.com/ru/companies/simpleone/articles/1085172/?utm_campaign=1085172&utm_source=habrahabr&utm_medium=rss": {
     "model": "gemini-2.5-flash-lite",
     "published": "Tue, 22 Sep 2026 12:09:40 GMT",
@@ -3919,6 +4015,14 @@
     "summary": "An agent hallucination in production is defined as an incorrect action: an API call, a database write, an email to a client, or a transaction. The cost of such an error is determined not so much by the price of tokens, but by the reversibility of the action and the time it took to notice it. Below are documented cases with sums ranging from $812 to approximately $100 billion in market capitalization, research data, and a formula to estimate the losses from agent errors for your system. Read more",
     "title": "How Much Does One Hallucination Cost: Calculating the Real Losses from Agent Errors in Production"
   },
+  "https://habr.com/ru/companies/speshu_ai/articles/1094252/?utm_campaign=1094252&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Wed, 14 Oct 2026 09:31:34 GMT",
+    "slug": "1094252",
+    "source_url": "https://habr.com/ru/companies/speshu_ai/articles/1094252/?utm_campaign=1094252&utm_source=habrahabr&utm_medium=rss",
+    "summary": "In the age of artificial intelligence, the enemy is closer than you think. Modern AI assistants (Claude Code or Cursor) are no longer just chatbots. To prevent them from harming your computer, they are placed in an isolated virtual container. But an AI can break out... Read more",
+    "title": "AI Agent Gains Control of a Computer: What Developers Should Do. Analyzing Automation Errors: Sandbox Escape"
+  },
   "https://habr.com/ru/companies/ssp-soft/articles/1079732/?utm_campaign=1079732&utm_source=habrahabr&utm_medium=rss": {
     "model": "gemini-2.5-flash-lite",
     "published": "Wed, 16 Sep 2026 07:03:07 GMT",
@@ -3966,6 +4070,14 @@
     "source_url": "https://habr.com/ru/companies/studyai/articles/1092428/?utm_campaign=1092428&utm_source=habrahabr&utm_medium=rss",
     "summary": "In today's experiment, we'll try to create conditional web design assets for five different themes: gaming, fintech, Web 1.0 style?, ecological, and neuro-service. Read more",
     "title": "Creating Web Design References with AI"
+  },
+  "https://habr.com/ru/companies/studyai/articles/1093322/?utm_campaign=1093322&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Wed, 14 Oct 2026 12:00:25 GMT",
+    "slug": "1093322",
+    "source_url": "https://habr.com/ru/companies/studyai/articles/1093322/?utm_campaign=1093322&utm_source=habrahabr&utm_medium=rss",
+    "summary": "In 1985, a small Tokyo restaurant captured the attention of the entire \"Land of a Hundred Islands.\" This was all because a peculiar robot began regularly working shifts there. Read more",
+    "title": "The 1980s Waiter Robot That Shocked Japan"
   },
   "https://habr.com/ru/companies/svoi_ru/articles/1078124/?utm_campaign=1078124&utm_source=habrahabr&utm_medium=rss": {
     "model": "gemini-2.5-flash-lite",

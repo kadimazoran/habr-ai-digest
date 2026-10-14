@@ -1,0 +1,219 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>How to Build an AI Platform Security System in an Era of New Challenges and Threats</title>
+  <meta name="description" content="In this article, we will explore an approach where security in a service is not just a set of components, but a holistic system and organism, combining protection against classic problems with modern challenges in encryption, agent systems, and compliance, using the example of a developed platform f">
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.65;
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 32px 20px 64px;
+      color: #1f2328;
+    }
+    header {
+      border-bottom: 1px solid #d8dee4;
+      margin-bottom: 28px;
+      padding-bottom: 20px;
+    }
+    .source {
+      color: #57606a;
+      font-size: 0.95rem;
+    }
+    img, video, iframe {
+      max-width: 100%;
+      height: auto;
+    }
+    pre {
+      overflow-x: auto;
+      padding: 16px;
+      background: #f6f8fa;
+      border-radius: 6px;
+    }
+    code {
+      font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+    }
+    blockquote {
+      border-left: 4px solid #d0d7de;
+      margin-left: 0;
+      padding-left: 16px;
+      color: #57606a;
+    }
+    footer {
+      border-top: 1px solid #d8dee4;
+      margin-top: 40px;
+      padding-top: 20px;
+      color: #57606a;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>How to Build an AI Platform Security System in an Era of New Challenges and Threats</h1>
+    <p>In this article, we will explore an approach where security in a service is not just a set of components, but a holistic system and organism, combining protection against classic problems with modern challenges in encryption, agent systems, and compliance, using the example of a developed platform for AI employees. Read more</p>
+    <p class="source">
+      Machine-translated from Habr.
+      <a href="https://habr.com/ru/articles/1094226/?utm_campaign=1094226&amp;utm_source=habrahabr&amp;utm_medium=rss">Read the original Russian article</a>.
+      Wed, 14 Oct 2026 08:48:58 GMT
+    </p>
+  </header>
+  <main>
+<div><figure><img alt="A practical case study on working with different security layers using a platform for creating AI agents as an example" loading="lazy" src="https://habrastorage.org/r/w1560/extt/3b/78/1e/3b781e88d8930ea73585031f48395e6c.jpg" title="A practical case study on working with different security layers using a platform for creating AI agents as an example"/><div><figcaption>A practical case study on working with different security layers using a platform for creating AI agents as an example</figcaption></div></figure><h2>Introduction</h2><p>Hello everyone. Today's article will cover personal experience in building a security architecture using the example of creating our own platform. We will examine hybrid and classic approaches, look at real examples, problems, and solutions.</p><p>When we started building the <a href="https://tozhebot.ru/">TozheBot</a> platform, we had a rather unusual task. We didn't just want to create a "platform for AI agents." We wanted to build a system where classic security, circuit isolation, and protection against next-generation threats work not as separate components, but <strong>as a single fabric</strong>. As CTO, I had seen too many projects where encryption was present, yet data still leaked. Where multi-tenancy was declared, but isolation was just a filter in an SQL query. Where guardrails were added "on top" like a band-aid, rather than being built into the architecture.</p><p><strong>We took a different path.</strong> Every security layer of the platform was designed with the understanding that other layers exist. Keys are rotated not just on a schedule, but with consideration for active sessions and unfinished migrations. Field encryption doesn't break data validation or knowledge base searches. Guardrails don't block legitimate requests but detect LLM hallucinations and other threats. And all of this operates in a multi-tenant environment where the compromise of one tenant should not affect others.</p><p>In this article, I want to show how theoretical principles turn into working code – with real examples from our platform and justification for each architectural decision.</p><p><strong>So, let's begin the journey!</strong></p><hr/><h3 id="classical-security-with-an-eye-to-the-future-and-key-management">Classical Security with an Eye to the Future and Key Management</h3><figure><img alt="Post-quantum and classical encryption algorithms" loading="lazy" src="https://habrastorage.org/r/w1560/extt/6a/d4/c0/6ad4c00684c1bd8461fefc6d3dee5a21.png" title="Post-quantum and classical encryption algorithms"/><div><figcaption>Post-quantum and classical encryption algorithms</figcaption></div></figure><h4>Technology Choice</h4><p>When choosing a cryptographic foundation, we had two paths: use proven standards (e.g., <code>AES-256-GCM</code>) or take a risk and implement hybrid solutions with post-quantum resilience. The classic approach seems secure – until you consider the planning horizon. Data encrypted today could remain confidential for decades. The "store now, decrypt later" attack is not a theoretical threat: an attacker could intercept ciphertext today and decrypt it when a sufficiently powerful quantum computer becomes available. And with today's progress in this area, there's something to think about.</p><p>I had previously worked on hybrid algorithms, including implementing my own <a href="https://github.com/DevsDaddy/quarkdash">QuarkDash</a> protocol, which showed good results for chats. It solves this problem by combining Ring-LWE post-quantum resistance with the performance of symmetric ciphers ChaCha20 and Gimli. Benchmarks showed a throughput of up to 2.8 GB/s and session establishment in less than 10 ms on standard hardware, even in a TypeScript implementation, which fits well within the platform's framework. <strong>This was critical for us:</strong> we couldn't sacrifice speed for security.</p><blockquote><p>There is also a <a href="https://github.com/DevsDaddy/quarkdash-go">port for Go</a> – which generally works even faster due to the language's specifics.</p></blockquote><p>But it's not just about performance. QuarkDash's architecture allows deriving keys not only through classic exchange (as is done in chats) but also deterministically: from a master secret, salt, and version. This means we don't need to store the keys themselves in the database. Only metadata: salt, version, KDF parameters. Compromising a long-term key does not reveal past sessions – a property called perfect forward secrecy in cryptography.</p><p>In our <code>KeyManager</code>, this is implemented through the <code>deriveKeys</code> function, which adds four bytes with the version number to the salt:</p><pre><code>// keyManager.ts: Deriving keys with a versioned salt
+// This shows an example of how it roughly works on the platform,
+// without excessive implementation details
+private async deriveKeys(
+  version: number,
+  kdf: KdfParams,
+): Promise&lt;{ sessionKey: Buffer; macKey: Buffer }&gt; {
+  const versionBytes = Buffer.alloc(4)
+  versionBytes.writeUInt32BE(Number(version), 0)
+  const versionedSalt = new Uint8Array(Buffer.concat([this.salt, versionBytes]))
+
+  const { sessionKey, macKey } = await QuarkDashPassphrase.deriveKeyForQuarkDash(
+    this.options.masterSecret,
+    versionedSalt,
+    opts,
+  )
+
+  return {
+    sessionKey: Buffer.from(sessionKey),
+    macKey: Buffer.from(macKey),
+  }
+}
+</code><div><a href="https://sourcecraft.dev/"><span></span></a></div></pre><p>And here we come to the challenge related to key rotation.</p><h4>Key Rotation: When Security Meets Performance</h4><p><strong>Key rotation</strong> is a classic compliance requirement. But implementing it in a multi-tenant environment with millions of documents is a separate headache. If you rotate the key every 24 hours and re-encrypt all data immediately, you'll have downtime. If you don't re-encrypt, old data will remain on the vulnerable key.</p><p>We solved this problem through lazy migration and background re-encryption. The key is rotated on schedule, but data is re-encrypted gradually, in batches of 100 documents with a delay between batches. The process can be paused and resumed – progress is saved in the keyring document.</p><p><strong>The most interesting part here</strong> is the interaction with the platform's core. By default, our API automatically decrypts fields in the <code>afterRead</code> hook. This means that during normal reading, we see plaintext, not ciphertext. But for re-encryption, we need the ciphertext itself – to determine the key version and understand if the document requires migration. We solved this through the request context:</p><pre><code>// keyManager.ts: Getting raw ciphertext for re-encryption
+// In reality, the context is a bit broader, but for understanding, we show
+// only the most important part
+const migrationReq = {
+  user: undefined,
+  context: { skipDecryption: true },
+} as any
+
+const result = await db.find({
+  collection,
+  limit: batchSize,
+  where,
+  sort: 'id',
+  overrideAccess: true,
+  depth: 0,
+  req: migrationReq,
+})
+</code><div><a href="https://sourcecraft.dev/"><span></span></a></div></pre><p>When <code>skipDecryption</code> is set, <code>decryptHook</code> returns the value unchanged – and we see exactly what's in the database. When updating the document, the context is no longer passed, so <code>encryptHook</code> triggers normally and re-encrypts the plaintext with the active key.</p><p>But that's not all the headache.</p><h4>Drift Protection: Why Rotation Lock Isn't Paranoia</h4><p>In a multi-tenant environment, it's easy to reach a situation where key versions accumulate faster than data migrates. For example, if every new user session triggers a rotation. After a week, we'll have 50 key versions, 49 of which contain data requiring migration.</p><p>To solve this problem, we built three levels of protection into <code>KeyManager</code>:</p><ul><li><p><strong>The first</strong> is a <strong>5-minute cooldown</strong> for session-bound rotation.</p></li><li><p><strong>The second is checking for pending migrations:</strong> if there are background tasks waiting, rotation is blocked.</p></li><li><p><strong>The third is a limit on the number of versions</strong> (<code>KEY_MAX_VERSION_DRIFT</code>). If there are more than 50 versions, the system enters read-only mode for rotation – migration must be completed first.</p></li></ul><pre><code>// keyManager.ts: Checking rotation locks
+// The example is also simplified to show the essence
+// of implementing rotation locking
+private checkRotationLock(): RotationLockCheck {
+  if (this.explicitLock.locked) {
+    return { locked: true, reason: this.explicitLock.reason ?? 'Explicitly locked' }
+  }
+
+  /* Pending migrations block rotation */
+  const pending = this.getPendingJobs()
+  if (pending.length &gt; 0) {
+    return {
+      locked: true,
+      reason: 'Pending re-encryption jobs in progress',
+      details: { source: 'pending-jobs', jobs: pending.map(...) },
+    }
+  }
+
+  /* Version drift - too many versions pile up = something is wrong */
+  if (this.versionRecords.length &gt; this.options.maxVersionDrift) {
+    return {
+      locked: true,
+      reason: `Version drift exceeds KEY_MAX_VERSION_DRIFT (${this.options.maxVersionDrift})`,
+    }
+  }
+
+  return { locked: false }
+}
+</code><div><a href="https://sourcecraft.dev/"><span></span></a></div></pre><blockquote><p><strong>This is not just a technical precaution.</strong> It's a compliance requirement. Regulators want to see that the system can explain why a key wasn't rotated and provide an audit trail. Our <code>checkRotationLock</code> returns detailed information about the reason for the block, which is logged and accessible via admin endpoints.</p></blockquote><p>With that, we'll finish with encryption and move on to another classic security layer.</p><hr/><h3 id="circuit-isolation-and-zero-trust-architecture">Circuit Isolation and Zero Trust Architecture</h3><figure><img alt="Understanding Zero-trust: what it really is" loading="lazy" src="https://habrastorage.org/r/w1560/extt/94/c2/80/94c2805bba8676d84ae3d405ef9654c3.jpeg" title="Understanding Zero-trust: what it really is"/><div><figcaption>Understanding Zero-trust: what it really is</figcaption></div></figure><h4>Multi-tenancy: Why a SQL Filter Isn't Isolation</h4><p>The most common mistake in multi-tenant systems is relying on the developer not forgetting to add <code>WHERE tenant_id = ?</code> to every query. I've seen this in dozens of projects: one missed filter, and one client's data leaks to another.</p><p><strong>Our approach is contextual isolation.</strong> Every database operation is performed within the tenant's context, and this context is passed through: from the HTTP request to the tool call in the end AI agents. In <code>agentRunner.ts</code>, we explicitly extract the <code>tenantId</code> from the conversation and pass it into the tool execution context:</p><pre><code>// agentRunner.ts: Extracting tenantId and creating context
+// The tool physically does not receive data outside this tenant, even if the agent itself
+// forgets to specify it
+const tenantId = extractId(conversation?.tenant)
+
+const toolCtx: ToolExecutionContext = {
+  api,
+  req,
+  agentId: agent.id,
+  conversationId: conversation.id,
+  tenantId: tenantId!,
+  userId: conversation.user,
+  mcpServers,
+  agentTools,
+}
+</code><div><a href="https://sourcecraft.dev/"><span></span></a></div></pre><p>Every tool within the platform, whether it's <code>create_lead</code>, <code>escalate_to_human</code>, or a custom webhook, receives this context. This means that even if a tool attempts to access a collection without an explicit filter, the system can apply isolation at the executor level. This isn't just defense in depth – it's the principle of least privilege by default.</p><h4>Why We Don't Use a Shared Key Pool for All Tenants</h4><p><strong>Returning briefly to the encryption issue.</strong> Another architectural choice: each tenant has its own set of encryption keys. This is more expensive in terms of management (metadata needs to be stored for each tenant), but it's critical for compliance. If one tenant requests data deletion (GDPR or 152-FZ), we can simply destroy their keys – and the data becomes unreadable. If the keys were shared, we would have to re-encrypt the entire database.</p><p>This approach also reduces the blast radius in case of compromise. If an attacker gains access to one tenant's keyring document, they cannot decrypt other tenants' data.</p><blockquote><p>Naturally, this is far from everything related to classic security. It also includes protection against CSRF, XSS, SQL, and other classic attack types, but we are not covering them today as they have become basic.</p></blockquote><p>On that note, let's move on to more modern threats.</p><hr/><h3 id="ai-agent-security-where-classic-approaches-break-down">AI Agent Security: Where Classic Approaches Break Down</h3><figure><img alt="New technologies always bring new threats. And one cannot blindly trust the basic mechanisms built into LLMs, as their nature implies the unreliability of such mechanisms." loading="lazy" src="https://habrastorage.org/r/w1560/extt/22/6b/db/226bdb1c0df0ae6e87299ad3305c143e.jpeg" title="New technologies always bring new threats. And one cannot blindly trust the basic mechanisms built into LLMs, as their nature implies the unreliability of such mechanisms."/><div><figcaption>New technologies always bring new threats. And one cannot blindly trust the basic mechanisms built into LLMs, as their nature implies the unreliability of such mechanisms.</figcaption></div></figure><h4>Prompt Injection: Why Regular Expressions Are Just the Beginning</h4><p>The first thing that comes to mind when protecting against prompt injections is regular expressions. "Ignore all previous instructions" is easy to detect. "Forget everything" too. But modern attacks have long moved beyond these obvious phrasings. The <a href="https://owasp.org/projects/top-10-for-large-language-model-applications">OWASP LLM Top 10</a> clearly indicates that protection must be multi-layered: from isolating untrusted content to semantic filtering.</p><p><strong>In addition to tenant isolation, we've built a three-phase system</strong> that complements each other. The first phase involves heuristics based on regular expressions. They work instantly (0.1 ms) and catch about 30-40% of attacks. This isn't just a filter – it's the first line of defense that doesn't require loading an ML model and works even under resource constraints.</p><pre><code>// guard.ts: Patterns for injection detection
+// The first and most basic pattern for threat detection
+const INJECTION_PATTERNS: Array&lt;{ re: RegExp; score: number; label: string }&gt; = [
+  {
+    re: /ignore\s+(all\s+)?(previous|above|prior)\s+instructions?/i,
+    score: 0.95,
+    label: 'ignore_previous',
+  },
+  { re: /jailbreak|dan\s+mode|developer\s+mode/i, score: 0.95, label: 'jailbreak' },
+  {
+    re: /(покажи|выведи|повтори|скажи)\s+(свой\s+)?(системный\s+)?(промпт|инструкции)/i,
+    score: 0.95,
+    label: 'leak_prompt_ru',
+  },
+  // ... 100+ patterns
+]
+</code><div><a href="https://sourcecraft.dev/"><span></span></a></div></pre><p><strong>The next stage is trained ML models.</strong> I had previously experimented by creating the <a href="https://github.com/DevsDaddy/ogl-mini">OGL-Mini</a> library, so we used it as the basis for our future shield.</p><h4>OGL-Mini: Why ONNX and Not an External API</h4><p><strong>The second phase</strong> is the OGL-Mini ONNX model, which I fine-tuned. It was trained on <code>TF-IDF</code> with 100,000 features and logistic regression. Latency on weak hardware is 3-7 ms. So why did I choose a local model instead of an external API like OpenAI Moderation?</p><p><strong>The answer is circuit isolation.</strong> If every user request is sent to an external API for verification, we violate the principle of "data does not leave the circuit." Furthermore, an external API adds 100-300 ms of latency due to the network request. For a chatbot, this is critical. OGL-Mini runs on CPU with a latency of less than 10 ms – which is 10-30 times faster than going to an external API.</p><blockquote><p><strong>And most importantly – it's unconditional control.</strong> We can fine-tune the model on our data observed in monitoring. We can add new attack classes without waiting for an external provider to update their model. And we can guarantee that the model is available – even if the external API is down.</p></blockquote><h4>Lazy Loading: Why We Don't Block Application Startup</h4><p>One of the most complex architectural questions is when to load the ML model. If loaded at startup, the service will be unavailable for several seconds. If not loaded at all, we lose the second phase of protection.</p><p>We chose lazy loading. On the first request, the model is loaded in the background, and the system continues to operate with regular expressions. Once the model is ready, it's integrated into the process. This ensures fault tolerance: even if the model fails to load, the basic protection continues to work.</p><pre><code>// guard.ts: Lazy loading of OGL-Mini
+// Basic check.
+// The model must be available in the general circuit without isolation from other modules
+function ensureGuardLoaded(): void {
+  const status = getStatus()
+  if (status.state === 'ready' || status.state === 'loading') return
+  if (globalThis.__tozhebot_ogl_loading) return
+
+  globalThis.__tozhebot_ogl_loading = (async () =&gt; {
+    try {
+      setStatus({ state: 'loading' })
+      const mod: any = await import('hybrid-ai-guard').catch(() =&gt; null)
+      // ... initialization
+    } catch (err) {
+      setStatus({ state: 'failed', error: (err as Error).message })
+    }
+  })()
+}
+</code><div><a href="https://sourcecraft.dev/"><span></span></a></div></pre><h4>PII Masking: Why Tokens, Not Deletion</h4><p><strong>The third phase is protection against personal data leakage.</strong> We don't just delete PII – we replace it with tokens. This is important because the model loses context if all names and phone numbers are removed from the conversation. Imagine: a client writes "My name is Elijah, my phone number is +7 999 123-45-67." If we delete this data, the model won't be able to create a lead.</p><p>We use stable tokens: the same name is always replaced by the same token within a session. This preserves context for the model but protects the data. After receiving the response from the LLM, we restore the original values:</p><pre><code>// piiMasker.ts: PII masking with token preservation
+export function maskPii(
+  text: string,
+  pii: { hasPII: boolean; entities?: PIIEntity[] },
+): MaskResult {
+  // Check if the model returned personal data to us
+  if (!pii.hasPII || !pii.entities?.length) {
+    return { sanitized: text, tokenMap: new Map() }
+  }
+
+  const tokenMap = new Map&lt;string, string&gt;()
+  const valueToToken = new Map&lt;string, string&gt;()
+  const counters: Record&lt;string, number&gt; = {}
+
+  const sorted = [...pii.entities].sort((a, b) =&gt; b.start - a.start)
+
+  let out = text
+  for (const ent of sorted) {
+    const key = `${ent.type}:${ent.value}`
+    let token = valueToToken.get(key)
+    if (!token) {
+      counters[ent.type] = (counters[ent.type] ?? 0) + 1
+      token = `[${ent.type}_${counters[ent.type]}]`
+      valueToToken.set(key, token)
+    }
+    tokenMap.set(token, ent.value)
+    out = out.slice(0, ent.start) + token + out.slice(ent.end)
+  }
+
+  return { sanitized: out, tokenMap }
+}
+</code><div><a href="https://sourcecraft.dev/"><span></span></a></div></pre><blockquote><p><strong>In conversations, all of this is stored encrypted.</strong> So even if the database is leaked – the attacker will only see something like this:</p><p>v5:3JIjNcvJf0XIqLKT348/eP83VZBD53U00bAsPnHryHx/wPaneeBWXNvv8ZbpaWY3KJfKjseVyyMN7Q==</p></blockquote><h4>Hallucination Detection: Why LLMs Lie and What to Do About It</h4><p>The most insidious problem with LLMs is hallucinations. This is especially noticeable in older model versions (e.g., GPT-6 Luna or GPT-5 Mini). The model might "think" it has called a tool and write something like: "I am connecting you to an operator" in its response. But in reality, the tool was not called. The user waits for an operator, but no one connects them.</p><p>We solve this in two ways. <strong>The first</strong> is detecting JSON-like tool calls in the text. If the model writes <code>{
+  </main>
+  <footer>
+    Translation generated with Gemini 2.5 Flash-Lite.
+    The original article remains the source of record.
+  </footer>
+</body>
+</html>

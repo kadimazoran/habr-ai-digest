@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>AI Agent Team in Claude Code for Gathering Audience Quotes: Reconnaissance, Collection, and Verification of Every Link</title>
+  <meta name="description" content="I&#x27;m breaking down how the AI agent team in Claude Code works, which collects verbatim quotes from the target audience from open sources and verifies that each quote actually exists. Architecture, limits, real-world measurement with 13 agents, and the bugs that had to be fixed. Read more">
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.65;
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 32px 20px 64px;
+      color: #1f2328;
+    }
+    header {
+      border-bottom: 1px solid #d8dee4;
+      margin-bottom: 28px;
+      padding-bottom: 20px;
+    }
+    .source {
+      color: #57606a;
+      font-size: 0.95rem;
+    }
+    img, video, iframe {
+      max-width: 100%;
+      height: auto;
+    }
+    pre {
+      overflow-x: auto;
+      padding: 16px;
+      background: #f6f8fa;
+      border-radius: 6px;
+    }
+    code {
+      font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+    }
+    blockquote {
+      border-left: 4px solid #d0d7de;
+      margin-left: 0;
+      padding-left: 16px;
+      color: #57606a;
+    }
+    footer {
+      border-top: 1px solid #d8dee4;
+      margin-top: 40px;
+      padding-top: 20px;
+      color: #57606a;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>AI Agent Team in Claude Code for Gathering Audience Quotes: Reconnaissance, Collection, and Verification of Every Link</h1>
+    <p>I&#x27;m breaking down how the AI agent team in Claude Code works, which collects verbatim quotes from the target audience from open sources and verifies that each quote actually exists. Architecture, limits, real-world measurement with 13 agents, and the bugs that had to be fixed. Read more</p>
+    <p class="source">
+      Machine-translated from Habr.
+      <a href="https://habr.com/ru/articles/1094336/?utm_campaign=1094336&amp;utm_source=habrahabr&amp;utm_medium=rss">Read the original Russian article</a>.
+      Wed, 14 Oct 2026 12:00:42 GMT
+    </p>
+  </header>
+  <main>
+<div><p>I'm breaking down how the AI agent team in Claude Code works, which collects verbatim quotes from the target audience from open sources and verifies that each quote actually exists. Architecture, limits, real-world measurement with 13 agents, and the bugs that had to be fixed.</p><h3>The Task</h3><p>In marketing, it's constantly necessary to know the exact words customers use to describe their problems. A persona like "Irina, 35, afraid of wasting budget" isn't enough: that's a marketer's retelling. What's needed are live phrases with a source link, which can then be used for headlines, video scripts, and landing page copy.</p><p>Doing this manually involves reading comments on vc.ru and YouTube, forums, reviews, jotting down remarks, and saving links. A couple of hundred quotes can take about 40 hours.</p><p>Asking a neural network to "find customer quotes" doesn't work for obvious reasons. The model confidently generates plausible phrases, half of which lack a source, and the links lead nowhere. Therefore, the entire system is built around one requirement: each quote must be found via a link and cross-referenced with the original.</p><p>We at MANIFEST agency have built a skill for Claude Code for this purpose. Below is its structure without prompts, but with all the decisions that influenced its quality.</p><h3>The "Segment × Criterion" Grid</h3><p>The collection is segmented by a grid. Rows represent audience segments, and columns represent criteria. In our full run, there were eight criteria:</p><ul><li><p>Pain points;</p></li><li><p>Fears;</p></li><li><p>Objections;</p></li><li><p>Experience with previous solutions;</p></li><li><p>Price expectations;</p></li><li><p>Selection criteria;</p></li><li><p>The "B point," i.e., the desired outcome;</p></li><li><p>Language and queries, i.e., how people formulate problems in search and chats.</p></li></ul><p>Each cell in the grid becomes a separate task for an agent. Before launching, we show the grid to a person and await confirmation: redoing an entire run is more expensive than correcting an eight-row table.</p><h3>Phases and Agent Roles</h3><p>The run proceeds in several phases, and each phase has its own agents:</p><ol><li><p><strong>Questions.</strong> The skill asks about the product, segments, hypotheses, and platforms where the audience communicates.</p></li><li><p><strong>Reconnaissance.</strong> One or two agents check the platforms and compile a list of targets: specific discussions, videos, and forum threads where actual customers are writing. Places where contractors talk among themselves are filtered out separately.</p></li><li><p><strong>Collection.</strong> One agent per grid cell, all in parallel. The agent saves the quote in its entirety, with original spelling and punctuation, the author, the platform, the source type, and the link. They also provide a one-line summary of the situation, e.g., "I pay almost all my revenue for marketing, with no results.".</p></li><li><p><strong>Verification.</strong> Other agents reopen each link and compare the text character by character. Anything not confirmed is deleted.</p></li><li><p><strong>Patterns.</strong> One agent reads all confirmed quotes for a criterion and writes down the exact words the audience uses and how often: "7 out of 12 quotes.".</p></li><li><p><strong>Table.</strong> A script compiles an xlsx file with three sheets: analysis by segment, raw quotes with links and verification status, and methodology.</p></li></ol><h3>Why Another Agent Verifies</h3><p>If the collector verifies their own work, the verification becomes a formality: the agent is inclined to confirm what they just found.</p><p>Role separation solves this. The verifier receives only the list of entries and instructions to open each link and find the phrase on the page. They have no context of the collection process, and nothing to confirm other than what they see on the page.</p><p>In a full run, collectors provided 96 quotes; after verification, 93 remained. Three were deleted because the wrong person was speaking: the contractor, not the client, wrote the comment. This is the most common collection error. On freelance platforms and in industry chats, contractors speak the loudest, but we need those who pay them.</p><h3>Modes and Why Time is Determined by Limits</h3><p>Without limits, a "fast" collection can stretch to an hour: each agent, by default, digs to the end. The time is determined by the depth of each agent's work; their number has almost no impact because they work in parallel.</p><p>Therefore, the mode is set by limits in the task for each agent:</p><ul><li><p><strong>Fast, about 15 minutes:</strong> 1 segment and 4–5 criteria, 6–7 agents, 30–50 quotes. Reconnaissance only on vc.ru and one industry platform, the collector takes 5–6 quotes and works only on reconnaissance targets, with no more than 15 source accesses. There is no separate verification phase; the collector must open each link themselves;</p></li><li><p><strong>Medium, about 30 minutes:</strong> 1 segment and 6–8 criteria, 10–11 agents, 60–90 quotes. The collector takes 8 quotes and up to 25 accesses, verification by one agent for the entire collection;</p></li><li><p><strong>Full:</strong> 1–2 segments and 8–12 criteria, up to 15 agents, 100–130 quotes, no limits on accesses.</p></li></ul><p>A real measurement of the full mode on July 31, 2026: 13 agents, 1,007 source accesses, 1 hour 38 minutes, 93 confirmed quotes across 8 criteria. This figure is what we rely on when promising a deadline.</p><h3>Where Quotes Come From</h3><p>The main sources are open: comments on vc.ru and YouTube, forums, reviews on maps and review sites. For vc.ru and YouTube, the skill has separate scripts that fetch comments under specific materials via public APIs. The agent doesn't need to scroll through pages, reducing the chance of mistaking article text for a quote.</p><p>Closed platforms like Telegram chats are not read by the agent directly. They are added separately if a person provides access or an export.</p><h3>What Constitutes a Valid Quote</h3><p>The rules each collector received:</p><ul><li><p>The quote is from an audience representative, describing their situation, in the first person;</p></li><li><p>The phrasing is natural, as if the person were telling a friend;</p></li><li><p>There is an author, platform, and a working link;</p></li><li><p>The quote contains specifics: a number, a timeframe, a detail, or a consequence.</p></li></ul><p>We do not include retellings in one's own words, advertising comments, reviews written by contractors, or phrases from marketing articles.</p><p>The script for compiling the table calculates the proportion of genuine voices. If it's less than two-thirds, the collection is considered unsuccessful: we've gathered market retellings instead of the language of the people, and more collection is needed.</p><h3>What the Run Showed</h3><p>The most common pain point formula for owners of high-ticket services appeared in 7 out of 12 quotes. People express zero results using the same words: "no results," "all zeros," "no bookings." Money is described with verbs of loss, and the amount is almost always stated precisely.</p><p>Three more unexpected observations:</p><ul><li><p>The price objection is rarely encountered; the complaint is about not understanding what you're paying for;</p></li><li><p>Results are described by actions: "bookings," "calls," "inquiries"; the word "conversion" is almost absent in this speech;</p></li><li><p>Agencies are compared to hiring an employee much more often than to other agencies.</p></li></ul><h3>Limitations</h3><ul><li><p>The agent only finds what is publicly available. Niches where clients communicate in private chats will yield empty results without manual supplementation.</p></li><li><p>An empty grid cell after collection requires a separate conversation with a person: sometimes the criterion is simply not discussed publicly, or a different source is needed.</p></li><li><p>Quotes with names remain working documents. In texts and advertising, they are used without names and links to personal pages.</p></li><li><p>Patterns are written by the model, so a human rereads the conclusions before putting them to work.</p></li></ul><h3>Conclusion</h3><p>The main takeaway from this work: the quality of collection is determined by role separation and limits; the model and the number of agents have less impact. The collector searches, the verifier confirms without context, and each has a clear work ceiling. Then, 40 hours of manual research turn into an hour and a half with a verifiable result.</p><p>If you've done something similar for audience research, I'm interested in comparing approaches in the comments: how do you combat fabricated quotes and contractor voices?</p></div>
+  </main>
+  <footer>
+    Translation generated with Gemini 2.5 Flash-Lite.
+    The original article remains the source of record.
+  </footer>
+</body>
+</html>

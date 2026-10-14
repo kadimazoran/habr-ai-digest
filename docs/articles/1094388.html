@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Evals for LLM Features. Part 1: Why You Need Them</title>
+  <meta name="description" content="Changing a prompt or model can be done in an evening. Understanding if it got better without evals is impossible. I&#x27;ll break down what an eval for an LLM feature is, where to run it, and what happens when you don&#x27;t have one. Read more">
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.65;
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 32px 20px 64px;
+      color: #1f2328;
+    }
+    header {
+      border-bottom: 1px solid #d8dee4;
+      margin-bottom: 28px;
+      padding-bottom: 20px;
+    }
+    .source {
+      color: #57606a;
+      font-size: 0.95rem;
+    }
+    img, video, iframe {
+      max-width: 100%;
+      height: auto;
+    }
+    pre {
+      overflow-x: auto;
+      padding: 16px;
+      background: #f6f8fa;
+      border-radius: 6px;
+    }
+    code {
+      font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+    }
+    blockquote {
+      border-left: 4px solid #d0d7de;
+      margin-left: 0;
+      padding-left: 16px;
+      color: #57606a;
+    }
+    footer {
+      border-top: 1px solid #d8dee4;
+      margin-top: 40px;
+      padding-top: 20px;
+      color: #57606a;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Evals for LLM Features. Part 1: Why You Need Them</h1>
+    <p>Changing a prompt or model can be done in an evening. Understanding if it got better without evals is impossible. I&#x27;ll break down what an eval for an LLM feature is, where to run it, and what happens when you don&#x27;t have one. Read more</p>
+    <p class="source">
+      Machine-translated from Habr.
+      <a href="https://habr.com/ru/articles/1094388/?utm_campaign=1094388&amp;utm_source=habrahabr&amp;utm_medium=rss">Read the original Russian article</a>.
+      Wed, 14 Oct 2026 13:56:15 GMT
+    </p>
+  </header>
+  <main>
+<div><p>Hello everyone!</p><p>My name is Taras Malinovskiy, and I am a backend developer working with Go. For the past year, I've been almost entirely focused on AI-related projects: building assistants, agents, various tools, and skills.</p><p>Recently, I participated in a hackathon organized by Podlodka AI Club. We were building a memory system for agents. We implemented the memory itself quite quickly, but proving that it actually worked turned out to be much harder. That's where most of the time went.</p><p>This experience was like flipping a switch: it truly dawned on me then what the secret to a quality AI product is. I had used evals before, but in the context of a hackathon—with its frantic pace and fierce competition—their value became particularly evident. After all, changing a prompt in an evening or switching a model with a single line in the config is not difficult. But understanding if it actually got better—that's where clear criteria are essential. Otherwise, any changes will remain mere guesswork.</p><p>This is precisely why I decided to dedicate this series of articles to evaluating the quality (evals) of various artificial intelligence components—from simple prompts to complex systems and agents. We'll explore how to create effective evaluation mechanisms, starting with basic checks that can be quickly implemented and moving on to full-fledged pipelines that automatically collect data from production.</p><p>A heads-up: the text might turn out to be quite lengthy, so please be patient. All examples are from real projects I've worked on.<br/><br/>The examples in this article will be based on the project: <a href="https://t.me/job_radar_it_bot?start=src_habr_01">Job Radar</a>. It collects IT vacancies from Telegram channels, filters out junk and scams, and also generates weekly market statistics and analyzes resumes.</p><p>In the first part, we will delve into why quality evaluation systems are needed and what happens to features based on large language models (LLMs) when such systems are absent.</p><p><strong>Table of Contents</strong></p><ol><li><p><a href="https://habr.com/ru/articles/1094388/?utm_campaign=1094388&amp;utm_source=habrahabr&amp;utm_medium=rss#evals">What is an eval and where is it run</a></p><ol><li><p><a href="https://habr.com/ru/articles/1094388/?utm_campaign=1094388&amp;utm_source=habrahabr&amp;utm_medium=rss#components">Eval Components</a></p></li><li><p><a href="https://habr.com/ru/articles/1094388/?utm_campaign=1094388&amp;utm_source=habrahabr&amp;utm_medium=rss#unit-tests">Why Regular Unit Tests Don't Work Well with LLMs</a></p></li><li><p><a href="https://habr.com/ru/articles/1094388/?utm_campaign=1094388&amp;utm_source=habrahabr&amp;utm_medium=rss#diff">Why Looking at Average Percentage is Dangerous, and Diffing by Cases Saves You</a></p></li><li><p><a href="https://habr.com/ru/articles/1094388/?utm_campaign=1094388&amp;utm_source=habrahabr&amp;utm_medium=rss#monitoring">Production Monitoring: How Evals Work in Real-Time and Catch Failures Before Users Do</a></p></li><li><p><a href="https://habr.com/ru/articles/1094388/?utm_campaign=1094388&amp;utm_source=habrahabr&amp;utm_medium=rss#lighter-models">How a Dataset Helps You Downgrade to Lighter Models and Save Money</a></p></li></ol></li><li><p><a href="https://habr.com/ru/articles/1094388/?utm_campaign=1094388&amp;utm_source=habrahabr&amp;utm_medium=rss#no-evals">What Happens When You Have Neither a Dataset Nor a Feedback Loop</a></p></li><li><p><a href="https://habr.com/ru/articles/1094388/?utm_campaign=1094388&amp;utm_source=habrahabr&amp;utm_medium=rss#conclusion">Conclusion: For an LLM Feature, "Working" Means "Passing the Dataset You've Recorded"</a></p></li></ol><p>To answer the question "has it gotten better?" without guesswork, let's first agree on what an eval is.</p><h3>1. What is an Eval and Where is it Run</h3><h4>1.1. Eval Components</h4><p>An eval includes three key components:</p><ul><li><p>Cases: a dataset of input data for testing.</p></li><li><p>Checks: criteria for evaluating the result.</p></li><li><p>Evaluation: metrics that show how successfully the task was performed.</p></li></ul><p>Choose the simplest check that will help you detect an error.</p><h3>End-to-End Example from a Project</h3><p>Let's take the Job Hunt project (Job Radar bot). It started as a pet project and later became a full-fledged service. The service collects IT vacancies from Telegram channels and distributes them by professional fields. </p><h3>The Problem</h3><p>One of the service's main features is classifying vacancies by professional fields (backend, HR, QA, etc.). If the model makes a mistake, the vacancy ends up in the wrong category, and subscribers won't see it. These errors go unnoticed: without exceptions or log entries.</p><h3>Eval Components for This Feature</h3><ol><li><p>Cases:</p><ul><li><p>Input data: vacancy text.</p></li><li><p>Success criterion: correct field label plus an explanation of why it fits.</p></li></ul></li><li><p>Check:</p><ul><li><p>Code that retrieves the response from the feature and the reference label.</p></li><li><p>Comparison of the label with the reference: a case is considered passed if the response matches the reference.</p></li></ul></li><li><p>Result:</p><ul><li><p>Analysis of results: how many cases passed, how many failed.</p></li><li><p>Comparison of results for different versions of the prompt or model.</p></li><li><p>It's important to run the case dataset with the same configuration as in production, with identical parameters, so the results will be comparable.</p></li></ul></li></ol><h3>Storing Cases</h3><p>Cases are conveniently stored in jsonl (JSON Lines) format: each JSON object describes a separate case.</p><pre><code>{
+  </main>
+  <footer>
+    Translation generated with Gemini 2.5 Flash-Lite.
+    The original article remains the source of record.
+  </footer>
+</body>
+</html>

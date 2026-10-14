@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Personal AI Assistant Without a Paid Subscription: How to Set Up a Prototype and Calculate Business Benefits</title>
+  <meta name="description" content="Hello 👋 While one person pays for five AI subscriptions, another builds a personal agent on a small machine and controls it via Telegram. The second option is interesting not because of its attractive price tag. It allows you to check what routine tasks can actually be offloaded from a person. Read ">
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.65;
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 32px 20px 64px;
+      color: #1f2328;
+    }
+    header {
+      border-bottom: 1px solid #d8dee4;
+      margin-bottom: 28px;
+      padding-bottom: 20px;
+    }
+    .source {
+      color: #57606a;
+      font-size: 0.95rem;
+    }
+    img, video, iframe {
+      max-width: 100%;
+      height: auto;
+    }
+    pre {
+      overflow-x: auto;
+      padding: 16px;
+      background: #f6f8fa;
+      border-radius: 6px;
+    }
+    code {
+      font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+    }
+    blockquote {
+      border-left: 4px solid #d0d7de;
+      margin-left: 0;
+      padding-left: 16px;
+      color: #57606a;
+    }
+    footer {
+      border-top: 1px solid #d8dee4;
+      margin-top: 40px;
+      padding-top: 20px;
+      color: #57606a;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Personal AI Assistant Without a Paid Subscription: How to Set Up a Prototype and Calculate Business Benefits</h1>
+    <p>Hello 👋 While one person pays for five AI subscriptions, another builds a personal agent on a small machine and controls it via Telegram. The second option is interesting not because of its attractive price tag. It allows you to check what routine tasks can actually be offloaded from a person. Read more</p>
+    <p class="source">
+      Machine-translated from Habr.
+      <a href="https://habr.com/ru/articles/1094234/?utm_campaign=1094234&amp;utm_source=habrahabr&amp;utm_medium=rss">Read the original Russian article</a>.
+      Wed, 14 Oct 2026 09:19:38 GMT
+    </p>
+  </header>
+  <main>
+<div><p>Hello 👋</p><figure><img loading="lazy" src="https://habrastorage.org/r/w1560/extt/cb/2a/fb/cb2afb84596450043d99c57a19da9784.jpg"/></figure><p>While one person pays for five AI subscriptions, another builds a personal agent on a small machine and controls it via Telegram. The second option is interesting not because of its attractive price tag. It allows you to check what routine tasks can actually be offloaded from a person.</p><p>I am Pavel Venzovsky, an AI Ambassador at Yandex. I am interested in the gap between "let's implement AI" and "it works and brings value." Below is an adapted version of my material about a personal agent: its structure, scenarios, and limitations. This is not an instruction for guaranteed free operation, nor a statement on behalf of the company.</p><h3>What Constitutes a Personal Agent</h3><p>Let's take Hermes Agent, an open-source project by Nous Research. It connects to models, has tools, memory, skills, scheduled tasks, and an interface via messengers, including Telegram. It also handles voice processing; the specific recognition method and its cost depend on the configuration.</p><p>The scheme, without technical details, looks like this:</p><ol><li><p>A small computer or server runs the agent program.</p></li><li><p>The agent accesses the chosen model via a suitable API or its own model service.</p></li><li><p>Tools allow it to work with files and perform permitted actions.</p></li><li><p>Skills describe repetitive operations, and memory helps retain useful context.</p></li><li><p>The user sets tasks from Telegram; some tasks can be run on a schedule.</p></li></ol><p>The messenger here is the control panel. The agent is the process executor. The model is the component that helps interpret the task and choose actions. If you mix these roles, you can easily start expecting a chatbot to perform the work of an entire department.</p><p>An agent application requires an authorized way to access the model. Having a paid chat subscription does not automatically mean it can be used as an API for a round-the-clock agent. The terms of a specific service must be checked separately.</p><h3>Where is the "Free" Part, and Where Does the Cost Begin</h3><p>For prototyping, you can consider model APIs from the NVIDIA catalog. In their official FAQ, free access via the Developer Program is described for prototyping, research, development, and testing. This is not a promise of a perpetual production service with support and guaranteed availability. Production use and specific NIM variant terms are checked separately.</p><p>Therefore, "without a paid subscription" and "for 0 rubles per month" are different statements. Even with free model access, the following costs remain:</p><ul><li><p>computer or server rental;</p></li><li><p>electricity and communication;</p></li><li><p>setup, updates, and troubleshooting;</p></li><li><p>potential fees for search, speech recognition, and other external tools;</p></li><li><p>human time for result verification.</p></li></ul><p>A free software license does not eliminate these expenses. And the agent does not become a full-fledged employee just because it can respond promptly in Telegram. As a good first approximation, it's a junior assistant given a clear task, limited permissions, and result verification.</p><h3>What Small Businesses Should Consider Testing</h3><p>You can start with a small, repetitive process:</p><ul><li><p>collecting summaries from permitted open sources;</p></li><li><p>preparing drafts of documents and presentations;</p></li><li><p>structuring notes and turning them into action plans;</p></li><li><p>generating regular reports in a consistent format;</p></li><li><p>preparing responses that a human checks before sending.</p></li></ul><p>These are examples of possible scenarios, not a promise that any of them will work immediately after installation. You will need to define the document format, access rights, sources, and quality criteria. External actions, such as sending an email to a client, are best separated from draft preparation and explicitly agreed upon.</p><p>Round-the-clock operation is useful for scheduling: the result can be available by the start of the workday. However, a computer that doesn't sleep does not guarantee that the model, internet, and all external services are available.</p><h3>How to Determine if the Agent is Helping</h3><p>I wouldn't start with the number of messages in the chat. For the first test, it's enough to choose one task and record:</p><ol><li><p>What constitutes a finished result and who accepts it.</p></li><li><p>How the task is currently performed and how much time it takes.</p></li><li><p>How much time is spent on setting up and verifying the agent's work.</p></li><li><p>How often the result needs to be redone.</p></li><li><p>What are the costs for the entire scenario, not just the model.</p></li></ol><p>For example, if the agent creates a draft report, it's useful to compare the entire path to an accepted report. A quick draft that then requires an hour of correction might be more expensive than the usual process. This is a proposed evaluation method, not figures from my implementation.</p><p>I wouldn't project savings without such observations. A cheap agent can also have an expensive manager – a person who spends all day explaining what exactly went wrong.</p><h3>A Local Machine Does Not Mean Local Data</h3><p>If Hermes runs on your mini-PC and sends requests to an external API, the data leaves that computer. This is a fundamental difference from a configuration where the model is also deployed within a controlled environment.</p><p>Different services have different terms for storing requests and using data. The statement "all free models learn from your requests" is too general. For a trial scenario, it's reasonable to use open or synthetic data; do not send confidential, personal, or client data to an external service without a justified basis and verification of terms.</p><p>When the usefulness of a process is confirmed, the next step is to choose suitable models, hosting, access rights, and maintenance. Simply moving the program to another server does not solve these issues.</p><h3>What Remains of the Idea of a Personal AI Employee</h3><p>I like the ability to inexpensively test a hypothesis: what repetitive actions will the agent offload from a person and what results will it yield. There's no need to start by buying a set of subscriptions or promising to replace a profession.</p><p>An agent empowers those who understand their process. If there is no process, you can get very convincing noise – now also on a schedule.</p><p>Sources:</p><p><a href="https://github.com/NousResearch/hermes-agent">https://github.com/NousResearch/hermes-agent</a></p><p><a href="https://docs.api.nvidia.com/nim/docs/product">https://docs.api.nvidia.com/nim/docs/product</a></p><p><a href="https://t.me/ai_on_edge">https://t.me/ai_on_edge</a></p></div>
+  </main>
+  <footer>
+    Translation generated with Gemini 2.5 Flash-Lite.
+    The original article remains the source of record.
+  </footer>
+</body>
+</html>

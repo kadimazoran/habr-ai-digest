@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Regression testing of prompts: An AI model acting as a reader missed three out of four texts that I edited</title>
+  <meta name="description" content="I edit prompts for agents that write and check texts. To ensure that edits don&#x27;t break what previously worked, I&#x27;ve created a set of examples with known outcomes and used it to test where an AI model acts as a reader. It was more likely to miss heavily edited texts than to flag them. The s">
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.65;
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 32px 20px 64px;
+      color: #1f2328;
+    }
+    header {
+      border-bottom: 1px solid #d8dee4;
+      margin-bottom: 28px;
+      padding-bottom: 20px;
+    }
+    .source {
+      color: #57606a;
+      font-size: 0.95rem;
+    }
+    img, video, iframe {
+      max-width: 100%;
+      height: auto;
+    }
+    pre {
+      overflow-x: auto;
+      padding: 16px;
+      background: #f6f8fa;
+      border-radius: 6px;
+    }
+    code {
+      font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+    }
+    blockquote {
+      border-left: 4px solid #d0d7de;
+      margin-left: 0;
+      padding-left: 16px;
+      color: #57606a;
+    }
+    footer {
+      border-top: 1px solid #d8dee4;
+      margin-top: 40px;
+      padding-top: 20px;
+      color: #57606a;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Regression testing of prompts: An AI model acting as a reader missed three out of four texts that I edited</h1>
+    <p>I edit prompts for agents that write and check texts. To ensure that edits don&#x27;t break what previously worked, I&#x27;ve created a set of examples with known outcomes and used it to test where an AI model acts as a reader. It was more likely to miss heavily edited texts than to flag them. The set includes two types of texts: some I later rewrote extensively by hand, others I barely touched. If a prompt edit is accepted based on such a test, defects will slip through, and the test will incorrectly pass. Read more</p>
+    <p class="source">
+      Machine-translated from Habr.
+      <a href="https://habr.com/ru/articles/1094096/?utm_campaign=1094096&amp;utm_source=habrahabr&amp;utm_medium=rss">Read the original Russian article</a>.
+      Wed, 14 Oct 2026 11:45:55 GMT
+    </p>
+  </header>
+  <main>
+<div><p>I edit prompts for agents that write and check texts. To ensure that edits don't break what previously worked, I've created a set of examples with known outcomes and used it to test where an AI model acts as a reader. It was more likely to miss heavily edited texts than to flag them.</p><p>The set includes two types of texts: some I later rewrote extensively by hand, others I barely touched. If a prompt edit is accepted based on such a test, defects will slip through, and the test will incorrectly pass.</p><h3>How to assemble a dataset for LLM testing</h3><p>Prompt regression testing involves running the same examples before and after an edit to see if performance has degraded where it was previously good. <a href="https://platform.claude.com/docs/en/test-and-evaluate/develop-tests">Anthropic's documentation</a> recommends using examples from real tasks and adding edge cases: empty data, excessively long input, and situations where even humans disagree. <a href="https://developers.openai.com/api/docs/guides/evaluation-best-practices">OpenAI</a> suggests running an evaluation for every change and using cases from logs. <a href="https://hamel.dev/blog/posts/evals/">Hamel Husain</a> writes that tests emerge from identified failures.</p><p>My benchmark is the fate of the text: how closely the published version matches what the agent produced. Match is the proportion of identical sentences: SequenceMatcher from the difflib module compares two lists of sentences. I don't use the score from the judge model as the benchmark; the benchmark must come from a human. A match below 85% means I edited heavily, which is a bad example. A match of 95% or higher is a good example. Anything in between is excluded from the set because the outcome for such texts is unclear.</p><figure><img alt="Diagram: prompt edit, running the dataset before and after, counters for missed defects and false alarms, decision to accept or reject" loading="lazy" src="https://habrastorage.org/r/w1560/extt/ad/ee/e4/adeee427fc47cc7979979146aaa625d4.png"/><div><figcaption>The dataset remains the same; only the prompt version changes.</figcaption></div></figure><h3>What two errors to consider when testing AI agents</h3><p>There are two types of errors, and I count them separately. Missed defect: a bad example passed the check. False alarm: a good example was flagged by the check. If you calculate a single overall match rate with a human, these errors merge. <a href="https://hamel.dev/blog/posts/llm-judge/">Husain provides a calculation</a>: a judge that passes all texts consecutively, with 95% good texts, matches a human 95% of the time and finds no errors.</p><p>Therefore, after running the tests, I have two counters, and I only accept a prompt edit if neither of them has increased.</p><h3>What the reader's assessment revealed about my edits</h3><p>I took 20 materials with known matches to the published version and compared them to the reader's assessment. My reader consists of three roles, each answering four questions on a scale of 1 to 10. The minimum score is considered, with a threshold of 7. The automatic summary indicates agreement for 15 out of 20 texts, but five of them fall between the thresholds and are unannotated. Among the annotated ones, the reader agreed with me in 10 cases: one caught defect and nine correctly passed good texts. They disagreed in five cases: three missed defects and two false alarms.</p><p>The separate counts provide two denominators. There were four heavily edited texts, and the reader flagged one of them. The match for these texts ranged from 64% to 79%. There were eleven barely touched texts, and the reader flagged two of them. Another five texts fell between the thresholds and were not included in the count.</p><figure><img alt="Two columns: out of 4 heavily edited texts, the reader flagged 1; out of 11 barely touched texts, the reader flagged 2" loading="lazy" src="https://habrastorage.org/r/w1560/extt/c9/15/48/c91548fc37fa783d6ff7c27d1203e85e.png"/><div><figcaption>The reader misses defects more often than it catches them: three out of four heavily edited texts passed.</figcaption></div></figure><p>I analyzed one additional missed case, outside this summary. On the first pass, readers gave the article a minimum score of 5 and flagged it; after revision, they gave it a 7 and passed it. I rejected it entirely and rewrote it from the first paragraph to the end. The reason was found in the questionnaire: four questions assess how something is written, not what it's about. A third of the text was dedicated to analyzing the method, and the scores did not decrease because of this. There was no question asking if the reader opened the article for that specific purpose. Now, if the brief specifies the proportion of parts, the reader must calculate the share of each part and state it, even if all scores are above the threshold.</p><p>I perform the same test when changing the AI model. Before switching readers from Opus to Sonnet, I ran Sonnet on 12 versions of texts that already had Opus scores, using the same roles and prompt. The scores matched within one point in 89% of cases. On average, Sonnet scores 0.66 points lower. The decision to reject or pass matched in only 7 out of 12 versions. All discrepancies were in one direction: 5 versions that Opus passed, Sonnet would have rejected. I kept the readers on Opus: there would have been more rejections with Sonnet, and no savings would have been achieved. This does not contradict the finding about missed cases: a stricter Sonnet would have also rejected good versions, and it's unknown who was right in those five cases without annotation.</p><p>The check itself also breaks. My check for headline clarity stopped 4 out of 7 articles overnight (whether they were good or not, I didn't annotate): the reader, not being an expert on each headline variant, found a new clarification, and the check stopped converging. I disabled it with a single constant, but kept the logic and 13 tests for it. The tests still require rejection for outdated results, empty responses, and invalid JSON.</p><h3>Python script: compare two versions of a check on the same dataset</h3><p>The dataset is in <code>cases.json</code>: a list of objects like <code>{
+  </main>
+  <footer>
+    Translation generated with Gemini 2.5 Flash-Lite.
+    The original article remains the source of record.
+  </footer>
+</body>
+</html>

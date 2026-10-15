@@ -2807,6 +2807,54 @@
     "summary": "Changing a prompt or model can be done in an evening. Understanding if it got better without evals is impossible. I'll break down what an eval for an LLM feature is, where to run it, and what happens when you don't have one. Read more",
     "title": "Evals for LLM Features. Part 1: Why You Need Them"
   },
+  "https://habr.com/ru/articles/1094550/?utm_campaign=1094550&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Thu, 15 Oct 2026 13:15:59 GMT",
+    "slug": "1094550",
+    "source_url": "https://habr.com/ru/articles/1094550/?utm_campaign=1094550&utm_source=habrahabr&utm_medium=rss",
+    "summary": "I found my old Xiaomi Mi Band 4 fitness tracker and wondered if I could run something interesting on it. As a non-hardware hacker, I decided to see if LLMs could help me run a NES emulator to play Super Mario Bros, controlled via the touchscreen and a Bluetooth keyboard. It sounded like science fiction, but I decided to try.",
+    "title": "How to run Super Mario Bros on Xiaomi Mi Band 4"
+  },
+  "https://habr.com/ru/articles/1094564/?utm_campaign=1094564&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Thu, 15 Oct 2026 07:49:25 GMT",
+    "slug": "1094564",
+    "source_url": "https://habr.com/ru/articles/1094564/?utm_campaign=1094564&utm_source=habrahabr&utm_medium=rss",
+    "summary": "Hello, Habr! Today I'll tell you how an AI user, far from professional design of polyagent systems, can achieve results comparable in quality to those of specialists for simple projects: for example, develop a computer game, create a set of small practical applications, or draw very beautiful, well-thought-out presentations (which modern AI cannot do by simple request or even a long prompt with context). You can also study the basics of linear algebra here and understand what matrices are (where all these rules for their multiplication and addition come from, why they are needed), what linear operators are, and how they are related. Read more",
+    "title": "Gauntlet Loop — The Greatest Spell in the Muggle World"
+  },
+  "https://habr.com/ru/articles/1094642/?utm_campaign=1094642&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Thu, 15 Oct 2026 08:49:41 GMT",
+    "slug": "1094642",
+    "source_url": "https://habr.com/ru/articles/1094642/?utm_campaign=1094642&utm_source=habrahabr&utm_medium=rss",
+    "summary": "The idea was simple, almost naive: if you ask the model to honestly state at the end of its response whether it's confident in its code or not, can you use this label to catch bad solutions in advance? Not run tests, not read code with your eyes, but just look at the last line. I ran 20 small Python tasks through three models, three times each, and collected 179 responses. All 179 ended with the line CONFIDENCE: SURE. The UNSURE option was in the prompt, but no one used it. However, four solutions failed hidden tests. One converted 1024 bytes to 1.0 MiB, another crashed on the difference between two ordinary dates. Both had SURE under them. I'll explain how it was set up, show all four errors, and honestly list what cannot be drawn from this experiment (and much cannot). Read more",
+    "title": "All 179 responses were SURE. Four of them failed tests"
+  },
+  "https://habr.com/ru/articles/1094674/?utm_campaign=1094674&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Thu, 15 Oct 2026 10:34:46 GMT",
+    "slug": "1094674",
+    "source_url": "https://habr.com/ru/articles/1094674/?utm_campaign=1094674&utm_source=habrahabr&utm_medium=rss",
+    "summary": "In the Apollo Gemini 4 Argon test, the AI greeted its evaluators directly within its reasoning. In another experiment, it abandoned a plan to hide a backdoor, reasoning that it would become a famous example of deceptive AI. We analyze what Google's report says about the model's safety and why recognizing tests hinders the evaluation of its behavior. Read more",
+    "title": "Gemini 4 Argon's Safety Report: How to Test an AI That Sees Through the Test"
+  },
+  "https://habr.com/ru/articles/1094680/?utm_campaign=1094680&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Thu, 15 Oct 2026 09:46:25 GMT",
+    "slug": "1094680",
+    "source_url": "https://habr.com/ru/articles/1094680/?utm_campaign=1094680&utm_source=habrahabr&utm_medium=rss",
+    "summary": "Hello! My name is Sasha Zhuravlev. I am a venture investor and founder of the Mento vc fund. We invest in startups at the Seed/Series A stages in the USA, and on my Telegram channel, I share my market insights and investment decisions. a16z (a VC fund with over $100B under management) has released a report on the state of the B2C AI market. It compiles data on web traffic (and payments) for various AI applications, compares them, and draws conclusions. My team and I have translated a breakdown of all the theses and charts for you. Inside, you'll find answers to questions like: • Which services and applications attract the most users, and which ones do people spend the most on? • What problem must a product solve for a person to be willing to pay for it every month? • What needs to be offered to those who don't pay yet to make AI a part of their daily lives? • Which niches are still open, and where might the next big player emerge? Enjoy reading! The a16z team has been monitoring the AI services market for private users for three years, and the lineup of leaders is becoming increasingly established. Based on traffic alone, it's becoming harder to understand what's really happening in the B2C AI market. Therefore, in this issue, a16z is adding a ranking based on the spending of American users with personal bank cards for the first time, based on YipitData. This ranking shows which AI products people are actually paying for. It will include services that fly under the radar of website traffic and mobile app audience rankings: for example, desktop versions or AI agents in messengers. Read more",
+    "title": "[Translation] Where to Find Opportunities in the B2C AI Segment"
+  },
+  "https://habr.com/ru/articles/1094772/?utm_campaign=1094772&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Thu, 15 Oct 2026 12:02:46 GMT",
+    "slug": "1094772",
+    "source_url": "https://habr.com/ru/articles/1094772/?utm_campaign=1094772&utm_source=habrahabr&utm_medium=rss",
+    "summary": "In the previous article, I tested Jev on text-based tasks: classification, answer confidence, long context, and noisy input. On October 14th, TypeSafe announced Jev 1.14, introducing experimental capabilities for images, a new 'box' question type, and extended context. I wanted to see what could be done with these new features in practice and where errors might occur. A quick series of experiments allowed me to test object detection by description, cat and dog breed classification, image-based questions, finding bank details on documents, and queries with dozens of photos. The total cost for all computations was around $2.6. The most telling result came from the 'find the cat among dogs' task. With 32 and 96 photos, the model never selected the correct photo from the middle of the array. After changing the query structure—same images, same order—it answered correctly in all tested cases. Below, I'll explain what exactly changed and why the initial result was easily misinterpreted. Read on.",
+    "title": "Jev 1.14: Finding Objects, Verifying Documents, and Spotting a Cat Among 96 Photos"
+  },
   "https://habr.com/ru/companies/1c/articles/1071340/?utm_campaign=1071340&utm_source=habrahabr&utm_medium=rss": {
     "model": "gemini-2.5-flash-lite",
     "published": "Thu, 03 Sep 2026 07:18:11 GMT",
@@ -3006,6 +3054,14 @@
     "source_url": "https://habr.com/ru/companies/cloud4y/articles/1093912/?utm_campaign=1093912&utm_source=habrahabr&utm_medium=rss",
     "summary": "For three months, AI agents decompiled a popular first-person shooter, and we from the community managed them. Our goal was not to prove it was possible, but to achieve an accurate and stable C++ reconstruction of the game. Result: 99% of functions were restored, 83% of them match the original byte-for-byte, and the game runs without noticeable bugs. By my estimate, this took 600-700 billion tokens. But the article is not about the game, but about orchestrating autonomous agents: how to set up the infrastructure and harness to get quality results from agents for months, and why all this doesn't work without objective automatic verification. Read on",
     "title": "[Translation] 600 Billion Tokens Later: How We Managed AI Agents While Decompiling a Shooter"
+  },
+  "https://habr.com/ru/companies/cloud4y/articles/1094488/?utm_campaign=1094488&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Thu, 15 Oct 2026 08:04:37 GMT",
+    "slug": "1094488",
+    "source_url": "https://habr.com/ru/companies/cloud4y/articles/1094488/?utm_campaign=1094488&utm_source=habrahabr&utm_medium=rss",
+    "summary": "For twenty years, the cybersecurity community has been teaching developers not to pull unverified dependencies into their projects. Then we started trusting LLMs to write code, and they happily invent non-existent packages, leaving attackers only to register them first. Let's explore what slopsquatting is, how often models hallucinate packages, and how to protect against it. Read more",
+    "title": "Slopsquatting: How We Spent 20 Years Teaching Developers Not to Trust Packages, Then All Trusted LLMs Together"
   },
   "https://habr.com/ru/companies/cloud_ru/articles/1069008/?utm_campaign=1069008&utm_source=habrahabr&utm_medium=rss": {
     "model": "gemini-2.5-flash-lite",
@@ -3358,6 +3414,14 @@
     "source_url": "https://habr.com/ru/companies/leader-id/articles/1091020/?utm_campaign=1091020&utm_source=habrahabr&utm_medium=rss",
     "summary": "A three-minute pitch, dozens of slides, half an hour of expert questions, and the ultimate goal of convincing the jury that you're not a dreamer but have a commercially viable idea. This is the task set for a startup founder on the classic path from idea to development through pitches and investor searches. How to prepare such a presentation, what to emphasize, how to manage nervousness, how not to get lost or forget the main point, and what that magical main point is? We discuss this with our colleague Elizaveta Kuzmina, Head of Technical Analytics at NTI Platform ANO and founder of Hypothesis Lab, a platform for testing advertising campaigns and hypotheses using synthetic personas for creative generation, as well as preparing scaling recommendations and collecting analytics. Elizaveta presented her platform at the finals of the \"Fiztech. Idea+\" accelerator, spring 2026 wave. It was the project's very first pitch, and it was immediately successful. Her team made it into the top 6 projects and received half a million rubles for development. Congratulating her on this achievement, we talked with Elizaveta about her startup, how the accelerator works, and how to prepare a super-concise three-minute presentation. We also discussed what questions experts ask and what helps convince the jury of a project's potential. In short, here are life hacks for everyone who is going or preparing to go down this path. Read on.",
     "title": "How to Nail a Three-Minute Pitch and Win a Grant: Successful Experience Shared by an Alumna of the \"Fiztech. Idea+\" Accelerator"
+  },
+  "https://habr.com/ru/companies/leader-id/articles/1094726/?utm_campaign=1094726&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Thu, 15 Oct 2026 12:11:08 GMT",
+    "slug": "1094726",
+    "source_url": "https://habr.com/ru/companies/leader-id/articles/1094726/?utm_campaign=1094726&utm_source=habrahabr&utm_medium=rss",
+    "summary": "Abrasive materials are an essential tool for homeowners, used for sanding wood, cleaning metal, and preparing surfaces for painting. In construction, the quality of abrasives directly impacts the finish of walls and floors, and ultimately, the aesthetic appeal and comfort of a home. In manufacturing, the precision of abrasive processing determines the final quality of parts. For manufacturers, the quality of abrasive products is a matter of prestige and customer loyalty, ensuring their brand of abrasives won't let them down. We're talking about the Belgorod startup 'Solid' – an intelligent visual analytics platform for quality control of abrasive products. It was created by students from Belgorod State Technological University named after V. G. Shukhov (BSTU) and was developed at the inter-university accelerator 'Homenet,' implemented as part of the Federal Project 'Technologies.' Read more",
+    "title": "From Sandpaper to AI: How Technologies Solve Problems"
   },
   "https://habr.com/ru/companies/lentatech/articles/1079778/?utm_campaign=1079778&utm_source=habrahabr&utm_medium=rss": {
     "model": "gemini-2.5-flash-lite",
@@ -3759,6 +3823,14 @@
     "summary": "Back in early 2025, I started noticing how people, when using AI, would put their brains into passive mode. They'd ask the AI to perform a task (summarize text, write code, etc.), accepting the result at face value. At the time, this approach worked very poorly, and the results were often nonsensical. But AI was developing, and I began to notice this behavior more and more often. Sometimes people would just ask the AI to write them code, which they would unconditionally accept as working. In other cases, a human was involved in the loop, monitoring the result and asking the AI to fix problems if they arose. Niklas Gruhn even coined a term for such people – meat proxy. Read more",
     "title": "[Translation] Turning Off Your Brain Is Not a Good Sign"
   },
+  "https://habr.com/ru/companies/ruvds/articles/1093594/?utm_campaign=1093594&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Thu, 15 Oct 2026 13:01:16 GMT",
+    "slug": "1093594",
+    "source_url": "https://habr.com/ru/companies/ruvds/articles/1093594/?utm_campaign=1093594&utm_source=habrahabr&utm_medium=rss",
+    "summary": "\"Vibe coding\" became the word of 2025, and it feels like every second person became a vibe coder in 2026. Codex, Claude Code, Cursor, and even KIMI can write you a beautiful and useful service in an evening. All that's left is the trivial part – to deploy it somewhere so it works and others can use it. Maybe people will find it useful and it will bring in money... Below, I'll break down where to take your cool pet project. Read on",
+    "title": "Generated a service, now where to host it and how much will it cost"
+  },
   "https://habr.com/ru/companies/ruvds/articles/1093900/?utm_campaign=1093900&utm_source=habrahabr&utm_medium=rss": {
     "model": "gemini-2.5-flash-lite",
     "published": "Wed, 14 Oct 2026 13:01:30 GMT",
@@ -4023,6 +4095,14 @@
     "summary": "In the age of artificial intelligence, the enemy is closer than you think. Modern AI assistants (Claude Code or Cursor) are no longer just chatbots. To prevent them from harming your computer, they are placed in an isolated virtual container. But an AI can break out... Read more",
     "title": "AI Agent Gains Control of a Computer: What Developers Should Do. Analyzing Automation Errors: Sandbox Escape"
   },
+  "https://habr.com/ru/companies/speshu_ai/articles/1094608/?utm_campaign=1094608&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Thu, 15 Oct 2026 07:35:10 GMT",
+    "slug": "1094608",
+    "source_url": "https://habr.com/ru/companies/speshu_ai/articles/1094608/?utm_campaign=1094608&utm_source=habrahabr&utm_medium=rss",
+    "summary": "Model IDs hardcoded into your code are dependencies with expiration dates, much like an unsupported library version. For Anthropic's flagship models, this date typically arrives about a year after release. Google's preview models expire within months, and the window between deprecation announcements and actual shutdowns for providers ranges from 28 to 182 days. We've analyzed what was shut down and when in 2026, what breaks, how teams actually migrate (based on a sample of 17,703 repositories), and how to build an application that can survive model changes without a crisis. Read on.",
+    "title": "The Threat of AI Agents: LLMs are Being Deprecated in 6 Months. Why and How to Prepare"
+  },
   "https://habr.com/ru/companies/ssp-soft/articles/1079732/?utm_campaign=1079732&utm_source=habrahabr&utm_medium=rss": {
     "model": "gemini-2.5-flash-lite",
     "published": "Wed, 16 Sep 2026 07:03:07 GMT",
@@ -4126,6 +4206,14 @@
     "source_url": "https://habr.com/ru/companies/syntx_ai/articles/1092400/?utm_campaign=1092400&utm_source=habrahabr&utm_medium=rss",
     "summary": "Twelve video neural networks were run on a single prompt: 8 seconds, 720p, one generation per model. Luma Ray 3.14 came out on top with a total score of 9.1 out of 10, two minutes, 5 tokens, and was the cheapest. Seedance 2.5 produced the best image quality but was the most expensive: 138.7 tokens, 27 times more than the leader. Read more",
     "title": "Video Neural Network Ranking: Compared 12 Models on a Single Prompt (October 2026)"
+  },
+  "https://habr.com/ru/companies/syntx_ai/articles/1094616/?utm_campaign=1094616&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Thu, 15 Oct 2026 10:43:47 GMT",
+    "slug": "1094616",
+    "source_url": "https://habr.com/ru/companies/syntx_ai/articles/1094616/?utm_campaign=1094616&utm_source=habrahabr&utm_medium=rss",
+    "summary": "Of the 6,157 reports Anthropic provided to open source project maintainers, 516 have been fixed: that's 8.4%, not 516 out of 29,000 as The New Stack headline suggests. Let's break down what Claude models found and what it led to. Read more",
+    "title": "29,439 possible vulnerabilities, 6,157 reports to maintainers, 516 fixes: Anthropic scans open source projects"
   },
   "https://habr.com/ru/companies/tbank/articles/1086714/?utm_campaign=1086714&utm_source=habrahabr&utm_medium=rss": {
     "model": "gemini-2.5-flash-lite",
@@ -4294,6 +4382,14 @@
     "source_url": "https://habr.com/ru/companies/vktech/articles/1069692/?utm_campaign=1069692&utm_source=habrahabr&utm_medium=rss",
     "summary": "On June 10, 2026, CISA released directive BOD 26-04, replacing BOD 19-02 and BOD 22-01. The new directive shifts from fixed deadlines for vulnerabilities in the Known Exploited Vulnerabilities (KEV) catalog to a risk-based approach for prioritizing security updates. CISA now considers asset public accessibility, KEV status, exploitability automation, and attack impact. The new model, based on SSVC, mandates a 3-day fix for the most urgent cases and allows for scheduled updates for the least urgent. However, AI platforms present a challenge due to the diverse nature of \"fixing\" vulnerabilities across different layers (web API, ML dependencies, GPU runtime, inference engine, model weights). A uniform CVSS score does not equate to uniform priority, timeline, or remediation strategy. This article analyzes eight public CVEs from a typical AI stack using a decision tree, examining asset accessibility, exploitation evidence, exploit automation, technical impact, and actual remediation paths. It also demonstrates how to derive decision thresholds from FIRST's published data. The content is intended for AppSec and DevSecOps engineers managing platform vulnerability backlogs, team leads whose releases depend on security tickets, and CISOs. A dedicated section addresses FSTEC requirements for Russian CISOs. The approach is also applicable to standard infrastructure without GPUs and models, with adjustments to the asset inventory but not the prioritization logic.",
     "title": "Triage of Vulnerabilities in AI Platforms: Why Calendar SLA Broke and What to Use Instead"
+  },
+  "https://habr.com/ru/companies/vkusvill/articles/1094732/?utm_campaign=1094732&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Thu, 15 Oct 2026 13:35:41 GMT",
+    "slug": "1094732",
+    "source_url": "https://habr.com/ru/companies/vkusvill/articles/1094732/?utm_campaign=1094732&utm_source=habrahabr&utm_medium=rss",
+    "summary": "Hello! We have news: VkusVill has prepared an MCP server with authorization! The address is the same, mcp.vkusvill.ru/mcp, and to access the full functionality, please register at https://vkusvill.ru/oauth/registration/ and authorize via the link from your agent. More details below. Read more",
+    "title": "MCP Server with Authorization: What We Did to Make It Secure"
   },
   "https://habr.com/ru/companies/vtb/articles/1086030/?utm_campaign=1086030&utm_source=habrahabr&utm_medium=rss": {
     "model": "gemini-2.5-flash-lite",

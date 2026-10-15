@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>MCP Server with Authorization: What We Did to Make It Secure</title>
+  <meta name="description" content="Hello! We have news: VkusVill has prepared an MCP server with authorization! The address is the same, mcp.vkusvill.ru/mcp, and to access the full functionality, please register at https://vkusvill.ru/oauth/registration/ and authorize via the link from your agent. More details below. Read more">
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.65;
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 32px 20px 64px;
+      color: #1f2328;
+    }
+    header {
+      border-bottom: 1px solid #d8dee4;
+      margin-bottom: 28px;
+      padding-bottom: 20px;
+    }
+    .source {
+      color: #57606a;
+      font-size: 0.95rem;
+    }
+    img, video, iframe {
+      max-width: 100%;
+      height: auto;
+    }
+    pre {
+      overflow-x: auto;
+      padding: 16px;
+      background: #f6f8fa;
+      border-radius: 6px;
+    }
+    code {
+      font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+    }
+    blockquote {
+      border-left: 4px solid #d0d7de;
+      margin-left: 0;
+      padding-left: 16px;
+      color: #57606a;
+    }
+    footer {
+      border-top: 1px solid #d8dee4;
+      margin-top: 40px;
+      padding-top: 20px;
+      color: #57606a;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>MCP Server with Authorization: What We Did to Make It Secure</h1>
+    <p>Hello! We have news: VkusVill has prepared an MCP server with authorization! The address is the same, mcp.vkusvill.ru/mcp, and to access the full functionality, please register at https://vkusvill.ru/oauth/registration/ and authorize via the link from your agent. More details below. Read more</p>
+    <p class="source">
+      Machine-translated from Habr.
+      <a href="https://habr.com/ru/companies/vkusvill/articles/1094732/?utm_campaign=1094732&amp;utm_source=habrahabr&amp;utm_medium=rss">Read the original Russian article</a>.
+      Thu, 15 Oct 2026 13:35:41 GMT
+    </p>
+  </header>
+  <main>
+<div><figure><img loading="lazy" src="https://habrastorage.org/r/w1560/extt/3b/4d/b0/3b4db01841ef082ce18f949fbfe8da19.jpg"/></figure><p>Hello! We have news: VkusVill has prepared an MCP server with authorization!</p><p>The address is the same, <a href="https://mcp.vkusvill.ru/mcp"><strong>mcp.vkusvill.ru/mcp</strong></a>, and to access the full functionality, please register at <a href="https://vkusvill.ru/oauth/registration/">https://vkusvill.ru/oauth/registration/</a> and authorize via the link from your agent. More details below.</p><p>In December 2025, we released the first version of the public MCP server and have since received many ideas and suggestions through the feedback form. For example, users suggested adding a tool to identify products by barcode, creating custom response fields for the search tool, and opening links in the mobile app.</p><p>However, the main issue was that when opening a link from an agent on the website, some products might be unavailable for order. This happens because the search in the public MCP server scans the entire catalog, while when you open a link on the website, you see the assortment of the store from which delivery will be made.</p><p>Passing the store as a parameter to the search tool is not suitable, as for some locations, delivery can be from multiple dark stores – the final choice is determined by an algorithm. And this does not bring us closer to giving the agent personalization capabilities (purchase history, loyalty program) and ordering.</p><p>Obviously, access to a personal account is needed. And it must meet information security requirements:</p><p><strong>– The agent logs in with their own credentials.</strong></p><p><strong> – The agent does not have access to the client's personal data. </strong></p><p><strong>– The person chooses what they are willing to delegate to the agent. </strong></p><p><strong>– The person can revoke access.</strong></p><p>These conditions are met by the OAuth 2.0 protocol, which is also the recommended authorization method in the MCP specification.</p><p>So, our solution is based on OAuth 2.0 + PKCE and involves the following process:</p><p><strong>Step 1: Registering an OAuth Client</strong></p><p>To register an authorization client, go to <a href="https://vkusvill.ru/oauth/registration/">https://vkusvill.ru/oauth/registration/</a> and follow the instructions.</p><p>Currently, it is only possible to create a personal agent — the OAuth client credentials will be linked to the loyalty card of the creator. This means that the created authorization client will only be able to request access to their personal account.</p><p>Soon, we will add the ability to register an OAuth client capable of working for multiple people. And, by the way, we are working on a partnership program. <a href="https://forms.yandex.ru/cloud/6aac08a595add511563f8ac9/">Apply</a> if you want to join the testing.</p><figure><="lazy" src="https://habrastorage.org/r/w1560/extt/50/4d/5c/504d5c3d4ac83139e3051eb199f2f2b6.png"/></figure><p><em>Redirect URI is the address of a web page or application where the VkusVill OAuth server will redirect the temporary authorization code after the user confirms access. Agent platforms have their own redirect URI. Check the documentation and specify it. At the time of writing, the URI for ChatGPT must be obtained from the plugin creation window, for </em><a href="http://Claude.ai"><em>Claude.ai</em></a><em> — </em><a href="https://claude.ai/api/mcp/auth_callback"><em>https://claude.ai/api/mcp/auth_callback</em></a><em>. If your agent is on OpenClaw or Hermes, then most likely you do not have a public address that the agent listens to. In this case, select "My service does not have a public URI."</em></p><p><u>Result</u>: an authorization client linked to your loyalty card is registered in the VkusVill OAuth server.</p><p><strong>Step 2: Connecting to the MCP Server and Transferring Credentials to the Agent</strong></p><p>After registration, you will receive an email with credentials. These must be transferred to your agent so that it has access to tools under authorization. How to do this can be found from the agent itself or in the documentation. The main thing is never to write credentials in the chat with the agent or transfer them to third parties/untrusted services, as this is sensitive data that grants access to your personal account.</p><p>The email will also contain a link where you can revoke access by deleting the authorization client account. At this stage, access is revoked within 24 hours.</p><figure><img alt="Connecting in ChatGPT via plugin creation. The Redirect URI for step 1 must be copied from the 'Callback URL' field. The client ID and secret should be inserted from the email after registration." ="lazy" src="https://habrastorage.org/r/w1560/extt/d4/f3/d2/d4f3d28785c21bcb50013187a46bbc19.jpg" title="Connecting in ChatGPT via plugin creation. The Redirect URI for step 1 must be copied from the 'Callback URL' field. The client ID and secret should be inserted from the email after registration."/><div><figcaption><em>Connecting in ChatGPT via plugin creation. The Redirect URI for step 1 must be copied from the 'Callback URL' field. The client ID and secret should be inserted from the email after registration.</em></figcaption></div></figure><p>Server address: <a href="https://mcp.vkusvill.ru/mcp">mcp.vkusvill.ru/mcp</a>.</p><p>Result: your agent is connected to the VkusVill MCP server and can request authorization.</p><p><strong>Step 3: Agent Authorization</strong></p><p>Upon the first request to the MCP server, the agent will request authorization. To do this, it will generate a link that the user must follow to select which actions and data will be available to the agent (scopes). After submitting the form, the user and the authorization code will be sent to the redirect URI (specified in step 1). If it was localhost and your agent is deployed in the cloud, you need to copy and transfer the text from the address bar of the page that opened after submission. The agent will exchange the temporary code for a JWT access token, which is valid for 24 hours. This means that at the moment, after this time expires, you need to repeat this step again.</p><figure><img alt="This release does not include tools for self-ordering. As new tools are added, new scopes will appear. We will notify you, as for your agent to support new tools, you need to register a new OAuth client with the corresponding scopes." ="lazy" src="https://habrastorage.org/r/w1560/extt/17/42/bc/1742bc4e22cc3494f81e28ce2231d6b3.jpg" title="This release does not include tools for self-ordering. As new tools are added, new scopes will appear. We will notify you, as for your agent to support new tools, you need to register a new OAuth client with the corresponding scopes."/><div><figcaption><em>This release does not include tools for self-ordering. As new tools are added, new scopes will appear. We will notify you, as for your agent to support new tools, you need to register a new OAuth client with the corresponding scopes.</em> </figcaption></div></figure><p><u>Result</u>: your agent has a JWT access token with the scopes you approved. </p><p><strong>Step 4: Using Tools with Authorization</strong></p><p>When calling a tool, the agent also passes the JWT access token. The MCP server checks the token's scopes and executes only what was agreed upon. Thus, the agent will not be able to perform an action that the user did not approve in the previous step.</p><figure><img alt="Collecting a basket in ChatGPT " ="lazy" src="https://habrastorage.org/r/w1560/extt/f8/f6/ae/f8f6ae012266c3c192476e2dd719f12a.png" title="Collecting a basket in ChatGPT "/><div><figcaption><em>Collecting a basket in ChatGPT</em> </figcaption></div></figure><p>As of today, an authorized agent with maximum scopes has access to:</p><p><strong> – The public MCP server tool;</strong></p><p><strong>– A tool for searching the catalog relevant to the address set in the VkusVill personal account;</strong></p><p><strong> – A tool for viewing online order history;</strong></p><p><strong> – A tool for viewing favorite products;</strong></p><p><strong> – A tool for viewing personal discounts ("6 discounts").</strong></p><p>We will continue to add tools; the current list can be found on the MCP server page mcp.vkusvill.ru/mcp. And your agent, of course, also has a way to request a list of tools (tools/list).</p><p>Result: your personal agent is ready to assemble a suitable basket for you.</p><figure><="lazy" src="https://habrastorage.org/r/w1560/extt/1c/78/f4/1c78f4a9b0b3b2ca53c82a5c1f200bc3.jpg"/></figure><h3>Conclusion</h3><p>This release is the minimum viable increment, taking into account your comments and ideas. Simultaneously with expanding the agent's capabilities, we are working on enhancing the security of the client's personal account. This means we will introduce:</p><p>– Instant revocation of access <br/>– Automatic access token renewal <br/>– Loyalty program and ordering tools <br/>– Access management panel.</p><p>We look forward to your ideas in the feedback form on how to further improve the agent experience when working with the VkusVill MCP server.</p><p>Much more is coming! You can learn about updates on the server page <a href="https://mcp.vkusvill.ru/mcp">mcp.vkusvill.ru/mcp</a> and on our page on <a href="https://github.com/vkustech/vkusvill-mcp-server-manifest">github</a>. </p></div>
+  </main>
+  <footer>
+    Translation generated with Gemini 2.5 Flash-Lite.
+    The original article remains the source of record.
+  </footer>
+</body>
+</html>

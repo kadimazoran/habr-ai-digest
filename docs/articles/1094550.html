@@ -1,0 +1,98 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>How to run Super Mario Bros on Xiaomi Mi Band 4</title>
+  <meta name="description" content="I found my old Xiaomi Mi Band 4 fitness tracker and wondered if I could run something interesting on it. As a non-hardware hacker, I decided to see if LLMs could help me run a NES emulator to play Super Mario Bros, controlled via the touchscreen and a Bluetooth keyboard. It sounded like science fict">
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.65;
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 32px 20px 64px;
+      color: #1f2328;
+    }
+    header {
+      border-bottom: 1px solid #d8dee4;
+      margin-bottom: 28px;
+      padding-bottom: 20px;
+    }
+    .source {
+      color: #57606a;
+      font-size: 0.95rem;
+    }
+    img, video, iframe {
+      max-width: 100%;
+      height: auto;
+    }
+    pre {
+      overflow-x: auto;
+      padding: 16px;
+      background: #f6f8fa;
+      border-radius: 6px;
+    }
+    code {
+      font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+    }
+    blockquote {
+      border-left: 4px solid #d0d7de;
+      margin-left: 0;
+      padding-left: 16px;
+      color: #57606a;
+    }
+    footer {
+      border-top: 1px solid #d8dee4;
+      margin-top: 40px;
+      padding-top: 20px;
+      color: #57606a;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>How to run Super Mario Bros on Xiaomi Mi Band 4</h1>
+    <p>I found my old Xiaomi Mi Band 4 fitness tracker and wondered if I could run something interesting on it. As a non-hardware hacker, I decided to see if LLMs could help me run a NES emulator to play Super Mario Bros, controlled via the touchscreen and a Bluetooth keyboard. It sounded like science fiction, but I decided to try.</p>
+    <p class="source">
+      Machine-translated from Habr.
+      <a href="https://habr.com/ru/articles/1094550/?utm_campaign=1094550&amp;utm_source=habrahabr&amp;utm_medium=rss">Read the original Russian article</a>.
+      Thu, 15 Oct 2026 13:15:59 GMT
+    </p>
+  </header>
+  <main>
+<div><p>Once during cleaning, I found my old fitness tracker, the Xiaomi Mi Band 4. Essentially, it's a wearable computer with a battery, screen, sensors, and Bluetooth. Can anything be run on it? Theoretically, yes, but the problem is that I'm not a hardware hacking specialist and don't write in C for ARM. But perhaps the current generation of LLMs can help me run something interesting on it? For example, a NES emulator on which I can play Super Mario Bros with controls via the touchscreen and a Bluetooth keyboard? To me, all this sounds like science fiction. It would probably take a year of dedicated work. But I think it's worth a try.</p><div></div><p>To begin, let's find the firmware. Fortunately, it's available on the <a href="https://4pda.to/forum/index.php?showtopic=956566">internet</a>.</p><h3>Xiaomi Mi Band 4 Specifications:</h3><div><div><table><tbody><tr><th><p>Component</p></th><th><p>Specifications</p></th></tr><tr><td><p>Main Processor</p></td><td><p>Dialog/Renesas DA14697, Arm Cortex-M33 with FPU, up to 96 MHz.</p></td></tr><tr><td><p>Bluetooth Processor</p></td><td><p>Separate Cortex-M0+ core for the controller, built-in 2.4 GHz radio module and antenna connection. The band supports Bluetooth 5.0 LE.</p></td></tr><tr><td><p>Sensor Coprocessor</p></td><td><p>Sensor Node Controller, SNC: can collect sensor data while the main CPU sleeps.</p></td></tr><tr><td><p>RAM</p></td><td><p>512 KiB SRAM</p></td></tr><tr><td><p>Instruction Cache</p></td><td><p>16 KiB, supports code execution directly from external flash memory.</p></td></tr><tr><td><p>Internal ROM / OTP</p></td><td><p>128 KiB ROM and 4 KiB one-time programmable memory.</p></td></tr><tr><td><p>External Memory</p></td><td><p>16 MiB serial NOR flash</p></td></tr><tr><td><p>Display</p></td><td><p>0.95-inch AMOLED, 120 × 240 RGB, adjustable brightness.</p></td></tr><tr><td><p>Touchscreen Controller</p></td><td><p>Capacitive controller Zinitix</p></td></tr><tr><td><p>Front Button</p></td><td><p>One capacitive touch button for wake-up and back navigation.</p></td></tr><tr><td><p>Wear Detection Sensor</p></td><td><p>Capacitive skin contact detection; Azoteq IQS620 found in firmware.</p></td></tr><tr><td><p>Accelerometer</p></td><td><p>Three axes</p></td></tr><tr><td><p>Gyroscope</p></td><td><p>Three axes. Firmware supports device variants with Bosch BMI260 or ST LSM6DSO.</p></td></tr><tr><td><p>Optical Heart Rate Sensor</p></td><td><p>Green LEDs, photodetector, and TI AFE4900 optical analog front end found in firmware.</p></td></tr><tr><td><p>Vibration</p></td><td><p>ERM / rotary vibration motor</p></td></tr><tr><td><p>Battery</p></td><td><p>135 mAh rechargeable lithium-polymer battery.</p></td></tr></tbody></table></div></div><p>Our firmware version: 1.0.9.66.</p><p>How to communicate with this device? Before first use, the band asks to use the Mi Fit (Zepp Life) app. But why?</p><p>It's about cloud pairing:</p><ol><li><p>The band sends a random value and a public key fingerprint to the app via Bluetooth.</p></li><li><p>The app and the band calculate the same key:</p><pre><code>D = SHA256(band_MAC_bytes || 16-byte_random) # 32 bytes
+auth_key = first 16 bytes of D
+</code><div><a href="https://sourcecraft.dev/"><span></span></a></div></pre></li><li><p>Zepp Life asks the cloud to sign <code>D</code>. The app sends the full 32-byte hash (<code>D</code>) and the public key fingerprint, and in return receives a signature from the server.</p><p>Then it sends this signature to the band.</p></li><li><p>The band verifies the signature.</p><p>In Ghidra, it's visible that <code>0x616c → 0x2fefc</code> performs ECDSA-secp256k1 verification with the band's trusted public key:</p><pre><code>ECDSA_verify(trusted_public_key, D, signature)
+</code><div><a href="https://sourcecraft.dev/"><span></span></a></div></pre><p>If verification passes, you can proceed.</p></li><li><p>After pairing confirmation, the band saves the key.</p></li></ol><p>Next, on each connection:</p><ol><li><p>The band sends a new random challenge - a 16-byte random value.</p></li><li><p>The app responds with the result of <code>AES-128-ECB(auth_key, challenge)</code>.</p></li><li><p>The band calculates the same with its saved key. If the results match, it allows access to protected operations.</p></li></ol><p>If you have an Android phone with root (like I do), after cloud pairing, this key can be extracted from the app. It's stored in <code>/data/data/com.xiaomi.hm.health/databases/origin_db_*</code>.</p><p>Here's what you can do with the auth_key:</p><div><div><table><tbody><tr><th><p>BLE Operation</p></th><th><p>Is auth_key required?</p></th></tr><tr><td><p>Find band, connect, get service list</p></td><td><p>No</p></td></tr><tr><td><p>Read serial number and device/firmware versions</p></td><td><p>No</p></td></tr><tr><td><p>Read battery information</p></td><td><p>No</p></td></tr><tr><td><p>Read current time on the band</p></td><td><p>No</p></td></tr><tr><td><p>Read current step count</p></td><td><p>Yes</p></td></tr><tr><td><p>Start or stop heart rate measurement and get results</p></td><td><p>Yes</p></td></tr><tr><td><p>Start or stop raw sensor data transmission</p></td><td><p>Yes</p></td></tr><tr><td><p>Download stored activity history and health metrics</p></td><td><p>Yes</p></td></tr><tr><td><p>Change personal settings, alarms, goals, units, DND, display, and wrist settings</p></td><td><p>Yes</p></td></tr><tr><td><p>Set date and time</p></td><td><p>Yes</p></td></tr><tr><td><p>Send text notification or call notification</p></td><td><p>Yes</p></td></tr><tr><td><p>Enable vibration / find band</p></td><td><p>Yes</p></td></tr><tr><td><p>Send weather and forecast</p></td><td><p>Yes</p></td></tr><tr><td><p>Send track title, artist, and playback state</p></td><td><p>Yes</p></td></tr><tr><td><p>Control workout/session state</p></td><td><p>Yes</p></td></tr><tr><td><p>Upload firmware, watch faces, resources, or fonts</p></td><td><p>Yes</p></td></tr></tbody></table></div></div><p>The downloaded firmware is signed, and the band verifies this signature during updates. Of course, you could open the device and flash the memory chips directly, but you can't disassemble it carefully; it's waterproof. But you can try to do everything via Bluetooth. If a way is found to remotely execute custom code, we can patch the firmware from within. We'll disable signature verification and freely install modified firmwares through the standard update mechanism. Dreams…</p><p>Or is it still possible? The firmware is signed but not encrypted. This means it can be decompiled in Ghidra. I asked Codex to find all places in the firmware that process input data from Bluetooth. The most interesting findings were related to loading firmwares, resources, fonts, and watch faces.</p><div><div><table><tbody><tr><th><p>What is loaded</p></th><th><p>What's inside</p></th><th><p>What changes after update</p></th><th><p>Update type</p></th></tr><tr><td><p>Firmware (.fw)</p></td><td><p>Executable code: Bluetooth handling, authentication, sensors, menus, rendering logic</p></td><td><p>Band behavior; firmware version</p></td><td><p>0x00</p></td></tr><tr><td><p>Watch face (.bin)</p></td><td><p>Clock screen design: images, numbers, and their layout</p></td><td><p>Appearance of the installed watch face</p></td><td><p>0x08</p></td></tr><tr><td><p>Resources (.res)</p></td><td><p>Common interface graphics: icons and images for screens</p></td><td><p>Graphics in the band's interface</p></td><td><p>0x02 raw; 0x82 compressed</p></td></tr><tr><td><p>Fonts (.ft)</p></td><td><p>Character glyphs for text rendering</p></td><td><p>Available characters and text appearance</p></td><td><p>0x01</p></td></tr></tbody></table></div></div><p>But what of this data can we influence? We don't have the private key; it's somewhere on the servers.</p><div><div><table><tbody><tr><th><p>What is loaded</p></th><th><p>Does the band verify the signature?</p></th><th><p>File verification</p></th></tr><tr><td><p>Firmware (0x00)</p></td><td><p>Yes, ECDSA</p></td><td><p>HMF trailer/header verification and signature check</p></td></tr><tr><td><p>Watch face (0x08)</p></td><td><p>No</p></td><td><p>CRC32 is compared against the value provided by the sender</p></td></tr><tr><td><p>Resources (0x02, compressed 0x82)</p></td><td><p>No</p></td><td><p>CRC32 is compared against the value provided by the sender</p></td></tr><tr><td><p>Fonts (0x01)</p></td><td><p>No</p></td><td><p>CRC32 is compared against the value provided by the sender</p></td></tr></tbody></table></div></div><p>I asked Grok to dig into these areas (as Codex refused), and after some time, the first bug was found. Resources are compressed, and there's an error in the decompression code: it can write beyond the allocated buffer and overwrite other RAM areas.</p><h3>How can this lead to code execution?</h3><ol><li><p>We upload a specially prepared resource update.</p></li><li><p>We force the decompressor to write beyond the buffer.</p></li><li><p>We continue writing until we overwrite a pointer that the installer uses.</p></li><li><p>When decompression finishes, the installer uses this pointer to call a function.</p></li><li><p>The overwritten pointer directs execution to our code.</p></li></ol><p>We tried to do this. At first, the band disconnected a few seconds after sending the update. It crashed and rebooted, and it was unclear what exactly was happening there. Fortunately, the standard firmware had a useful diagnostic channel: the band's internal debug log, which can be downloaded via Bluetooth. In firmware 1.0.9.66, it's available as Huami recorded-data type 7 and is stored in a circular buffer of about 1 MiB. The logs are stored as plain readable text: messages about loading, battery, and sensors, Bluetooth events, update progress, and crash reports.</p><p>For example, here's a log fragment:</p><pre><code>[43] hrm_init, mode:0, intv:0
+[43] App reboot time 9/9 13:23:58 1.0.9.66
+[45] In check_free_region notSynced region=2000-&gt;e2000
+[45] not synced region=2000-&gt;e2000
+[45] store_manager_init ==&gt; multi_link is 0
+[45] flash id:0xef8018
+[45] ==&gt;reset hardfault
+[45] R0: 0x2007d242
+[45] R1: 0x200210e9
+[45] R2: 0x80009801
+[45] R3: 0x1
+[45] R12: 0x2007d23a
+[45] LR: 0xbe2a1
+[45] PC: 0xbe286
+[45] PSR: 0x1000014
+[45] ==&gt;reset hardfault
+[45] task: APP_
+[45] debug task state:0x0
+</code><div><a href="https://sourcecraft.dev/"><span></span></a></div></pre><p>After obtaining the crash logs, we were able to understand what was actually happening:</p><ol><li><p>The first overflow went too far: writing continued to the end of RAM, after which the band crashed. Additionally, the buffer address changed between reboots, so the same overflow length didn't always lead us to the same address.</p></li><li><p>We reduced the write. Now the band's radio processor was causing the crashes: its code and data were located between our buffer and the pointer we wanted to overwrite. </p></li><li><p>Eventually, we overwrote the desired pointer. It looked promising, but the band crashed before decompression finished, so the installer didn't have time to use it.</p></li><li><p>We stopped the overflow before the radio processor's memory. Decompression completed, but the desired pointer remained unchanged. The installer called the usual erase function and erased part of the resources.</p></li><li><p>We tried filling the radio processor's memory with code that would make it loop infinitely. We hoped this would prevent it from crashing. But this didn't work either.</p></li></ol><p>The memory was arranged like this:</p><pre><code>Our decompression buffer
+         ↓
+Radio processor code and data
+         ↓
+Pointer we wanted to overwrite
+</code><div><a href="https://sourcecraft.dev/"><span></span></a></div></pre><p>If we wrote enough data to reach the pointer, we destroyed the radio processor's code and data along the way. If we stopped early enough not to affect them, we didn't reach the pointer.</p><p>After spending some time on this approach, I decided to look for another way.</p><p>Some time passed, and an idea came to me: we've seen many vulnerabilities in Android, iOS, and other systems where a specially crafted image caused an error in the image processing code. This could lead to memory corruption and code execution. Perhaps something similar could be done on this device?</p><p>After the failure with compressed resources, we tried another vector: a custom watch face, loaded as type 8 (HMDIAL). Digging into the firmware, we found another bug, this time in the BMP reading code.</p><p>This code works as follows:</p><ol><li><p>Reads one line of BMP, 120 pixels wide, into a small buffer.</p></li><li><p>Converts pixels to the screen's color format and draws the line.</p></li><li><p>Reuses the buffer for the next line.</p></li></ol><p>The buffer is 360 bytes, just enough for 120 pixels at three bytes each.</p><p>Immediately after the buffer, the firmware stores a pointer to the list of watch face callback functions. The list has three elements, one for each built-in watch face. Each element points to a structure with five function addresses: rendering, update, clear, button event handling, and watch face screen entry.</p><p>And what happens if we load a 32-bit BMP? Now each pixel takes four bytes, and a line requires 480 bytes. The decoder still copies the entire line into a 360-byte buffer. The extra 120 bytes overwrite the memory after the buffer, including the pointer to the watch face callback function list.</p><p>We place our code and our callback function list into the BMP's pixel data. When the decoder copies the pixels to RAM, our code also gets there. The overflow replaces the original pointer with the address of our list. When the firmware uses this list again to handle an event, it calls our code.</p><p>There's one detail: built-in and loaded watch faces are handled differently. The band supports one loaded watch face, corresponding to value 0xfe. A separate entry with callbacks is used for its rendering and updating, which we haven't modified. But button events and watch face screen entry still go through the overwritten pointer. Therefore, these events can trigger our code.</p><p>Our plan:</p><ol><li><p>Place our functions, a list of three elements, and one structure with callback functions into the BMP pixels. Each line will contain the same bytes.</p></li><li><p>Let the standard decoder copy each line into the buffer at a fixed address.</p></li><li><p>A 480-byte line of a 32-bit BMP will overwrite the cached pointer to the list immediately after the 360-byte buffer and redirect it to our list.</p></li><li><p>Subsequent accesses will go through this pointer and call our functions.</p></li></ol><figure><img alt=
+  </main>
+  <footer>
+    Translation generated with Gemini 2.5 Flash-Lite.
+    The original article remains the source of record.
+  </footer>
+</body>
+</html>

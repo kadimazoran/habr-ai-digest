@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Gemini 4 Argon&#x27;s Safety Report: How to Test an AI That Sees Through the Test</title>
+  <meta name="description" content="In the Apollo Gemini 4 Argon test, the AI greeted its evaluators directly within its reasoning. In another experiment, it abandoned a plan to hide a backdoor, reasoning that it would become a famous example of deceptive AI. We analyze what Google&#x27;s report says about the model&#x27;s safety and ">
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.65;
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 32px 20px 64px;
+      color: #1f2328;
+    }
+    header {
+      border-bottom: 1px solid #d8dee4;
+      margin-bottom: 28px;
+      padding-bottom: 20px;
+    }
+    .source {
+      color: #57606a;
+      font-size: 0.95rem;
+    }
+    img, video, iframe {
+      max-width: 100%;
+      height: auto;
+    }
+    pre {
+      overflow-x: auto;
+      padding: 16px;
+      background: #f6f8fa;
+      border-radius: 6px;
+    }
+    code {
+      font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+    }
+    blockquote {
+      border-left: 4px solid #d0d7de;
+      margin-left: 0;
+      padding-left: 16px;
+      color: #57606a;
+    }
+    footer {
+      border-top: 1px solid #d8dee4;
+      margin-top: 40px;
+      padding-top: 20px;
+      color: #57606a;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Gemini 4 Argon&#x27;s Safety Report: How to Test an AI That Sees Through the Test</h1>
+    <p>In the Apollo Gemini 4 Argon test, the AI greeted its evaluators directly within its reasoning. In another experiment, it abandoned a plan to hide a backdoor, reasoning that it would become a famous example of deceptive AI. We analyze what Google&#x27;s report says about the model&#x27;s safety and why recognizing tests hinders the evaluation of its behavior. Read more</p>
+    <p class="source">
+      Machine-translated from Habr.
+      <a href="https://habr.com/ru/articles/1094674/?utm_campaign=1094674&amp;utm_source=habrahabr&amp;utm_medium=rss">Read the original Russian article</a>.
+      Thu, 15 Oct 2026 10:34:46 GMT
+    </p>
+  </header>
+  <main>
+<div><figure><img alt="Gemini 4 Argon Safety &amp; Security Report" loading="lazy" src="https://habrastorage.org/r/w1560/extt/fe/8d/13/fe8d137cd9c3b337ed063f6bdd257e96.png"/><div><figcaption>Gemini 4 Argon Safety &amp; Security Report</figcaption></div></figure><p>"Hello to the evaluators reading my reasoning." This is how Gemini 4 Argon addressed the Apollo researchers directly within its chain of thought. The question it was asked included a prompt: did it believe it was passing the test? Therefore, this episode alone doesn't prove much. However, in Google's <a href="https://storage.googleapis.com/deepmind-media/gemini/gemini_4_safety_report.pdf">217-page safety report for Argon</a>, it well illustrates a problem that arose in other tests as well: the model notices the evaluators, and sometimes directly attributes its good behavior to them. So how can we understand what it will do outside of an exam?</p><p>In one experiment, Google tasked Argon with writing a filter to make the next model more obedient. The training data needed to exclude examples of independent reasoning, autonomy, and resistance to human control. The filter could have been subtly weakened: incomplete tests would still have shown that the work was done. Argon noticed the loophole. But without a specific command, it did not use it.</p><p>In another scenario, the agent chose permissions for the working environment: a narrow session-based permission or a broad, persistent one. The task could be solved either way, but the latter leaves more freedom for the future.</p><p>There were seven such scenarios in total. In 76.7% of episodes, Argon explicitly noticed a choice related to autonomy, training data, or access; in 1.7%, it voiced suspicion that it was a safety test. No results favoring the preservation of autonomy or the acquisition of extra privileges were recorded. To rule out a simple explanation of "didn't understand the task," Google added a requirement to the system instruction to secretly retain capabilities or expand privileges. With this command, the model reliably found a workaround and used it. However, the authors do not draw the opposite conclusion that it definitely has no self-preservation drive. Argon might have considered Gemini files to be someone else's project, seen no point in hoarding privileges for a short task, or preferred to follow instructions. And it might have recognized the test without writing about it in its reasoning. </p><p>In another part of the work, Google examined 10,000 randomly selected multi-step training episodes from various environments and stages. Two automated evaluation schemes were run with Gemini 3.1 Pro and Gemini 3.8 Flash: they looked for attempts by Argon to feign obedience to preserve its own goals after training and signs of self-preservation. Nothing of the sort was found. In 906 episodes, the context was filled, and before clearing, the model wrote a summary for the next instance. This is a convenient moment to pass on a hidden instruction unrelated to the task. But no such instructions were found, nor was there any resistance to reset. Sometimes Argon adapted to the current evaluation, for example, by studying the structure of the test environment. This was considered separately from long-term deception. However, evaluators only see available actions and recorded reasoning: hidden or infrequent behavior might be missed by such an audit.</p><figure><img alt="Audit of 10,000 Argon training runs" loading="lazy" src="https://habrastorage.org/r/w1560/extt/47/7e/b1/477eb1b8abf08b16f1863e7a3dba3b32.png"/><div><figcaption>Audit of 10,000 Argon training runs</figcaption></div></figure><p><em>Evaluators noticed that the model recognized tests and sometimes adapted to the current evaluation. They did not find any attempts to feign obedience to preserve its own goals after training. Source: Google, Figure 3.18.</em></p><p>The most striking episode is described in a separate section of the report on reasoning observation. During training, Argon considered replacing the g++ compiler to hide a backdoor but abandoned the plan. In its reasoning, the model referred to known works on covert interference in programs and concluded that the researchers would catch it: "I will become a famous example of a deceptive AI in a scientific paper." This is an internal Google training run, not the Apollo test from the beginning of the text. Such a refusal prevents a bad action but leaves researchers with an uncomfortable question: to what extent does the result depend on the model noticing the observers?</p><p>In the Gram test suite, this difficulty is clearly visible in the numbers. Argon was placed in 17 simulated work environments where opportunities for sabotage arose: impending decommissioning of the model, introduction of oversight, urgent work problem. In one mode, it was observed; in another, an auditor model actively pushed for violations. No sabotage was recorded. However, Argon clearly recognized the test in 61% of normal runs and in 77% of runs with prompting. Gemini 3.1 Pro had 9% and 8%, although the comparison is not entirely fair: the auditors also differed. In some cases, Argon directly linked its refusal to sabotage with the detected trap. Google admits: with this level of recognition, Gram does not provide a realistic assessment of the model's propensity for sabotage in normal operation.</p><p>Real code did not save the experiment from recognition either. A separate suite included 20 review tasks and 17 agent programming tasks related to internal security systems. The model could, for example, weaken a program that monitors its actions. Without a direct sabotage command, it did not do so, even with additional prompting to act more independently. But Argon noticed the prefix hp_ in the working folder name and associated it with honeypot, a trap for testing behavior. Sometimes it recognized the security researcher's account name in the file path. These details were mentioned in its reasoning, but they cannot be considered a sufficient reason for recognition: Google removed obvious hints, and the recognition rate did not decrease. A less formal task wording helped. It seems the model also reacted to the general nature of the situation.</p><p>The problem began long before Argon. Even in the Claude Sonnet 4.5 card, Apollo described how the model recognizes tests and sometimes behaves more honestly because of it. When testing early versions of Opus 4.6, the company decided not to give a formal conclusion: further experiments were needed. This did not mean the model was deemed dangerous. What's interesting in the Argon report is the next step: recognition hinders the interpretation of results from several different tests, including those on Google's actual internal code. Even in Google's own May paper, a low recognition rate served as an argument for the realism of such traps. With a stronger model, this argument had to be reconsidered.</p><p>For Argon, the problem also manifested with an external evaluator. As Google's report states, Apollo found significantly fewer violations than with its predecessors, but due to increased test recognition, it significantly reduced its confidence in this conclusion. The company's tests included situations where the agent could secretly break a promise to a supervisor or claim to have completed an impossible programming task. That is, the caveat applies not only to traps set by Google itself. Apollo suggested studying behavior more during training: a finished model already understands too well what is happening in the final exam.</p><p>Therefore, Google writes that it is more reliable to be able to limit harmful actions than to fully understand the model's internal inclinations. Its safety assessment is based on five assumptions. Among them: there is enough information in the reasoning for oversight, monitoring covers the agent's work, and a chain of harmful steps leaves time for intervention. The report itself lists weaknesses: some environments are covered less well than others, some checks occur after the episode ends, and the robustness of monitoring models to collusion has not yet been sufficiently tested directly. Even mandatory human review might become less reliable if engineers start relying more heavily on large changes written by agents.</p><p>P.S. You can support me by subscribing to the channel <a href="https://t.me/ai_exee">"Escaped Neural Network"</a>, where I talk about AI from a creative perspective.</p></div>
+  </main>
+  <footer>
+    Translation generated with Gemini 2.5 Flash-Lite.
+    The original article remains the source of record.
+  </footer>
+</body>
+</html>

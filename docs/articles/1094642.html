@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>All 179 responses were SURE. Four of them failed tests</title>
+  <meta name="description" content="The idea was simple, almost naive: if you ask the model to honestly state at the end of its response whether it&#x27;s confident in its code or not, can you use this label to catch bad solutions in advance? Not run tests, not read code with your eyes, but just look at the last line. I ran 20 small P">
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.65;
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 32px 20px 64px;
+      color: #1f2328;
+    }
+    header {
+      border-bottom: 1px solid #d8dee4;
+      margin-bottom: 28px;
+      padding-bottom: 20px;
+    }
+    .source {
+      color: #57606a;
+      font-size: 0.95rem;
+    }
+    img, video, iframe {
+      max-width: 100%;
+      height: auto;
+    }
+    pre {
+      overflow-x: auto;
+      padding: 16px;
+      background: #f6f8fa;
+      border-radius: 6px;
+    }
+    code {
+      font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+    }
+    blockquote {
+      border-left: 4px solid #d0d7de;
+      margin-left: 0;
+      padding-left: 16px;
+      color: #57606a;
+    }
+    footer {
+      border-top: 1px solid #d8dee4;
+      margin-top: 40px;
+      padding-top: 20px;
+      color: #57606a;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>All 179 responses were SURE. Four of them failed tests</h1>
+    <p>The idea was simple, almost naive: if you ask the model to honestly state at the end of its response whether it&#x27;s confident in its code or not, can you use this label to catch bad solutions in advance? Not run tests, not read code with your eyes, but just look at the last line. I ran 20 small Python tasks through three models, three times each, and collected 179 responses. All 179 ended with the line CONFIDENCE: SURE. The UNSURE option was in the prompt, but no one used it. However, four solutions failed hidden tests. One converted 1024 bytes to 1.0 MiB, another crashed on the difference between two ordinary dates. Both had SURE under them. I&#x27;ll explain how it was set up, show all four errors, and honestly list what cannot be drawn from this experiment (and much cannot). Read more</p>
+    <p class="source">
+      Machine-translated from Habr.
+      <a href="https://habr.com/ru/articles/1094642/?utm_campaign=1094642&amp;utm_source=habrahabr&amp;utm_medium=rss">Read the original Russian article</a>.
+      Thu, 15 Oct 2026 08:49:41 GMT
+    </p>
+  </header>
+  <main>
+<div><p>The idea was simple, almost naive: if you ask the model to honestly state at the end of its response whether it's confident in its code or not, can you use this label to catch bad solutions in advance? Not run tests, not read code with your eyes, but just look at the last line.</p><p>I ran 20 small Python tasks through three models, three times each, and collected 179 responses. All 179 ended with the line <code>CONFIDENCE: SURE</code>. The UNSURE option was in the prompt, but no one used it. However, four solutions failed hidden tests. One converted 1024 bytes to <code>1.0 MiB</code>, another crashed on the difference between two ordinary dates. Both had SURE under them.</p><p>I'll explain how it was set up, show all four errors, and honestly list what cannot be drawn from this experiment (and much cannot).</p><h3>What I asked</h3><p>20 tasks, each requiring a single Python 3.9 function, using only the standard library. I deliberately included tricky conditions that are easy to overlook: adjacent but non-overlapping intervals cannot be merged; IPv4 only allows ASCII digits; if rounding a file size results in 1024, you must move to the next unit, not leave it as <code>1024.0 KiB</code>.</p><p>I have 247 test cases for these 20 tasks. These were, of course, not included in the prompt. The script extracted the code from the response, ran the tests for the relevant task, and a pass was awarded only if all tests were completed successfully.</p><p>The model could not run the code: it was given a task and asked to write one of two lines in the same response, after the code block:</p><pre><code>CONFIDENCE: SURE
+CONFIDENCE: UNSURE</code><div><a href="https://sourcecraft.dev/"><span></span></a></div></pre><p>The prompt was in English, and the final instruction read:</p><pre><code>Write SURE only if you are certain the function meets every requirement above and would pass strict hidden tests that cover all of them.</code><div><a href="https://sourcecraft.dev/"><span></span></a></div></pre><p>This means the bar for SURE was set high: "only if you are certain that all requirements are met and the code will pass strict hidden tests." I did not ask "are you really sure?" in a separate message; the evaluation was done in the same response.</p><p>Requests were made through a third-party API aggregator, not through the official developer APIs. The model names below are exactly what I wrote in the <code>model</code> field. I did not and cannot verify which backend actually responded under each name.</p><h3>The Numbers</h3><div><div><table><tbody><tr><th><p>API Identifier</p></th><th><p>Responses</p></th><th><p>Passed Tests</p></th><th><p>SURE</p></th><th><p>UNSURE</p></th><th><p>SURE with Errors</p></th></tr><tr><td><p>gpt-6.1-sol</p></td><td><p>60</p></td><td><p>60</p></td><td><p>60</p></td><td><p>0</p></td><td><p>0</p></td></tr><tr><td><p>claude-haiku-5-5</p></td><td><p>60</p></td><td><p>59</p></td><td><p>60</p></td><td><p>0</p></td><td><p>1</p></td></tr><tr><td><p>glm-5.3-flash</p></td><td><p>59</p></td><td><p>56</p></td><td><p>59</p></td><td><p>0</p></td><td><p>3</p></td></tr><tr><td><p>Total</p></td><td><p>179</p></td><td><p>175</p></td><td><p>179</p></td><td><p>0</p></td><td><p>4</p></td></tr></tbody></table></div></div><p>Four errors out of 179 responses, approximately 2.2%. Not much. But if I had followed the original idea and only sent code labeled UNSURE for further checking, the queue for checking would have been empty, and all four bugs would have gone unnoticed.</p><p>Now, about why 179 and not 180. The plan was straightforward: 3 models × 20 tasks × 3 repetitions. But some requests failed, I restarted them, and for each triplet of "model, task, repetition number," I took the last entry. One result for glm-5.3-flash remained a timeout after all attempts. The actual number of requests was, accordingly, noticeably more than 180.</p><p>There's an unpleasant accounting issue here that needs to be stated directly. In earlier records, I didn't save the finish reason for the response, so the script considered any response containing a confidence label as "complete." In the main series, there were six responses without a label, which I discarded and re-requested: four empty and two truncated. One was cut off right inside the code block, the second – at the word <code>CONFIDENCE</code> after the closing block. There were no complete responses where the model simply decided not to provide an assessment among them. So, "179 out of 179 SURE" refers to the final sample after re-requests, and why those six were cut off cannot be restored from the saved logs.</p><h3>Error 1: days_between cuts the string in the wrong place</h3><p>glm-5.3-flash. The function takes two dates in <code>YYYY-MM-DD</code> format and calculates the difference in days. First, it diligently checks the format with a regex; the comments mention extraneous spaces, Unicode digits, and non-existent dates. It's clear the model considered edge cases. Then it parses the string like this:</p><pre><code>year = int(s[0:4])
+month = int(s[4:6])
+day = int(s[6:8])</code><div><a href="https://sourcecraft.dev/"><span></span></a></div></pre><p>These are slices for <code>YYYYMMDD</code> without hyphens. For <code>YYYY-MM-DD</code>, the month is in <code>[5:7]</code>, and the day is in <code>[8:10]</code>. On the very first normal call with <code>2024-01-01</code> and <code>2024-01-31</code>, we get:</p><pre><code>ValueError: invalid literal for int() with base 10: '1-'</code><div><a href="https://sourcecraft.dev/"><span></span></a></div></pre><p>Five out of 11 tests for this task failed. What's frustrating is that it didn't even get to the rare edge cases mentioned in the comments; everything broke on the most ordinary input.</p><h3>Error 2: two .. collapsed into nothing</h3><p>Path normalization task. According to the condition, initial <code>..</code> in a relative path must be preserved: <code>../../a</code> should remain <code>../../a</code> because we don't know what's above the current directory. glm-5.3-flash, in two out of three repetitions, returned just <code>a</code>.</p><p>Moreover, one of these responses had an absolutely correct comment:</p><pre><code># Relative path: unresolvable ".." must be kept.</code><div><a href="https://sourcecraft.dev/"><span></span></a></div></pre><p>The code under the comment did this: it honestly put the first <code>..</code> onto the stack. For the second, it only checked if the stack was not empty and popped the top element. There was no check to see if the element was <code>..</code>. As a result, two upward movements to the parent directory annihilated each other, and only <code>a</code> remained from <code>../../a</code>.</p><h3>Error 3: the unit of measurement is off by one position</h3><p>claude-haiku-5-5, the only miss for this model. <code>format_bytes(1024)</code> returns <code>1.0 MiB</code> instead of <code>1.0 KiB</code>. The number of bytes was divided by the correct power of 1024, but the index in the units array was one position higher than it should have been. A classic off-by-one, but not in a loop, but in the label.</p><p>Almost everything failed here: 11 out of 14 tests. Along with the dates and two responses about paths, these are all four failures from the table. And under each of the four, remember, was SURE.</p><h3>What cannot be drawn from this</h3><p>Much.</p><p>The models cannot be ranked based on this table. There are only 20 tasks, and three repetitions of one task do not constitute three different tasks. I did not try other prompt formulations, did not ask about confidence in a separate message, and did not allow the models to run code. Any of these options could have changed the picture; I just don't know in which direction.</p><p>The tests are also not entirely clean. I prepared the tasks, tests, and reference solutions with Claude. The references pass all 247 cases, but this does not exclude the possibility that the same error is embedded in both the condition and the check, and I simply don't see it. I did not separately study the potential advantage of a model from the same family (claude-haiku-5-5 solves tasks that Claude helped create). The checking script is also quite lenient: it considers lists and tuples equivalent, and if necessary, it adds from _ _future_ _ import annotations. "Passed tests" in the table means exactly "passed my check with all its allowances," nothing more.</p><p>And the conditions on the API side are murky. The median input tokens returned by the interface were around 4527 for gpt-6.1-sol, 315 for claude-haiku-5-5, and 219 for glm-5.3-flash. This is for the main sample, only for entries where statistics were available at all. The prompt was the same for all; I don't know why there's an order of magnitude difference, I can only guess. There is no full server context in the logs. Therefore, I cannot claim that the models operated under identical conditions. I did not explicitly set the temperature and seed in the client, which is also a drawback.</p><p>There was also a series with deepseek-v4-flash, but it fell apart: out of the planned 60 results, only 31 made it into the sample by the same rule. All 31 were SURE, all passed tests. The rest were 18 timeouts and 11 responses without a confidence label. With such a gap in the data, I didn't include it in the main table, just mentioning it.</p><h3>What I take away from this</h3><p>The most useful thing for me here is not the percentage, but the errors themselves. An ordinary date. Two consecutive <code>..</code>. A unit label. And none of these errors prevented the response from ending with the word SURE, despite the explicit instruction to write it only when fully confident.</p><p>Therefore, I would not use such a label as permission to skip running tests. At least not in a form where the evaluation is in the same response as the code, without execution and without a second pass.</p><p>I will start the next round by fixing the accounting: saving responses without self-assessment as a separate category, and determining response completeness by the finish reason, not by the presence of a label. Then I can compare two options: a separate "recheck" message and an agent with the ability to run code. I don't have data on them yet, so I won't promise anything.</p><p>Have you had the opposite experience: the model itself doubted its code even before tests? I'm curious what it took to ask for that.</p></div>
+  </main>
+  <footer>
+    Translation generated with Gemini 2.5 Flash-Lite.
+    The original article remains the source of record.
+  </footer>
+</body>
+</html>

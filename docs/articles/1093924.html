@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Writing is Not Remembering: A Month of External Memory for an AI Agent</title>
+  <meta name="description" content="One day I lost a chat. It wasn&#x27;t a disaster – just a regular work session checking student homework. I hadn&#x27;t exported, hadn&#x27;t logged anything. And the chat disappeared. Most likely, I deleted it myself, but I can&#x27;t remember for sure. Only what I had manually saved outside the ch">
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.65;
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 32px 20px 64px;
+      color: #1f2328;
+    }
+    header {
+      border-bottom: 1px solid #d8dee4;
+      margin-bottom: 28px;
+      padding-bottom: 20px;
+    }
+    .source {
+      color: #57606a;
+      font-size: 0.95rem;
+    }
+    img, video, iframe {
+      max-width: 100%;
+      height: auto;
+    }
+    pre {
+      overflow-x: auto;
+      padding: 16px;
+      background: #f6f8fa;
+      border-radius: 6px;
+    }
+    code {
+      font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+    }
+    blockquote {
+      border-left: 4px solid #d0d7de;
+      margin-left: 0;
+      padding-left: 16px;
+      color: #57606a;
+    }
+    footer {
+      border-top: 1px solid #d8dee4;
+      margin-top: 40px;
+      padding-top: 20px;
+      color: #57606a;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Writing is Not Remembering: A Month of External Memory for an AI Agent</h1>
+    <p>One day I lost a chat. It wasn&#x27;t a disaster – just a regular work session checking student homework. I hadn&#x27;t exported, hadn&#x27;t logged anything. And the chat disappeared. Most likely, I deleted it myself, but I can&#x27;t remember for sure. Only what I had manually saved outside the chat survived; everything else simply ceased to exist. And then it struck me: the exact same thing happens to a model in every long session when data falls out of context due to compression. What if we give the agent an independent memory that lives outside the chat and doesn&#x27;t depend on whether the model decides to discard it or not? Thus, the MemShelf project was born.</p>
+    <p class="source">
+      Machine-translated from Habr.
+      <a href="https://habr.com/ru/companies/basis/articles/1093924/?utm_campaign=1093924&amp;utm_source=habrahabr&amp;utm_medium=rss">Read the original Russian article</a>.
+      Fri, 16 Oct 2026 09:54:45 GMT
+    </p>
+  </header>
+  <main>
+<div><p>One day I lost a chat. It wasn't a disaster – just a regular work session checking student homework. I hadn't exported, hadn't logged anything. And the chat disappeared. Most likely, I deleted it myself, but I can't remember for sure.</p><p>Only what I had manually saved outside the chat survived; everything else simply ceased to exist. And then it struck me: the exact same thing happens to a model in every long session when data falls out of context due to compression. What if we give the agent an independent memory that lives outside the chat and doesn't depend on whether the model decides to discard it or not? Thus, the MemShelf project was born.</p><h2>From a Document Shelf to an Experience Shelf</h2><p>In a <a href="https://habr.com/ru/companies/basis/articles/1066908/">previous article</a>, I talked about DocShelf – an MCP server that turns a pile of local PDFs into a document shelf: there's an index-table of contents, the model finds the relevant fragment based on it and pulls up a specific piece, not the entire archive at once.</p><p>MemShelf works the same way, only the shelf isn't for documents, but for the agent's own "experience." The unit of storage is an episode: what was done, what decision was reached, what alternatives were rejected and why, where mistakes were made, what remains to be done.</p><p>It's similar to a work log, but a "classic" work log usually "lives" around a specific feature and commit, whereas an episode is around the entire work session, including what didn't make it into any commit: rejected alternatives, pitfalls, open ends.</p><p>Episodes land on the shelf from several sources:</p><ul><li><p>Night and day shifts of Claude Code across a portfolio of 28 repositories. Each shift concludes with an episode: what was merged, what was rejected and with what evidence, what defects were found in self-checks. The next shift starts by reading the shelf, not by retelling.</p></li><li><p>Dispatcher and bus between sessions. Decisions on protocol and roles live longer than any individual session, so their place is on the shelf.</p></li><li><p>Homelab: a farm of runners, UPS, switches. Each incident is logged as an episode with reproduction steps.</p></li><li><p>Experiments with preregistration: before starting, I record what I'm testing and what result I'll consider a success, so as not to tailor conclusions to numbers later. Registration, measurement, closing the branch – three episodes that cannot be lost. For example, the shelf contains experience with the compression threshold, which will be discussed below.</p></li><li><p>Student feedback on training materials, which accumulates between course cohorts.</p></li></ul><p>By mid-September, there were 230 episodes on the shelf, about 150 of them being session summaries. The figures below are mainly from a snapshot on August 20 (shelf day 38, 157 episodes), on which all measurements are based.</p><h2>What's Wrong with Compression</h2><p>Why move memory out of the chat, other than "just in case"? Suppose the context window is 500,000 tokens. As long as the conversation fits entirely within it, everything is fine. As soon as it doesn't, the agent starts compression: it automatically decides what from the history is important and what isn't, and compresses the context.</p><p>Crucially, the decision isn't made by a human, and there's no interface like "keep this, discard that." This is where the model's stupidity comes from, when after a long work session it starts forgetting what it said an hour ago: the necessary piece was discarded during compression.</p><p>You can reduce the window to avoid filling the context too much with each request. But the smaller the window, the more often compression triggers, and the higher the chance of losing something important. This threshold has a practical "floor": a noticeable part of the window is occupied even before your first word. The client's system prompt, built-in tools, connected MCP servers, connectors, and skills – for me, this is a median of 38.6 thousand tokens, and 32 thousand of them are from the client itself, meaning I have no influence on them as a user. And in some tools, the window simply cannot be set below a certain size. A working compromise is to raise the bar to 200-300 thousand: compaction is less frequent, and there's already some savings.</p><p>This is where MemShelf comes in. Compression isn't canceled, but it loses its main decision-making power: instead of handing "important data" to the agent, you close the session yourself with an episode and put it on the shelf. In the next session, the agent doesn't guess the context from what survived compression, but reads what you actually recorded.</p><h2>How an Episode Lands on the Shelf</h2><p>The cycle mechanics: topic closed -> agent compiles episode in Markdown -> tool checks and cleans it -> I commit -> bot redraws index. In the next session, in a different chat, the agent finds the required entry via MCP using the index and reads it entirely or just one section.</p><p>The shelf itself is a git repository with Markdown files, and everything discussed below resides in it:</p><pre><code>main-memshelf/ 
+├── shelf.yml              # manifest: name, storage mode, categories
+├── POLICY.md              # what is edited before writing
+├── POLICY.patterns        # regex for known values: names, keys, tokens
+├── INDEX.md               # table of contents - the only thing that goes into the agent's context
+├── ledger.tsv             # one line per shelve: date, id, approx_tokens, digest_tokens
+├── recall-log.tsv         # one line per recall: id, section, fetched_tokens
+├── stats.svg              # shelf economics, redrawn by bot
+├── docs/
+│   ├── topics/            # closed topics
+│   │   ├── .meta.json
+│   │   └── 2026-08-14-shelf-reachable-but-unused.md
+│   ├── sessions/          # session summaries; Timeline section is mandatory
+│   │   └── 2026-08-20-cc-token-audit.md
+│   └── research/          # experiments with preregistration
+│       └── 2026-08-14-autocompact-100k-closed-200k-registered.md
+└── archive/               # originals for rollups; recall by id still works
+└── .github/workflows/     # bot: render INDEX/ledger/.meta/stats on main + PR guard</code><div><a href=
+  </main>
+  <footer>
+    Translation generated with Gemini 2.5 Flash-Lite.
+    The original article remains the source of record.
+  </footer>
+</body>
+</html>

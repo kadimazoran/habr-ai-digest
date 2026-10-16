@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Perhaps the Only Useful Application of DLSS 5. Black and White Films</title>
+  <meta name="description" content="I promise, this is the last time I&#x27;ll write about DLSS 5. To be clear from the start. Yes, the result is crap. Yes, it&#x27;s disgusting. Yes, it&#x27;s an experiment for the sake of experiment. But the fact itself! God, what a horror. Author – stop it!">
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.65;
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 32px 20px 64px;
+      color: #1f2328;
+    }
+    header {
+      border-bottom: 1px solid #d8dee4;
+      margin-bottom: 28px;
+      padding-bottom: 20px;
+    }
+    .source {
+      color: #57606a;
+      font-size: 0.95rem;
+    }
+    img, video, iframe {
+      max-width: 100%;
+      height: auto;
+    }
+    pre {
+      overflow-x: auto;
+      padding: 16px;
+      background: #f6f8fa;
+      border-radius: 6px;
+    }
+    code {
+      font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+    }
+    blockquote {
+      border-left: 4px solid #d0d7de;
+      margin-left: 0;
+      padding-left: 16px;
+      color: #57606a;
+    }
+    footer {
+      border-top: 1px solid #d8dee4;
+      margin-top: 40px;
+      padding-top: 20px;
+      color: #57606a;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Perhaps the Only Useful Application of DLSS 5. Black and White Films</h1>
+    <p>I promise, this is the last time I&#x27;ll write about DLSS 5. To be clear from the start. Yes, the result is crap. Yes, it&#x27;s disgusting. Yes, it&#x27;s an experiment for the sake of experiment. But the fact itself! God, what a horror. Author – stop it!</p>
+    <p class="source">
+      Machine-translated from Habr.
+      <a href="https://habr.com/ru/articles/1095306/?utm_campaign=1095306&amp;utm_source=habrahabr&amp;utm_medium=rss">Read the original Russian article</a>.
+      Fri, 16 Oct 2026 12:06:09 GMT
+    </p>
+  </header>
+  <main>
+<div><p>I promise, this is the last time I'll write about DLSS 5. To be clear from the start. Yes, the result is crap. Yes, it's disgusting. Yes, it's an experiment for the sake of experiment. But the fact itself!</p><div></div><h3>Where the Idea Came From</h3><p>I posted a video on YouTube where DLSS 5 via RenoDX redraws L.A. Noire, including in black and white mode. That was the point. If you apply DLSS 5 in denoise before upscaling mode, and do a multipass (4x or more), then, within its hallucinations, it starts to colorize the image.</p><p>Below it, someone asked if it could colorize black and white films. I replied that if integrated into a player, then yes, but you won't like the result. He rightly noted that video has neither motion vectors nor depth.</p><figure><img alt="The very thread under the video about L.A. Noire" loading="lazy" src="https://habrastorage.org/r/w1560/extt/9d/d6/b6/9dd6b689a1744a35886e86665a0393ef.jpg" title="The very thread under the video about L.A. Noire"/><div><figcaption>The very thread under the video about L.A. Noire</figcaption></div></figure><p>And I thought: why not, when possible.</p><h3>How</h3><p>I integrated RenoDX into Media Player Classic. I took Chaplin's 1921 film 'The Kid,' which has long been in the public domain.</p><p>First, I tried the smart approach: running the model over the file repeatedly. But the files turned out too stable and remained black and white, nothing interesting. Then I enabled everything directly in the player, in x10 mode. On the left is the original, on the right is what the viewer sees with DLSS 5.</p><p>In the end, I tried different models: Default, Natural, Cinematic (in the standalone addon, they are called a/b/c). Only Default colors properly; the others just chew up the gray.</p><h3>What Was the Result</h3><p>The colors it produces are modest, dirty brown, with hints of a blue jacket or red fur on the collar. But faces are a disaster. It blurs them. Chaplin lost his mustache and aged about twenty years.</p><figure><img alt="Left is 1921, right is the same after DLSS 5. The Tramp without a mustache" loading="lazy" src="https://habrastorage.org/r/w1560/extt/d8/c3/d3/d8c3d3353f08f0c74da2e273fd69704e.jpg" title="Left is 1921, right is the same after DLSS 5. The Tramp without a mustache"/><div><figcaption>Left is 1921, right is the same after DLSS 5. The Tramp without a mustache</figcaption></div></figure><p>For a woman arguing with a policeman, the model briefly drew a beard and a hat. No comments.</p><figure><img alt="A beard appeared on its own. I didn't ask for it" loading="lazy" src="https://habrastorage.org/r/w1560/extt/8e/58/14/8e58143db19d253ab51c6c763c4e8917.jpg" title="A beard appeared on its own. I didn't ask for it"/><div><figcaption>A beard appeared on its own. I didn't ask for it</figcaption></div></figure><p>The street scene is even funnier. In the original, it's a dry, dusty road, but DLSS 5 decided it had just rained and turned it into wet asphalt with reflections.</p><figure><img alt="A dry dirt road turned into puddles" loading="lazy" src="https://habrastorage.org/r/w1560/extt/e2/4f/8a/e24f8ad684bb4b0fe38f893be2d4d254.jpg" title="A dry dirt road turned into puddles"/><div><figcaption>A dry dirt road turned into puddles</figcaption></div></figure><figure><img alt="And here it's a downpour that isn't in the film" loading="lazy" src="https://habrastorage.org/r/w1560/extt/c2/f6/09/c2f6098460925ba91d82274dafba33ff.jpg" title="And here it's a downpour that isn't in the film"/><div><figcaption>And here it's a downpour that isn't in the film</figcaption></div></figure><h3>And What's the Point</h3><p>The point is that it colorizes the film in real-time. Without the vectors and depth that Nvidia asked for, and which require DX12.</p><p>Nvidia will likely address faces too. On October 13th, they showed an updated model, twice as fast as the September one, and in comparisons from Hogwarts Legacy, it touches faces much more modestly. And on October 23rd, RTX Remix promises masks for individual scene elements and presets for each object. This means you can tell the model: don't touch faces, colorize everything else.</p></div>
+  </main>
+  <footer>
+    Translation generated with Gemini 2.5 Flash-Lite.
+    The original article remains the source of record.
+  </footer>
+</body>
+</html>

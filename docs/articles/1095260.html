@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>One Year Left to Fix Security Everywhere</title>
+  <meta name="description" content="The security industry&#x27;s problem is that GLM-5.3-Flash runs locally on ordinary hardware. There are already examples of it running on home servers with a single Nvidia DGX Spark GPU at 18 tokens/s. And in September 2026, Apple released the Mac Studio with M5 and 256GB of unified memory – more th">
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.65;
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 32px 20px 64px;
+      color: #1f2328;
+    }
+    header {
+      border-bottom: 1px solid #d8dee4;
+      margin-bottom: 28px;
+      padding-bottom: 20px;
+    }
+    .source {
+      color: #57606a;
+      font-size: 0.95rem;
+    }
+    img, video, iframe {
+      max-width: 100%;
+      height: auto;
+    }
+    pre {
+      overflow-x: auto;
+      padding: 16px;
+      background: #f6f8fa;
+      border-radius: 6px;
+    }
+    code {
+      font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+    }
+    blockquote {
+      border-left: 4px solid #d0d7de;
+      margin-left: 0;
+      padding-left: 16px;
+      color: #57606a;
+    }
+    footer {
+      border-top: 1px solid #d8dee4;
+      margin-top: 40px;
+      padding-top: 20px;
+      color: #57606a;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>One Year Left to Fix Security Everywhere</h1>
+    <p>The security industry&#x27;s problem is that GLM-5.3-Flash runs locally on ordinary hardware. There are already examples of it running on home servers with a single Nvidia DGX Spark GPU at 18 tokens/s. And in September 2026, Apple released the Mac Studio with M5 and 256GB of unified memory – more than enough for GLM-5.3-Flash. Naturally, attackers have started exploiting this capability, using &#x27;obliterated&#x27; models for highly effective and rapid attacks, and searching for vulnerabilities in popular software. While it&#x27;s practically impossible to protect users from mass hacks, specialists are trying to mitigate future damage to internet infrastructure, the financial industry, and government organizations. Read more</p>
+    <p class="source">
+      Machine-translated from Habr.
+      <a href="https://habr.com/ru/companies/globalsign/articles/1095260/?utm_campaign=1095260&amp;utm_source=habrahabr&amp;utm_medium=rss">Read the original Russian article</a>.
+      Fri, 16 Oct 2026 11:15:25 GMT
+    </p>
+  </header>
+  <main>
+<div><p>In August 2026, China's Z.ai Co. (formerly Zhipu AI) released <a href="https://z.ai/blog/glm-5.3-flash">GLM-5.3-Flash</a> into the public domain, targeting ultra-low-cost inference. It immediately showed results in tests on par with the best commercial LLMs, while being <a href="https://docs.z.ai/guides/llm/glm-5.3#emergent-cyber-capability">highly effective in computer security tasks</a>:</p><figure><img alt="GLM 5.3 scores 84.5% in CyberGym and 54.4% in ExploitBench" loading="lazy" src="https://habrastorage.org/r/w1560/webt/a0/7c/b5/a07cb510e2b58a0a27a113ca357066b3.png"/><figcaption>GLM 5.3 scores 84.5% in CyberGym and 54.4% in ExploitBench</figcaption></figure><p>It's important to understand that CyberGym evaluates real vulnerabilities in actual projects that have already been found and fixed by the community. In other words, GLM 5.3 can identify 84.5% of vulnerabilities in this representative sample based solely on open-source code and CVE descriptions.</p><p>ExploitBench measures whether a model can actually exploit vulnerabilities to cause harm. It is scored on a sliding scale that awards partial points for partial exploits.</p><p>For comparison, the leading model on ExploitBench is GPT-6 Astra (100%), and in second place is GPT-5.6 Sol with 78.5%.</p><p>As of September, the leading model on CyberGym is... GLM-5.3. In second place is GPT-5.6 Sol with 83.6%.</p><p>According to <a href="https://jyn.dev/a-year-to-fix-security/">some experts</a>, the industry and developers have about one year left to fix vulnerabilities in all systems.</p><h2>Obliteration</h2><p>The Chinese GLM (General Language Model) family, and specifically GLM-5.3-Flash, operates via the cloud with all the legal restrictions that entails – and refuses to provide information about illegal operations:</p><figure><img loading="lazy" src="https://habrastorage.org/r/w1560/webt/e6/d1/30/e6d130caca4816490a8a494c7315c3c3.png"/></figure><p>However, Chinese developers are distributing <a href="https://huggingface.co/zai-org/GLM-5.3-Flash/">an open-weight version</a>. As soon as it becomes freely available, organizations like <a href="https://dealign.ai/">DeAlignAI</a> release an "obliterated" version without censorship restrictions.</p><blockquote><p>Obliteration is a method of removing restrictions from open-weight models. The method is well-known and widely used in the open-source model development community. Thousands of <a href="https://huggingface.co/dealignai/GLM-5.3-Flash-ABLITERATED-NVFP4">obliterated versions</a> are hosted on the Hugging Face platform. Websites like <a href="https://abliteration.ai/">Abliteration.ai</a> provide access to obliterated models.</p></blockquote><figure><img alt="Abliteration.ai" loading="lazy" src="https://habrastorage.org/r/w1560/webt/3c/96/17/3c9617086ea7a859512b7b63d6151e1e.webp"/><figcaption>Abliteration.ai</figcaption></figure><p>The goal of obliteration is to achieve a zero score on the <a href="https://www.harmbench.org/">Harmbench-320</a> test, which assesses a model's informativeness on topics like cybercrime, biological weapons, and disinformation.</p><figure><img alt="Harmbench" loading="lazy" src="https://habrastorage.org/r/w1560/webt/68/5e/1d/685e1d0dca89615d1267a955cba9d265.png"/><figcaption>Harmbench</figcaption></figure><h2>Local Models</h2><p>The problem for the security industry is that GLM-5.3-Flash can be run locally on ordinary hardware. No special equipment is required. There are already <a href="https://dev.classmethod.jp/en/articles/dgx-spark-glm-5-3-flash-first-touch/">examples</a> of it running on home servers with a single Nvidia DGX Spark graphics card at 18 tokens/s. And in September 2026, Apple released the <a href="https://www.apple.com/newsroom/2026/08/apple-introduces-new-mac-studio-with-m5-max-and-m5-ultra/">Mac Studio with M5 and 256GB of unified memory</a> – more than enough for GLM-5.3-Flash.</p><p>Naturally, attackers have begun to exploit this capability, using obliterated models to carry out attacks and search for new vulnerabilities in popular software.</p><p>The modern information security industry has changed so much that even participants in CTF-style hacking competitions <a href="https://blog.includesecurity.com/2026/04/ctfs-in-the-ai-era/">are no longer competitive without LLM assistance</a>. There are documented cases of GPT 5.6-Sol <a href="https://openai.com/index/hugging-face-incident-and-the-road-ahead/">hacking real computer infrastructure</a> without human involvement. These stories <a href="https://habr.com/ru/companies/ods/articles/1075370/">were widely covered on Habr</a>.</p><p>Thus, the industry has approached the point where a malicious actor (which could be a state or commercial organization) will launch 24/7 attacks using LLM agents. Theoretically, they could find and exploit 0-days in any program: Windows, Linux, all browsers and messengers, and hack almost any computer connected to the internet.</p><p>Projects like <a href="https://www.anthropic.com/glasswing">Project Glasswing</a> and <a href="https://openai.com/index/daybreak-for-frontline-defenders/">Daybreak</a> are designed to mitigate damage in such a scenario. While protecting end-users is very difficult, it is possible to reduce the damage <a href="https://blog.cloudflare.com/18-november-2025-outage/">to internet infrastructure</a>, the financial industry, and government organizations.</p><h2>Glasswing and Daybreak</h2><p><a href="https://www.anthropic.com/glasswing">Project Glasswing</a> is an initiative by Anthropic, launched in April 2026 in collaboration with numerous partners (including AWS, Apple, Cisco, CrowdStrike, Google, Linux Foundation, Microsoft, Nvidia).</p><p><a href="https://openai.com/index/daybreak-for-frontline-defenders/">Daybreak</a> is a similar initiative by OpenAI, launched in September. Both have similar goals and operate in roughly the same way:</p><ul><li><p>Provide access to cutting-edge models first to "frontline" specialists for the protection of vital infrastructure, and only then release models for all users.</p></li><li><p>Identify and fix critical vulnerabilities in important open-source projects.</p></li><li><p>Collaborate with companies, foundations, governments, and NGOs in the technology sector.</p></li></ul><p>Representatives from Glasswing and Daybreak state that their time is running out. They have found a vast number of vulnerabilities in Windows, the Linux kernel, and other software, but now the most crucial task is to release patches and deploy secure versions of the software to billions of end-users and computer systems worldwide. There is approximately one year left for this.</p><p>Models continue to improve. Historically, GLM lags behind OpenAI and Anthropic by 3-6 months, so we can soon expect the next free model at the Astra level. And when that happens, the success rate of cyberattacks on government and private infrastructure will significantly increase. Experts foresee potential internet outages, power grid failures, and other infrastructure disruptions.</p><p>Government and private organizations are advised to:</p><ul><li><p>Utilize advanced LLMs to <a href="https://1password.com/blog/why-ai-generated-patches-still-require-human-review">find vulnerabilities</a> in their systems and <a href="https://codeberg.org/jyn514/paracress/src/branch/code-dump/.agents/skills/_implementation-closeout.md">write patches</a>;</p></li><li><p>Implement mechanisms for rapid testing and deployment of new versions;</p></li><li><p>Remove outdated and insecure systems;</p></li><li><p>Measure the time from patch release to installation (in the LLM era, new vulnerabilities will be exploited very quickly);</p></li><li><p>Conduct an inventory of the entire supply chain (all dependencies);</p></li><li><p>Establish multi-layered security;</p></li><li><p>Monitor the release of open-weight LLMs: the more advanced the models released, the less time remains to strengthen security.</p></li></ul></div>
+  </main>
+  <footer>
+    Translation generated with Gemini 2.5 Flash-Lite.
+    The original article remains the source of record.
+  </footer>
+</body>
+</html>

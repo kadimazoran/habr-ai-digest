@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Not My Feature, or How I&#x27;m Losing Meaning</title>
+  <meta name="description" content="No matter what you read here next, I&#x27;m not a Luddite or an opponent of AI. I&#x27;m an active user and believe it&#x27;s a marvelous wonder, but... it&#x27;s turning out strangely. I set up an agent, gave it context, reviewed the proposed plan, launched it, and checked the resulting code. It wa">
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.65;
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 32px 20px 64px;
+      color: #1f2328;
+    }
+    header {
+      border-bottom: 1px solid #d8dee4;
+      margin-bottom: 28px;
+      padding-bottom: 20px;
+    }
+    .source {
+      color: #57606a;
+      font-size: 0.95rem;
+    }
+    img, video, iframe {
+      max-width: 100%;
+      height: auto;
+    }
+    pre {
+      overflow-x: auto;
+      padding: 16px;
+      background: #f6f8fa;
+      border-radius: 6px;
+    }
+    code {
+      font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+    }
+    blockquote {
+      border-left: 4px solid #d0d7de;
+      margin-left: 0;
+      padding-left: 16px;
+      color: #57606a;
+    }
+    footer {
+      border-top: 1px solid #d8dee4;
+      margin-top: 40px;
+      padding-top: 20px;
+      color: #57606a;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Not My Feature, or How I&#x27;m Losing Meaning</h1>
+    <p>No matter what you read here next, I&#x27;m not a Luddite or an opponent of AI. I&#x27;m an active user and believe it&#x27;s a marvelous wonder, but... it&#x27;s turning out strangely. I set up an agent, gave it context, reviewed the proposed plan, launched it, and checked the resulting code. It was good. I fixed one minor duplication issue, then sent it for code review. Then to testing. Then to production. And now... it&#x27;s like fake Christmas ornaments – they look real, but bring no joy. Read more</p>
+    <p class="source">
+      Machine-translated from Habr.
+      <a href="https://habr.com/ru/articles/1095278/?utm_campaign=1095278&amp;utm_source=habrahabr&amp;utm_medium=rss">Read the original Russian article</a>.
+      Fri, 16 Oct 2026 11:41:37 GMT
+    </p>
+  </header>
+  <main>
+<div><p>No matter what you read here next, I'm not a Luddite or an opponent of AI. I'm an active user and believe it's a marvelous wonder, but...</p><p>It's turning out strangely. I set up an agent, gave it context, reviewed the proposed plan, launched it, and checked the resulting code. It was good. I fixed one minor duplication issue, then sent it for code review. Then to testing. Then to production.</p><p>And now...</p><p>It's like fake Christmas ornaments – they look real, but bring no joy. This is my feature, and it seems I've delivered it, solved the business problem. Except I wasn't solving technical problems as I used to do as a programmer. I wasn't thinking, digging through documentation or Stack Overflow. I checked the 'Allow' box on the agent a few times. Well, yes, I did review all the technical solutions, and before that, I read the spec and even asked the analyst a couple of questions.</p><p>But it feels like I didn't get into development for this. Strangely enough, I enjoyed struggling with not understanding how to do something, then finding a solution and being proud. There's even a basis for this – the so-called IKEA effect: people tend to value something more the more effort they put into it.</p><p>And at some point, I started encountering articles on Habr, Reddit, and YouTube where developers complain about detachment from the result, about losing connection with their code, about losing that very feeling of pride in the outcome. And there's a problem here. Because it seems like IT businesses aren't created for developers to self-actualize.</p><p>Yes, at some point, we decided we were setting the rules of the game. We became popular on the wave of digitalization, it turned out that money circulates in the virtual world, and businesses needed to extract it. We came and said we knew how to do it. And we created our own IT religion with lots of bibles, crusades, and holy wars. But we forgot one thing – we exist only because businesses, at some point, needed our skills and experience to make money. If no one paid us, we wouldn't exist. And AI has exposed this simple, obvious truth. Our entire value was in being needed. As a tool. And now businesses are getting a new tool. And yes, we are still somewhat needed to help businesses adopt, integrate, debug, and test it, but that's entirely different. And the process seems to have begun.</p><p>Because, ultimately, at a high level, businesses really don't care what the code looks like, what framework is under the hood, how outdated it is, how much legacy code there is, or which of Martin's principles are being violated. It only matters as much as we've managed to convince the business that it's important. But if the business has a properly functioning revenue generator, it's absolutely not interested in what's inside. Yes, if it turns into a buggy, slow, and annoying mess, then, of course, the business will get concerned and go fix something. But not because some principles are violated or the code smells somewhere, but because unhappy customers are taking their money to a competitor. And this is, in fact, normal. Because digital business wasn't invented as a sandbox for programmers or a magic castle where they could realize their creativity and enjoy technical decisions – but for the customer who ultimately brings money to the business.</p><p>It's just that for some time, we dictated how things should work. We invented OOP, DRY, KISS, SDLC, DevOps, and a bunch of other acronyms we used to explain to the business why they couldn't quickly do what they wanted and why we needed 30% of resources for tech debt and technical tasks, for testing. We had this power because the business had no other choice. Developers were the value, the keepers of secret knowledge on how to turn words and thoughts into an interactive virtual universe. But all these principles and approaches were primarily needed by me. For two reasons.</p><p>First, so that when the client and manager ran out of lavender raf on almond milk and came out of the meeting room to tell me about the brilliant idea they had to turn the airship I built according to a crooked spec into a submarine (especially since they already looked similar externally), I could do it without a psychiatrist, with a two-week course of magnesium. Because my application has a good layered modular architecture with loose coupling, and I wouldn't have to rip out parts of it with great difficulty.</p><p>And second, so that while I'm screaming 'live!!' at my last nerve cell in some retreat, a new developer who comes to replace me could understand this legacy because we speak the same language of common patterns and approaches.</p><p>AI removes the need for this. The machine writes for the machine, and it does it quite well.</p><p>We in the post-Soviet space haven't noticed this yet: we still enjoy going to conferences where we're told how to correctly work with this or that harness, we fix AGENTS.md once a week, trying to keep up with the rapidly changing world of new models, new approaches, new skills. We don't have widespread cloud subscriptions because there are sanction, organizational, and perpetual distrust and inertia barriers. There are resource limitations. Many developers still use LLMs simply as 'I'll ask ChatGPT,' without fully diving into agent development. But there's Yandex with its 75/75/75 program, there are large banks developing their own harnesses and training models – also not out of sporting interest.</p><p>New job titles like 'AI-first Engineer,' 'Product Engineer' are appearing. Yes, I was a tool before. But within that instrumental shell, I was a creator. I sought solutions, I was an artist, I investigated bugs like a detective. Well, now I'm confidently striding towards a new profession – a support staff for a large language model, who needs to read the spec on time so that the genius of the new era correctly understands what my own manager wants from him.</p><p>And the most alarming thing is that models are getting better and better, they write decent code if directed correctly, they can review and adapt to the architecture. We help them with plugins, skills, utilities. And that smug smile of ours: 'Let's see how you sing when it writes you garbage code and you crawl back to us asking for a fix' – it's no longer so confident.</p><p>And this is worrying, but my worry is hardly a reason to stop scientific and technological progress. And I don't really know, and probably no one can accurately predict yet, where it will all lead.</p><p>Become a Luddite and deny AI? Objectively, I'll start performing worse than my colleagues with Codex.<br/>Give AI only part of the tasks, and do some by hand? But it's so hard to stop using this tool once you've tried it. It penetrates deeper and deeper into all the routine.<br/>Give up and go the path of scientific and technological progress – as long as they pay?</p></div>
+  </main>
+  <footer>
+    Translation generated with Gemini 2.5 Flash-Lite.
+    The original article remains the source of record.
+  </footer>
+</body>
+</html>

@@ -1,0 +1,82 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>1C Integration from a Verbal Description and Sample Object: How an AI Assistant Gathers Settings and Why It Requires Human Oversight</title>
+  <meta name="description" content="Most 1C integrations with external systems I&#x27;ve had to support are set up the same way: a procedure of several hundred lines in the configuration or an external utility parses JSON and fills a document. It works until someone touches either the source or 1C. I tried describing the integration n">
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.65;
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 32px 20px 64px;
+      color: #1f2328;
+    }
+    header {
+      border-bottom: 1px solid #d8dee4;
+      margin-bottom: 28px;
+      padding-bottom: 20px;
+    }
+    .source {
+      color: #57606a;
+      font-size: 0.95rem;
+    }
+    img, video, iframe {
+      max-width: 100%;
+      height: auto;
+    }
+    pre {
+      overflow-x: auto;
+      padding: 16px;
+      background: #f6f8fa;
+      border-radius: 6px;
+    }
+    code {
+      font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+    }
+    blockquote {
+      border-left: 4px solid #d0d7de;
+      margin-left: 0;
+      padding-left: 16px;
+      color: #57606a;
+    }
+    footer {
+      border-top: 1px solid #d8dee4;
+      margin-top: 40px;
+      padding-top: 20px;
+      color: #57606a;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>1C Integration from a Verbal Description and Sample Object: How an AI Assistant Gathers Settings and Why It Requires Human Oversight</h1>
+    <p>Most 1C integrations with external systems I&#x27;ve had to support are set up the same way: a procedure of several hundred lines in the configuration or an external utility parses JSON and fills a document. It works until someone touches either the source or 1C. I tried describing the integration not with code, but with data, and having an AI assistant propose the settings: it receives the task in words, a sample message, and a sample object from the database, and compiles a draft that goes through a human. I&#x27;ll break down what it receives as input, what it returns, where it makes mistakes, and how these are caught before writing to the database. Read more</p>
+    <p class="source">
+      Machine-translated from Habr.
+      <a href="https://habr.com/ru/articles/1095312/?utm_campaign=1095312&amp;utm_source=habrahabr&amp;utm_medium=rss">Read the original Russian article</a>.
+      Fri, 16 Oct 2026 12:09:11 GMT
+    </p>
+  </header>
+  <main>
+<div><figure><img alt="1C Integration from a Verbal Description" loading="lazy" src="https://habrastorage.org/r/w1560/extt/a0/42/95/a04295aaab61b8f3b83dcab39f9f0053.jpg"/><div><figcaption>1C Integration from a Verbal Description</figcaption></div></figure><p>Most 1C integrations with external systems I've had to support are set up the same way: a procedure of several hundred lines in the configuration or an external utility parses JSON and fills a document. It works until someone touches either the source or 1C. After updating a standard configuration or adding a new field in the source, it needs fixing, and usually, only the person who wrote it can do it.</p><p>I tried describing the integration not with code, but with data. The integration settings store the direction, method, rules for "where to get → where to put," and small handlers for things that cannot be expressed by rules. All of this lives in an extension, while the standard configuration remains supported.</p><p>The next step turned out to be more interesting: if the integration is described by data, this data can be proposed by an AI assistant. The user writes the task in words, inserts a sample message, and shows a sample object from their database, and the assistant compiles a draft of the settings. Below, I'll break down what it receives as input, what it returns, where it makes mistakes, and how these are caught before writing to the database.</p><h4>1. The Problem: Integration as Code</h4><p>An integration "in code" has three weak points:</p><ul><li><p><strong>Updates.</strong> Modifying the standard configuration removes it from support or turns every update into a comparison-merge.</p></li><li><p><strong>Opacity.</strong> To understand why a price appeared in an order, you need to read the procedure.</p></li><li><p><strong>Number of Sources.</strong> Website, CRM, email with price lists, bot, clinic software: each requires its own integration with its own errors and logging.</p></li></ul><h4>2. The Approach: Integration as Data</h4><p>The extension has four entities:</p><ul><li><p><strong>Integration Settings</strong>: direction (receive/send), method, message identification key, 1C object.</p></li><li><p><strong>Property Definition Rules</strong>: path in message → attribute or tabular section, method for finding reference values.</p></li><li><p><strong>Event Handlers</strong>: short procedures for things not expressible by tables.</p></li><li><p><strong>Message Log</strong>: each incoming and outgoing message, status, error, retry.</p></li></ul><p>The extension's HTTP service receives a message, finds the settings by method, applies the rules, and writes the result to the log. The configuration remains unchanged.</p><h4>3. What the Assistant Receives</h4><p>Three inputs:</p><ol><li><p><strong>Task Text.</strong> For example: "The website sends an order. Create a Sales Order, find the customer by phone, if not found, create one, find items by SKU."</p></li><li><p><strong>Sample Message.</strong> The actual JSON of the order.</p></li><li><p><strong>Sample Object.</strong> An existing document from the database. Metadata (attributes, tabular sections, types) is taken from it, as well as which fields are actually filled in this database.</p></li></ol><p>The sample is important: the same task in different 1C configurations (like UT and UNF) maps to different attributes, and a verbal description cannot convey this.</p><h4>4. What It Returns</h4><ul><li><p>Integration direction and method name (e.g., <code>inSalesOrder</code>);</p></li><li><p>A table of rules "JSON path → attribute";</p></li><li><p>Search rules: nomenclature by SKU, partner by phone;</p></li><li><p>An object formation handler.</p></li></ul><p>A simplified example of a handler (for the article):</p><pre><code>Procedure OnObjectFormation(Message, Object, Refusal) Export
+	Data = Message.Data;
+	Object.CustomerOrderNumber = Data.number;
+	For Each ItemRow From Data.items Do
+		NewItemRow = Object.Items.Add();
+		NewItemRow.Nomenclature = FindBySKU(ItemRow.sku);
+		NewItemRow.Quantity = ItemRow.qty;
+		NewItemRow.Price = ItemRow.price;
+	EndDo;
+EndProcedure
+</code><div><a href="https://sourcecraft.dev/"><span></span></a></div></pre><h4>5. Why the Response Isn't Executed Blindly</h4><p>The assistant's response is loaded into a form where it can be viewed in its entirety. Then, a person checks the rules and runs a test processing: it constructs an object based on the sample message but does not write anything. Only after this is the integration enabled.</p><h4>6. Pitfalls from Real-World Scenarios</h4><p>I recorded a minute-long video on a live database, and the assistant made mistakes where a human without context would also err:</p><ul><li><p><strong>Direction.</strong> Until the explanation stated that the message was incoming, it proposed an outgoing integration. This is fixed with a single phrase in the task.</p></li><li><p><strong>Types.</strong> "Expected Array for path customer": in the example, the customer was an object, but the rule expected an array. This is visible during test processing.</p></li><li><p><strong>Search Key.</strong> Searching for a customer by name instead of phone. Syntactically correct, semantically wrong. Only a human can catch this, so verification is mandatory.</p></li></ul><h4>7. Execution</h4><p>The extension's HTTP service, a queue, a log, retries on error, and duplicate protection by message key (for an order, it's the order number from the website). Resending the same message does not create a second document.</p><h4>8. Sources Other Than Websites</h4><p>The mechanism doesn't know what a "website" is. It needs the message format and the 1C object. Therefore, it can also be used to describe: emails and attachments, files in a folder (price lists, supplier invoices), Telegram bots and forms, niche CRMs, clinic and salon software, any service with an API. And the reverse direction: statuses and balances from 1C to external systems.</p><h4>9. Limitations</h4><ul><li><p>OAuth2, request signatures, and certificates require a developer.</p></li><li><p>Deeply nested arrays and non-trivial transformations are handled by procedures, not rules.</p></li><li><p>The responsibility for mapping lies with the human: the assistant proposes, the human approves.</p></li></ul><h4>Conclusion</h4><p>An AI assistant handles routine tasks well: matching fields, suggesting searches, writing handler templates. It performs poorly on tasks not present in the input data: direction, business meaning of a key. Therefore, the "propose → show in full → test → enable" scheme seems correct for 1C, where an integration error turns into an accounting error.</p><p>A minute-long video demonstrating this scenario: <a href="https://svjazka.com">https://svjazka.com</a>. I write about integration breakdowns in the channel <a href="https://habr.com/users/belenya_1c">@belenya_1c</a>.</p></div>
+  </main>
+  <footer>
+    Translation generated with Gemini 2.5 Flash-Lite.
+    The original article remains the source of record.
+  </footer>
+</body>
+</html>

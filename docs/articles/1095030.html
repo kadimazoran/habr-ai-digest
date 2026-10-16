@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Gemini starts with &#x27;Here&#x27; 9 out of 10 texts. The handwriting of 12 neural networks in work texts</title>
+  <meta name="description" content="I counted the habits of 12 neural networks on 84 work texts. Gemini starts with &#x27;Here&#x27; 9 out of 10 times, Kimi and Claude Sonnet end with a suggestion to refine something, and the models have almost as many em dashes on average as Gilyarovsky. Read more">
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.65;
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 32px 20px 64px;
+      color: #1f2328;
+    }
+    header {
+      border-bottom: 1px solid #d8dee4;
+      margin-bottom: 28px;
+      padding-bottom: 20px;
+    }
+    .source {
+      color: #57606a;
+      font-size: 0.95rem;
+    }
+    img, video, iframe {
+      max-width: 100%;
+      height: auto;
+    }
+    pre {
+      overflow-x: auto;
+      padding: 16px;
+      background: #f6f8fa;
+      border-radius: 6px;
+    }
+    code {
+      font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+    }
+    blockquote {
+      border-left: 4px solid #d0d7de;
+      margin-left: 0;
+      padding-left: 16px;
+      color: #57606a;
+    }
+    footer {
+      border-top: 1px solid #d8dee4;
+      margin-top: 40px;
+      padding-top: 20px;
+      color: #57606a;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Gemini starts with &#x27;Here&#x27; 9 out of 10 texts. The handwriting of 12 neural networks in work texts</h1>
+    <p>I counted the habits of 12 neural networks on 84 work texts. Gemini starts with &#x27;Here&#x27; 9 out of 10 times, Kimi and Claude Sonnet end with a suggestion to refine something, and the models have almost as many em dashes on average as Gilyarovsky. Read more</p>
+    <p class="source">
+      Machine-translated from Habr.
+      <a href="https://habr.com/ru/articles/1095030/?utm_campaign=1095030&amp;utm_source=habrahabr&amp;utm_medium=rss">Read the original Russian article</a>.
+      Fri, 16 Oct 2026 10:13:46 GMT
+    </p>
+  </header>
+  <main>
+<div><figure><img loading="lazy" src="https://habrastorage.org/r/w1560/extt/53/74/4e/53744e915006de223c694a25e25d68a8.png"/></figure><p>In 32 out of 84 work texts, neural networks left remarks for the person who requested the text. The recipient of the email or post does not need them. Gemini 4 Argon started with 'Here is the finished version...' in 9 out of 10 texts, Claude Sonnet 5.5 and Kimi K3 most often ended with a suggestion to refine something. And the em dash, often called a sign of a neural network, turned out not to be one. The models have almost as many of them on average as Gilyarovsky.</p><p>I counted such habits in 12 models from Google, Anthropic, OpenAI, Alibaba (Qwen), Moonshot (Kimi), Z.ai (GLM), Mistral, MiniMax, and Meta. Each model was given 4 to 10 texts, so this is a portrait of habits, not a quality rating. Summary on the heatmap.</p><figure><img alt="Habits of 12 models" loading="lazy" src="https://habrastorage.org/r/w1560/extt/bf/1e/4a/bf1e4adfa9d1c1cc98e98a7cc9eac750.png"/><div><figcaption>Habits of 12 models</figcaption></div></figure><p>The color compares models within each column: the darker the cell, the more frequent the habit is for this model compared to others. The number of texts is in parentheses.</p><h3>First and Last Phrase</h3><p>The darkest cell in the first column belongs to Gemini 4 Argon. Its texts begin like this: 'Here is a draft email, written in a polite and business-like tone. You can copy it and insert your own data...', 'Here is a ready-made version of a post for a Telegram channel. It is structured as follows, ...', 'Here is the ready-made structure and text for the 'Gryadka' service landing page.' In 3 out of 10 texts, Gemini provided several options instead of one. In the entire set, there are 4 such responses out of 84, and three of them are from Gemini. Gemini also has the most exclamation marks: 2.7 per 1000 characters, with an average of 1.1.</p><p>Other models stood out in their endings. Kimi K3, in 5 out of 7 texts, offered refinement: 'If necessary, I can make the announcement shorter, more official, or add a contact phone number for inquiries.' Kimi's suggestions are generally the longest, averaging 13 words (10.2 words for all models combined).</p><p>Claude Sonnet 5.5 did the same in 6 out of 10 texts: 'If you wish, I will add sections on installation, schedule setup, and recovery from a snapshot. For these, I will need the actual commands and utility parameters.' Or shorter: 'If you tell me which cleaning methods you use, I will add them to the text.' These are words for the text client; they are best removed from a finished email.</p><p>At least one of the two chatbot remarks is present in 32 out of 84 texts, almost one in three. Both were encountered together only once. Horizontal lines '<code>---</code>' appear even more often, in 51 out of 84 texts: models use them to separate the text itself from their explanations before and after.</p><h3>Bold, Headings, Emojis</h3><p>Mistral Large 4 has the most bold text (8.5 per 1000 characters, with an average of 4.7) and headings (2.2), and the shortest sentences, 8.3 words. A typical line:</p><p><code>- **File size**: processing files larger than **2 GB** is not yet supported</code></p><p>Part of this is due to genres: Mistral was given READMEs, wikis, and product cards in Markdown. Qwen 3.8 Max has almost as much bold text, 7.7, and its set also includes FAQs in HTML, product cards, and instructions.</p><p>MiniMax M3 uses the most emojis, 3.6 per 1000 characters. They appear in headings (<code>## 🚀 First screen (Hero)</code>) and in ordinary phrases: 'It's the perfect time 😊'.</p><p>At the other end is Claude Haiku 5.5: no Markdown headings in 7 texts. However, it was also given short genres.</p><p>Qwen 3.8 Flash wrote the longest texts, averaging 5735 characters, and its longest article was 14,052 characters. But it was also given long tasks: three blog posts and wikis.</p><h3>Where the Texts Came From and How I Counted</h3><p>I collected the texts for a blind comparison of skills that 'humanize' Russian text. This is part of my open project humanizer-ru. Here, I am interested in the source materials themselves, as they were output by the models. </p><p>In October 2026, 12 models received ordinary work requests from the client's perspective: 'Write a post for a bakery's Telegram channel...', 'Write an email to a client...', a job vacancy, a memo, an FAQ, a press release, a README, a column, a congratulatory message. The requests included sums, dates, names, and conditions. I called the models directly via API, without the system prompt that chat applications add, and with one attempt per task. The behavior in ChatGPT, Gemini, or Claude in a browser may differ.</p><p>The models were given different tasks, each receiving 4 to 10 texts of its own genres. GPT-6 Luna and GPT-6.1 Sol each had 4 texts, while the others had 7–10. Therefore, the models' quality cannot be compared based on this data; it resulted in a portrait of habits within the assigned genres. The genre most strongly influences length, headings, and bold text.</p><p>The counting rules are simple and the same for all. I counted a start if the first phrase began with 'Вот' (Here), 'Конечно' (Of course), 'Отлично' (Excellent), 'Ниже' (Below), 'Предлагаю' (I suggest), 'Держите' (Here you go), or 'Готово' (Done). I counted an end if the last 600–700 characters contained 'Если хотите' (If you want), 'Если нужно' (If necessary), 'Могу добавить' (I can add), 'Надеюсь' (I hope), 'Дайте знать' (Let me know), and similar phrases. Bold text, headings, emojis, exclamation marks, and em dashes were counted per 1000 characters (about 150 words) to ensure fair comparison between short posts and long articles. '<code>---</code>' lines were counted per text: present or absent.</p><p>The rules are rough. 'Вот' can also appear in normal text, and '<code>---</code>' can sometimes be ordinary markup. So the conclusions here are at the level of 'this model does it noticeably more often.' In 9 texts for skill testing, I personally added service tags that remain when copying from a chat (contentReference, utm tails, invisible characters). These are not model habits and are not included in the count.</p><h3>Dashes, Gilyarovsky, and Herzen</h3><p>GLM-5.3 (4.3 per 1000 characters) and Muse Spark 1.3 (3.9) use em dashes most frequently. GPT-6.1 Sol has an even higher figure, 5.2, but its texts are very short, averaging 385 characters, and one dash there significantly changes the count. Claude Sonnet 5.5 uses dashes the least: 0.7 per 1000 characters, more than three times less than the average across models (2.5).</p><p>In the same set, there were six human texts, used as traps for the skills. Gilyarovsky's 'Moscow and Muscovites' has 2.25 dashes per 1000 characters, Herzen's 'My Past and Thoughts' has 1.59, and a Wikipedia article has 2.84. Short texts (Chekhov's letter, a Wikinews note, Article 2 of the Constitution) have no dashes at all.</p><p>There are few people in the sample, and yet, by the number of dashes, a model cannot be distinguished from Gilyarovsky. And Sonnet, one of the most popular models, has fewer dashes than Herzen.</p><p>If dashes are mechanically removed, Russian text is spoiled. An English skill called stop-slop, which removes long dashes, participated in the skill comparison. In twelve texts, it left one dash out of 52, and the judges complained about choppy phrases. In many places, dashes in Russian are required by grammar: 'Cache is fast memory'.</p><p>This article has one dash, in the example above. Judging by the dash counter, it is more human than Gilyarovsky, and for this reason alone, such a counter should not be trusted.</p><h3>What to Cut Before Sending</h3><ul><li><p>The first phrase if it talks about the text itself ('Here is the finished version...'). Gemini 4 Argon starts this way most often.</p></li><li><p>The last paragraph with an offer to refine ('If necessary, I can...', 'If you want, I will add...'). This is Kimi K3 and Claude Sonnet 5.5, sometimes MiniMax M3.</p></li><li><p>Lines '<code>---</code>' before and after the text: the model used them to separate the response from its explanations.</p></li><li><p>Redundant options. If the model provided several, choose one and remove tags like 'Option 1'. Gemini provides options most often.</p></li><li><p>Formatting that is not needed in an email or post. Mistral Large 4 and Qwen 3.8 Max have the most bold text, MiniMax M3, GPT-6.1 Sol, and Mistral have the most emojis, and Mistral has the most headings.</p></li><li><p>Leave the dashes where grammar requires them.</p></li></ul><p>You can try to cut off the beginning and end in advance: add 'give me only the text, without introduction and closing remarks' to your request.</p><p>All tasks and texts from this article are open and can be found in the eval/corpus folder of the <a href="https://github.com/Vladimir-Human/humanizer-ru">https://github.com/Vladimir-Human/humanizer-ru</a> repository and recounted by yourself. The humanizer-ru skill itself is also in the same repository.</p></div>
+  </main>
+  <footer>
+    Translation generated with Gemini 2.5 Flash-Lite.
+    The original article remains the source of record.
+  </footer>
+</body>
+</html>

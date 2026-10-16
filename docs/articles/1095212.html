@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Second Memory and Second Brain are Not the Same. How I Collected 200,000 Files of My Life and Connected Agents to Them</title>
+  <meta name="description" content="It&#x27;s fashionable to call a folder of notes in Obsidian a second brain. But 200,000 files on their own do nothing – that&#x27;s second memory. It becomes a brain when agents are connected to it. And I&#x27;ll tell you how it works for me and what they can find. Read more">
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.65;
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 32px 20px 64px;
+      color: #1f2328;
+    }
+    header {
+      border-bottom: 1px solid #d8dee4;
+      margin-bottom: 28px;
+      padding-bottom: 20px;
+    }
+    .source {
+      color: #57606a;
+      font-size: 0.95rem;
+    }
+    img, video, iframe {
+      max-width: 100%;
+      height: auto;
+    }
+    pre {
+      overflow-x: auto;
+      padding: 16px;
+      background: #f6f8fa;
+      border-radius: 6px;
+    }
+    code {
+      font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+    }
+    blockquote {
+      border-left: 4px solid #d0d7de;
+      margin-left: 0;
+      padding-left: 16px;
+      color: #57606a;
+    }
+    footer {
+      border-top: 1px solid #d8dee4;
+      margin-top: 40px;
+      padding-top: 20px;
+      color: #57606a;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Second Memory and Second Brain are Not the Same. How I Collected 200,000 Files of My Life and Connected Agents to Them</h1>
+    <p>It&#x27;s fashionable to call a folder of notes in Obsidian a second brain. But 200,000 files on their own do nothing – that&#x27;s second memory. It becomes a brain when agents are connected to it. And I&#x27;ll tell you how it works for me and what they can find. Read more</p>
+    <p class="source">
+      Machine-translated from Habr.
+      <a href="https://habr.com/ru/articles/1095212/?utm_campaign=1095212&amp;utm_source=habrahabr&amp;utm_medium=rss">Read the original Russian article</a>.
+      Fri, 16 Oct 2026 09:33:35 GMT
+    </p>
+  </header>
+  <main>
+<div><p>It's fashionable now to call a folder of notes in Obsidian a second brain. I was looking through the GitHubs of Andrey Karpathy and others who write about this, and most often the "second brain" there is a bunch of files, interlinked with each other, plus Claude Code connected to them.</p><p>I think differently.</p><p>There is second memory, and there is a second brain. These are different things, and the difference between them is precisely what makes all this worth building.</p><h3>Second Memory</h3><p>Second memory is everything that has passed through your life:</p><ul><li><p>correspondence with colleagues, friends, wives, children in all messengers: Telegram, Slack, Discord, WhatsApp, etc. - the entire history, as deep as it can be downloaded;</p></li><li><p>emails, all your mail;</p></li><li><p>your notes, articles, scientific materials;</p></li><li><p>transcriptions of meetings and voice recordings.</p></li></ul><p>Second memory is the ability to aggregate all this information.</p><p>I have aggregated it for myself, and now it's extremely convenient to live: RAG, retrieval, and embeddings are built on top of all this, and I have search working across all my information.</p><p>In terms of volume, it's about 200,000 files and several tens of gigabytes.</p><p>But this is still memory. It's not a brain yet.</p><h3>Why Obsidian is Not a Brain</h3><p>Obsidian is just a visual representation of files, interlinked with each other. An external graphical shell made for people.</p><p>When there are more than a few thousand files, Obsidian on Windows and Mac, especially on weak computers, starts to lag heavily and can take half an hour to load.</p><p>And even if you have tens and hundreds of thousands of files and tens of gigabytes of data – it's still just second memory. No matter how many files you add, they don't do anything on their own.</p><h3>What Else to Put into Memory: AI Dialogues and Coding Sessions</h3><p>This is a very important point, although for some reason it's often missed.</p><p>You need to put not only correspondence with people into your second brain, but also all your dialogues with artificial intelligence. With DeepSeek, with ChatGPT, with Claude, with Mistral - with all the regular LLMs you've interacted with from your phone, voice, or computer.</p><p>And separately - all your sessions that you've ever had in Claude Code, Codex, Cursor, and so on.</p><p>Why?</p><p>Every time you start doing something, you don't build from absolute zero, but rely on your background: who you are and what you do.</p><p>Start learning something new – you rely on your methodology.</p><p>Write new lines of code – you rely on your code writing structure.</p><p>Therefore, it's important for the AI to know as much about you as possible. And it can only know in one way – by constantly looking at what you have already done, written, and discussed.</p><h3>How Search Works</h3><p>For those interested in the technical details. My memory search is a script <code>brain_ask.py</code>, it works in two steps:</p><pre><code>question-&gt; e5-base: dense search by chunks, top-60, deduplication by file-&gt; cross-encoder reranker (mmarco-mMiniLMv2-L12, multilingual, understands Russian)-&gt; top-12 chunks in context for the agent</code><div><a href=
+  </main>
+  <footer>
+    Translation generated with Gemini 2.5 Flash-Lite.
+    The original article remains the source of record.
+  </footer>
+</body>
+</html>

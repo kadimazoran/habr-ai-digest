@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Stop Burning Gigabytes on Anti-Detects: How RFC 9421 and the Open wbauth Protocol Accelerate AI Agents by 5.5x</title>
+  <meta name="description" content="TL;DR. We stopped masking agents as humans. Now they present a cryptographic passport: an Ed25519 signature according to IETF RFC 9421. Cold start: 5 ms instead of 1744 ms. Request: 15.8 ms instead of 86.8 ms. Memory: 0.76 MB instead of 500 MB. Proxies are not needed. Below I analyze the architectur">
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.65;
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 32px 20px 64px;
+      color: #1f2328;
+    }
+    header {
+      border-bottom: 1px solid #d8dee4;
+      margin-bottom: 28px;
+      padding-bottom: 20px;
+    }
+    .source {
+      color: #57606a;
+      font-size: 0.95rem;
+    }
+    img, video, iframe {
+      max-width: 100%;
+      height: auto;
+    }
+    pre {
+      overflow-x: auto;
+      padding: 16px;
+      background: #f6f8fa;
+      border-radius: 6px;
+    }
+    code {
+      font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+    }
+    blockquote {
+      border-left: 4px solid #d0d7de;
+      margin-left: 0;
+      padding-left: 16px;
+      color: #57606a;
+    }
+    footer {
+      border-top: 1px solid #d8dee4;
+      margin-top: 40px;
+      padding-top: 20px;
+      color: #57606a;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Stop Burning Gigabytes on Anti-Detects: How RFC 9421 and the Open wbauth Protocol Accelerate AI Agents by 5.5x</h1>
+    <p>TL;DR. We stopped masking agents as humans. Now they present a cryptographic passport: an Ed25519 signature according to IETF RFC 9421. Cold start: 5 ms instead of 1744 ms. Request: 15.8 ms instead of 86.8 ms. Memory: 0.76 MB instead of 500 MB. Proxies are not needed. Below I analyze the architecture, canonicalization, WAF check, code, and measurement methodology. Measurement limitations are also honestly described. Prologue: 40 gigabytes of RAM just to pretend to be a grandma. A typical agent farm in 2026 looks like this. There&#x27;s a cluster of nodes, each running dozens of Camoufox, Playwright, or AdsPower. Each process consumes 500 MB to 1.5 GB of memory. There&#x27;s a pool of residential IPs, for which they pay per gigabyte of traffic. There&#x27;s a separate module that draws Bezier curves so the cursor moves &quot;human-like.&quot; And there&#x27;s an on-duty engineer who, at 3 AM, figures out why after updating fingerprint heuristics, the WAF dropped 30% of sessions. Look at this as an architect. We are building a system whose entire value is in lying about its nature. The opposing side is building a system whose entire value is in catching that lie. It&#x27;s a zero-sum arms race. Both sides pay for hardware, nobody wins, and the price increases every quarter. Anti-detect is not an engineering solution, but a crutch that tries to solve the identification problem through mimicry. The problem of identification in distributed systems has long been solved, and it is solved with cryptography. Read more</p>
+    <p class="source">
+      Machine-translated from Habr.
+      <a href="https://habr.com/ru/articles/1095294/?utm_campaign=1095294&amp;utm_source=habrahabr&amp;utm_medium=rss">Read the original Russian article</a>.
+      Fri, 16 Oct 2026 11:55:59 GMT
+    </p>
+  </header>
+  <main>
+<div><h2>Stop Burning Gigabytes on Anti-Detects: How RFC 9421 and the Open wbauth Protocol Accelerate AI Agents by 5.5x</h2><hr/><p><strong>TL;DR.</strong> We stopped masking agents as humans. Now they present a cryptographic passport: an Ed25519 signature according to IETF RFC 9421. Cold start: 5 ms instead of 1744 ms. Request: 15.8 ms instead of 86.8 ms. Memory: 0.76 MB instead of 500 MB. Proxies are not needed. Below I analyze the architecture, canonicalization, WAF check, code, and measurement methodology. Measurement limitations are also honestly described.<br/></p><p>Prologue: 40 gigabytes of RAM just to pretend to be a grandma<br/></p><p>A typical agent farm in 2026 looks like this. There's a cluster of nodes, each running dozens of Camoufox, Playwright, or AdsPower. Each process consumes 500 MB to 1.5 GB of memory. There's a pool of residential IPs, for which they pay per gigabyte of traffic. There's a separate module that draws Bezier curves so the cursor moves "human-like." And there's an on-duty engineer who, at 3 AM, figures out why after updating fingerprint heuristics, the WAF dropped 30% of sessions.</p><p>Look at this as an architect. We are building a system whose entire value is in <strong>lying</strong> about its nature. The opposing side is building a system whose entire value is in <strong>catching</strong> that lie. It's a zero-sum arms race. Both sides pay for hardware, nobody wins, and the price increases every quarter.</p><p>Anti-detect is not an engineering solution, but a crutch that tries to solve the identification problem through mimicry.</p><p>The problem of identification in distributed systems has long been solved, and it is solved with cryptography.</p><hr/><h3>Part 1. Paradigm Shift: Not Masking, but a Passport</h3><p>It doesn't matter to a website whether you are human or not. It needs to answer three questions:<br/></p><p>1. <strong>Who</strong> is making the request?</p><p>2. Can this "who" be <strong>trusted</strong> (reputation, limits, agreements)?</p><p>3. Did the request actually come <strong>from them</strong>, and not from someone who stole their User-Agent?<br/></p><p>The string <code>User-Agent: MyBot/1.0</code> answers the first question, but can be faked with a single line of code. IP checks (reverse DNS, ASN lists) answer the third, but tie identity to infrastructure. Changed cloud provider – lost reputation.<br/></p><p>The correct answer is <strong>signing the request with an asymmetric key</strong>. This is precisely what <a href="https://www.rfc-editor.org/rfc/rfc9421">RFC 9421 — HTTP Message Signatures</a> (IETF, February 2024) standardizes. Building on top of this is the <em>Web Bot Auth</em> direction, which introduces the <code>Signature-Agent</code> header: it indicates where the agent's public key directory is located.</p><p>The result – three headers instead of a browser:</p><p>No JS runtime, no canvas fingerprint, no mouse movements. 64 bytes of signature and one verification operation at the network edge.<br/></p><hr/><h3>Part 2. wbauth: What We Built</h3><p><strong>wbauth</strong> is our open implementation of the protocol. It consists of three parts:</p><div><div><table><tbody><tr><td><p>Component</p></td><td><p>Where</p></td><td><p>Role</p></td></tr><tr><td><p><code>wb-auth@0.4.0</code></p></td><td><p>npm </p></td><td><p>Signer (Node / Bun / Deno / Workers) and verifier for WAF</p></td></tr><tr><td><p><code>wbauth-sdk@0.4.0</code></p></td><td><p>PyPI</p></td><td><p>Signer for Python: adapters for <code>httpx</code> and <code>requests</code></p></td></tr><tr><td><p><strong>Directory</strong></p></td><td><p>Cloudflare Workers + D1</p></td><td><p>Public key directory: registration, rotation, revocation</p></td></tr></tbody></table></div></div><p>Sales figures</p><div><div><table><tbody><tr><td><p></p><p>Metric</p></td><td><p>Camoufox</p></td><td><p>wbauth</p></td><td><p>Difference</p></td></tr><tr><td><p>Cold Start</p></td><td><p>1744 ms</p></td><td><p>5 ms</p></td><td><p>350x faster</p></td></tr><tr><td><p>Request Time</p></td><td><p>86.8 ms</p></td><td><p>15.8 ms</p></td><td><p>5.5x faster</p></td></tr><tr><td><p>Process Memory</p></td><td><p>500 MB</p></td><td><p>0.76 MB</p></td><td><p>650x less</p></td></tr><tr><td><p>Disk (Runtime)</p></td><td><p>1.3 GB</p></td><td><p>14 MB</p></td><td><p>90x more compact</p></td></tr><tr><td><p>Breaks on WAF Update</p></td><td><p>Yes</p></td><td><p>No</p></td><td><p>Stable contract</p></td></tr></tbody></table></div></div><hr/><h3>Part 3. How It Looks in Code</h3><pre><code>pythonimport httpxfrom wbauth import Agent, HttpxAuth# Load agent key from environment or fileagent = Agent.from_env()  # Ed25519 private key + kid + directory_url# Make requests as usual - signature is generated automaticallywith httpx.Client(auth=HttpxAuth(agent)) as client:    response = client.get("https://shop.example.com/api/catalog")    print(response.status_code, response.json())</code><div><a href="https://sourcecraft.dev/"><span></span></a></div></pre><pre><code>typescriptimport { createSigner, wrapFetch } from "wb-auth";const signer = await createSigner({    privateKey: process.env.WBAUTH_PRIVATE_KEY!,    keyId: process.env.WBAUTH_KEY_ID!,    directoryUrl: "https://wbauth.silov801.workers.dev",});const signedFetch = wrapFetch(fetch, signer);const response = await signedFetch("https://shop.example.com/api/catalog");console.log(await response.json());</code><div><a href="https://sourcecraft.dev/"><span></span></a></div></pre><hr/><h3>Part 4. How the Server (WAF / Edge) Verifies</h3><p>On the server side, verification takes a few milliseconds:<br/></p><p>1. Retrieve the <code>Signature-Agent</code> header and request the public key from the trusted directory (with caching in KV/Redis).</p><p>2. Construct the canonical signature string according to RFC 9421 rules.</p><p>3. Verify the Ed25519 signature (one fast cryptographic operation).</p><p>4. Check the <code>created</code> and <code>expires</code> timestamps (protection against replay attacks).</p><p>5. Allow the request to the API, bypassing Cloudflare's draconian captchas and blocks!</p><hr/><h3>Conclusion</h3><p>The era of crutches and fingerprint theft is coming to an end. Agents should not pretend to be humans – they should identify themselves in a civilized and secure manner.<br/></p><p>- The source code is open on GitHub: <a href="https://github.com/MrKoriy/wbauth">https://github.com/MrKoriy/wbauth</a></p><p>- Packages are available right now: <code>npm i wb-auth@0.4.0</code> and <code>pip install wbauth-sdk==0.4.0</code><br/></p><p>I invite you to discuss in the comments: how do you currently solve the problem of agent verification, and do you believe the industry will transition to cryptographic signatures?</p></div>
+  </main>
+  <footer>
+    Translation generated with Gemini 2.5 Flash-Lite.
+    The original article remains the source of record.
+  </footer>
+</body>
+</html>

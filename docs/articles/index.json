@@ -2855,6 +2855,78 @@
     "summary": "In the previous article, I tested Jev on text-based tasks: classification, answer confidence, long context, and noisy input. On October 14th, TypeSafe announced Jev 1.14, introducing experimental capabilities for images, a new 'box' question type, and extended context. I wanted to see what could be done with these new features in practice and where errors might occur. A quick series of experiments allowed me to test object detection by description, cat and dog breed classification, image-based questions, finding bank details on documents, and queries with dozens of photos. The total cost for all computations was around $2.6. The most telling result came from the 'find the cat among dogs' task. With 32 and 96 photos, the model never selected the correct photo from the middle of the array. After changing the query structure—same images, same order—it answered correctly in all tested cases. Below, I'll explain what exactly changed and why the initial result was easily misinterpreted. Read on.",
     "title": "Jev 1.14: Finding Objects, Verifying Documents, and Spotting a Cat Among 96 Photos"
   },
+  "https://habr.com/ru/articles/1095030/?utm_campaign=1095030&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Fri, 16 Oct 2026 10:13:46 GMT",
+    "slug": "1095030",
+    "source_url": "https://habr.com/ru/articles/1095030/?utm_campaign=1095030&utm_source=habrahabr&utm_medium=rss",
+    "summary": "I counted the habits of 12 neural networks on 84 work texts. Gemini starts with 'Here' 9 out of 10 times, Kimi and Claude Sonnet end with a suggestion to refine something, and the models have almost as many em dashes on average as Gilyarovsky. Read more",
+    "title": "Gemini starts with 'Here' 9 out of 10 texts. The handwriting of 12 neural networks in work texts"
+  },
+  "https://habr.com/ru/articles/1095212/?utm_campaign=1095212&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Fri, 16 Oct 2026 09:33:35 GMT",
+    "slug": "1095212",
+    "source_url": "https://habr.com/ru/articles/1095212/?utm_campaign=1095212&utm_source=habrahabr&utm_medium=rss",
+    "summary": "It's fashionable to call a folder of notes in Obsidian a second brain. But 200,000 files on their own do nothing – that's second memory. It becomes a brain when agents are connected to it. And I'll tell you how it works for me and what they can find. Read more",
+    "title": "Second Memory and Second Brain are Not the Same. How I Collected 200,000 Files of My Life and Connected Agents to Them"
+  },
+  "https://habr.com/ru/articles/1095276/?utm_campaign=1095276&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Fri, 16 Oct 2026 11:41:28 GMT",
+    "slug": "1095276",
+    "source_url": "https://habr.com/ru/articles/1095276/?utm_campaign=1095276&utm_source=habrahabr&utm_medium=rss",
+    "summary": "The official app keeps the map, vision, and identity in the cloud. The robot's body doesn't have this: motors, head, light, cliff sensor, and charge are available via Bluetooth. I'm writing my own client, com.looidev, in Kotlin. There are two modes. In the first, the phone is in hand and acts as a joystick. In the second, it's mounted on the robot's head: there's a screen, front camera, and a GATT recording loop. Dialogue, speech synthesis, and page console parsing are handled by a Node-host on a computer on the same network. The host doesn't write to the movement characteristic. Below is the system boundary, the robot's channel, why the movement frame is 20ms, how the manual and autonomous loops are structured, the map and the 'wall only from contact' rule, and how the page console is separated from the model that talks. Read on.",
+    "title": "LOOI Client: GATT on the Phone, Odometry, and a Separate Ollama Loop"
+  },
+  "https://habr.com/ru/articles/1095278/?utm_campaign=1095278&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Fri, 16 Oct 2026 11:41:37 GMT",
+    "slug": "1095278",
+    "source_url": "https://habr.com/ru/articles/1095278/?utm_campaign=1095278&utm_source=habrahabr&utm_medium=rss",
+    "summary": "No matter what you read here next, I'm not a Luddite or an opponent of AI. I'm an active user and believe it's a marvelous wonder, but... it's turning out strangely. I set up an agent, gave it context, reviewed the proposed plan, launched it, and checked the resulting code. It was good. I fixed one minor duplication issue, then sent it for code review. Then to testing. Then to production. And now... it's like fake Christmas ornaments – they look real, but bring no joy. Read more",
+    "title": "Not My Feature, or How I'm Losing Meaning"
+  },
+  "https://habr.com/ru/articles/1095294/?utm_campaign=1095294&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Fri, 16 Oct 2026 11:55:59 GMT",
+    "slug": "1095294",
+    "source_url": "https://habr.com/ru/articles/1095294/?utm_campaign=1095294&utm_source=habrahabr&utm_medium=rss",
+    "summary": "TL;DR. We stopped masking agents as humans. Now they present a cryptographic passport: an Ed25519 signature according to IETF RFC 9421. Cold start: 5 ms instead of 1744 ms. Request: 15.8 ms instead of 86.8 ms. Memory: 0.76 MB instead of 500 MB. Proxies are not needed. Below I analyze the architecture, canonicalization, WAF check, code, and measurement methodology. Measurement limitations are also honestly described. Prologue: 40 gigabytes of RAM just to pretend to be a grandma. A typical agent farm in 2026 looks like this. There's a cluster of nodes, each running dozens of Camoufox, Playwright, or AdsPower. Each process consumes 500 MB to 1.5 GB of memory. There's a pool of residential IPs, for which they pay per gigabyte of traffic. There's a separate module that draws Bezier curves so the cursor moves \"human-like.\" And there's an on-duty engineer who, at 3 AM, figures out why after updating fingerprint heuristics, the WAF dropped 30% of sessions. Look at this as an architect. We are building a system whose entire value is in lying about its nature. The opposing side is building a system whose entire value is in catching that lie. It's a zero-sum arms race. Both sides pay for hardware, nobody wins, and the price increases every quarter. Anti-detect is not an engineering solution, but a crutch that tries to solve the identification problem through mimicry. The problem of identification in distributed systems has long been solved, and it is solved with cryptography. Read more",
+    "title": "Stop Burning Gigabytes on Anti-Detects: How RFC 9421 and the Open wbauth Protocol Accelerate AI Agents by 5.5x"
+  },
+  "https://habr.com/ru/articles/1095304/?utm_campaign=1095304&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Fri, 16 Oct 2026 12:03:44 GMT",
+    "slug": "1095304",
+    "source_url": "https://habr.com/ru/articles/1095304/?utm_campaign=1095304&utm_source=habrahabr&utm_medium=rss",
+    "summary": "A neural network drew a witch that looks like pixel art. It's not a sprite: the file is 1344x1344 with 40,318 unique colors (this is the 'read' frame), and the grid on which these 'pixels' are arranged doesn't exist. This is a fundamental difference, not a cosmetic one: a \"pixelated\" image cannot be recolored to a night palette in one operation, cannot be animated frame by frame, and it's not guaranteed that the character won't twitch when changing emotions. Below is a pipeline that turns such drafts into sprites, where one pixel is exactly one color from the palette, and where this property is verified by numbers, not by eye. I'll also show where the pipeline breaks: each of the five techniques had its own pitfalls. Read more",
+    "title": "12 Sprites and 61 Colors: How a Neural Network Assembled a Pixel Art Mascot for a Website from Qwen Image 2.1 Drafts"
+  },
+  "https://habr.com/ru/articles/1095306/?utm_campaign=1095306&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Fri, 16 Oct 2026 12:06:09 GMT",
+    "slug": "1095306",
+    "source_url": "https://habr.com/ru/articles/1095306/?utm_campaign=1095306&utm_source=habrahabr&utm_medium=rss",
+    "summary": "I promise, this is the last time I'll write about DLSS 5. To be clear from the start. Yes, the result is crap. Yes, it's disgusting. Yes, it's an experiment for the sake of experiment. But the fact itself! God, what a horror. Author – stop it!",
+    "title": "Perhaps the Only Useful Application of DLSS 5. Black and White Films"
+  },
+  "https://habr.com/ru/articles/1095312/?utm_campaign=1095312&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Fri, 16 Oct 2026 12:09:11 GMT",
+    "slug": "1095312",
+    "source_url": "https://habr.com/ru/articles/1095312/?utm_campaign=1095312&utm_source=habrahabr&utm_medium=rss",
+    "summary": "Most 1C integrations with external systems I've had to support are set up the same way: a procedure of several hundred lines in the configuration or an external utility parses JSON and fills a document. It works until someone touches either the source or 1C. I tried describing the integration not with code, but with data, and having an AI assistant propose the settings: it receives the task in words, a sample message, and a sample object from the database, and compiles a draft that goes through a human. I'll break down what it receives as input, what it returns, where it makes mistakes, and how these are caught before writing to the database. Read more",
+    "title": "1C Integration from a Verbal Description and Sample Object: How an AI Assistant Gathers Settings and Why It Requires Human Oversight"
+  },
+  "https://habr.com/ru/articles/1095330/?utm_campaign=1095330&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Fri, 16 Oct 2026 12:37:03 GMT",
+    "slug": "1095330",
+    "source_url": "https://habr.com/ru/articles/1095330/?utm_campaign=1095330&utm_source=habrahabr&utm_medium=rss",
+    "summary": "If you're tracking whether a neural network links to your site, it's useful to know how long a link stays in the response to the same question. Not long: after a month and a half, only a quarter to a third of the previous links remained in the responses of Alice AI and Perplexity (27.5% for Perplexity, 35.5% for Alice AI), and more than half of the links turned out to be new. I asked both neural networks 20 questions from the same niche (how to get into neural network responses, how much it costs, where to order). For each question, each neural network responded five times: three repetitions in a row within an hour, another after 5 days, and another after a month and a half. The report that you are in the response ages faster than it seems. Read more",
+    "title": "How long does a link last in a neural network's response: I compared three measurements for 20 questions"
+  },
   "https://habr.com/ru/companies/1c/articles/1071340/?utm_campaign=1071340&utm_source=habrahabr&utm_medium=rss": {
     "model": "gemini-2.5-flash-lite",
     "published": "Thu, 03 Sep 2026 07:18:11 GMT",
@@ -2966,6 +3038,14 @@
     "source_url": "https://habr.com/ru/companies/basis/articles/1077922/?utm_campaign=1077922&utm_source=habrahabr&utm_medium=rss",
     "summary": "Can AI not only eliminate routine tasks but also drastically accelerate a developer's professional growth? For example, can it turn a junior into at least a mid-level developer in one evening? This was a, perhaps crazy, but a hypothesis, and we decided to hold an internal hackathon to test it in conditions close to real-world scenarios. Read more",
     "title": "Not a Replacement, but a SuperAI-lity: What a Hackathon Gave Our Company"
+  },
+  "https://habr.com/ru/companies/basis/articles/1093924/?utm_campaign=1093924&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Fri, 16 Oct 2026 09:54:45 GMT",
+    "slug": "1093924",
+    "source_url": "https://habr.com/ru/companies/basis/articles/1093924/?utm_campaign=1093924&utm_source=habrahabr&utm_medium=rss",
+    "summary": "One day I lost a chat. It wasn't a disaster – just a regular work session checking student homework. I hadn't exported, hadn't logged anything. And the chat disappeared. Most likely, I deleted it myself, but I can't remember for sure. Only what I had manually saved outside the chat survived; everything else simply ceased to exist. And then it struck me: the exact same thing happens to a model in every long session when data falls out of context due to compression. What if we give the agent an independent memory that lives outside the chat and doesn't depend on whether the model decides to discard it or not? Thus, the MemShelf project was born.",
+    "title": "Writing is Not Remembering: A Month of External Memory for an AI Agent"
   },
   "https://habr.com/ru/companies/beeline_cloud/articles/1081756/?utm_campaign=1081756&utm_source=habrahabr&utm_medium=rss": {
     "model": "gemini-2.5-flash-lite",
@@ -3183,6 +3263,14 @@
     "summary": "Traditional worms of the past, like WannaCry, exploited pre-known vulnerabilities. Their spread could be stopped by patching these vulnerabilities. According to scientists, LLM agents create a fundamentally new threat – a worm that generates individual attack strategies for each new target. An external expert cannot predict how the worm will change and what vulnerabilities it will exploit in the future. Consequently, it is harder to stop its spread. Scientists have developed such a worm and tested its operation in the isolated corporate network FakeCorp. Read more",
     "title": "Adaptive worm picks individual vulnerabilities for each PC"
   },
+  "https://habr.com/ru/companies/globalsign/articles/1095260/?utm_campaign=1095260&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Fri, 16 Oct 2026 11:15:25 GMT",
+    "slug": "1095260",
+    "source_url": "https://habr.com/ru/companies/globalsign/articles/1095260/?utm_campaign=1095260&utm_source=habrahabr&utm_medium=rss",
+    "summary": "The security industry's problem is that GLM-5.3-Flash runs locally on ordinary hardware. There are already examples of it running on home servers with a single Nvidia DGX Spark GPU at 18 tokens/s. And in September 2026, Apple released the Mac Studio with M5 and 256GB of unified memory – more than enough for GLM-5.3-Flash. Naturally, attackers have started exploiting this capability, using 'obliterated' models for highly effective and rapid attacks, and searching for vulnerabilities in popular software. While it's practically impossible to protect users from mass hacks, specialists are trying to mitigate future damage to internet infrastructure, the financial industry, and government organizations. Read more",
+    "title": "One Year Left to Fix Security Everywhere"
+  },
   "https://habr.com/ru/companies/gptunnel/articles/1081094/?utm_campaign=1081094&utm_source=habrahabr&utm_medium=rss": {
     "model": "gemini-2.5-flash-lite",
     "published": "Fri, 11 Sep 2026 05:36:46 GMT",
@@ -3342,6 +3430,14 @@
     "source_url": "https://habr.com/ru/companies/infostart/articles/1094306/?utm_campaign=1094306&utm_source=habrahabr&utm_medium=rss",
     "summary": "INFOSTART TECH EVENT is the largest professional technical conference for 1C specialists. The 16th conference in 2026 gathered 1500 participants in St. Petersburg from all over Russia and abroad. I finally managed to get through as a speaker at an event of this scale! Here's how these 3 days went. Read more",
     "title": "How I Spoke at INFOSTART TECH EVENT 2026: API Talk, Coder Battle, and an AI Podcast"
+  },
+  "https://habr.com/ru/companies/infostart/articles/1095346/?utm_campaign=1095346&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Fri, 16 Oct 2026 12:47:24 GMT",
+    "slug": "1095346",
+    "source_url": "https://habr.com/ru/companies/infostart/articles/1095346/?utm_campaign=1095346&utm_source=habrahabr&utm_medium=rss",
+    "summary": "Working with an AI assistant often involves lengthy explanations: here's the code, here's the configuration structure, here are the related objects. Infostart MCP allows the assistant to obtain some of this information itself, access the syntax helper, and use BSL code checking tools. The Infostart Resource Center decided to test how this works on typical tasks for 1C specialists. The first results are compiled in an article on Infostart. The pilot involved developers, analysts, an architect, a tech lead, and heads of departments. They tried developing integrations, modifying reports, preparing technical specifications, finding causes of problems, and checking contractor changes. Read more",
+    "title": "We tested Infostart MCP on real 1C tasks: what we found"
   },
   "https://habr.com/ru/companies/infowatch/articles/1083954/?utm_campaign=1083954&utm_source=habrahabr&utm_medium=rss": {
     "model": "gemini-2.5-flash-lite",
@@ -3558,6 +3654,14 @@
     "source_url": "https://habr.com/ru/companies/otus/articles/1087130/?utm_campaign=1087130&utm_source=habrahabr&utm_medium=rss",
     "summary": "When a language model-based function doesn't have a single correct answer, traditional 'expected = actual result' checks stop working. Testers need to determine which response properties are truly important, how to distinguish acceptable variability from errors, and how to build a clear pass/fail criterion. This article uses a customer support ticket summarization function as an example to explain how to form a behavior contract, a set of checks, and an approach to regression testing AI features.",
     "title": "How to Find the Cause of AI Feature Errors and Test Them Using a Test Oracle"
+  },
+  "https://habr.com/ru/companies/otus/articles/1091192/?utm_campaign=1091192&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Fri, 16 Oct 2026 10:05:54 GMT",
+    "slug": "1091192",
+    "source_url": "https://habr.com/ru/companies/otus/articles/1091192/?utm_campaign=1091192&utm_source=habrahabr&utm_medium=rss",
+    "summary": "Accuracy has increased, and the queue for manual review has decreased – it seems the new ML model can be released to production. However, behind the improvement in overall metrics, a serious drop in quality on individual data segments might be hidden. Using the example of an ad classifier, we'll explore how to identify such problems, check the model on slices, and determine the criteria for its readiness for release. Let's analyze ML errors.",
+    "title": "Average metric hides failure in a rare segment: checking an ML model on slices"
   },
   "https://habr.com/ru/companies/otus/articles/1091600/?utm_campaign=1091600&utm_source=habrahabr&utm_medium=rss": {
     "model": "gemini-2.5-flash-lite",
@@ -4063,6 +4167,14 @@
     "summary": "Hello, Habr! We, Smart Engines and the law firm INTELLECT, have completed our annual report on document fraud. The results show a serious deterioration of the situation. In 2025, the number of crimes related to forged documents registered by the Ministry of Internal Affairs increased by 338% year-on-year, reaching a seven-year high. The estimated size of the illegal market for forged identity documents reached 2.6 billion rubles. We discuss the scale of document fraud, new schemes involving generative AI, and technologies for detecting forgeries.",
     "title": "Smart Engines and INTELLECT Study: Document Forgery Crimes in Russia Increased by 338%"
   },
+  "https://habr.com/ru/companies/smartengines/articles/1095336/?utm_campaign=1095336&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Fri, 16 Oct 2026 12:33:09 GMT",
+    "slug": "1095336",
+    "source_url": "https://habr.com/ru/companies/smartengines/articles/1095336/?utm_campaign=1095336&utm_source=habrahabr&utm_medium=rss",
+    "summary": "Checking for a signature in a designated document area is more complex than it seems: printed text, stamps, and security patterns can be nearby, while the signature itself might be faint, blurred, or partially obscured. At Smart Engines, we tackle this challenge using a compact CNN based on ResNet18 with spatial attention. The model takes an image fragment as input and outputs whether a signature is present. This article explains the spatial attention module, its impact on false positive rates, and visualizes attention maps to show which parts of the signature area the model focuses on during processing.",
+    "title": "How Spatial Attention Helps CNNs Detect Signatures in Documents"
+  },
   "https://habr.com/ru/companies/sminex_developer/articles/1083860/?utm_campaign=1083860&utm_source=habrahabr&utm_medium=rss": {
     "model": "gemini-2.5-flash-lite",
     "published": "Fri, 18 Sep 2026 12:08:45 GMT",
@@ -4470,5 +4582,13 @@
     "source_url": "https://habr.com/ru/specials/1091886/?utm_campaign=1091886&utm_source=habrahabr&utm_medium=rss",
     "summary": "Sergey Lavrov visited Sber's Moscow Startup Summit. Not the Minister of Foreign Affairs. I am a former entrepreneur, co-investor in two projects, winner of the reality show \"Startup Battle,\" participant in Sber's accelerator for students, postgraduates, and university staff, and a graduate of \"School 21.\" Therefore, I was interested in looking at the summit from different angles and understanding how the startup and venture ecosystem is structured today. Spoiler: after two days, I wanted to return next year as a startup founder or investor. The Moscow Startup Summit took place on September 29-30 at SberCity, in the \"School 21\" campus. For two days, startup founders, investors, representatives of corporations, and government agencies gathered here—four categories of participants were indicated on the badges to make networking easier. The scale is impressive: over 4500 participants from different countries, 150 experts, more than 40 discussions in the business program, and 100 startups at the exhibition. I walked through the key activities and sessions, and in this article, I will tell you what I saw. Read the report",
     "title": "How Technologies Are Changing Five Industries: A Report from the Moscow Startup Summit"
+  },
+  "https://habr.com/ru/specials/1095232/?utm_campaign=1095232&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Fri, 16 Oct 2026 12:09:03 GMT",
+    "slug": "aad22abc52e9",
+    "source_url": "https://habr.com/ru/specials/1095232/?utm_campaign=1095232&utm_source=habrahabr&utm_medium=rss",
+    "summary": "Various AI assistants have been around in fintech for a long time; every banking app has at least one. But what will they become when they \"grow up\"? We at SVOY Tech decided to explore the future of AI in financial services. Through a survey, we want to understand in what form AI in fintech will be in demand by users in the next five years, and then look at the same ideas through the eyes of developers: how difficult and expensive it is to implement AI, what prevents a solution from moving from pilot to production, and what architectures look realistic. Read more",
+    "title": "Exploring AI in FinTech: What Users and Developers Actually Want"
   }
 }

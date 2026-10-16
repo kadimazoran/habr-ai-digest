@@ -1,0 +1,129 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Average metric hides failure in a rare segment: checking an ML model on slices</title>
+  <meta name="description" content="Accuracy has increased, and the queue for manual review has decreased – it seems the new ML model can be released to production. However, behind the improvement in overall metrics, a serious drop in quality on individual data segments might be hidden. Using the example of an ad classifier, we&#x27;l">
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.65;
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 32px 20px 64px;
+      color: #1f2328;
+    }
+    header {
+      border-bottom: 1px solid #d8dee4;
+      margin-bottom: 28px;
+      padding-bottom: 20px;
+    }
+    .source {
+      color: #57606a;
+      font-size: 0.95rem;
+    }
+    img, video, iframe {
+      max-width: 100%;
+      height: auto;
+    }
+    pre {
+      overflow-x: auto;
+      padding: 16px;
+      background: #f6f8fa;
+      border-radius: 6px;
+    }
+    code {
+      font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+    }
+    blockquote {
+      border-left: 4px solid #d0d7de;
+      margin-left: 0;
+      padding-left: 16px;
+      color: #57606a;
+    }
+    footer {
+      border-top: 1px solid #d8dee4;
+      margin-top: 40px;
+      padding-top: 20px;
+      color: #57606a;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Average metric hides failure in a rare segment: checking an ML model on slices</h1>
+    <p>Accuracy has increased, and the queue for manual review has decreased – it seems the new ML model can be released to production. However, behind the improvement in overall metrics, a serious drop in quality on individual data segments might be hidden. Using the example of an ad classifier, we&#x27;ll explore how to identify such problems, check the model on slices, and determine the criteria for its readiness for release. Let&#x27;s analyze ML errors.</p>
+    <p class="source">
+      Machine-translated from Habr.
+      <a href="https://habr.com/ru/companies/otus/articles/1091192/?utm_campaign=1091192&amp;utm_source=habrahabr&amp;utm_medium=rss">Read the original Russian article</a>.
+      Fri, 16 Oct 2026 10:05:54 GMT
+    </p>
+  </header>
+  <main>
+<div><p>Let's imagine an ad service.</p><p>Before publication, listings go through a classifier: suspicious ones go to a moderator, and the rest proceed.</p><p>The team connects a new partner feed and prepares a <a href="https://otus.pw/2awp/">new version of the ML model</a> for release.</p><p>On the test set, accuracy increased from 93% to 95.5%, and the number of listings sent for manual review decreased from 136 to 113.</p><p>For the product, this looks like two improvements at once.</p><p>However, on listings from the new feed, the model started detecting only 8 out of 20 violations instead of the previous 16. Another eight violations on the same set slipped past the manual review route.</p><blockquote><p>The outcome depends on whether other controls catch them, but for a release decision, overall accuracy alone is no longer sufficient.</p></blockquote><p>This is a <strong>simulated product scenario</strong>, not data from a live service. The numbers and both prediction versions are provided below in reproducible code. They are useful for demonstrating the verification procedure, which can then be applied to your fully labeled dataset.</p><p>I am Innokentiy Bodrov, a Product Leader with over 18 years of experience in technology products.</p><p><em>In this article, I will show how an overall metric can hide the failure of a new data source, which slices and counters to check before release, and how to link the results to the decision to release the model.</em></p><h3>The overall report shows an increase in accuracy and a reduction in the queue</h3><p>The test set contains 1000 listings: 900 from the main stream and 100 from the new partner API.</p><p>Independent labeling marked 90 violations in the main stream and 20 in the partner stream.</p><ul><li><p>The positive class means "violation confirmed".</p></li><li><p>A positive prediction means "send for manual review".</p></li></ul><p>Both model versions are evaluated on the same listings.</p><div><div><table><tbody><tr><th><p>Segment</p></th><th><p>Model</p></th><th><p>Listings</p></th><th><p>Violations</p></th><th><p>TP</p></th><th><p>FP</p></th><th><p>FN</p></th><th><p>TN</p></th><th><p>Accuracy</p></th><th><p>Recall</p></th></tr><tr><td><p>Main stream</p></td><td><p>A</p></td><td><p>900</p></td><td><p>90</p></td><td><p>72</p></td><td><p>40</p></td><td><p>18</p></td><td><p>770</p></td><td><p>93.6%</p></td><td><p>80%</p></td></tr><tr><td><p>Main stream</p></td><td><p>B</p></td><td><p>900</p></td><td><p>90</p></td><td><p>81</p></td><td><p>20</p></td><td><p>9</p></td><td><p>790</p></td><td><p>96.8%</p></td><td><p>90%</p></td></tr><tr><td><p>Partner API</p></td><td><p>A</p></td><td><p>100</p></td><td><p>20</p></td><td><p>16</p></td><td><p>8</p></td><td><p>4</p></td><td><p>72</p></td><td><p>88%</p></td><td><p>80%</p></td></tr><tr><td><p>Partner API</p></td><td><p>B</p></td><td><p>100</p></td><td><p>20</p></td><td><p>8</p></td><td><p>4</p></td><td><p>12</p></td><td><p>76</p></td><td><p>84%</p></td><td><p>40%</p></td></tr><tr><td><p><strong>Entire set</strong></p></td><td><p><strong>A</strong></p></td><td><p><strong>1000</strong></p></td><td><p><strong>110</strong></p></td><td><p><strong>88</strong></p></td><td><p><strong>48</strong></p></td><td><p><strong>22</strong></p></td><td><p><strong>842</strong></p></td><td><p><strong>93%</strong></p></td><td><p><strong>80%</strong></p></td></tr><tr><td><p><strong>Entire set</strong></p></td><td><p><strong>B</strong></p></td><td><p><strong>1000</strong></p></td><td><p><strong>110</strong></p></td><td><p><strong>89</strong></p></td><td><p><strong>24</strong></p></td><td><p><strong>21</strong></p></td><td><p><strong>866</strong></p></td><td><p><strong>95.5%</strong></p></td><td><p><strong>80.9%</strong></p></td></tr></tbody></table></div></div><p>Here:</p><ul><li><p><code>TP</code> — correctly identified violations.</p></li><li><p><code>FN</code> — missed violations.</p></li><li><p><code>FP</code> — clean listings mistakenly sent for review.</p></li><li><p><code>TN</code> — clean listings that the model did not send to the moderator.</p></li></ul><p><code>Accuracy = (TP + TN) / N</code>, and <code>Recall = TP / (TP + FN)</code>.</p><p>Across the entire set, even recall increased: from 80% to 80.9%. The manual review queue for these 1000 listings decreased by 23 positions: the number of positive predictions is <code>TP + FP</code>. But in the partner feed, the number of missed violations increased from 4 to 12.</p><p>The new model unloads moderators and worsens control precisely where the new data source appeared. The release decision requires evaluating both effects.</p><p>This is not a peculiarity of accuracy. Aggregated precision, recall, or F1 can also hide deterioration in a specific group.</p><p>For moderation, <code>FN</code> means a violation that the model did not send for review, and <code>FP</code> adds work for the team and delays a legitimate seller. When choosing a metric, one must determine the cost of each outcome and the available moderation capacity. <a href="https://developers.google.com/machine-learning/crash-course/classification/accuracy-precision-recall">Google details the meaning and limitations of classification metrics</a>.</p><h3>Published case: toxic comment classifier</h3><p>Researchers at Jigsaw conducted a similar check on two publicly available versions of the Perspective API classifier.</p><p>They evaluated the models on a corpus of 1.8 million comments; 450,000 of them were labeled with mentions of specific groups.</p><p>On short comments mentioning gay or lesbian individuals, the BPSN AUC metric for the first version was 0.57, while for the version after correcting the training data, it was 0.82.</p><blockquote><p>BPSN AUC compares the scores of non-toxic comments from this slice with toxic comments outside the slice: a low value indicates a risk of false positives at a general threshold.</p></blockquote><p>These are <a href="https://arxiv.org/pdf/1903.04561">results of offline model evaluation in a study</a>, not a measurement of moderation errors in an active service.</p><p>The case demonstrates a different type of failure than our partner feed: here, legitimate comments suffer, potentially receiving excessively high toxicity scores.</p><p>The authors also found that the correction helped shorter comments more and did not fully resolve the problem across the entire corpus.</p><p>This means that after correction, it is useful to re-check not only the selected slice but also groups adjacent in length and content.</p><p>Our 93% and 95.5% from the beginning of the article are illustrative numbers; the Jigsaw study does not confirm them.</p><h3>Recalculating results for each listing</h3><p>The code below works with the standard Python library. It does not train a model: two columns of predictions define the results of conditional versions A and B.</p><p>In a production project, these columns should be obtained from the models on the same set of listings. Here, we are checking the comparison procedure, not the training method.</p><pre><code>from collections import defaultdict
+
+
+def segment(name, positives, negatives, a_tp, a_fp, b_tp, b_fp):
+    rows = []
+    for i in range(positives):
+        rows.append((name, 1, int(i &lt; a_tp), int(i &lt; b_tp)))
+    for i in range(negatives):
+        rows.append((name, 0, int(i &lt; a_fp), int(i &lt; b_fp)))
+    return rows
+
+
+# Row fields: source, confirmed_violation, prediction_A, prediction_B.
+rows = (
+    segment("main", 90, 810, a_tp=72, a_fp=40, b_tp=81, b_fp=20)
+    + segment("partner_api", 20, 80, a_tp=16, a_fp=8, b_tp=8, b_fp=4)
+)
+
+
+def evaluate(data, prediction_column):
+    counts = defaultdict(int)
+    for _, actual, pred_a, pred_b in data:
+        predicted = (pred_a, pred_b)[prediction_column]
+        counts[(actual, predicted)] += 1
+
+    tp = counts[(1, 1)]
+    fp = counts[(0, 1)]
+    fn = counts[(1, 0)]
+    tn = counts[(0, 0)]
+    n = tp + fp + fn + tn
+    return {
+        "n": n,
+        "positives": tp + fn,
+        "tp": tp,
+        "fp": fp,
+        "fn": fn,
+        "tn": tn,
+        "accuracy": (tp + tn) / n if n else None,
+        "recall": tp / (tp + fn) if tp + fn else None,
+        "precision": tp / (tp + fp) if tp + fp else None,
+    }
+
+
+for name in ("all", "main", "partner_api"):
+    part = rows if name == "all" else [row for row in rows if row[0] == name]
+    for model, column in (("A", 0), ("B", 1)):
+        m = evaluate(part, column)
+        print(
+            name, model,
+            f"n={m['n']}", f"positives={m['positives']}",
+            f"TP={m['tp']}", f"FP={m['fp']}",
+            f"FN={m['fn']}", f"TN={m['tn']}",
+            f"accuracy={m['accuracy']:.1%}",
+            f"recall={m['recall']:.1%}",
+            f"precision={m['precision']:.1%}",
+        )
+</code><div><a href="https://sourcecraft.dev/"><span></span></a></div></pre><p>For your own dataset, instead of the <code>segment()</code> function, you will need rows in the format <code>(source, confirmed_violation, prediction_A, prediction_B)</code>.</p><p>Add a listing ID and its creation timestamp. This allows you to verify that both versions received the same input and that the labeling was available for every listing, not just those that the old model sent for moderation.</p><p>In the demonstration, the predictions are already binary.</p><p>If the models return a probability or score, the threshold for each version is chosen on a separate validation set and fixed before the final comparison.</p><p>For analyzing the trade-off between the moderation queue and missed violations, PR curves are useful.</p><p>With a rare positive class, a PR curve can be more informative than an ROC curve. <a href="https://developers.google.com/machine-learning/crash-course/classification/roc-and-auc">Google: ROC, AUC, and PR Curves</a>.</p><h3>Labeling only reviewed listings will hide missed violations</h3><p>The quality of evaluation depends on the source of truth. If a moderator only sees listings selected by the current model, then for the remaining listings, there is no confirmed class.</p><blockquote><p>It is incorrect to equate "not reviewed" with "no violation": it is precisely among the unreviewed items that potential <code>FN</code>s are found.</p></blockquote><p>Therefore, in our scenario, the test set is fully labeled regardless of the decisions of either model.</p><p>In practice, a team can organize selective review of listings from both routes and maintain the probability of selection.</p><p>If primarily suspicious listings are reviewed, raw proportions on the labeled set will not be an assessment of quality across the entire stream. With different selection probabilities, evaluating the overall metric will require weights; the absence of labels in part of the stream requires a separate check of assumptions.</p><p>This is a variant of the <em>selective labels</em> problem: the system's decision determines for which objects a label actually appears. It is studied, for example, in <a href="https://arxiv.org/abs/1807.00905">work on selectively observable labels</a>; <a href="https://arxiv.org/abs/2402.12237">a study on the interaction of automatic and manual moderation</a> considers the simultaneous selection of listings and the human queue.</p><p>There are two more data quality checks here. Fix the version of moderation rules: if they changed during the data collection period, identical listings might have received different labels.</p><p>And in case of disputes, check the consistency of decisions made by several moderators. A larger number of rows won't help if the target class itself is defined inconsistently.</p><h3>Slices are chosen based on product routes</h3><p>If slices are not defined in advance, one can always find a group where the candidate looks bad due to randomness. For an ad service, I would start with routes that use different input data or carry different error costs:</p><ol><li><p>Listing source: main interface, partner API, batch import.</p></li><li><p>Product category, if categories have different rules or error costs.</p></li><li><p>Client version and listing completion format: free text, structured attributes, short text.</p></li><li><p>Intersections of source and category, if there are enough labeled violations in each intersection.</p></li></ol><p>The first list should be based on known product routes, not on searching for the most striking drop after calculation.</p><p>For each slice, you need <code>N</code>, the number of violations, the error matrix, and the slice's proportion in the stream.</p><p>If the test set is collected with a deliberate overrepresentation of violations, its precision and queue size cannot be transferred to real traffic without adjusting for class prevalence.</p><p>The study by <a href="https://arxiv.org/abs/1909.12475">Oakden-Rayner et al. on <em>hidden stratification</em></a> shows that significant subgroups may not be labeled as separate classes.</p><p>The authors studied medical images and found noticeable quality differences in important subgroups. This is a good reason to look for domain-specific meaningful slices; the numerical results of the study cannot be declared a typical effect for other tasks.</p><p>There is another risk: a small slice yields an unstable proportion. In our example's partner API, there are only 20 labeled violations; one additional missed violation would change the recall by five percentage points.</p><p>A drop from 16 to 8 detected violations is visible in the raw counters, but for a release decision, estimates of uncertainty and new observations will be needed.</p><p>Versions should be compared on paired listings; for such an evaluation, one can use <a href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.stats.bootstrap.html">paired bootstrap in SciPy</a>. If one seller created many listings, grouping by seller must be preserved during resampling.</p><p>The interval will not fix a biased sample, incorrect labeling, or a slice chosen after reviewing the results.</p><h3>The release threshold is tied to risk and queue size</h3><p>A single table in the report is insufficient if the decision is still made based on overall accuracy.</p><p>For our simulated service, the product owner and moderation team could agree on conditions in advance:</p><ul><li><p>overall accuracy must not be lower than the current version's accuracy;</p></li><li><p>for the partner API, the model must detect at least 75% of confirmed violations on a separate test set;</p></li><li><p>the manual review queue must not exceed the available capacity of moderators for the expected traffic volume;</p></li><li><p>the comparison is conducted on a single fixed test set; thresholds for models are chosen on a separate validation set and fixed before the final check;</p></li><li><p>if there is insufficient labeling for an important slice, the team increases the test set and does not treat a noisy estimate as proof of improvement.</p></li></ul><p>According to these rules, model B fails the check: in the partner API, it detects 8 out of 20 violations, or 40%, against a requirement of 75%. The 75% figure is for illustration only; it is not an industry standard.</p><p>In a production system, the threshold is derived from the acceptable number of missed violations, the consequences of a violation, and the capacity of manual review.</p><p>If the test set does not reflect future traffic, the expected queue and violation rate for the target population are recalculated separately.</p><p>Conditions can be automated: check the absolute minimum metric on a slice and the change relative to the current model.</p><blockquote><p>It is precisely these two types of thresholds that <a href="https://www.tensorflow.org/tfx/model_analysis/model_validations">TensorFlow Model Analysis</a> supports.</p></blockquote><p>The tool does not decide for the team which slices and thresholds are important; it makes the agreed-upon rule reproducible.</p><p>If the overall test passes, but a new route fails, there is an intermediate solution: keep model A for it, send its listings for enhanced manual review, or postpone the feed's connection.</p><p>The choice depends on whether listings can be routed by source, whether the queue can handle the additional load, and whether a separate threshold for the feed will create unexpected effects.</p><p>These options require measurement, not automatic application after a single table.</p><h3>Failure on the partner feed requires separate investigation</h3><p>A poor metric on a slice does not indicate the cause. For the partner API, I would check four hypotheses:</p><ul><li><p>listings from the API contain different texts, categories, or attribute omissions;</p></li><li><p>moderators applied a different version of rules to partner listings;</p></li><li><p>the feature processing pipeline transforms API fields differently than main interface fields;</p></li><li><p>the chosen threshold creates an unfavorable trade-off between missed violations and manual review volume for the feed.</p></li></ul><p>Order of checks:</p><ol><li><p>download the eight additional missed violations by model B with listing IDs;</p></li><li><p>compare texts and attributes before and after processing;</p></li><li><p>re-check disputed labels;</p></li><li><p>compare the score distribution by source.</p></li></ol><p>Only after this should a fix be chosen – labeling, transformation, model, or threshold. Its quality will need to be measured on new data: selecting a solution based on the 20 positive listings already reviewed will create an inflated estimate.</p><p>In other products, a slice might describe groups of people, not data sources. Then, quality analysis also involves fairness of decisions. Equal recall by itself does not prove system fairness: criteria related to the specific decision and its consequences are needed. <a href="https://developers.google.com/machine-learning/crash-course/fairness/evaluating-for-bias">Google: Evaluating Bias and Fairness</a>.</p><h3>Release report supplemented with slice size and error cost</h3><p>On 1000 simulated listings, model B increased accuracy from 93% to 95.5% and reduced the number of items sent for manual review from 136 to 113. In the partner API, it missed 12 out of 20 violations instead of 4. The increase in the overall metric and the reduction in the queue coexist here with a specific product risk.</p><p>In the release report, I would keep the overall metric, the error matrix for pre-selected routes, the number of labeled violations, the expected moderation queue, and the acceptance criteria for each critical slice side-by-side.</p><p>Row-by-row predictions for both versions allow returning from percentages to the listings where the models diverged. Without this step, a table with a nice overall accuracy does not explain which cases the new version stopped noticing.</p><h3>Conclusions</h3><ul><li><p>Overall accuracy increased from 93% to 95.5%, but on the partner feed, recall dropped from 80% to 40%. The release check should show both results.</p></li><li><p>For each important slice, original error counters, the amount of labeling, and an assessment of the consequences of a missed violation or false positive are needed. A single percentage without the slice size is misleading.</p></li><li><p>Slices and acceptance criteria should be defined before the final model comparison. If a critical route fails the threshold, its release requires a separate decision.</p></li><li><p>The cause of the drop is determined by examining listings where versions diverged, and the fix is verified on new data. A poor metric by itself does not explain the cause.</p></li></ul><hr/><p>Even a model with good metrics can start making mistakes over time due to changes in input data.</p><p>We will discuss how to detect such changes and monitor model quality in production on <strong>October 26 at 20:00</strong> during a free demo lesson <a href="https://otus.pw/tBhu/">
+"Data Drift in Machine Learning: Why Models Degrade in Production and How to Monitor It"</a>.</p><p><em>We will cover types of data drift, metrics, and monitoring tools in practice.</em></p><blockquote><p>More practical topics on ML, analytics, and development can be found in the <a href="https://otus.pw/LzebJ/">October digest of OTUS webinars</a>.</p></blockquote></div>
+  </main>
+  <footer>
+    Translation generated with Gemini 2.5 Flash-Lite.
+    The original article remains the source of record.
+  </footer>
+</body>
+</html>

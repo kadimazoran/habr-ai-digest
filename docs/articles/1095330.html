@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>How long does a link last in a neural network&#x27;s response: I compared three measurements for 20 questions</title>
+  <meta name="description" content="If you&#x27;re tracking whether a neural network links to your site, it&#x27;s useful to know how long a link stays in the response to the same question. Not long: after a month and a half, only a quarter to a third of the previous links remained in the responses of Alice AI and Perplexity (27.5% fo">
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.65;
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 32px 20px 64px;
+      color: #1f2328;
+    }
+    header {
+      border-bottom: 1px solid #d8dee4;
+      margin-bottom: 28px;
+      padding-bottom: 20px;
+    }
+    .source {
+      color: #57606a;
+      font-size: 0.95rem;
+    }
+    img, video, iframe {
+      max-width: 100%;
+      height: auto;
+    }
+    pre {
+      overflow-x: auto;
+      padding: 16px;
+      background: #f6f8fa;
+      border-radius: 6px;
+    }
+    code {
+      font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+    }
+    blockquote {
+      border-left: 4px solid #d0d7de;
+      margin-left: 0;
+      padding-left: 16px;
+      color: #57606a;
+    }
+    footer {
+      border-top: 1px solid #d8dee4;
+      margin-top: 40px;
+      padding-top: 20px;
+      color: #57606a;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>How long does a link last in a neural network&#x27;s response: I compared three measurements for 20 questions</h1>
+    <p>If you&#x27;re tracking whether a neural network links to your site, it&#x27;s useful to know how long a link stays in the response to the same question. Not long: after a month and a half, only a quarter to a third of the previous links remained in the responses of Alice AI and Perplexity (27.5% for Perplexity, 35.5% for Alice AI), and more than half of the links turned out to be new. I asked both neural networks 20 questions from the same niche (how to get into neural network responses, how much it costs, where to order). For each question, each neural network responded five times: three repetitions in a row within an hour, another after 5 days, and another after a month and a half. The report that you are in the response ages faster than it seems. Read more</p>
+    <p class="source">
+      Machine-translated from Habr.
+      <a href="https://habr.com/ru/articles/1095330/?utm_campaign=1095330&amp;utm_source=habrahabr&amp;utm_medium=rss">Read the original Russian article</a>.
+      Fri, 16 Oct 2026 12:37:03 GMT
+    </p>
+  </header>
+  <main>
+<div><p>If you're tracking whether a neural network links to your site, it's useful to know how long a link stays in the response to the same question. Not long: after a month and a half, only a quarter to a third of the previous links remained in the responses of Alice AI and Perplexity (27.5% for Perplexity, 35.5% for Alice AI), and more than half of the links turned out to be new.</p><p>I asked both neural networks 20 questions from the same niche (how to get into neural network responses, how much it costs, where to order). For each question, each neural network responded five times: three repetitions in a row within an hour, another after 5 days, and another after a month and a half. The report that you are in the response ages faster than it seems.</p><h3>How I counted which neural network sources remained in the response</h3><p>I consider a source to be a link that is referenced in the response text. For Alice AI, these are links marked as used in the response: usually there are three, although there is a list of 5-8 links below the response. For Perplexity (sonar-pro via API with search), these are links referenced in the text with a footnote number [n]. The median number of such links per response is 8 in the first measurements and 12 in the third.</p><p>I did not include the full Perplexity list in the main count. In the third measurement, the API started returning twice as many sources, and the longer the later list, the more random coincidences with the earlier one. For verification, I also counted using the full list: after a month and a half, less than half of the links still remain there.</p><p>I call the metric *previous links remaining*. This is the proportion of links from an early response to a question that are present again in a later response to the same question: |A∩B| / |A|. The denominator is only the early response, so it's not the Jaccard similarity of common links. The count is cumulative: links from all questions go into one denominator. For 5 and 45 days, each of the three hourly repetitions is compared with the later response, and all pairs go into the same denominator. I compare addresses exactly, after removing www, anchors, utm tags, and trailing slashes.</p><pre><code>import re
+
+def norm_url(u):
+    u = u.split("#")[0].replace("://www.", "://")
+    u = re.sub(r"[?&amp;]utm_[^&amp;]*", "", u)
+    return u.rstrip("/")
+
+def kept_share(early, late):
+    """early, late: {вопрос: множество ссылок} -&gt; |A∩B| / |A| по всем вопросам"""
+    kept = total = 0
+    for q, urls in early.items():
+        if q not in late:
+            continue
+        a = {norm_url(u) for u in urls}
+        b = {norm_url(u) for u in late[q]}
+        kept += len(a &amp; b)
+        total += len(a)
+    return kept / total if total else None</code><div><a href="https://sourcecraft.dev/"><span></span></a></div></pre><p>A background is also needed. In the first measurement, I compared each of the three hourly repetitions with the other two, resulting in six pairs. This is the variance without the passage of time: if some links were not repeated within an hour, it's due to the randomness of the response, not aging.</p><h3>What proportion of links remains in the response to the same question after 5 and 45 days</h3><p>After 5 days, slightly more than half of the previous links remain, and after 45 days, 27.5% to 35.5%. But not everything is repeated even within the same hour. For Alice AI, 78.3% of links remain within an hour, and for Perplexity, 73.9%: about a quarter changes without any passage of time.</p><figure><img alt=
+  </main>
+  <footer>
+    Translation generated with Gemini 2.5 Flash-Lite.
+    The original article remains the source of record.
+  </footer>
+</body>
+</html>

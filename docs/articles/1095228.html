@@ -1,0 +1,92 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>How I added a face to Yandex&#x27;s voice AI: Simli, Anam, and testing on iPhone</title>
+  <meta name="description" content="My voice AI administrator, Aika, had a voice on Yandex Realtime but no face. I added one on top of the existing voice: the avatar service receives the finished audio and syncs lips to it. I compared Simli and Anam using the same portrait and voice. Along the way, I dealt with the pause before the re">
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.65;
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 32px 20px 64px;
+      color: #1f2328;
+    }
+    header {
+      border-bottom: 1px solid #d8dee4;
+      margin-bottom: 28px;
+      padding-bottom: 20px;
+    }
+    .source {
+      color: #57606a;
+      font-size: 0.95rem;
+    }
+    img, video, iframe {
+      max-width: 100%;
+      height: auto;
+    }
+    pre {
+      overflow-x: auto;
+      padding: 16px;
+      background: #f6f8fa;
+      border-radius: 6px;
+    }
+    code {
+      font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+    }
+    blockquote {
+      border-left: 4px solid #d0d7de;
+      margin-left: 0;
+      padding-left: 16px;
+      color: #57606a;
+    }
+    footer {
+      border-top: 1px solid #d8dee4;
+      margin-top: 40px;
+      padding-top: 20px;
+      color: #57606a;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>How I added a face to Yandex&#x27;s voice AI: Simli, Anam, and testing on iPhone</h1>
+    <p>My voice AI administrator, Aika, had a voice on Yandex Realtime but no face. I added one on top of the existing voice: the avatar service receives the finished audio and syncs lips to it. I compared Simli and Anam using the same portrait and voice. Along the way, I dealt with the pause before the response, starting video on iPhone, and why video didn&#x27;t connect on my mobile internet without a VPN. For the second character, it turned out the portrait looked fake not because of the face, but because of the empty background behind it. And during pre-publication checks, I found a race condition in connection cancellation that I had missed. Read on</p>
+    <p class="source">
+      Machine-translated from Habr.
+      <a href="https://habr.com/ru/articles/1095228/?utm_campaign=1095228&amp;utm_source=habrahabr&amp;utm_medium=rss">Read the original Russian article</a>.
+      Sat, 17 Oct 2026 07:01:16 GMT
+    </p>
+  </header>
+  <main>
+<div><p>My voice AI administrator, Aika, already had a voice, a conversation script, and a working page. It lacked a face. I wanted to add one while keeping Yandex Realtime: let the new service receive the finished audio and sync lips to it.</p><p>I tried Simli and Anam. The face appeared, but along with it, I had to deal with the pause before the response, starting video on iPhone, and mobile internet. And with the second character, Eva, it turned out that the portrait's persuasiveness depends not only on the face but also on what's behind it.</p><p>Claude Code wrote the code, and Codex generated some appearance options based on my technical specifications. The solutions, selection, and live phone testing were mine.</p><p>At the end of September, Google showcased Gemini Live with an avatar — Habr already has a <a href="https://habr.com/ru/companies/koda/articles/1086738/">review of this approach</a>. My task was different: the voice engine was already working, and I didn't want to switch from it just for a face.</p><h3>What was the input</h3><p>Aika talks to website visitors directly in the browser. The browser maintains a WebSocket connection with our FastAPI server, and the server maintains a session with Yandex Realtime. This is a "speech-to-speech" interface: I don't need to separately assemble a chain of recognition, text model, and synthesis.</p><p>I discussed why Yandex instead of OpenAI in my <a href="https://habr.com/ru/articles/1057176/">previous article</a>. For this story, one thing is important: the server sends audio to the browser in chunks of PCM16 at 24 kHz, as <code>pcm_chunk</code> events. PCM16 is uncompressed audio where each sample takes 16 bits. In normal voice mode, the browser plays it.</p><p>The task: add a face that syncs its lips to this audio while the response is still being received.</p><h3>A face given someone else's voice</h3><p>I didn't need a new pipeline of recognition, language model, and synthesis. I only needed face animation. Both services I tried have such a mode: you provide your audio, the service renders a face to it and returns audio and video via WebRTC — a real-time media transmission technology.</p><p>The response is still generated and voiced by Yandex. The avatar service is responsible for the visuals and their synchronization with the audio.</p><p>The first technical detail is the frequency. Yandex, in my configuration, provides 24 kHz. Simli needs 16 kHz, and for Anam, I used the same format as in their <a href="https://anam.ai/docs/javascript-sdk/examples/custom-tts">JavaScript example</a>. Anam's frequency is set by a parameter: 16 kHz here is our integration's choice, not a universal service limitation.</p><p>Audio arrives in chunks — pieces of varying lengths. If you start resampling from scratch with each chunk, the result depends on where the boundary falls. Therefore, the fractional position and the last sample are carried over to the next chunk. In this example, <code>AVATAR_RATE</code> is 16000:</p><pre><code>const resampler = {
+  pos: 0, prev: 0,
+  reset() { this.pos = 0; this.prev = 0; },
+  run(int16, inRate) {
+    const n = int16.length;
+    if (!n) return new Int16Array(0);
+    const step = inRate / AVATAR_RATE;
+    const out = new Int16Array(Math.ceil((n - this.pos) / step) + 1);
+    let p = this.pos, k = 0;
+    while (p &lt; n - 1) {
+      const i = Math.floor(p), f = p - i;
+      const a = i &lt; 0 ? this.prev : int16[i];
+      out[k++] = Math.round(a + (int16[i + 1] - a) * f);
+      p += step;
+    }
+    this.pos = p - n;
+    this.prev = int16[n - 1];
+    return out.subarray(0, k);
+  },
+};
+</code><div><a href="https://sourcecraft.dev/"><span></span></a></div></pre><p>Verification: the same signal was processed entirely and then cut into pieces of random length. The maximum difference was zero.</p><p>This only confirms that chunk boundaries don't change the result. The quality of resampling itself is a separate issue: there's no proper filter before downsampling here, so components above 8 kHz can cause distortions in the remaining range. The seam problem was thus closed, and there's still room for improvement in resampling quality.</p><p>The service key does not reach the browser. The page requests a short-lived session token from our server via <code>POST /voice/avatar-session</code>. The server checks the origin — the source of the request — and limits issuance: 6 tokens per hour per IP and 30 per hour in total.</p><p>If obtaining a token or starting video fails, the page reverts to voice mode. Eight seconds are allocated for the token request, and fifteen for the SDK launch call. An important detail: a successful SDK launch doesn't mean the first frame has appeared yet. In hidden video mode, a line with the error reason is displayed, and the voice call continues. The face here is a decoration, not a condition for conversation.</p><p>Anam has two more important commands. After sending the last audio fragment of a remark, call <code>endSequence()</code>. When interrupted, call <code>interruptPersona()</code> and the same <code>endSequence()</code>: the first stops the avatar's current speech, the second closes the input audio sequence. The end of audio transmission doesn't mean the avatar has finished playing it.</p><h3>Simli vs. Anam</h3><p>I compared what I could launch on my accounts: Simli's previous generation face and Anam Cara-4. This is a service choice for my task, not a comparison of the best models from both manufacturers.</p><p>Creating a Simli next-generation face in my account returned a 403 with a message about the GS Faces limit, so the face was created via the previous generation endpoint. For both services, we used the same source portrait, the same voice, and the same page.</p><div><div><table><tbody><tr><th><p></p></th><th><p>Simli — previous generation</p></th><th><p>Anam Cara-4</p></th></tr><tr><td><p>Received frame</p></td><td><p>512×512</p></td><td><p>768×1152, portrait</p></td></tr><tr><td><p>My impression of the facial expressions</p></td><td><p>Lips move, little other facial expression</p></td><td><p>Blinks, smiles, shows teeth, tilts head</p></td></tr><tr><td><p>Creating your own face</p></td><td><p>From photo via previous generation API</p></td><td><p>From a single photo, trial video available after creation</p></td></tr></tbody></table></div></div><p>I almost compared apples and oranges regarding connection speed. In one Simli run, the first frame was captured approximately 11 seconds after the "Connecting to video..." status. For Anam, the status changed after 0.9 seconds, but the image only appeared in the logs after 2.7 seconds. Looking at the status, it seems one speed, but looking at the frame, it's another. Therefore, there's no common "connection time" row in the table: I didn't conduct identical measurement series until the first frame.</p><figure><img alt=
+  </main>
+  <footer>
+    Translation generated with Gemini 2.5 Flash-Lite.
+    The original article remains the source of record.
+  </footer>
+</body>
+</html>

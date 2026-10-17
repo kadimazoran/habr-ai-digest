@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Machine Learning in PHP: Rubix ML 3.x – A Major Ecosystem Update</title>
+  <meta name="description" content="Significant updates to Rubix ML 3.x bring performance improvements, enhanced neural network training, better data handling, and parallel computing capabilities to the PHP machine learning ecosystem. The release also includes a new official website, making it easier for PHP developers to integrate ML">
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.65;
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 32px 20px 64px;
+      color: #1f2328;
+    }
+    header {
+      border-bottom: 1px solid #d8dee4;
+      margin-bottom: 28px;
+      padding-bottom: 20px;
+    }
+    .source {
+      color: #57606a;
+      font-size: 0.95rem;
+    }
+    img, video, iframe {
+      max-width: 100%;
+      height: auto;
+    }
+    pre {
+      overflow-x: auto;
+      padding: 16px;
+      background: #f6f8fa;
+      border-radius: 6px;
+    }
+    code {
+      font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+    }
+    blockquote {
+      border-left: 4px solid #d0d7de;
+      margin-left: 0;
+      padding-left: 16px;
+      color: #57606a;
+    }
+    footer {
+      border-top: 1px solid #d8dee4;
+      margin-top: 40px;
+      padding-top: 20px;
+      color: #57606a;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Machine Learning in PHP: Rubix ML 3.x – A Major Ecosystem Update</h1>
+    <p>Significant updates to Rubix ML 3.x bring performance improvements, enhanced neural network training, better data handling, and parallel computing capabilities to the PHP machine learning ecosystem. The release also includes a new official website, making it easier for PHP developers to integrate ML into their projects.</p>
+    <p class="source">
+      Machine-translated from Habr.
+      <a href="https://habr.com/ru/articles/1095514/?utm_campaign=1095514&amp;utm_source=habrahabr&amp;utm_medium=rss">Read the original Russian article</a>.
+      Fri, 16 Oct 2026 22:46:54 GMT
+    </p>
+  </header>
+  <main>
+<div><p>Notable changes in the PHP ecosystem regarding machine learning don't happen very often. While most developers' attention is focused on Python, PyTorch, and large language models, ML tools for PHP continue to evolve, albeit remaining a niche area. Therefore, the release of Rubix ML 3.x is an important event for PHP developers who want to use machine learning in their projects. This is not just another library version: the update has affected performance, neural network training, data processing, and parallel computing capabilities. Additionally, the project has launched an official website with an overview of the library's features, documentation, and examples. It helps to see Rubix ML not as a collection of individual algorithms, but as a comprehensive toolkit for the entire machine learning cycle – from data preparation to deploying a trained model in production. Let's break down what has changed and why it's interesting for developers who work with PHP every day.</p><p>Read more</p><h3>Why Machine Learning in PHP at All?</h3><p>When a machine learning task arises in an existing PHP application, the common approach is to create a separate service in Python.</p><p>Such a solution has obvious advantages. Python has a vast ML ecosystem, numerous ready-made models and tools, and the computational part can be scaled independently.</p><p>However, a separate service comes at a cost: additional deployment, inter-application communication, monitoring, data exchange, and one more component to maintain.</p><p>Imagine a SaaS platform that collects statistics from social networks, publishes content, and analyzes user activity. At some point, there's a need to find anomalies in metrics, classify data, or segment accounts.</p><p>Is it mandatory to create a separate Python service for this?</p><p>Not always. For some tasks, you can use an ML library directly within the PHP application. Rubix ML provides algorithms for classification, regression, clustering, anomaly detection, and neural network models, as well as tools for data preparation and model quality evaluation.</p><p>Of course, this doesn'p mean PHP should replace Python for all machine learning tasks. But the ability to start with an already used language can be beneficial in itself.</p><h3>What's New in Rubix ML 3.0?</h3><h4>1. Parallel Computing: Inference and Training</h4><p>One of the most interesting changes is the ability to perform individual algorithm operations in parallel.</p><p>It's important to understand the terminology here. <em>Training</em> is the process of teaching a model. <em>Inference</em> is applying an already trained model to new data to obtain predictions or estimates.</p><p>For example, we've trained a model that detects anomalies in user activity. Now, the system needs to check thousands or millions of new observations every day.</p><p>If processing is done sequentially, inference time can become a bottleneck. Parallel computing allows distributing work across multiple processes to utilize available CPU cores more effectively.</p><p>In Rubix ML 3.0, parallel inference has been added for K-Nearest Neighbors and KNN Regressor. For Isolation Forest, both training and inference are parallelized.</p><p>How does it work?</p><p>Instead of creating a separate process for each observation, the developer can use the parallel execution mechanism supported by the algorithm. The library distributes the corresponding computational tasks through the selected backend.</p><p>For instance, with K-Nearest Neighbors, processing multiple observations can be distributed among worker processes. For Isolation Forest, the results of individual ensemble trees can be computed independently and their scores combined.</p><p>To actually enable parallel processing, you need to configure a supported backend. Rubix ML offers backends based on Amp and Swoole, among others. By default, a sequential backend is used, so simply updating to version 3.0 doesn't mean any model call will automatically become parallel.</p><p>For Isolation Forest, setting up a Swoole-based backend looks like this:</p><pre><code>use Rubix
+ML
+Backends
+Swoole;</code><code>$estimator-&gt;setBackend(new Swoole());</code><div><a href=
+  </main>
+  <footer>
+    Translation generated with Gemini 2.5 Flash-Lite.
+    The original article remains the source of record.
+  </footer>
+</body>
+</html>

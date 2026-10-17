@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>How a Session-Based Recommendation System Works: Graph, Metadata, and LightGBM</title>
+  <meta name="description" content="A visitor viewed item A. The graph suggests B, similar descriptions suggest C, and similar images suggest D. How can we combine these lists into recommendations without arbitrarily adding scores of different meanings? Using a working project on Coveo, I demonstrate the entire process: historical ite">
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.65;
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 32px 20px 64px;
+      color: #1f2328;
+    }
+    header {
+      border-bottom: 1px solid #d8dee4;
+      margin-bottom: 28px;
+      padding-bottom: 20px;
+    }
+    .source {
+      color: #57606a;
+      font-size: 0.95rem;
+    }
+    img, video, iframe {
+      max-width: 100%;
+      height: auto;
+    }
+    pre {
+      overflow-x: auto;
+      padding: 16px;
+      background: #f6f8fa;
+      border-radius: 6px;
+    }
+    code {
+      font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+    }
+    blockquote {
+      border-left: 4px solid #d0d7de;
+      margin-left: 0;
+      padding-left: 16px;
+      color: #57606a;
+    }
+    footer {
+      border-top: 1px solid #d8dee4;
+      margin-top: 40px;
+      padding-top: 20px;
+      color: #57606a;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>How a Session-Based Recommendation System Works: Graph, Metadata, and LightGBM</h1>
+    <p>A visitor viewed item A. The graph suggests B, similar descriptions suggest C, and similar images suggest D. How can we combine these lists into recommendations without arbitrarily adding scores of different meanings? Using a working project on Coveo, I demonstrate the entire process: historical item graph, pre-computed description and image vectors, up to 300 candidates, and ranking with LightGBM. I cover source quotas, feature imputation, and pairwise learning, including cases where the purchased item isn&#x27;t among the candidates. The model is trained, quality is measured, and recommendations are available via a local HTTP API. This article details the system&#x27;s architecture, compares it with simpler methods, and discusses its limitations. The code and reproduction instructions are open-source. How to generate 20 recommendations.</p>
+    <p class="source">
+      Machine-translated from Habr.
+      <a href="https://habr.com/ru/articles/1095556/?utm_campaign=1095556&amp;utm_source=habrahabr&amp;utm_medium=rss">Read the original Russian article</a>.
+      Sat, 17 Oct 2026 08:23:30 GMT
+    </p>
+  </header>
+  <main>
+<div><p>A visitor viewed item A. Based on browsing history, B is related to it, C is similar in description, and D is similar in image. Item A itself should also be considered: the visitor viewed it, but a purchase hasn't been registered yet. How can we assemble a list of no more than 20 recommendations from these suggestions?</p><p>Using this example, I'll break down the system I built for the <a href="https://github.com/coveooss/SIGIR-ecom-data-challenge">Coveo SIGIR eCOM 2021, Public Data Release 1.0.0</a>. From a historical catalog of 14,314 SKUs, it selects up to 300 candidates, calculates features for them, and passes them to LightGBM. The model ranks the items, and a local HTTP API returns up to 20 recommendations. The model is trained, and I'll present the evaluation results at the end.</p><p>Code: <a href="https://github.com/ykutovaya/RecSys-Coveo">RecSys-Coveo</a>.</p><p>In the <a href="https://habr.com/ru/articles/1095468/">previous article</a>, I discussed the goals and limitations of purchase records. Here, I'll cover item selection, feature calculation, and training the ranker—the model that determines the output order.</p><p>First, let's recall the time rules. A session is a set of events with a common identifier in Coveo, and an SKU is an item identifier. Events with the same timestamp are considered a single block: their internal order is unknown. Recommendations are generated once, after the first block containing a viewed item with a valid SKU, provided no purchase has been registered in the session by the end of that block.</p><p>The model only sees events available at the time of recommendation generation. The goal is to identify various SKUs of registered purchases occurring after the recommendation in the same session. The observation window ends 24 hours later or at the last published record, whichever comes first.</p><h3>What the Graph Knows About an Item</h3><p>Before processing requests, I build the catalog, graph, and item statistics from 50,000 sessions in the <code>A_G</code> period. The presence of a purchase does not affect session selection. The next 50,000 sessions, from period <code>B</code>, are used for training the ranker. This separation prevents future purchases from period <code>B</code> from becoming graph edges and influencing the recommendations for the same session.</p><p>The graph nodes are items. There are three types of directed edges between them:</p><ul><li><p>view → view;</p></li><li><p>view → add to cart;</p></li><li><p>view → purchase.</p></li></ul><p>If a visitor purchased B after viewing A, the session contributes to a type 3 edge. A reverse edge B → A does not arise from this. The edge also doesn't indicate whether items are substitutes or complements; it reflects the sequence of actions.</p><p>After viewing item A, I look for subsequent views, add-to-cart actions, and purchases of other items within the same historical session. In the current configuration, I consider only the next ten blocks of item events and only actions that occurred no later than 30 minutes after viewing A. I do not build edges between events within the same block: their order is unknown. The longer the interval between events, the lower the pair's weight—it decays exponentially.</p><p>If multiple A → B pairs of the same type occur in a session, I take the maximum weight. Then, I sum the contributions from different sessions. One session contributes at most one unit to an edge, so repeated views of the same item pages don't create a strong link on their own.</p><p>In the current configuration, an edge must appear in at least three sessions. For each item and edge type, I store up to 100 neighbors with the highest weights. I further weaken edges for items with low total weights. For our query with a single view of A, the score for candidate B based on one edge type looks like this:</p><img alt=
+  </main>
+  <footer>
+    Translation generated with Gemini 2.5 Flash-Lite.
+    The original article remains the source of record.
+  </footer>
+</body>
+</html>

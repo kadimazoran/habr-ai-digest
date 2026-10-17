@@ -2871,6 +2871,14 @@
     "summary": "It's fashionable to call a folder of notes in Obsidian a second brain. But 200,000 files on their own do nothing – that's second memory. It becomes a brain when agents are connected to it. And I'll tell you how it works for me and what they can find. Read more",
     "title": "Second Memory and Second Brain are Not the Same. How I Collected 200,000 Files of My Life and Connected Agents to Them"
   },
+  "https://habr.com/ru/articles/1095228/?utm_campaign=1095228&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Sat, 17 Oct 2026 07:01:16 GMT",
+    "slug": "1095228",
+    "source_url": "https://habr.com/ru/articles/1095228/?utm_campaign=1095228&utm_source=habrahabr&utm_medium=rss",
+    "summary": "My voice AI administrator, Aika, had a voice on Yandex Realtime but no face. I added one on top of the existing voice: the avatar service receives the finished audio and syncs lips to it. I compared Simli and Anam using the same portrait and voice. Along the way, I dealt with the pause before the response, starting video on iPhone, and why video didn't connect on my mobile internet without a VPN. For the second character, it turned out the portrait looked fake not because of the face, but because of the empty background behind it. And during pre-publication checks, I found a race condition in connection cancellation that I had missed. Read on",
+    "title": "How I added a face to Yandex's voice AI: Simli, Anam, and testing on iPhone"
+  },
   "https://habr.com/ru/articles/1095276/?utm_campaign=1095276&utm_source=habrahabr&utm_medium=rss": {
     "model": "gemini-2.5-flash-lite",
     "published": "Fri, 16 Oct 2026 11:41:28 GMT",
@@ -2926,6 +2934,86 @@
     "source_url": "https://habr.com/ru/articles/1095330/?utm_campaign=1095330&utm_source=habrahabr&utm_medium=rss",
     "summary": "If you're tracking whether a neural network links to your site, it's useful to know how long a link stays in the response to the same question. Not long: after a month and a half, only a quarter to a third of the previous links remained in the responses of Alice AI and Perplexity (27.5% for Perplexity, 35.5% for Alice AI), and more than half of the links turned out to be new. I asked both neural networks 20 questions from the same niche (how to get into neural network responses, how much it costs, where to order). For each question, each neural network responded five times: three repetitions in a row within an hour, another after 5 days, and another after a month and a half. The report that you are in the response ages faster than it seems. Read more",
     "title": "How long does a link last in a neural network's response: I compared three measurements for 20 questions"
+  },
+  "https://habr.com/ru/articles/1095420/?utm_campaign=1095420&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Sat, 17 Oct 2026 06:56:24 GMT",
+    "slug": "1095420",
+    "source_url": "https://habr.com/ru/articles/1095420/?utm_campaign=1095420&utm_source=habrahabr&utm_medium=rss",
+    "summary": "I needed live Russian subtitles for one-on-one calls and wanted to switch from cloud-based Deepgram to my own server. I set up a testbed and ran T-one from T-Bank, GigaAM from Sber, and Vosk on a regular CPU, for a call center scenario and a half-hour live session. The main takeaway wasn't about the models: the same code on two servers with a similar number of cores showed a difference in capacity by orders of magnitude. Inside: latency and quality measurements, pitfalls, cost-effectiveness calculations, and open-source code for the testbed with a probe that will show your server's capacity in a minute. Read on.",
+    "title": "Open Models vs. Cloud: T-one, GigaAM, or Deepgram: What Can a Regular CPU Actually Handle for Live Call Subtitles?"
+  },
+  "https://habr.com/ru/articles/1095484/?utm_campaign=1095484&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Fri, 16 Oct 2026 18:19:04 GMT",
+    "slug": "1095484",
+    "source_url": "https://habr.com/ru/articles/1095484/?utm_campaign=1095484&utm_source=habrahabr&utm_medium=rss",
+    "summary": "Provocative statement: my chess engine aims to surpass all existing ones in skill and speed. Of course, with caveats (more on that later). The engine showed excellent results but inexplicably lost in some situations. To fix this, one needs to analyze a large amount of data (game records against competing programs), identify anomalies, make changes to algorithms, adjust coefficients, run test matches, and compare results with previous versions. Data analysis using an AI chat showed dubious benefits. However, AI excelled at writing scripts to control competing programs and helped build a remarkable tool for analyzing the finest settings of a chess engine. Read more",
+    "title": "Calibrating Chess Engine Parameters"
+  },
+  "https://habr.com/ru/articles/1095492/?utm_campaign=1095492&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Fri, 16 Oct 2026 18:59:13 GMT",
+    "slug": "1095492",
+    "source_url": "https://habr.com/ru/articles/1095492/?utm_campaign=1095492&utm_source=habrahabr&utm_medium=rss",
+    "summary": "Work on the on-premise version for \"Night Eye\" was one of the stages of optimizing TAPe+ML for a processor core. The initial delivery for the project occupied about 28-30 MB. This version ran on RDBox with a core load of 30-60%. Then we continued optimizing libraries and execution. The current on-premise delivery occupies about 4.2 MB. The model fits into the processor's internal memory and, after initial loading, runs there – without constantly transferring its parameters from RAM. On tested CPUs, frame processing on a single CPU core takes 8.6–15.8 ms. See further",
+    "title": "Computer Vision On-Premise Above SOTA, Weighing 4MB and on a Single CPU Core: How \"Night Eye\" Became an All-Seeing Eye"
+  },
+  "https://habr.com/ru/articles/1095496/?utm_campaign=1095496&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Fri, 16 Oct 2026 21:27:58 GMT",
+    "slug": "1095496",
+    "source_url": "https://habr.com/ru/articles/1095496/?utm_campaign=1095496&utm_source=habrahabr&utm_medium=rss",
+    "summary": "I tested if local LLMs could offload work from Hermes Agent on a home PC with an RTX 3080 and 32GB RAM. I compared Qwen and GLM on architectural tasks, editing, and data extraction, experimented with different quantizations, and connected Hermes on a Mac to a Windows-based model. This article details the test conditions, speed and memory benchmarks, specific errors, and the reasons for ultimately choosing Qwen3.5 9B. While the connection worked, achieving the expected response quality and confirming cloud limit savings has not yet been successful. Read on.",
+    "title": "ChatGPT Limits and Local LLMs: My Experiment with Hermes Agent"
+  },
+  "https://habr.com/ru/articles/1095512/?utm_campaign=1095512&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Sat, 17 Oct 2026 07:06:17 GMT",
+    "slug": "1095512",
+    "source_url": "https://habr.com/ru/articles/1095512/?utm_campaign=1095512&utm_source=habrahabr&utm_medium=rss",
+    "summary": "I spend a significant part of my workday in meetings and discussions. When my child was born and sleepless nights began, I started missing details. What deadline was mentioned? Who promised to get back with an answer? What did we finally agree on? This is how the story of Recorder began. At first, I planned to buy a ready-made application. Then I started comparing Whisper, Parakeet, and GigaAM. In the end, I tested 32 recognition configurations and assembled a cascade of two models: one provides the basic text, the other corrects inaccuracies. On my recordings, this corrected every fifth error (WER dropped from 27.0% to 21.7%). The experiments resulted in a free Mac application that records meetings and transcribes audio and video to text locally. I'll explain how I chose the models, what I measured, and which obvious solutions didn't work. The article includes a prompt for an agent to build it yourself. Read on.",
+    "title": "Audio Transcription to Text for Free and Without Clouds: Why One Model Wasn't Enough"
+  },
+  "https://habr.com/ru/articles/1095514/?utm_campaign=1095514&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Fri, 16 Oct 2026 22:46:54 GMT",
+    "slug": "1095514",
+    "source_url": "https://habr.com/ru/articles/1095514/?utm_campaign=1095514&utm_source=habrahabr&utm_medium=rss",
+    "summary": "Significant updates to Rubix ML 3.x bring performance improvements, enhanced neural network training, better data handling, and parallel computing capabilities to the PHP machine learning ecosystem. The release also includes a new official website, making it easier for PHP developers to integrate ML into their projects.",
+    "title": "Machine Learning in PHP: Rubix ML 3.x – A Major Ecosystem Update"
+  },
+  "https://habr.com/ru/articles/1095538/?utm_campaign=1095538&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Sat, 17 Oct 2026 06:56:32 GMT",
+    "slug": "1095538",
+    "source_url": "https://habr.com/ru/articles/1095538/?utm_campaign=1095538&utm_source=habrahabr&utm_medium=rss",
+    "summary": "I have several Claude subscriptions, and Claude Code runs almost all day: I write myself, agents are running in parallel. The five-hour limit expires at the most inconvenient moment, the weekly one long before the end of the week. After that, everything is the same: open the terminal, log out, log in with another account in the browser, return to the session, and remember where you left off. At some point, I got tired of doing this manually. Thus, ccswap was born – a Go daemon for macOS and Linux. When the current account approaches its limit (or when I ask), it logs Claude Code into another one. Running sessions pick up the new account in about half a minute, without restarting anything. Below is how it works, what I stumbled upon, and why you should use it with your eyes open: Anthropic has rules that directly concern this endeavor. Read more",
+    "title": "ccswap: Switching Claude Code Between My Subscriptions Without Proxies or Restarts"
+  },
+  "https://habr.com/ru/articles/1095556/?utm_campaign=1095556&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Sat, 17 Oct 2026 08:23:30 GMT",
+    "slug": "1095556",
+    "source_url": "https://habr.com/ru/articles/1095556/?utm_campaign=1095556&utm_source=habrahabr&utm_medium=rss",
+    "summary": "A visitor viewed item A. The graph suggests B, similar descriptions suggest C, and similar images suggest D. How can we combine these lists into recommendations without arbitrarily adding scores of different meanings? Using a working project on Coveo, I demonstrate the entire process: historical item graph, pre-computed description and image vectors, up to 300 candidates, and ranking with LightGBM. I cover source quotas, feature imputation, and pairwise learning, including cases where the purchased item isn't among the candidates. The model is trained, quality is measured, and recommendations are available via a local HTTP API. This article details the system's architecture, compares it with simpler methods, and discusses its limitations. The code and reproduction instructions are open-source. How to generate 20 recommendations.",
+    "title": "How a Session-Based Recommendation System Works: Graph, Metadata, and LightGBM"
+  },
+  "https://habr.com/ru/articles/1095562/?utm_campaign=1095562&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Sat, 17 Oct 2026 09:01:27 GMT",
+    "slug": "1095562",
+    "source_url": "https://habr.com/ru/articles/1095562/?utm_campaign=1095562&utm_source=habrahabr&utm_medium=rss",
+    "summary": "In this article, I honestly share my personal experience integrating Claude Code and Gemini Notebook through unofficial libraries. I analyze the architecture of this solution, encounter inevitable automation workarounds, and answer the main question: where does real benefit end and excessive complication begin. Read more",
+    "title": "Should Claude Code and Gemini Notebook be Linked?"
+  },
+  "https://habr.com/ru/articles/1095624/?utm_campaign=1095624&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Sat, 17 Oct 2026 12:28:10 GMT",
+    "slug": "1095624",
+    "source_url": "https://habr.com/ru/articles/1095624/?utm_campaign=1095624&utm_source=habrahabr&utm_medium=rss",
+    "summary": "A couple of weeks ago, I logged into Claude and was met with a red banner: account disabled for violating the Usage Policy. Which clause and in which chat was not specified. I decided it was a misunderstanding and wrote an appeal, calmly and to the point. Read on to find out what happened. Read more",
+    "title": "Anthropic banned my Claude and only gave me my phone number in the export. Now Grok is answering me in a wig"
   },
   "https://habr.com/ru/companies/1c/articles/1071340/?utm_campaign=1071340&utm_source=habrahabr&utm_medium=rss": {
     "model": "gemini-2.5-flash-lite",
@@ -3878,6 +3966,14 @@
     "source_url": "https://habr.com/ru/companies/ru_mts/articles/1093270/?utm_campaign=1093270&utm_source=habrahabr&utm_medium=rss",
     "summary": "Beyond writing for Habr, I'm currently working on another book. AI is a great help here. It can compile materials and check facts. However, in the free version of most of them, serious work always ends the same way. Sources are analyzed, logic holds up, I finally sit down to write the final draft, and on the second paragraph, I get: 'limit exhausted, wait a few hours.' But I have time to work now. Inspiration and a complete thought in my head are also only now. All that's left is to quickly save the draft, keep the unfinished work in 'RAM,' and wait for the cooldown to end. And then start all over again. At such moments, I really want to understand what needs to be bought to avoid such breaks, and why the purchase is structured this way and not another. I promised a continuation about prices in the first text on tokenomics, and now it has a personal reason. It all comes down to computing power, not marketing. AI prices have changed more than once in a year, and there were reasons for that. Let's look at six major companies—OpenAI, Anthropic, Microsoft, DeepSeek, Alibaba, and Moonshot—and analyze three ways to sell AI and how they have evolved. All prices are in US dollars, as of October 1, 2026. They change often, so logic is more valuable than numbers here. Read more",
     "title": "Tokenomics of Pricing: Three Currencies in Which We Are Billed for AI"
+  },
+  "https://habr.com/ru/companies/ru_mts/articles/1095280/?utm_campaign=1095280&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Sat, 17 Oct 2026 10:30:36 GMT",
+    "slug": "1095280",
+    "source_url": "https://habr.com/ru/companies/ru_mts/articles/1095280/?utm_campaign=1095280&utm_source=habrahabr&utm_medium=rss",
+    "summary": "In November 2025, Jürgen Schmidhuber, considered by half the industry to be the true father of modern AI, responded to Elon Musk by sharing a link to his own work from seventeen years prior. He suggested that to understand why current AI lacks true creativity, one should read his 2008 paper. This article delves into his theory, why he believes it explains everything from jokes to the law of universal gravitation, and its implications for LLMs.",
+    "title": "Compression, Beauty, and Schmidhuber: Can Neural Networks Invent Anything New?"
   },
   "https://habr.com/ru/companies/rubytech/articles/1089758/?utm_campaign=1089758&utm_source=habrahabr&utm_medium=rss": {
     "model": "gemini-2.5-flash-lite",

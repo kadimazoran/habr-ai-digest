@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Compression, Beauty, and Schmidhuber: Can Neural Networks Invent Anything New?</title>
+  <meta name="description" content="In November 2025, Jürgen Schmidhuber, considered by half the industry to be the true father of modern AI, responded to Elon Musk by sharing a link to his own work from seventeen years prior. He suggested that to understand why current AI lacks true creativity, one should read his 2008 paper. This ar">
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.65;
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 32px 20px 64px;
+      color: #1f2328;
+    }
+    header {
+      border-bottom: 1px solid #d8dee4;
+      margin-bottom: 28px;
+      padding-bottom: 20px;
+    }
+    .source {
+      color: #57606a;
+      font-size: 0.95rem;
+    }
+    img, video, iframe {
+      max-width: 100%;
+      height: auto;
+    }
+    pre {
+      overflow-x: auto;
+      padding: 16px;
+      background: #f6f8fa;
+      border-radius: 6px;
+    }
+    code {
+      font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+    }
+    blockquote {
+      border-left: 4px solid #d0d7de;
+      margin-left: 0;
+      padding-left: 16px;
+      color: #57606a;
+    }
+    footer {
+      border-top: 1px solid #d8dee4;
+      margin-top: 40px;
+      padding-top: 20px;
+      color: #57606a;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Compression, Beauty, and Schmidhuber: Can Neural Networks Invent Anything New?</h1>
+    <p>In November 2025, Jürgen Schmidhuber, considered by half the industry to be the true father of modern AI, responded to Elon Musk by sharing a link to his own work from seventeen years prior. He suggested that to understand why current AI lacks true creativity, one should read his 2008 paper. This article delves into his theory, why he believes it explains everything from jokes to the law of universal gravitation, and its implications for LLMs.</p>
+    <p class="source">
+      Machine-translated from Habr.
+      <a href="https://habr.com/ru/companies/ru_mts/articles/1095280/?utm_campaign=1095280&amp;utm_source=habrahabr&amp;utm_medium=rss">Read the original Russian article</a>.
+      Sat, 17 Oct 2026 10:30:36 GMT
+    </p>
+  </header>
+  <main>
+<div><figure><img alt="Jürgen Schmidhuber (right)" loading="lazy" src="https://habrastorage.org/r/w1560/extt/37/b4/24/37b4248389a9b854cba5baa2201e7e1d.png" title="Jürgen Schmidhuber (right)"/><figcaption>Jürgen Schmidhuber (right)</figcaption></figure><p>In November 2025, Jürgen Schmidhuber, whom half the industry considers the true father of modern AI, responded to Elon Musk by publishing a <a href="https://x.com/SchmidhuberAI/status/1989691960324469150">link</a> to his own work from seventeen years ago. The implication was: if you want to understand why current AI is incapable of true creativity, read my 2008 paper… Below, I will explain this theory, why its author is confident it explains everything from jokes to the law of universal gravitation, and what this means for LLMs.</p><h2>The Controversial Father of AI</h2><p>If you worked with neural networks before the era of transformers, you have certainly used the work of Jürgen Schmidhuber, a German and Swiss scientist specializing in AI. In 1997, he and his PhD student Sepp Hochreiter published <a href="https://www.bioinf.jku.at/publications/older/2604.pdf">LSTM</a> — a recurrent neural network architecture that was the standard for sequence processing for about fifteen years.</p><p>Speech recognition on smartphones in the early 2010s, Google's machine translation before the switch to transformers — all of this was LSTM and its descendants. Schmidhuber currently heads the IDSIA laboratory in Lugano, Switzerland, and refers to himself as nothing less than the father of AI.</p><figure><img loading="lazy" src="https://habrastorage.org/r/w1560/extt/75/11/88/75118894f2e15e7dd0773a44d0003346.png"/></figure><p>There's another side to our protagonist: for decades, Schmidhuber has been engaged in a public priority dispute with a trio of scientists — Hinton, Bengio, and LeCun, who received the Turing Award in 2018. He published a <a href="https://people.idsia.ch/~juergen/critique-turing-award-bengio-hinton-lecun.html">review</a> of their achievements with over 200 citations, where he claims the laureates systematically failed to cite original sources, including his own work. His claims extend to almost everything, from backpropagation to GANs, which he considers a specific case of his "artificial curiosity." Schmidhuber's priority is indeed confirmed, but his manner of presentation has made him, to put it mildly, a controversial figure.</p><p>Without this context, Schmidhuber's November tweet appears as a provocation, as he has been arguing for thirty-five years that creativity and curiosity are not gifts but computable processes that can be formalized, and he formalized them back when the current stars of OpenAI were still in school.</p><h2>A Simple Principle Explaining EVERYTHING</h2><p>Schmidhuber's tweet was a response to <a href="https://x.com/elonmusk/status/1989349376565924343">Elon Musk's</a> statement that AI is about compression and correlation. François Chollet, the author of Keras and the ARC benchmark, also responded, writing:</p><blockquote><p><em>“All great scientific discoveries are inherently compressions of information. They take a complex body of observations and say, ‘All of this follows one simple rule.’” </em></p></blockquote><p>In their understanding, compression is likely related to finding a short program that explains the data, and correlation is about detecting stable relationships between observations.</p><p>Chollet himself explains:</p><blockquote><p><em>“…the universe is a beautifully consistent system of rules. Intelligence is the efficiency with which you can go from the results of applying these rules (what you can observe) to the rules themselves.”</em></p></blockquote><p>Specifically, this refers to approximation — a mathematical method that involves replacing complex, unknown, or "noisy" dependencies between variables with simpler models that accurately reflect the original data. That is, a rule is always symbolic, and if it's not, then you haven't actually explained anything, according to Chollet. Ultimately, to understand what Schmidhuber wanted to say to Musk and Chollet, one must examine his paper.</p><h3>How a Schmidhuber Agent Should Act</h3><p>The paper <a href="https://arxiv.org/abs/0812.4360">Driven by Compression Progress</a> was published on December 23, 2008. Its full title is: "A Simple Principle Explaining the Major Aspects of Subjective Beauty, Novelty, Surprise, Interest, Attention, Curiosity, Creativity, Art, Science, and Jokes." At this point, one can understand that modesty was never Schmidhuber's strong suit.</p><p>The entire work is built on one sentence: we are interested in what we understand slightly better now than we did yesterday. Schmidhuber formalizes this through the observer having a compressor that compresses the entire history of their observations. The better it compresses, the better the observer understands and predicts the world. For example, a vast sequence of mathematical knowledge can be condensed into a short formula for the sum of cubes.</p><p>The main ideas of the theory are embodied in a set of algorithmic principles for stimulating development through creativity in human-like intelligent agents.</p><ul><li><p><strong>First — save everything. </strong>The entire history of actions and observations is sacred because it is the only thing the agent knows about the world. Schmidhuber even estimates that humans have ample brain capacity for observations if counted by synapses.</p></li><li><p><strong>Second — improve subjective compressibility. </strong>Any discovered pattern saves bits, and a compressed version of the data is essentially its explanation.</p></li><li><p><strong>Third — let the internal reward for curiosity reflect compression progress.</strong> The agent is rewarded not for the result or for collected data, but for the progress in compressing perceived beauty, for every bit saved. If you looked at the world and understood nothing new, there's no reward, but if you found a pattern, you get an internal treat.</p></li><li><p><strong>Fourth — maximize the reward for internal curiosity.</strong> This means the agent itself decides what is beautiful, where to look, and what to touch, moving towards areas where it is most likely to understand something.</p></li></ul><p>These principles, in essence, define the goals of a curious or creative system, rather than the methods for achieving these goals by selecting a specific adaptive compressor or predictor and a specific reinforcement learning algorithm. It's complex, yes, but it will become clearer.</p><h3>What an Agent Should Consider Beautiful</h3><p>Schmidhuber defines the beauty of data as its compressibility for a specific observer at a given moment, and interestingness as the derivative of this beauty over time, i.e., the steepness of the learning curve. In other words, something beautiful can be boring if you've already learned it, and interesting is what becomes more understandable.</p><p>For example, a compressor that has seen many faces builds an average face prototype, and a new face is encoded simply as a deviation from the prototype. A face close to the prototype is cheap to encode, making it subjectively more beautiful. This also explains symmetry and simple proportions; these are literally regularities that the compressor favors. The author also highlights another assumption: people like faces similar to their own because they see their own face in the mirror every day.</p><figure><img alt=
+  </main>
+  <footer>
+    Translation generated with Gemini 2.5 Flash-Lite.
+    The original article remains the source of record.
+  </footer>
+</body>
+</html>

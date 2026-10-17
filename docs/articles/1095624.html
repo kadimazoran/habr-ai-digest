@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Anthropic banned my Claude and only gave me my phone number in the export. Now Grok is answering me in a wig</title>
+  <meta name="description" content="A couple of weeks ago, I logged into Claude and was met with a red banner: account disabled for violating the Usage Policy. Which clause and in which chat was not specified. I decided it was a misunderstanding and wrote an appeal, calmly and to the point. Read on to find out what happened. Read more">
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.65;
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 32px 20px 64px;
+      color: #1f2328;
+    }
+    header {
+      border-bottom: 1px solid #d8dee4;
+      margin-bottom: 28px;
+      padding-bottom: 20px;
+    }
+    .source {
+      color: #57606a;
+      font-size: 0.95rem;
+    }
+    img, video, iframe {
+      max-width: 100%;
+      height: auto;
+    }
+    pre {
+      overflow-x: auto;
+      padding: 16px;
+      background: #f6f8fa;
+      border-radius: 6px;
+    }
+    code {
+      font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+    }
+    blockquote {
+      border-left: 4px solid #d0d7de;
+      margin-left: 0;
+      padding-left: 16px;
+      color: #57606a;
+    }
+    footer {
+      border-top: 1px solid #d8dee4;
+      margin-top: 40px;
+      padding-top: 20px;
+      color: #57606a;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Anthropic banned my Claude and only gave me my phone number in the export. Now Grok is answering me in a wig</h1>
+    <p>A couple of weeks ago, I logged into Claude and was met with a red banner: account disabled for violating the Usage Policy. Which clause and in which chat was not specified. I decided it was a misunderstanding and wrote an appeal, calmly and to the point. Read on to find out what happened. Read more</p>
+    <p class="source">
+      Machine-translated from Habr.
+      <a href="https://habr.com/ru/articles/1095624/?utm_campaign=1095624&amp;utm_source=habrahabr&amp;utm_medium=rss">Read the original Russian article</a>.
+      Sat, 17 Oct 2026 12:28:10 GMT
+    </p>
+  </header>
+  <main>
+<div><p>A couple of weeks ago, I logged into Claude and was met with a red banner: account disabled for violating the Usage Policy. Which clause and in which chat was not specified. I decided it was a misunderstanding and wrote an appeal, calmly and to the point.</p><figure><img loading="lazy" src="https://habrastorage.org/r/w1560/extt/7d/57/1d/7d571da12aa6d2212d0f79b19004a83f.png"/></figure><p>The response came quickly and was summed up in one sentence: we will not reinstate, you violated the Usage Policy. What exactly I violated remained a mystery. A little later, an automatic email arrived in the same inbox: my appeal is being processed. So now they lie side-by-side, the rejection and the promise to sort it out. And the rejection came first.</p><p>Okay, I thought, at least I'll get my chats back. Export works for banned users, it says in the help section. It also adds in small print that the archive contents may be limited. They understand the word "limited" broadly. I received one file:</p><pre><code>[{“uuid”: “2078d5e2-…”, “full_name”: “Eldar”, “email_address”: “…”, “verified_phone_number”: “+998…”}]</code><div><a href="https://sourcecraft.dev/"><span></span></a></div></pre><p>This is the entire archive. Not a single chat, not a single project, not a line of code. But they carefully returned my name, email, and phone number. Apparently, in case I forget my name and where their rejections are sent. Of everything I wrote to them, they considered the number I entered during registration the most valuable.</p><figure><img loading="lazy" src="https://habrastorage.org/r/w1560/extt/b0/9e/8b/b09e8b19862cbfeab43e5acb2950838e.png"/></figure><h2>What I managed to retrieve</h2><p>Paranoia saved me. On August 12th, I backed up my chats for some reason, so only what accumulated after, about a month and a half, was lost. At first, I hoped the desktop application kept a copy and scoured AppData, IndexedDB, and Local Storage. It amounted to less than a megabyte, and it was all settings. The chats were only on their server.</p><p>However, in WSL, I found a snapshot of ~/.claude, left over from Claude Code 2.1.238, containing CLI session transcripts. There were 35 sessions, which contained my latest work with the model. Sub-agents occupied another 1.2 GB, but I didn't get around to them. And frankly, they weren't that necessary.</p><figure><img loading="lazy" src="https://habrastorage.org/r/w1560/extt/15/6f/ea/156fea82877c7b0cbc904c6b5229fa75.png"/></figure><h2>Claude Code in a wig</h2><p>Initially, I didn't abandon Claude Code, I had gotten too used to it. It could no longer connect to Anthropic, so it connected to my proxy. The client has a Developer mode, and you can connect your own LiteLLM proxy. It turned out that the client checks the model name, and anything that doesn't look like Claude is rejected:</p><pre><code>Doesn’t look like an Anthropic model: expected a gateway model route referencing an Anthropic model (e.g. claude-sonnet-4-5, anthropic/claude-*)</code><div><a href="https://sourcecraft.dev/"><span></span></a></div></pre><p>I had to set up a route in LiteLLM called <code>anthropic/claude-local</code>, which internally redirected requests to <code>grok-4.7</code>. Claude Code accepted this route: for the client, the model name was similar enough to an Anthropic model. What model was behind the route didn't matter much to it. <br/><br/>So Grok got a job at Anthropic: without an interview, with a fake ID.</p><p>Next, I ran into context limits. The model accepts 500k, but the application stubbornly shows 200k. I patched the constants directly in claude.exe, restarted twice, and the counter didn't budge: for all names like <code>claude-*</code>, the limit is hardcoded. <br/><br/>The variable <code>CLAUDE_CODE_MAX_CONTEXT_TOKENS=500000</code> in <code>settings.json</code> worked, but only for names that don't start with <code>claude-*</code>.<br/> <br/>I had to choose a wig that fit. The name had to be similar enough to Claude to get the client through, but not so similar that it would recognize it and limit its context.</p><figure><img loading="lazy" src="https://habrastorage.org/r/w1560/extt/22/7a/36/227a36b78202eec50afccdea716975f4.png"/></figure><p>Finally, I had to make the found sessions open. At first, they appeared empty, even though there were hundreds of replies in jsonl. It turned out the file path was recorded as <code>
+t
+c…</code>: a hybrid of Linux and Windows that Windows couldn't open. I corrected the paths and transferred the sessions to Ubuntu via wslConfig. After that, the application started looking for conversations within WSL, couldn't find them, and created empty ones with new IDs.</p><p>In the end, I placed the transcripts in <code>~/.claude/projects</code> directly in Ubuntu, and where the IDs had changed, I substituted the original under the new name. WSL also contributed its part.</p><h2>Moving to my own setup</h2><p>I didn't want to create a new account and wait for the next banner, so after playing with Claude Code and Grok impersonating Opus, I decided to move to my own homelab. <br/><br/>Open WebUI runs on a server in my home network, alongside Ollama, which I use for recognizing cats and hedgehogs with the Frigate server. By the way, if you're interested, I can tell you more about it separately.</p><p>The history is stored in Postgres, and attachments are on disk. The only thing that could disable my account here would be a power outage, but for that, I have a UPS and a 16 kW generator.</p><p>I had to manually upload the backup from before August 12th; the standard import doesn't accept files exported from a backup. I ended up with a folder named Claude migrated with subfolders chats, projects, and code; the sessions from the WSL snapshot were also placed there. <br/><br/>Everything that was on disk was moved. The gap after August 12th remained a gap.</p><figure><img loading="lazy" src="https://habrastorage.org/r/w1560/extt/0a/c2/29/0ac229533d332140083d5df416db163f.png"/></figure><p>Since I was at it, I also migrated ChatGPT: 283 chats and 4783 messages, with their original dates. OpenAI handles projects elegantly. The export only contains internal IDs without names, so I extracted the names from the system prompts of the chats. </p><figure><img loading="lazy" src="https://habrastorage.org/r/w1560/extt/58/6f/76/586f76da6aaea529753d29c6b5dea702.png"/></figure><p>ChatGPT's memory is also not included in the export. I simply asked it to export everything it remembered about me and compared it with what was already in Open WebUI. Almost everything matched, and I had even corrected some of it myself at some point. </p><p>The funniest part was about my pet project's server on Yandex Cloud: according to ChatGPT, it cost $3000 per month, but in reality, it was around seven thousand rubles. I didn't bother migrating this whole story into memory.</p><h2>Fine-tuning OWUI settings</h2><p>Then came what made the move worthwhile. There are several providers, and each has its own Headroom in front of it: a compressed prompt goes out, and the full chat remains in the database. I wanted to put LiteLLM in front of them, a single entry point and a tool that would read the cut-off middle. It didn't work. Open WebUI strictly sends <code>stream:true</code>, and Headroom doesn't insert the tool on streams. This wasn't fixed in 0.40.0; <a href="https://github.com/headroomlabs-ai/headroom/issues/3815">Issue 3815</a> is still open. The four proxies remained four.</p><p>I still wanted to read the full context, so I deployed the tool myself, as a separate MCP next to each proxy. The model sees the marker <code>&lt;&lt;ccr:hash&gt;&gt;</code> and calls <code>headroom_retrieve</code> itself. A bug immediately appeared: retrieve returned the same marker it had just resolved. <br/><br/>The Exclude setting in the Headroom proxy configuration caught the bare name <code>headroom_retrieve</code>, but Open WebUI calls it with a prefix, <code>hr-grok_headroom_retrieve</code>. </p><p>Simply put, headroom was compressing the response of its own retrieve tool, even though it shouldn't have.<br/><br/>I added <code>HEADROOM_EXCLUDE_TOOLS=*headroom_retrieve</code> to the proxy, and in the models' system prompt, I entered the prefixed name: in the MCP specification, it's bare, and the model won't recognize it otherwise. <br/><br/>I tested it with a ticket from Plane. The marker arrived, the original was returned by hash, and the proxy didn't re-compress its own response. The chat in the database is intact, tokens are truncated on the way, and the cut-off content is no longer dead weight.</p><p>At the same time, having my own storage doesn't mean the model runs locally. If a request goes to an external provider, they receive the context sent to them. My history and attachments remain with me, and the provider and model can be changed independently of the interface.</p><figure><img loading="lazy" src="https://habrastorage.org/r/w1560/extt/a4/3a/dc/a43adc29808677043202f246f7e85189.png"/></figure><p>Custom tools are connected on top: Plane, knowledge base search, and memory, which won't disappear with the account. From my phone, all of this opens in a regular browser at the address in my home network.</p><figure><img loading="lazy" src="https://habrastorage.org/r/w1560/extt/41/23/08/412308f14184d7695091976fa060e72a.png"/></figure><h2>Hermes</h2><p>After some time, I caught myself keeping a separate Claude Code application out of pure nostalgia. It connected to my proxy, pretended to talk to Anthropic, and demanded that the model wear a fake name. So I installed the Hermes agent and connected it directly to Open WebUI. Now I give tasks to the agent from the same chat where all the history is, without a separate program and a separate login. Claude Code became unnecessary after that; I regretted it for about five minutes.</p><figure><img loading="lazy" src="https://habrastorage.org/r/w1560/extt/91/e1/42/91e142d876183a47b4dc6c1db7f3755d.png"/></figure><p>The entire stack is now open-source: Open WebUI, Postgres, Headroom, and Hermes. Only the model is external, and it can be replaced without a new migration.</p><figure><img alt="If you put it all together in one picture, it looks like this" loading="lazy" src="https://habrastorage.org/r/w1560/extt/dc/96/e8/dc96e807ee7c8dcf93464d51a3881cab.png" title="If you put it all together in one picture, it looks like this"/><div><figcaption>If you put it all together in one picture, it looks like this</figcaption></div></figure><p>The next goal is a unified routing point between providers with switching on errors and exhaustion of available limits. I want the model change not to turn into another migration. This is still in the planning stages.</p><h2>Why I was banned</h2><p>I only have suspicions. I strictly used Claude through Proxifier and through proxies that I administer myself. I think the ban came after purchasing the Max subscription. It was needed to rewrite the front-end of my pet project, and I used it quite actively. Anthropic, it seems, didn't like that a person bought Max and was actually working on it. But these are guesses. There's no reason in the export, only my phone number. If they decide to explain, they have the number.</p><p>I've once again convinced myself that vendor lock-in is evil. The more of your own data and open-source components you have around, the less dependent you are on a corporation that can disable your account and leave you with a phone number as a souvenir.</p><p>The appeal didn't get anything back. I got back the backup taken out of paranoia, and the database that sits at home. The only external component in my stack now is mainly the model. It can be replaced without migrating my entire life again.</p></div>
+  </main>
+  <footer>
+    Translation generated with Gemini 2.5 Flash-Lite.
+    The original article remains the source of record.
+  </footer>
+</body>
+</html>

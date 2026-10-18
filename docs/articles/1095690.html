@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>No salary, no vacation, no sick leave. But there are User Stories and Merge Requests: how AI agents work for me in Jira</title>
+  <meta name="description" content="An IT team in a medium-sized company (product, integrator, it doesn&#x27;t matter) usually consists of a product manager, business analysts, developers, and QA engineers. They typically work in one tracker like Jira. Now imagine that virtual colleagues have appeared in the Assignee field for all the">
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.65;
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 32px 20px 64px;
+      color: #1f2328;
+    }
+    header {
+      border-bottom: 1px solid #d8dee4;
+      margin-bottom: 28px;
+      padding-bottom: 20px;
+    }
+    .source {
+      color: #57606a;
+      font-size: 0.95rem;
+    }
+    img, video, iframe {
+      max-width: 100%;
+      height: auto;
+    }
+    pre {
+      overflow-x: auto;
+      padding: 16px;
+      background: #f6f8fa;
+      border-radius: 6px;
+    }
+    code {
+      font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+    }
+    blockquote {
+      border-left: 4px solid #d0d7de;
+      margin-left: 0;
+      padding-left: 16px;
+      color: #57606a;
+    }
+    footer {
+      border-top: 1px solid #d8dee4;
+      margin-top: 40px;
+      padding-top: 20px;
+      color: #57606a;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>No salary, no vacation, no sick leave. But there are User Stories and Merge Requests: how AI agents work for me in Jira</h1>
+    <p>An IT team in a medium-sized company (product, integrator, it doesn&#x27;t matter) usually consists of a product manager, business analysts, developers, and QA engineers. They typically work in one tracker like Jira. Now imagine that virtual colleagues have appeared in the Assignee field for all these roles. I have three of them: front-end, back-end, and analyst. They don&#x27;t replace people. Reviews, answers to questions, and the final say in MR remain with the human, I&#x27;ll show below where exactly. I give agents one-shot tasks: clear and limited enough to be solved in one pass without long correspondence. How it works in practice</p>
+    <p class="source">
+      Machine-translated from Habr.
+      <a href="https://habr.com/ru/articles/1095690/?utm_campaign=1095690&amp;utm_source=habrahabr&amp;utm_medium=rss">Read the original Russian article</a>.
+      Sat, 17 Oct 2026 16:36:51 GMT
+    </p>
+  </header>
+  <main>
+<div><figure><img loading="lazy" src="https://habrastorage.org/r/w1560/extt/0c/5a/6b/0c5a6b44dd370fc212d18ee2056e8e88.png"/></figure><p>An IT team in a medium-sized company (product, integrator, it doesn't matter) usually consists of a product manager, business analysts, developers, and QA engineers. They typically work in one tracker like Jira. Now imagine that virtual colleagues have appeared in the Assignee field for all these roles. I have three of them: front-end, back-end, and analyst.</p><p>They don't replace people. Reviews, answers to questions, and the final say in MR remain with the human, I'll show below where exactly. I give agents one-shot tasks: clear and limited enough to be solved in one pass without long correspondence: add a button, fix a form, prepare a draft of requirements, etc.</p><blockquote><p>I've been working with AI agents for a long time, and I'm used to working with my harness (for those who don't know, this is the working environment around the model: project context, instructions, access, checks) locally. It has long been the working environment for the entire team; not a day goes by without it. But the local version lives on each machine, and I wanted to assign tasks to agents just like to people: in Jira. Thus, the server version appeared.</p></blockquote><p>Next, two demo scenarios: a small front-end task and a more complex one for an analyst. Then I'll explain what's behind the Assignee field.</p><h2>Case 1. One button and two merge requests</h2><p>The button isn't the main thing here. I was interested in checking the entire process, from assigning the task in Jira to changes in code, documentation, and review in GitLab. Therefore, I took a small task: to add a button to copy details to the supplier card. In Jira, it's one line, without description or mockups.</p><figure><img alt="The assignee is selected just like a human: from the list in the Assignee field." loading="lazy" src="https://habrastorage.org/r/w1560/extt/5b/d0/38/5bd0389622d472ed76f188058c838f73.png" title="The assignee is selected just like a human: from the list in the Assignee field."/><div><figcaption>The assignee is selected just like a human: from the list in the Assignee field.</figcaption></div></figure><p>I assign the AI Front-dev as the assignee, move the task to 'In Progress,' and a task automatically appears in the harness backend. In the card, you can see how the agent loads project instructions, studies repositories, selects the necessary ones, and decides to update the documentation as well. During the work, test logs, check results, and other artifacts appear.</p><figure><img loading="lazy" src="https://habrastorage.org/r/w1560/extt/d8/0f/08/d80f0880227ffcfcf118a599f0560c23.png"/></figure><p>The result: in the Jira task, there are two links to merge requests and the status 'For review.' The first contains project documentation with a description of the new button. The second contains the button itself: code in the project's style, a test, and the copying logic.</p><figure><img loading="lazy" src="https://habrastorage.org/r/w1560/extt/17/21/48/17214842c30f3d884f5970ee5932216f.png"/></figure><p>I switched to the branch and opened the form. The button appeared and copies the details to the clipboard:</p><figure><img alt="Before and after: supplier details copy button." loading="lazy" src="https://habrastorage.org/r/w1560/extt/dd/06/b0/dd06b0c1a4b78f0f4dbb6356198e3329.png" title="Before and after: supplier details copy button."/><div><figcaption>Before and after: supplier details copy button.</figcaption></div></figure><p>It works, but it looks boring. No questions for the agent here: the task was a single line, without mockups or design requirements. To match the project's design, it needs Figma mockups or at least a more detailed description. But that's a separate conversation; it's not important for the test. After this, only the agent's MR review is left for me.</p><figure><img loading="lazy" src="https://habrastorage.org/r/w1560/extt/73/e6/83/73e6832ce3dd863a5350d711117d33e0.png"/></figure><p>At first glance, the code looks fine, but the MR needs to be checked anyway. If something is not satisfactory, I can leave comments and change the Jira task status to 'In Progress.' Then the agent will automatically take the task again, see that the MR in the task requires revisions, read my comments, and make the corrections; the cycle will repeat.</p><h2>Case 2. From business need to User Story</h2><p>Now for a more complex task, and it's no longer one-shot. I describe the need as a customer might, briefly and without technical details: 'I want to find products that are running low directly from the stock analysis and immediately create a supply request for them.' In this case, I assign the business analyst agent and move the task to 'In Progress.'</p><p>The analyst reads the documentation and repositories (they only read the project's codebase) and stops: the task in the harness goes to 'Waiting for response.' The agent doesn't guess for me; it asks questions.</p><figure><img loading="lazy" src="https://habrastorage.org/r/w1560/extt/3a/2a/b3/3a2ab390ed523f4e60648b186b025891.png"/></figure><p>The questions are specific, representing implementation choices. For example, can the composition of goods in the created request be changed, or should only selected items be included? Should the stock threshold be specified as an integer, or should fractional values with up to six decimal places be allowed? For each question, the agent suggests a recommended option, and I can choose it or write my own answer.</p><p>After my answers, the analyst prepares a draft User Story in Confluence. I read it and decide that it's ready for development.</p><figure><img loading="lazy" src="https://habrastorage.org/r/w1560/extt/70/00/25/700025eff41583adadf11d9750071627.png"/></figure><p>The original task now has a link to the User Story and two related tasks, Front-end and Back-end. Both are already in 'In Progress' status: they have been assigned to agent developers. I won't go into how they handled it here; the mechanics are the same as in Case 1.<br/>A human is needed three times in this chain: to answer questions, to read the User Story, and to decide that it's ready for development. The agents did the rest.</p><h2>How it works behind the Assignee field</h2><p>Each assignee in Jira has a profile in the harness: role, model, instructions, and access. When I assign a task to such an assignee and move it to 'In Progress,' the server checks the assignment, creates a task, and puts it in the queue. Then, the work proceeds according to one of the two scenarios from the cases above.</p><figure><img alt="Task path: common entry, two types of assignees, and result for review. Dotted lines show clarifications and returns after feedback." loading="lazy" src="https://habrastorage.org/r/w1560/extt/22/c2/73/22c273d2850fb7ae4899a37de8a68dba.png" title="Task path: common entry, two types of assignees, and result for review. Dotted lines show clarifications and returns after feedback."/><div><figcaption>Task path: common entry, two types of assignees, and result for review. Dotted lines show clarifications and returns after feedback.</figcaption></div></figure><p>First, the server gathers the context: task description, comments, related materials from Jira and Confluence, project instructions, and repository snapshots. Source versions are saved with the task, so it's clear later what requirements the result was based on. If there are significant gaps in the context, the task waits for human clarification.</p><p>The work is done in a separate environment. The developer agent prepares code, tests, and documentation. The analyst agent reads code but cannot modify repositories in this mode: their result is requirements. If human decision is needed to proceed, the agent asks a question through the backend. This pause was shown in Case 2.</p><p>For each repository, custom checks can be configured. For example, a linter, tests, build. For interface tasks, a run in a headless browser with screenshots can be added. Commands and results are saved in the task artifacts. If a check fails, the server requests a human decision: correct the command, improve the result, or approve skipping with a reason. If no mandatory checks are assigned for the repository, the MR is still created, but with a note about it.</p><p>Branches and MRs are published by a separate server component, not the agent itself. Before sending, it verifies the assignee's permissions, task relevance, source branch, and the commit to which the checks apply. For the analyst, the result is an unpublished draft User Story in Confluence. Merging or publishing the document is done by a human.</p><p>The task lives on the server: PostgreSQL stores the state and history, Redis distributes the work. Therefore, I can close the tab, return later, open prepared files, stop, or resume the task. The backend collects events, questions, artifacts, and token consumption. Hidden model reasoning is not saved: actions, commands, and results are visible, not 'what the agent was thinking.'</p><h2>How local harness became server-based</h2><p>I took the harness I used locally as a basis: agent roles, skills, instructions, access to the codebase, and result checking rules. If you have set up such an environment for yourself, it can become the basis for a server version. You'll need to add task initiation from the tracker, task states, isolated execution, and a backend for people. The diagram looks like this:</p><figure><img alt=
+  </main>
+  <footer>
+    Translation generated with Gemini 2.5 Flash-Lite.
+    The original article remains the source of record.
+  </footer>
+</body>
+</html>

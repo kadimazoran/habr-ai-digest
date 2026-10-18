@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>api2app: Using with ComfyUI</title>
+  <meta name="description" content="In this tutorial, I will explain how to use ComfyUI as an API and quickly create a web application accessible from the internet. In the application, I will be able to quickly configure the interface for changing tasks without programming. Read more">
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.65;
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 32px 20px 64px;
+      color: #1f2328;
+    }
+    header {
+      border-bottom: 1px solid #d8dee4;
+      margin-bottom: 28px;
+      padding-bottom: 20px;
+    }
+    .source {
+      color: #57606a;
+      font-size: 0.95rem;
+    }
+    img, video, iframe {
+      max-width: 100%;
+      height: auto;
+    }
+    pre {
+      overflow-x: auto;
+      padding: 16px;
+      background: #f6f8fa;
+      border-radius: 6px;
+    }
+    code {
+      font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+    }
+    blockquote {
+      border-left: 4px solid #d0d7de;
+      margin-left: 0;
+      padding-left: 16px;
+      color: #57606a;
+    }
+    footer {
+      border-top: 1px solid #d8dee4;
+      margin-top: 40px;
+      padding-top: 20px;
+      color: #57606a;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>api2app: Using with ComfyUI</h1>
+    <p>In this tutorial, I will explain how to use ComfyUI as an API and quickly create a web application accessible from the internet. In the application, I will be able to quickly configure the interface for changing tasks without programming. Read more</p>
+    <p class="source">
+      Machine-translated from Habr.
+      <a href="https://habr.com/ru/articles/1093214/?utm_campaign=1093214&amp;utm_source=habrahabr&amp;utm_medium=rss">Read the original Russian article</a>.
+      Sat, 17 Oct 2026 16:49:28 GMT
+    </p>
+  </header>
+  <main>
+<div><figure><img loading="lazy" src="https://habrastorage.org/r/w1560/extt/e0/e9/ba/e0e9ba6373739bb53af662a2d05dc301.png"/></figure><p>In this tutorial, I will explain how to use <strong>ComfyUI</strong> as an <strong>API</strong> and quickly create a <strong>web application</strong> accessible from the internet. In the application, I will be able to <strong>quickly</strong> configure the interface for changing tasks <strong>without programming</strong>.</p><h2>Preparing the API Workflow</h2><p>For this example, I used the <strong>"Flux.2 [Klein] 4B: Text to Image"</strong> workflow template.</p><figure><img alt="List of ComfyUI workflow templates" loading="lazy" src="https://habrastorage.org/r/w1560/extt/d8/f0/92/d8f092a8b268fce5a7663650f8730bd7.jpg" title="List of ComfyUI workflow templates"/><div><figcaption>List of ComfyUI workflow templates</figcaption></div></figure><p>I will test its functionality and then <strong>export it for the API</strong>. I open the <strong>JSON file</strong> and copy its content to the clipboard.</p><figure><img alt="ComfyUI - Export for API" loading="lazy" src="https://habrastorage.org/r/w1560/extt/26/29/78/262978e5af0b2d7df3104c3726469a7a.jpg" title="ComfyUI - Export for API"/><div><figcaption>ComfyUI - Export for API</figcaption></div></figure><h2>Local API Testing in api2app</h2><p>First, I will test the API locally. To do this, I will run <strong>ComfyUI</strong> in <strong>CORS</strong> mode:</p><pre><code>python main.py --enable-cors-header https://api2app.org</code><div><a href="https://sourcecraft.dev/"><span></span></a></div></pre><p>On the <strong>api2app</strong> website, I navigate to the <strong>"API"</strong> section and click the <strong>"Add New API"</strong> button. I open the <strong>"Raw Data"</strong> tab, create an object with the key <strong>"prompt"</strong> in the field, and paste the copied JSON. Then, I change the request method to POST and the URL to:</p><pre><code>http://127.0.0.1:8188/prompt</code><div><a href="https://sourcecraft.dev/"><span></span></a></div></pre><figure><img alt="api2app - API Configuration Creation" loading="lazy" src="https://habrastorage.org/r/w1560/extt/50/52/26/5052262ac1b9a9988cd796ab0bce20cf.jpg" title="api2app - API Configuration Creation"/><div><figcaption>api2app - API Configuration Creation</figcaption></div></figure><p>I click the <strong>"Test"</strong> button in <strong>"Browser"</strong> mode and receive a response with the task ID in the queue:</p><figure><img alt="api2app - API Testing" loading="lazy" src="https://habrastorage.org/r/w1560/extt/7c/a3/83/7ca3839a9a060227fb96f2d25b1879f3.jpg" title="api2app - API Testing"/><div><figcaption>api2app - API Testing</figcaption></div></figure><p>For local use, you can use the standard ComfyUI API, but if you want to enable <strong>internet access</strong>, it's better to use an additional package: <a href="https://github.com/Comfy-Org/comfy-api-proxy">https://github.com/Comfy‑Org/comfy‑api‑proxy</a></p><p>I install the package:</p><pre><code>pip install comfy-api-proxy</code><div><a href="https://sourcecraft.dev/"><span></span></a></div></pre><p>I start the proxy with an authorization key and CORS enabled:</p><pre><code>comfy-api-proxy --enable-cors-header https://api2app.org --token=ea3092cf-7856-4ef8-988b-8f413f299c50</code><div><a href="https://sourcecraft.dev/"><span></span></a></div></pre><p>Now the request address is:</p><pre><code>http://127.0.0.1:8189/api/v2/jobs</code><div><a href="https://sourcecraft.dev/"><span></span></a></div></pre><p>The key in the request body has also changed; instead of "prompt", you now need to use the <strong>"workflow"</strong> key:</p><figure><img alt="api2app - API Configuration for Image Generation Task Creation" loading="lazy" src="https://habrastorage.org/r/w1560/extt/43/36/c9/4336c9697784bb157c14384af6d0cefa.jpg" title="api2app - API Configuration for Image Generation Task Creation"/><div><figcaption>api2app - API Configuration for Image Generation Task Creation</figcaption></div></figure><p>You also need to add an "Authorization" header with the token I specified when starting the proxy:</p><figure><img alt="api2app - Authorization Token Header" loading="lazy" src="https://habrastorage.org/r/w1560/extt/af/de/fe/afdefe824a176b7218cbbcf19ac4305c.jpg" title="api2app - Authorization Token Header"/><div><figcaption>api2app - Authorization Token Header</figcaption></div></figure><p>Note that in <strong>"Browser"</strong> mode, the authorization field <strong>should not be private</strong> (the button with the lock icon).</p><p>I click the <strong>"Save"</strong> button and return to the <strong>"API"</strong> section. Now I need to create an API configuration to track the <strong>task status</strong>.</p><p>I create a new <strong>API configuration</strong> with the <strong>GET</strong> method and the following URL:</p><pre><code>http://127.0.0.1:8189/api/v2/jobs/8fd2d6cb-0150-4d10-9b91-283eeef9ad5c</code><div><a href="https://sourcecraft.dev/"><span></span></a></div></pre><p>I click the <strong>"Test"</strong> button in <strong>"Browser"</strong> mode.</p><figure><img alt="api2app - Testing Task Result Configuration" loading="lazy" src="https://habrastorage.org/r/w1560/extt/18/39/dc/1839dcf19e026fe7697963f2229e4148.jpg" title="api2app - Testing Task Result Configuration"/><div><figcaption>api2app - Testing Task Result Configuration</figcaption></div></figure><p>If the image generation is complete, the response will contain a <strong>URL</strong> to retrieve the result and a <strong>content ID</strong> (asset_id → id):</p><pre><code>  "outputs": [    {      "node_id": "9",      "name": "0e2294e1-3666-466f-b579-8a8eb9318e81_00001_.png",      "type": "image",      "content_type": "image/png",      "size_bytes": 0,      "id": "eyJqIjogIjhmZDJkNm...",      "hash": null,      "url": "http://127.0.0.1:8189/api/v2/assets/eyJqIjogIjhmZDJkNm.../content",      "url_expires_at": "2026-10-18T14:12:40.658748+00:00",      "job_id": "8fd2d6cb-0150-4d10-9b91-283eeef9ad5c"    }  ],</code><div><a href="https://sourcecraft.dev/"><span></span></a></div></pre><p>The 3rd API configuration is for viewing the image. Request method: <strong>GET</strong>, URL:</p><pre><code>http://127.0.0.1:8189/api/v2/assets/{asset_id}/content</code><div><a href="https://sourcecraft.dev/"><span></span></a></div></pre><p><strong>asset_id</strong> is the content identifier from the response of the <strong>"/api/v2/jobs/"</strong> request.</p><figure><img alt="api2app - API Configuration for Image Retrieval" loading="lazy" src="https://habrastorage.org/r/w1560/extt/a2/63/ab/a263ab8551827139f69f2078dd22de8b.jpg" title="api2app - API Configuration for Image Retrieval"/><div><figcaption>api2app - API Configuration for Image Retrieval</figcaption></div></figure><p>The created API configurations need to be made public (or can be hidden).</p><figure><img alt="api2app - API Publishing" loading="lazy" src="https://habrastorage.org/r/w1560/extt/49/a1/a1/49a1a1d49e81bf4abc2b4baac1f3e111.jpg" title="api2app - API Publishing"/><div><figcaption>api2app - API Publishing</figcaption></div></figure><h2>Creating the Graphical Interface</h2><p>It's time to create the web application with a graphical interface. To do this, I navigate to the <strong>"Applications" → "My Applications"</strong> section and click the <strong>"Create New Application"</strong> button.</p><p>I add a <strong>"Text Area"</strong> element and a button.</p><figure><img alt="api2app - Graphical Interface Creation" loading="lazy" src="https://habrastorage.org/r/w1560/extt/9d/cd/d0/9dcdd0a88aa3f2adfdb14f86b26d16bd.jpg" title="api2app - Graphical Interface Creation"/><div><figcaption>api2app - Graphical Interface Creation</figcaption></div></figure><p>I will also add <strong>"Operation Progress"</strong> and <strong>"Image"</strong> elements.</p><figure><img alt="api2app - Application Elements" loading="lazy" src="https://habrastorage.org/r/w1560/extt/7b/db/32/7bdb32abd1774f9220cd61bf68a82981.jpg" title="api2app - Application Elements"/><div><figcaption>api2app - Application Elements</figcaption></div></figure><p>Now I need to configure the <strong>input and output actions</strong> for the elements. I click the <strong>"Input Action"</strong> button for the <strong>"Text Area"</strong> element (image description).</p><figure><img alt="api2app - Input Action" loading="lazy" src="https://habrastorage.org/r/w1560/extt/ff/57/d9/ff57d945eb40d09d1cb778fe62d3777d.jpg" title="api2app - Input Action"/><div><figcaption>api2app - Input Action</figcaption></div></figure><p>In the input action settings window, I need to find the API configuration and select the field that contains the text prompt for image generation. In my case, this is the <strong>"Prompt.76.Inputs.Value"</strong> field.</p><figure><img alt="api2app - Prompt Field" loading="lazy" src="https://habrastorage.org/r/w1560/extt/cc/30/69/cc3069d9f2baa9dc2447ef350cf4bf46.jpg" title="api2app - Prompt Field"/><div><figcaption>api2app - Prompt Field</figcaption></div></figure><p>For the <strong>"Button"</strong> element, the input action is the same API and the <strong>"Send"</strong> action.</p><figure><img alt="api2app - Input Action for Button" loading="lazy" src="https://habrastorage.org/r/w1560/extt/3a/59/1c/3a591c4232c157ec7e961da62b750dc6.jpg" title="api2app - Input Action for Button"/><div><figcaption>api2app - Input Action for Button</figcaption></div></figure><p>I also need to add a hidden field named <strong>"Task ID"</strong>. The task ID value will be sent to this field, and then a request will be made to get the operation result.</p><p>The output action for this field is: <strong>"comfyui - api - jobs post"</strong> → <strong>"id"</strong>.</p><figure><img alt='api2app - Output Action for Hidden Field
+  </main>
+  <footer>
+    Translation generated with Gemini 2.5 Flash-Lite.
+    The original article remains the source of record.
+  </footer>
+</body>
+</html>

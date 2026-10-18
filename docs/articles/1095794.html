@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>AI Doesn&#x27;t Speed Up Developers. It Widens the Gap Between Them</title>
+  <meta name="description" content="Imagine a developer who can complete a day&#x27;s work in two hours. What will they get: a bonus, a promotion, or four more day&#x27;s worth of work? If the reward for speed is a new quota, silence becomes the rational strategy. Perhaps some developers are already working many times faster. It&#x27;">
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.65;
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 32px 20px 64px;
+      color: #1f2328;
+    }
+    header {
+      border-bottom: 1px solid #d8dee4;
+      margin-bottom: 28px;
+      padding-bottom: 20px;
+    }
+    .source {
+      color: #57606a;
+      font-size: 0.95rem;
+    }
+    img, video, iframe {
+      max-width: 100%;
+      height: auto;
+    }
+    pre {
+      overflow-x: auto;
+      padding: 16px;
+      background: #f6f8fa;
+      border-radius: 6px;
+    }
+    code {
+      font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+    }
+    blockquote {
+      border-left: 4px solid #d0d7de;
+      margin-left: 0;
+      padding-left: 16px;
+      color: #57606a;
+    }
+    footer {
+      border-top: 1px solid #d8dee4;
+      margin-top: 40px;
+      padding-top: 20px;
+      color: #57606a;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>AI Doesn&#x27;t Speed Up Developers. It Widens the Gap Between Them</h1>
+    <p>Imagine a developer who can complete a day&#x27;s work in two hours. What will they get: a bonus, a promotion, or four more day&#x27;s worth of work? If the reward for speed is a new quota, silence becomes the rational strategy. Perhaps some developers are already working many times faster. It&#x27;s just not necessarily for you. Read more</p>
+    <p class="source">
+      Machine-translated from Habr.
+      <a href="https://habr.com/ru/articles/1095794/?utm_campaign=1095794&amp;utm_source=habrahabr&amp;utm_medium=rss">Read the original Russian article</a>.
+      Sun, 18 Oct 2026 10:20:10 GMT
+    </p>
+  </header>
+  <main>
+<div><p>Why studies show a modest effect, while individual developers and teams accelerate manifold with AI</p><p>It pains me to see some developers I know. These are strong engineers to whom I would unhesitatingly entrust the architecture of a complex system or an emergency fix in production. But, to my surprise, many of them still haven't properly worked with modern coding agents like Claude Code or Codex.</p><p>At best, the company has deployed a not-so-powerful open-source model: slow, with a short context window, and no internet access. The agent lags, loses context, breaks working code, and imperturbably refers to a non-existent function. The developer tries a few times, spends more time than they save, and delivers a verdict:</p><blockquote><p><em>All this AI is an overrated toy.</em></p></blockquote><p>Some tried a year ago. Models have changed several times since then, but the verdict hasn't. Disappointment generally has a long shelf life.</p><p>I can't blame these people. They judge by the experience they've had. Only today, that experience might tell us almost nothing about the agents' real capabilities.</p><p>The numbers, by the way, easily support the skeptic. In 2025, METR conducted a controlled experiment: 16 experienced open-source developers completed 246 real-world tasks in projects they were very familiar with. With AI, they were on average <a href="https://metr.org/blog/2025-07-10-early-2025-ai-experienced-os-dev-study/">19% slower</a>.</p><p>Almost simultaneously, a study at Microsoft, Accenture, and a Fortune 100 company found a 26% increase in completed tasks among 4867 developers <a href="https://www.microsoft.com/en-us/research/publication/the-effects-of-generative-ai-on-high-skilled-work-evidence-from-three-field-experiments-with-software-developers/">growth in completed tasks</a>. And social media was already buzzing about 2x, 5x, and 10x.</p><p>So where is the truth? Arguing is futile. It seems everyone is measuring different things but calling it all productivity.</p><h3>Two Developers, One Checkmark</h3><p>One person presses Tab a few times a day, asks the chat to explain a regular expression, and then corrects the model's broken typing. Another assigns entire tasks to agents, runs multiple sessions in parallel, accepts the result based on tests, gives the diff to another model for critical review, and checks the change in a real environment.</p><p>The first types code faster. The second is already building a small production workshop around themselves.</p><p>In a survey, both will get one checkmark: "uses AI." Then their results will be averaged, yielding those same modest percentages.</p><p>The study isn't lying here. The classification, which mixes practically different ways of working, is lying.</p><p>AI has not yet made all developers faster. It has increased the distance between them.</p><h3>We Pay Not Just for Tokens</h3><p>Companies are used to buying software by the number of licenses. They issue a hundred licenses with limits, wait a quarter, and look at average productivity. No revolution – so the marketers have fooled everyone again.</p><p>But a license doesn't equal access. The model, context window size, access to repositories and tools, limits, and speed are important. They determine how many attempts a person can make in a day.</p><p>If the agent responds in a minute, the developer looks at the result, corrects it, and launches the next attempt. If each response takes twenty minutes to wait for, the person switches context, loses context, or accepts the first plausible result.</p><p>A fast agent participates in a conversation. A slow one is like a contractor: you give them a task and hope to get something useful by tomorrow evening.</p><p>It's the same story with limits. Serious work begins when the agent can deeply understand the task, write a solution, test it, fix errors, and go through another cycle. If the corporate quota runs out by Tuesday noon, on Wednesday the developer returns to the past.</p><p>In such a configuration, the company later writes in a report that AI has been implemented, but there is no noticeable increase in productivity. Although they essentially paid for a limited pilot.</p><p>A cheap model can sometimes be the most expensive. A bad diff can be discarded. It's much worse when, after several such attempts, a good engineer no longer wants to experiment.</p><h3>Where 5x and 10x Live</h3><p>A manifold increase rarely arises from the model alone. A workflow must be built around it.</p><p>I like the public case of Davis Vaughan, the developer of dplyr and other key R ecosystem packages. With Claude Code, he prepared about two hundred sets of changes for open-source projects. Each passed human review and turned into a pull request.</p><p>By his own estimate, this work would have taken about 33 hours manually. With agents, Vaughan spent eight – <a href="https://blog.davisvaughan.com/posts/2026-01-09-claude-200-pull-requests/">about four times less</a>.</p><p>It didn't happen all at once. Agents deviated from the plan, hit GitHub limits, and sometimes edited files in the wrong place. The acceleration appeared after Vaughan compressed and isolated tasks, leaving the final "ready to merge" decision to himself.</p><p>There are even more impressive figures. Nubank claims an <a href="https://devin.ai/customers/nubank">8–12-fold reduction in human hours</a> on a portion of a multi-million dollar ETL system migration using Devin. This is a real company's success story, not an independent experiment, but the calculation method is described: ordinary manual migration hours were compared to the time spent assigning tasks to the agent and verifying the result.</p><p>Large multipliers are easier to demonstrate on repetitive work. However, it's not limited to that.</p><p>An Atlassian team of five people took a prototype to a corporate product with real authorization, auditing, integrations, and users in five months. The first attempt failed: agents wrote code faster than the team could understand the subject area. Some solutions had to be discarded, architecture and product issues returned to people, and agents were left with implementation and initial review.</p><p>After that, the result per engineer was <a href="https://www.atlassian.com/blog/jira/ai-built-prototype-to-production">about five times higher</a> than when creating a comparable internal product using traditional methods. The comparison is internal, but at least it's about the full product development cycle, not repetitive migration.</p><p>Why such figures are not visible everywhere is well illustrated by observing over 100,000 GitHub developers. With autonomous agents, the number of commits increased by 180%, projects by about 50%, and actual releases by <a href="https://www.nber.org/papers/w35275">about 30%</a>.</p><p>They started writing significantly more, but the increase in the number of releases was much more modest. Code appears faster than the organization can digest it.</p><h3>Code Already Waits for Developers</h3><p>Intercom tried to rebuild its entire R&amp;D organization around AI. After nine months, the company reported a <a href="https://ideas.fin.ai/p/2x-nine-months-later">twofold increase in merged PRs per R&amp;D employee</a>. In the same report, the number of product changes in March more than doubled January's, and the median time from idea to release decreased by 39%.</p><p>Honeycomb also showed an increase in the volume of changes but also talked about the cost. Peak merge volume into the monorepo increased from about 30 to 74 per day, and the number of incidents increased from a baseline of 18.5 per quarter to 53. The authors note that incidents grew roughly in line with the volume of changes, and simultaneously the team, platform, and nature of tasks changed. Therefore, AI cannot be credited with the entire effect. Nevertheless, this <a href="https://www.honeycomb.io/blog/30-70-prs-day-how-we-managed-not-wreck-systems">analysis</a> clearly shows the new bottleneck.</p><p>If yesterday developers waited for code to be written, today code waits for developers: for review, testing, clarification of requirements, and deployment to production. It seems the main deficit has become human attention: someone still needs to understand whether to accept the next diff.</p><p>The company-wide average won't show this. Some employees are already gaining a manifold advantage, while AI gives nothing to others yet. Therefore, it's more useful to analyze specific ways of working. If someone has managed to speed up, it's worth understanding which tasks, with which models, and how they worked – and then help colleagues repeat that experience.</p><p>But this cannot be solved with technology alone.</p><h3>Developers Are Not Fools</h3><p>Let's imagine a developer who can complete a day's work in two hours. What will happen if they talk about it?</p><p>Will they get a bonus, a promotion, or more freedom? Or four more day's worth of work?</p><p>If the reward for speed is a new quota, silence becomes the rational strategy. Someone will spend the saved hours on family or rest, someone on a pet project, someone will try to work for another company in parallel. For corporate statistics, the outcome is the same: time has been freed up, but it hasn't gone to the employer.</p><p>Savings occur for the individual, not in the accounting system. For them to turn into company productivity, they will have to be bought with trust, money, freedom, or career growth.</p><p>If, in response to personal 5x gains, the company simply raises the quota to 5x, the next time its dashboard won't show those five x's.</p><p>Perhaps some developers are already working many times faster. It's just not necessarily for you.</p><h3>Dinosaurs Still Attend Stand-ups</h3><p>There's a convenient way to ignore what's happening: label everything AI has touched as "neuro-slop."</p><p>Neuro-slop itself, of course, exists. Generative models have made garbage production almost free, so the increased flow of changes needs to be checked more rigorously. But garbage written by humans doesn't become craftsmanship, and the origin of code doesn't yet determine its quality.</p><p>For me, neuro-slop begins where a person stops being responsible for the result.</p><p>There's another unpleasant association. People who, in the coming years, will fundamentally refuse to merge into ecstasy with AI, resemble dinosaurs that are already extinct but don't know it yet.</p><p>A dinosaur was not a stupid animal. It was perfectly suited for a world that no longer exists. Professional extinction rarely looks like an instant layoff: a person continues to receive a salary, maintain legacy systems, and attend stand-ups, even though their production method has already lost economically.</p><p>The market will compare not a person with a model, but two developers: one diligently typing on the keyboard, and another who thinks and has learned to manage machine time.</p><p>Unlike dinosaurs, a developer can change their way of working.</p><p>If your opinion about agents was formed a year ago based on a weak model with a small limit, try again. Take a real task, give it to a strong modern agent, allow several iterations, ask another model to check the result, run tests, and verify the change in a real environment. Calculate the equivalent human time to a result that can actually be released.</p><p>If it turns out slower again – so be it, for this task and with this process. But this is already a conclusion about today's tool, not about a year-old grievance.</p><p>And if a week's work suddenly fits into one day, the main question will have to be asked to the employer: what will you do – reward the developer and study their life hacks, or simply assign four more weeks of work by Friday?</p><p>Perhaps, before measuring productivity gains from AI, it's worth checking the company's readiness not to punish a person for it.</p></div>
+  </main>
+  <footer>
+    Translation generated with Gemini 2.5 Flash-Lite.
+    The original article remains the source of record.
+  </footer>
+</body>
+</html>

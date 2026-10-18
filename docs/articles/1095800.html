@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Interpretability of LLMs Proven?</title>
+  <meta name="description" content="A preliminary report suggests that the impossibility of full LLM interpretability is overestimated. In his article on goodfire.com, author Nick Cammarata claims his experiments show that the formation of an LLM&#x27;s response can be traced, allowing for changes in model training and verification ap">
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.65;
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 32px 20px 64px;
+      color: #1f2328;
+    }
+    header {
+      border-bottom: 1px solid #d8dee4;
+      margin-bottom: 28px;
+      padding-bottom: 20px;
+    }
+    .source {
+      color: #57606a;
+      font-size: 0.95rem;
+    }
+    img, video, iframe {
+      max-width: 100%;
+      height: auto;
+    }
+    pre {
+      overflow-x: auto;
+      padding: 16px;
+      background: #f6f8fa;
+      border-radius: 6px;
+    }
+    code {
+      font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+    }
+    blockquote {
+      border-left: 4px solid #d0d7de;
+      margin-left: 0;
+      padding-left: 16px;
+      color: #57606a;
+    }
+    footer {
+      border-top: 1px solid #d8dee4;
+      margin-top: 40px;
+      padding-top: 20px;
+      color: #57606a;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Interpretability of LLMs Proven?</h1>
+    <p>A preliminary report suggests that the impossibility of full LLM interpretability is overestimated. In his article on goodfire.com, author Nick Cammarata claims his experiments show that the formation of an LLM&#x27;s response can be traced, allowing for changes in model training and verification approaches. The author himself calls the text a hypothesis, and the main article with a full description of the experiments is not yet available. However, as usual, a loud headline and strong claims have led to many retellings where the hypothesis has turned into a fact. Below is a quick look at the hypothesis. Read more</p>
+    <p class="source">
+      Machine-translated from Habr.
+      <a href="https://habr.com/ru/articles/1095800/?utm_campaign=1095800&amp;utm_source=habrahabr&amp;utm_medium=rss">Read the original Russian article</a>.
+      Sun, 18 Oct 2026 10:39:22 GMT
+    </p>
+  </header>
+  <main>
+<div><p>A research essay has been published suggesting that the complexity of interpreting neural networks is overestimated. Author Nick Cammarata, in his <a href="https://already-clean.goodfire.com/">article</a> on the <a href="http://goodfire.com">goodfire.com</a> website, claims that the polysemanticity of neurons is caused not by superposition, but by correctable reasons, and that most neurons, even in huge models, perform a single understandable task. The author himself calls the text a working hypothesis; a technical article with a full description of the experiments has not yet been released. But, as usual, a loud headline and strong claims have led to many retellings where the hypothesis has turned into a fact.</p><p>Below is a quick look at the hypothesis.</p><h2>Selective Verification of Nick Cammarata's Theses</h2><p>A retelling would probably be superfluous. The article is written very clearly and convincingly; even with Google's auto-translate, you will easily understand the arguments and the preliminary description of the experiments.</p><p>It is worth noting right away that Goodfire is a commercial company that offers, among other things, LLM verification as a service, with silico as its main tool. This is not an indication that the article is incorrect, but there are too many examples where business pressure has led to conclusions being made too harshly or too quickly.</p><p>The experiment with neuron auditing was conducted on Qwen, hypotheses were formed and tested by agents. That is, the LLMs themselves proved that LLMs are interpretable. It looks funny, but it is premature to draw conclusions before the full description of the experiments.</p><p>Cammarata's assertion that weak activations are a secondary recursive generalization is based on ablation with average accuracy measurement (weak75 reduces accuracy from 72% to 71%). The author himself notes that this changes every tenth response, but considers the lost distinctions to be minor—between classes that the network already confuses. This statement is verifiable, and I have set up a similar experiment on micro-networks. My favorite task is sorting; let's check how secondary the activation tail is.</p><p>On my MLP-512 model, with a similar weak75 protocol, the accuracy on the standard test actually increased from 97.5% to 98.3%, which seems to fully support Cammarata. But if we check on borderline examples (swapping only two adjacent elements in the sequence), with tail ablation, the network's accuracy dropped from 93.1% to 72.4%, meaning the network lost almost half (48%) of its ability beyond random guessing. And the recall of violations halved, from ~88% to ~44%.</p><p>The conclusion from the experiment is that the class boundaries, which determine whether the model distinguishes between close cases, are located within the weak activations. An important caveat: random removal of the same mass of activations yields almost the same effect, so the boundaries are held by a weak distributed mass overall, and the tail is a large part of it.</p><p>Cammarata, essentially, tested typical cases, not boundaries.</p><h2>Conclusion</h2><p>Thus, his own verification criterion (ablation of 75% of the tail and assessment of average accuracy) can create the illusion of network integrity. Cammarata sees that the tail handles subtle cases but considers it trivial, while on borderline examples, this triviality is responsible for the collapse of real competence.</p><p>This means that Cammarata's networks might appear clean simply because he tests them for cleanliness using a method that does not account for the importance of boundaries.</p><p>In any case, a full analysis of Cammarata's theses is possible only after the publication of the full technical report. However, this does not prevent hype, as always.</p><p><a href="https://github.com/Kamilgr1/Cammarata">git</a></p></div>
+  </main>
+  <footer>
+    Translation generated with Gemini 2.5 Flash-Lite.
+    The original article remains the source of record.
+  </footer>
+</body>
+</html>

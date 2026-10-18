@@ -1,0 +1,96 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>AI GM for Tabletop RPG: One Prompt Per Turn, Dice Before Response, and a Bug That Doubled Health</title>
+  <meta name="description" content="I&#x27;m creating a browser-based text RPG where a language model acts as the Game Master. The player describes any action in their own words, the GM responds with a narrative, and the game handles the mechanics: health, money, stats, inventory, d20 rolls. It seems simple: send the model the story a">
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.65;
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 32px 20px 64px;
+      color: #1f2328;
+    }
+    header {
+      border-bottom: 1px solid #d8dee4;
+      margin-bottom: 28px;
+      padding-bottom: 20px;
+    }
+    .source {
+      color: #57606a;
+      font-size: 0.95rem;
+    }
+    img, video, iframe {
+      max-width: 100%;
+      height: auto;
+    }
+    pre {
+      overflow-x: auto;
+      padding: 16px;
+      background: #f6f8fa;
+      border-radius: 6px;
+    }
+    code {
+      font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+    }
+    blockquote {
+      border-left: 4px solid #d0d7de;
+      margin-left: 0;
+      padding-left: 16px;
+      color: #57606a;
+    }
+    footer {
+      border-top: 1px solid #d8dee4;
+      margin-top: 40px;
+      padding-top: 20px;
+      color: #57606a;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>AI GM for Tabletop RPG: One Prompt Per Turn, Dice Before Response, and a Bug That Doubled Health</h1>
+    <p>I&#x27;m creating a browser-based text RPG where a language model acts as the Game Master. The player describes any action in their own words, the GM responds with a narrative, and the game handles the mechanics: health, money, stats, inventory, d20 rolls. It seems simple: send the model the story and character sheet, get a response. In practice, the most interesting challenges weren&#x27;t in prompts like &#x27;write humorously,&#x27; but at the intersection of a probabilistic model and deterministic game mechanics. Below are four such points and how I solved them. Stack: Node.js 24, Express, built-in node:sqlite, models via OpenRouter, and a shared engine module for server and browser. Read more</p>
+    <p class="source">
+      Machine-translated from Habr.
+      <a href="https://habr.com/ru/articles/1095802/?utm_campaign=1095802&amp;utm_source=habrahabr&amp;utm_medium=rss">Read the original Russian article</a>.
+      Sun, 18 Oct 2026 10:32:11 GMT
+    </p>
+  </header>
+  <main>
+<div><p>I'm creating a browser-based text RPG where a language model acts as the Game Master. The player describes any action in their own words, the GM responds with a narrative, and the game handles the mechanics: health, money, stats, inventory, d20 rolls. It seems simple: send the model the story and character sheet, get a response. In practice, the most interesting challenges weren't in prompts like 'write humorously,' but at the intersection of a probabilistic model and deterministic game mechanics. Below are four such points and how I solved them.</p><p>Stack: Node.js 24, Express, built-in node:sqlite, models via OpenRouter, and a shared engine module for server and browser.</p><h3>1. Mechanics Handled by Code, Not the Model</h3><p>The first version was naive: the model was given the entire character sheet and asked to 'respond and update state.' This quickly breaks. The model forgets items, hands out +100 swords, confuses how much money the hero has, and after a dozen turns, the character sheet takes on a life of its own.</p><p>Therefore, the model responds with strict JSON, which, besides the narrative, only contains changes:</p><pre><code>{ 
+  "check": { "stat": "CHA", "dc": 12, "why": "persuade the dragon", "kind": "other", "ok": true },
+  "narration": "The dragon opens one eye…",
+  "hp": -3,
+  "add": [{ "name": "Stranger's Boot", "icon": "👢", "slot": "feet", "def": 1 }],
+  "fact": "Gosha called the dragon dad"
+}</code><div><a href="https://sourcecraft.dev/"><span></span></a></div></pre><p>Plus a `scene` field with keys from a catalog of pixel art, which the client uses to assemble an illustration for the turn. The engine applies the changes, and it also enforces boundaries: armor reduces damage by no more than half, stats don't go to infinity, and items from the editor have a bonus cap. The model invents what happened, and the code decides its cost. For example, damage considering armor:</p><pre><code>let dhp = num(r.hp);
+if (dhp &lt; 0 &amp;&amp; !r.pierce) { // armor reduces damage, but no more than half
+  const def = Math.max(0, gear(ch).def);
+  const dmg = -dhp, after = Math.max(Math.ceil(dmg / 2), dmg - def);
+  dhp = -after;
+}
+</code><div><a href="https://sourcecraft.dev/"><span></span></a></div></pre><p>The `fact` field goes into the 'chronicle'—a short list of events that is mixed into the prompt for subsequent turns. This way, the GM remembers that twenty turns ago the hero called the dragon dad, and the entire history isn't crammed into the context.</p><h3>2. One Prompt Per Turn Instead of Two</h3><p>Initially, a turn was a two-step process. First, the model decided if a check was needed and its difficulty, then the player rolled the dice, and then a second prompt for the narrative, taking the roll into account. Double cost and double delay, and on fast, cheap models, the delay is felt most acutely.</p><p>The solution is to roll the dice in advance. The server rolls a d20 before the prompt and puts the result in the prompt:</p><pre><code>DICE: rolled 14, with Charisma bonus total 16.</code><div><a href="https://sourcecraft.dev/"><span></span></a></div></pre><p>The system prompt explains how to work with this: if a check is needed, the first response field is `check` (stat, difficulty on a 8 / 12 / 15 / 18+ scale, success or failure), and the narrative is written considering the outcome. If no check is needed, there's no `check` and the dice are not mentioned.</p><p>The server stores such a response 'sealed.' The player only sees 'Charisma check required, difficulty 12' and a dice animation, and the `ok` field is cut out:</p><pre><code>const publicCheck = (c) =&gt; { const { ok, ...rest } = c; return rest; };</code><div><a href="https://sourcecraft.dev/"><span></span></a></div></pre><p>The player clicks 'Roll,' and the narrative is revealed without a new model request.</p><p>Arithmetic remains. Models sometimes write 'success' with a result below the difficulty. Re-rolls are not allowed—the narrative is already written for the outcome. Therefore, the server adjusts the difficulty so that the honest result matches the text:</p><pre><code>function sealedRoll(ch, check, die, used) { 
+  let roll = resolveCheck(ch, check, die, used);
+  if (typeof check.ok === 'boolean' &amp;&amp; !roll.crit &amp;&amp; roll.ok !== check.ok &amp;&amp; Number.isFinite(roll.total)) {
+    roll = resolveCheck(ch, { ...check, dc: check.ok ? roll.total : roll.total + 1 }, die, used);
+  }
+  return roll;
+}
+</code><div><a href="https://sourcecraft.dev/"><span></span></a></div></pre><p>Critical 1s and 20s are untouched—they are sacred. And one more detail: streaming output had to be taught to hold back text until it's clear whether a check will occur, otherwise the player manages to read the outcome before the roll.</p><h3>3. A Bug That Doubled Health</h3><p>Testers complained: as soon as the GM increased the hero's maximum health, it started doubling thereafter. The cause was found in one prompt phrase: 'hp, money, stats—changes, not final values.' It said nothing about `max_hp`. The model saw 'Health 10/20,' decided the hero became stronger, and wrote `max_hp: 20`—the final number. And the engine faithfully added: 20, 40, 80…</p><p>The fix was two-layered. In the prompt, `max_hp` was added to the list of changes with the rule 'change rarely and by no more than a quarter; healing, rest, and food are `hp`.' And in the engine, there's a safeguard in case the model still sends a final value:</p><pre><code>function maxHpDelta(cur, v) {
+  if (!v) return 0;
+  const lim = Math.max(2, Math.round(cur / 4));
+  return clamp(v &gt; lim ? v - cur : v, -lim, lim);
+}
+</code><div><a href="https://sourcecraft.dev/"><span></span></a></div></pre><p>A number exceeding the allowed step is considered the final value and converted into a difference, and the step itself is limited to ±25%. From the same issue arose another rule: when the maximum increases, the current health increases by the same amount. Otherwise, 'blessing: +5 health' looks to the player as if nothing has changed.</p><p>The conclusion is banal but useful: every numerical field in the model's JSON response must have an explicit type—delta or absolute value—and validation on the code side, not just in the prompt.</p><h3>4. GM Styles: Where Character Lives in the Prompt</h3><p>The latest innovation is GM 'styles': Classic, Hilarious, Jerk, Epic, and Documentary. The first version was disappointing: the styles sounded almost the same. The style block was in the middle of a long system prompt, followed by rules for format, mechanics, and examples, and the model simply forgot about the style.</p><p>Three things helped:</p><ol><li><p>Moving the style block to the very end of the system prompt and explicitly stating that the style is more important than the usual manner and tone of the world, and that game rules, checks, and JSON format remain unchanged.</p></li><li><p>Duplicating it in a single line right before the player's action: '(GM Style: Jerk.)'.</p></li><li><p>Giving each style its own response length. The Jerk needs space to play out the scene and mock the player, while the Documentary needs time for the narrator's voice to pause.</p></li></ol><p>The reminder line turned out to be the cheapest and most effective fix: a dozen tokens, but the difference is like between two different games.</p><h3>Conclusion</h3><ul><li><p>The model invents, the code calculates. Everything that affects balance goes through the engine with strict boundaries.</p></li><li><p>Randomness happens before the prompt, not after. This saves a request and makes the response cohesive.</p></li><li><p>Every number in the model's response has an explicit type and a safeguard in the code.</p></li><li><p>Important instructions go at the end of the prompt and as a short line next to the user's input.</p></li></ul><p>The project is called 'Absurdia,' you can see how it works live here: <a href="https://absurdia.online/">https://absurdia.online/?src=habr</a>. I'll be happy to answer questions about prompts and architecture in the comments.</p></div>
+  </main>
+  <footer>
+    Translation generated with Gemini 2.5 Flash-Lite.
+    The original article remains the source of record.
+  </footer>
+</body>
+</html>

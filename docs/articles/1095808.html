@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Your secrets shouldn&#x27;t go to the cloud: meet Obscura</title>
+  <meta name="description" content="This summer, I wrote about what happens when you upload work data to ChatGPT: SOC logs, Cisco and FortiGate configs, internal IPs, employee emails. I then created an offline tool to clean configs manually before sending. It solves the problem for those who remember to use it. But a company cannot re">
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.65;
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 32px 20px 64px;
+      color: #1f2328;
+    }
+    header {
+      border-bottom: 1px solid #d8dee4;
+      margin-bottom: 28px;
+      padding-bottom: 20px;
+    }
+    .source {
+      color: #57606a;
+      font-size: 0.95rem;
+    }
+    img, video, iframe {
+      max-width: 100%;
+      height: auto;
+    }
+    pre {
+      overflow-x: auto;
+      padding: 16px;
+      background: #f6f8fa;
+      border-radius: 6px;
+    }
+    code {
+      font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+    }
+    blockquote {
+      border-left: 4px solid #d0d7de;
+      margin-left: 0;
+      padding-left: 16px;
+      color: #57606a;
+    }
+    footer {
+      border-top: 1px solid #d8dee4;
+      margin-top: 40px;
+      padding-top: 20px;
+      color: #57606a;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Your secrets shouldn&#x27;t go to the cloud: meet Obscura</h1>
+    <p>This summer, I wrote about what happens when you upload work data to ChatGPT: SOC logs, Cisco and FortiGate configs, internal IPs, employee emails. I then created an offline tool to clean configs manually before sending. It solves the problem for those who remember to use it. But a company cannot rely on everyone always remembering. So I took the next step: a gateway that sits between a person and a neural network, checks every request, and decides what to do with it. It&#x27;s called Obscura. It works on-prem, so data stays within the network. How the gateway is built under the hood.</p>
+    <p class="source">
+      Machine-translated from Habr.
+      <a href="https://habr.com/ru/articles/1095808/?utm_campaign=1095808&amp;utm_source=habrahabr&amp;utm_medium=rss">Read the original Russian article</a>.
+      Sun, 18 Oct 2026 11:18:08 GMT
+    </p>
+  </header>
+  <main>
+<div><h2>Obscura: Your Own On-Prem Gateway That Prevents Secrets from Leaking to AI Without Breaking Model Responses</h2><p>This summer, I wrote about <a href="https://habr.com/ru/articles/1065792/">what happens when you upload work data to ChatGPT</a>: SOC logs, Cisco and FortiGate configs, internal IPs, employee emails. I then created an offline tool to clean configs manually before sending. It solves the problem for those who remember to use it. But a company cannot rely on everyone always remembering.</p><p>So I took the next step: a gateway that sits between a person and a neural network, checks every request, and decides what to do with it. It's called Obscura. It works on-prem, so data stays within the network.</p><figure><img alt="Title: Fig. 1. Main console screen - Description: Fig. 1. Main console screen" loading="lazy" src="https://habrastorage.org/extt/3b/ed/3a/3bed3aa1940f5ec2266729cda8f5adc6.gif"/><div><figcaption>Title: Fig. 1. Main console screen - Description: Fig. 1. Main console screen</figcaption></div></figure><p><em>Fig. 1. Main console screen</em></p><h3>How it Works</h3><p>The client interacts with the gateway as if it were a regular OpenAI-compatible API (/v1/chat/completions); for Anthropic, there's an adapter /v1/messages. For web interfaces like ChatGPT, there's a Chrome/Edge/Firefox extension, a separate inspector for files and images, plus a built-in corporate chat.</p><p>There are three operating modes:</p><p>•        <strong>Monitor:</strong> We only observe and log;</p><p>•        <strong>Warn:</strong> The user chooses whether to "mask" or "send as is";</p><p>•        <strong>Enforce:</strong> Mask or block before sending.</p><figure><img alt="Title: Fig. 2. Gateway Architecture - Description: Fig. 2. Gateway Architecture" loading="lazy" src="https://habrastorage.org/extt/d1/6d/1b/d16d1b4b62354bf2dee516b50f10c3ff.gif"/><div><figcaption>Title: Fig. 2. Gateway Architecture - Description: Fig. 2. Gateway Architecture</figcaption></div></figure><p><em>Fig. 2. Gateway Architecture</em></p><p>Stack: Python, FastAPI, SQLite in WAL, Redis, spaCy, Svelte 5 for the web console.</p><h3>NER – RU/EN/AZ/TR</h3><p>Most DLP solutions are designed for English. They handle Russian data less effectively: different document formats, Cyrillic context, declensions. Obscura has its own rules for Russian: INN (10 and 12 digits, with checksum verification), SNILS, bank cards, payment details, phone numbers, as well as API keys and tokens (sk-..., AWS, GitHub, JWT). Regex matches are confirmed by checksum, reducing the chance of a random number being mistaken for a "card number".</p><p> </p><figure><img alt="Title: Fig. 3. Types of detected data and distribution by severity - Description: Fig. 3. Types of detected data and distribution by severity" loading="lazy" src="https://habrastorage.org/extt/fb/f2/54/fbf254e95796f79b669d32733a64eec7.gif"/><div><figcaption>Title: Fig. 3. Types of detected data and distribution by severity - Description: Fig. 3. Types of detected data and distribution by severity</figcaption></div></figure><p><em>Fig. 3. Types of detected data and distribution by severity</em></p><h3>The Problem: [EMAIL_1] Breaks Model Responses</h3><p>Typically, data is replaced with labels. This is fine for chat, but not for code and JSON: the model receives an incomprehensible label in the middle of a structure, which can break the format or lead to irrelevant reasoning. Therefore, Obscura has a synthetic surrogate mode:</p><div><div><table><tbody><tr><td><p><strong>What was found</strong></p></td><td><p><strong>What goes to the model</strong></p></td></tr><tr><td><p>e-mail</p></td><td><p><a href="mailto:user_7f2b9a@corp-redact.io">user_7f2b9a@corp-redact.io</a></p></td></tr><tr><td><p>card number</p></td><td><p>another number passing Luhn check</p></td></tr><tr><td><p>IP address</p></td><td><p>an address from the RFC 5737 test network, e.g., 198.51.100.14</p></td></tr><tr><td><p>name</p></td><td><p>another plausible name</p></td></tr></tbody></table></div></div><p> </p><p>The model sees normal data and responds naturally, while the gateway returns the actual values in the response. The generator is deterministic: one value within a request yields one surrogate. The speed is about 18,800 values per second, and all generated card numbers pass Luhn.</p><figure><img loading="lazy" src="https://habrastorage.org/r/w1560/extt/99/99/a2/9999a257189a632161c153794c339082.png"/></figure><h3>Streaming: The Most Annoying Part</h3><p>With stream=True, the response comes in chunks of 1–2 characters. A token might arrive as "[", "EMA", "IL_1", "]", and substring search for each chunk doesn't work. The solution: a finite state machine with a sliding window. Regular text is sent to the client immediately, while the tail, which might be the beginning of a token, is held in a buffer until it's clear what it is. A simplified illustration (not the code from the repository):</p><figure><img loading="lazy" src="https://habrastorage.org/r/w1560/extt/03/57/cc/0357ccd38fe6ae4b4c4a820ad837129d.png"/></figure><p> </p><p>This is especially important for Russian text: each Cyrillic letter takes two bytes in UTF-8, and chunk boundaries can split them in half. I tested this with "chaotic" fragmentation: chunks of 1–3 bytes, broken brackets and UTF-8, false prefixes. Lost bytes: 0. At 100 parallel streams: P50 0.056 ms, P95 0.486 ms, P99 10.9 ms.</p><h3>How the Gateway Decides What's a Secret</h3><p>A single regex yields too many false positives, so each match has several indicators: format and checksum, contextual words nearby, Shannon entropy of the candidate string, and de-obfuscation traces. Before detection, the text is normalized: Base64 and Hex are decoded, invisible characters are removed, sparse digits and leetspeak are merged. </p><figure><img loading="lazy" src="https://habrastorage.org/r/w1560/extt/f4/d1/f7/f4d1f793f84d801c1bf184db37ae2df0.png"/></figure><p>I calculate entropy for individual long strings without spaces, not for the entire text: regular prose also has an entropy of about 4 bits.</p><p>All of this is visible in the log as a "verdict": the security officer understands why the rule triggered and can adjust it. The log is linked by hashes; editing or deleting a line breaks the chain, which is detected by the "Verify chain integrity" button.</p><figure><img alt="Title: Fig. 4. Event log and verdict explanation - Description: Fig. 4. Event log and verdict explanation" loading="lazy" src="https://habrastorage.org/extt/78/0c/6e/780c6e35e1873d4983600f119603b993.gif"/><div><figcaption>Title: Fig. 4. Event log and verdict explanation - Description: Fig. 4. Event log and verdict explanation</figcaption></div></figure><p><em>Fig. 4. Event log and verdict explanation</em></p><h3>Browser Fleet</h3><p>The extension registers each browser as a device. If the extension is disabled or removed, the device goes silent, which is immediately visible in the console, not after an incident.</p><figure><img alt="Title: Fig. 5. Devices with extension - Description: Fig. 5. Devices with extension" loading="lazy" src="https://habrastorage.org/extt/ff/12/5b/ff125b30e6c9d6e433506f0a04a96679.gif"/><div><figcaption>Title: Fig. 5. Devices with extension - Description: Fig. 5. Devices with extension</figcaption></div></figure><p><em>Fig. 5. Devices with extension</em></p><h3>Images</h3><p>A screenshot with a passport or card is also a leak. The inspector extracts text via OCR and feeds it into the same pipeline. If a secret is found, the request is blocked (403), the original is encrypted and stored in the evidence locker, and SecOps receives an alert.</p><h3>Evidence</h3><p>Intercepted data cannot be stored in logs in plain text. Therefore, fragments are encrypted, and access follows a four-eyes principle: one officer submits a request with justification, another approves it, and a 15-minute token is issued. For the "right to be forgotten," there's crypto-deletion: the write key is erased, the ciphertext remains, and the log chain is not broken.</p><figure><img alt="Title: Fig. 6. Evidence storage - Description: Fig. 6. Evidence storage" loading="lazy" src="https://habrastorage.org/extt/9e/03/8f/9e038f27cf206c6a1139312e8ce58ba0.gif"/><div><figcaption>Title: Fig. 6. Evidence storage - Description: Fig. 6. Evidence storage</figcaption></div></figure><p><em>Fig. 6. Evidence storage</em></p><h3>Agents, Budget, Policies</h3><p>•        <strong>Injections and jailbreaks:</strong> heuristics plus risk assessment, system prompt protection.</p><p>•        <strong>Tool Guard:</strong> checks tool call arguments for shell injections and SSRF.</p><p>•        <strong>Token Limits:</strong> TPM and TPD per key or department, returns 429 before the request even goes to the paid model.</p><p>•        <strong>Policy Simulator:</strong> a new rule is run against logs from the past 7/14/30/90 days to see how many legitimate requests it would have blocked, even before enabling it.</p><p>•        <strong>SIEM:</strong> sending alerts (only metadata, not the values themselves) via webhook and integrations.</p><h3>Numbers</h3><p>All numbers are mine, synthetic, from my home PC: AMD Family 21, ~3.1 GHz, 20 GB RAM, Windows 10. Old hardware.</p><div><div><table><tbody><tr><td><p><strong>Metric</strong></p></td><td><p><strong>Value</strong></p></td></tr><tr><td><p>Detokenizer P50 / P95 / P99</p></td><td><p>0.056 / 0.486 / 10.9 ms</p></td></tr><tr><td><p>Surrogate generation</p></td><td><p>≈ 18,800 values/s</p></td></tr><tr><td><p>Lost bytes during fragmentation</p></td><td><p>0</p></td></tr><tr><td><p>Race conditions with 50 parallel quota reservations</p></td><td><p>0</p></td></tr><tr><td><p>Tests</p></td><td><p>515 out of 515, pip-audit without CVEs</p></td></tr></tbody></table></div></div><p> </p><h3>Limitations</h3><p>Tests show that the code does what I intended, not the detection quality on real requests. The detector is rule-based and uses NER, not a trained classifier, so it misses non-standard formats, and sometimes incorrectly flags numbers that resemble phone numbers (order numbers). A secret rephrased in one's own words will not be caught by the gateway. There is no independent audit or production deployment yet. The project is evolving daily, with new features constantly appearing.</p><h3>How I Made It With an AI Agent</h3><p>I used Claude Code, ChatGPT, DeepSeek, and Antigravity in development. I particularly liked Claude Code (Opus, Sonnet) and ChatGPT (Astra) as they helped speed up development and testing. Of course, AI can make mistakes, so its results need verification. Before actual deployment, a team of specialists will conduct additional tests, security checks, and compliance assessments. AI will also be used as an additional tool for identifying issues and improving the system.</p><h3>What's Next</h3><p>Transparent kernel-level interception (eBPF), SSO, multi-region storage, and many other features!</p><h3>I Need Your Advice</h3><p>If you have worked on similar projects or see ways to improve Obscura, I would be happy to hear your ideas in the comments. I'm particularly interested in which Russian data and formats are hardest to detect and what features are missing in similar gateways for real companies.</p><p>I plan to release Obscura in two months. Before the release, we will conduct additional functional tests and security checks with specialists. </p><p>After the release, I will offer everyone a free 30-day trial of Obscura. To get access, just message me privately or on Telegram.</p><p>Thank you for your attention!</p>!</p></div>
+  </main>
+  <footer>
+    Translation generated with Gemini 2.5 Flash-Lite.
+    The original article remains the source of record.
+  </footer>
+</body>
+</html>

@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>I wanted to entrust AI with an entire project. I ran into issues with isolation, memory, and crash recovery</title>
+  <meta name="description" content="What had to be checked before trusting a system with independent work on a software project. I wanted to build a system capable of independently managing a software project from idea to working product using AI agents. But the first engineering experiments showed that code generation is far from the">
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.65;
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 32px 20px 64px;
+      color: #1f2328;
+    }
+    header {
+      border-bottom: 1px solid #d8dee4;
+      margin-bottom: 28px;
+      padding-bottom: 20px;
+    }
+    .source {
+      color: #57606a;
+      font-size: 0.95rem;
+    }
+    img, video, iframe {
+      max-width: 100%;
+      height: auto;
+    }
+    pre {
+      overflow-x: auto;
+      padding: 16px;
+      background: #f6f8fa;
+      border-radius: 6px;
+    }
+    code {
+      font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+    }
+    blockquote {
+      border-left: 4px solid #d0d7de;
+      margin-left: 0;
+      padding-left: 16px;
+      color: #57606a;
+    }
+    footer {
+      border-top: 1px solid #d8dee4;
+      margin-top: 40px;
+      padding-top: 20px;
+      color: #57606a;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>I wanted to entrust AI with an entire project. I ran into issues with isolation, memory, and crash recovery</h1>
+    <p>What had to be checked before trusting a system with independent work on a software project. I wanted to build a system capable of independently managing a software project from idea to working product using AI agents. But the first engineering experiments showed that code generation is far from the most difficult part of the task. In the article, I discuss the development of Yggdrasil: why file system restrictions do not guarantee data protection, what problems remain after VM isolation, why memory limits do not provide strict guarantees for the host, and how to restore execution after failures without the risk of repeating actions already taken. I analyze real test results, including failed checks, adopted architectural decisions, and limitations that have not yet been overcome. The project is still in the research phase, so this is not about a ready-made solution, but about the problems encountered when trying to build truly autonomous AI development. Read more</p>
+    <p class="source">
+      Machine-translated from Habr.
+      <a href="https://habr.com/ru/articles/1095776/?utm_campaign=1095776&amp;utm_source=habrahabr&amp;utm_medium=rss">Read the original Russian article</a>.
+      Sun, 18 Oct 2026 09:13:04 GMT
+    </p>
+  </header>
+  <main>
+<div><p><em>What had to be checked before trusting a system with independent work on a software project.</em></p><h3>Where it all began</h3><p>For the past few months, I've been actively using AI tools in development. A coding agent can study a repository, write code, run tests, and suggest changes. But after completing a task, someone needs to evaluate the result, set the next task, transfer context, and deal with errors. Usually, that someone is a human.</p><p>I became curious if it was possible to delegate more work to the system: describe a product idea in plain language, clarify requirements, and then sequentially receive working versions without manual management of each AI session. For execution, I wanted to use existing CLI agents, including Codex CLI and Claude Code.</p><p>In the diagram, the idea looked simple:</p><pre><code>User idea
+      ↓
+Clarification of requirements and plan
+      ↓
+Tasks → AI executors → result verification
+      ↓
+Working product version</code><div><a href="https://sourcecraft.dev/"><span></span></a></div></pre><p>Problems began when I tried to move from the diagram to verifiable guarantees. What is the agent allowed to see? How do I stop all the processes it launched? What to do if the system crashes after performing an external action but before saving the result?</p><p>The project is still in the architectural design and individual prototype stage. Below, I will discuss experiments that forced me to reconsider my initial decisions.</p><h3>1. Disallowing file reads is not enough to protect data</h3><p>First, I tested execution isolation on macOS. The agent needs access to project files, but not to other repositories, user documents, or running application data. In the initial prototype, App Sandbox was used for this.</p><p>The test development process could not directly read a closed file with synthetic user data. The file restriction worked. But after granting network access, the same process obtained this data through the test HTTP interface of the running product.</p><p>The situation looked like this:</p><pre><code>Direct read of a closed file → denied
+Receiving the same data via HTTP → success</code><div><a href="https://sourcecraft.dev/"><span></span></a></div></pre><p>The service, addresses, and data were part of the test stand. No real documents were leaked, and this couldn't be called an unexpected violation of macOS rules; the process was clearly granted network capabilities.</p><p>The problem lay in the architecture of the restrictions themselves. One method of data access was forbidden, but another was left open. Direct network access also allowed access to addresses that the experimental scenario policy considered forbidden.</p><p>In the same prototype, the problem of stopping processes was discovered. A child process detached from its parent group via <code>setsid</code> and continued writing after the parent group was stopped. The coordinator could consider the task complete and start the next one while the previous process continued to run.</p><p>In total, I received 97 observations: 40 allowed operations and 57 denied. The tested architecture did not meet the mandatory requirements.</p><p>From this, I derived two requirements. Access to data must be controlled through all channels, including the network, running services, and tool outputs. Task completion must mean the actual termination of all its associated workload, including child processes.</p><h3>2. VM isolation helped, but didn't solve all problems</h3><p>The next candidate was separate Linux VMs on Mac. One for executing agent tasks, a second for the product being created, and a third for trusted verification. Untrusted workloads have no direct network access or shared directories with the host. Allowed operations go through a broker that checks their type, context, and permissions.</p><pre><code>                   Mac
+                    │
+            Control process
+                    │
+          Allowed operations broker
+             ╱      │      ╲
+            ╱       │       ╲
+       Execution  Product  Verification
+          VM        VM        VM</code><div><a href="https://sourcecraft.dev/"><span></span></a></div></pre><p>In the scenario studied, a process within the execution VM could work with its project but did not get access to host test files, neighboring projects, or user data. Tested direct network paths were also unavailable. Real Codex CLI and Claude Code executed scenarios with tools and MCP through a synthetic provider.</p><p>The experiment confirmed part of the mechanics of launching and transferring requests. VMs also did not solve the issue of user access to the created application. If the server runs inside an isolated VM, and the user opens the application in a regular browser, the received JavaScript executes on the host. Therefore, the entire product cannot be considered isolated just because its server is inside a virtual machine.</p><p>As a result, the VM with a broker became a viable architectural candidate, while secure access to the product, real AI channels, and a full-fledged network broker remained separate tasks. For me, this was an important architectural conclusion: trust boundaries must be defined through data flows and executed actions, not just through the isolation of a specific process.</p><h3>3. Two gigabytes of VM memory does not mean two gigabytes of Mac memory</h3><p>During resource checks, the following problem was discovered. If a virtual machine is allocated 2 GB of guest system memory, it does not mean that all associated host load will not exceed 2 GB. There is the memory of the virtualization process, auxiliary components, and additional overhead. Moreover, not all of it can be reliably attributed to a specific process.</p><p>To test the restriction mechanisms, I conducted an experiment with QEMU/HVF. This was a separate study of the resource approach, not a replacement for the VM candidate from the previous section. In one of the runs, 37 out of 38 checks passed, but the overall result remained negative. The reason is quite simple: the necessary aggregate guarantee for the host could not be proven.</p><p>In particular:</p><ul><li><p>Limiting the virtual address space of a process did not prove the limit of physical memory consumed by the entire system.</p></li><li><p>Limiting accumulated CPU time did not ensure the required behavior of VM startup and shutdown.</p></li><li><p>An independent watchdog could detect exceeding the observed metric and stop the load, but it worked reactively, with a delay and potential threshold overshoot.</p></li></ul><p>As a result, I had to separate two requirements. The first is to technically limit the parameters of the guest environment and check them separately. The second is to monitor the host's state and, under dangerous conditions, terminate its own load within a set time. I no longer claim an absolute hard limit on the aggregate RAM and CPU consumption of the entire Mac.</p><p>For monitoring protection, it is also necessary to define acceptable overages, prove the completeness of process accounting, and verify the detection and actual termination time. Moreover, simply sending a termination signal is not enough. It is necessary to ensure that the process has actually stopped executing and its resources can be released.</p><p>A similar situation arose with memory pressure monitoring. One of the prototypes passed 44 out of 44 checks, but the overall profile remained unverified. In a subsequent read-only run, an independent observer collected 698 readings, and an auxiliary process collected another 170. All showed <code>WARN</code>; no actual transition between states occurred.</p><p>In fact, it was possible to verify the reception and processing of observations under specific conditions, but not the entire chain from memory pressure changes to timely load termination and safe recovery. The conclusion was quite obvious but important: successful checks of individual components do not prove that the entire system meets the requirements.</p><h3>4. Action performed, but the coordinator doesn't know about it</h3><p>Isolation and resource control are only part of the problem. The system must continue to operate after the control process or an individual executor fails.</p><p>A rather unpleasant scenario arises here:</p><pre><code>Coordinator sent command
+           ↓
+Action might have been performed
+           ↓
+Coordinator crashed before saving result
+           ↓
+Result unknown after restart</code><div><a href="https://sourcecraft.dev/"><span></span></a></div></pre><p>If the command read a file, re-execution might be acceptable. If it modified data, created an external resource, sent a message, or used a one-time permission, a blind repeat could already lead to problems. Meanwhile, the AI session history does not eliminate the uncertainty. It may simply lack information about the actual result of the last operation.</p><p>Therefore, I distinguish between the intent to perform an action, sending the command, the observed result, and the confirmed state of the external system. After a crash, the coordinator cannot always immediately resume execution. Sometimes, it is first necessary to determine exactly what happened, and only then choose between continuing, verifying, retrying, or escalating to a human.</p><p>In the recovery prototype, 159 out of 159 checks passed for the studied set of failure points, backup, and recovery. But this is the result of a specific prototype, not a guarantee of correct operation under any hardware or production failure. Full lifecycle qualification remains open.</p><p>Nearby, another interesting problem was discovered, this time during the restart of a network relay. A late closure of an old connection could affect a new one, as both received the identifier <code>conn-1</code>. After adding a generation to the identifier, the restart scenarios passed re-testing.</p><p>The reason was that a resource name itself does not guarantee its identity. After a restart, a different instance might exist under the same name. This is precisely why recovery cannot be reduced to a simple continuation of an AI session. It is necessary to reconcile the saved state with the actual consequences of actions already performed.</p><h3>What remains open for now</h3><p>All the experiments described do not negate the initial questions about task decomposition, context transfer, model selection, and code quality verification. They have added a whole set of requirements, without which I am not ready to launch fully autonomous work on a long-term project. Now, I need to test a full-fledged network broker, real authorization mechanisms for two CLIs, secure user access to applications within the VM, Mac resource protection under changing memory pressure, crash recovery, and independent verification of agent results.</p><p>For the future version, I have set quite strict acceptance criteria. The same release must pass automatic checks, a 48-hour run, a seven-day long-term test, and a real cycle of exhausting and recovering the quota of at least one CLI. I do not rule out that the current architecture will change many more times.</p><p>Initially, I was primarily thinking about how to get several AI agents to write code sequentially. Now, much more time is spent checking the conditions under which the system can be trusted to take the next step at all: what data it sees, what processes continue to run after being stopped, what actions can be safely repeated after a failure, and what guarantees we can actually provide.</p><p>For now, my main conclusion is quite simple: autonomy does not begin with a long chain of model calls, but with the ability to accurately determine what the system has done, what it was allowed to do, and what it is safe to do next.</p></div>
+  </main>
+  <footer>
+    Translation generated with Gemini 2.5 Flash-Lite.
+    The original article remains the source of record.
+  </footer>
+</body>
+</html>

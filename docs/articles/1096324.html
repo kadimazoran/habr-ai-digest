@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>How to Make Your First Code Version Disposable</title>
+  <meta name="description" content="Authors: Kirill Goncharov, Sergey Adamov (BusinessPad) Imagine this situation. You&#x27;ve set up an AI agent and used it to build a new product in two weeks – for example, an order approval system. In it, a manager creates an order, a financier checks it, a supervisor approves it, and then delivery">
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.65;
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 32px 20px 64px;
+      color: #1f2328;
+    }
+    header {
+      border-bottom: 1px solid #d8dee4;
+      margin-bottom: 28px;
+      padding-bottom: 20px;
+    }
+    .source {
+      color: #57606a;
+      font-size: 0.95rem;
+    }
+    img, video, iframe {
+      max-width: 100%;
+      height: auto;
+    }
+    pre {
+      overflow-x: auto;
+      padding: 16px;
+      background: #f6f8fa;
+      border-radius: 6px;
+    }
+    code {
+      font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+    }
+    blockquote {
+      border-left: 4px solid #d0d7de;
+      margin-left: 0;
+      padding-left: 16px;
+      color: #57606a;
+    }
+    footer {
+      border-top: 1px solid #d8dee4;
+      margin-top: 40px;
+      padding-top: 20px;
+      color: #57606a;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>How to Make Your First Code Version Disposable</h1>
+    <p>Authors: Kirill Goncharov, Sergey Adamov (BusinessPad) Imagine this situation. You&#x27;ve set up an AI agent and used it to build a new product in two weeks – for example, an order approval system. In it, a manager creates an order, a financier checks it, a supervisor approves it, and then delivery is initiated. The system works, and users can go through the entire process from start to finish. But suddenly, details emerge that were difficult to foresee: it turns out that before sending an order to the supervisor, an additional check is needed, and orders over 100,000 rubles must be confirmed by the director. You open the code to make these changes and face a problem. The requirement for mandatory approval of large orders by the director is written in three places at once: in the interface, the server-side, and the instructions for the AI agent. Moreover, the wording differs, and it&#x27;s unclear which one is correct. If you change the limit in one place, the others will continue to function as before: the interface won&#x27;t display a notification about approval by the new person, the server will allow a large order without the director, and the AI agent will prompt users with the old workflow. The more new requirements appear, the harder it becomes to understand where related rules are located, what needs to be changed, and whether this change will disrupt the work of other parts of the system. From this, it&#x27;s often concluded that vibe-coding cannot be used to build serious products. I propose a fresh perspective – don&#x27;t demand perfect code from the first version of a product, but instead, create a complete description of the service in parallel with development. I&#x27;ll explain what it provides, how to create it, and where to store it. Read more</p>
+    <p class="source">
+      Machine-translated from Habr.
+      <a href="https://habr.com/ru/articles/1096324/?utm_campaign=1096324&amp;utm_source=habrahabr&amp;utm_medium=rss">Read the original Russian article</a>.
+      Mon, 19 Oct 2026 15:00:42 GMT
+    </p>
+  </header>
+  <main>
+<div><p><strong>Authors: </strong></p><p>Kirill Goncharov, Product and Digital Transformation Director at BusinessPad</p><p>Sergey Adamov, System Analyst at BusinessPad</p><figure><img loading="lazy" src="https://habrastorage.org/r/w1560/extt/f8/f9/b9/f8f9b9a1ce474ff1c13fb89ab3ec7451.png"/></figure><p>Imagine this situation. You've set up an AI agent and used it to build a new product in two weeks – for example, an order approval system. In it, a manager creates an order, a financier checks it, a supervisor approves it, and then delivery is initiated. The system works, and users can go through the entire process from start to finish. But suddenly, details emerge that were difficult to foresee: for example, orders over 100,000 rubles must be confirmed by the director.</p><p>You open the code to make these changes and face a problem. The requirement for mandatory approval of large orders by the director is written in three places at once: in the interface, the server-side, and the instructions for the AI agent. Moreover, the wording differs, and it's unclear which one is correct. If you change the limit in one place, the others will continue to function as before: the interface won't display a notification about approval by the new person, the server will allow a large order without the director, and the AI agent will prompt users with the old workflow. The more new requirements appear, the harder it becomes to understand where related rules are located, what needs to be changed, and whether this change will disrupt the work of other parts of the system.</p><p>From this, it's often concluded that vibe-coding cannot be used to build serious products. We propose a fresh perspective – don't demand perfect code from the first version of a product, but instead, create a complete description of the service in parallel with development. We'll explain what it provides, how to create it, and where to store it.</p><p><strong>How to Create the Description</strong></p><p>The description needs to capture two entities.</p><p>The first is the <strong>domain model</strong>, which is what the product consists of. The team needs to list the main objects of the system, their characteristics, relationships between them, user roles, possible states, and constraints. For example, for an order approval system, you need to specify that it has orders, clients, and contracts; an order has a number, amount, and date; each order is linked to a client; and managers, financiers, and directors can work with it. You also need to record the possible states of an order – for example, 'draft,' 'under review,' and 'approved'; and constraints: for instance, the order amount cannot be negative.</p><p>The second is what I call the <strong>semantic contract</strong>. Essentially, it's a set of rules that define how the product should work, regardless of the programming language used or the interface through which the user interacts with it. If the domain model answers the question 'What does the product consist of?', then the semantic contract answers 'How should it work?'.</p><p>In this part, the company needs to describe the actions that can be performed in the system: who has the right to perform them, under what conditions, what should happen as a result, and how to verify that the action was performed correctly. For clarity, let's take the action 'approve order.' Here, you can specify that a financier or director can approve it. To do this, the client's name, payment amount, and date must be specified in the order beforehand. After approval, the order status changes to 'approved,' participants receive a notification, and the action is logged. If the status changes but the notification is not sent, the system should retry sending it without re-approving the order. If the order amount exceeds the set limit, it must be confirmed by the director.</p><p>The basic unit of a semantic contract is a product capability, which is an action beneficial to the user, with clear conditions and a verifiable result. For example, 'approve order' is a product capability, while the 'Approve' button is just one way to use it. Today, the user clicks a button, tomorrow they give a command to an AI agent, and later they initiate the same action from another program. The interaction method changes, but the approval rules remain the same.</p><p>Where to get this information? There are several sources. The first is the requirements and decisions of the product owner. They help understand what the system should do. The second category includes code, interface, roles, permissions, data structure, and logic. They show how the system currently works. End-to-end scenarios, automated tests, actual data changes, and confirmation from the responsible employee constitute the third category and allow verification of whether the desired result was achieved. If all these sources contradict each other, the system should not independently choose the 'correct' version. Discrepancies must be recorded and passed to the person responsible for the product.</p><p><strong>Why Describing Buttons and Requests Is Not Enough</strong></p><p>The simplest way to document system operation is to write: 'button #143 initiates request #27.' This might be sufficient for automating an existing interface. For product development, it is not. This is because such a description does not explain why the user performs the action, under what circumstances it is allowed, and what result is considered correct. If the button is moved or the technical implementation of the request is changed, the description becomes outdated.</p><p>Therefore, it's better to build the description from the user's task: <strong>what the person wants to do → which product capability they are using → which object they are working with → what rules apply → what result the system should achieve. </strong>The specific button or other interface element appears only after this.</p><p><strong>Where to Store the Description</strong></p><p>Store it in the same place as the code, i.e., in the product repository, in a separate folder. Write it in plain text files, for example, in Markdown and YAML formats: they are equally easy for humans and AI agents to read. This way, the description is included in the version history, and it's visible who changed a rule, when, and why. Every change to the description is reviewed by the product owner, just like code changes. This ensures the description stays up-to-date with the system, unlike a document in a chat that no one opens after a month. The agent only needs to be given the path to the folder: before working, it will read the rules and operate within their boundaries. Place verification scenarios nearby and link them to product capabilities. This way, after each change, the system will compare the result with the description.</p><figure><img alt="Fig. 1. Experience Accumulation Loop" loading="lazy" src="https://habrastorage.org/r/w1560/extt/c5/ce/ac/c5ceac18ba682a1590725c7afef0e6f6.png" title="Fig. 1. Experience Accumulation Loop"/><div><figcaption>Fig. 1. Experience Accumulation Loop</figcaption></div></figure><p><strong>Why Businesses Need a Description</strong></p><p>There are five main values of a semantic description.</p><p><strong>1. The product's meaning lives longer than any code.<br/></strong>Entities, capabilities, rules, permissions, states, workflows, and expected results are no longer scattered across the interface, server, database, tasks, and AI instructions. They are collected into a single product model, and the model can be verified. The team sees two layers at once: how the system is structured today and how it should work even if the code changes.</p><p><strong>2. The architecture can be refactored as many times as needed.<br/></strong>Even if the code transforms, the product's meaning and operating criteria remain unchanged. Therefore, the initial interface can be safely replaced if necessary, and a monolithic server can be split into independent services. The way system parts exchange data can also be rethought, and the AI model or its provider can be changed.</p><p><strong>3. The product can be easily packaged into a new interface.</strong></p><p>Web interfaces, mobile applications, programmatic interfaces (APIs), automated processes, and AI agents provide access to the same product capabilities. There's no need to re-interpret permissions, preconditions, and successful outcomes five times. A new channel receives a ready-made semantic contract, and the team only designs the appropriate presentation and adapter for the specific implementation.</p><p><strong>4. Any new version can be verified against business results.<br/></strong>A new version is checked not against the old screen appearance, but against the business meaning: have the rules, permissible states, permissions, and expected results remained in place? Acceptance tests and regression tests for already working scenarios are derived from the semantics. This shows where the system behaves differently from what is documented. The agent receives boundaries within which it operates autonomously. Powerful models enhance this scheme, but the framework remains the source of truth.</p><p><strong>5. The product accumulates verified experience.<br/></strong>The system records a trace of user actions (the sequence of their steps) with semantic annotations. It shows who is performing the action and what role they play, which entity they are working with and in what state it is, which interface elements they use, what steps they take, how it all ends, where they make mistakes, and how they correct them. Interface elements and available steps are linked to the framework, so the trace shows not a series of clicks, but the user's actual path and goal. The agent studies it, comparing user steps with expected states and results. It also identifies goals that people repeat, workarounds, and places where the fact diverges from the rule. Then, a human reviews the agent's findings. Verified findings become tests, examples for the agent, refined rules, and context for the company or an individual. This way, the product continuously evolves and improves.</p></div>
+  </main>
+  <footer>
+    Translation generated with Gemini 2.5 Flash-Lite.
+    The original article remains the source of record.
+  </footer>
+</body>
+</html>

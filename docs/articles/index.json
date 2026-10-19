@@ -3103,6 +3103,46 @@
     "summary": "This summer, I wrote about what happens when you upload work data to ChatGPT: SOC logs, Cisco and FortiGate configs, internal IPs, employee emails. I then created an offline tool to clean configs manually before sending. It solves the problem for those who remember to use it. But a company cannot rely on everyone always remembering. So I took the next step: a gateway that sits between a person and a neural network, checks every request, and decides what to do with it. It's called Obscura. It works on-prem, so data stays within the network. How the gateway is built under the hood.",
     "title": "Your secrets shouldn't go to the cloud: meet Obscura"
   },
+  "https://habr.com/ru/articles/1096224/?utm_campaign=1096224&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Mon, 19 Oct 2026 10:34:29 GMT",
+    "slug": "1096224",
+    "source_url": "https://habr.com/ru/articles/1096224/?utm_campaign=1096224&utm_source=habrahabr&utm_medium=rss",
+    "summary": "On March 10, 2000, the NASDAQ index reached its peak. By the fall of 2002, it had lost almost 78%. Pets.com went public in February 2000 and was already selling off its assets by November of the same year. Webvan, a grocery delivery service with a billion-dollar valuation, went bankrupt in the summer of 2001. Amazon's stock fell by more than 90% over the same two years, but the company survived. The survivors weren't those with the best websites. Pets.com had a great website and advertising; its sock puppet mascot is still remembered today. But under the website, they had nothing of their own: they bought pet food from the same suppliers as regular pet stores and sold it below cost. Amazon, meanwhile, was building warehouses and logistics that couldn't be replicated overnight. The same is happening with AI services now. Most are set up the same way: a form on a website, a prompt, a request to someone else's neural network, and an answer on the screen. As soon as the neural network owner adds such a feature themselves, the service loses its meaning. This already happened with \"chat with PDF\" services when file uploads were added to the chatbots themselves. Since May, I've been developing a contract review service, and during this time, I've compiled a list for myself: what an AI service needs to be trusted with work, not just for play. The examples in it are from contracts, but the rules, in my opinion, are applicable to any industry. Read more",
+    "title": "Pets.com died, Amazon survived. What the 2000 bubble says about AI services"
+  },
+  "https://habr.com/ru/articles/1096234/?utm_campaign=1096234&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Mon, 19 Oct 2026 11:00:50 GMT",
+    "slug": "1096234",
+    "source_url": "https://habr.com/ru/articles/1096234/?utm_campaign=1096234&utm_source=habrahabr&utm_medium=rss",
+    "summary": "We tested how the agent edits files in 250 team sessions. It wrote to files via shell about 590 times, even though it had edit and write tools. 442 of these writes were due to a single phrase in one skill. We've accumulated many such stories during Veai CLI development. Veai CLI works in the terminal, like Claude Code and Codex. Its first public version is out today. Anthropic, OpenAI, Google, DeepSeek, GLM, and Qwen models are available through it with a single subscription and without a VPN, and you can pay with a Russian card. First, we'll explain who needs Veai CLI, what it can do, and how it differs from Claude Code, Codex, OpenCode, and Koda CLI. Then, in the \"Under the Hood\" section, we'll explain how it's built and what challenges we faced. Pricing and installation are at the end of the article. Read on",
+    "title": "CLI Harness. Management via Telegram. Claude, GPT, and Qwen in a single terminal agent built on pi"
+  },
+  "https://habr.com/ru/articles/1096254/?utm_campaign=1096254&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Mon, 19 Oct 2026 11:50:10 GMT",
+    "slug": "1096254",
+    "source_url": "https://habr.com/ru/articles/1096254/?utm_campaign=1096254&utm_source=habrahabr&utm_medium=rss",
+    "summary": "For almost a year now, AI has been not an experiment for me, but a working tool: real projects, real deadlines, real responsibility for the result. And over this year, I've seen that people who \"write code with AI\" do it fundamentally differently. Some throw a prompt and take what comes out. Others design a system where AI does the work under their control. Andrey Karpaty, who coined the term \"vibe coding\" in February 2025, meant something simple: to whip up a business card website or a utility for oneself, without reading the code, trusting the result. But the word stuck to everything: from crafts to production systems where an engineer is responsible for every line. The difference between these two ways of working is huge, and a name for the second approach seems to be missing. On top of that, many truly abuse the technology and create quick, unverified solutions targeting responsible niches where they show their weakness, lack of refinement, and data security threats. Such solutions have added a negative connotation to the concept of \"vibe coding,\" and real software engineers have inadvertently been lumped in with beginners and received the \"shameful\" label of vibe coder. This situation seemed unfair to me, not because engineers might be offended, but because there's a substitution of concepts, and a misconception on the business side when evaluating the product being created. Businesses in production don't need MVPs and \"one-evening\" crafts; they need an architecturally strong and reliable product for which the developer is responsible and provides guarantees. Therefore, defining the concepts became a concrete task for me to form a domain and a common language for communication in the IT environment. Read more",
+    "title": "Why \"Vibe Coding\" Isn't for All Developers"
+  },
+  "https://habr.com/ru/articles/1096324/?utm_campaign=1096324&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Mon, 19 Oct 2026 15:00:42 GMT",
+    "slug": "1096324",
+    "source_url": "https://habr.com/ru/articles/1096324/?utm_campaign=1096324&utm_source=habrahabr&utm_medium=rss",
+    "summary": "Authors: Kirill Goncharov, Sergey Adamov (BusinessPad) Imagine this situation. You've set up an AI agent and used it to build a new product in two weeks – for example, an order approval system. In it, a manager creates an order, a financier checks it, a supervisor approves it, and then delivery is initiated. The system works, and users can go through the entire process from start to finish. But suddenly, details emerge that were difficult to foresee: it turns out that before sending an order to the supervisor, an additional check is needed, and orders over 100,000 rubles must be confirmed by the director. You open the code to make these changes and face a problem. The requirement for mandatory approval of large orders by the director is written in three places at once: in the interface, the server-side, and the instructions for the AI agent. Moreover, the wording differs, and it's unclear which one is correct. If you change the limit in one place, the others will continue to function as before: the interface won't display a notification about approval by the new person, the server will allow a large order without the director, and the AI agent will prompt users with the old workflow. The more new requirements appear, the harder it becomes to understand where related rules are located, what needs to be changed, and whether this change will disrupt the work of other parts of the system. From this, it's often concluded that vibe-coding cannot be used to build serious products. I propose a fresh perspective – don't demand perfect code from the first version of a product, but instead, create a complete description of the service in parallel with development. I'll explain what it provides, how to create it, and where to store it. Read more",
+    "title": "How to Make Your First Code Version Disposable"
+  },
+  "https://habr.com/ru/articles/1096346/?utm_campaign=1096346&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Mon, 19 Oct 2026 14:51:12 GMT",
+    "slug": "1096346",
+    "source_url": "https://habr.com/ru/articles/1096346/?utm_campaign=1096346&utm_source=habrahabr&utm_medium=rss",
+    "summary": "I have two Claude accounts. The first is corporate. The second is personal, I pay for it myself and use it in my projects. Both run on the same machine, and it quickly became clear that they should be kept separate. There are several reasons. Work code should go through the work account because the company has its own rules for this. Conversely, I don't want to run my own projects at the employer's expense and leave them in the corporate history. You can switch manually via /logout and /login, but \"is this life?\". I wanted the account to be selected automatically, depending on which project I opened. It turned out to be very easy to do. Read more",
+    "title": "Two Claude Code accounts on one machine"
+  },
   "https://habr.com/ru/companies/1c/articles/1071340/?utm_campaign=1071340&utm_source=habrahabr&utm_medium=rss": {
     "model": "gemini-2.5-flash-lite",
     "published": "Thu, 03 Sep 2026 07:18:11 GMT",
@@ -3207,6 +3247,14 @@
     "summary": "Hi! This is Andrey Bezrukov from the Avito Ads team. If you work with user feedback, you know that to analyze it, you need not only to see the comment about the problem but also to understand its exact meaning, keep track of all the topics covered, and apply consistent labeling rules. Our team has built a system for this purpose, consisting of specialized AI agents, a Python assistant, and an updatable taxonomy. In this article, we explain how to distribute tasks among tools so that they truly help you analyze feedback faster. Read on",
     "title": "How we built an AI pipeline for product feedback labeling"
   },
+  "https://habr.com/ru/companies/axiomjdk/articles/1096022/?utm_campaign=1096022&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Mon, 19 Oct 2026 12:24:05 GMT",
+    "slug": "1096022",
+    "source_url": "https://habr.com/ru/companies/axiomjdk/articles/1096022/?utm_campaign=1096022&utm_source=habrahabr&utm_medium=rss",
+    "summary": "A year ago, my company started \"motivating\" developers to use AI. Then came coding agents. Now, I'm being \"called\" to become an SDD adherent and actively use OpenSpec. I'm not a luddite; I started using AI with GPT-3 and was an early adopter of agent programming. But resistance is futile. This article explores how to integrate OpenSpec into my existing harness without breaking what works. Read on.",
+    "title": "I was forced to use OpenSpec"
+  },
   "https://habr.com/ru/companies/basis/articles/1077922/?utm_campaign=1077922&utm_source=habrahabr&utm_medium=rss": {
     "model": "gemini-2.5-flash-lite",
     "published": "Thu, 03 Sep 2026 12:00:13 GMT",
@@ -3287,6 +3335,14 @@
     "summary": "If you've ever been involved in advertising and marketing, you've likely encountered the need for a banner ad campaign. Doing it manually is time-consuming, and outsourcing costs money and time. Today, this can be done in under an hour, including approvals. The challenge isn't whether AI can draw, but whether it can capture attention, consider your audience, and meet platform requirements. While a large advertising campaign can hardly do without a designer, if you need prototypes or to quickly and cheaply generate several ad banners, you should know how to work with AI. Furthermore, the volume of creatives is growing faster than our ability to test them. So, what can be done? In this article, we'll explore which tools, and most importantly how, address banner advertising tasks, how to build a process where AI saves time, and where it only creates risks. Read on.",
     "title": "How to Create Banners with Neural Networks: AI for Advertising"
   },
+  "https://habr.com/ru/companies/bothub/articles/1096360/?utm_campaign=1096360&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Mon, 19 Oct 2026 15:08:45 GMT",
+    "slug": "1096360",
+    "source_url": "https://habr.com/ru/companies/bothub/articles/1096360/?utm_campaign=1096360&utm_source=habrahabr&utm_medium=rss",
+    "summary": "If you're not deeply familiar with frontend development and building a website from scratch, and you need a website, you might have considered AI as a tool. This can be a correct, efficient, and rational decision – but only if you correctly formulate the brief and choose the right model. After all, different tools bring the same landing page to a working state in different ways. In this article, we will conduct a practical test of tools on one specific brief. Our methodology does not claim to be scientific, as the result of a neural network's work is non-deterministic and varies from case to case. In this article, we will analyze the GPT-6, Claude 5.5, DeepSeek V4.1, Qwen 3.8, and GLM 5.3 models. We will also examine benchmark measurements, although the focus will be on our practical test. This article is not a top list, as each use case leads to its own requirements for the model, and an abstract best model will not always be in demand for your specific case with your requirements. Read more",
+    "title": "Top AI Models for Code and Website Generation: Testing with a Single Brief"
+  },
   "https://habr.com/ru/companies/cinimex/articles/1088534/?utm_campaign=1088534&utm_source=habrahabr&utm_medium=rss": {
     "model": "gemini-2.5-flash-lite",
     "published": "Wed, 30 Sep 2026 12:09:55 GMT",
@@ -3318,6 +3374,14 @@
     "source_url": "https://habr.com/ru/companies/cloud4y/articles/1094488/?utm_campaign=1094488&utm_source=habrahabr&utm_medium=rss",
     "summary": "For twenty years, the cybersecurity community has been teaching developers not to pull unverified dependencies into their projects. Then we started trusting LLMs to write code, and they happily invent non-existent packages, leaving attackers only to register them first. Let's explore what slopsquatting is, how often models hallucinate packages, and how to protect against it. Read more",
     "title": "Slopsquatting: How We Spent 20 Years Teaching Developers Not to Trust Packages, Then All Trusted LLMs Together"
+  },
+  "https://habr.com/ru/companies/cloud4y/articles/1096334/?utm_campaign=1096334&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Mon, 19 Oct 2026 14:27:28 GMT",
+    "slug": "1096334",
+    "source_url": "https://habr.com/ru/companies/cloud4y/articles/1096334/?utm_campaign=1096334&utm_source=habrahabr&utm_medium=rss",
+    "summary": "Language models have become much smarter due to scale, trained on trillions of text tokens. Robotics lacks this scale; millions of hours of robots folding shirts or pouring water haven't been uploaded. Each hour must be recorded from scratch. This article explores how robot training data is currently collected, how much has been gathered, and the cost of catching up to LLMs. By rough estimates, robots have about a thousand times less data. Read more",
+    "title": "[Translation] Teleoperation, Simulations, and Cap Cams: How Data is Collected for Robot Training"
   },
   "https://habr.com/ru/companies/cloud_ru/articles/1069008/?utm_campaign=1069008&utm_source=habrahabr&utm_medium=rss": {
     "model": "gemini-2.5-flash-lite",
@@ -3398,6 +3462,14 @@
     "source_url": "https://habr.com/ru/companies/domclick/articles/1085232/?utm_campaign=1085232&utm_source=habrahabr&utm_medium=rss",
     "summary": "July 2025: METR showed that experienced developers work 19% slower with AI, although they are confident they are 20% faster. February 2026: the experiment was repeated on 57 developers – and METR itself explained why the numbers cannot be trusted: more and more participants do not want to work without AI even for money, and 30-50% hide tasks where AI is particularly good. May 2026: a survey, acceleration '3 times' – and again caveats. I analyze three posts and what follows from them for the 'will it replace or not' debate. Read more",
     "title": "Remember the study about 'AI slows down by 19%'? It was repeated – and it broke"
+  },
+  "https://habr.com/ru/companies/finam_broker/articles/1096122/?utm_campaign=1096122&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Mon, 19 Oct 2026 16:00:40 GMT",
+    "slug": "1096122",
+    "source_url": "https://habr.com/ru/companies/finam_broker/articles/1096122/?utm_campaign=1096122&utm_source=habrahabr&utm_medium=rss",
+    "summary": "Artificial intelligence has driven chip sales to their fastest growth since the 1980s, with TSMC and Samsung reporting record profits, according to The Economist. However, chipmaker stocks have fallen more than 10% this month as investors question how long the boom will last. Read more",
+    "title": "The semiconductor boom: record profits, falling stocks, and the industry's second law"
   },
   "https://habr.com/ru/companies/first/articles/1084590/?utm_campaign=1084590&utm_source=habrahabr&utm_medium=rss": {
     "model": "gemini-2.5-flash-lite",
@@ -3622,6 +3694,14 @@
     "source_url": "https://habr.com/ru/companies/infowatch/articles/1083954/?utm_campaign=1083954&utm_source=habrahabr&utm_medium=rss",
     "summary": "Christopher Duff, 40, Sydney, is accused of hacking the NSW court system. Prosecutors allege he used ChatGPT to write a program for downloading sensitive documents. The case involves nearly 9,000 court documents Duff accessed in 2025. He denies the charges, and the court seeks to use his chat logs as evidence, marking a first in Australian justice. Details and arguments from both sides follow.",
     "title": "Australian Man on Trial for Leaking Court Documents Using AI"
+  },
+  "https://habr.com/ru/companies/it_sense/articles/1096286/?utm_campaign=1096286&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Mon, 19 Oct 2026 12:44:27 GMT",
+    "slug": "1096286",
+    "source_url": "https://habr.com/ru/companies/it_sense/articles/1096286/?utm_campaign=1096286&utm_source=habrahabr&utm_medium=rss",
+    "summary": "An email arrived for Alexander at night, starting with: 'Hello, [Name]!' The script failed to insert the name, leaving the brackets intact, despite it being in his resume. It then asked him to answer a couple of clarifying questions directly in the email. 'Classic,' Alexander said, showing me the correspondence. Alexander is a developer who searched for a job for over four months and learned to distinguish a bot from a human during that time. A bot replies immediately or late at night. A recruiter replies on the third to fifth day and writes differently: 'Alexander, good afternoon! I've reviewed your experience with high-load projects...' He gets responses to one or two out of ten applications, and in about seven out of ten cases, a bot is the first to respond. Marina, an analyst, speaks about the same issue more calmly. On one platform, her applications simply hang: 'Usually, nothing happens. Two years ago, there was no feedback, and now there isn't either – stability is the key.' Read more",
+    "title": "Recruiter Bots, ATS, and Auto-Filters: Can You Reach a Human Today?"
   },
   "https://habr.com/ru/companies/just_ai/articles/1084804/?utm_campaign=1084804&utm_source=habrahabr&utm_medium=rss": {
     "model": "gemini-2.5-flash-lite",
@@ -4414,6 +4494,14 @@
     "source_url": "https://habr.com/ru/companies/speshu_ai/articles/1094608/?utm_campaign=1094608&utm_source=habrahabr&utm_medium=rss",
     "summary": "Model IDs hardcoded into your code are dependencies with expiration dates, much like an unsupported library version. For Anthropic's flagship models, this date typically arrives about a year after release. Google's preview models expire within months, and the window between deprecation announcements and actual shutdowns for providers ranges from 28 to 182 days. We've analyzed what was shut down and when in 2026, what breaks, how teams actually migrate (based on a sample of 17,703 repositories), and how to build an application that can survive model changes without a crisis. Read on.",
     "title": "The Threat of AI Agents: LLMs are Being Deprecated in 6 Months. Why and How to Prepare"
+  },
+  "https://habr.com/ru/companies/speshu_ai/articles/1096186/?utm_campaign=1096186&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Mon, 19 Oct 2026 13:30:29 GMT",
+    "slug": "1096186",
+    "source_url": "https://habr.com/ru/companies/speshu_ai/articles/1096186/?utm_campaign=1096186&utm_source=habrahabr&utm_medium=rss",
+    "summary": "Nano Banana 2.1 was released on October 6, 2026, as an update to Nano Banana 2. Google promises better prompt adherence, more accurate text, character consistency, and support for wide formats. Let's see how noticeable the difference is in practice: five identical tasks, from a regular photo to placing a person in a new scene. Read more",
+    "title": "Nano Banana 2.1 or Nano Banana 2: Which is Better? Comparing Image Generation Neural Networks on Five Identical Prompts"
   },
   "https://habr.com/ru/companies/ssp-soft/articles/1079732/?utm_campaign=1079732&utm_source=habrahabr&utm_medium=rss": {
     "model": "gemini-2.5-flash-lite",

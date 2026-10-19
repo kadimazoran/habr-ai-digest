@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Pets.com died, Amazon survived. What the 2000 bubble says about AI services</title>
+  <meta name="description" content="On March 10, 2000, the NASDAQ index reached its peak. By the fall of 2002, it had lost almost 78%. Pets.com went public in February 2000 and was already selling off its assets by November of the same year. Webvan, a grocery delivery service with a billion-dollar valuation, went bankrupt in the summe">
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.65;
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 32px 20px 64px;
+      color: #1f2328;
+    }
+    header {
+      border-bottom: 1px solid #d8dee4;
+      margin-bottom: 28px;
+      padding-bottom: 20px;
+    }
+    .source {
+      color: #57606a;
+      font-size: 0.95rem;
+    }
+    img, video, iframe {
+      max-width: 100%;
+      height: auto;
+    }
+    pre {
+      overflow-x: auto;
+      padding: 16px;
+      background: #f6f8fa;
+      border-radius: 6px;
+    }
+    code {
+      font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+    }
+    blockquote {
+      border-left: 4px solid #d0d7de;
+      margin-left: 0;
+      padding-left: 16px;
+      color: #57606a;
+    }
+    footer {
+      border-top: 1px solid #d8dee4;
+      margin-top: 40px;
+      padding-top: 20px;
+      color: #57606a;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Pets.com died, Amazon survived. What the 2000 bubble says about AI services</h1>
+    <p>On March 10, 2000, the NASDAQ index reached its peak. By the fall of 2002, it had lost almost 78%. Pets.com went public in February 2000 and was already selling off its assets by November of the same year. Webvan, a grocery delivery service with a billion-dollar valuation, went bankrupt in the summer of 2001. Amazon&#x27;s stock fell by more than 90% over the same two years, but the company survived. The survivors weren&#x27;t those with the best websites. Pets.com had a great website and advertising; its sock puppet mascot is still remembered today. But under the website, they had nothing of their own: they bought pet food from the same suppliers as regular pet stores and sold it below cost. Amazon, meanwhile, was building warehouses and logistics that couldn&#x27;t be replicated overnight. The same is happening with AI services now. Most are set up the same way: a form on a website, a prompt, a request to someone else&#x27;s neural network, and an answer on the screen. As soon as the neural network owner adds such a feature themselves, the service loses its meaning. This already happened with &quot;chat with PDF&quot; services when file uploads were added to the chatbots themselves. Since May, I&#x27;ve been developing a contract review service, and during this time, I&#x27;ve compiled a list for myself: what an AI service needs to be trusted with work, not just for play. The examples in it are from contracts, but the rules, in my opinion, are applicable to any industry. Read more</p>
+    <p class="source">
+      Machine-translated from Habr.
+      <a href="https://habr.com/ru/articles/1096224/?utm_campaign=1096224&amp;utm_source=habrahabr&amp;utm_medium=rss">Read the original Russian article</a>.
+      Mon, 19 Oct 2026 10:34:29 GMT
+    </p>
+  </header>
+  <main>
+<div><figure><img loading="lazy" src="https://habrastorage.org/r/w1560/extt/3f/74/de/3f74decc87bdcb23bb212ec08fa39dfa.png"/></figure><p>On March 10, 2000, the NASDAQ index reached its peak. By the fall of 2002, it had lost almost 78%. <a href="http://Pets.com">Pets.com</a> went public in February 2000 and was already selling off its assets by November of the same year. Webvan, a grocery delivery service with a billion-dollar valuation, went bankrupt in the summer of 2001. Amazon's stock fell by more than 90% over the same two years, but the company survived.</p><p>The survivors weren't those with the best websites. Pets.com had a great website and advertising; its sock puppet mascot is still remembered today. But under the website, they had nothing of their own: they bought pet food from the same suppliers as regular pet stores and sold it below cost. Amazon, meanwhile, was building warehouses and logistics that couldn't be replicated overnight.</p><p>The same is happening with AI services now. Most are set up the same way: a form on a website, a prompt, a request to someone else's neural network, and an answer on the screen. As soon as the neural network owner adds such a feature themselves, the service loses its meaning. This already happened with "chat with PDF" services when file uploads were added to the chatbots themselves.</p><p>Since May, I've been developing a contract review service, and during this time, I've compiled a list for myself: what an AI service needs to be trusted with work, not just for play. The examples in it are from contracts, but the rules, in my opinion, are applicable to any industry.</p><h3>1. The final word does not belong to the model</h3><p>Any language model will confidently state things that are not true from time to time: it might refer to clause 7.3, which says something completely different, or such a clause doesn't exist at all. A service that presents the model's answer as is simply passes this error on to the user.</p><p>Therefore, anything that can be verified without a neural network must be checked by regular code. In contract review, these are citations: each output is based on a document fragment, and the code verifies it against the text. If it's not found, the output is not included in the report.</p><p>How often this is necessary can be seen in a real document. In a draft contract for roof repair for a school from an open tender, the model found over a hundred risks, and in 24 of them, the citation did not match the text verbatim. Without verification, these would be 24 "citations" that are not in the contract.</p><p>The same applies to numbers. Amounts, deadlines, and percentages are calculated by code. The model reads well, but it's better not to trust it with calculations.</p><h3>2. Industry knowledge is more important than a successful prompt</h3><p>The most expensive errors in a contract are hidden in the combination of clauses that appear harmless individually. An example from a government contract for the supply of equipment for a polyclinic:</p><ul><li><p>the goods must be delivered "within 5 calendar days from the date of contract signing";</p></li><li><p>the supplier "shall send the customer a notification at least 5 days before delivery".</p></li></ul><p>Together, these clauses mean that the notification must be sent on the day the contract is signed. If you are one day late, you can only meet the deadline if the customer agrees to accept the goods earlier. Otherwise, it's a delay and penalties.</p><p>A request like "find all suspicious things" is executed by the neural network only sporadically. It's more reliable to ask it specific questions formulated by someone who knows the industry. We have catalogs for this: 15 types of contracts, almost four hundred questions for them, separate layers for government procurement and for different industries. Such a catalog is precisely Amazon's warehouses: you don't get it just by taking the same model.</p><h3>3. The service understands what it's given</h3><p>People upload the entire procurement documentation: application requirements, instructions, price justification, and the draft contract itself is somewhere at the end. In one case, out of 96 pages, only 13 were contract-related. If you give the model everything indiscriminately, it will diligently find risks in the application instructions. A good service first figures out where in the document is the information that needs to be checked.</p><h3>4. The model is a replaceable part</h3><p>Models are updated every few months. A product that relies on a specific model ages with it. However, if the value lies in the surrounding layer – in checks, reference materials, document understanding – the model can be replaced with a more powerful one, and the product will only benefit from it.</p><h3>5. The owner knows where the data goes</h3><p>A contract contains personal data of signatories and trade secrets. If a service sends text to a foreign neural network, it constitutes cross-border data transfer with all the consequences under Federal Law 152, even if the service itself appears to be Russian. To the question "where does my document go," the service owner must provide a single, clear answer, without "I'll check with the developers.".</p><h3>6. The service honestly states its limitations</h3><p>A person is responsible for the decision, not a neural network. Therefore, a good service shows the basis for each conclusion and clearly states where specialist verification is needed. Reducing a lawyer's work from an hour to a few minutes is realistic. Promising that all risks have been found is dishonest.</p><h3>How to check a service in five minutes</h3><p>If you are choosing an AI service for work – whether it's for contracts or anything else – ask it four questions.</p><ol><li><p><strong>"Show me where it's written."</strong> Take any conclusion and find its citation in the source document using Ctrl+F. If it's not found verbatim, it means no one is checking what the model writes.</p></li><li><p><strong>Give it an inconvenient document.</strong> A hundred pages instead of five, a scan instead of a Word file, a contract within a package of documents. A service without its own logic will stumble at the very first step.</p></li><li><p><strong>Ask what the service knows beyond the neural network.</strong> Its own reference materials, rules, checks, calculations. If the answer is "we have the best prompt" or the model's name, there's nothing under the hood.</p></li><li><p><strong>Ask where your text goes.</strong> The answer should be short and specific.</p></li></ol><hr/><p>The 2000 bubble didn't kill the internet. It killed companies that had nothing under their beautiful websites. The same will happen with AI: the technology will remain, but services will start to be evaluated based on what's under their hood – on checks, industry knowledge, and responsibility for the result.</p><p><em>The author develops the contract review service Chronixy.</em></p></div>
+  </main>
+  <footer>
+    Translation generated with Gemini 2.5 Flash-Lite.
+    The original article remains the source of record.
+  </footer>
+</body>
+</html>

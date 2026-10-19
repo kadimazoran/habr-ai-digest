@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Two Claude Code accounts on one machine</title>
+  <meta name="description" content="I have two Claude accounts. The first is corporate. The second is personal, I pay for it myself and use it in my projects. Both run on the same machine, and it quickly became clear that they should be kept separate. There are several reasons. Work code should go through the work account because the ">
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.65;
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 32px 20px 64px;
+      color: #1f2328;
+    }
+    header {
+      border-bottom: 1px solid #d8dee4;
+      margin-bottom: 28px;
+      padding-bottom: 20px;
+    }
+    .source {
+      color: #57606a;
+      font-size: 0.95rem;
+    }
+    img, video, iframe {
+      max-width: 100%;
+      height: auto;
+    }
+    pre {
+      overflow-x: auto;
+      padding: 16px;
+      background: #f6f8fa;
+      border-radius: 6px;
+    }
+    code {
+      font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+    }
+    blockquote {
+      border-left: 4px solid #d0d7de;
+      margin-left: 0;
+      padding-left: 16px;
+      color: #57606a;
+    }
+    footer {
+      border-top: 1px solid #d8dee4;
+      margin-top: 40px;
+      padding-top: 20px;
+      color: #57606a;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Two Claude Code accounts on one machine</h1>
+    <p>I have two Claude accounts. The first is corporate. The second is personal, I pay for it myself and use it in my projects. Both run on the same machine, and it quickly became clear that they should be kept separate. There are several reasons. Work code should go through the work account because the company has its own rules for this. Conversely, I don&#x27;t want to run my own projects at the employer&#x27;s expense and leave them in the corporate history. You can switch manually via /logout and /login, but &quot;is this life?&quot;. I wanted the account to be selected automatically, depending on which project I opened. It turned out to be very easy to do. Read more</p>
+    <p class="source">
+      Machine-translated from Habr.
+      <a href="https://habr.com/ru/articles/1096346/?utm_campaign=1096346&amp;utm_source=habrahabr&amp;utm_medium=rss">Read the original Russian article</a>.
+      Mon, 19 Oct 2026 14:51:12 GMT
+    </p>
+  </header>
+  <main>
+<div><p>I have two Claude accounts. The first is corporate. The second is personal, I pay for it myself and use it in my projects. Both run on the same machine, and it quickly became clear that they should be kept separate.</p><p>There are several reasons. Work code should go through the work account because the company has its own rules for this. Conversely, I don't want to run my own projects at the employer's expense and leave them in the corporate history. You can switch manually via <code>/logout</code> and <code>/login</code>, but "is this life?".</p><p>I wanted the account to be selected automatically, depending on which project I opened. It turned out to be very easy to do. Below I will explain how to set this up on Linux. For Windows, it's done analogously - I think you'll figure it out.</p><h2>Where Claude Code stores its files</h2><p>Everything related to the user, Claude Code keeps in one folder. By default, this is <code>~/.claude</code> (user's home directory on Windows). Next to it is the file <code>~/.claude.json</code>.</p><div><div><table><tbody><tr><th><p>What</p></th><th><p>Where (Linux)</p></th></tr><tr><td><p>Authorization token</p></td><td><p><code>~/.claude/.credentials.json</code></p></td></tr><tr><td><p>Global settings</p></td><td><p><code>~/.claude/settings.json</code></p></td></tr><tr><td><p>Global instructions</p></td><td><p><code>~/.claude/CLAUDE.md</code></p></td></tr><tr><td><p>Agents, skills, plugins</p></td><td><p><code>~/.claude/agents/</code>, <code>~/.claude/skills/</code>, <code>~/.claude/plugins/</code></p></td></tr><tr><td><p>Session history</p></td><td><p><code>~/.claude/projects/</code></p></td></tr><tr><td><p>State, MCP servers</p></td><td><p><code>~/.claude.json</code></p></td></tr></tbody></table></div></div><p>The location of this folder can be changed by the environment variable <code>CLAUDE_CONFIG_DIR</code> (<a href="https://code.claude.com/docs/en/env-vars">environment variables</a>). If it is set, Claude Code looks for everything in the specified location, and <code>.claude.json</code> also moves inside. Two folders give two independent Claude Codes, each with its own account, settings, and history.</p><p>I left my personal account in the old (default) location, and for work, I created <code>~/.claude-work</code>:</p><pre><code>~/.claude        personal account
+~/.claude-work   work account
+CLAUDE_CONFIG_DIR=~/.claude-work</code><div><a href="https://sourcecraft.dev/"><span></span></a></div></pre><p>Now we need to make sure the variable is set automatically and only where needed. Let's start with the terminal.</p><h2>Divide and conquer</h2><h4>Linux / macOS</h4><p>First, run Claude once with the new directory and log in with your work account:</p><pre><code>CLAUDE_CONFIG_DIR=“$HOME/.claude-work” claude</code><div><a href="https://sourcecraft.dev/"><span></span></a></div></pre><p>The directory is empty, so Claude Code will go through the initial setup and prompt for authorization. If it doesn't prompt, you can force it with <code>/login</code>. Log in with your <strong>work</strong> account.</p><p>Then, add a short command (in this case, for the <strong>bash / zsh</strong> shell, add the line to <code>~/.bashrc</code> or <code>~/.zshrc</code>):</p><pre><code>alias claude-work='CLAUDE_CONFIG_DIR="$HOME/.claude-work" claude'</code><div><a href="https://sourcecraft.dev/"><span></span></a></div></pre><p>Let's check in any terminal now:</p><ul><li><p><code>claude</code> launches the personal account</p></li><li><p><code>claude-work</code> launches the work account</p></li></ul><p>A good start, half the job is done. But what about VS Code?</p><h2>Using VSCODE profiles</h2><p>We've sorted out the terminal. It's more complicated with VS Code because the Claude Code extension itself launches the <code>claude</code> process and is completely unaware of our alias.</p><p>The first thing that comes to mind is configuring <code>claudeCode.environmentVariables</code>: a list of environment variables with which it launches Claude. The first thing that comes to mind is to put it in <code>.vscode/settings.json</code> of the work project. <strong>But alas, this won't work.</strong></p><details><summary>Why .vscode/settings.json doesn't work</summary><div><p>In the extension's <code>package.json</code>, this setting has <code>"scope": "machine"</code>. For VS Code, this means:</p><ul><li><p>the property <strong>cannot</strong> be set at the workspace level (.vscode/settings.json): VS Code simply ignores it. This is logical: otherwise, any cloned repository could substitute the process environment.</p></li><li><p>the setting <strong>can</strong> be set in user settings, and each VS Code profile has its own. Only settings with <code>application</code> scope apply to all profiles at once, while <code>machine</code> is stored separately in each profile.</p></li></ul><p>Hence the solution: a separate VS Code <strong>profile</strong> for work.</p></div></details><p>And here VS Code <a href="https://code.visualstudio.com/docs/configure/profiles">profiles</a> come to our aid.<br/><br/>Create a new profile:</p><p><code>Ctrl+Shift+P</code> → <strong>Profiles: New Profile...</strong> (or <strong>File</strong> → <strong>Preferences</strong> → <strong>Profile</strong> → <strong>Profiles</strong>).</p><ul><li><p><strong>Name: </strong>e.g. <code>Work</code></p></li><li><p><strong>Copy from:</strong> <code>Default</code>. This way, the new profile will inherit all your settings from the Default profile (well, unless you used profiles before. Or copy from the one you use from your desired profile).</p></li></ul><p>Next, switch VS Code to the new profile (<strong>File → Preferences → Profile → Profile (Work)</strong>).</p><figure><img alt="switching to a new profile" loading="lazy" src="https://habrastorage.org/r/w1560/extt/97/49/4b/97494b9ddb2086829888dc263e0ad2cd.png" title="switching to a new profile"/><div><figcaption>switching to a new profile</figcaption></div></figure><p>And open VS Code settings for your user (but for the new profile - <strong>File</strong> <strong>→</strong> <strong>Preferences</strong> <strong>→</strong> <strong>Settings</strong>):</p><figure><img alt="It is important to ensure that we are editing settings for User, not for Workspace" loading="lazy" src="https://habrastorage.org/r/w1560/extt/4f/99/a8/4f99a8be872faeaebff742b6acacd2aa.png" title="It is important to ensure that we are editing settings for User, not for Workspace"/><div><figcaption>It is important to ensure that we are editing settings for User, not for Workspace</figcaption></div></figure><p>Click to edit the setting and add to the opened JSON file (note that claudeCode.environmentVariables is an array, add to it):</p><pre><code>{
+  "claudeCode.environmentVariables": [
+    { "name": "CLAUDE_CONFIG_DIR", "value": "/home/&lt;user&gt;/.claude-work" }
+  ],
+  "terminal.integrated.env.linux": {
+    "CLAUDE_CONFIG_DIR": "/home/&lt;user&gt;/.claude-work"
+  }
+}</code><div><a href="https://sourcecraft.dev/"><span></span></a></div></pre><p>Also, pay attention to <code>&lt;user&gt;</code> - obviously, you need to replace it with your username.<br/><br/>Two important points:</p><ol><li><p><strong>The path must be absolute.</strong> The extension does not recognize <code>~</code>, <code>$HOME</code>, and <code>%USERPROFILE%</code>: the string is passed as is, and Claude will look for the config anywhere but where we need it. Unfortunately.</p></li><li><p><strong>The second setting (</strong><code><strong>terminal.integrated.env.*</strong></code><strong>) is needed for the integrated terminal.</strong> <code>claudeCode.environmentVariables</code> only affects the extension panel. Without the second setting, the command <code>claude</code>, typed in the integrated terminal of the work window, will run under the <strong>personal</strong> account. This is exactly the error we are protecting against.</p></li></ol><p>For macOS, it will be <code>terminal.integrated.env.osx</code>, and for Windows, <code>terminal.integrated.env.windows</code>, respectively.</p><h2>Linking work folders to the profile</h2><p>Of course, switching profiles manually is much easier than switching Claude accounts. But VS Code allows you to automate even this. <br/><br/>Go back to the profile settings, select our <strong>Work</strong> profile.<br/>In the `Folders &amp; Workspaces` section, add our work folders with projects.<br/><br/>That's it. Now, when VS Code opens any project, it will automatically switch to the work profile, and thus - launch <code>claude-work</code> instead of the standard <code>claude</code> (meaning it will log in with our work account).<br/>All that's left is to restart the IDE and check that everything works as we've configured.</p><h2>Checking</h2><p>Open any work project in the editor. </p><ul><li><p>In the work VS Code window, open the Claude panel and execute <code>/status</code>. We should see our work account.</p></li><li><p>In the integrated terminal, you can run <code>echo $CLAUDE_CONFIG_DIR</code></p></li><li><p>In the regular OS terminal, you can also check <code>/status</code> in <code>claude</code> and <code>claude-code</code>.</p></li></ul><h3>Result</h3><ul><li><p>One variable <code>CLAUDE_CONFIG_DIR</code> gives two (or more) completely independent Claude Codes.</p></li><li><p>In the terminal, these are different cli commands: <code>claude</code> , <code>claude-work</code>, etc.</p></li><li><p>In VS Code, it's the Work profile with <code>claudeCode.environmentVariables</code> and <code>terminal.integrated.env.*</code>.</p></li><li><p>Work folders are linked to the profile, so the account is selected based on the project we opened.</p></li><li><p><code>/status</code> helps to quickly verify if anything has gone wrong and which account the current session is running under. Just in case.</p></li></ul><p>If you solve the same problem differently (perhaps through separate OS users, containers or dev containers, or some other way), share it in the comments. It's interesting to compare.</p></div>
+  </main>
+  <footer>
+    Translation generated with Gemini 2.5 Flash-Lite.
+    The original article remains the source of record.
+  </footer>
+</body>
+</html>

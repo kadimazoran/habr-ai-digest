@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>A Bot Analyzed 1518 Job Postings on hh.ru and Sent 339 Applications</title>
+  <meta name="description" content="This summer, I wrote a bot that automatically searched for jobs on hh.ru, evaluated them using an LLM, composed cover letters, and applied. Over two months, it processed 1518 vacancies and sent 339 applications. I&#x27;ll share the results: the funnel, what changes improved conversion, and why expan">
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.65;
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 32px 20px 64px;
+      color: #1f2328;
+    }
+    header {
+      border-bottom: 1px solid #d8dee4;
+      margin-bottom: 28px;
+      padding-bottom: 20px;
+    }
+    .source {
+      color: #57606a;
+      font-size: 0.95rem;
+    }
+    img, video, iframe {
+      max-width: 100%;
+      height: auto;
+    }
+    pre {
+      overflow-x: auto;
+      padding: 16px;
+      background: #f6f8fa;
+      border-radius: 6px;
+    }
+    code {
+      font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+    }
+    blockquote {
+      border-left: 4px solid #d0d7de;
+      margin-left: 0;
+      padding-left: 16px;
+      color: #57606a;
+    }
+    footer {
+      border-top: 1px solid #d8dee4;
+      margin-top: 40px;
+      padding-top: 20px;
+      color: #57606a;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>A Bot Analyzed 1518 Job Postings on hh.ru and Sent 339 Applications</h1>
+    <p>This summer, I wrote a bot that automatically searched for jobs on hh.ru, evaluated them using an LLM, composed cover letters, and applied. Over two months, it processed 1518 vacancies and sent 339 applications. I&#x27;ll share the results: the funnel, what changes improved conversion, and why expanding the search hurt it. Read on.</p>
+    <p class="source">
+      Machine-translated from Habr.
+      <a href="https://habr.com/ru/articles/1096734/?utm_campaign=1096734&amp;utm_source=habrahabr&amp;utm_medium=rss">Read the original Russian article</a>.
+      Tue, 20 Oct 2026 11:52:52 GMT
+    </p>
+  </header>
+  <main>
+<div><p>This summer, I was looking for a Python developer position in AI: LLM, RAG, automation, remote work. I have about two years of experience, and manually applying to dozens of jobs a day quickly became tiresome. So, I wrote a bot that did it for me: it found vacancies on hh.ru, decided if they were suitable, wrote a cover letter, and applied.</p><p>The bot ran for two months, from June 17th to August 17th. During this time, it processed 1518 vacancies and sent 339 applications. The sample size is small: one person, one resume. However, I know everything about each application: the model's vacancy score, whether the email was sent, and which bot version it was written with.</p><p>Therefore, this will include not only the overall funnel but also how the results changed as I refined the bot.</p><h3>How the Bot Works</h3><p>Since December 15, 2025, hh.ru has closed its API for job seekers, so the bot operates through a regular browser (Playwright) using my logged-in profile. Twice a day, the Windows Task Scheduler launches it, and during each run, it does the following:</p><ol><li><p>Searches for vacancies using 14 queries: "AI Engineer", "LLM Engineer", "RAG", "Python FastAPI", "Python chatbot", and so on. Only remote positions, up to 6 years of experience.</p></li><li><p>Filters out irrelevant postings using stop words: senior, lead, team lead, architect, 1C, intern.</p></li><li><p>Sends the vacancy description to an LLM. The model assigns a score from 0 to 100: 85 and above means the role is directly about LLM or ML, 70-84 means Python backend where AI is part of the tasks, and below that is irrelevant. The bot only applies if the score is above the threshold.</p></li><li><p>Writes a cover letter tailored to the vacancy: 4-7 sentences, with the first sentence highlighting my experience relevant to their main requirement. No "I am interested in your vacancy.".</p></li><li><p>Applies. If the employer asks questions, it answers them based on my resume. If there's a test in the vacancy, it does nothing and forwards it to me via Telegram.</p></li><li><p>Verifies that the application was actually sent and sends a summary card to Telegram.</p></li></ol><p>The bot also reads chats with recruiters. It answers simple questions about experience and tech stack itself. Anything related to salary, relocation, personal data, or tests is sent to me as a draft for my decision.</p><p>I used the LLM via a Codex CLI subscription, so I didn't pay extra for the API. The state is stored in SQLite: which vacancies have been evaluated, which have been applied to, which chats have been read.</p><h3>Where the Numbers Come From</h3><p>The bot maintained its own database, but it lacked the crucial information: the employer's response. This is only available on hh.ru. The "Applications and Invitations" page provides statuses in JSON directly within the HTML, so I went through all the pages, including the archive, and matched the applications with the bot's database using the vacancy ID.</p><p>The data export is from October 20th. Two months have passed since the last application, so anyone who wanted to respond has likely done so. I calculated the outcomes as follows:</p><ul><li><p><strong>Invitation</strong> - Status is "Invitation" or "Interview".</p></li><li><p><strong>Rejection</strong> - Status is "Rejection".</p></li><li><p><strong>Opened and No Response</strong> - Application viewed, status unchanged.</p></li><li><p><strong>Not Opened</strong> - Application not viewed by anyone.</p></li></ul><p>The 339 applications include only those sent by the bot itself. Vacancies with tests that were forwarded to me, and my manual applications during the same months, are counted separately.</p><h3>The Funnel</h3><figure><img alt=
+  </main>
+  <footer>
+    Translation generated with Gemini 2.5 Flash-Lite.
+    The original article remains the source of record.
+  </footer>
+</body>
+</html>

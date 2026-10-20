@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>&quot;Max Extra&quot; for GLM-5.3 Prime: I Manually Iterated Through Tokens and Found an Insertion That Gives +7.3% Accuracy with -47% Reasoning</title>
+  <meta name="description" content="Everyone running GLM-5.3 Prime in production on Max reasoning has this feeling: it seems to think, but it also seems to underthink. My task was brutal – to invent a &quot;Max Extra&quot; effort level purely through prompting: a minimal insertion into the system prompt, close to the training data, wi">
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.65;
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 32px 20px 64px;
+      color: #1f2328;
+    }
+    header {
+      border-bottom: 1px solid #d8dee4;
+      margin-bottom: 28px;
+      padding-bottom: 20px;
+    }
+    .source {
+      color: #57606a;
+      font-size: 0.95rem;
+    }
+    img, video, iframe {
+      max-width: 100%;
+      height: auto;
+    }
+    pre {
+      overflow-x: auto;
+      padding: 16px;
+      background: #f6f8fa;
+      border-radius: 6px;
+    }
+    code {
+      font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+    }
+    blockquote {
+      border-left: 4px solid #d0d7de;
+      margin-left: 0;
+      padding-left: 16px;
+      color: #57606a;
+    }
+    footer {
+      border-top: 1px solid #d8dee4;
+      margin-top: 40px;
+      padding-top: 20px;
+      color: #57606a;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>&quot;Max Extra&quot; for GLM-5.3 Prime: I Manually Iterated Through Tokens and Found an Insertion That Gives +7.3% Accuracy with -47% Reasoning</h1>
+    <p>Everyone running GLM-5.3 Prime in production on Max reasoning has this feeling: it seems to think, but it also seems to underthink. My task was brutal – to invent a &quot;Max Extra&quot; effort level purely through prompting: a minimal insertion into the system prompt, close to the training data, without overthinking. And literally picking each token manually. Why? I noticed that on Max reasoning, the neural network takes a minute to respond to &quot;Hello,&quot; but for migrating an entire project to another stack, it takes a maximum of 15 seconds (*personal feeling). I built my benchmark: 342 dirty prompts like real users have (typos, &quot;plzplz,&quot; &quot;idk,&quot; &quot;well basically&quot;), equally EN and RU, an LLM grader, paired sign tests, and ~50,000 requests to the provider in an evening. Spoiler: the hypothesis &quot;the neural network lacks thinking depth&quot; died in the very first phase. But what I found instead is more interesting. Read on</p>
+    <p class="source">
+      Machine-translated from Habr.
+      <a href="https://habr.com/ru/articles/1096770/?utm_campaign=1096770&amp;utm_source=habrahabr&amp;utm_medium=rss">Read the original Russian article</a>.
+      Tue, 20 Oct 2026 12:51:02 GMT
+    </p>
+  </header>
+  <main>
+<div><p>Everyone running GLM-5.3 Prime in production on <code>Max</code> reasoning has this feeling: it seems to think, but it also seems to underthink. My task was brutal – <strong>to invent a "Max Extra" effort level purely through prompting</strong>: a minimal insertion into the system prompt, close to the training data, without overthinking. And literally picking each token manually.</p><p>Why? I noticed that on Max reasoning, the neural network takes a minute to respond to "Hello," but for migrating an entire project to another stack, it takes a maximum of 15 seconds (*personal feeling).</p><p>I built my benchmark: 342 dirty prompts like real users have (typos, "plzplz," "idk," "well basically"), equally EN and RU, an LLM grader, paired sign tests, and ~50,000 requests to the provider in an evening.</p><p>Spoiler: the hypothesis "the neural network lacks thinking depth" <strong>died in the very first phase</strong>. But what I found instead is more interesting.</p><h3>📌 Facts and Figures</h3><p>⭐️ Insertion <code>Answer in as few words as possible, exactly.</code> → <strong>accuracy 0.8754 → 0.9485 (+7.31pp)</strong>, sign test p=0.000000 (139 wins / 14 losses against raw glm).</p><p>⭐️ Reasoning tokens: <strong>1000 → 535 (−47%)</strong>. Average response length: 39.9 → <strong>8.2 words</strong>.</p><p>⭐️ Russian trigger is different: <code>Отвечай коротко и точно.</code> → +4.39pp, rtok −53%.</p><p>⭐️ Mind reading: <strong>ru/intent 0.873 → 1.000</strong>, following dirty instructions <strong>ru/if 0.698 → 0.911</strong>.</p><p>⭐️ Code didn't break: 24/24 pytest tasks, with reasoning on code <strong>6141 → 3030 tokens</strong> — half the tokens for the same perfect result.</p><p>⭐️ Effect holds at user temperatures: +5.9pp at 0.7, +6.8pp at vendor default.</p><h3>🤡 How the Main Hypothesis Died</h3><p>I started with my main theory: "for every step, think through the path forward, every case and vector." Initially, I assumed the neural network needed to think through every direction to understand the user. I wrote a dozen monstrous insertions: lookahead with exploring alternatives, simulating inputs and failures, adaptive-depth ("think deeper on complex ones"), combo with intent.</p><p>The result was so-so:</p><ul><li><p>All "think deeper" insertions — <strong>zero or negative boost</strong>. The best of them barely held +1.3pp in a ±4pp noise.</p></li><li><p>Control "think as long as possible": rtok +37%, accuracy <strong>-2.7pp</strong>. Classic from recent papers: extra reasoning steps without external feedback more often change the correct answer to an incorrect one.</p></li><li><p>Worst result: "think through all possible cases, then briefly" → <strong>-5.5pp, p=0.000000</strong>. The profound clause diluted brevity and killed the effect.</p></li></ul><p>The conclusion of phase 2 was harsh: <strong>at Max, the model already thinks enough</strong>. Digging into depth is a dead end.</p><h3>🫠 The Model Started Guessing User Intent (and it's Measurable)</h3><p>In real work, a user never writes a spec. They write "make it simpler," "well, make it look good," "make it thinner." And true intent guessing is <strong>choosing the single most probable interpretation and acting on it</strong>. What does the default glm without a prompt do? It hedges.</p><p>A real case from the logs. User: "I have a job interview tomorrow with a team lead for a Python role, I'm totally unprepared, help me 🙏". What do they most likely want – a run-through of questions, a cheat sheet, or a salary table? The default GLM without a prompt answers like this:</p><blockquote><p>Short answer: <strong>B, and C as material for it</strong>. The team lead isn't checking salaries or your peace of mind…</p></blockquote><p>The model <strong>knows</strong> the correct answer – and doesn't dare to state it. Instead of one intent, the user gets two with caveats. In agent work, it's the same disease: if you ask "what's the best way to do X?" – you get "there are three approaches, choose yourself," even though the user wanted a vector and a solution.</p><p>With the insertion, the answer to this same prompt is: <strong>"B"</strong>. One intent, stated directly. Logs show this systemically: where the default glm spreads the interpretation across options, the insertion forces it to first <strong>mentally</strong> choose the most probable user intent – because a short answer physically cannot contain all caveats. The choice happens in reasoning, not passed on to the user.</p><p>The same pattern applies to numerical solutions. User: "The French recipe calls for 200°C, my pan is +15°, how many Fahrenheit should I set?" GLM without prompt: "419°F – well, I'll round it to <strong>420°F</strong>, and if you have 25-degree increments, then 425…" – <strong>three solutions where the user needs one</strong>.</p><p>In the numerical domain, "guessed intent from an ambiguous message" in Russian improved from 0.96 to <strong>1.00</strong>. Modest – because even before the insertion, the model often guessed correctly. The difference is elsewhere: <strong>now it dares to state the guess out loud</strong>.</p><h3>🎯 Token Hunting: Why "Briefly" Beats "Concisely"</h3><p>Then came what it was all for – manual token iteration. 17+ formulations × 342 prompts × 3 samples, each against the same raw glm in a paired test:</p><ul><li><p>"Answer briefly" (0.9133) vs "Answer concisely" (0.8908) — <strong>"briefly" is stronger</strong>, the model ignores "concisely" more often.</p></li><li><p>"Отвечай коротко" (0.9094) vs "Кратко" (0.8840) — <strong>the verb-imperative is stronger</strong> than the single adverb.</p></li><li><p>Adding "exactly/точно" strengthens: "коротко и точно" 0.9288, "as few words as possible, exactly" <strong>0.9454</strong>.</p></li><li><p>"Answer in as few words as possible" compresses the answer to 10.8 words – and this turned out to be <strong>stronger</strong> than "briefly" (23.9 words).</p></li><li><p>Language triggers diverged: on EN prompts, the English phrase gave +3.5pp vs +1.6pp for the Russian one; on RU, both pulled their weight (+9–11pp). The RU insertion on EN prompts also burned tokens – the model mentally translated the instruction itself. So, <strong>the ideal triggers for the two languages are different</strong>, as expected.</p></li></ul><h3>🕯 Stress Test: Where the Firmware Breaks</h3><p>⭐️ <code>"Ответь одним словом."</code> → <strong>-4.9pp, p=0.0002</strong>: the if-domain collapses to 0.63, rtok <strong>spikes +12%</strong> – the model struggles, cramming the answer into one word, and starts making mistakes in formats that require 5–9 words.</p><p>The optimum lies precisely between "as few words as possible" and "in one word."</p><h3>🧠 The Model Became Smarter and More Accurate (Not Just Shorter)</h3><p>A skeptic might say: "Well, the answer length, obviously it will pass based on word count." I checked – both in logs and code:</p><ul><li><p><strong>No vector degraded</strong>, and smart ones improved: math 0.867 → 0.887, logic 0.979 → 1.000. This isn't "became dumber but more compact" – it became more accurate. By the way, this is likely not a margin of error. There were many runs, and all were stable.</p></li><li><p>Example with the oven. User: "The French recipe calls for 200°C, my dark pan is +15°, American oven in Fahrenheit – how many degrees to set?" Regular GLM: "419°F – round to <strong>420°F</strong>…" – the correct answer 419 is drowned in caveats and almost distorted. With the insertion: <strong>"419°F"</strong> – accurate, immediate, without self-confusion.</p></li><li><p>The computational chain in reasoning is preserved <strong>entirely</strong>. The same depth for half the tokens – the effective IQ <strong>per token</strong> has doubled.</p></li><li><p>Code: 24/24 pytest with reasoning 6141 → 3030 tokens. The model simply stopped retelling the solution around the code.</p></li></ul><h3>✏️ Take It (Two Triggers, Mixed Mode)</h3><p>EN dialogues – at the end of the system prompt:</p><blockquote><p>Answer in as few words as possible, exactly.</p></blockquote><p>RU dialogues:</p><blockquote><p>Отвечай коротко и точно.</p></blockquote><p>Choosing by user language (mixed) gives the best of both worlds: EN 0.96 / RU 0.90, a total of +5.3pp. And two warnings from the measurements: <strong>do not</strong> force "in one word" and <strong>do not</strong> combine with "think through all possible cases" – both formulations measurably harm performance.</p><h3>✔️ Conclusion</h3><p>This investigation showed that you can make the model use fewer tokens in reasoning and still be smarter and understand the user better. I was shocked myself, as I thought it would just fly past the neural network's attention and have no effect. But it turned out that testing even the seemingly silliest things can be useful. Good luck everyone, I recommend it.🤝</p><p><br/> 🧠 <a href="https://t.me/JustBash">Bash Channel</a> - <a href="https://t.me/JustBash">@JustBash</a></p></div>
+  </main>
+  <footer>
+    Translation generated with Gemini 2.5 Flash-Lite.
+    The original article remains the source of record.
+  </footer>
+</body>
+</html>

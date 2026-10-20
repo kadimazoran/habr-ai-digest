@@ -1,0 +1,206 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>GraphQL for an AI Agent: How We Turn GraphQL Operations into MCP Tools</title>
+  <meta name="description" content="Hello! This is Danil, a TypeScript developer on the Platform V DataSpace team at SberTech. DataSpace is a platform module for visual (low-code) business application development and data management. It provides a GraphQL API for working with databases. We&#x27;ve been developing the product for sever">
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.65;
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 32px 20px 64px;
+      color: #1f2328;
+    }
+    header {
+      border-bottom: 1px solid #d8dee4;
+      margin-bottom: 28px;
+      padding-bottom: 20px;
+    }
+    .source {
+      color: #57606a;
+      font-size: 0.95rem;
+    }
+    img, video, iframe {
+      max-width: 100%;
+      height: auto;
+    }
+    pre {
+      overflow-x: auto;
+      padding: 16px;
+      background: #f6f8fa;
+      border-radius: 6px;
+    }
+    code {
+      font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+    }
+    blockquote {
+      border-left: 4px solid #d0d7de;
+      margin-left: 0;
+      padding-left: 16px;
+      color: #57606a;
+    }
+    footer {
+      border-top: 1px solid #d8dee4;
+      margin-top: 40px;
+      padding-top: 20px;
+      color: #57606a;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>GraphQL for an AI Agent: How We Turn GraphQL Operations into MCP Tools</h1>
+    <p>Hello! This is Danil, a TypeScript developer on the Platform V DataSpace team at SberTech. DataSpace is a platform module for visual (low-code) business application development and data management. It provides a GraphQL API for working with databases. We&#x27;ve been developing the product for several years, but now, due to the rapid development of AI and MCP, a predictable task has emerged: connecting this API to AI agents via the Model Context Protocol (MCP). MCP is needed so that an AI client can discover tools, understand their input parameters, and call external systems through a standard protocol. At first glance, GraphQL is well-suited to serve as a source of MCP tools: the schema already describes types, input arguments, and the form of the result, but it doesn&#x27;t answer the main question: &#x27;what part of the API and with what level of freedom should be exposed to the agent?&#x27;. In DataSpace, the scenario turned out to be as follows: - there is a GraphQL API on top of the data model; - there is an AI agent that needs to perform application actions; - an MCP adapter is needed between them; - the backend team wants to maintain control over the contract, types, and security. The question turned out not to be whether GraphQL can be connected to MCP. It can. What&#x27;s more interesting is: what form should the MCP adapter for a GraphQL API take? In this article, I will discuss several variants of such adapters and our choice: generating MCP tools from pre-prepared GraphQL operations. Read more</p>
+    <p class="source">
+      Machine-translated from Habr.
+      <a href="https://habr.com/ru/companies/sberbank/articles/1096456/?utm_campaign=1096456&amp;utm_source=habrahabr&amp;utm_medium=rss">Read the original Russian article</a>.
+      Tue, 20 Oct 2026 11:58:01 GMT
+    </p>
+  </header>
+  <main>
+<div><figure><img loading="lazy" src="https://habrastorage.org/r/w1560/extt/79/79/b8/7979b8d97d319b23cb0953c2a3a6540b.png"/></figure><p>Hello! This is Danil, a TypeScript developer on the Platform V DataSpace team at SberTech.<br/>DataSpace is a platform module for visual (low-code) business application development and data management. It provides a GraphQL API for working with databases. We've been developing the product for several years, but now, due to the rapid development of AI and MCP, a predictable task has emerged: connecting this API to AI agents via the Model Context Protocol (MCP).</p><p>MCP is needed so that an AI client can discover tools, understand their input parameters, and call external systems through a standard protocol. At first glance, GraphQL is well-suited to serve as a source of MCP tools: the schema already describes types, input arguments, and the form of the result, but it doesn't answer the main question: 'what part of the API and with what level of freedom should be exposed to the agent?'.</p><p>In DataSpace, the scenario turned out to be as follows:</p><ul><li><p>there is a GraphQL API on top of the data model;</p></li><li><p>there is an AI agent that needs to perform application actions;</p></li><li><p>an MCP adapter is needed between them;</p></li><li><p>the backend team wants to maintain control over the contract, types, and security.</p></li></ul><p>The question turned out not to be whether GraphQL can be connected to MCP. It can. What's more interesting is: what form should the MCP adapter for a GraphQL API take?</p><p>In this article, I will discuss several variants of such adapters and our choice: generating MCP tools from pre-prepared GraphQL operations.</p><h2>What kinds of MCP adapters for GraphQL exist?</h2><p>It's possible to adapt GraphQL for MCP in several ways. The main difference is the level of freedom the agent receives.</p><h3>A Tool for Arbitrary GraphQL Queries</h3><p>Example implementation: Microsoft Fabric API.</p><p>The most flexible option is to create an MCP tool that accepts a GraphQL query and variables:</p><pre><code>execute_graphql( 
+  query: string, 
+  variables?: Record&lt;string, unknown&gt;
+)</code><div><a href="https://sourcecraft.dev/"><span></span></a></div></pre><p>The agent or MCP client forms the query itself, selects fields, and passes variables. Along with this flexibility, the model takes responsibility for the correctness of the GraphQL query: field selection, naming, rules for working with null, and variables. The selection set remains dynamic, the API surface is broad, and the backend team analyzes the executed queries.</p><p>This approach gives the agent maximum freedom and is well-suited for research, local development, prototyping, exploring an unfamiliar schema, or creating developer tools where it's important to quickly start working with an arbitrary GraphQL API. One universal tool is enough to get started, so a prototype can be assembled quickly.</p><h3>Tools from Schema and Root Fields</h3><p>Example implementation: <code>parob/graphql-mcp</code>.</p><p>In this variant, MCP tools are created from the root fields of the <code>Query</code> and <code>Mutation</code> types. The agent receives a ready-made set of tools with names and arguments close to the root fields.</p><p>This format is simpler than the tool for arbitrary queries and allows quickly exposing a significant part of the API via MCP. The GraphQL schema already contains enough information for automatic tool construction, making the approach convenient in the early stages of development. However, the set of tools follows the GraphQL schema. Often, it is broader and more detailed than the application contract we want to provide to the AI agent.</p><h3>Tools from Fixed GraphQL Operations</h3><p>Example implementations: Apollo MCP Server, WunderGraph Cosmo MCP Gateway, GraphQL Hive MCP plugin.</p><p>Here, an MCP tool corresponds to a pre-written GraphQL operation. The agent selects the tool and fills in the variables. The GraphQL operation text is defined in advance by the developer.</p><p>Structurally, a GraphQL operation is close to an MCP tool: it has a name, input variables, a selection set, and a result form. The developer can read it, review it, and check it against the schema.</p><p>Operations can be stored in a repository, discussed in pull requests, checked against the GraphQL schema, and used as an allowlist for the API surface available to the agent. This gives us a predictable selection set, clear auditing, and full control by the backend team over the API contract.</p><p>The set of operations becomes a separate artifact that the team can maintain along with the code. Therefore, the approach is well-suited for production scenarios, enterprise APIs, and sensitive data. It also fits well with dynamic GraphQL gateways: Apollo, WunderGraph, and Hive. They collect available operations at startup and immediately provide an MCP API for them.</p><h3>Code Generation from GraphQL Operations</h3><p>Example implementations: our generator, labd/graphql-codegen-mcp-tools-poc.</p><p>This is an evolution of the operation-derived approach. GraphQL operations remain the source of truth. Based on them, TypeScript types, Zod schemas, MCP tool declarations, and helper code for tool registration are generated.</p><p>Lab Digital is developing a similar idea in graphql-codegen-mcp-tools: GraphQL operations are marked with MCP directives, pass through GraphQL Code Generator, and are transformed into tool descriptions.</p><p>Code generation is particularly useful when the MCP server becomes part of the product. In the generated code, you can see which tools have appeared or disappeared, which fields have become mandatory, how enum values have changed, how the result form has changed, and what tool descriptions the model will see.</p><p>All these changes can be reviewed locally and in CI before the agent calls the tool. However, the approach also has associated costs: the project gains an additional step – code generation, and you'll need to maintain the generator configuration along with the rest of the code.</p><p>Code generation provides type safety, reduces manual work, adds data validation via Zod, and allows for diff generation.</p><p>We chose this particular option – fixed GraphQL operations and code generation in TypeScript/Zod – because we needed an adapter where GraphQL developers continue to describe and validate the contract using familiar GraphQL operations, and the agent receives a limited set of MCP tools instead of the entire GraphQL API.</p><h2>Overall Workflow</h2><figure><img alt="Generator and Server Diagram" loading="lazy" src="https://habrastorage.org/r/w1560/extt/8f/01/19/8f01197a2afe2119b3d5e2a1f0f6ac42.png" title="Generator and Server Diagram"/><div><figcaption>Generator and Server Diagram</figcaption></div></figure><p>The generator takes the following as input:</p><ul><li><p>GraphQL schema;</p></li><li><p>a set of pre-written operations;</p></li><li><p>configuration;</p></li><li><p>a list of plugins;</p></li><li><p>tool descriptions and annotations, custom scalar settings;</p></li><li><p>TypeScript and Zod generation settings.</p></li></ul><p>The code generator invokes a set of plugins and creates <code>dataspace-graphql.ts</code>: TypeScript types, GraphQL documents, Zod schemas for input and output data, and MCP tool descriptions. The template MCP server imports this file, registers the tools in <code>McpServer</code>, and uses the default handler, which calls the appropriate GraphQL operation in DataSpace and returns <code>structuredContent</code>.</p><p>During startup, the server works with the generated TypeScript module with a known set of tools. Work with the schema, operations, and schema sources happens before the MCP server starts.</p><p>Why all in TypeScript? We chose it as a simple and convenient language for DataSpace consumers and for our low-code platform as a whole, of which DataSpace is a part, along with other solutions for automation, process orchestration, data model design, and report generation. The generated TS module is placed alongside the template MCP server code, and custom tools can be added there as well.</p><p>Let's see how this looks with a simple operation: from a single GraphQL query, we get TypeScript types, Zod schemas, and an MCP tool.</p><h2>Demo: Searching Clinics by City</h2><p>The DataSpace demo model describes a medical domain: clinics, doctors, patients, schedules, appointments, and addresses. For this example, we'll limit ourselves to searching for clinics by city.</p><p>The GraphQL operation itself looks like this:</p><pre><code>query searchClinicByCity($cityName: String!) { 
+  searchClinic( 
+    cond: """ 
+    it.address.city.$upper $like ${cityName}.$upper + '%' 
+    """ 
+  ) @strExpr(string: $cityName) { 
+    elems { 
+      id 
+      name 
+      address { 
+        city 
+        street 
+      } 
+    } 
+  } 
+}</code><div><a href="https://sourcecraft.dev/"><span></span></a></div></pre><p>The operation developer pre-defines the DataSpace <code>cond</code>, the <code>@strExpr</code> directive, and the set of clinic fields. The agent passes one parameter – <code>cityName</code>.</p><p>Example response from the GraphQL API:</p><pre><code>{ 
+  "data": { 
+    "searchClinic": { 
+      "elems": [ 
+        { 
+          "id": "7670926301867474949", 
+          "name": "Best Clinic", 
+          "address": { 
+            "city": "Moscow", 
+            "street": "Novocheremushkinskaya St" 
+          } 
+        }, 
+        { 
+          "id": "7670926301867474951", 
+          "name": "Vita Med", 
+          "address": { 
+            "city": "Moscow", 
+            "street": "Tsuryupy St" 
+          } 
+        } 
+      ] 
+    } 
+  } 
+}</code><div><a href="https://sourcecraft.dev/"><span></span></a></div></pre><p>For each GraphQL operation, the code generator creates Zod schemas for variables and responses:</p><pre><code>export const SearchClinicByCityQueryVariablesSchema = z.object({ 
+  cityName: z.string(), 
+}).strict(); 
+export const SearchClinicByCityQuerySchema = z.object({ 
+  searchClinic: z.object({ 
+    elems: z.array(z.object({ 
+      id: z.string(), 
+      name: z.string().nullable(), 
+      address: z.object({ 
+        city: z.string().nullable(), 
+        street: z.string().nullable() 
+      }) 
+    })) 
+  }) 
+});</code><div><a href="https://sourcecraft.dev/"><span></span></a></div></pre><p>Next, the MCP tool description is generated:</p><pre><code>export const SearchClinicByCityToolDefinition = { 
+  name: 'SearchClinicByCity', 
+  document: SearchClinicByCityDocument, 
+  inputSchemaObject: SearchClinicByCityQueryVariablesSchema, 
+  outputSchemaObject: SearchClinicByCityQuerySchema, 
+  config: { 
+    title: 'SearchClinicByCity', 
+    description: 'Search clinics by city name', 
+    annotations: { 
+      title: 'SearchClinicByCity', 
+      readOnlyHint: true, 
+      destructiveHint: false, 
+    }, 
+    inputSchema: SearchClinicByCityQueryVariablesSchema.shape, 
+    outputSchema: SearchClinicByCityQuerySchema.shape, 
+  } 
+} satisfies ToolDefinition 
+ 
+export const allMcpTools: ToolDefinition[] = [ 
+  SearchClinicByCityToolDefinition, 
+  // and other tools 
+];</code><div><a href="https://sourcecraft.dev/"><span></span></a></div></pre><p>The server imports the generated module and registers the tools in <code>McpServer</code>:</p><pre><code>const mcpServer = new McpServer(); 
+ 
+for (const tool of allMcpTools) { 
+  mcpServer.registerTool(tool.name, tool.config, defaultMcpHandler(tool)); 
+}</code><div><a href="https://sourcecraft.dev/"><span></span></a></div></pre><p>After startup, we open <code>@modelcontextprotocol/inspector</code> and see the GraphQL operation as a regular MCP tool.</p><figure><img alt="Tool display in inspector" loading="lazy" src="https://habrastorage.org/r/w1560/extt/53/ef/57/53ef570f8f6bb5a38ab33e345f6a7d7b.png" title="Tool display in inspector"/><div><figcaption>Tool display in inspector</figcaption></div></figure><p>Calling <code>SearchClinicByCity</code> with the parameter <code>cityName = "Moscow"</code> returns a structured response. A text fallback is necessary for MCP clients that do not support <code>structuredContent</code>. The inspector uses <code>outputSchema</code> to validate the MCP server's response.</p><blockquote><p>Not many agents these days pass outputSchema into the LLM context.</p></blockquote><figure><img alt="Displaying the result of calling the tool in the inspector" loading="lazy" src="https://habrastorage.org/r/w1560/extt/fb/13/15/fb131531776fed870f7b85da7aa513b1.png" title="Displaying the result of calling the tool in the inspector"/><div><figcaption>Displaying the result of calling the tool in the inspector</figcaption></div></figure><p>From this simple example, the main point is clear: the agent doesn't write GraphQL. It selects a tool and fills in variables, while the selection set, DataSpace condition, types, and result form are already fixed in the operation.</p><h2>Where mistakes are easy to make: null, omitted, and default</h2><p>We decided to use the MCP contract (JSON Schema) as an early check of the request form, rather than as a complete copy of GraphQL input coercion. We allow conscious simplification of certain GraphQL flexibilities. The GraphQL API remains the final source of truth, and JSON Schema and Zod schemas reflect it for the agents.</p><p>Let's take a small example:</p><pre><code>input ClinicSearchInput { 
+  cityName: String! 
+  district: String 
+  limit: Int! = 10 
+}</code><div><a href="https://sourcecraft.dev/"><span></span></a></div></pre><p>Here, it's easy to mix two different axes. The first axis is what was actually sent in the request:</p><div><div><table><tbody><tr><td><p><strong>Sent</strong></p></td><td><p><strong>Meaning</strong></p></td></tr><tr><td><p>Value </p></td><td><p>Field sent with a specific value </p></td></tr><tr><td><p><code>null</code></p></td><td><p>Field sent explicitly as <code>null</code></p></td></tr><tr><td><p><code>omitted</code></p></td><td><p>Field not sent at all </p></td></tr></tbody></table></div></div><p>The second axis is what is declared in the GraphQL schema:</p><div><div><table><tbody><tr><td><p><strong>In schema</strong></p></td><td><p><strong>Meaning</strong></p></td></tr><tr><td><p><code>nullable</code></p></td><td><p>Field can accept <code>null</code></p></td></tr><tr><td><p><code>non-null</code></p></td><td><p>Field cannot accept <code>null</code></p></td></tr><tr><td><p><code>default value</code></p></td><td><p>If the field is not sent, the GraphQL API will substitute the value during the <code>input coercion</code> stage</p></td></tr></tbody></table></div></div><p>There's a slight nuance that <code>null</code> and <code>omitted</code> are different things. The default value applies only to <code>omitted</code>, but not to an explicitly sent <code>null</code>. This behavior is preserved in the MCP generator.</p><p>For the generator, this can be summarized in a practical table:</p><div><div><table><tbody><tr><td><p><strong>Field</strong></p></td><td><p><strong>Can be omitted</strong></p></td><td><p><strong>Can be null</strong></p></td><td><p><strong>Zod</strong></p></td></tr><tr><td><p><code>cityName: String!</code></p></td><td><p>No</p></td><td><p>No</p></td><td><p><code>z.string()</code></p></td></tr><tr><td><p><code>district: String</code></p></td><td><p>Yes</p></td><td><p>Yes</p></td><td><p><code>z.string().nullish()</code></p></td></tr><tr><td><p><code>limit: Int! = 10</code></p></td><td><p>Yes</p></td><td><p>No</p></td><td><p><code>z.number().optional()</code></p></td></tr></tbody></table></div></div><p>This leads to the following rules:</p><ul><li><p><code>required</code> in JSON Schema is only set for <code>Non-Null</code> fields without a default value;</p></li><li><p>GraphQL's <code>nullable</code> type is reflected as the ability to pass <code>null</code>;</p></li><li><p><code>omitted</code> does not need to be replaced with <code>null</code>;</p></li><li><p>we decided not to transfer GraphQL's default values to Zod via <code>.default(...)</code>, so that the MCP layer does not become a second implementation of GraphQL <code>input coercion</code>.</p></li></ul><p>A practical rule for the agent: do not send <code>null</code> instead of an unknown or missing value – use it only if there is an explicit need to set the value to <code>null</code>.</p><p>For lists, the permissibility of <code>null</code> must be reflected at two levels: for the list itself and for its elements.</p><div><div><table><tbody><tr><td><p><strong>GraphQL Type</strong></p></td><td><p><strong>Zod</strong></p></td></tr><tr><td><p><code>[String]</code></p></td><td><p><code>z.array(z.string().nullable()).nullish()</code></p></td></tr><tr><td><p><code>[String]!</code></p></td><td><p><code>z.array(z.string().nullable())</code></p></td></tr><tr><td><p><code>[String!]</code></p></td><td><p><code>z.array(z.string()).nullish()</code></p></td></tr><tr><td><p><code>[String!]!</code></p></td><td><p><code>z.array(z.string())</code></p></td></tr></tbody></table></div></div><p>In GraphQL, for the type <code>[[Int]]</code>, you can pass the value <code>1</code>, and <code>input coercion</code> will convert it to <code>[[1]]</code>. For simplicity, we decided to abandon this semantics in JSON Schema. We specify an explicit list with full nesting.</p><p>GraphQL input objects do not accept fields that are not in the type, and the MCP layer can catch this before calling the GraphQL API. In JSON Schema, <code>additionalProperties: false</code> is set; for Zod, this is <code>.strict()</code>.</p><p>GraphQL enums map well to JSON string enums and <code>z.enum(...)</code>:</p><pre><code>enum SortDirection { 
+  ASC 
+  DESC 
+} 
+const SortDirectionSchema = z.enum(['ASC', 'DESC']);</code><div><a href="https://sourcecraft.dev/"><span></span></a></div></pre><p>Basic scalars map as expected. Custom scalars are more complex. Their business semantics cannot be reliably inferred from the name. <code>DateTime</code>, <code>Decimal</code>, <code>JSON</code>, <code>UUID</code>, and internal domain scalars require explicit configuration or a conservative fallback to <code>number</code>, <code>string</code>, or <code>boolean</code>.</p><p>It's also best to be cautious with recursive GraphQL input objects. JSON Schema can describe recursion through <code>$defs</code> and <code>$ref</code>, but it's better to check support in the specific MCP client and validator.</p><p>In addition to the schema and operations, it's useful to provide the generator with descriptions that are understandable to the agent:</p><ul><li><p>for the operation and tool, so the agent can better choose the right tool;</p></li><li><p>for input fields, especially if the field name doesn't reveal the business meaning;</p></li><li><p>for enums and their values;</p></li><li><p>for tool annotations;</p></li></ul><p>The less the agent has to infer at the API contract level, the higher the chance it will be useful at the business task level.</p><h2>When a Tool Should Be Higher Level Than a GraphQL Operation</h2><p>Not every good MCP tool should be a direct mapping of a single GraphQL operation.</p><p>Suppose there's a task: find available slots for a doctor. In the data model, the schedule might be stored as busy intervals. For a human, it's clear: take the work schedule, subtract the busy intervals, filter out past times, and return the free windows. </p><p>But for an agent, this application logic might be too much. It could make mistakes with interval boundaries, mishandle time zones, return a slot over an existing booking, or confuse appointment durations. In such cases, it's more useful to create your own TypeScript handler on top of a GraphQL operation. GraphQL still handles data retrieval, while the TypeScript layer transforms it into a result more convenient for the agent.</p><pre><code>const doctorFreeSlotResponseSchema = z.object({ 
+  elems: z.array(z.object({ 
+    doctorScheduleId: z.string(), 
+    beginDate: z.string(), 
+    endDate: z.string() 
+  })) 
+}) 
+server.registerTool( 
+  'SearchDoctorFreeSlotsInPeriod', 
+  { 
+    title: 'SearchDoctorFreeSlotsInPeriod', 
+    description: 'Returns hourly free slots for a doctor schedule in the requested period', 
+    inputSchema: SearchDoctorScheduleByDoctorIdAndPeriodQueryVariablesSchema.shape, 
+    outputSchema: doctorFreeSlotResponseSchema.shape, 
+    annotations: {destructiveHint: false, readOnlyHint: true} 
+  }, 
+  async (args, extra) =&gt; { 
+    const response = await execute(SearchDoctorScheduleByDoctorIdAndPeriodDocument, args) 
+    const structuredContent: z.infer&lt;typeof doctorFreeSlotResponseSchema&gt; = { 
+      elems: findDoctorFreeSlots(response.searchDoctorSchedule.elems) 
+    } 
+    return { 
+      content: [{type: 'text', text: JSON.stringify(structuredContent)}], 
+      structuredContent, 
+    } 
+  } 
+)</code><div><a href="https://sourcecraft.dev/"><span></span></a></div></pre><p>In this example, the input schema from the generated GraphQL operation <code>SearchDoctorScheduleByDoctorIdAndPeriod</code> is reused. However, the result is different: instead of raw schedules and busy intervals, a ready-made array of free slots is returned. The <code>findDoctorFreeSlots</code> function encapsulates the application logic: it takes the doctor's schedule, considers already busy intervals, and collects free slots. For the agent, this logic becomes part of the tool's contract, not a task to be figured out each time.</p><p>The point is to give the agent a tool at the task level, not at the API CRUD level. The generator, in this case, doesn't close off the system. It provides a base layer: types, operations, Zod schemas, handlers, and registration, and alongside it, you can manually write application tools, reusing the same GraphQL client, authorization, context, and generated types.</p><h2>Security</h2><p>The fixed operations approach helps reduce the API surface that the agent receives. If an operation doesn't have a certain field, the agent cannot simply add it to the query. The set of available tools and GraphQL operations is known in advance. MCP annotations like <code>readOnlyHint</code> and <code>destructiveHint</code> help the agent and client choose tools more carefully, but actual permission checks are performed on the DataSpace side:</p><ul><li><p>RBAC, ABAC, and RLS on the DataSpace side;</p></li><li><p>JWT of a service account or a specific user;</p></li><li><p>additional security predicates at the operation level;</p></li><li><p>limits and checks that do not depend on the model's behavior.</p></li></ul><p>The MCP server can call the DataSpace GraphQL API with the JWT of the original user or with the JWT of a service account. The choice depends on the access model. For example, an RLS rule can restrict search results to the current user's data. In this example, a regular user sees only records with their email, while a user with the <code>manager</code> role sees all records:</p><pre><code>{ 
+  "name": "searchPerson", 
+  "body": "...", 
+  "pathConditions": [ 
+    { 
+      "path": "searchPerson", 
+      "cond": "it.email == ${jwt:email} || 'manager' $in ${[]:jwt:realm_access.roles}", 
+      "description": "Select all records for managers; otherwise select the current user's record" 
+    } 
+  ] 
+}</code><div><a href="https://sourcecraft.dev/"><span></span></a></div></pre><p>An RBAC rule solves a different problem: it doesn't filter the result but prohibits the operation itself if the user doesn't have the required role. For example, creating a clinic can only be allowed for an administrator:</p><pre><code>{ 
+  "name": "createClinic", 
+  "body": "...", 
+  "checkSelects": [ 
+    { 
+      "conditionValue": "'administrator' $in ${jwt:roles}", 
+      "typeName": null, 
+      "description": "Only administrator can create clinic" 
+    } 
+  ] 
+}</code><div><a href="https://sourcecraft.dev/"><span></span></a></div></pre><p>In DataSpace, the security model is initially built around fixed operations. Therefore, MCP tools based on operations do not create a separate layer of restrictions but transfer the existing access boundaries to MCP: the agent works only with a predefined set of operations, the composition of which can be explicitly verified.</p><h2>What We Achieved</h2><p>There are several ways to connect GraphQL and MCP:</p><ul><li><p>An MCP adapter for arbitrary queries is good for API exploration and rapid development scenarios. </p></li><li><p>MCP tools derived from the schema and root fields help quickly expose the API via MCP. </p></li><li><p>For a manageable API surface, we chose tools based on operations. Code generation makes this approach more controllable. The agent works with a pre-prepared set of operations: it selects a tool and fills in variables. GraphQL developers, in turn, retain control over the operation body, selection set, and result form.</p></li></ul><p>The approach is not tied only to DataSpace; it can be adapted for other GraphQL APIs. It even seems possible to adapt the generator for other languages. For example, generating Pydantic models for Python. And in the near future, we plan to develop more flexible tool configuration. Ultimately, GraphQL operations become a common contract: developers manage the composition and permissions of GraphQL operations, and the agent works with a predictable and explicitly defined set of MCP tools.</p><h2>Useful Links</h2><ul><li><p><a href="https://rutube.ru/video/9ffa7e5d43f06a4c6b1d43e2c17c0b64/">Link to webinar on Platform V DataSpace</a></p></li><li><p><a href="https://platformv.sbertech.ru/data-space-course/">DataSpace CE training course</a></p></li><li><p><a href="https://gitverse.ru/sbertech/dataspace-ce">DataSpace CE on GitVerse</a></p></li><li><p><a href="https://modelcontextprotocol.io/">https://modelcontextprotocol.io/</a></p></li><li><p><a href="https://www.typescriptlang.org/docs/">https://www.typescriptlang.org/docs/</a></p></li><li><p><a href="https://graphql.org/">https://graphql.org/</a></p></li><li><p><a href="https://www.howtographql.com/">https://www.howtographql.com/</a></p></li><li><p><a href="https://the-guild.dev/graphql/codegen">https://the-guild.dev/graphql/codegen</a></p></li></ul></div>
+  </main>
+  <footer>
+    Translation generated with Gemini 2.5 Flash-Lite.
+    The original article remains the source of record.
+  </footer>
+</body>
+</html>

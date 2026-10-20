@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>AI Agent for a Closed Loop: VS Code Extension for Enterprise LLM</title>
+  <meta name="description" content="In my previous article, I wrote about GitBor, a Git client used to verify the actual output of an AI agent. This article is about the agent itself. I developed them in parallel: one tool writes code, the second shows what was produced. Our enterprise model is good, but its context is around 100,000 ">
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.65;
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 32px 20px 64px;
+      color: #1f2328;
+    }
+    header {
+      border-bottom: 1px solid #d8dee4;
+      margin-bottom: 28px;
+      padding-bottom: 20px;
+    }
+    .source {
+      color: #57606a;
+      font-size: 0.95rem;
+    }
+    img, video, iframe {
+      max-width: 100%;
+      height: auto;
+    }
+    pre {
+      overflow-x: auto;
+      padding: 16px;
+      background: #f6f8fa;
+      border-radius: 6px;
+    }
+    code {
+      font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+    }
+    blockquote {
+      border-left: 4px solid #d0d7de;
+      margin-left: 0;
+      padding-left: 16px;
+      color: #57606a;
+    }
+    footer {
+      border-top: 1px solid #d8dee4;
+      margin-top: 40px;
+      padding-top: 20px;
+      color: #57606a;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>AI Agent for a Closed Loop: VS Code Extension for Enterprise LLM</h1>
+    <p>In my previous article, I wrote about GitBor, a Git client used to verify the actual output of an AI agent. This article is about the agent itself. I developed them in parallel: one tool writes code, the second shows what was produced. Our enterprise model is good, but its context is around 100,000 tokens, and popular agents consume it thoughtlessly. I&#x27;ll explain how I adapted the agent for a closed loop: context saving, multiple tasks in tabs, offline voice input—and why a VS Code extension was approved where an AI program was not. Read on.</p>
+    <p class="source">
+      Machine-translated from Habr.
+      <a href="https://habr.com/ru/articles/1096732/?utm_campaign=1096732&amp;utm_source=habrahabr&amp;utm_medium=rss">Read the original Russian article</a>.
+      Tue, 20 Oct 2026 11:53:33 GMT
+    </p>
+  </header>
+  <main>
+<div><p>In the <a href="https://habr.com/ru/articles/1048796/">previous article</a>, I wrote about <a href="https://gitbor.ru/">GitBor</a>, a Git client used to verify the actual output of an AI agent. This article is about the agent itself. I developed them in parallel. One tool writes code, the second shows what was produced.</p><h4>Good Model, Short Context</h4><p>Closed loop, energy sector, live cybersecurity. Copilot and Cursor are not an option for us because the code goes to external servers. However, we have our own internal gateway with Qwen.</p><p>The model is good. A recent mid-sized Qwen handles short tasks excellently. The problem is the context, which for us is about 100,000 tokens. The agent reads five files, modifies two, checks test output, and there's no space left. The model forgets the beginning of the task and starts looping.</p><p>Popular agents are designed for cloud models with vast contexts and consume them as they please. I reviewed several open-source options: Cline, Kilo Code, Continue. I took a little from each, more from some, less from others, and started adapting them for my needs. This is how Skycode came to be.</p><p>I initially started with a fork of VS Code itself, like Cursor. For one person, this proved to be unmanageable. Every Microsoft update had to be merged manually, build fixed, installer signing issues resolved. Eventually, I switched to a regular extension, which turned out to be even better for corporate use. I'll explain why below.</p><h4>The Main Goal: Conserve Context</h4><p>This is where the bulk of the work went. The goal is for the agent to read what's necessary and complete the task within 100,000 tokens.</p><p><strong>Read in Chunks.</strong> A file can be read line by line, not in its entirety. There's a separate tool, <code>read_symbol</code>, which extracts a single method or class from a file. Models usually need a method, not a two-thousand-line file. If the model reads a file for the second time without changes, it receives a short confirmation like "file is the same," without the full text.</p><p><strong>Don't Repeat What the Model Has Already Seen.</strong> After a modification, it receives the chunk around the change; it doesn't need the entire file again. Long terminal output is truncated, showing only the beginning and end. Environment descriptions are sent only if something has changed.</p><p><strong>Compress History.</strong> When the context limit is approached, the session is compressed into a brief summary: what has been done and what remains. Here, I encountered a surprise. In the part inherited from Cline, for non-top-tier models, half of the history was silently dropped instead of being compressed. The model simply forgot what it was doing. Fresh Cline also has significant changes in compression, but I focused more on preventing the context from filling up in the first place.</p><p><strong>See Where It Went.</strong> The interface has a ring that shows how much space is used and for what: files, command output, history. If one log consumes half the space, it's immediately noticeable.</p><figure><img alt="context ring" loading="lazy" src="https://habrastorage.org/r/w1560/extt/e4/18/3e/e4183e37eafe6283e6738ee267ef28bb.png" title="context ring"/><figcaption><strong>context ring</strong></figcaption></figure><p>Along the way, I fixed several issues unrelated to the model's core intelligence but which caused problems. The model sometimes repeated a phrase hundreds of times. The culprit turned out to be a temperature of 0; with the recommended settings for Qwen, loops were almost eliminated. The model also liked to write "I'll start by reading the files." and then end the response without doing anything. Now, the agent prompts it to continue in such cases. And if a response is cut off due to the length limit in the middle of writing a file, the truncated file is no longer saved. The model receives a hint to break the work into parts.</p><p>I've used very few hard restrictions in the prompt. It's easier to provide a hint at the right moment to support a model's weak spot.</p><h4>Multiple Tasks in Tabs</h4><p>This is what I use the most myself. Tasks open in tabs, like files in an editor. In one, the agent analyzes a module; in another, it writes tests. They work in parallel.</p><p>While the agent is busy, you can continue typing; messages will queue up. If urgent, a second Enter press interrupts the agent and sends the message immediately.</p><p>The short context actually helps here: the model handles a couple of small tasks in different tabs better than one huge one. The agent can also draw relationship diagrams and tables directly in the chat, which can then be copied to Word or Excel. This is very helpful with existing legacy systems.</p><figure><img alt="tabs, diagram in response, queue" loading="lazy" src="https://habrastorage.org/r/w1560/extt/77/14/c1/7714c1ed8fe233d4351e66630da3a951.png" title="tabs, diagram in response, queue"/><figcaption><strong>tabs, diagram in response, queue</strong></figcaption></figure><h4>Voice Input Without Internet</h4><p>Voice typing, where text appears as you speak, is available in many places. But almost everywhere, the audio is sent to a server, which is not allowed in a closed loop.</p><p>Initially, I used Whisper, but its small Russian versions have mediocre recognition. I switched to GigaAM v3 from Sber. It recognizes 17 seconds of speech in about a second on a standard processor, complete with punctuation, and the text appears in the input field as you speak. The model is downloaded once; no internet is needed afterward.</p><figure><img alt="dictation" loading="lazy" src="https://habrastorage.org/extt/2a/a3/c2/2aa3c2d2a00e9f62e7765b8d01d8eb7e.gif" title="dictation"/><figcaption><strong>dictation</strong></figcaption></figure><h4>Terminal or Editor</h4><p>I showed Skycode to colleagues. One said: cool, but I use OpenCode or Claude Code in the terminal. This is when I realized that developers with agents fall into roughly two camps. Some prefer the console, and good tools already exist for them. I'm in the latter group; I like visuals and control. I want to see the changes directly in the file and revert them with a single click if necessary. Skycode is for people like that.</p><p>In a closed loop, the difference between a standalone program and an extension proved decisive. GitBor is installed as a program, and the AI version was not approved for our loop, so I had to create a non-AI build. It will be the same with console agents; they are also separate programs. Skycode, however, is a VS Code extension. In our company, like many others, everyone has VS Code installed, and extensions are installed from the Marketplace without separate approval. If these are also restricted, it's easier to negotiate with information security: the extension only communicates with the internal gateway, there's no telemetry, and the code is open.</p><h4>Honest About What's Not Right</h4><ul><li><p>I'm developing it alone, so I haven't had time to test everything thoroughly.</p></li><li><p>I primarily tested on Windows. I barely ran it on macOS and Linux.</p></li><li><p>The context is still short. All these tricks extend it, but it's better to break down large tasks and review the diff visually.</p></li><li><p>There's intentionally no telemetry, so I only learn about user issues from them directly.</p></li></ul><h4>Why This Article</h4><p>Skycode is free, and the code is open-source. I believe that in the corporate environment, the coming years will be dominated by internally hosted models rather than top-tier cloud ones. The key factor will no longer be which model is smarter, but how the surrounding tool conserves its context.</p><p>If you are also working behind a gateway with Qwen, GigaChat, or a local model, please share in the comments what breaks for you. The most useful improvements to Skycode have come from such shared experiences.</p><p>You can find it in VS Code by searching for "Skycode AI".</p><ul><li><p>Project page: <a href="https://ruslansinkevich.ru/skycode/">https://ruslansinkevich.ru/skycode/</a></p></li><li><p>Sources: <a href="https://github.com/RuslanSinkevich/skycode">https://github.com/RuslanSinkevich/skycode</a></p></li></ul></div>
+  </main>
+  <footer>
+    Translation generated with Gemini 2.5 Flash-Lite.
+    The original article remains the source of record.
+  </footer>
+</body>
+</html>

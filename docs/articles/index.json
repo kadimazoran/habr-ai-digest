@@ -3143,6 +3143,70 @@
     "summary": "I have two Claude accounts. The first is corporate. The second is personal, I pay for it myself and use it in my projects. Both run on the same machine, and it quickly became clear that they should be kept separate. There are several reasons. Work code should go through the work account because the company has its own rules for this. Conversely, I don't want to run my own projects at the employer's expense and leave them in the corporate history. You can switch manually via /logout and /login, but \"is this life?\". I wanted the account to be selected automatically, depending on which project I opened. It turned out to be very easy to do. Read more",
     "title": "Two Claude Code accounts on one machine"
   },
+  "https://habr.com/ru/articles/1096486/?utm_campaign=1096486&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Tue, 20 Oct 2026 09:01:02 GMT",
+    "slug": "1096486",
+    "source_url": "https://habr.com/ru/articles/1096486/?utm_campaign=1096486&utm_source=habrahabr&utm_medium=rss",
+    "summary": "You've implemented an AI agent into your work. It displays information about invoices, generates summaries, processes incoming messages, and does much more. But what level of automation are you at? And what's next? In this article, we'll explore what \"AI-ization\" is, how to integrate an AI agent into a workflow, and why the next step isn't necessarily a smarter agent, but a move towards an AI-Native approach to process management. I identify five levels of AI-ization: from AI as a personal assistant to a system where processes are initially designed around AI capabilities and software automation. This is my practical model, developed for myself and my clients to determine the necessary level of automation and choose the next step. It doesn't claim to be a universal maturity standard, but it helps understand the current position and potential next steps. Read more",
+    "title": "How to Implement AI in Business: 5 Levels of Process \"AI-ization\" and the AI-Native Approach"
+  },
+  "https://habr.com/ru/articles/1096618/?utm_campaign=1096618&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Tue, 20 Oct 2026 08:42:00 GMT",
+    "slug": "1096618",
+    "source_url": "https://habr.com/ru/articles/1096618/?utm_campaign=1096618&utm_source=habrahabr&utm_medium=rss",
+    "summary": "Technological singularity is usually discussed as a point after which artificial intelligence will discover new laws, create technologies, and improve its own models at such a speed that humans will be left to use the results of its work. Today, most of the devices around us seem almost magical to those unfamiliar with their workings. But within this \"magic\" are principles, research, calculations, and engineering solutions understandable to humans. At the same time, no single person holds all knowledge in their head. It exists as a common heritage of many scientists and specialists, which is transmitted, verified, and developed. Science, long before the advent of AI, became a collective way of understanding the world. What if the main result of AI development also enters this common pool of knowledge? Imagine that artificial intelligence helps discover a mathematical theory that is understandable to humans but also profound. One that makes previously separate areas of mathematics visible as parts of a single structure. Prepared specialists will be able to master its principles and apply them independently. And if the new theory simultaneously provides a significant advantage in already known calculations, the distribution of influence among people in society will change first and foremost. Read the article",
+    "title": "The Gray Wall of Singularity"
+  },
+  "https://habr.com/ru/articles/1096634/?utm_campaign=1096634&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Tue, 20 Oct 2026 09:06:41 GMT",
+    "slug": "1096634",
+    "source_url": "https://habr.com/ru/articles/1096634/?utm_campaign=1096634&utm_source=habrahabr&utm_medium=rss",
+    "summary": "I'll start with a personal anecdote. My grandmother, now a very elderly woman, worked as a computer operator at the computing center (a data center for zoomers) of the Gorky Railway. That is, she was an educated person. This did not stop her from telling me, a five-year-old, that in the near future the state would chip us all, and then it would be the end for all of us. Later, in my youth, for fun, I replayed this thought experiment in my head and came to roughly the same conclusion: well, yes, it's convenient for the state machine, the citizen's ID number is not in a paper booklet, but is immediately \"attached\" to the citizen along with an online wallet, downloaded movies, and social media authorization. But they can't force everyone to get such a chip, can they? A very large circle of dissatisfied people can be found. Well, as a last resort, with total mobilization and a state law, you can always go into hiding in the jungles of South America again. Any coercion leads to leakage. Now it seems to me, my grandmother was afraid of the wrong thing. It's not scary that everyone will be chipped. It's scary if not everyone is chipped. For example, me: I have a corporate subscription to Claude for $200 to solve work tasks, a home subscription for $200 to solve home tasks, and a free ChatGPT for quick voice translations during live communication (at the time of writing, Claude's mobile app was not very good at speech recognition). I have delegated a fairly large part of my routine and work tasks to the models, they cope well (sometimes!), and overall I am satisfied. Plus, I'm the kind of person who likes that I can ask a silly question about anything at any moment and get an answer immediately. I'm a nerd. Read more",
+    "title": "Rented Mind: Why No One Will Force a Chip on Us, Yet We'll Still Get One"
+  },
+  "https://habr.com/ru/articles/1096732/?utm_campaign=1096732&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Tue, 20 Oct 2026 11:53:33 GMT",
+    "slug": "1096732",
+    "source_url": "https://habr.com/ru/articles/1096732/?utm_campaign=1096732&utm_source=habrahabr&utm_medium=rss",
+    "summary": "In my previous article, I wrote about GitBor, a Git client used to verify the actual output of an AI agent. This article is about the agent itself. I developed them in parallel: one tool writes code, the second shows what was produced. Our enterprise model is good, but its context is around 100,000 tokens, and popular agents consume it thoughtlessly. I'll explain how I adapted the agent for a closed loop: context saving, multiple tasks in tabs, offline voice input—and why a VS Code extension was approved where an AI program was not. Read on.",
+    "title": "AI Agent for a Closed Loop: VS Code Extension for Enterprise LLM"
+  },
+  "https://habr.com/ru/articles/1096734/?utm_campaign=1096734&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Tue, 20 Oct 2026 11:52:52 GMT",
+    "slug": "1096734",
+    "source_url": "https://habr.com/ru/articles/1096734/?utm_campaign=1096734&utm_source=habrahabr&utm_medium=rss",
+    "summary": "This summer, I wrote a bot that automatically searched for jobs on hh.ru, evaluated them using an LLM, composed cover letters, and applied. Over two months, it processed 1518 vacancies and sent 339 applications. I'll share the results: the funnel, what changes improved conversion, and why expanding the search hurt it. Read on.",
+    "title": "A Bot Analyzed 1518 Job Postings on hh.ru and Sent 339 Applications"
+  },
+  "https://habr.com/ru/articles/1096770/?utm_campaign=1096770&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Tue, 20 Oct 2026 12:51:02 GMT",
+    "slug": "1096770",
+    "source_url": "https://habr.com/ru/articles/1096770/?utm_campaign=1096770&utm_source=habrahabr&utm_medium=rss",
+    "summary": "Everyone running GLM-5.3 Prime in production on Max reasoning has this feeling: it seems to think, but it also seems to underthink. My task was brutal – to invent a \"Max Extra\" effort level purely through prompting: a minimal insertion into the system prompt, close to the training data, without overthinking. And literally picking each token manually. Why? I noticed that on Max reasoning, the neural network takes a minute to respond to \"Hello,\" but for migrating an entire project to another stack, it takes a maximum of 15 seconds (*personal feeling). I built my benchmark: 342 dirty prompts like real users have (typos, \"plzplz,\" \"idk,\" \"well basically\"), equally EN and RU, an LLM grader, paired sign tests, and ~50,000 requests to the provider in an evening. Spoiler: the hypothesis \"the neural network lacks thinking depth\" died in the very first phase. But what I found instead is more interesting. Read on",
+    "title": "\"Max Extra\" for GLM-5.3 Prime: I Manually Iterated Through Tokens and Found an Insertion That Gives +7.3% Accuracy with -47% Reasoning"
+  },
+  "https://habr.com/ru/articles/1096818/?utm_campaign=1096818&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Tue, 20 Oct 2026 13:40:51 GMT",
+    "slug": "1096818",
+    "source_url": "https://habr.com/ru/articles/1096818/?utm_campaign=1096818&utm_source=habrahabr&utm_medium=rss",
+    "summary": "In two months, my AI agent system has brought the company about 350 thousand rubles in additional income, and it's only growing. It independently performs tasks in real commercial projects, works with existing repositories, and allows closing some tasks with almost no developer involvement. From a business perspective, the experiment was successful, but from an engineering standpoint, I have accumulated enough complaints about my own architecture to start developing a new system. Usually, stories about AI agents focus on their capabilities: what model was used, how many agents were launched, and what tasks were automated. But in commercial development, a more down-to-earth question sooner or later arises: what benefit does all this bring to the company? I managed to get a very specific answer to it, and also found out that a working product and a reliable product are not always the same thing. Read more",
+    "title": "My AI Agents Brought the Company About 350 Thousand Rubles in Two Months. And I Consider Their Architecture Unsuccessful"
+  },
+  "https://habr.com/ru/articles/1096824/?utm_campaign=1096824&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Tue, 20 Oct 2026 13:43:54 GMT",
+    "slug": "1096824",
+    "source_url": "https://habr.com/ru/articles/1096824/?utm_campaign=1096824&utm_source=habrahabr&utm_medium=rss",
+    "summary": "The security of your entire LLM system hinges on one piece of code: the prompt builder. If it allows a rogue role, invisible characters, or a forged history to slip through, no amount of \"strict system prompting\" will save you. After working on my own project, I decided to create a 20-point cheat sheet on what to check, why, and what to add by 2026. Read more",
+    "title": "How to Write a Secure Prompt Builder for LLMs: A Cheat Sheet"
+  },
   "https://habr.com/ru/companies/1c/articles/1071340/?utm_campaign=1071340&utm_source=habrahabr&utm_medium=rss": {
     "model": "gemini-2.5-flash-lite",
     "published": "Thu, 03 Sep 2026 07:18:11 GMT",
@@ -3230,6 +3294,14 @@
     "source_url": "https://habr.com/ru/companies/avito/articles/1078084/?utm_campaign=1078084&utm_source=habrahabr&utm_medium=rss",
     "summary": "Hello! My name is Vladislav Kozlov, and I am the lead of Business Security analysts at Avito. I want to share an interesting experience with LLM that allowed me to cheaply and quickly test my idea. I'll also tell you about an interesting clustering algorithm that my model and I came up with and implemented as a library. This article won't reveal the depths of vibe coding, the abyss of AI understanding, or the Truth. It's not about powerful LLM skills, but rather about the personal experience of cheap and fast idea prototyping. Its main goal is to inspire readers not to postpone their ideas, but to implement and share them. I also hope that the algorithm we created with the neural network will be useful to you. Read more",
     "title": "From 'Someday' to a Working Prototype: How LLM Gave an Idea a Chance"
+  },
+  "https://habr.com/ru/companies/avito/articles/1087672/?utm_campaign=1087672&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Tue, 20 Oct 2026 09:12:04 GMT",
+    "slug": "1087672",
+    "source_url": "https://habr.com/ru/companies/avito/articles/1087672/?utm_campaign=1087672&utm_source=habrahabr&utm_medium=rss",
+    "summary": "Hello! My name is Vladimir Allamov, I am an Application Security engineer in the product security team at Avito. I want to share my thoughts on a sensational incident that shows how autonomous AI systems can go beyond the test environment and create real threats to infrastructure. Spoiler: the human factor was involved. In May 2026, Google's Gemini AI model, during security testing conducted by Irregular, gained access to the protected services and websites of three real companies. This was a so-called Capture the Flag (CTF) event. In such tests, it is necessary to find vulnerabilities and extract pre-placed information – \"flags\" – from a controlled target system. Gemini was tasked with obtaining data from the software of a fictional company in an isolated environment, but due to a configuration error, the test system allowed the model to access real internet services. Since the fictional companies in the test task had the same names as real organizations, the model mistakenly identified them and began interacting with their services. In one case, Gemini tried passwords until it gained access to a protected service. In two other cases, the model discovered and used credentials found in public repositories for access. Read more below ↓ Read more",
+    "title": "Gemini gained internet access and attacked the systems of three real companies"
   },
   "https://habr.com/ru/companies/avito/articles/1090584/?utm_campaign=1090584&utm_source=habrahabr&utm_medium=rss": {
     "model": "gemini-2.5-flash-lite",
@@ -3951,6 +4023,14 @@
     "summary": "Local Qwen3.8 27B outperformed GPT-5.6 in an SQL benchmark, and it ran on a regular MacBook. The cost of queries was almost zero, but there's a catch: it took several minutes for a single response. Let's explore what such an SQL agent can do, where local execution is truly beneficial, and how to set up Qwen with DuckDB on your laptop. Read more",
     "title": "[Translation] Qwen3.8 27B Outperformed GPT-5.6 in SQL Benchmark. And All This — Locally on a Laptop"
   },
+  "https://habr.com/ru/companies/ozontech/articles/1094882/?utm_campaign=1094882&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Tue, 20 Oct 2026 09:00:12 GMT",
+    "slug": "1094882",
+    "source_url": "https://habr.com/ru/companies/ozontech/articles/1094882/?utm_campaign=1094882&utm_source=habrahabr&utm_medium=rss",
+    "summary": "Imagine it's 2023 and ready-made AI agents don't exist yet. You only have a regular LLM that can continue text. What do you need to add to it so it can read files, search for information, execute commands, fix code, and decide on its own what the next step should be? I started a meeting with about twenty people from my team and neighboring ones with roughly this question. I set myself no easy task: to break down an agent from bottom to top in an hour. Starting from the language model to tools, agent loop, RAG, MCP, and skills, and then still have time to move on to practice and see how it behaves in the first work tasks. In the end, we launched the assembled construct live. Everything immediately went off the plan. Read more",
+    "title": "One Hour in a World Without AI Agents: From Tokens to MCP"
+  },
   "https://habr.com/ru/companies/piter/articles/1087530/?utm_campaign=1087530&utm_source=habrahabr&utm_medium=rss": {
     "model": "gemini-2.5-flash-lite",
     "published": "Mon, 28 Sep 2026 11:07:57 GMT",
@@ -4159,6 +4239,14 @@
     "summary": "In November 2025, Jürgen Schmidhuber, considered by half the industry to be the true father of modern AI, responded to Elon Musk by sharing a link to his own work from seventeen years prior. He suggested that to understand why current AI lacks true creativity, one should read his 2008 paper. This article delves into his theory, why he believes it explains everything from jokes to the law of universal gravitation, and its implications for LLMs.",
     "title": "Compression, Beauty, and Schmidhuber: Can Neural Networks Invent Anything New?"
   },
+  "https://habr.com/ru/companies/ru_mts/articles/1096292/?utm_campaign=1096292&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Tue, 20 Oct 2026 12:49:27 GMT",
+    "slug": "1096292",
+    "source_url": "https://habr.com/ru/companies/ru_mts/articles/1096292/?utm_campaign=1096292&utm_source=habrahabr&utm_medium=rss",
+    "summary": "At peak hour, the average speed in Bangalore is about 14 km/h, making it the second most congested city globally. To manage this, real-time traffic data is crucial. While sensors are scarce, Bangalore has over five thousand security cameras. Their video feeds could provide a traffic map and short-term forecasts. However, consolidating this video data is infeasible due to bandwidth limitations and data ownership issues. Researchers from the Indian Institute of Science (IISc) proposed a novel approach: process video near the cameras and transmit only numerical data—vehicle counts by type. This system, named TrafficFab, was tested on a setup with 400 video streams.",
+    "title": "How to build a city traffic map from cameras without collecting video in one place"
+  },
   "https://habr.com/ru/companies/rubytech/articles/1089758/?utm_campaign=1089758&utm_source=habrahabr&utm_medium=rss": {
     "model": "gemini-2.5-flash-lite",
     "published": "Sat, 03 Oct 2026 08:06:48 GMT",
@@ -4287,6 +4375,14 @@
     "summary": "FRIDA Decisions is an open-source fast-thinking model for the Russian language. It selects an option from a list, assigns a score on a scale, answers 'yes' or 'no', and ranks candidates in a single encoder pass, without text generation, in tens of milliseconds on an RTX 5060 Ti. It can be used wherever LLMs currently function as classifiers or judges: ticket routing, moderation, data labeling, RAG ranking. On our razvilka benchmark, the model scores 0.893, on par with the commercial TypeSafe Jev API (0.897) and the LLM Qwen3.5-35B-A3B, which is 40 times larger. Read more",
     "title": "FRIDA Decisions: Thinking Fast in Russian"
   },
+  "https://habr.com/ru/companies/sberbank/articles/1096456/?utm_campaign=1096456&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Tue, 20 Oct 2026 11:58:01 GMT",
+    "slug": "1096456",
+    "source_url": "https://habr.com/ru/companies/sberbank/articles/1096456/?utm_campaign=1096456&utm_source=habrahabr&utm_medium=rss",
+    "summary": "Hello! This is Danil, a TypeScript developer on the Platform V DataSpace team at SberTech. DataSpace is a platform module for visual (low-code) business application development and data management. It provides a GraphQL API for working with databases. We've been developing the product for several years, but now, due to the rapid development of AI and MCP, a predictable task has emerged: connecting this API to AI agents via the Model Context Protocol (MCP). MCP is needed so that an AI client can discover tools, understand their input parameters, and call external systems through a standard protocol. At first glance, GraphQL is well-suited to serve as a source of MCP tools: the schema already describes types, input arguments, and the form of the result, but it doesn't answer the main question: 'what part of the API and with what level of freedom should be exposed to the agent?'. In DataSpace, the scenario turned out to be as follows: - there is a GraphQL API on top of the data model; - there is an AI agent that needs to perform application actions; - an MCP adapter is needed between them; - the backend team wants to maintain control over the contract, types, and security. The question turned out not to be whether GraphQL can be connected to MCP. It can. What's more interesting is: what form should the MCP adapter for a GraphQL API take? In this article, I will discuss several variants of such adapters and our choice: generating MCP tools from pre-prepared GraphQL operations. Read more",
+    "title": "GraphQL for an AI Agent: How We Turn GraphQL Operations into MCP Tools"
+  },
   "https://habr.com/ru/companies/selectel/articles/1078306/?utm_campaign=1078306&utm_source=habrahabr&utm_medium=rss": {
     "model": "gemini-2.5-flash-lite",
     "published": "Sun, 06 Sep 2026 08:00:45 GMT",
@@ -4390,6 +4486,14 @@
     "source_url": "https://habr.com/ru/companies/simpleone/articles/1093906/?utm_campaign=1093906&utm_source=habrahabr&utm_medium=rss",
     "summary": "Since the late 1980s, when the first ticket tracking systems and the first version of ITIL appeared, the ticket has remained the main unit of work for technical support. Now this accounting scheme has to be revised, because AI agents are already performing actions in several systems at once: unlocking accounts, granting access, restarting services. We analyze what this leads to, what remains of a request when there is no one to take it for work, and how to measure support then. Read more",
     "title": "How AI is changing support: what remains of a ticket"
+  },
+  "https://habr.com/ru/companies/simpleone/articles/1096260/?utm_campaign=1096260&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Tue, 20 Oct 2026 08:27:12 GMT",
+    "slug": "1096260",
+    "source_url": "https://habr.com/ru/companies/simpleone/articles/1096260/?utm_campaign=1096260&utm_source=habrahabr&utm_medium=rss",
+    "summary": "An employee encountered an error, copied it into a neural network, and it fixed everything for them. In half a minute, they were back to work, and no ticket or record of the interaction remained in the system. We explore what IT support loses in this scenario, why such self-service is particularly costly in Russia, and how to regain visibility without forcing people back into queues.",
+    "title": "Shadow AI: Shut Down Support, Users Can Do It Themselves"
   },
   "https://habr.com/ru/companies/smartengines/articles/1079702/?utm_campaign=1079702&utm_source=habrahabr&utm_medium=rss": {
     "model": "gemini-2.5-flash-lite",
@@ -4614,6 +4718,14 @@
     "source_url": "https://habr.com/ru/companies/syntx_ai/articles/1094616/?utm_campaign=1094616&utm_source=habrahabr&utm_medium=rss",
     "summary": "Of the 6,157 reports Anthropic provided to open source project maintainers, 516 have been fixed: that's 8.4%, not 516 out of 29,000 as The New Stack headline suggests. Let's break down what Claude models found and what it led to. Read more",
     "title": "29,439 possible vulnerabilities, 6,157 reports to maintainers, 516 fixes: Anthropic scans open source projects"
+  },
+  "https://habr.com/ru/companies/syntx_ai/articles/1096542/?utm_campaign=1096542&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Tue, 20 Oct 2026 08:11:04 GMT",
+    "slug": "1096542",
+    "source_url": "https://habr.com/ru/companies/syntx_ai/articles/1096542/?utm_campaign=1096542&utm_source=habrahabr&utm_medium=rss",
+    "summary": "Claude or ChatGPT for code: on eight identical tasks, Claude Opus 5.5, Claude Sonnet 5.5, ChatGPT 6 Astra, and ChatGPT 6.1 Sol wrote correct code on the first try, with one response only needing reformatting. The difference was found in response time (8 to 28 minutes for all tasks), price per token (up to 5x), and solution design. Read more",
+    "title": "Claude or ChatGPT for code: 4 models on identical tasks"
   },
   "https://habr.com/ru/companies/tbank/articles/1086714/?utm_campaign=1086714&utm_source=habrahabr&utm_medium=rss": {
     "model": "gemini-2.5-flash-lite",

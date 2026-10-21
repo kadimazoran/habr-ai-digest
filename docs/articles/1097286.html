@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>AI Assistant for 1C Learns to Analyze Code and Update Customizations in Extensions</title>
+  <meta name="description" content="The main scenario used to be: a user connects AI to an information base, asks a question, and gets an answer based on its data. Recent versions have added capabilities for maintenance and development tasks: finding the cause of a document&#x27;s behavior, checking method intercepts, or preparing an ">
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.65;
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 32px 20px 64px;
+      color: #1f2328;
+    }
+    header {
+      border-bottom: 1px solid #d8dee4;
+      margin-bottom: 28px;
+      padding-bottom: 20px;
+    }
+    .source {
+      color: #57606a;
+      font-size: 0.95rem;
+    }
+    img, video, iframe {
+      max-width: 100%;
+      height: auto;
+    }
+    pre {
+      overflow-x: auto;
+      padding: 16px;
+      background: #f6f8fa;
+      border-radius: 6px;
+    }
+    code {
+      font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+    }
+    blockquote {
+      border-left: 4px solid #d0d7de;
+      margin-left: 0;
+      padding-left: 16px;
+      color: #57606a;
+    }
+    footer {
+      border-top: 1px solid #d8dee4;
+      margin-top: 40px;
+      padding-top: 20px;
+      color: #57606a;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>AI Assistant for 1C Learns to Analyze Code and Update Customizations in Extensions</h1>
+    <p>The main scenario used to be: a user connects AI to an information base, asks a question, and gets an answer based on its data. Recent versions have added capabilities for maintenance and development tasks: finding the cause of a document&#x27;s behavior, checking method intercepts, or preparing an extension modification. The &quot;ChatGPT, Codex + Claude for 1C&quot; solution now includes tools for analyzing program code, creating and modifying extensions, and verifying customizations after updating the standard configuration. Direct connection from ChatGPT and anonymization of supported personal data before sending to the model have also been added. Configuration and extension code analysis: The assistant can now find procedures and functions, navigate call chains, and correlate program logic with actual information base data. For example, a developer can ask: &quot;Why does the project change when this document is posted?&quot; For such analysis, the program creates a local index of modules in the main configuration and active extensions. This allows finding relevant code snippets without constantly exporting the entire configuration to files. The AI receives the code fragments necessary for the task. Indexing is done in read-only mode and does not alter the working configuration. Creating and modifying extensions: Using Codex and Claude, you can create extensions and modify the code of existing ones. The program applies prepared changes in the database and restarts 1C. Extension versions are saved, allowing you to revert to a previous state. Read more</p>
+    <p class="source">
+      Machine-translated from Habr.
+      <a href="https://habr.com/ru/companies/infostart/articles/1097286/?utm_campaign=1097286&amp;utm_source=habrahabr&amp;utm_medium=rss">Read the original Russian article</a>.
+      Wed, 21 Oct 2026 11:46:45 GMT
+    </p>
+  </header>
+  <main>
+<div><p>Previously, the main workflow looked like this: a user connects an AI to an information base, asks a question, and receives an answer based on its data. In recent versions, capabilities for maintenance and development tasks have emerged: finding the cause of a document's behavior, checking method intercepts, or preparing an extension modification.</p><p>The solution <a href="https://infostart.ru/marketplace/2748093/">"ChatGPT, Codex + Claude for 1C"</a> now offers tools for analyzing program code, creating and modifying extensions, as well as verifying customizations after updating the standard configuration. Direct connection from ChatGPT and anonymization of supported personal data before transferring to the model have been added.</p><p><strong>Analyzing Configuration and Extension Code</strong></p><p>The assistant can now search for procedures and functions, navigate call chains, and correlate program logic with the actual data of the information base.</p><p>For example, a developer can ask:</p><p>Why does the project change when this document is posted?</p><p>For such analysis, the program creates a local index of the modules in the main configuration and active extensions. This allows finding the necessary code snippets without constantly exporting the entire configuration to files.</p><p>The AI receives the code fragments necessary for the task. Indexing is performed in read-only mode and does not alter the working configuration.</p><p><strong>Creating and Modifying Extensions</strong></p><p>Through Codex and Claude, you can create extensions and modify the code of existing ones. The program applies the prepared changes in the database and restarts 1C. Extension versions are saved, so you can revert to a previous state.</p><p>In normal mode, checks are performed before applying changes. If an error is detected, the changes are not applied, and information about the problem is sent to the model for correction. This check does not replace the testing of application logic.</p><p>The ability to modify extensions is enabled separately for each database and is only available for the MCPFullAccess role.</p><p>For development on database copies, an accelerated mode has been added: changes are loaded in a single configurator launch, processing only modified modules. Additional preliminary checks are disabled in this mode; they can be run separately by clicking "Check" if needed.</p><p><strong>Verifying Customizations After Updating the Standard Configuration</strong></p><p>A separate area of updates concerns working with method intercepts in extensions.</p><p>The "Intercepts" report helps detect:</p><ul><li><p>methods that have disappeared or changed in the standard configuration;</p></li><li><p>intercepts that are overridden by another extension;</p></li><li><p>outdated copies of standard code;</p></li><li><p>potential issues with re-recording documents and register movements.</p></li></ul><p>In the latest update, the report can now show changes made by the provider and the extension author, and prepare updated code while preserving customizations. You can also generate a task to fix an intercept and send it to the Codex or Claude chat.</p><p>For example, if a standard method was previously copied into an extension and several parts were modified, the assistant can retrieve the current version of the method, transfer the customizations, and check for conflicting areas. The result of such a transfer should be verified on a database copy.</p><p>Problems in the report are presented as cards with filtering by extension, importance, and intercept type. After fixing the code, the check can be performed directly in the working folder without rebuilding the index.</p><p><strong>Connecting Directly from ChatGPT</strong></p><p>In addition to Codex, Claude Desktop, and Claude Code, the ability to work with the information base directly from ChatGPT has been added.</p><p>After setting up the connection, the user can ask questions about 1C data, search for documents, compare metrics, analyze code, and generate reports. The initial setup is done according to the instructions, after which the program maintains the connection automatically.</p><p>Diagnostics have also been improved: if OpenAI rejects the connection tunnel, the program shows the reason.</p><p>Access to the selected AI service is purchased separately and is not included in the solution's cost. Capabilities and limitations depend on the service and account used.</p><p><strong>Anonymizing Data Before Transferring to the Model</strong></p><p>The settings now include an "Anonymize Data" function. When enabled, supported personal information is replaced with pseudonyms before being sent to Codex or Claude.</p><p>Full names, phone numbers, addresses, passport data, SNILS, individual taxpayer identification numbers (INN), bank details, and dates of birth are processed. A persistent pseudonym is assigned to each person, allowing for the correlation of information across different query results.</p><p>However, organization names, product names, and amounts are not changed. Transferring attachments to the model is disabled in anonymization mode. This function should be considered when selecting data for analysis: it does not mean that the entire transmitted context becomes anonymized.</p><p><strong>Multiple Employees Working on a Terminal Server</strong></p><p>Support has been added for scenarios where multiple employees work on the same server via RDP. Each connects their 1C instance to their own program instance. Codex and Claude see the respective employee's databases and work within their permissions.</p><p>Recent versions also reduce disk space usage: the program deletes outdated code indexes and retains only the latest reports and extension versions. The results folder can be opened by clicking "Reports."</p><p>A description of the capabilities, system requirements, and purchase conditions are available on the <a href="https://infostart.ru/marketplace/2748093/">solution's page on the Infostart Marketplace</a>.</p></div>
+  </main>
+  <footer>
+    Translation generated with Gemini 2.5 Flash-Lite.
+    The original article remains the source of record.
+  </footer>
+</body>
+</html>

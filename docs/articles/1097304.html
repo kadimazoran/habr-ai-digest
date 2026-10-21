@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>InkPeek — a translator for Android e-readers: works offline, and with internet, it explains via AI</title>
+  <meta name="description" content="Hello. This is a post about a small application I made for myself. I&#x27;ll say right away: I wrote it with a neural network. I don&#x27;t know how Habr feels about such projects now, but maybe someone will find it useful. I wanted to read more books in a foreign language - on an e-reader, of cours">
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.65;
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 32px 20px 64px;
+      color: #1f2328;
+    }
+    header {
+      border-bottom: 1px solid #d8dee4;
+      margin-bottom: 28px;
+      padding-bottom: 20px;
+    }
+    .source {
+      color: #57606a;
+      font-size: 0.95rem;
+    }
+    img, video, iframe {
+      max-width: 100%;
+      height: auto;
+    }
+    pre {
+      overflow-x: auto;
+      padding: 16px;
+      background: #f6f8fa;
+      border-radius: 6px;
+    }
+    code {
+      font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+    }
+    blockquote {
+      border-left: 4px solid #d0d7de;
+      margin-left: 0;
+      padding-left: 16px;
+      color: #57606a;
+    }
+    footer {
+      border-top: 1px solid #d8dee4;
+      margin-top: 40px;
+      padding-top: 20px;
+      color: #57606a;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>InkPeek — a translator for Android e-readers: works offline, and with internet, it explains via AI</h1>
+    <p>Hello. This is a post about a small application I made for myself. I&#x27;ll say right away: I wrote it with a neural network. I don&#x27;t know how Habr feels about such projects now, but maybe someone will find it useful. I wanted to read more books in a foreign language - on an e-reader, of course. But I couldn&#x27;t find a convenient dictionary for my e-reader that would instantly translate a word or phrase over the page, and with an internet connection, also explain the grammar. AI plugins for KOReader are overloaded, and dictionaries for FBReader look like a relic from the early 2000s. So I made my own. It works on e-readers like Boox: it connects to FBReader, CoolReader, or KOReader as an external dictionary and is called from the text selection menu, online and offline. Initially, it was an experiment, but it stuck with me, so I decided to share it. How it works</p>
+    <p class="source">
+      Machine-translated from Habr.
+      <a href="https://habr.com/ru/articles/1097304/?utm_campaign=1097304&amp;utm_source=habrahabr&amp;utm_medium=rss">Read the original Russian article</a>.
+      Wed, 21 Oct 2026 12:18:31 GMT
+    </p>
+  </header>
+  <main>
+<div><p>Hello. This is a post about a small application I made for myself. I'll say right away: I wrote it with a neural network. I don't know how Habr feels about such projects now, but maybe someone will find it useful.</p><p>I wanted to read more books in a foreign language - on an e-reader, of course. But I couldn't find a convenient dictionary for my e-reader that would instantly translate a word or phrase over the page, and with an internet connection, also explain the grammar. AI plugins for KOReader are overloaded, and dictionaries for FBReader look like a relic from the early 2000s. So I made my own.</p><p>It works on e-readers like Boox: it connects to FBReader, CoolReader, or KOReader as an external dictionary and is called from the text selection menu, online and offline. Initially, it was an experiment, but it stuck with me, so I decided to share it.</p><figure><img alt="Example of grammar analysis with AI" loading="lazy" src="https://habrastorage.org/r/w1560/extt/d8/9b/28/d89b2846a01b7bd483736d1ed7aa2dc7.png" title="Example of grammar analysis with AI"/><div><figcaption>Example of grammar analysis with AI</figcaption></div></figure><p>The essence of the functionality is as follows:</p><ul><li><p>the application registers itself in the system using the "ColorDict 3" protocol, and various e-readers can use it as an external dictionary;</p></li><li><p>when called, the application opens a window on top of the e-reader (I use FBReader);</p></li><li><p>it allows translating individual words and phrases <strong>offline</strong>:</p><ul><li><p><strong>translation of each word</strong> using downloaded language packs: we collect dictionaries ourselves from Wiktionary (dumps from <a href="http://kaikki.org">kaikki.org</a>) + WikDict - where Wiktionary doesn't have an entry. Currently, there are about two dozen pairs: books in 8 languages with answers in English, in 5 languages with answers in Russian, plus English: French, Spanish, Italian, Portuguese, Polish as an experiment. Ready-made dictionaries didn't work: the quality of all of them varies, and word forms are found inconsistently. Therefore, I collect my own, and before publication, each pack is checked with tests;</p></li><li><p><strong>phrase translation</strong> - using <a href="https://github.com/mozilla/translations">translation models from Firefox</a>: directly if one of the languages is English, otherwise through English (de -> en -> ru), on the <a href="https://github.com/browsermt/bergamot-translator">Bergamot</a> engine directly on the device (through English, nuances like 'ty'/'vy' might be lost);</p></li><li><p>for determining the source language, a lightweight phrase language detection model from the <a href="https://fasttext.cc">fastText</a> project is used - to clarify which language the offline translation should start from;</p></li><li><p>for words, it suggests grammar: der/die/das and plural for German nouns, basic verb forms (gehen — ging — ist gegangen), strong and irregular verbs; any form of a word in the text leads to its dictionary entry: Häusern -> das Haus, went -> go.</p></li></ul></li></ul><figure><img alt="Subtitle without internet: each word of the phrase with its base form and meaning" loading="lazy" src="https://habrastorage.org/r/w1560/extt/c3/ab/86/c3ab86f78552703901ae5919a286fd1b.png" title="Subtitle without internet: each word of the phrase with its base form and meaning"/><div><figcaption>Subtitle without internet: each word of the phrase with its base form and meaning</figcaption></div></figure><ul><li><p>if an internet connection is available, additional AI features are available:</p><ul><li><p>integration with various providers via API (requires your own API key), including OpenRouter which even has free models/API limits, and your own server (LM Studio, Ollama);</p></li><li><p>AI phrase translation, depending on the selected model and provider;</p></li><li><p>AI "Analysis": grammar of the phrase and difficult words;</p></li><li><p>AI "Context": meaning in this context, style, idioms, plus examples with translation;</p></li><li><p>when any AI tab is clicked, all requests are sent at once and cached; other tabs then open instantly.</p></li></ul></li><li><p>There are also standard features like history (each entry has a short translation), favorite words and phrases, etc.</p></li></ul><figure><img alt="AI translation of a phrase from Kafka" loading="lazy" src="https://habrastorage.org/r/w1560/extt/63/66/9b/63669b9cac8c5e1a085925865a80d7f1.png" title="AI translation of a phrase from Kafka"/><div><figcaption>AI translation of a phrase from Kafka</figcaption></div></figure><p>A few numbers:</p><ul><li><p>Boox Go 6 (Snapdragon 662, 2 GB): offline sentence translation in 0.1–0.9 s;</p></li><li><p>language pack - 25–60 MB per pair, you only download the ones you need;</p></li><li><p>a pair is published only if its dictionary knows at least 85% of the 5000 most frequent words in the language (with inflections);</p></li><li><p>20 pairs, interface in 8 languages, everything works without internet except for the AI tabs.</p></li></ul><p>What surprised me in the end was not that you can quickly build an application with a neural network - you get used to that. What surprised me was how much is already available and open-source. The fastText model, about a megabyte in size, detects the language of text among 176 languages in milliseconds. The entire Wiktionary is available as structured data (<a href="http://kaikki.org">kaikki.org</a>), and you can build your own dictionaries from it with gender, word forms, and conjugations. Mozilla has open offline translation models that translate a sentence in less than a second on a weak Boox Go 6. And AI is layered on top of all this in an evening, through any provider or even your own server. Five years ago, this would have required a team, but now it's a pet project for a couple of days.</p><p>As a result, the InkPeek project (<a href="https://github.com/kafeg/inkpeek">https://github.com/kafeg/inkpeek</a>) was created, where, with the help of a neural network, I implemented what I needed: you can read literature in a language of interest, get convenient word translations (+grammar +verbs) and entire phrases offline (of course, the quality is not comparable to online versions), and with an internet connection - get additional explanations on grammatical structures, examples, etc.</p><p>How to connect: install the APK from Releases, select the desired pairs in the "Languages" tab and download them. In FBReader: Settings -> Dictionary and Translator -> "ColorDict 3" for both words and phrases. For KOReader, Cool Reader, and Moon+, instructions are in the README.</p><p>Everything works for me on a Boox Go 6, a rather weak device, so there should be no problems on any e-reader. The README on GitHub has technical details. Perhaps, such a dictionary application for e-readers will be useful to someone, just as it was to me.</p><p>The code is under MIT, dictionaries under CC BY-SA (Wiktionary), models under MPL-2.0 (Mozilla).</p></div>
+  </main>
+  <footer>
+    Translation generated with Gemini 2.5 Flash-Lite.
+    The original article remains the source of record.
+  </footer>
+</body>
+</html>

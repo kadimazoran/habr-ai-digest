@@ -1,0 +1,82 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>SIEM on Two Cores for 150 Hosts and a 9B Model for Triage: How a Custom AI SOC Works</title>
+  <meta name="description" content="Imagine a SOC where a language model analyzes every triggered rule. Ideally, it correctly handles about 60% of second-line events. The remaining 40% are false positives and misses, making automatic response impossible. Alexander Kelchin&#x27;s team, CTO and CISO of Medici Lab, arrived at this figure">
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.65;
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 32px 20px 64px;
+      color: #1f2328;
+    }
+    header {
+      border-bottom: 1px solid #d8dee4;
+      margin-bottom: 28px;
+      padding-bottom: 20px;
+    }
+    .source {
+      color: #57606a;
+      font-size: 0.95rem;
+    }
+    img, video, iframe {
+      max-width: 100%;
+      height: auto;
+    }
+    pre {
+      overflow-x: auto;
+      padding: 16px;
+      background: #f6f8fa;
+      border-radius: 6px;
+    }
+    code {
+      font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+    }
+    blockquote {
+      border-left: 4px solid #d0d7de;
+      margin-left: 0;
+      padding-left: 16px;
+      color: #57606a;
+    }
+    footer {
+      border-top: 1px solid #d8dee4;
+      margin-top: 40px;
+      padding-top: 20px;
+      color: #57606a;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>SIEM on Two Cores for 150 Hosts and a 9B Model for Triage: How a Custom AI SOC Works</h1>
+    <p>Imagine a SOC where a language model analyzes every triggered rule. Ideally, it correctly handles about 60% of second-line events. The remaining 40% are false positives and misses, making automatic response impossible. Alexander Kelchin&#x27;s team, CTO and CISO of Medici Lab, arrived at this figure through their own experiments. They then rebuilt their SIEM so that a 9-billion-parameter model achieved 96-97% correct answers, while the entire system handled 150 hosts on two CPU cores. Read more</p>
+    <p class="source">
+      Machine-translated from Habr.
+      <a href="https://habr.com/ru/articles/1097200/?utm_campaign=1097200&amp;utm_source=habrahabr&amp;utm_medium=rss">Read the original Russian article</a>.
+      Wed, 21 Oct 2026 10:11:59 GMT
+    </p>
+  </header>
+  <main>
+<div><p>Imagine a SOC where a language model analyzes every triggered rule. Ideally, it correctly handles about 60% of second-line events. The remaining 40% are false positives and misses, making automatic response impossible. Alexander Kelchin's team, CTO and CISO of Medici Lab, arrived at this figure through their own experiments. They then rebuilt their SIEM so that a 9-billion-parameter model achieved 96-97% correct answers, while the entire system handled 150 hosts on two CPU cores.</p><figure><img loading="lazy" src="https://habrastorage.org/r/w1560/extt/84/5a/1d/845a1dc8001b7acff0cffb9534909093.jpg"/></figure><p>Alexander and I discussed this architecture in an hour-long conversation; the <a href="https://www.youtube.com/watch?v=uMgobYLceSM">full recording</a> is on YouTube, and the <a href="https://poxek.mave.digital/ep-10">audio version</a> is available on all podcast platforms. In this article, I've compiled the engineering aspects: how processing is structured, where the scheme breaks down, and what you can take away from it, even if you're not planning to build your own SIEM. The figures below are from Alexander's account and his team's internal measurements; they haven't published their methodology. Where a public benchmark exists, I'll provide it below.</p><h3>Where 60% Comes From and Why It's Bad News for Automation</h3><p>On the second line of a SOC, an analyst investigates: they gather context, correlate events, decide if it's an incident or not, and respond. Alexander tested how AI handles this under the most favorable conditions for the model, with automated response. The average proportion of correctly processed events was about 60%.</p><blockquote><p>It's a good percentage, but still terrible. Sixty percent correct and forty percent incorrect: either false positives or false negatives. And if you completely hand over L2 automated response—well, it's impossible.</p></blockquote><p>Microsoft provided a public benchmark of a similar order. In the <a href="https://arxiv.org/abs/2507.14201">ExCyTIn-Bench</a> benchmark, LLM agents investigate threats using 57 Microsoft Sentinel log tables and related services, with 7,542 questions. The best model at the time of publication earned an award of 0.606. The metrics and tasks differ, but the conclusion is the same: models don't yet fully cover the second line.</p><p>It's not just the model that makes mistakes. Correlation rules in a typical SOC generate false positives for years, and no one fixes them: the event stream is huge, and the business doesn't want to allocate a dedicated person to rewrite rules. If you have AI read the output of such rules, it will inherit all their noise. For Alexander's team, the quality of input for the model was determined by their own SIEM, and that's where we should start.</p><h3>Classic Scheme: All Raw Data to One Server</h3><p>A typical SIEM collects events from all sources on a central server or cluster. There, they are normalized, enriched, and correlated. Scaling is done through sharding, and memory and disk requirements grow with the data flow. In our conversation, I quipped about systems that need terabytes of RAM to run for a hundred hosts, and Alexander agreed: such an architecture is already heavy from the start.</p><p>For an AI SOC, this scheme has another problem. If you send the normalized stream to an LLM, you hit the context window limit. Expanding the window is exponentially more expensive, and with a long context, the quality of the answer to a specific question decreases. Alexander tested models at 27B and tried frontier models via subscription on a testbed. Quality metrics improved, but speed dropped significantly, and the gains were diluted with long contexts.</p><h3>Agent-Based Processing: 60 KB of C and C++ Code</h3><p>Alexander's team moved the main processing to the endpoint hosts. An agent on each host applies rules locally and sends only cleaned events to the collector. Alexander cited the concept of Microsoft Sentinel as a benchmark, where the SIEM becomes half EDR.</p><blockquote><p>We easily handled 150 hosts on two CPU cores. My pride is that the agent weighed 60 kilobytes.</p></blockquote><p>The agent is written in C and C++, with custom rules. The main consequence for an AI SOC is that events don't need normalization. The format is defined by its own rule engine, so the model on the collector always sees a short and predictable input. The simplified flow looks like this:</p><pre><code>host: OS events → agent (60 KB, custom rules) → rule X triggered
+        │
+        ▼  only cleaned events
+collector: dispatcher checks which rule triggered
+        │
+        ▼  ~200 tokens of context
+model, fine-tuned on group of rules X → verdict + explanation
+        │
+        ▼
+SOC analyst reads ready, verified cards
+</code><div><a href="https://sourcecraft.dev/"><span></span></a></div></pre><p>From the same agent autonomy comes the next idea: local automated response that works independently of the collector. The team explored this. Technically, it's an agent with its own rules that is allowed to act on its own.</p><h3>A Small Model for a Narrow Task</h3><p>Initially, the team took a Qwen model with 9B parameters without fine-tuning and measured the baseline. In a simple scenario—"here's a rule, it triggered, here's minimal context"—the model performed unexpectedly well. The context was about 200 tokens. According to Alexander, on their server, the model could process about three events per second, and by this point, the events had already been filtered on the hosts.</p><p>Fine-tuning made the leap. The models were fine-tuned for specific groups of rules, and a dispatcher was placed before them: it sees which rule triggered and sends the event to the corresponding model. After this, the proportion of good answers, according to the team's internal measurements, reached 96-97%. The analyst receives already analyzed and verified events instead of a raw stream.</p><p>These 96-97% cannot be directly compared to the 60% from the beginning of the article. There, the model did the entire second-line work; here, it verifies a single triggered rule with minimal context. This is precisely the engineering trick: reduce the task to a size where a small model is reliable.</p><p>Alexander and I had a slight disagreement about choosing the model size. There are two paths. You can start with a small model and increase its size until the task is solved. You can test the idea with a frontier model first and then scale down to a smaller one. The second path saves months if you can guess the right size based on experience. Alexander replied that their quality truly improved only after fine-tuning, and they didn't need to change the model size for it.</p><h3>Three Objections to the Scheme</h3><p>Alexander mentioned that he faced arguments about this architecture. The objections are reasonable, and I'll address them one by one.</p><p><strong>Host goes offline — no processing.</strong> Alexander's response: in a classic SIEM, if a host is lost, you also lose your collector. The agent doesn't make this problem worse. Silence from a host in any scheme should itself become an event for the collector.</p><p><strong>Agent is easy to reverse engineer.</strong> This is the most serious objection, and Alexander admits it: "when a hacker knows which rules you have working in the system, it's easier for them to bypass them." In 60 kilobytes, the rules are visible almost immediately. The team spent a long time thinking about anti-reverse engineering and tried encrypting the rules. I suggested Rust with obfuscation, but that only increases the analysis cost. The rules still reside on the host, which the attacker can already control.</p><p><strong>Customers need to change rules.</strong> Usually, these are in YAML, and you can't hide them from someone sitting on the host. Here, a compromise between manageability and stealth is inevitable.</p><h3>Why It's Hard to Sell</h3><p>Technically, the scheme is cheaper. According to Alexander, it doesn't require a separate GPU, and the cost difference with traditional solutions is significant, although he didn't provide exact figures. Sales, however, are sluggish. A small team finds it hard to convince large clients that their system works.</p><blockquote><p>Businesses are afraid to adopt something they can't control. This is always the case, and it's absolutely logical. They'll delve into it and realize they're becoming hostages to the team.</p></blockquote><p>Initially, the product was conceived for small and medium-sized businesses that couldn't afford a heavy SIEM. Later, Alexander came to a different conclusion: small businesses aren't focused on cybersecurity right now; they want to survive. And for most of them, a managed SIEM that has been known and understood for a long time is much more important than risky hypothetical profits.</p><h3>What to Adopt, Even Without Your Own SIEM</h3><ol><li><p><strong>Measure model quality separately for each rule.</strong> Average accuracy across the entire stream hides rules on which the model consistently errs.</p></li><li><p><strong>Cut context down to the triggered rule.</strong> 200 tokens with relevant fields work better than "here's the whole log for an hour."</p></li><li><p><strong>Route by rules.</strong> Several small, fine-tuned models for rule groups are cheaper and more predictable than one large one.</p></li><li><p><strong>Clean up correlations before implementing AI.</strong> A model won't fix a rule that has been noisy for years.</p></li><li><p><strong>Keep a human for second-line response.</strong> As long as the proportion of correct decisions for your task is measured in tens of percent, automatic response multiplies errors.</p></li><li><p><strong>If you move logic to hosts, consider it public.</strong> Rules in an agent are documentation for an attacker; plan detections considering they might be read.</p></li></ol><p>I have two questions for you. Have you implemented LLMs for triage in your SOC, and what proportion of correct verdicts did they provide on your rules? And where, in your opinion, is the threshold after which models can be entrusted with automatic response? If you provide figures, I'll discuss them in the comments.</p></div>
+  </main>
+  <footer>
+    Translation generated with Gemini 2.5 Flash-Lite.
+    The original article remains the source of record.
+  </footer>
+</body>
+</html>

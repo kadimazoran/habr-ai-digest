@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>AI Agent Took the Wheel of My Pet Project. I&#x27;m Taking It Back With Interactive Explanations and Two Prompts</title>
+  <meta name="description" content="Hi everyone! My name is Dina, I&#x27;m a Java developer with about six years of enterprise experience. Since April, I&#x27;ve been working on a pet project with an AI agent: it wrote the code, I set tasks and watched the tests. Everything was going well: tests were green, scenarios were closed, and ">
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.65;
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 32px 20px 64px;
+      color: #1f2328;
+    }
+    header {
+      border-bottom: 1px solid #d8dee4;
+      margin-bottom: 28px;
+      padding-bottom: 20px;
+    }
+    .source {
+      color: #57606a;
+      font-size: 0.95rem;
+    }
+    img, video, iframe {
+      max-width: 100%;
+      height: auto;
+    }
+    pre {
+      overflow-x: auto;
+      padding: 16px;
+      background: #f6f8fa;
+      border-radius: 6px;
+    }
+    code {
+      font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+    }
+    blockquote {
+      border-left: 4px solid #d0d7de;
+      margin-left: 0;
+      padding-left: 16px;
+      color: #57606a;
+    }
+    footer {
+      border-top: 1px solid #d8dee4;
+      margin-top: 40px;
+      padding-top: 20px;
+      color: #57606a;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>AI Agent Took the Wheel of My Pet Project. I&#x27;m Taking It Back With Interactive Explanations and Two Prompts</h1>
+    <p>Hi everyone! My name is Dina, I&#x27;m a Java developer with about six years of enterprise experience. Since April, I&#x27;ve been working on a pet project with an AI agent: it wrote the code, I set tasks and watched the tests. Everything was going well: tests were green, scenarios were closed, and then I opened the project and realized I didn&#x27;t clearly understand how the main scenario worked: from request to finished video. This article is about how I regained understanding of my own code. Read more</p>
+    <p class="source">
+      Machine-translated from Habr.
+      <a href="https://habr.com/ru/articles/1097826/?utm_campaign=1097826&amp;utm_source=habrahabr&amp;utm_medium=rss">Read the original Russian article</a>.
+      Thu, 22 Oct 2026 10:12:21 GMT
+    </p>
+  </header>
+  <main>
+<div><h3>Introduction</h3><p>Hi everyone! My name is Dina, I'm a Java developer with about six years of enterprise experience. Since April, I've been working on a pet project with an AI agent: it wrote the code, I set tasks and watched the tests. Everything was going well: tests were green, scenarios were closed, and then I opened the project and realized I didn't clearly understand how the main scenario worked: from request to finished video. This article is about how I regained understanding of my own code.</p><h3>The Problem: Code Appears Faster Than Understanding</h3><p>Neural networks write code astonishingly fast: what would take a day by hand, the agent types in minutes. But in this speed, it's easy to miss one detail: if you didn't write the code, but only watched it, your involvement isn't as high.</p><p>Imagine that before AI agents, you were told: "From today on, you won't write code. Features will be done by another developer, and you'll only review their pull requests." I haven't met a developer who, while reviewing a PR, delves into it so deeply as to know the code better than the author. Involvement is still lower.</p><p>With agents, we've all found ourselves in this role.</p><p>Now, situations like this are possible: a colleague generated a lot of code and quit. A new person comes in their place, opens the project, and doesn't understand where to start.</p><p>I became that colleague to myself: in my pet project, I generated code with incredible speed, and didn't spend much time on review. Involvement decreased, but it wasn't noticeable at the moment.</p><h3>Cognitive Debt</h3><p>This problem has a name – cognitive debt. The term itself has been around for a while: for example, in a 2025 MIT Media Lab study <a href="https://arxiv.org/abs/2506.08872">"Your Brain on ChatGPT"</a> about how AI assistants affect essay writing. In development, it was popularized by Margaret-Anne Storey, a professor at the University of Victoria. Her idea was picked up by Simon Willison and Martin Fowler.</p><p>Technical debt lives in the code: workarounds, bad architecture, lack of tests. Cognitive debt lives in people's heads: the team stops understanding what the system does, why it's designed that way, and how to change it safely. The code itself might be perfectly clean.</p><p>I like to compare it to a loan: if you don't understand what the neural network generated, you haven't sped up your work, you've taken out a loan. You'll have to pay it back later, when something breaks in the code that no one understands. And you'll pay with interest.</p><p>Storey describes a student team she supervised. The team worked together, under the professor's supervision, and still by the eighth week, they couldn't make even a simple change without breaking something in an unexpected place. At first, they blamed technical debt, but the issue was different: no one on the team could explain why certain decisions were made or how parts of the system were connected. Cognitive debt accumulates unnoticed, even when everyone is trying.</p><p>There are numbers too. In January 2026, Anthropic conducted a <a href="https://www.anthropic.com/research/AI-assistance-coding-skills">randomized experiment</a>: 52 developers, mostly juniors, were learning an unfamiliar asynchronous Python library, Trio. Half performed the task with an AI assistant in a chat window. On a test of the material just learned, the group with AI scored an average of 50%, while the group without AI scored 67%. The lag was most significant in debugging questions. Meanwhile, the AI only sped up the work by about two minutes, and even this acceleration was statistically insignificant.</p><p>The most interesting part of this study isn't the average numbers, but how people worked with AI. Those who completely delegated code writing to it scored less than 40%. Those who first generated code and then asked questions to understand it, or asked for explanations along with the code, scored 65% and above. And this was with a regular chat. The authors themselves believe that with agents like Claude Code, which write entire code blocks, the effect will likely be even stronger.</p><h3>My Personal Experience</h3><p>I'll tell you how not understanding the code became a point of no return in my project.</p><p>It happened during spec generation. I was following a process where the agent itself breaks down the story into scenarios, writes tests, then code, then refactors and conducts a review. At each step, it adds a report of its work. At some point, I calculated the volumes:</p><ul><li><p>product code: about 3,150 lines;</p></li><li><p>agent specs and reports: 13,260 lines, 4.2 times more than the code;</p></li><li><p>just the progress file for the second story: 5,821 lines, 1.8 times more than all the product code.</p></li></ul><p>I physically couldn't read such a volume. The agent generated specs that I stopped understanding, and it took the wheel: it became the main pilot consulting me, not the other way around. I only saw green tests and closed scenarios, but control was lost.</p><h3>Method: Linear Walkthrough and Interactive Explanation</h3><p>I took the idea from Simon Willison's chapters <a href="https://simonwillison.net/guides/agentic-engineering-patterns/linear-walkthroughs/">"Linear walkthroughs"</a> and <a href="https://simonwillison.net/guides/agentic-engineering-patterns/interactive-explanations/">"Interactive explanations"</a> from his guide Agentic Engineering Patterns. Claude Code wrote him a word cloud utility, but the phrase from the report about "placement along an Archimedean spiral" didn't explain anything to him. A linear walkthrough helped understand the code structure, but not the algorithm itself. However, an animation showing how each word tries to find its place and moves along the spiral finally made the algorithm understandable.</p><p>It's important that these are two steps: first a text walkthrough, then an animation that builds upon it. I adapted them for my pet project Avatar – a service that generates video through a paid API of an external provider.</p><p>Stack: Java 17 and Spring Boot on the backend, React and TypeScript on the frontend, Postgres (H2 locally), Gradle build. The architecture is clean: domain, usecase, adapters. The code is written by Claude Code, and the walkthrough and animation were also done by it.</p><h4>Step 1. My Prompt for Linear Walkthrough</h4><pre><code>Read the source code of [path to video generation module].  Plan a linear walkthrough: in what order should the code be explained so that someone who didn't write it understands the entire path from the video generation request to receiving the result, including errors and timeouts.  Write the walkthrough in walkthrough.md.  Insert code snippets using shell commands (grep, sed, cat) directly from files, not by retyping them manually. Explain not only what the code does, but also why it's designed that way.  </code><div><a href="https://sourcecraft.dev/"><span></span></a></div></pre><p>The requirement to insert code using commands, not retyping, is key. This makes it much harder for the agent to accidentally "improve" a quote or invent a line that isn't in the code: under each quote, there's a command, and you can run it yourself.</p><h4>Step 2. Prompt for Interactive Animation</h4><pre><code>Read walkthrough.md completely.  Based on it, create the result-flow.html page, which animatedly shows how video generation works in my project: which components are involved, how the application waits for the result, what happens on error, retry, and timeout. Use dummy data and simulated time, no real API calls. Add a scenario switcher (success, error with retry, timeout), pause, speed control, and step-by-step forward and backward mode. At each step, show the state of each component and which code snippet is currently executing.  </code><div><a href="https://sourcecraft.dev/"><span></span></a></div></pre><p>I specifically added error and timeout scenarios. In asynchronous code, the most confusing part isn't the happy path, but what happens when something goes wrong.</p><h3>What I Got From My Pet Project</h3><h4>What the Walkthrough Found</h4><p>The walkthrough turned out to be extensive: a separate section for each part of the video path, from request to retry. Here are a few findings from it.</p><p><strong>A project that looks functional doesn't work with a real key.</strong> The first thing the walkthrough revealed was the search for stubs in the real provider client:</p><pre><code>grep -n 'Not implemented yet' RealProvider.java</code><div><a href="https://sourcecraft.dev/"><span></span></a></div></pre><pre><code>68:throw new UnsupportedOperationException(
+  </main>
+  <footer>
+    Translation generated with Gemini 2.5 Flash-Lite.
+    The original article remains the source of record.
+  </footer>
+</body>
+</html>

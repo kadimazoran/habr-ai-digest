@@ -3031,6 +3031,14 @@
     "summary": "An IT team in a medium-sized company (product, integrator, it doesn't matter) usually consists of a product manager, business analysts, developers, and QA engineers. They typically work in one tracker like Jira. Now imagine that virtual colleagues have appeared in the Assignee field for all these roles. I have three of them: front-end, back-end, and analyst. They don't replace people. Reviews, answers to questions, and the final say in MR remain with the human, I'll show below where exactly. I give agents one-shot tasks: clear and limited enough to be solved in one pass without long correspondence. How it works in practice",
     "title": "No salary, no vacation, no sick leave. But there are User Stories and Merge Requests: how AI agents work for me in Jira"
   },
+  "https://habr.com/ru/articles/1095706/?utm_campaign=1095706&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Thu, 22 Oct 2026 10:00:20 GMT",
+    "slug": "1095706",
+    "source_url": "https://habr.com/ru/articles/1095706/?utm_campaign=1095706&utm_source=habrahabr&utm_medium=rss",
+    "summary": "In my recommendation system, items from subsequent registered purchases were more frequently lost before ranking. I increased candidate quotas from descriptions and images: the overall limit grew from 300 to 370. Then, I recalculated features and retrained LightGBM on the same data. For 625 sessions with a registered target, candidate coverage increased from 66.24% to 68.96%, but hits in the top 20 dropped from 389 to 388. This article details the loss analysis, experiment conditions, and the decision to retain the original setup without claiming statistical superiority. The project uses Coveo data. Code and reproduction instructions are open-source. Let's analyze the experiment.",
+    "title": "More Candidates — No Hit@20 Increase: An Experiment Analysis"
+  },
   "https://habr.com/ru/articles/1095708/?utm_campaign=1095708&utm_source=habrahabr&utm_medium=rss": {
     "model": "gemini-2.5-flash-lite",
     "published": "Sun, 18 Oct 2026 10:56:56 GMT",
@@ -3286,6 +3294,102 @@
     "source_url": "https://habr.com/ru/articles/1097352/?utm_campaign=1097352&utm_source=habrahabr&utm_medium=rss",
     "summary": "This year, it seems we've definitively moved into AI-assisted coding, and there's no turning back. For me personally, it's hard to imagine giving up AI – I'm hooked. But until recently, I couldn't quite grasp why some developers claim AI writes all their code, leaving them with nothing to do, while others insist AI is merely an assistant whose code needs careful review. And then there are those who are completely disillusioned with AI, using it more as a reference than a full-fledged development tool. Read on",
     "title": "AI Can Jump"
+  },
+  "https://habr.com/ru/articles/1097784/?utm_campaign=1097784&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Thu, 22 Oct 2026 09:48:41 GMT",
+    "slug": "1097784",
+    "source_url": "https://habr.com/ru/articles/1097784/?utm_campaign=1097784&utm_source=habrahabr&utm_medium=rss",
+    "summary": "I've compiled a list of 10 API routers offering free models, quotas, and signup bonuses. This includes API test results, costs for short requests, limitations, Russian language support, and ruble payments. The order of platforms has been updated, along with VPN information and the status of VseGPT and FreeRouter. Read more",
+    "title": "10 API Routers with Long-Term Free or Ultra-Cheap Access to Claude, GPT, DeepSeek, GLM, and Other Models"
+  },
+  "https://habr.com/ru/articles/1097816/?utm_campaign=1097816&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Thu, 22 Oct 2026 09:59:19 GMT",
+    "slug": "1097816",
+    "source_url": "https://habr.com/ru/articles/1097816/?utm_campaign=1097816&utm_source=habrahabr&utm_medium=rss",
+    "summary": "Greetings everyone! This article is inspired by the publication NVIDIA CMP – microscopes for hammering nails? Digging deeper... (for all technical details, refer there). Here I will simply publish the results of my experiments, a solution method, and the obtained results. Read more",
+    "title": "NVIDIA CMP 50HX: Not All Is Lost Yet..."
+  },
+  "https://habr.com/ru/articles/1097826/?utm_campaign=1097826&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Thu, 22 Oct 2026 10:12:21 GMT",
+    "slug": "1097826",
+    "source_url": "https://habr.com/ru/articles/1097826/?utm_campaign=1097826&utm_source=habrahabr&utm_medium=rss",
+    "summary": "Hi everyone! My name is Dina, I'm a Java developer with about six years of enterprise experience. Since April, I've been working on a pet project with an AI agent: it wrote the code, I set tasks and watched the tests. Everything was going well: tests were green, scenarios were closed, and then I opened the project and realized I didn't clearly understand how the main scenario worked: from request to finished video. This article is about how I regained understanding of my own code. Read more",
+    "title": "AI Agent Took the Wheel of My Pet Project. I'm Taking It Back With Interactive Explanations and Two Prompts"
+  },
+  "https://habr.com/ru/articles/1097830/?utm_campaign=1097830&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Thu, 22 Oct 2026 10:15:02 GMT",
+    "slug": "1097830",
+    "source_url": "https://habr.com/ru/articles/1097830/?utm_campaign=1097830&utm_source=habrahabr&utm_medium=rss",
+    "summary": "AI agents have increased the volume and size of PRs, but reviewer time and attention remain the same. I've found myself reading generated code less line-by-line and more often checking specifications, architecture, contracts, and tests. I've analyzed research from Google, Microsoft, and open-source projects to understand where AI helps in reviews, why approvals are becoming a less reliable signal, and what we still can't measure. Read on",
+    "title": "Code Review in the Age of AI: How Agents Are Changing Code Inspection"
+  },
+  "https://habr.com/ru/articles/1097846/?utm_campaign=1097846&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Thu, 22 Oct 2026 10:23:48 GMT",
+    "slug": "1097846",
+    "source_url": "https://habr.com/ru/articles/1097846/?utm_campaign=1097846&utm_source=habrahabr&utm_medium=rss",
+    "summary": "Following up on the first article, I've gathered feedback and am ready to present the revised program - Partscaster. For those new to it, I'll start by explaining what it is, its purpose, and how it differs from other tools. Visit the site with 'before/after' examples: https://zazza.github.io/partscaster/, and check out the repository: https://github.com/Zazza/partscaster. Read on.",
+    "title": "Partscaster 1.0: A Program for Refining Neuro-Generated Tracks"
+  },
+  "https://habr.com/ru/articles/1097852/?utm_campaign=1097852&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Thu, 22 Oct 2026 10:29:22 GMT",
+    "slug": "1097852",
+    "source_url": "https://habr.com/ru/articles/1097852/?utm_campaign=1097852&utm_source=habrahabr&utm_medium=rss",
+    "summary": "If I do the same boring operation manually for the second time, an AI agent somewhere in the world gets sad. And if it's the third time, it's probably already a Python script. Lately, I've found myself increasingly reluctant to manually parse Excel, convert documents, write one-off utilities, or deal with yet another terminal error. Not because I've forgotten how. It's just that many of these tasks can now be delegated to an AI agent, which can not only suggest a solution but also execute it. I've gathered five everyday scenarios where AI agents genuinely save me time. No fantasies about replacing entire professions – just practical examples, limitations, and a bit of pain from manual work. Read more",
+    "title": "5 Tasks I No Longer Want to Do Manually After Discovering AI Agents"
+  },
+  "https://habr.com/ru/articles/1097878/?utm_campaign=1097878&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Thu, 22 Oct 2026 10:55:53 GMT",
+    "slug": "1097878",
+    "source_url": "https://habr.com/ru/articles/1097878/?utm_campaign=1097878&utm_source=habrahabr&utm_medium=rss",
+    "summary": "A message arrives in the chat: \"How can I enable notifications only for new orders?\" The application needs to determine its type: question, advertisement, or other. The subsequent action depends on the selected category. Read more",
+    "title": "Jev: Why You Need a Model for Decisions and How to Use It"
+  },
+  "https://habr.com/ru/articles/1097880/?utm_campaign=1097880&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Thu, 22 Oct 2026 10:56:29 GMT",
+    "slug": "1097880",
+    "source_url": "https://habr.com/ru/articles/1097880/?utm_campaign=1097880&utm_source=habrahabr&utm_medium=rss",
+    "summary": "As an AI enthusiast and technical writer who has been writing about AI for over five years, I'm already familiar with many terms. But then I thought, \"There are AI terms that people should know, including newer ones.\" So I wrote this article to cover 8 terms and explain them as simply as possible, without getting too technical. The next time you hear or read about them, you'll know what they mean. Read more",
+    "title": "[Translation] 8 New AI Terms You Should Know"
+  },
+  "https://habr.com/ru/articles/1097894/?utm_campaign=1097894&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Thu, 22 Oct 2026 11:20:54 GMT",
+    "slug": "1097894",
+    "source_url": "https://habr.com/ru/articles/1097894/?utm_campaign=1097894&utm_source=habrahabr&utm_medium=rss",
+    "summary": "For the past two years, website owners have developed a collective habit: adding Disallow for GPTBot, CCBot, and other AI crawlers to robots.txt and believing their content is protected from AI. Gary Illyes from Google has drawn a line that nullifies this habit: robots.txt controls crawling, not content usage for training (Search Engine Journal, 2026). Read more",
+    "title": "Gary Illyes: robots.txt only prohibits crawling, not content usage for AI training"
+  },
+  "https://habr.com/ru/articles/1097906/?utm_campaign=1097906&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Thu, 22 Oct 2026 11:59:32 GMT",
+    "slug": "1097906",
+    "source_url": "https://habr.com/ru/articles/1097906/?utm_campaign=1097906&utm_source=habrahabr&utm_medium=rss",
+    "summary": "A new 30-month study examined the performance of 26,811 Chinese schoolchildren. Researchers assessed the impact of generative AI on their learning process. Read more",
+    "title": "[Translation] The Learning Trap: A Study of 26,000 Students Reveals a Problem with AI Use"
+  },
+  "https://habr.com/ru/articles/1097994/?utm_campaign=1097994&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Thu, 22 Oct 2026 14:02:46 GMT",
+    "slug": "1097994",
+    "source_url": "https://habr.com/ru/articles/1097994/?utm_campaign=1097994&utm_source=habrahabr&utm_medium=rss",
+    "summary": "You launch three agents at once. One is done. The second has been waiting for your 'yes' for ten minutes. The third crashed, and you don't know about it. You only find out when you switch windows one by one. We created Lumio to stop working like this. It's a free Mac app that turns your MacBook notch into a remote for AI agents. In version 1.2, Cursor and GitHub Copilot in VS Code have been added to Claude Code and Codex. Now all four are visible in one place, and you can respond to almost anything without opening the editor. Read more",
+    "title": "MacBook Notch as a Remote for AI Agents: Claude Code, Codex, Cursor, and Copilot in One Place"
+  },
+  "https://habr.com/ru/articles/1098004/?utm_campaign=1098004&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Thu, 22 Oct 2026 14:10:02 GMT",
+    "slug": "1098004",
+    "source_url": "https://habr.com/ru/articles/1098004/?utm_campaign=1098004&utm_source=habrahabr&utm_medium=rss",
+    "summary": "I gave Claude Code (Opus 5.5) a test assignment: to draw a scene from Blade Runner 2049 in SVG. The agents I tried all failed similarly: they didn't look at the actual frame, drew from memory, and reported completion mindlessly. So, I started prompting the agent with questions: is there documentation, what should the result be compared against, when should it stop? These questions evolved into AutoHarness – a skill that forces the agent to prepare for a task before starting it. Read more",
+    "title": "How I Made AI Agents Gather Their Own Harness for a Specific Task"
   },
   "https://habr.com/ru/companies/1c/articles/1071340/?utm_campaign=1071340&utm_source=habrahabr&utm_medium=rss": {
     "model": "gemini-2.5-flash-lite",
@@ -4334,6 +4438,14 @@
     "source_url": "https://habr.com/ru/companies/ru_mts/articles/1096292/?utm_campaign=1096292&utm_source=habrahabr&utm_medium=rss",
     "summary": "At peak hour, the average speed in Bangalore is about 14 km/h, making it the second most congested city globally. To manage this, real-time traffic data is crucial. While sensors are scarce, Bangalore has over five thousand security cameras. Their video feeds could provide a traffic map and short-term forecasts. However, consolidating this video data is infeasible due to bandwidth limitations and data ownership issues. Researchers from the Indian Institute of Science (IISc) proposed a novel approach: process video near the cameras and transmit only numerical data—vehicle counts by type. This system, named TrafficFab, was tested on a setup with 400 video streams.",
     "title": "How to build a city traffic map from cameras without collecting video in one place"
+  },
+  "https://habr.com/ru/companies/ru_mts/articles/1097914/?utm_campaign=1097914&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Thu, 22 Oct 2026 13:16:14 GMT",
+    "slug": "1097914",
+    "source_url": "https://habr.com/ru/companies/ru_mts/articles/1097914/?utm_campaign=1097914&utm_source=habrahabr&utm_medium=rss",
+    "summary": "Content production is getting cheaper. Even from a free neural network, you can get an illustration, a composition with the right mood, or even a book in seconds. But what are the scales of the problem? Have we reached the era of the generated internet, or not yet? Since we don't have a registry of everything on the internet, it's impossible to determine the share of human content. However, I managed to find studies on the share of generations in news, books, photos, and music. I suggest we discuss them. Spoiler: almost all segments show a kind of overproduction, which I recently mentioned in the context of scientific papers: it's much easier to create content than to check, edit, or advertise it. Disclaimer: academic research lags behind the development of models and people's habits of using them. Therefore, when providing a figure, I indicate the moment (and based on what analysis) it was calculated. Keep in mind that the situation has changed since 2025, and there haven't been many new studies since then. Also, for each study, one can make a reservation that researchers do not have reliable data on the share of AI; they use detectors, which are usually the same AI, just \"on the side of good.\" Read more",
+    "title": "What part of the internet still belongs to people?"
   },
   "https://habr.com/ru/companies/rubytech/articles/1089758/?utm_campaign=1089758&utm_source=habrahabr&utm_medium=rss": {
     "model": "gemini-2.5-flash-lite",

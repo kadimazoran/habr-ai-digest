@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>5 Tasks I No Longer Want to Do Manually After Discovering AI Agents</title>
+  <meta name="description" content="If I do the same boring operation manually for the second time, an AI agent somewhere in the world gets sad. And if it&#x27;s the third time, it&#x27;s probably already a Python script. Lately, I&#x27;ve found myself increasingly reluctant to manually parse Excel, convert documents, write one-off ut">
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.65;
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 32px 20px 64px;
+      color: #1f2328;
+    }
+    header {
+      border-bottom: 1px solid #d8dee4;
+      margin-bottom: 28px;
+      padding-bottom: 20px;
+    }
+    .source {
+      color: #57606a;
+      font-size: 0.95rem;
+    }
+    img, video, iframe {
+      max-width: 100%;
+      height: auto;
+    }
+    pre {
+      overflow-x: auto;
+      padding: 16px;
+      background: #f6f8fa;
+      border-radius: 6px;
+    }
+    code {
+      font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+    }
+    blockquote {
+      border-left: 4px solid #d0d7de;
+      margin-left: 0;
+      padding-left: 16px;
+      color: #57606a;
+    }
+    footer {
+      border-top: 1px solid #d8dee4;
+      margin-top: 40px;
+      padding-top: 20px;
+      color: #57606a;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>5 Tasks I No Longer Want to Do Manually After Discovering AI Agents</h1>
+    <p>If I do the same boring operation manually for the second time, an AI agent somewhere in the world gets sad. And if it&#x27;s the third time, it&#x27;s probably already a Python script. Lately, I&#x27;ve found myself increasingly reluctant to manually parse Excel, convert documents, write one-off utilities, or deal with yet another terminal error. Not because I&#x27;ve forgotten how. It&#x27;s just that many of these tasks can now be delegated to an AI agent, which can not only suggest a solution but also execute it. I&#x27;ve gathered five everyday scenarios where AI agents genuinely save me time. No fantasies about replacing entire professions – just practical examples, limitations, and a bit of pain from manual work. Read more</p>
+    <p class="source">
+      Machine-translated from Habr.
+      <a href="https://habr.com/ru/articles/1097852/?utm_campaign=1097852&amp;utm_source=habrahabr&amp;utm_medium=rss">Read the original Russian article</a>.
+      Thu, 22 Oct 2026 10:29:22 GMT
+    </p>
+  </header>
+  <main>
+<div><p>I'll start with the conclusion: if I do the same boring operation manually for the second time, an AI agent somewhere in the world gets sad. And if it's the third time, it's probably already a Python script.</p><p>For a long time, I perceived AI mainly as another interface to a language model: ask a question, get an answer, ask to rewrite something, explain code, or help with a formula. Then I started using <strong>AI agents</strong> and quickly realized that the difference between them and a regular chat is much less magical than it sometimes seems.</p><p>A regular chat mainly tells you what can be done. An agent can open a file itself, write a small script, run it, check the result, fix an error, and put the finished file where it's needed. After that, some habitual tasks suddenly start to feel like manually copying files to a USB drive. Technically possible. But somehow awkward now.</p><figure><img alt="AI agents and manual work" loading="lazy" src="https://habrastorage.org/r/w1560/webt/77/9d/9f/779d9f83cbaa071385be121c8ca09e07.png"/><div><figcaption>AI agents and manual work</figcaption></div></figure><p>Below are five types of tasks that, after getting acquainted with agents, I particularly don't want to do manually again.</p><h3>1. Parsing Large Excel and CSV Files</h3><p>One of the most typical tasks looks like this: a data export of several tens of thousands of rows arrives, and first, you need to understand what's going on in it at all. Previously, a significant portion of the time was spent even before the actual analysis. I would open Excel, study the sheets, look for key identifiers, check for missing values and duplicates, create pivot tables, write formulas, and only then get to the conclusions.</p><p>The most unpleasant thing happened when, after half an hour, it turned out that the calculation was not done at the correct entity level, the denominator was chosen incorrectly, or the same object appeared in multiple rows. At that moment, analytics temporarily turned into an exercise in accepting the inevitable.</p><p>With an agent, I usually start differently:</p><blockquote><p>Examine the file structure, identify key identifiers, check for missing values and duplicates, and then propose an analysis plan.</p></blockquote><p>Then the agent can use Python, pandas, openpyxl, DuckDB, and other common tools. And here, one principle is important to me: <strong>the model should not calculate numbers "in its head"</strong>. The normal scenario is when the AI understands the task, formulates the logic, writes the code, and the calculations themselves are performed in a standard deterministic way.</p><p>That is, instead of "I think it's about 18% here," you get a much more boring but useful option: here's the filter, here's the denominator, here's the code, here's the result. Mathematics still works best when calculated by mathematics, not by a confident text generator.</p><p>There's another bonus – reproducibility. If a new export of the same format arrives tomorrow, you don't have to go through the whole process manually again. You can repeat the already prepared sequence and focus on what has actually changed in the data.</p><figure><img alt="Table parsing with AI agents" loading="lazy" src="https://habrastorage.org/r/w1560/webt/8e/fc/46/8efc46fc131a0f8f40c6e59dd4e843e8.png"/><div><figcaption>Table parsing with AI agents</figcaption></div></figure><h3>2. Moving Information from One Format to Another</h3><p>There's a separate class of tasks that require almost no complex solutions but are excellent time-eaters. For example, you need to convert PDF to a table, assemble a Word document from several sources, transform Markdown to HTML, bring a chaotic document to a unified structure, or generate a final Excel file from intermediate files.</p><p>Essentially, a person at this moment acts as an expensive format converter. Such an enterprise converter with coffee, meeting calendars, and periodic attempts to understand why a table has shifted again in one document.</p><p>An AI agent is useful in such tasks not because it "understands documents better than a human," but because it has access to common tools: pandoc, python-docx, PyMuPDF, openpyxl, pypdf, and other libraries. It can not only suggest how to solve the problem but actually perform the conversion.</p><p>For example, instead of the answer "you can use Pandoc for this," the agent can actually run:</p><pre><code>pandoc input.md -o output.docx</code><div><a href="https://sourcecraft.dev/"><span></span></a></div></pre><p>look at the result, notice that part of the structure is lost, correct the source or parameters, and repeat the operation.</p><p>For me, this is one of the most underestimated capabilities of agents. Not magical intelligence or another chat with beautiful phrasing, but the absence of the need to be the glue between ten formats and tools myself.</p><h3>3. Writing One-Off Utilities</h3><p>This is where, perhaps, the most significant shift occurred for me. Previously, if a small program was needed for a task, I would first assess how much I actually wanted to open an IDE and write code for it. Very often, the answer was: not that much.</p><p>Now the threshold has significantly lowered. If you need to compare two exports, rename a thousand files, build a simple interface over Excel, perform a local search across documents, automatically generate a report, or validate a dataset against rules, I first think not "is it worth the development?" but "can it be quickly handed over to an agent?"</p><p>It writes code, runs it, catches errors, fixes them, and runs it again. Sometimes it resembles a very fast intern who doesn't need sleep but needs a good task setter. If a simple interface is needed, you can add Streamlit, HTML, or a small local web service to it.</p><p>As a result, a utility that was previously too much hassle to create for a task that takes a couple of hours a month suddenly becomes quite justified. <strong>AI reduces the cost not only of creating complex products but also of small automations that previously simply didn't pay off in terms of time.</strong></p><h3>4. Troubleshooting Unfamiliar Environments Through Trial and Error</h3><p>Anyone who has ever set up anything in Linux knows the wonderful cycle:</p><pre><code>command → error → search → article → another command → another error → yet another article → command from 2019 → it got worse</code><div><a href="https://sourcecraft.dev/"><span></span></a></div></pre><p>It's especially fun when the problem lies somewhere between PATH, certificates, SSH, Python environments, permissions, dependencies, and the corporate network. At some point, you're no longer fixing the problem but completing a side quest that accidentally appeared within your workday.</p><figure><img alt="Side quest for environment setup" loading="lazy" src="https://habrastorage.org/r/w1560/webt/9c/b1/d5/9cb1d50473c114a5c0be268fb8a9cecc.png"/><div><figcaption>Side quest for environment setup</figcaption></div></figure><p>With an agent, this turns more into collaborative diagnostics. Instead of chaotically trying commands, you can first check which Python is being used:</p><pre><code>which python which pip</code><div><a href="https://sourcecraft.dev/"><span></span></a></div></pre><p>then check the environment:</p><pre><code>pip list</code><div><a href="https://sourcecraft.dev/"><span></span></a></div></pre><p>and then study logs, directory structures, environment variables, and gradually localize the problem.</p><p>This doesn't mean the agent never makes mistakes. It makes them, believe me. Sometimes it confidently suggests the very command that makes you want to close the terminal and pretend nothing happened.</p><p>But the value for me is elsewhere: I no longer need to keep the syntax of twenty tools in my head simultaneously. I can maintain a higher level – <strong>what exactly do I want to achieve</strong> – and then unravel the technical details together with the agent.</p><h3>5. Repeating the Same Process a Second Time</h3><p>Perhaps this is the main effect. If I've done a task manually with an agent once, the question almost automatically arises the second time: why am I even doing this again?</p><p>Suppose every month you need to put a new export into a folder, check its structure, calculate metrics, find anomalies, generate a final Excel, and write a short summary. After the first run, it becomes clear where checks are needed, which fields are mandatory, what constitutes an error, and what the result should be.</p><p>At this point, the process can be formalized as a command, script, or separate scenario. For example:</p><pre><code>/analyze-report</code><div><a href="https://sourcecraft.dev/"><span></span></a></div></pre><p>and hide the entire sequence behind it.</p><p>Then AI becomes not only an executor of individual tasks but also a way to document a workflow. Moreover, automation no longer has to start with full-fledged development. Previously, the first question often sounded like "should we assign this task to developers?" Now you can start much cheaper: first, automate the process locally, check if it's truly useful, and only then decide whether to turn it into a proper service.</p><figure><img alt="Automating a local process" loading="lazy" src="https://habrastorage.org/r/w1560/webt/cf/1f/31/cf1f31d46a0f0aaf289399ea564c4c7c.png"/><div><figcaption>Automating a local process</figcaption></div></figure><h3>Where's the Catch</h3><p>Of course, an agent is not a magic button. Although sometimes it tries very hard to look like one. I wouldn't entrust it without supervision with financial calculations, modification or deletion of important data, actions in production systems, or any decisions where the cost of an error is significantly higher than the cost of saved ten minutes.</p><p>Sensitive information is a separate story. If an agent gains access to internal documents, client data, or corporate systems, you need to understand where the data goes, what rights the agent has, and what exactly it can do on behalf of the user.</p><p>And the closer the task is to a real business process, the more important non-AI issues become: access rights, logging, security, infrastructure, monitoring, and responsibility for errors. It has indeed become very easy to assemble a useful tool locally today. Turning it into a reliable service for hundreds of people is still a separate engineering task.</p><p>Kubernetes hasn't disappeared just because we've learned to talk nicely to a model.</p><h3>Instead of a Conclusion</h3><p>Although the conclusion was already in the first paragraph – optimization has reached even the structure of the article.</p><p>The most useful thought I've gained from working with AI agents is quite boring: <strong>you don't necessarily have to look for a task where AI will do something incredible</strong>. It's much more practical to look at your regular workday and notice operations that are repetitive, require a lot of mechanical actions, and follow roughly the same scenario every time.</p><p>I increasingly ask myself a simple question:</p><blockquote><p>What stupid repetitive operation have I already done for the second time today?</p></blockquote><p>Very often, that's exactly where the best first use case for an agent lies.</p><p>And if, after that, it takes over another Excel file, PDF conversion, or environment setup from me – I'm absolutely fine with that.</p></div>
+  </main>
+  <footer>
+    Translation generated with Gemini 2.5 Flash-Lite.
+    The original article remains the source of record.
+  </footer>
+</body>
+</html>

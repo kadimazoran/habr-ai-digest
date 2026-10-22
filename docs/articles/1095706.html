@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>More Candidates — No Hit@20 Increase: An Experiment Analysis</title>
+  <meta name="description" content="In my recommendation system, items from subsequent registered purchases were more frequently lost before ranking. I increased candidate quotas from descriptions and images: the overall limit grew from 300 to 370. Then, I recalculated features and retrained LightGBM on the same data. For 625 sessions">
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.65;
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 32px 20px 64px;
+      color: #1f2328;
+    }
+    header {
+      border-bottom: 1px solid #d8dee4;
+      margin-bottom: 28px;
+      padding-bottom: 20px;
+    }
+    .source {
+      color: #57606a;
+      font-size: 0.95rem;
+    }
+    img, video, iframe {
+      max-width: 100%;
+      height: auto;
+    }
+    pre {
+      overflow-x: auto;
+      padding: 16px;
+      background: #f6f8fa;
+      border-radius: 6px;
+    }
+    code {
+      font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+    }
+    blockquote {
+      border-left: 4px solid #d0d7de;
+      margin-left: 0;
+      padding-left: 16px;
+      color: #57606a;
+    }
+    footer {
+      border-top: 1px solid #d8dee4;
+      margin-top: 40px;
+      padding-top: 20px;
+      color: #57606a;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>More Candidates — No Hit@20 Increase: An Experiment Analysis</h1>
+    <p>In my recommendation system, items from subsequent registered purchases were more frequently lost before ranking. I increased candidate quotas from descriptions and images: the overall limit grew from 300 to 370. Then, I recalculated features and retrained LightGBM on the same data. For 625 sessions with a registered target, candidate coverage increased from 66.24% to 68.96%, but hits in the top 20 dropped from 389 to 388. This article details the loss analysis, experiment conditions, and the decision to retain the original setup without claiming statistical superiority. The project uses Coveo data. Code and reproduction instructions are open-source. Let&#x27;s analyze the experiment.</p>
+    <p class="source">
+      Machine-translated from Habr.
+      <a href="https://habr.com/ru/articles/1095706/?utm_campaign=1095706&amp;utm_source=habrahabr&amp;utm_medium=rss">Read the original Russian article</a>.
+      Thu, 22 Oct 2026 10:00:20 GMT
+    </p>
+  </header>
+  <main>
+<div><p>In my recommendation system, LightGBM selects up to 20 items from a pool of up to 300 candidates. An analysis of misses revealed that items from subsequent registered purchases were more often lost before ranking. I expanded the candidate selection to 370 and tested whether this would yield more hits.</p><p>The system is built on <a href="https://github.com/coveooss/SIGIR-ecom-data-challenge">Coveo SIGIR eCOM 2021, Public Data Release 1.0.0</a> — anonymized e-commerce data on views, search queries, and purchases. Its architecture is detailed in the <a href="https://habr.com/ru/articles/1095556/">previous article</a>, and the code is available in <a href="https://github.com/ykutovaya/RecSys-Coveo">RecSys-Coveo</a>.</p><h3>Where Target Items Were Lost</h3><p>The target is items from registered purchases made after the recommendation. If at least one of these items appears in the top 20, it counts as a hit. Hit@20 is the proportion of hits among sessions with a target. The absence of a purchase record is not considered a miss. The recommendation moment, target window, and admission rules are described in the <a href="https://habr.com/ru/articles/1095468/">second article</a>; they remain unchanged here.</p><p>The system can only recommend items from the historical catalog: 14,314 SKUs, represented by anonymized item identifiers. The catalog, graph, and statistics are built from 50,000 early sessions — the period <img alt="A_G" loading="lazy" src="https://habrastorage.org/getpro/habr/formulas/4/47/47c/47c11e9ee7ae9a1eac2ac6ebffb04e4e.svg"/>.</p><p>I evaluated the initial model on a hold-out period <img alt="D" loading="lazy" src="https://habrastorage.org/getpro/habr/formulas/f/f6/f62/f623e75af30e62bbd73d6df5b50bb7b5.svg"/>. Out of 60,000 sessions, 748 had a registered target. This resulted in 441 hits, or 58.96% Hit@20. The remaining 307 misses were categorized by stage:</p><div><div><table><tbody><tr><th><p>Reason for miss in <img alt="D" loading="lazy" src="https://habrastorage.org/getpro/habr/formulas/f/f6/f62/f623e75af30e62bbd73d6df5b50bb7b5.svg"/></p></th><th><p>Sessions</p></th></tr><tr><td><p>None of the target items are in the historical catalog</p></td><td><p>172</p></td></tr><tr><td><p>Target is in the catalog, but no target item made it into the candidates</p></td><td><p>106</p></td></tr><tr><td><p>Target is among candidates, but not in the top 20 recommendations</p></td><td><p>29</p></td></tr><tr><td><p><strong>Total</strong></p></td><td><p><strong>307</strong></p></td></tr></tbody></table></div></div><p>These are session counts, not item counts. If multiple items were purchased in a session, finding at least one counts as a hit. Each missed session belongs to only one row in the table.</p><p>In 278 out of 307 misses, the ranker did not receive a target item. Increasing the number of candidates might help with selection losses, but not with items missing from the catalog. This table does not establish the reasons for the absence itself.</p><p>Candidate coverage is the proportion of sessions with a target where at least one target item made it into the intermediate set. Its presence is sufficient for coverage but not yet for Hit@20. Therefore, with a common denominator, the boundary from the <a href="https://github.com/ykutovaya/RecSys-Coveo/blob/main/documents/math/coveo_session_recommender_math.pdf">specification</a> applies:</p><img alt="\operatorname{Hit@20} \leq \operatorname{Coverage}_{\mathrm{cand}}." loading="lazy" src="https://habrastorage.org/getpro/habr/formulas/e/e8/e8a/e8a961a6cc464c77ac22678f473e9b7f.svg"/><p>The difference between the metrics represents the maximum possible increase in Hit@20 without changing the selection process.</p><h3>What I Changed</h3><p>I tested the hypothesis that short similarity lists for descriptions and images were filtering out useful candidates, and that expanding these lists would yield more hits.</p><p>I increased the description quota from 40 to 80 and the image quota from 30 to 60. The quota limits the number of items from a single source before merging the lists. I did not change other quotas, the catalog, the graph, or the statistics <img alt="A_G" loading="lazy" src="https://habrastorage.org/getpro/habr/formulas/4/47/47c/47c11e9ee7ae9a1eac2ac6ebffb04e4e.svg"/>. The overall limit increased from 300 to 370 candidates, while the final output remained the same — up to 20 items.</p><p>Duplicate SKUs are merged, and any remaining slots are filled with popular items. Therefore, the additional 70 slots do not necessarily mean 70 new items from descriptions and images in every session. Both sources were expanded simultaneously; their individual contributions were not measured here.</p><h3>Why the Model Had to Be Retrained</h3><p>The new quotas affect the features not only of the added candidates but also of the existing ones.</p><p>In a hypothetical example, item X is already selected by the graph and occupies the sixtieth position in the description similarity list:</p><div><div><table><tbody><tr><th><p>Item X Details</p></th><th><p>Description Quota 40</p></th><th><p>Description Quota 80</p></th></tr><tr><td><p>Present among candidates due to the graph</p></td><td><p>Yes</p></td><td><p>Yes</p></td></tr><tr><td><p>Also selected by description similarity</p></td><td><p>No</p></td><td><p>Yes</p></td></tr><tr><td><p>Position in the text source list</p></td><td><p>Not used</p></td><td><p>60</p></td></tr></tbody></table></div></div><p>The similarity score might have been calculated in both versions, but the source and position features have changed. An old feature row cannot simply be transferred to a new set.</p><p>During training, target items are compared with other candidates for a query. Expanding the set changes the pairs, their normalization, and the weights of permutations. Even existing candidates might not retain their order after retraining.</p><p>For the 370-candidate version, I recalculated all features and retrained LightGBM on the same 50,000 sessions <img alt="B" loading="lazy" src="https://habrastorage.org/getpro/habr/formulas/9/9d/9d5/9d5ed678fe57bcca610140957afab571.svg"/>, using the same parameters. The target is present in 625 sessions; training pairs are generated only when a target candidate and a non-target candidate exist. I did not add missed targets retroactively, as this would constitute a data leakage of future purchases into the selection.</p><p>This is a test of expanding quotas along with retraining, not of adding items to the output of an unchanged model.</p><h3>Two Gains and Three Losses</h3><p>I compared the models on a separate validation set <img alt="C_{\mathrm{select}}" loading="lazy" src="https://habrastorage.org/getpro/habr/formulas/4/46/46a/46a85e0d14159fcb76b9747a4afa4f90.svg"/>. This set consists of 50,000 complete sessions, selected independently of purchases: 625 with a registered target and 49,375 with an unknown outcome.</p><p>The sessions do not overlap with the training set. The models responded to the same queries with the same available context.</p><p>I established a rule in advance: select the 370-candidate version only if it passes checks and yields more hits. In case of a tie, retain the original model.</p><div><div><table><tbody><tr><th><p>Metric on <img alt="C_{\mathrm{select}}" loading="lazy" src="https://habrastorage.org/getpro/habr/formulas/4/46/46a/46a85e0d14159fcb76b9747a4afa4f90.svg"/></p></th><th><p>300 Candidates</p></th><th><p>370 Candidates</p></th></tr><tr><td><p>Target found among candidates</p></td><td><p>414 (66.24%)</p></td><td><p>431 (68.96%)</p></td></tr><tr><td><p>Hit in top 20, Hit@20</p></td><td><p>389 (62.24%)</p></td><td><p>388 (62.08%)</p></td></tr><tr><td><p>Target found, but not in top 20</p></td><td><p>25</p></td><td><p>43</p></td></tr></tbody></table></div></div><p>Percentages are calculated based on all 625 sessions with a target, even if the target item is not in the catalog or among the candidates. There were no fallback responses or delivery failures: losses after selection are attributed to ranking.</p><p>Coverage increased by 2.72 percentage points. However, the target was found among candidates but remained outside the top twenty in <img alt="431 - 388 = 43" loading="lazy" src="https://habrastorage.org/getpro/habr/formulas/c/c7/c7f/c7f20583cc8c214de30bd1ef75ba17cc.svg"/> sessions compared to <img alt="414 - 389 = 25" loading="lazy" src="https://habrastorage.org/getpro/habr/formulas/b/b7/b73/b73125d0d2eec66091b5c649523ae110.svg"/> — 18 more sessions.</p><p>The 370-candidate version yielded two new hits and lost three previous ones. In the remaining 620 sessions, both versions either hit or missed. Five outcomes changed, resulting in a net difference of one hit. Matching outcomes does not imply matching item order.</p><p>The coverage increase of 17 sessions does not explain the two new hits: the summary does not indicate whether these were provided by the added candidates.</p><h3>Hit@20 and NDCG@20 Yielded Different Results</h3><p>NDCG@20 changed from 0.48768 to 0.48999. Unlike Hit@20, it considers not only the presence of the target item but also its position.</p><p>Hypothetical example: the only target item moved from fifteenth place to second. Hit@20 remains unchanged, while NDCG@20 increases. In another session, the target dropped from twentieth place to twenty-first — a hit was lost. In aggregate, one metric might increase while the other decreases.</p><p>The training function <code>session_lambdas_v1</code> uses weights for NDCG@20 changes, rather than direct Hit@20 optimization. However, this does not explain the observed reorderings: the examples above are hypothetical. The reasons for specific position changes in this experiment have not yet been analyzed.</p><h3>Why I Kept 300 Candidates</h3><p>I kept 300 candidates: the 370-candidate version did not meet the predefined selection criterion — it did not yield more hits.</p><p>The statistical conclusion is <code>insufficient</code>: it is not sufficiently justified how to account for the temporal dependency of sessions; the required accuracy was not predefined. A difference of one hit does not prove the superiority of 300 candidates, nor the equality of the models. There is no universal conclusion here about the optimal number of candidates.</p><p>I am not comparing speed here: the timer included unequal diagnostics, and there is no separate measurement for <code>recommend</code>.</p><p>The hypothesis emerged after analyzing <img alt="D" loading="lazy" src="https://habrastorage.org/getpro/habr/formulas/f/f6/f62/f623e75af30e62bbd73d6df5b50bb7b5.svg"/>, so it is no longer suitable for independent confirmation of the result. The 58.96% on <img alt="D" loading="lazy" src="https://habrastorage.org/getpro/habr/formulas/f/f6/f62/f623e75af30e62bbd73d6df5b50bb7b5.svg"/> and 62.24% on <img alt="C_{\mathrm{select}}" loading="lazy" src="https://habrastorage.org/getpro/habr/formulas/4/46/46a/46a85e0d14159fcb76b9747a4afa4f90.svg"/> were obtained on different sessions; their difference does not indicate model improvement. The impact on sales and quality with the current assortment is unknown: no A/B test was conducted.</p><p>The experiment code is available in the project repository, and commands for reproduction are in the <a href="https://github.com/ykutovaya/RecSys-Coveo/blob/main/documents/reproduction.md">reproduction instructions</a>.</p></div>
+  </main>
+  <footer>
+    Translation generated with Gemini 2.5 Flash-Lite.
+    The original article remains the source of record.
+  </footer>
+</body>
+</html>

@@ -1,0 +1,100 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Jev: Why You Need a Model for Decisions and How to Use It</title>
+  <meta name="description" content="A message arrives in the chat: &quot;How can I enable notifications only for new orders?&quot; The application needs to determine its type: question, advertisement, or other. The subsequent action depends on the selected category. Read more">
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.65;
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 32px 20px 64px;
+      color: #1f2328;
+    }
+    header {
+      border-bottom: 1px solid #d8dee4;
+      margin-bottom: 28px;
+      padding-bottom: 20px;
+    }
+    .source {
+      color: #57606a;
+      font-size: 0.95rem;
+    }
+    img, video, iframe {
+      max-width: 100%;
+      height: auto;
+    }
+    pre {
+      overflow-x: auto;
+      padding: 16px;
+      background: #f6f8fa;
+      border-radius: 6px;
+    }
+    code {
+      font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+    }
+    blockquote {
+      border-left: 4px solid #d0d7de;
+      margin-left: 0;
+      padding-left: 16px;
+      color: #57606a;
+    }
+    footer {
+      border-top: 1px solid #d8dee4;
+      margin-top: 40px;
+      padding-top: 20px;
+      color: #57606a;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Jev: Why You Need a Model for Decisions and How to Use It</h1>
+    <p>A message arrives in the chat: &quot;How can I enable notifications only for new orders?&quot; The application needs to determine its type: question, advertisement, or other. The subsequent action depends on the selected category. Read more</p>
+    <p class="source">
+      Machine-translated from Habr.
+      <a href="https://habr.com/ru/articles/1097878/?utm_campaign=1097878&amp;utm_source=habrahabr&amp;utm_medium=rss">Read the original Russian article</a>.
+      Thu, 22 Oct 2026 10:55:53 GMT
+    </p>
+  </header>
+  <main>
+<div><p>A message arrives in the chat: "How can I enable notifications only for new orders?" The application needs to determine its type: question, advertisement, or other. The subsequent action depends on the selected category.</p><p><a href="https://docs.typesafe.ai/introduction">Jev from TypeSafe AI</a> accepts data and questions of a specific type, returning values for code: a label, a score on a scale, or the probability of a "yes" answer. Universal LLMs also support structured outputs, and a similar process can be built with their help. Jev is worth considering when you need a ready-made contract for decisions: distribution into predefined options when choosing a category and independent questions about the same data per call. The application receives both the result and scores, based on which it can choose the next action.</p><p>This is an analysis of the API documentation as of October 26, 2026, without service calls. The advantages of Jev in probability calibration, quality, and speed were not tested here.</p><h3>Category, Scale, or Yes/No Question</h3><p>Three types of questions are useful for text tasks. <a href="https://docs.typesafe.ai/primitives/choice">Choice</a> selects one option from a set: for example, "question," "advertisement," or "other" for a chat message. The same method can be used to determine the topic of a support request and select a handler: payment, delivery, return. There is no order between categories.</p><p><a href="https://docs.typesafe.ai/primitives/score">Score</a> evaluates text on an ordered scale. For a queue of requests, you can describe urgency: "can wait," "disrupts work but has a workaround," "work stopped." Three levels occupy positions from 0 to 2, and the final score can be fractional, between levels. This is a position on the scale you described.</p><p><a href="https://docs.typesafe.ai/primitives/noul">Noul</a> returns the probability of a "yes" answer as a number from 0 to 1. For example, whether a comment contains personal data or if a client asks to speak to a human. Such a signal is useful for moderation and transferring to an operator; the threshold for action is set by the application.</p><p>In a single call, you can determine the message type using Choice and separately ask via Noul if it contains personal data. This way, the application gets a category and an additional signal for verification. Questions are evaluated independently: the second does not receive the answer to the first. Dependencies between decisions must be organized in the code.</p><h3>First Request: Determine Message Type</h3><p>Let's use Choice with categories "question," "advertisement," and "other." In the instructions, we'll set a rule for a mixed case: if an advertisement contains a question, choose advertisement.</p><p>According to the <a href="https://docs.typesafe.ai/introduction/quickstart">quickstart</a>, you need Python 3.10 or newer and the official package <code>typesafe-sdk</code>. Get a key from the <a href="https://console.typesafe.ai">TypeSafe console</a> and pass it via the environment variable <code>TYPESAFE_API_KEY</code>. For example, in PowerShell:</p><pre><code>python -m pip install typesafe-sdk
+$env:TYPESAFE_API_KEY = "your-key-from-the-console"
+</code><div><a href="https://sourcecraft.dev/"><span></span></a></div></pre><p>Save the code in <code>classify_message.py</code>. The client will read the key from the environment. <code>jev-latest</code> selects the current model based on the documentation example, without fixing the version.</p><pre><code>from typesafe_sdk import Choice, TypeSafeClient
+
+message = "Подскажите, как подключить уведомления только для новых заказов?"
+
+with TypeSafeClient(model="jev-latest") as client:
+    response = client.system_one(
+        state=message,
+        questions={
+            "message_type": Choice(
+                instructions=(
+                    "Определи тип сообщения в чате. "
+                    "Если реклама содержит вопрос, выбери рекламу."
+                ),
+                criteria={
+                    "question": "Просьба о помощи или информации без рекламы",
+                    "advertising": "Продвижение товара, услуги или внешнего канала",
+                    "other": "Сообщение без рекламы и без просьбы о помощи или информации",
+                },
+            ),
+        },
+    )
+
+answer = response.choices["message_type"]
+print("Метка:", answer.choice)
+print("Вероятности:", answer.probabilities)
+print("Confidence:", answer.confidence)
+</code><div><a href="https://sourcecraft.dev/"><span></span></a></div></pre><p>In the same PowerShell session, run <code>python classify_message.py</code>.</p><p><code>state</code> contains the text being evaluated; instead of a string, structured data is allowed, for example, a message along with chat rules. In <code>questions</code>, the identifier <code>message_type</code> links the question to the answer, <code>instructions</code> sets the task, and <code>criteria</code> describes the categories. In the <a href="https://docs.typesafe.ai/sdk/python">Python SDK</a>, Choice answers are available via <code>response.choices</code>.</p><p>The <code>.choice</code> field contains the label with the highest probability, and <code>.probabilities</code> contains the distribution across options. If the scores for "question" and "advertisement" are close, the application can send the message for analysis even when one label formally wins. The distribution allows accounting for such ambiguity when choosing an action.</p><p><a href="https://docs.typesafe.ai/confidence">Confidence</a> for Choice is calculated from the highest probability, adjusted for the number of options: 0 corresponds to uniform choice, and 1 corresponds to complete focus on one option. This is a separate indicator, not the probability of the chosen label itself. Even a high value does not guarantee that the model correctly understood the message.</p><p>Jev is suitable for a part of the application where a predetermined decision needs to be made based on text content: selecting a handler, setting priorities, or flagging a message for moderation. After classification, the question can be passed to a bot to prepare a response. Generating detailed text and tasks requiring long reasoning require a separate stage; Jev occupies the space between input data and the next code action.</p></div>
+  </main>
+  <footer>
+    Translation generated with Gemini 2.5 Flash-Lite.
+    The original article remains the source of record.
+  </footer>
+</body>
+</html>

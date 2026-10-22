@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>How I Made AI Agents Gather Their Own Harness for a Specific Task</title>
+  <meta name="description" content="I gave Claude Code (Opus 5.5) a test assignment: to draw a scene from Blade Runner 2049 in SVG. The agents I tried all failed similarly: they didn&#x27;t look at the actual frame, drew from memory, and reported completion mindlessly. So, I started prompting the agent with questions: is there documen">
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.65;
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 32px 20px 64px;
+      color: #1f2328;
+    }
+    header {
+      border-bottom: 1px solid #d8dee4;
+      margin-bottom: 28px;
+      padding-bottom: 20px;
+    }
+    .source {
+      color: #57606a;
+      font-size: 0.95rem;
+    }
+    img, video, iframe {
+      max-width: 100%;
+      height: auto;
+    }
+    pre {
+      overflow-x: auto;
+      padding: 16px;
+      background: #f6f8fa;
+      border-radius: 6px;
+    }
+    code {
+      font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+    }
+    blockquote {
+      border-left: 4px solid #d0d7de;
+      margin-left: 0;
+      padding-left: 16px;
+      color: #57606a;
+    }
+    footer {
+      border-top: 1px solid #d8dee4;
+      margin-top: 40px;
+      padding-top: 20px;
+      color: #57606a;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>How I Made AI Agents Gather Their Own Harness for a Specific Task</h1>
+    <p>I gave Claude Code (Opus 5.5) a test assignment: to draw a scene from Blade Runner 2049 in SVG. The agents I tried all failed similarly: they didn&#x27;t look at the actual frame, drew from memory, and reported completion mindlessly. So, I started prompting the agent with questions: is there documentation, what should the result be compared against, when should it stop? These questions evolved into AutoHarness – a skill that forces the agent to prepare for a task before starting it. Read more</p>
+    <p class="source">
+      Machine-translated from Habr.
+      <a href="https://habr.com/ru/articles/1098004/?utm_campaign=1098004&amp;utm_source=habrahabr&amp;utm_medium=rss">Read the original Russian article</a>.
+      Thu, 22 Oct 2026 14:10:02 GMT
+    </p>
+  </header>
+  <main>
+<div><p>I gave Claude Code (Opus 5.5) a test assignment:</p><blockquote><p>Draw a scene from the movie Blade Runner 2049 using SVG graphics, where Ryan Gosling’s character is looking at a hologram of an AI girl in purple light. Don’t use external SVG generators.</p></blockquote><p>The task seems simple, but in reality, it's almost impossible. The prohibition on external generators removes the possibility of cheating: the model draws with code roughly like a person would paint, dictating coordinates.</p><p>All the agents I tried failed it in the same way: none looked at the actual reference, or even tried to – at most, they'd look at a Wikipedia article. The agents drew from memory and reported that it was done. When asked to "make it better," they'd fix something in one place and break something else in another.</p><figure><img alt="Left is a frame from the movie, center is Opus 5.5 on its own, right is the same Opus 5.5 with AutoHarness" loading="lazy" src="https://habrastorage.org/r/w1560/extt/df/62/d2/df62d23e289f553223540b60ad0dc87f.png"/><div><figcaption>Left is a frame from the movie, center is Opus 5.5 on its own, right is the same Opus 5.5 with AutoHarness</figcaption></div></figure><h3>Questions the Agent Doesn't Ask Itself</h3><p>At some point, I stopped hoping for the best and started prompting the agent with questions:</p><ul><li><p>Is there documentation?</p></li><li><p>Has anyone solved something similar?</p></li><li><p>What tools do I have? If the necessary one doesn't exist, can it be created?</p></li><li><p>What should the result be compared against? Where is the reference?</p></li><li><p>What does "good" mean? By what criteria should the work be accepted?</p></li><li><p>How do I not forget what has already been done?</p></li><li><p>Is the new result better than the old one? When should I stop?</p></li></ul><p>With these questions, the picture improved. However, I had to ask them anew each time, and after a couple of steps, the agent would forget them. I decided to delegate everything to a skill, and that's how AutoHarness was born.</p><p>I used to work in aviation. No one builds an airplane head-on there: first, they study each discipline, documentation, and if the necessary document doesn't exist, they write it. I wanted the same from the agent, without being tied to the test task.</p><h3>How It Works in Practice</h3><p>Before starting work, the agent breaks down the task into areas of knowledge. For the movie frame, these are the figure of the person, the lighting, and the composition. For each area, it searches for a ready-made skill or MCP server from sources I trust, such as the Anthropic marketplace. The agent installs skills itself. Installing skills from a public catalog is risky, so each candidate receives a trust score, the skill is first downloaded to a temporary folder and checked for dangerous things like reading <code>~/.ssh</code> or <code>curl | sh</code>. Anything that cannot be fully trusted is installed only after my "yes." If a suitable one isn't found, the agent writes the skill itself. The answer "I already know this" is not accepted; such knowledge must also be recorded in a skill. At the end of the task, the agent deletes everything it installed.</p><p>Then the agent retrieves the reference. In this case, it's the movie frame itself. Before the first attempt, the agent measures proportions, figure placement, color – everything by which it will later judge the result.</p><p>Next, the agent writes a short brief for itself. It contains three things: what a good result should be (for the frame – the same proportions, purple light, hologram in place), my conditions verbatim ("without external generators"), and how it will check the work. For the movie frame, this looks like this:</p><ul><li><p>Look at its work. SVG is code, and the agent doesn't "see" it. Therefore, it opens the file in a browser and takes a screenshot, turning the code into an image.</p></li><li><p>Place it next to the original. The screenshot is placed side-by-side with the actual movie frame.</p></li><li><p>Compare against measurements. Before starting work, the agent measured the frame: where the character is positioned, their height relative to the frame, where the hologram is, what the color is. Now it compares its drawing against these numbers.</p></li><li><p>Provide critique. A separate agent, one that didn't do the drawing, compares the images and gives an assessment. Without a brief, the agent in Claude Code simply cannot create or modify files: a hook prevents it.</p></li></ul><h3>The Agent Doesn't Evaluate Its Own Work</h3><p>The most telling case wasn't with the picture. I was fixing several security issues in AutoHarness itself. The agent writing the fixes rated its own work as "minor" five times in a row. A separate critic agent, which didn't write the code, found two ways to bypass the hook in the very first round and called it a blocker. Then it found three more serious problems.</p><p>Therefore, the work is always checked by a second agent that did not do it. It compares images blindly: it sees two versions labeled A and B and doesn't know which is new. The feedback always ends with a single word: blocker, major, minor, or none. The first agent doesn't rephrase the feedback, otherwise, a blocker could easily turn into a minor. Instead, the program assigns a one-time ID to each check. The second agent writes this ID as the first line of feedback, and the first agent saves the feedback to a file entirely, and the program matches the IDs and reads the assessment itself, so the critic's old feedback won't be accepted as new.</p><p>If the critic finds a serious problem, the agent first looks for how it should be according to the rules and adds it to the skill. It can only fix it after that. If the same problem persists for three rounds, the agent must change its approach.</p><h3>Who Enforces the Rules</h3><p>Agents skip prompt rules; I've seen this many times. Therefore, AutoHarness has two parts. The first is instructions for the agent. The second is the <code>autoharness</code> script, which the agent runs itself in the terminal. The agent records each step in the task log and verifies it. For example, if the brief states that a skill was found via a certain query, the script will cross-reference this with the search log. If a step is not completed, it refuses, and the agent cannot proceed.</p><h3>Skills Also Need Verification</h3><p>A skill written by an agent might point in the wrong direction. Therefore, it can be run on test tasks: each is done by two agents, one with the skill and one without, and a judge compares the work without knowing which is which.</p><h3>What's the Result</h3><p>On my tasks, Opus 5.5 with AutoHarness worked noticeably better than without it, especially on visual tasks. I don't have a proper benchmark yet. A normal run is expensive and time-consuming. In my opinion, the predictability of task completion results has improved.</p><p>Preparation consumes time and tokens, so for minor things like typos, there's a light mode without searching and briefing.</p><p>Works with Claude Code, Codex CLI, Gemini CLI, Antigravity CLI, Qwen Code, GigaCode.</p><p>Code: <a href="https://github.com/D-Shey/autoharness">https://github.com/D-Shey/autoharness</a></p><p>I would appreciate any criticism. Perhaps someone has done something similar?</p></div>
+  </main>
+  <footer>
+    Translation generated with Gemini 2.5 Flash-Lite.
+    The original article remains the source of record.
+  </footer>
+</body>
+</html>

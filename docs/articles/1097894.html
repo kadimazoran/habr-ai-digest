@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Gary Illyes: robots.txt only prohibits crawling, not content usage for AI training</title>
+  <meta name="description" content="For the past two years, website owners have developed a collective habit: adding Disallow for GPTBot, CCBot, and other AI crawlers to robots.txt and believing their content is protected from AI. Gary Illyes from Google has drawn a line that nullifies this habit: robots.txt controls crawling, not con">
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.65;
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 32px 20px 64px;
+      color: #1f2328;
+    }
+    header {
+      border-bottom: 1px solid #d8dee4;
+      margin-bottom: 28px;
+      padding-bottom: 20px;
+    }
+    .source {
+      color: #57606a;
+      font-size: 0.95rem;
+    }
+    img, video, iframe {
+      max-width: 100%;
+      height: auto;
+    }
+    pre {
+      overflow-x: auto;
+      padding: 16px;
+      background: #f6f8fa;
+      border-radius: 6px;
+    }
+    code {
+      font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+    }
+    blockquote {
+      border-left: 4px solid #d0d7de;
+      margin-left: 0;
+      padding-left: 16px;
+      color: #57606a;
+    }
+    footer {
+      border-top: 1px solid #d8dee4;
+      margin-top: 40px;
+      padding-top: 20px;
+      color: #57606a;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Gary Illyes: robots.txt only prohibits crawling, not content usage for AI training</h1>
+    <p>For the past two years, website owners have developed a collective habit: adding Disallow for GPTBot, CCBot, and other AI crawlers to robots.txt and believing their content is protected from AI. Gary Illyes from Google has drawn a line that nullifies this habit: robots.txt controls crawling, not content usage for training (Search Engine Journal, 2026). Read more</p>
+    <p class="source">
+      Machine-translated from Habr.
+      <a href="https://habr.com/ru/articles/1097894/?utm_campaign=1097894&amp;utm_source=habrahabr&amp;utm_medium=rss">Read the original Russian article</a>.
+      Thu, 22 Oct 2026 11:20:54 GMT
+    </p>
+  </header>
+  <main>
+<div><p>For the past two years, website owners have developed a collective habit: adding <code>Disallow</code> for GPTBot, CCBot, and other AI crawlers to robots.txt and believing their content is protected from AI. Gary Illyes from Google has drawn a line that nullifies this habit: <strong>robots.txt controls crawling, not content usage for training</strong> (Search Engine Journal, 2026).</p><h3>Two Different Processes</h3><p>Illyes has separated two things that many publishers considered synonymous.</p><p>The first is robots.txt. This is an access protocol for crawlers, and it answers one question: <strong>can a bot access a page</strong> and read its content. That is all it is designed for. The file appeared long before generative AI – it is about crawling discipline, not about the fate of already read text.</p><p>The second is the use of content for training models. This is a separate process, regulated by other mechanisms: <em>company-specific policies</em>, opt-out programs, and ultimately, copyright. Blocking an AI crawler via robots.txt does not mean the content will not end up in a dataset: it could have been collected earlier, through another method, or as part of another program. The <code>Disallow</code> directive simply does not answer the question <strong>where already collected content will end up</strong>.</p><p>Essentially, Illyes said: you are solving the crawling problem while thinking you are solving the protection from training problem. These are two different processes with two different control points – and mixing them meant building a wall in one place while everyone walks through another.</p><h3>Why the Directive Doesn't Work as Protection</h3><p>Here, it all comes down to the nature of the file itself. robots.txt is a polite request, not a technical barrier. A well-behaved crawler will read it and leave. A crawler that came specifically for training data will read the same line – and calmly move on, because the file cannot physically prevent it. Hence the false sense of security for those who have spent two years building "content protection" based on this directive. And this is a security <strong>officially confirmed by Google itself</strong>.</p><figure><img loading="lazy" src="https://habrastorage.org/r/w1560/extt/3d/8e/6f/3d8e6f204191da47cefca95605e1299d.png"/></figure><p>An important caveat, to avoid falling into the other extreme: robots.txt has not been canceled or broken. For its task – controlling crawling – it works exactly as it used to. What is changing is not the file itself, but the understanding of which task it covers and which it does not.</p><h3>What This Means for Neuro-Promotion</h3><p>Now comes the part that is more interesting than the technical details. The entire strategy of "hiding from AI with a single line" was based on the assumption that value lies in the mere existence of text. But the value is not there.</p><p>In neural search results, the model will still gather a dozen sources and provide one answer. And the one that gets into this answer will not be the one that loudly blocked itself, but the one that has something substantial to say. <strong>AI filters out those who have nothing to present.</strong> This is the shift in perspective: protection moves from the question "<em>how to prohibit</em>" to the question "<em>how to make it so that an answer cannot be complete without me</em>".</p><figure><img loading="lazy" src="https://habrastorage.org/r/w1560/extt/27/1d/95/271d9552f38a7d8408002cc162f9c4da.png"/></figure><p>Work becomes different because of this. Not hiding facts, but enhancing them – expertise, data, experience, things that cannot be retold by a text that has been retold three times. I elaborated on this shift from "hiding" to "being an indispensable source" in my diary – <a href="https://habr.com/ru/articles/1056746/">how promotion works in neural networks</a>, it reads as a direct continuation of this analysis.</p><p>And one more observation that this news illustrates well. The demand for visibility in neural networks did not appear because someone invented and imposed it. It appeared because people started asking models questions instead of using the search bar. <strong>Marketing follows need, it does not create it</strong> – and content protection, and promotion methods are being rebuilt following the changes in behavior itself.</p><h3>In Short</h3><p>If your content protection from AI relied on a single directive in robots.txt – it essentially didn't exist. Leave the file for crawling, for its intended purpose. And solve the real problem separately: become the source that the model cannot bypass.</p></div>
+  </main>
+  <footer>
+    Translation generated with Gemini 2.5 Flash-Lite.
+    The original article remains the source of record.
+  </footer>
+</body>
+</html>

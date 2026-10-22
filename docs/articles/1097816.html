@@ -1,0 +1,243 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>NVIDIA CMP 50HX: Not All Is Lost Yet...</title>
+  <meta name="description" content="Greetings everyone! This article is inspired by the publication NVIDIA CMP – microscopes for hammering nails? Digging deeper... (for all technical details, refer there). Here I will simply publish the results of my experiments, a solution method, and the obtained results. Read more">
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.65;
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 32px 20px 64px;
+      color: #1f2328;
+    }
+    header {
+      border-bottom: 1px solid #d8dee4;
+      margin-bottom: 28px;
+      padding-bottom: 20px;
+    }
+    .source {
+      color: #57606a;
+      font-size: 0.95rem;
+    }
+    img, video, iframe {
+      max-width: 100%;
+      height: auto;
+    }
+    pre {
+      overflow-x: auto;
+      padding: 16px;
+      background: #f6f8fa;
+      border-radius: 6px;
+    }
+    code {
+      font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+    }
+    blockquote {
+      border-left: 4px solid #d0d7de;
+      margin-left: 0;
+      padding-left: 16px;
+      color: #57606a;
+    }
+    footer {
+      border-top: 1px solid #d8dee4;
+      margin-top: 40px;
+      padding-top: 20px;
+      color: #57606a;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>NVIDIA CMP 50HX: Not All Is Lost Yet...</h1>
+    <p>Greetings everyone! This article is inspired by the publication NVIDIA CMP – microscopes for hammering nails? Digging deeper... (for all technical details, refer there). Here I will simply publish the results of my experiments, a solution method, and the obtained results. Read more</p>
+    <p class="source">
+      Machine-translated from Habr.
+      <a href="https://habr.com/ru/articles/1097816/?utm_campaign=1097816&amp;utm_source=habrahabr&amp;utm_medium=rss">Read the original Russian article</a>.
+      Thu, 22 Oct 2026 09:59:19 GMT
+    </p>
+  </header>
+  <main>
+<div><h2>Background</h2><p>I have a home server with a typical “under-the-desk” configuration. Proxmox with several virtual machines. At some point, I bought an NVIDIA CMP 50HX at an auction for next to nothing, just to play around with simple models. I run models using llama.cpp, and also use Whisper for speech recognition. I quickly came to terms with the speed of operation and lived with it all peacefully for several months until I stumbled upon the article <a href="https://habr.com/ru/articles/948396/">NVIDIA CMP – microscopes for hammering nails? Digging deeper…</a>.</p><p>I highly recommend reading the <a href="https://habr.com/ru/articles/948396/">article</a>, it significantly enlightens the mind regarding the understanding of the problem (and solution options) discussed below.</p><h2>Addressing the “Higher Intellect”</h2><p>I sent the link to the article “to the chat” with a request to suggest a solution. As a result, within 20 minutes, I had a ready-made testbed with a patch for the <code>ggml</code> source code. Since <code>ggml</code> is common to <code>llama.cpp</code> and <code>whisper.cpp</code>, the same patch works for both projects.</p><blockquote><p>If you are not interested in the testing process, you can immediately proceed to the <a href="https://habr.com/ru/articles/1097816/?utm_campaign=1097816&amp;utm_source=habrahabr&amp;utm_medium=rss#result">results</a> and the <a href="https://habr.com/ru/articles/1097816/?utm_campaign=1097816&amp;utm_source=habrahabr&amp;utm_medium=rss#conclusion">ready-made solution</a>.</p></blockquote><details><summary>llamacpp-cmp.patch</summary><div><pre><code>diff --git a/ggml/src/ggml-cuda/common.cuh b/ggml/src/ggml-cuda/common.cuh
+index fea1cf9..046728a 100644
+--- a/ggml/src/ggml-cuda/common.cuh
++++ b/ggml/src/ggml-cuda/common.cuh
+@@ -738,7 +738,17 @@ static __device__ __forceinline__ int ggml_cuda_dp4a(const int a, const int b, i
+ 
+ #else // defined(GGML_USE_HIP)
+ 
+-#if __CUDA_ARCH__ &gt;= GGML_CUDA_CC_DP4A || defined(GGML_USE_MUSA)
++#if defined(GGML_CUDA_CMP_EMU_DP4A) &amp;&amp; !defined(GGML_USE_MUSA)
++    // NVIDIA CMP mining GPUs: the hardware dp4a is throttled (about 1/8 rate on CMP 40HX/50HX).
++    // Four plain integer multiply-adds written as inline PTX are faster and are not folded back
++    // into dp4a by the compiler (a plain C expression would be).
++    int r = c;
++    asm("mad.lo.s32 %0, %1, %2, %0;" : "+r"(r) : "r"((int)(int8_t)(a      )), "r"((int)(int8_t)(b      )));
++    asm("mad.lo.s32 %0, %1, %2, %0;" : "+r"(r) : "r"((int)(int8_t)(a &gt;&gt;  8)), "r"((int)(int8_t)(b &gt;&gt;  8)));
++    asm("mad.lo.s32 %0, %1, %2, %0;" : "+r"(r) : "r"((int)(int8_t)(a &gt;&gt; 16)), "r"((int)(int8_t)(b &gt;&gt; 16)));
++    asm("mad.lo.s32 %0, %1, %2, %0;" : "+r"(r) : "r"((int)(int8_t)(a &gt;&gt; 24)), "r"((int)(int8_t)(b &gt;&gt; 24)));
++    return r;
++#elif __CUDA_ARCH__ &gt;= GGML_CUDA_CC_DP4A || defined(GGML_USE_MUSA)
+     return __dp4a(a, b, c);
+ #else // __CUDA_ARCH__ &gt;= GGML_CUDA_CC_DP4A || defined(GGML_USE_MUSA)
+     const int8_t * a8 = (const int8_t *) &amp;a;
+diff --git a/ggml/src/ggml-cuda/ggml-cuda.cu b/ggml/src/ggml-cuda/ggml-cuda.cu
+index 9fe618f..c9ed96e 100644
+--- a/ggml/src/ggml-cuda/ggml-cuda.cu
++++ b/ggml/src/ggml-cuda/ggml-cuda.cu
+@@ -1403,6 +1403,36 @@ static __global__ void k_compute_batched_ptrs( 
+     ptrs_dst[0*ne23 + i12 + i13*ne12] = (      char *)         dst + i12*nbd2 + i13*nbd3;
+ }
+ 
++#if !defined(GGML_USE_HIP) &amp;&amp; !defined(GGML_USE_MUSA)
++// NVIDIA CMP mining GPUs (CMP 40HX/50HX/90HX): tensor cores and FMA are throttled, so cuBLAS must be
++// told not to use them (see https://habr.com/ru/articles/948396/: FP16 GEMM goes from ~3 to ~24
++// "units" with CUBLAS_COMPUTE_16F_PEDANTIC on a CMP 50HX).
++// GGML_CUDA_CMP_MODE=1 forces this on, =0 forces it off, unset/other = auto-detect by device name.
++static bool ggml_cuda_device_is_cmp(const int device) {
++    static int8_t cache[GGML_CUDA_MAX_DEVICES] = {0}; // 0 = unknown, 1 = no, 2 = yes
++    if (device &lt; 0 || device &gt;= GGML_CUDA_MAX_DEVICES) {
++        return false;
++    }
++    if (cache[device] == 0) {
++        const char * env = getenv("GGML_CUDA_CMP_MODE");
++        bool is_cmp;
++        if (env != nullptr &amp;&amp; env[0] == '0') {
++            is_cmp = false;
++        } else if (env != nullptr &amp;&amp; env[0] == '1') {
++            is_cmp = true;
++        } else {
++            cudaDeviceProp prop;
++            is_cmp = cudaGetDeviceProperties(&amp;prop, device) == cudaSuccess &amp;&amp; strstr(prop.name, "CMP") != nullptr;
++        }
++        cache[device] = is_cmp ? 2 : 1;
++        if (is_cmp) {
++            GGML_LOG_INFO("%s: device %d treated as NVIDIA CMP: cuBLAS FP16 GEMM without tensor cores (PEDANTIC)\n", __func__, device);
++        }
++    }
++    return cache[device] == 2;
++}
++#endif // !defined(GGML_USE_HIP) &amp;&amp; !defined(GGML_USE_MUSA)
++
+ // Type traits for mapping ggml types to CUDA/cuBLAS types
+ template&lt;ggml_type T&gt;
+ struct batched_mul_mat_traits;
+@@ -1577,6 +1607,15 @@ static void ggml_cuda_mul_mat_cublas_impl(ggml_backend_cuda_context &amp; ctx, const
+     GGML_ASSERT(ne12 % ne02 == 0);
+     GGML_ASSERT(ne13 % ne03 == 0);
+ 
++    auto gemm_algo = CUBLAS_GEMM_DEFAULT_TENSOR_OP;
++#if !defined(GGML_USE_HIP) &amp;&amp; !defined(GGML_USE_MUSA)
++    if (compute_type == GGML_TYPE_F16 &amp;&amp; cu_compute_type == CUBLAS_COMPUTE_16F &amp;&amp; ggml_cuda_device_is_cmp(ctx.device)) {
++        // NVIDIA CMP: the tensor-core path is throttled; pure FP16 CUDA-core GEMM is ~7x faster.
++        cu_compute_type = CUBLAS_COMPUTE_16F_PEDANTIC;
++        gemm_algo       = CUBLAS_GEMM_DEFAULT;
++    }
++#endif // !defined(GGML_USE_HIP) &amp;&amp; !defined(GGML_USE_MUSA)
++
+     // broadcast factors
+     const int64_t r2 = ne12/ne02;
+     const int64_t r3 = ne13/ne03;
+@@ -1599,7 +1638,7 @@ static void ggml_cuda_mul_mat_cublas_impl(ggml_backend_cuda_context &amp; ctx, const
+                            src1_ptr, cu_data_type_b, s11, 
+                     beta,   dst_ptr, cu_data_type,   ldc, 
+                     cu_compute_type,
+-                    CUBLAS_GEMM_DEFAULT_TENSOR_OP));
++                    gemm_algo));
+     } else if (r2 == 1 &amp;&amp; r3 == 1 &amp;&amp; is_src0_cont_2 &amp;&amp; is_src1_cont_2) {
+         // with a [0, 2, 1, 3] perm. and ne02==1 the matrix strides need to be determined from dim 3:
+         const int64_t sma = ne02 == 1 ? s03 : s02;
+@@ -1615,7 +1654,7 @@ static void ggml_cuda_mul_mat_cublas_impl(ggml_backend_cuda_context &amp; ctx, const
+                 beta,   dst_ptr, cu_data_type,   ldc, ne1*ldc, // strideC
+                 ne12*ne13,
+                 cu_compute_type,
+-                CUBLAS_GEMM_DEFAULT_TENSOR_OP));
++                gemm_algo));
+     } else {
+         // use cublasGemmBatchedEx
+         const int64_t ne23 = ne12*ne13;
+@@ -1653,7 +1692,7 @@ static void ggml_cuda_mul_mat_cublas_impl(ggml_backend_cuda_context &amp; ctx, const
+                 beta,  (      void **) (ptrs_dst.get() + 0*ne23), cu_data_type,   ldc, 
+                 ne23,
+                 cu_compute_type,
+-                CUBLAS_GEMM_DEFAULT_TENSOR_OP));
++                gemm_algo));
+     }
+ 
+     // Convert output back to F32 if needed
+</code><div><a href="https://sourcecraft.dev/"><span></span></a></div></pre></div></details><blockquote><p><strong>Important Note:</strong> The patch is compiled for the current (as of the article's publication date) branches of the repositories. On llama.cpp (branch <code>a0e6dc7</code>), the patch applies cleanly (<code>git apply</code>). On whisper.cpp (branch <code>0c7be69</code>), the lines are shifted by 45, so <code>git apply</code> fails, but <code>patch -p1</code> applies all five fragments (fuzz 1–2). After applying the patch, all three GEMM calls in <code>ggml_cuda_mul_mat_cublas_impl</code> use the new <code>gemm_algo</code> variable.</p><p>For future branches, the patch will obviously need to be checked (or redone)</p></blockquote><h3>What the Patch Does</h3><h4>1. cuBLAS FP16 without Tensor Cores (ggml-cuda.cu)</h4><p>The function <code>ggml_cuda_device_is_cmp()</code> has been added to <code>ggml_cuda_mul_mat_cublas_impl</code>. It identifies CMP cards by device name and caches the result. On CMP, the calls to <code>cublasGemmEx</code> / <code>cublasGemmStridedBatchedEx</code> / <code>cublasGemmBatchedEx</code> receive different parameters:</p><ul><li><p><code>CUBLAS_COMPUTE_16F</code> → <code>CUBLAS_COMPUTE_16F_PEDANTIC</code>;</p></li><li><p><code>CUBLAS_GEMM_DEFAULT_TENSOR_OP</code> → <code>CUBLAS_GEMM_DEFAULT</code>.</p></li></ul><p>The behavior is controlled by the environment variable <code>GGML_CUDA_CMP_MODE</code>: <code>1</code> forces the mode on, <code>0</code> turns it off, without the variable, auto-detection works. When triggered, the following line is written to the log:</p><pre><code>ggml_cuda_device_is_cmp: device 0 treated as NVIDIA CMP: cuBLAS FP16 GEMM without tensor cores (PEDANTIC)</code><div><a href="https://sourcecraft.dev/"><span></span></a></div></pre><p>This switches the matrix multiplication method with weights in F16 (this primarily affects <code>Whisper</code>).</p><h4>2. dp4a Emulation (common.cuh)</h4><p>If compiled with <code>-DGGML_CUDA_CMP_EMU_DP4A</code>, the <code>ggml_cuda_dp4a</code> function, instead of <code>__dp4a</code>, executes four <code>mad.lo.s32</code> instructions written in Inline PTX:</p><pre><code>int r = c; 
+asm("mad.lo.s32 %0, %1, %2, %0;" : "+r"(r) : "r"((int)(int8_t)(a      )), "r"((int)(int8_t)(b      )));
+asm("mad.lo.s32 %0, %1, %2, %0;" : "+r"(r) : "r"((int)(int8_t)(a &gt;&gt;  8)), "r"((int)(int8_t)(b &gt;&gt;  8)));
+asm("mad.lo.s32 %0, %1, %2, %0;" : "+r"(r) : "r"((int)(int8_t)(a &gt;&gt; 16)), "r"((int)(int8_t)(b &gt;&gt; 16)));
+asm("mad.lo.s32 %0, %1, %2, %0;" : "+r"(r) : "r"((int)(int8_t)(a &gt;&gt; 24)), "r"((int)(int8_t)(b &gt;&gt; 24)));
+return r;
+</code><div><a href="https://sourcecraft.dev/"><span></span></a></div></pre><p>Inline PTX is needed here because the compiler would fold a plain C expression back into <code>dp4a</code>. The Matrix-Vector Quantized Multiplication (MMVQ) and MMQ kernels without tensor cores are built on <code>dp4a</code>, and thus, primarily token generation.</p><h2>Preparing the Testbed and Compiling Benchmarks</h2><blockquote><p>If you are not interested in the testing process, you can immediately proceed to the <a href="https://habr.com/ru/articles/1097816/?utm_campaign=1097816&amp;utm_source=habrahabr&amp;utm_medium=rss#result">results</a> and the <a href="https://habr.com/ru/articles/1097816/?utm_campaign=1097816&amp;utm_source=habrahabr&amp;utm_medium=rss#conclusion">ready-made solution</a>.</p></blockquote><h4>0. My Testbed</h4><div><div><table><tbody><tr><th><p></p></th><th><p></p></th></tr><tr><td><p>GPU</p></td><td><p>NVIDIA CMP 50HX, 10 GB, compute capability 7.5</p></td></tr><tr><td><p>Driver</p></td><td><p>580.126.09</p></td></tr><tr><td><p>CUDA Toolkit</p></td><td><p>12.8 (build), driver supports CUDA 13.0</p></td></tr><tr><td><p>CPU / RAM</p></td><td><p>12 threads, 32 GB</p></td></tr><tr><td><p>OS</p></td><td><p>Proxmox VE (kernel 6.8.12-pve)</p></td></tr><tr><td><p>llama.cpp</p></td><td><p><code>a0e6dc7</code> (master as of 10/15/2026)</p></td></tr><tr><td><p>whisper.cpp</p></td><td><p><code>0c7be69</code> (master as of 10/15/2026)</p></td></tr></tbody></table></div></div><h4>1. Checking Hardware and Driver</h4><pre><code>nvidia-smi --query-gpu=name,compute_cap,driver_version,memory.total --format=csv</code><div><a href="https://sourcecraft.dev/"><span></span></a></div></pre><p>The <code>name</code> column should contain the word <code>CMP</code> (e.g., <code>NVIDIA CMP 50HX</code>); otherwise, the auto-detection in the patch will not work. A driver with CUDA 12.x support is required: the output of <code>nvidia-smi</code> should show <code>CUDA Version: 12.x</code> or higher.</p><p>For other CMPs, substitute your architecture for <code>75</code>:</p><div><div><table><tbody><tr><th><p>Card</p></th><th><p>Chip</p></th><th><p><code>CMAKE_CUDA_ARCHITECTURES</code></p></th></tr><tr><td><p>CMP 30HX, 40HX, 50HX</p></td><td><p>Turing</p></td><td><p><code>75</code></p></td></tr></tbody></table></div></div><blockquote><p>Only CMP 50HX was tested</p></blockquote><h4>2. Packages and CUDA Toolkit</h4><p>Debian / Ubuntu:</p><pre><code>sudo apt update
+sudo apt install -y build-essential cmake git ccache curl python3
+cmake --version    # requires 3.18+, tested on 3.25</code><div><a href="https://sourcecraft.dev/"><span></span></a></div></pre><p>Ensure that your chosen toolkit includes <strong>nvcc and cuBLAS</strong>:</p><pre><code>ls $CUDA_ROOT/bin/nvcc
+ls $CUDA_ROOT/include/cublas_v2.h $CUDA_ROOT/lib64/libcublas.so*
+$CUDA_ROOT/bin/nvcc --version</code><div><a href="https://sourcecraft.dev/"><span></span></a></div></pre><p>If <code>cublas_v2.h</code> is missing, this toolkit is not fully installed; use another one (on the test server, it was 12.8). You can install cuBLAS like this:</p><pre><code>sudo apt install -y cuda-toolkit-12-8     # or libcublas-dev-12-8 if NVIDIA repository is available</code><div><a href="https://sourcecraft.dev/"><span></span></a></div></pre><p>Check where the symlink <code>/usr/local/cuda</code> points:</p><pre><code>readlink -f /usr/local/cuda</code><div><a href="https://sourcecraft.dev/"><span></span></a></div></pre><p>If it points to something other than <code>$CUDA_ROOT</code> (e.g., to CUDA 13), it's not a problem, but when using cmake, <strong>make sure</strong> to pass <code>-DCUDAToolkit_ROOT</code>, otherwise, a linking error <code>cudaGetDeviceProperties_v2</code> might occur.</p><h4>3. Compiling Benchmarks for Testing</h4><p>To test all variants, I compiled 5 versions with different combinations of options and ran tests. Each version was compiled in a separate directory with common parameters:</p><pre><code>-DGGML_CUDA=ON \
+-DCMAKE_BUILD_TYPE=Release \
+-DCMAKE_CUDA_COMPILER=/usr/local/cuda-12.8/bin/nvcc</code><div><a href="https://sourcecraft.dev/"><span></span></a></div></pre><p>The table shows additional parameters for testing different build variants</p><div><div><table><tbody><tr><th><p>Variant</p></th><th><p>Architecture</p></th><th><p>Additional Parameters</p></th><th><p>Build</p></th></tr><tr><td><p><strong>A</strong></p></td><td><p>75</p></td><td><p>—</p></td><td><p>Base build (without patch)</p></td></tr><tr><td><p><strong>B</strong></p></td><td><p>61-virtual</p></td><td><p><code>GGML_CUDA_FORCE_MMQ=ON</code></p></td><td><p>Pascal code: no tensor cores, MMQ on dp4a</p></td></tr><tr><td><p><strong>C</strong></p></td><td><p>61-virtual</p></td><td><p><strong>B</strong> + <code>-fmad=false</code></p></td><td><p><strong>B</strong> + FMA disabled in all cores</p></td></tr><tr><td><p><strong>D</strong></p></td><td><p>61-virtual</p></td><td><p><strong>C</strong> + <code>-DGGML_CUDA_CMP_EMU_DP4A</code></p></td><td><p><strong>C</strong> + dp4a emulation</p></td></tr><tr><td><p><strong>E</strong></p></td><td><p>75</p></td><td><p><code>-fmad=false -DGGML_CUDA_CMP_EMU_DP4A</code></p></td><td><p>Hybrid: tensor cores for MMQ retained, FMA and dp4a removed</p></td></tr></tbody></table></div></div><details><summary>Build Commands</summary><div><pre><code># A: Base build (without patch)
+cmake -B build_a -DGGML_CUDA=ON -DCMAKE_BUILD_TYPE=Release -DCMAKE_CUDA_COMPILER=/usr/local/cuda-12.8/bin/nvcc -DCMAKE_CUDA_ARCHITECTURES=75
+# B: Pascal code: no tensor cores, MMQ on dp4a
+cmake -B build_b -DGGML_CUDA=ON -DCMAKE_BUILD_TYPE=Release -DCMAKE_CUDA_COMPILER=/usr/local/cuda-12.8/bin/nvcc -DCMAKE_CUDA_ARCHITECTURES="61-virtual" -DGGML_CUDA_FORCE_MMQ=ON
+# C: B + FMA disabled in all cores
+cmake -B build_c -DGGML_CUDA=ON -DCMAKE_BUILD_TYPE=Release -DCMAKE_CUDA_COMPILER=/usr/local/cuda-12.8/bin/nvcc -DCMAKE_CUDA_ARCHITECTURES="61-virtual" -DGGML_CUDA_FORCE_MMQ=ON \
+      -DCMAKE_CUDA_FLAGS="-fmad=false"
+# D: C + dp4a emulation
+cmake -B build_d -DGGML_CUDA=ON -DCMAKE_BUILD_TYPE=Release -DCMAKE_CUDA_COMPILER=/usr/local/cuda-12.8/bin/nvcc -DCMAKE_CUDA_ARCHITECTURES="61-virtual" -DGGML_CUDA_FORCE_MMQ=ON \
+      -DCMAKE_CUDA_FLAGS="-fmad=false -DGGML_CUDA_CMP_EMU_DP4A"
+# E: Hybrid: tensor cores for MMQ retained, FMA and dp4a removed
+cmake -B build_e -DGGML_CUDA=ON -DCMAKE_BUILD_TYPE=Release -DCMAKE_CUDA_COMPILER=/usr/local/cuda-12.8/bin/nvcc -DCMAKE_CUDA_ARCHITECTURES=75 -fmad=false -DGGML_CUDA_CMP_EMU_DP4A
+
+for n in a b c d e; do cmake --build build_$n -j --target llama-bench; done
+</code><div><a href="https://sourcecraft.dev/"><span></span></a></div></pre></div></details><hr/><a></a><h2>Results: llama.cpp</h2><h4>Measurement Methodology</h4><ul><li><p><strong>LLM:</strong> <code>llama-bench -m &lt;model&gt; -p 512 -n 128 -ngl 99</code>, 5 repetitions (default value), <code>pp512</code> — prompt processing speed of 512 tokens (prefill), <code>tg128</code> — generation speed of 128 tokens. Both metrics are in tokens per second, higher is better.</p></li><li><p><strong>Flags:</strong> <code>-fa 1 -ctk q8_0 -ctv q8_0</code> (flash attention and KV cache in q8_0).</p></li><li><p><strong>Whisper:</strong> <code>whisper-cli</code> with the large-v3-turbo model on <code>samples/jfk.wav</code> (11 seconds of audio), encoding time (encode) and total time.</p></li><li><p><strong>Cleanup:</strong> Before each measurement, the GPU was empty (0 MiB used), and each run lasted approximately 5 minutes.</p></li></ul><h4>1. Qwen3.5-9B Q4_K_M (5.28 GiB)</h4><div><div><table><tbody><tr><th><p>Build</p></th><th><p>pp512, tokens/s</p></th><th><p>tg128, tokens/s</p></th></tr><tr><td><p>A — base</p></td><td><p>307.8 ± 0.6</p></td><td><p>29.9 ± 0.5</p></td></tr><tr><td><p>B — Pascal + MMQ</p></td><td><p>84.4 ± 0.1</p></td><td><p>28.8 ± 0.6</p></td></tr><tr><td><p>C — B + no FMA</p></td><td><p>111.7 ± 0.1</p></td><td><p>44.7 ± 0.3</p></td></tr><tr><td><p>D — C + dp4a emulation</p></td><td><p>105.9 ± 0.1</p></td><td><p>54.6 ± 0.2</p></td></tr><tr><td><p><strong>E — sm_75 + no FMA + dp4a emulation</strong></p></td><td><p><strong>412.0 ± 1.6</strong></p></td><td><p><strong>58.8 ± 0.2</strong></p></td></tr></tbody></table></div></div><h4>2. Qwen3.8-9B-Distill Q4_K_M (5.37 GiB)</h4><div><div><table><tbody><tr><th><p>Build</p></th><th><p>pp512, tokens/s</p></th><th><p>tg128, tokens/s</p></th></tr><tr><td><p>A — base</p></td><td><p>309.5 ± 0.8</p></td><td><p>30.0 ± 0.7</p></td></tr><tr><td><p>B — Pascal + MMQ</p></td><td><p>84.7 ± 0.1</p></td><td><p>29.4 ± 0.6</p></td></tr><tr><td><p>C — B + no FMA</p></td><td><p>111.7 ± 0.1</p></td><td><p>45.5 ± 0.2</p></td></tr><tr><td><p>D — C + dp4a emulation</p></td><td><p>108.0 ± 0.1</p></td><td><p>55.1 ± 0.1</p></td></tr><tr><td><p><strong>E — sm_75 + no FMA + dp4a emulation</strong></p></td><td><p><strong>412.6 ± 1.4</strong></p></td><td><p><strong>57.8 ± 0.1</strong></p></td></tr></tbody></table></div></div><h4>3. Qwen3.8-9B-Distill Q5_K_M (6.18 GiB)</h4><div><div><table><tbody><tr><th><p>Build</p></th><th><p>pp512, tokens/s</p></th><th><p>tg128, tokens/s</p></th></tr><tr><td><p>A — base</p></td><td><p>311.4 ± 0.3</p></td><td><p>29.9 ± 0.2</p></td></tr><tr><td><p>B — Pascal + MMQ</p></td><td><p>84.7 ± 0.1</p></td><td><p>28.4 ± 0.7</p></td></tr><tr><td><p>C — B + no FMA</p></td><td><p>111.6 ± 0.1</p></td><td><p>44.2 ± 0.3</p></td></tr><tr><td><p>D — C + dp4a emulation</p></td><td><p>117.1 ± 0.1</p></td><td><p>51.2 ± 0.0</p></td></tr><tr><td><p><strong>E — sm_75 + no FMA + dp4a emulation</strong></p></td><td><p><strong>410.7 ± 1.4</strong></p></td><td><p><strong>53.2 ± 0.2</strong></p></td></tr></tbody></table></div></div><h3>What the Measurements Showed</h3><p><strong>1. INT8 tensor cores on CMP 50HX are not throttled, at least in MMQ.</strong> Variants B–D, which lack tensor cores entirely, process the prompt 3–4 times slower than the base version. Therefore, bypassing them is unnecessary.</p><p><strong>2. FMA and dp4a are bottlenecks for generation.</strong> Token generation is limited by MMVQ kernels, which are built on <code>dp4a</code> and FMA. Comparing within the “Pascal branch,” moving from B to C (disabling FMA) gives a +55% increase in generation, and from C to D (dp4a emulation) another +16–23%.</p><p><strong>3. Hence, variant E: the best of both worlds.</strong> We keep <code>sm_75</code> so that MMQ goes through tensor cores, and remove FMA and dp4a. The result on Q4_K_M:</p><div><div><table><tbody><tr><th><p></p></th><th><p>pp512</p></th><th><p>tg128</p></th></tr><tr><td><p>A (before)</p></td><td><p>306.8</p></td><td><p>28.4</p></td></tr><tr><td><p>E (after)</p></td><td><p>412.6</p></td><td><p>57.8</p></td></tr><tr><td><p>Speedup</p></td><td><p><strong>×1.34</strong></p></td><td><p><strong>×2.04</strong></p></td></tr></tbody></table></div></div><p>It is worth explaining separately why E outperforms A even in prefill. The <code>-fmad=false</code> flag affects all kernels: normalization, softmax, RoPE, dequantization, and flash attention. On CMP, all of these are limited by throttled FMA.</p><p><strong>4. The larger the quant, the lower the generation, while prefill remains unchanged.</strong> Generation is limited by the weight size: 58 tokens/s on Q4_K_M versus 53 on Q5_K_M. Prefill is around 410 tokens/s in all cases.</p><h2>Results: whisper.cpp</h2><p>The large-v3-turbo model stores weights in F16, so the first part of the patch (cuBLAS PEDANTIC) plays the main role here. Its effect was measured separately on build A, by switching <code>GGML_CUDA_CMP_MODE</code>.</p><div><div><table><tbody><tr><th><p>Build</p></th><th><p>encode, ms</p></th><th><p>total, ms</p></th></tr><tr><td><p>A, <code>GGML_CUDA_CMP_MODE=0</code></p></td><td><p>873.7</p></td><td><p>2071.8</p></td></tr><tr><td><p>A, auto-detect (PEDANTIC enabled)</p></td><td><p>265.7</p></td><td><p>1038.7</p></td></tr><tr><td><p>B</p></td><td><p>1097.1</p></td><td><p>2454.8</p></td></tr><tr><td><p>C</p></td><td><p>251.5</p></td><td><p>999.4</p></td></tr><tr><td><p>D</p></td><td><p>251.5</p></td><td><p>999.4</p></td></tr><tr><td><p>E</p></td><td><p>267.3</p></td><td><p>1020.6</p></td></tr></tbody></table></div></div><h3>Conclusions:</h3><ul><li><p><strong>PEDANTIC FP16 GEMM speeds up the encoder by 3.3 times</strong> (874 → 266 ms), and the total time is halved. The 7x speedup from the article, measured on pure GEMM, is not achieved, but the effect in a real task is still significant.</p></li></ul><hr/><a></a><h2>Summary</h2><div><div><table><tbody><tr><th><p>Task</p></th><th><p>Before</p></th><th><p>After</p></th><th><p>Speedup</p></th></tr><tr><td><p>LLM, generation (tg128)</p></td><td><p>28.4 tokens/s</p></td><td><p>57.8 tokens/s</p></td><td><p><strong>×2.0</strong></p></td></tr><tr><td><p>LLM, prompt processing (pp512)</p></td><td><p>306.8 tokens/s</p></td><td><p>412.6 tokens/s</p></td><td><p><strong>×1.34</strong></p></td></tr><tr><td><p>Whisper, encoder (jfk.wav)</p></td><td><p>874 ms</p></td><td><p>~266 ms</p></td><td><p><strong>×3.3</strong></p></td></tr></tbody></table></div></div><p>What is clear from the CMP 50HX testing results:</p><ol><li><p><code><strong>FMA</strong></code><strong> is indeed throttled, and it's the main bottleneck.</strong> Compiling with <code>-fmad=false</code> is the cheapest and most effective step: the code doesn't change, only the compiler flag is needed.</p></li><li><p><code><strong>dp4a</strong></code><strong> is throttled</strong>. Emulation by replacing four functions with <code>mad.lo.s32</code> provides an additional ~20% to generation.</p></li><li><p><code><strong>cuBLAS FP16</strong></code><strong> is throttled</strong>. The PEDANTIC mode speeds up F16 models like Whisper by more than 3 times.</p></li><li><p><code><strong>INT8 MMQ</strong></code><strong> on tensor cores works fine.</strong> Compiling for Pascal (<code>61-virtual</code>) reduces prefill threefold, so it's not necessary.</p></li></ol><p>Recommended build for CMP 50HX (and likely for other Turing-based CMPs):</p><pre><code>cmake -B build -DGGML_CUDA=ON -DCMAKE_CUDA_ARCHITECTURES=75 \
+      -DCMAKE_CUDA_FLAGS="-fmad=false -DGGML_CUDA_CMP_EMU_DP4A"</code><div><a href="https://sourcecraft.dev/"><span></span></a></div></pre><p>plus the patch for cuBLAS PEDANTIC.</p><details><summary>Build Instructions</summary><div><h2>1. Source Code and Patch</h2><h3>llama.cpp</h3><pre><code>mkdir -p $WORK &amp;&amp; cd $WORK
+git clone https://github.com/ggml-org/llama.cpp
+cd llama.cpp
+# optional: fix to a verified version
+git checkout a0e6dc7
+git apply --check -v $PATCH &amp;&amp; git apply $PATCH
+git diff --stat</code><div><a href="https://sourcecraft.dev/"><span></span></a></div></pre><p>Should result in:</p><pre><code> ggml/src/ggml-cuda/common.cuh   | 12 ++++++++++--
+ ggml/src/ggml-cuda/ggml-cuda.cu | 45 +++++++++++++++++++++++++++++++++++++++----
+</code><div><a href="https://sourcecraft.dev/"><span></span></a></div></pre><p>If <code>git apply</code> fails (you have a different version), try one by one:</p><pre><code>git apply --3way $PATCH                 # only for full clone, not --depth 1
+patch -p1 --dry-run &lt; $PATCH &amp;&amp; patch -p1 &lt; $PATCH</code><div><a href="https://sourcecraft.dev/"><span></span></a></div></pre><h3>whisper.cpp</h3><pre><code>cd $WORK
+git clone https://github.com/ggml-org/whisper.cpp
+cd whisper.cpp
+# optional: git checkout 0c7be69
+git apply --check $PATCH &amp;&amp; git apply $PATCH \
+  || (patch -p1 --dry-run &lt; $PATCH &amp;&amp; patch -p1 &lt; $PATCH)</code><div><a href="https://sourcecraft.dev/"><span></span></a></div></pre><p>In whisper.cpp, the patch usually applies via <code>patch</code> with line shifts and fuzz. This is normal, but <strong>verify the result</strong> afterward.</p><h3>Verifying Patch Application (for both projects)</h3><pre><code>for r in llama.cpp whisper.cpp; do
+  echo "== $r"
+  f=$WORK/$r/ggml/src/ggml-cuda/ggml-cuda.cu
+  grep -c "gemm_algo));" $f                         # expected: 3
+  grep -c "CUBLAS_GEMM_DEFAULT_TENSOR_OP));" $f     # expected: 0
+  grep -c "GGML_CUDA_CMP_EMU_DP4A" $WORK/$r/ggml/src/ggml-cuda/common.cuh   # expected: 1
+done</code><div><a href="https://sourcecraft.dev/"><span></span></a></div></pre><p>If you see <code>CUBLAS_GEMM_DEFAULT_TENSOR_OP));</code> somewhere else, it means your version has cuBLAS calls that the patch doesn't cover. Manually replace <code>CUBLAS_GEMM_DEFAULT_TENSOR_OP</code> with <code>gemm_algo</code> following the pattern and add the same <code>if (... ggml_cuda_device_is_cmp(...))</code> block.</p><h2>2. Compilation</h2><p>Common parameters:</p><pre><code>CMP_FLAGS=(
+  -DCUDAToolkit_ROOT=$CUDA_ROOT
+  -DCMAKE_CUDA_COMPILER=$CUDA_ROOT/bin/nvcc
+  -DGGML_CUDA=ON
+  -DCMAKE_BUILD_TYPE=Release
+  -DBUILD_SHARED_LIBS=OFF
+  -DCMAKE_CUDA_ARCHITECTURES=75
+  "-DCMAKE_CUDA_FLAGS=-fmad=false -DGGML_CUDA_CMP_EMU_DP4A"
+)
+export PATH=$CUDA_ROOT/bin:$PATH</code><div><a href="https://sourcecraft.dev/"><span></span></a></div></pre><h3>llama.cpp</h3><pre><code>cd $WORK/llama.cpp
+cmake -B build_e "${CMP_FLAGS[@]}" -DLLAMA_CURL=OFF
+cmake --build build_e -j $JOBS --target llama-server llama-cli llama-bench</code><div><a href="https://sourcecraft.dev/"><span></span></a></div></pre><h3>whisper.cpp</h3><pre><code>cd $WORK/whisper.cpp
+cmake -B build_e "${CMP_FLAGS[@]}"
+cmake --build build_e -j $JOBS --target whisper-server whisper-cli whisper-bench</code><div><a href="https://sourcecraft.dev/"><span></span></a></div></pre><p>Compilation takes 5–10 minutes per project, depending on the CPU.</p><h3>Verifying Correct Compilation</h3><pre><code>for f in $WORK/llama.cpp/build_e/CMakeCache.txt $WORK/whisper.cpp/build_e/CMakeCache.txt; do
+  grep -E "^CMAKE_CUDA_FLAGS:|^CMAKE_CUDA_ARCHITECTURES|^CUDA_cudart_LIBRARY:" $f
+done
+ldd $WORK/llama.cpp/build_e/bin/llama-server | grep -E "cublas|cudart"
+</code><div><a href="https://sourcecraft.dev/"><span></span></a></div></pre><p>All paths should point to <code>$CUDA_ROOT</code> (e.g., <code>cuda-12.8</code>), not <code>/usr/local/cuda</code> → 13.x.</p><blockquote><p><strong>Root Compilation.</strong> <code>sudo</code> resets <code>PATH</code>, so the <code>export PATH</code> above does not apply. The <code>-DCUDAToolkit_ROOT</code> flag in <code>CMP_FLAGS</code> resolves this issue; do not remove it.</p></blockquote></div></details><hr/><h2>Conclusions</h2><p>The hypothesis proposed in the original <a href="https://habr.com/ru/articles/948396/">article</a> is fully confirmed.</p><p>Is it possible to squeeze anything more out of these cards (I think not). Whether there are tasks for which it is currently reasonable to use such cards – it's up to you. In my case, the speedup in Whisper's performance was quite significant.</p><p><strong>Greetings to all!</strong></p></div>
+  </main>
+  <footer>
+    Translation generated with Gemini 2.5 Flash-Lite.
+    The original article remains the source of record.
+  </footer>
+</body>
+</html>

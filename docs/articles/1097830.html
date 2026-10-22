@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Code Review in the Age of AI: How Agents Are Changing Code Inspection</title>
+  <meta name="description" content="AI agents have increased the volume and size of PRs, but reviewer time and attention remain the same. I&#x27;ve found myself reading generated code less line-by-line and more often checking specifications, architecture, contracts, and tests. I&#x27;ve analyzed research from Google, Microsoft, and op">
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.65;
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 32px 20px 64px;
+      color: #1f2328;
+    }
+    header {
+      border-bottom: 1px solid #d8dee4;
+      margin-bottom: 28px;
+      padding-bottom: 20px;
+    }
+    .source {
+      color: #57606a;
+      font-size: 0.95rem;
+    }
+    img, video, iframe {
+      max-width: 100%;
+      height: auto;
+    }
+    pre {
+      overflow-x: auto;
+      padding: 16px;
+      background: #f6f8fa;
+      border-radius: 6px;
+    }
+    code {
+      font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+    }
+    blockquote {
+      border-left: 4px solid #d0d7de;
+      margin-left: 0;
+      padding-left: 16px;
+      color: #57606a;
+    }
+    footer {
+      border-top: 1px solid #d8dee4;
+      margin-top: 40px;
+      padding-top: 20px;
+      color: #57606a;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Code Review in the Age of AI: How Agents Are Changing Code Inspection</h1>
+    <p>AI agents have increased the volume and size of PRs, but reviewer time and attention remain the same. I&#x27;ve found myself reading generated code less line-by-line and more often checking specifications, architecture, contracts, and tests. I&#x27;ve analyzed research from Google, Microsoft, and open-source projects to understand where AI helps in reviews, why approvals are becoming a less reliable signal, and what we still can&#x27;t measure. Read on</p>
+    <p class="source">
+      Machine-translated from Habr.
+      <a href="https://habr.com/ru/articles/1097830/?utm_campaign=1097830&amp;utm_source=habrahabr&amp;utm_medium=rss">Read the original Russian article</a>.
+      Thu, 22 Oct 2026 10:15:02 GMT
+    </p>
+  </header>
+  <main>
+<div><p>I am acutely feeling the changes in the review process right now. The number of PRs has increased, and they have become much longer because LLMs allow for writing a lot of tests, updating documentation, and doing much other auxiliary work at once. This leaves its mark on my work: I have to review much more code, and the quality of this process gradually decreases with fatigue. I approve each subsequent PR with less confidence.</p><figure><img loading="lazy" src="https://habrastorage.org/r/w1560/webt/3f/29/85/3f29853fc89bf1f3339c5685a9199790.png"/></figure><p>There are two difficulties with public data on industry reviews. A significant portion of telemetry comes from tool vendors. And a <a href="https://arxiv.org/abs/2607.07980">2026 CMU study</a> showed that the trends of "agent PRs are reviewed less, merged faster, discussed less" can be reversed with a different, equally valid, assembly of GitHub data. Therefore, the numbers below describe specific samples. It is necessary to be cautious when applying them to your team and explaining the reasons for changes with them.</p><p>I have gathered research and engineering cases to understand what happens to reviews when an agent writes the code, but a human is still supposed to check it. And where in this process I myself am already changing my approach.</p><h3>The Review Flow Has Grown and Received a Machine First Pass</h3><p><a href="https://arxiv.org/abs/2607.01418">A study of the rollout of agent CLIs at Microsoft</a> recorded a 24% increase in the number of merged PRs for engineers who connected. This is a measurement from one employer, but it aligns with my observation: there are more changes, and they all enter someone's review process.</p><p><a href="https://github.blog/changelog/2025-04-04-copilot-code-review-now-generally-available/">Copilot code review</a> became generally available in April 2025. In March 2026, Anthropic <a href="https://techcrunch.com/2026/03/09/anthropic-launches-code-review-tool-to-check-flood-of-ai-generated-code/">released its own Code Review</a>, explaining the launch by the fact that review had become a bottleneck. A machine first pass is already available in the main development tools.</p><p>Currently, all PRs that go through me are written by an agent under human control. One developer can easily handle about 7–10 PRs per week, but they are quite large, and reviewing them "the old way" takes a lot of time. Therefore, to keep up with the development pace and not become a bottleneck, I have to review only part of the changes — architecture, migrations, contracts, domain changes, and so on.</p><h3>The Signature Remains with the Human</h3><p><a href="https://gcc.gnu.org/ai-policy.html">GCC policy</a> requires that contributions be made by a human who understands the changes and is ready to answer questions about them. The decision to include in the project is also made by a human; only a human puts the <code>Signed-off-by</code>, and the use of LLM is marked with the tag <code>Assisted-by:</code>.</p><p>Formally, an agent can write code, but the responsibility for the accepted change remains with the human. The signature itself does not yet indicate how thoroughly it was checked.</p><p>We are pressured by deadlines and obligations, and the volume of code for review is growing. Therefore, we use SDD based on OpenSpec to check whether the written code implements the business logic we need. It's not a guarantee, but it significantly eases the work.</p><p>This approach also has a cost. In the September <a href="https://www.infoq.com/articles/when-spec-driven-development-pays-off/">pilot "When Spec-Driven Development Pays Off"</a>, five reviewers checked two generated banking services with and without a specification. No significant improvement in discrepancy detection was found: 52.5% versus 51.8%. With the specification, remarks were more often tied to specific requirements, but the review took an average of 48.4 minutes instead of 26.7. Five people and one domain are too few for a general conclusion; this is a reason to distinguish between checking compliance with requirements and the ability to find more errors.</p><p>In the <a href="https://arxiv.org/abs/2608.15678">work "Where Accountability Lives"</a>, the authors analyzed 121 artifacts: tool documentation, platform controls, and provider policies. Platforms record events, terms of use impose the duty to check code, but the record of fulfilling this duty is often missing. In regulated environments, this gap can be closed by mandatory approval procedures.</p><p>GitHub <a href="https://github.blog/ai-and-ml/generative-ai/code-review-in-the-age-of-ai-why-developers-will-always-own-the-merge-button/">promised in July 2025</a> that the merge button would remain with the human. But the <a href="https://docs.github.com/copilot/how-tos/use-copilot-agents/request-a-code-review/use-code-review">Copilot code review documentation</a> already allows crediting agent reviews in required approvals: an optional feature in public preview, disabled by default. Mandatory human review can no longer be considered a technically immutable rule.</p><p>The limit of human inspection is clearly visible in the example of curl, when in the summer of 2026 the project <a href="https://daniel.haxx.se/blog/2026/06/15/curl-summer-of-bliss/">stopped accepting vulnerability reports for a month</a> after a flood of AI-generated reports. This is a different process, but the limitation is familiar: the incoming flow must be processed by humans, and their attention does not grow with it.</p><p>My colleagues and I are still managing to clear the queue reasonably well, but periodically reviews get stuck due to the human factor (for example, recently I was stuck in calls for two days, and all tasks waited for me during this time). As I wrote in my <a href="https://ulshin.tech/longreads/coding-agents-sdlc/">research on changes in SDLC</a>, review has become one of the most significant bottlenecks.</p><h3>What the Machine First Pass Actually Removes from Humans</h3><p>One of the most studied cases is Google. <a href="https://arxiv.org/abs/2405.13565">AutoCommenter</a>, an LLM for reviewing coding practices, is used daily by tens of thousands of developers. About 40% of its comments lead to code changes. However, Google's own A/B test did not show significant changes in review duration or the number of iterations. While individual comments are useful, this experiment did not confirm time savings for reviewers.</p><p><a href="https://stripe.dev/blog/minions-stripes-one-shot-end-to-end-coding-agents">Stripe reports</a> over a thousand agent PRs per week that undergo human review. This is the volume for the entire company; it cannot be used to calculate the workload of an individual reviewer or the time they spend on a PR.</p><p>Other AI reviewers also show results depending on what is considered useful:</p><ul><li><p><a href="https://arxiv.org/abs/2411.07091">RevMate</a> — a field experiment at Mozilla and Ubisoft: about 8% of LLM reviewer comments were accepted upon publication. However, accepted AI comments lead to code edits as often as human ones, meaning acceptance is a poor metric of usefulness.</p></li><li><p><a href="https://icml.cc/virtual/2025/poster/44165">A reviewer configuration focused on defects</a> found major bugs twice as effectively as standard LLMs; the study authors are affiliated with the industry.</p></li><li><p><a href="https://arxiv.org/abs/2508.18771">A field study</a> based on over 22,000 comments in 178 repositories showed that even unaccepted remarks provoke reflection and influence future edits.</p></li></ul><p>I have not yet been able to fully experience AI review in practice. At my previous job, it was implemented, but its usefulness was very, very conditional (the agent only found trivial things). Nevertheless, I see that the industry is moving in this direction, and I plan to return to the topic of implementing AI review as soon as I have the strength and time.</p><p>Even with a machine first pass, the question remains how human inspection is changing. Public review traces allow us to track behavior, but do not always explain its causes.</p><h3>How People's Behavior in Reviews is Changing</h3><p><a href="https://arxiv.org/abs/2606.22721">"Habituation at the Gate"</a> tracks the same reviewers on the open AIDev dataset: several hundred people, over ten thousand reviews, seven months of observation. When comparing the behavior of the same reviewers in different periods, the proportion of approved agent PRs increases, and the proportion of approved human PRs decreases; simultaneously, the proportion of inline comments decreases, and the review waiting time increases. The authors consider the data most consistent with habituation. This is a workshop paper on open-source data; it does not measure defects behind approvals.</p><p>It's time for me to confess: I do not review agent PRs as thoroughly as I used to review PRs written by humans. I read them less carefully and leave fewer comments because it is difficult to meticulously read such a volume of code. I cannot say I am proud of this behavior — rather, I took it as a sign that it was time to change something in my approach. This research was partly born from the problem described.</p><figure><img alt=
+  </main>
+  <footer>
+    Translation generated with Gemini 2.5 Flash-Lite.
+    The original article remains the source of record.
+  </footer>
+</body>
+</html>

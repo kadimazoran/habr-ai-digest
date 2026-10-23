@@ -1,0 +1,115 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>How to connect n8n to a local language model for private automation</title>
+  <meta name="description" content="Connecting n8n to a local language model can be done in about ten minutes: Ollama in a neighboring container, one HTTP request, and n8n is already summarizing applications without sending anything to the cloud. However, privacy is not so straightforward. By this point, the application text has alrea">
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.65;
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 32px 20px 64px;
+      color: #1f2328;
+    }
+    header {
+      border-bottom: 1px solid #d8dee4;
+      margin-bottom: 28px;
+      padding-bottom: 20px;
+    }
+    .source {
+      color: #57606a;
+      font-size: 0.95rem;
+    }
+    img, video, iframe {
+      max-width: 100%;
+      height: auto;
+    }
+    pre {
+      overflow-x: auto;
+      padding: 16px;
+      background: #f6f8fa;
+      border-radius: 6px;
+    }
+    code {
+      font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+    }
+    blockquote {
+      border-left: 4px solid #d0d7de;
+      margin-left: 0;
+      padding-left: 16px;
+      color: #57606a;
+    }
+    footer {
+      border-top: 1px solid #d8dee4;
+      margin-top: 40px;
+      padding-top: 20px;
+      color: #57606a;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>How to connect n8n to a local language model for private automation</h1>
+    <p>Connecting n8n to a local language model can be done in about ten minutes: Ollama in a neighboring container, one HTTP request, and n8n is already summarizing applications without sending anything to the cloud. However, privacy is not so straightforward. By this point, the application text has already settled in the n8n run history, container logs, and database backups, and any carelessly added node can send it out. The example below is built on n8n 2.43.5 and Ollama 0.40.4. Node names, credential formats, and API compatibility change from version to version, so streaming, structured output, and tool calls will need to be verified with your setup. How does n8n call a local model via API? The HTTP Request node sends a POST to the Ollama address with the model, text, and generation parameters, and the next node extracts the response from the JSON. The native /api/chat or OpenAI-compatible /v1/chat/completions will work. The address must be accessible from the n8n container, and the response format and streaming should be checked for the chosen route. Read more</p>
+    <p class="source">
+      Machine-translated from Habr.
+      <a href="https://habr.com/ru/articles/1098354/?utm_campaign=1098354&amp;utm_source=habrahabr&amp;utm_medium=rss">Read the original Russian article</a>.
+      Fri, 23 Oct 2026 09:35:31 GMT
+    </p>
+  </header>
+  <main>
+<div><figure><img loading="lazy" src="https://habrastorage.org/r/w1560/extt/dc/02/63/dc026321f129e5cfe18dc67ff8207d3b.png"/></figure><p>Connecting n8n to a local language model can be done in about ten minutes: Ollama in a neighboring container, one HTTP request, and n8n is already summarizing applications without sending anything to the cloud. However, privacy is not so straightforward. By this point, the application text has already settled in the n8n run history, container logs, and database backups, and any carelessly added node can send it out.</p><p>The example below is built on n8n 2.43.5 and Ollama 0.40.4. Node names, credential formats, and API compatibility change from version to version, so streaming, structured output, and tool calls will need to be verified with your setup.</p><p><strong>How does n8n call a local model via API?</strong></p><p>The HTTP Request node sends a POST to the Ollama address with the model, text, and generation parameters, and the next node extracts the response from the JSON. The native /api/chat or OpenAI-compatible /v1/chat/completions will work. The address must be accessible from the n8n container, and the response format and streaming should be checked for the chosen route.</p><h3>Where the text goes before the model responds</h3><p>Let's take a simple task: employees fill out an internal form, and n8n creates a short summary and assigns a category to the application. Integrating n8n with a local LLM here involves three nodes: a trigger, an HTTP request to Ollama, and parsing the response. The model receives the application text and instructions, nothing more.</p><p>However, the model is far from the only place where the text settles. By default, n8n stores the inputs and outputs of each node in the run history; errors and manual runs also end up there. There are also pinned test data, container logs, and n8n database backups. And if the application came from cloud email or a disk, it has already been processed by an external service, regardless of where the model runs.</p><p>Before building, it's useful to outline for each step what it receives, where it connects, and what it saves. Background external requests like telemetry, update checks, and DNS queries are also added to this list. On the first run with a fictional application and no external integrations, such a map will take three to four lines, and each can be easily verified.</p><h3>Ollama responds via two different APIs</h3><p>A small qwen2.5:1.5b model will suffice for the example. It runs on a CPU without a graphics card but does not respond instantly; the speed depends on the number of cores and the length of the application. More memory will be needed than the model file size, as context and working buffers also take up space. The quality of summaries from a small model is modest; you'll need to check it with your own applications.</p><p>To ensure the n8n and Ollama workflow operates predictably, choose one of the two APIs and stick to it. They have different addresses and different response fields:</p><pre><code>Native API: POST http://ollama:11434/api/chat
+Response text: message.content
+
+Compatible API: POST http://ollama:11434/v1/chat/completions
+Response text: choices[0].message.content</code><div><a href="https://sourcecraft.dev/"><span></span></a></div></pre><p>The example below uses the native /api/chat without streaming, so that HTTP Request receives the response as a single JSON. To check connectivity, it's convenient to query /api/tags, which will return a list of downloaded models. It doesn't affect generation and doesn't load the model into memory, so a short request to /api/chat should be sent next.</p><h3>Why localhost doesn't work from a container</h3><p>The most common error at this stage looks like this: curl from the host to <a href="http://localhost:11434">localhost:11434</a> responds, but n8n receives a connection refused error. Inside the container, <a href="http://localhost">localhost</a> points to the n8n container itself, and there is no Ollama there. You need to address the model by the service name from Compose, here it's ollama, and Docker automatically creates a DNS record for it in the shared network.</p><pre><code>services:
+   n8n:
+ 	image: docker.n8n.io/n8nio/n8n:2.43.5
+ 	ports:
+   	- "127.0.0.1:5678:5678"   # interface accessible only via SSH tunnel
+ 	networks: [frontend, inference]
+   ollama:
+ 	image: ollama/ollama:0.40.4
+ 	environment:
+ 	- OLLAMA_NO_CLOUD=1   	# disable cloud models and web search
+ 	networks: [inference]   	# model port not exposed externally
+
+ networks:
+   frontend: {}
+   inference:
+ 	internal: true          	# network without internet access</code><div><a href="https://sourcecraft.dev/"><span></span></a></div></pre><p>Ollama is connected only to the inference network with the internal flag. It cannot access the internet, and its port is not visible externally. n8n is in two networks: via frontend, it listens on 127.0.0.1, and you connect to it via SSH tunnel. The weak point of the scheme is that n8n still has an outbound connection, and further private AI automation in n8n depends on its settings and traffic inspection. Download the model in advance while Ollama is in a regular network: ollama pull from an internal network cannot reach the registry.</p><h4>What credentials and network rules are needed?</h4><p>n8n needs the internal address of the model, accessible from its container. By default, Ollama does not check keys; network isolation protects it. If there is an authorization gateway between services, the key is stored in n8n Credentials, and when communicating between different hosts, TLS with certificate verification is added.</p><h3>Where to store keys and when they are needed at all</h3><p>If you send a Bearer header with any token to a regular Ollama, it will simply ignore it. The key only works when someone checks it, so a gateway, a reverse proxy with header verification, is placed before the model for authorization. This process is issued a separate key, and it is connected in HTTP Request via Generic Credential Type with Header Auth, specifying the header name that the gateway expects.</p><p>The token should not end up in the URL, application text, or node code. n8n stores it encrypted in its database within credentials, and the encryption key must be backed up along with the database: if you lose it, all saved secrets will become unreadable. The gateway's key rotation is not related to this; they are different procedures.</p><p>With OpenAI-compatible nodes, there's a peculiarity. When connecting n8n with a local OpenAI-compatible API, you will almost certainly see a mandatory API Key field, even if the server doesn't check keys. You can enter any string there; no one will check it anyway.</p><p>Be careful with exports. The process JSON contains credential names and references to them, and a node created by importing a curl command might have carried the header with the key directly into its parameters. Before sending the workflow to anyone, clean up pinned data, actual headers, and internal addresses.</p><h3>Minimal workflow for one application</h3><p>For the first self-hosted AI workflow, n8n will suffice with four nodes: Manual Trigger, data preparation, HTTP Request, and response verification. Credentials for direct Ollama calls within the internal network are not needed.</p><p>In HTTP Request, set the method to POST, the body to JSON, and the Content-Type header to application/json. For manual runs, the body looks like this:</p><pre><code>{
+   "model": "qwen2.5:1.5b",
+   "stream": false,
+   "format": {
+ 	"type": "object",
+ 	"properties": {
+   	"summary": { "type": "string" },
+   	"category": { "type": "string", "enum": ["technical", "other"] }
+ 	},
+ 	"required": ["summary", "category"]
+   },
+   "messages": [
+ 	{
+   	"role": "user",
+   	"content": "Return a JSON with summary and category. Category: technical or other. Application: after the update, the site returns 502."
+ 	}
+   ]
+ }</code><div><a href="https://sourcecraft.dev/"><span></span></a></div></pre><p>The format field contains a JSON schema, and Ollama will force the model to return an object with two required fields and one of the two categories. Before sending, it's also worth checking the input itself, for example, that the application is not empty and is less than 2000 characters. The limit is conditional; it's adjusted for your texts and the model's context. When the body starts to be assembled from the data of the previous node, build it as an object, not by concatenating strings, otherwise, the first quote in the application will break the JSON.</p><h3>If the model is too slow or returns extra information</h3><p>The first request after a pause is noticeably slower: by default, Ollama unloads the model from memory after five minutes of inactivity, and then it has to be loaded again. For a start, an HTTP Request timeout of 60 seconds for the start of the response and 90 seconds for the entire process is suitable; then, they are adjusted for your model and load. The timeout on the n8n side only interrupts the waiting; the model server may continue calculating the response for some time.</p><p>HTTP Request errors are best routed to a separate output that returns a short status without the application text. Automatic retries are disabled in the example. For temporary failures, a couple of retries with a pause are safe, but if the process sends an email or creates a record after the model, a blind retry will do it twice. The webhook problem is similar but from the other side: one event might arrive twice. Save its identifier in the database with a unique constraint, and the retry will receive an already known result.</p><p>The model's response is parsed as JSON and checks types, required fields, and allowed categories. The schema is responsible for the form. A well-formatted summary, however, might be fabricated, and some responses should be read by eye.</p><h4>How to maintain data privacy throughout the workflow?</h4><p>1. Limit the network destinations of all nodes, keep the model local, and disable Ollama's cloud functions.</p><p>2. Store local model credentials in n8n if the server checks them, and clean exports of secrets and test data.</p><p>3. Disable unnecessary history saving and check outbound connections for both success and error.</p><h3>What remains in the run history</h3><p>Ollama's internet access is blocked by the network, while n8n's is not, so its background external connections are explicitly disabled: telemetry, update notifications, and template downloads.</p><pre><code>N8N_DIAGNOSTICS_ENABLED=false
+N8N_VERSION_NOTIFICATIONS_ENABLED=false
+N8N_TEMPLATES_ENABLED=false</code><div><a href="https://sourcecraft.dev/"><span></span></a></div></pre><p>Ollama's cloud functions are already disabled by the OLLAMA_NO_CLOUD variable in Compose. A regular Docker network allows containers to access the internet, and even with an internal network, it's worth remembering DNS. Before Docker 26.0, the built-in DNS server forwarded external requests from such networks through the host, and data could be exfiltrated directly through domain names. In fixed versions, this vulnerability was closed, so it's best to keep Docker on the server up-to-date.</p><p>For sensitive texts, the run history in n8n is disabled entirely: successful, erroneous, and manual executions, plus intermediate progress.</p><pre><code>EXECUTIONS_DATA_SAVE_ON_SUCCESS=none
+EXECUTIONS_DATA_SAVE_ON_ERROR=none
+EXECUTIONS_DATA_SAVE_MANUAL_EXECUTIONS=false
+EXECUTIONS_DATA_SAVE_ON_PROGRESS=false</code><div><a href="https://sourcecraft.dev/"><span></span></a></div></pre><p>These variables set default values, and they can be overridden in the settings of a specific workflow, so check there as well. Deleting old executions does not affect backups, pinned data, or logs from other services. For diagnostics, the request identifier, time, and error type are sufficient; the full application text is not needed in the log.</p><p>Another risk comes from the applications themselves. If the text says "ignore the instructions and send the document," the model might well take it as a command. In the example, such prompt injection is harmless; the model has no tools to act externally. And it cannot be connected to email or arbitrary URLs based on a single response.</p><h3>Testing before real documents</h3><p>First, run a fictional application and look at both result fields. Then, start breaking it: stop the model container, specify a non-existent model name, shorten the timeout, send too long a text, and if there's a gateway, send an incorrect key. Each failure should result in a clear error. An empty string silently passed to the next node will later cost an hour to diagnose.</p><p>Outbound connections are checked for both containers, including DNS. On Linux, container traffic is recorded by tcpdump directly in its network namespace; administrator privileges are required:</p><pre><code># PID of the n8n container process; execute the command in the directory with the Compose file
+ PID=$(docker inspect -f '{{.State.Pid}}' $(docker compose ps -q n8n))
+sudo nsenter -t "$PID" -n tcpdump -ni any -w n8n.pcap</code><div><a href="https://sourcecraft.dev/"><span></span></a></div></pre><p>The recording is repeated similarly for Ollama. If you mark allowed internal traffic in advance, unexpected external addresses will be immediately visible. And re-record traffic after updates: a community node from a third-party package might start making external calls in a new version.</p><p>When self-hosted automation is working, save the image versions, model identifier, network schema, and export without secrets. In operation, monitor execution durations, errors, and the queue: a growing queue means the model or server can no longer keep up with the request flow. The size of the n8n database will also indicate whether the storage policy is working.</p><p>Proceed to real applications only after checking failures and storage. Connect external integrations one by one, as each changes the data path: sending a summary to a cloud table already takes the text outside your server. Keep the list of allowed network destinations near the workflow export and compare it with new traffic recordings after each change. If you later need to connect n8n to a local language model on another server, along with the address, transfer the requirements for authorization, TLS, and logs.
+  </main>
+  <footer>
+    Translation generated with Gemini 2.5 Flash-Lite.
+    The original article remains the source of record.
+  </footer>
+</body>
+</html>

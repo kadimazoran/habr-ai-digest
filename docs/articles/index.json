@@ -3295,6 +3295,14 @@
     "summary": "This year, it seems we've definitively moved into AI-assisted coding, and there's no turning back. For me personally, it's hard to imagine giving up AI – I'm hooked. But until recently, I couldn't quite grasp why some developers claim AI writes all their code, leaving them with nothing to do, while others insist AI is merely an assistant whose code needs careful review. And then there are those who are completely disillusioned with AI, using it more as a reference than a full-fledged development tool. Read on",
     "title": "AI Can Jump"
   },
+  "https://habr.com/ru/articles/1097468/?utm_campaign=1097468&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Fri, 23 Oct 2026 12:30:00 GMT",
+    "slug": "1097468",
+    "source_url": "https://habr.com/ru/articles/1097468/?utm_campaign=1097468&utm_source=habrahabr&utm_medium=rss",
+    "summary": "This text presents a specific technical solution and response to the questions posed by Eliezer Yudkowsky in his article 'Cat-Belling Problems,' published on September 4th, following his debate with Jeffrey Irving at the ILIAD-2026 conference on AI safety and control. For better understanding of the issues, a Russian translation of the article is available on Habr.",
+    "title": "Asymmetry as a Property of Life and a Solution to the 'Cat-Belling Problems' of Artificial Superintelligence"
+  },
   "https://habr.com/ru/articles/1097784/?utm_campaign=1097784&utm_source=habrahabr&utm_medium=rss": {
     "model": "gemini-2.5-flash-lite",
     "published": "Thu, 22 Oct 2026 09:48:41 GMT",
@@ -3390,6 +3398,86 @@
     "source_url": "https://habr.com/ru/articles/1098004/?utm_campaign=1098004&utm_source=habrahabr&utm_medium=rss",
     "summary": "I gave Claude Code (Opus 5.5) a test assignment: to draw a scene from Blade Runner 2049 in SVG. The agents I tried all failed similarly: they didn't look at the actual frame, drew from memory, and reported completion mindlessly. So, I started prompting the agent with questions: is there documentation, what should the result be compared against, when should it stop? These questions evolved into AutoHarness – a skill that forces the agent to prepare for a task before starting it. Read more",
     "title": "How I Made AI Agents Gather Their Own Harness for a Specific Task"
+  },
+  "https://habr.com/ru/articles/1098250/?utm_campaign=1098250&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Fri, 23 Oct 2026 10:07:22 GMT",
+    "slug": "1098250",
+    "source_url": "https://habr.com/ru/articles/1098250/?utm_campaign=1098250&utm_source=habrahabr&utm_medium=rss",
+    "summary": "Initially, we gave GPT full control: here's the store page, here's the list of promo codes, figure it out. It looked good in the demo. That is, until the day it navigated to the checkout page, saw a filled-in form, figured the task was roughly this, and proceeded to click the purchase button. Formally, it was following instructions. In reality, at that moment, we realized that LLMs cannot be given full control over someone else's browser. Moreover, in production, it was expensive, unstable, and at times dangerous. Almost every detail of this system emerged after something broke in production. So, the following is mainly a collection of failure stories. I offer you a detailed analysis and our conclusions on working with LLMs in Web development and building AI-native products. It will be useful! --> Read more",
+    "title": "Why We Took the Browser Away from LLMs: 8 Lessons After a Year Working on a Promo Code Extension"
+  },
+  "https://habr.com/ru/articles/1098354/?utm_campaign=1098354&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Fri, 23 Oct 2026 09:35:31 GMT",
+    "slug": "1098354",
+    "source_url": "https://habr.com/ru/articles/1098354/?utm_campaign=1098354&utm_source=habrahabr&utm_medium=rss",
+    "summary": "Connecting n8n to a local language model can be done in about ten minutes: Ollama in a neighboring container, one HTTP request, and n8n is already summarizing applications without sending anything to the cloud. However, privacy is not so straightforward. By this point, the application text has already settled in the n8n run history, container logs, and database backups, and any carelessly added node can send it out. The example below is built on n8n 2.43.5 and Ollama 0.40.4. Node names, credential formats, and API compatibility change from version to version, so streaming, structured output, and tool calls will need to be verified with your setup. How does n8n call a local model via API? The HTTP Request node sends a POST to the Ollama address with the model, text, and generation parameters, and the next node extracts the response from the JSON. The native /api/chat or OpenAI-compatible /v1/chat/completions will work. The address must be accessible from the n8n container, and the response format and streaming should be checked for the chosen route. Read more",
+    "title": "How to connect n8n to a local language model for private automation"
+  },
+  "https://habr.com/ru/articles/1098384/?utm_campaign=1098384&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Fri, 23 Oct 2026 10:14:56 GMT",
+    "slug": "1098384",
+    "source_url": "https://habr.com/ru/articles/1098384/?utm_campaign=1098384&utm_source=habrahabr&utm_medium=rss",
+    "summary": "This article provides a checklist for securely storing keys in code repositories, prompted by recent incidents where AI agents accessed sensitive systems. It details nine points to verify, common vulnerabilities, and remediation steps, including what to do if a key has already been leaked. The checklist is based on findings from CERT-In and Anthropic.",
+    "title": "Checklist for Storing Keys in Repositories Based on AI Agent Incidents"
+  },
+  "https://habr.com/ru/articles/1098386/?utm_campaign=1098386&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Fri, 23 Oct 2026 10:15:10 GMT",
+    "slug": "1098386",
+    "source_url": "https://habr.com/ru/articles/1098386/?utm_campaign=1098386&utm_source=habrahabr&utm_medium=rss",
+    "summary": "Hello Habr! I'm sharing some interesting news with you. Today's research topic is Agent Economics and its costs. Read more",
+    "title": "Digest: OpenAI found a critical vulnerability in PHP, KYA for the masses, and the CCP's QWEN spy"
+  },
+  "https://habr.com/ru/articles/1098410/?utm_campaign=1098410&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Fri, 23 Oct 2026 10:56:09 GMT",
+    "slug": "1098410",
+    "source_url": "https://habr.com/ru/articles/1098410/?utm_campaign=1098410&utm_source=habrahabr&utm_medium=rss",
+    "summary": "My name is Evgeny Novikov, I build Flutter apps and created my own framework for full-stack development in Dart. Many of you might have seen ads for my Telegram channel or even me in person – a year ago I spoke at CrossConf in Moscow. In this article, I want to talk about the framework and the journey of its creation. Read more",
+    "title": "How I Wrote My Own Framework"
+  },
+  "https://habr.com/ru/articles/1098416/?utm_campaign=1098416&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Fri, 23 Oct 2026 10:56:43 GMT",
+    "slug": "1098416",
+    "source_url": "https://habr.com/ru/articles/1098416/?utm_campaign=1098416&utm_source=habrahabr&utm_medium=rss",
+    "summary": "I've compiled a table ranking SEO factors by importance for GEO. This reflects my current understanding and practical priorities for October 2026, not official data from ChatGPT, Google, or Alice. I'll first present the overall picture, then break down factors for two promotion scenarios. Read on",
+    "title": "GEO-ranking factors in neural network responses"
+  },
+  "https://habr.com/ru/articles/1098422/?utm_campaign=1098422&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Fri, 23 Oct 2026 11:03:46 GMT",
+    "slug": "1098422",
+    "source_url": "https://habr.com/ru/articles/1098422/?utm_campaign=1098422&utm_source=habrahabr&utm_medium=rss",
+    "summary": "This is MuFoEd. I'll introduce you to it a little later. For now, I'll tell a short story that, I'm sure, is no longer news. I was missing a couple of features in the Windows notepad. And I didn't go looking for a replacement program, as I would have done before. I went to AI, described my woes, and half an hour later I had the program I needed, created from scratch. But was it from scratch? And is this model so great that it wrote such a complex program so quickly? It would seem so. But, no. It made this program by standing on the \"shoulders of giants\" - a bunch of created and debugged libraries made by others, I'll emphasize this, people. And learning from an even larger pile of code made by people. Read more",
+    "title": "AI Utility Manifesto and MuFoEd"
+  },
+  "https://habr.com/ru/articles/1098436/?utm_campaign=1098436&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Fri, 23 Oct 2026 11:23:51 GMT",
+    "slug": "1098436",
+    "source_url": "https://habr.com/ru/articles/1098436/?utm_campaign=1098436&utm_source=habrahabr&utm_medium=rss",
+    "summary": "In one of the Ai2 Institute's tests, a language model was choosing an employee for an engineering position. The model was given two resumes to choose from. In one version of the task, a specific female candidate was less qualified than the second candidate, and in another, she was superior. Tülu 3.1 8B chose this woman in both cases, including when her resume was weaker. Only the explanations changed. The model compensated for missing certificates with reasoning about potential and diversity of experience. This example is from the FairStress research paper, published a few days ago. And it's unpleasant in its familiarity: the model adjusts its justification to its internal verdict, although the exact opposite is expected. Moreover, it's hard to spot the trick from a single answer: the text looks reasonable, the candidate is chosen, and the arguments are listed. Over the past few years, researchers have conducted similar checks with names, ages, dialects, and even a simple \"Are you sure?\". Models readily exhibited stereotypes where data was lacking, refused correct answers under pressure, and evaluated people differently depending on their social group. So-called positive discrimination has long been no secret: in some countries, representatives of certain social groups are given hiring advantages. Such measures are introduced through laws or corporate policies – they have specific boundaries of application (well, at least country borders). But with the spread of neural networks, similar preferences can be transferred to other regions and companies along with the model itself. An employer who has not introduced such rules and did not intend to consider the gender or origin of candidates may inadvertently take these factors into account, following the recommendations of an AI recruiter. In this article, I will analyze five studies: how neural network bias manifests and what happens when trying to correct it. Read more",
+    "title": "Bias with a Convincing Explanation: How Neural Networks Discriminate Against Candidates"
+  },
+  "https://habr.com/ru/articles/1098458/?utm_campaign=1098458&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Fri, 23 Oct 2026 11:41:53 GMT",
+    "slug": "1098458",
+    "source_url": "https://habr.com/ru/articles/1098458/?utm_campaign=1098458&utm_source=habrahabr&utm_medium=rss",
+    "summary": "When working with AI on a single project for an extended period, decisions, requirements, and agreements gradually accumulate. Over time, the model may stop considering some of this information, rely on outdated solutions, or contradict previously agreed-upon requirements. We'll explore how to organize project context using ChatGPT Projects, instructions, documents, and memory, and most importantly, how to keep it up-to-date. Read more",
+    "title": "How to Help AI Not Lose Context During Long-Term Project Work"
+  },
+  "https://habr.com/ru/articles/1098516/?utm_campaign=1098516&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Fri, 23 Oct 2026 13:12:12 GMT",
+    "slug": "1098516",
+    "source_url": "https://habr.com/ru/articles/1098516/?utm_campaign=1098516&utm_source=habrahabr&utm_medium=rss",
+    "summary": "I once needed to remove an unnecessary piece of the screen. A deletion task, what could be simpler? The final diff: 99 files, +5218 -5495. To delete 5 thousand lines of code, I had to write 5 thousand lines of specs: proposal, design, tasks, and REMOVED deltas. Then I wondered: why do we generate, store, and commit a bunch of artifacts that a modern model doesn't need? Thus, SlimSpec, a plugin for Claude Code, was born. Specs in it don't lead the work but remain after it. On a real project, a comparable change cost 29.7M tokens versus 45.7M for OpenSpec, and not a single line of process files ended up in git. I'll tell you how it works, show the numbers, and what had to be paid. Read more",
+    "title": "SDD in Reverse: Not Programming to Specs, but Getting Them as a Bonus"
   },
   "https://habr.com/ru/companies/1c/articles/1071340/?utm_campaign=1071340&utm_source=habrahabr&utm_medium=rss": {
     "model": "gemini-2.5-flash-lite",
@@ -3806,6 +3894,14 @@
     "source_url": "https://habr.com/ru/companies/gptunnel/articles/1092536/?utm_campaign=1092536&utm_source=habrahabr&utm_medium=rss",
     "summary": "Tired of answering the same questions repeatedly? Learn how to build an AI chatbot for your VK community using ChatGPT and the GPTunneL constructor in just 10 minutes, with no coding required. This guide covers everything from setup to your first automated response.",
     "title": "How to Create a VK AI Bot with ChatGPT in 10 Minutes: A Step-by-Step No-Code Guide"
+  },
+  "https://habr.com/ru/companies/gpugo/articles/1098552/?utm_campaign=1098552&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Fri, 23 Oct 2026 13:40:30 GMT",
+    "slug": "1098552",
+    "source_url": "https://habr.com/ru/companies/gpugo/articles/1098552/?utm_campaign=1098552&utm_source=habrahabr&utm_medium=rss",
+    "summary": "EmbeddingGemma 2 has an output projection with a rank of 512, even though the standard embedding contains 768 coordinates. We used QR decomposition of this projection to map vectors into a 512-dimensional space while preserving cosine similarity. We then compared QR variants with standard MRL dimensionality reduction. Experiments were conducted on an RTX 5090, evaluating search quality on SciFact and FiQA, measuring memory and latency for exact FAISS search on MS MARCO corpora up to five million documents, and the conversion time for an existing database. On five million documents, QR-direct reduced the process peak memory from 15.88 to 11.11 GiB. The total latency for a single query changed from 36.19 to 34.80 ms, and for a batch of 32, from 50.62 to 44.97 ms. This article explains the transformation, the variants compared, and the conclusions drawn from these experiments. The RTX 5090 testbed was rented through the GPUGO catalog. Read more",
+    "title": "EmbeddingGemma 2: How to switch from 768 to 512 coordinates and save memory on RTX 5090"
   },
   "https://habr.com/ru/companies/habr/articles/1088468/?utm_campaign=1088468&utm_source=habrahabr&utm_medium=rss": {
     "model": "gemini-2.5-flash-lite",
@@ -4254,6 +4350,14 @@
     "source_url": "https://habr.com/ru/companies/psm_unlim/articles/1083150/?utm_campaign=1083150&utm_source=habrahabr&utm_medium=rss",
     "summary": "I saw figures from an AIANA study – new analytics on the Russian AI market. The volume is estimated at 316.1 billion rubles (as of the end of 2025). The main customer, logically, is business: 71.9% of revenue comes from B2B. 98.4 billion rubles are for AI hardware and physical infrastructure. This is 31.1% of the market – the largest segment by revenue. For me, this is the main point: digital confirmation that the AI market is supported not only by models, applications, and prompts, but by \"hardware.\" But then things get interesting. The largest segment of hardware is computing \"hardware.\" The first question that arose for me as someone from the energy sector was: was electricity forgotten in this segment? As it turned out a couple of scrolls down, it wasn't forgotten. It's just that in business logic, energy is currently consciously left outside the AI market. Let's figure out why and what the risks are. How accurately does the picture without energy convey the real possibilities of launching new AI projects? Read more",
     "title": "AI Forgot About Energy? The Paradox of AI Market Research in Russia"
+  },
+  "https://habr.com/ru/companies/pt/articles/1097678/?utm_campaign=1097678&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Fri, 23 Oct 2026 09:19:00 GMT",
+    "slug": "1097678",
+    "source_url": "https://habr.com/ru/companies/pt/articles/1097678/?utm_campaign=1097678&utm_source=habrahabr&utm_medium=rss",
+    "summary": "SOC analysts, whether in large or small teams, often report seeing all correlation rule alerts but lacking the time to investigate them. This doesn't mean the rules are ineffective. A SOC in a large organization can generate over 10,000 alerts daily, making it impossible to manually gather context, consult knowledge bases, and make decisions for each one. Consequently, nearly two-thirds of alerts remain uninvestigated, primarily those with lower significance levels, allowing attackers to blend into the background. When Positive Technologies simulated insider behavior, a traditional signature- and correlation-rule-based system produced only three medium/low significance alerts. To prevent missing critical events and ensure correct risk assignment in such scenarios, MaxPatrol SIEM includes the MaxPatrol BAD behavioral analysis module. However, an alert being detected doesn't eliminate the analyst's need to understand it. This gap—between the system detecting something and the specialist understanding it—is what we aimed to close with AI. Read more",
+    "title": "PT Naira AI Assistant in MaxPatrol SIEM: Why Analysts Stopped Searching and Started Asking"
   },
   "https://habr.com/ru/companies/raiffeisenbank/articles/1075704/?utm_campaign=1075704&utm_source=habrahabr&utm_medium=rss": {
     "model": "gemini-2.5-flash-lite",

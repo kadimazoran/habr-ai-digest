@@ -1,0 +1,186 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>How to Help AI Not Lose Context During Long-Term Project Work</title>
+  <meta name="description" content="When working with AI on a single project for an extended period, decisions, requirements, and agreements gradually accumulate. Over time, the model may stop considering some of this information, rely on outdated solutions, or contradict previously agreed-upon requirements. We&#x27;ll explore how to ">
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.65;
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 32px 20px 64px;
+      color: #1f2328;
+    }
+    header {
+      border-bottom: 1px solid #d8dee4;
+      margin-bottom: 28px;
+      padding-bottom: 20px;
+    }
+    .source {
+      color: #57606a;
+      font-size: 0.95rem;
+    }
+    img, video, iframe {
+      max-width: 100%;
+      height: auto;
+    }
+    pre {
+      overflow-x: auto;
+      padding: 16px;
+      background: #f6f8fa;
+      border-radius: 6px;
+    }
+    code {
+      font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+    }
+    blockquote {
+      border-left: 4px solid #d0d7de;
+      margin-left: 0;
+      padding-left: 16px;
+      color: #57606a;
+    }
+    footer {
+      border-top: 1px solid #d8dee4;
+      margin-top: 40px;
+      padding-top: 20px;
+      color: #57606a;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>How to Help AI Not Lose Context During Long-Term Project Work</h1>
+    <p>When working with AI on a single project for an extended period, decisions, requirements, and agreements gradually accumulate. Over time, the model may stop considering some of this information, rely on outdated solutions, or contradict previously agreed-upon requirements. We&#x27;ll explore how to organize project context using ChatGPT Projects, instructions, documents, and memory, and most importantly, how to keep it up-to-date. Read more</p>
+    <p class="source">
+      Machine-translated from Habr.
+      <a href="https://habr.com/ru/articles/1098458/?utm_campaign=1098458&amp;utm_source=habrahabr&amp;utm_medium=rss">Read the original Russian article</a>.
+      Fri, 23 Oct 2026 11:41:53 GMT
+    </p>
+  </header>
+  <main>
+<div><figure><img loading="lazy" src="https://habrastorage.org/r/w1560/extt/46/c2/15/46c215d98fbf738a2a9d3a0744b5bd47.png"/></figure><p>Imagine you've been managing a technical blog, for example, with ChatGPT, Claude, or another AI platform for several months. You discuss publication topics, outline article plans, research sources, and define style and editorial requirements.</p><p>Over this time, you've made dozens of decisions: abandoned some topics, agreed on the structure for a series of materials, and published several articles. Then, at some point, you open a new chat and find that the AI is suggesting an already published topic as new. Or it writes text in a format you previously decided against.</p><p>You have to re-explain the rules and re-establish the agreed-upon decisions. As long as there are few discussions, it doesn't cause serious inconvenience. But as the project develops, maintaining consistency becomes more difficult.</p><p><strong>When working with AI long-term, the context needs to be designed and maintained as consciously as the project itself.</strong></p><p>AI platforms now offer tools for this: Projects, Instructions, Knowledge, Memory, and Skills. However, the availability of these features doesn't mean the project context is organized correctly.</p><p>In this article, I propose to break down what task each mechanism solves, how to set up an AI project, and how to keep its knowledge up-to-date.</p><p>It's worth noting upfront that this approach is applicable not only to blogs but also to scientific research, business strategy, educational courses, product planning, and other long-term tasks.</p><h3>What AI Projects Are We Talking About</h3><p>I will use <strong>ChatGPT Projects</strong> as an example to explain the approach further. Similar principles apply to other AI chat platforms, although specific tools and their capabilities may vary.</p><p><a href="https://help.openai.com/en/articles/10169521-projects-in-chatgpt">ChatGPT Projects</a> are spaces where you can group related discussions, set persistent instructions, and provide AI with materials related to a specific topic or product.</p><p>Similar challenges arise when working with AI coding agents like Codex CLI, Claude Code, or Cursor. However, these tools typically have direct access to project files and can use instructions and documentation from the repository. In AI chats, access to sources is organized differently: through project files, attached documents, instructions, and memory mechanisms. Therefore, we will look at how to build a context management system specifically in such an environment.</p><h3>Example: Managing a Technical Blog with AI Chats</h3><p>Let's imagine we're running a technical blog for developers. We create a separate project in ChatGPT called <strong>Technical Blog</strong> and use it for research and preparing publications.</p><figure><img alt="Creating a project" loading="lazy" src="https://habrastorage.org/r/w1560/extt/75/cb/d2/75cbd222c5339d2f8c89927a729a236d.png" title="Creating a project"/><div><figcaption>Creating a project</figcaption></div></figure><p>After several discussions, we formulate editorial guidelines:</p><div><div><table><tbody><tr><th><p>Area</p></th><th><p>Decision</p></th></tr><tr><td><p>Audience</p></td><td><p>Developers and technical specialists</p></td></tr><tr><td><p>Topics</p></td><td><p>AI tools, web development, engineering practices</p></td></tr><tr><td><p>Style</p></td><td><p>Practical, without promotional language</p></td></tr><tr><td><p>Structure</p></td><td><p>Coherent text, minimal lists unless necessary</p></td></tr><tr><td><p>Publications</p></td><td><p>Do not repeat already published topics without a new angle</p></td></tr></tbody></table></div></div><p>Gradually, separate chats emerge within the project. In one, we research the topic of context windows; in another, we edit an article on token optimization; in a third, we discuss a series of materials on AI tools. A separate dialogue is dedicated to the editorial plan.</p><p>Thus, we have several related discussions, general editorial requirements, and materials at various stages of preparation. We will use this example to explore how to organize project context.</p><h3>Why Chat History Doesn't Replace Project Context</h3><p>It might seem that creating a separate project in ChatGPT is enough, and the platform will automatically save all necessary information. However, chat history mechanisms have limitations. Typically, language models have a limited context window that they can process within a single turn. This can include instructions, current messages, available history, tool outputs, and information from connected sources.</p><p>As discussions become lengthy, the platform may use various methods to manage context: shortening history, selecting relevant fragments, or accessing memory mechanisms. Therefore, having a decision in an old chat doesn't guarantee it will be used in the next response. Even if the information is available, the model doesn't always interpret it correctly.</p><p>Suppose, during a discussion about editorial strategy, we considered several publication formats and ultimately chose practical guides. Both initial proposals and the final decision remain in the chat history. If the latter isn't explicitly highlighted, the model might rely on an intermediate option—provided that the relevant messages are even accessible to it within the current context.</p><h3>What Tools Do AI Platforms Offer</h3><p>ChatGPT offers several mechanisms to help organize work within projects. They differ in names and capabilities, but it's convenient to categorize them by purpose.</p><div><div><table><tbody><tr><th><p>Mechanism</p></th><th><p>Primary Task</p></th></tr><tr><td><p>Project Instructions</p></td><td><p>Define persistent AI operating rules</p></td></tr><tr><td><p>Project Files / Sources</p></td><td><p>Store project information</p></td></tr><tr><td><p>Memory / Chat History</p></td><td><p>Help consider previous discussions</p></td></tr><tr><td><p>Skills</p></td><td><p>Describe repeatable work procedures</p></td></tr></tbody></table></div></div><p>Let's look at them in more detail.</p><p><strong>Project Instructions</strong> allow you to set rules that the AI must consider when working within a project.</p><figure><img alt="Setting up Project Instructions" loading="lazy" src="https://habrastorage.org/r/w1560/extt/73/55/38/7355387e1b7d8ba99e0b5cc743eb43a1.png" title="Setting up Project Instructions"/><div><figcaption>Setting up Project Instructions</figcaption></div></figure><p>For example:</p><pre><code>## General Rules
+
+- Consider current editorial guidelines.
+- Do not add unverified facts or quantitative estimates.
+- Distinguish between agreed-upon decisions and preliminary proposals.
+- Do not consider a discussed topic as a published article.
+- If there is insufficient information, state so.</code><div><a href="https://sourcecraft.dev/"><span></span></a></div></pre><p>This helps avoid constantly repeating the same requirements. However, you shouldn't transfer the entire editorial plan, discussion history, or details of each publication into Project Instructions. Their purpose is to define how the AI should work, not to store all project knowledge. ChatGPT Projects allow you to add files and other project sources.</p><p><strong>Project Files / Sources</strong> are the appropriate place for requirements, editorial guidelines, topic plans, decisions, and the current status of publications.</p><figure><img alt="Sources within a ChatGPT Project" loading="lazy" src="https://habrastorage.org/r/w1560/extt/47/2e/b3/472eb388ac18fe12d482db3e3b73393d.png" title="Sources within a ChatGPT Project"/><div><figcaption>Sources within a ChatGPT Project</figcaption></div></figure><p>For instance, you can prepare three Markdown documents:</p><pre><code>Sources
+├── PROJECT.md
+├── CONTEXT.md
+└── DECISIONS.md</code><div><a href="https://sourcecraft.dev/"><span></span></a></div></pre><p>These are documents added to the AI project's sources. They don't require a separate repository or a special directory structure.</p><p><code>PROJECT.md</code> contains the blog's goals, audience, editorial guidelines, and constraints.<br/><code>CONTEXT.md</code> describes the current state of the project.<br/><code>DECISIONS.md</code> records significant editorial decisions and the reasons for making them.</p><p>The file names are illustrative. ChatGPT doesn't require this exact structure. However, explicit separation of information helps maintain documents and avoid contradictions.</p><p><a href="https://help.openai.com/en/articles/8590148-memory-in-chatgpt"><strong>Memory</strong></a> helps the AI consider information from past interactions.</p><p>In ChatGPT Projects, with appropriate settings, information from other chats within the project can be used. Memory helps maintain continuity between discussions but doesn't guarantee retrieval of every previously made decision. Therefore, it's best to record editorial guidelines, approved topics, and publication statuses in project documents.</p><p><a href="https://help.openai.com/en/articles/20001066-skills-in-chatgpt"><strong>Skills</strong></a> allow for the standardization of specialized workflows.</p><p>For an editorial project, these could include fact-checking, draft editing, or preparing an announcement. For example, we regularly ask the AI to check article structure, identify unverified claims, and prepare publication announcements.</p><p>Instead of describing the verification criteria each time, you can encapsulate them in a separate procedure.</p><p>An illustrative example:</p><pre><code># Article Review
+
+When reviewing a draft article:
+
+1. Check for compliance with the topic and audience.
+2. Identify unverified facts and figures.
+3. Verify the logical structure.
+4. Point out repetitions and excessive lists.
+5. Cross-reference the material with editorial guidelines.
+6. Do not present evaluative conclusions as confirmed research findings.</code><div><a href="https://sourcecraft.dev/"><span></span></a></div></pre><p>If the platform supports connecting Skills, such a procedure can be formalized accordingly. If a native mechanism is unavailable or inaccessible, the procedure can be stored as a document and explicitly used for relevant tasks.</p><p>However, a regular file with instructions doesn't become one that automatically invokes a Skill. Skills are useful for our system but not mandatory. You can start with Instructions and project documentation.</p><h3>Setting Up an AI Project in Practice</h3><p>Let's assume we've created a separate project. For starters, persistent instructions and two documents are sufficient.</p><h4>Step 1. Create PROJECT.md</h4><p>This document contains relatively stable knowledge about the project.</p><pre><code># Technical Blog
+
+## Overview
+
+Practical articles for developers
+about AI tools and web development.
+
+## Audience
+
+Developers and technical specialists.
+
+## Editorial Rules
+
+- Write in clear technical language.
+- Prioritize practical examples.
+- Do not overload articles with lists.
+- Do not include unverified figures.
+- Separate facts from assumptions.
+- Verify sources for changing information.
+
+## Constraints
+
+- Do not repeat published topics
+  without a new research angle.
+- Do not consider an article outline as finished text.
+- Agree on significant changes
+  to the editorial direction.</code><div><a href="https://sourcecraft.dev/"><span></span></a></div></pre><p>After adding the document to the project's sources, the AI gains the ability to use it when discussing new decisions. For example, when preparing an article, it should consider editorial requirements and the prohibition of unverified quantitative data. However, the presence of the document in the project doesn't guarantee that its content will be considered in every response.</p><p>Therefore, it's important to additionally define rules for working with sources.</p><h4>Step 2. Create CONTEXT.md</h4><p>The second document contains the current state of the editorial plan.</p><pre><code># Current Editorial State
+
+Updated: 2026-10-20
+
+## Published
+
+- Saving tokens when working with AI.
+
+## In Progress
+
+- Managing AI project context: draft undergoing editing.
+
+## Planned
+
+- Practical guide to Skills.
+
+## Known Issues
+
+- The article on context needs usage examples.
+
+## Next Steps
+
+- Complete article editing.
+- Prepare publication announcement.</code><div><a href="https://sourcecraft.dev/"><span></span></a></div></pre><p>Now, a new chat can get information about which materials have been published, which are in progress, and which are only planned.</p><p>An important nuance: since the chat doesn't necessarily have access to the publication platform, the article status must be confirmed by the user or an accessible source. The AI should not independently declare an article published solely based on having previously prepared its draft.</p><h4>Step 3. Configure Project Instructions</h4><p>Now, we need to define how the AI should use the documents.</p><pre><code># Project Instructions
+
+## Context Sources
+
+- PROJECT.md - blog goals, editorial guidelines, and constraints.
+- CONTEXT.md - current editorial plan and article statuses.
+
+## Before Task
+
+- Determine which sources are relevant to the request.
+- Use up-to-date information from available documents.
+- Do not claim to have read a file if it was not retrieved.
+- In case of contradictions, clarify which decision is current.
+
+## During Task
+
+- Adhere to confirmed editorial guidelines.
+- Distinguish between proposals and decisions.
+- Do not consider a prepared outline as a finished or published article.
+- Do not invent publications or sources.
+
+## After Task
+
+- Determine if new confirmed decisions have been made.
+- If editorial guidelines or material statuses change, suggest updating documents.
+- Do not record every message.
+- Do not declare documents updated until changes are saved.</code><div><a href="https://sourcecraft.dev/"><span></span></a></div></pre><p>There's a fundamental point here.</p><p>We are not requiring the AI to rewrite project documentation after every response. Instead, we define conditions under which it truly needs to be updated. For example, if we are simply discussing several ideas for a future article, updating <code>CONTEXT.md</code> is not necessary. But if we have approved a topic, completed a draft, or published a material, the corresponding change should be recorded.</p><h4>Step 4. Test the Setup in a New Chat</h4><p>After creating the documents and instructions, we need to ensure that the AI can indeed use the project context.</p><p>To do this, open a new chat within the project and ask:</p><blockquote><p>What editorial guidelines should be considered when preparing the next article?</p></blockquote><p>We expect the AI to mention the audience, practical focus, and the prohibition of unverified figures.</p><p>Then, ask:</p><blockquote><p>What articles have already been published, and which are in progress?</p></blockquote><p>The answer should align with the current <code>CONTEXT.md</code>, not the model's assumptions.</p><p>If the information is not taken into account, you need to check the availability of sources and how they are used in the chosen platform. Such a test doesn't guarantee correct behavior in all future requests but allows for checking the basic setup.</p><h3>How to Keep Context Up-to-Date</h3><p>Creating documents once is not enough. After a few weeks, plans and publication statuses may change. If the information in the sources is not updated, the AI will receive outdated information.</p><p>Therefore, a simple workflow is needed:</p><p><strong>Read current context → discuss or perform task → confirm result → update sources → verify changes.</strong></p><h4>Example: Article Published</h4><p>Let's assume we finished editing the article on context management, published it, and confirmed the publication link.</p><p>Previously, <code>CONTEXT.md</code> contained:</p><pre><code>## In Progress
+
+- Managing AI project context
+  - Status: draft undergoing editing.
+
+## Next Steps
+
+- Complete article editing.
+- Prepare publication announcement.</code><div><a href="https://sourcecraft.dev/"><span></span></a></div></pre><p>Now, this information is outdated. After confirming the result, the document needs to be modified:</p><pre><code>## Published
+
+- Managing AI project context
+  - URL: link to the published article
+  - Status: published
+
+## In Progress
+
+No articles undergoing editing.
+
+## Next Steps
+
+- Prepare publication announcement.
+- Select the topic for the next article.</code><div><a href="https://sourcecraft.dev/"><span></span></a></div></pre><p>Note: we are not adding another entry about task completion at the end of the file.</p><p>We are updating the current project state. This keeps the document concise. The discussion history remains in the chats, and <code>CONTEXT.md</code> contains the current snapshot of the state.</p><p>In practice, you shouldn't rely entirely on the AI to determine when to update. Instructions help shape the expected workflow, but after significant milestones, it's useful to explicitly check the status of project documents. For example, after publishing an article, you can ask the AI to compare the current <code>CONTEXT.md</code> with the confirmed changes and prepare an updated version. This takes less effort than reconstructing the project state months later.</p><h3>Who Should Update Project Files</h3><p>In chat platforms, various scenarios are possible here.</p><p><em>First - manual updates.</em></p><p>After a significant decision is made, the AI prepares a new version of the document or specific changes. The user reviews them and updates the source in the project.</p><p>This is the most universal scenario, requiring no additional integrations.</p><p><em>Second - updates via connected tools.</em></p><p>If the chat has access to an editable source, such as documents in a connected service, it can modify them using appropriate tools and permissions.</p><p>However, it's important to note that updating an external document doesn't always mean automatically updating its copy previously uploaded to the AI project. Therefore, after modification, you need to ensure that the next chat uses the current version.</p><p>The mere presence of a rule in Project Instructions doesn't guarantee automatic synchronization.</p><h3>How to Avoid Turning Context into an Information Dump</h3><p>Over time, the temptation arises to save almost everything in project files. Every discussion, every solution option, all intermediate conclusions and plans. But this leads to the same problem we are trying to solve: significant information gets lost among a large amount of secondary data.</p><p>Therefore, it's advisable to separate discussion history from the current state.</p><p><code>PROJECT.md</code> should contain current editorial guidelines and constraints.<br/><code>CONTEXT.md</code> should contain confirmed information about the project's current state.</p><p>If a decision is revised, outdated information must be replaced or clearly marked as inactive.</p><p>For significant editorial decisions, a separate <code>DECISIONS.md</code> can be added, recording the reasons for choices and the history of decision revisions. There's no need to create such a file in advance if the project is simple enough and all information fits within <code>PROJECT.md</code>.</p><p>This approach aligns with the principle of minimally sufficient context: saving what will actually be needed in future discussions.</p><h3>What Limitations Remain</h3><p>Even a correctly configured AI project doesn't guarantee that the model will never forget a decision or suggest an option that contradicts editorial guidelines.</p><ul><li><p>Project Instructions may be applied inconsistently.</p></li><li><p>Project sources are not necessarily used in their entirety for every request.</p></li><li><p>Memory may not retrieve the necessary information.</p></li><li><p>Skills may not activate or may not be fully executed.</p></li><li><p>Project documentation itself may contain outdated information.</p></li></ul><p>Therefore, context management does not eliminate the need to verify AI responses. It creates a more understandable and controllable basis for work but does not replace editorial review of results.</p><h3>Conclusion</h3><p>Managing the context of a long-term AI project involves more than just the initial setup of Instructions, Memory, and knowledge sources. It's equally important to keep agreed-upon decisions and the current project state up-to-date.</p><p>To start, persistent instructions, one or two documents, and a simple rule are sufficient: after significant changes, check if the project context needs updating.</p><p><strong>When working with AI long-term, the context needs to be designed and maintained as consciously as the project itself.</strong></p><p>This approach doesn't guarantee error-free responses but makes continuing work in new chats less dependent on reconstructing old correspondence.</p><hr/><h3>Useful Materials</h3><p><strong>Chat Platform Documentation</strong></p><ul><li><p><a href="https://help.openai.com/en/articles/10169521-projects-in-chatgpt">OpenAI - Projects in ChatGPT</a></p></li><li><p><a href="https://help.openai.com/en/articles/8590148-memory-in-chatgpt">OpenAI - Memory in ChatGPT</a></p></li><li><p><a href="https://help.openai.com/en/articles/20001066-skills-in-chatgpt">OpenAI - Skills in ChatGPT</a></p></li></ul><p><strong>OpenAI Engineering Materials</strong></p><ul><li><p><a href="https://developers.openai.com/cookbook/examples/codex/iterating-development-workflows-with-codex">Iterating Development Workflows with Codex</a> - principles for organizing long-term workflows and preserving significant decisions.</p></li><li><p><a href="https://developers.openai.com/blog/rethinking-skills-and-prompts-for-gpt-6-astra">Rethinking skills and prompts for GPT-6 Astra</a> - on prompt accuracy, excessive context, and organizing Skills.</p></li></ul><p>The last two materials primarily relate to agentic scenarios, but the context organization principles described in them are also useful for AI chats.</p></div>
+  </main>
+  <footer>
+    Translation generated with Gemini 2.5 Flash-Lite.
+    The original article remains the source of record.
+  </footer>
+</body>
+</html>

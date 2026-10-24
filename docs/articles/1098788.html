@@ -1,0 +1,326 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>System Analysis in the Era of LLMs</title>
+  <meta name="description" content="System analysis in the era of LLMs - a paradigm shift and the role of the analyst, and one of the approaches to designing features. Read more">
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.65;
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 32px 20px 64px;
+      color: #1f2328;
+    }
+    header {
+      border-bottom: 1px solid #d8dee4;
+      margin-bottom: 28px;
+      padding-bottom: 20px;
+    }
+    .source {
+      color: #57606a;
+      font-size: 0.95rem;
+    }
+    img, video, iframe {
+      max-width: 100%;
+      height: auto;
+    }
+    pre {
+      overflow-x: auto;
+      padding: 16px;
+      background: #f6f8fa;
+      border-radius: 6px;
+    }
+    code {
+      font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+    }
+    blockquote {
+      border-left: 4px solid #d0d7de;
+      margin-left: 0;
+      padding-left: 16px;
+      color: #57606a;
+    }
+    footer {
+      border-top: 1px solid #d8dee4;
+      margin-top: 40px;
+      padding-top: 20px;
+      color: #57606a;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>System Analysis in the Era of LLMs</h1>
+    <p>System analysis in the era of LLMs - a paradigm shift and the role of the analyst, and one of the approaches to designing features. Read more</p>
+    <p class="source">
+      Machine-translated from Habr.
+      <a href="https://habr.com/ru/articles/1098788/?utm_campaign=1098788&amp;utm_source=habrahabr&amp;utm_medium=rss">Read the original Russian article</a>.
+      Sat, 24 Oct 2026 07:05:49 GMT
+    </p>
+  </header>
+  <main>
+<div><p>Talmudic texts have been written about business analysis (greetings, Vigers adherents): stakeholder maps, influence matrices, goal trees, requirement pyramids, and many other scary terms.</p><p>But in the real, gray life of ordinary <s>peasants</s> analysts, the business analysis stage looks like this:</p><blockquote><p>The product manager comes: "We need to make this thing. Go talk to those guys, set up a meeting, if anything is unclear - come to me, we'll figure it out."</p><p>You go: "Guys, what do we want?" - "This." And they give you the requirements for the feature and the criteria for its readiness in five sentences. That's it.</p></blockquote><p>I'm exaggerating, of course. But every time I talk about this in large public forums (and here too), I get a wave of hate, supposedly I'm corrupting the youth and am a heretic who shouldn't be called an engineer.</p><p>I don't have time to argue about methodologies; AI is writing this article for me while I'm shooting lifestyle content about how well an analyst lives and how I can fly off to relax on islands once a month (spoiler - no, no, and absolutely not. Run away from such info-touts if you see IT reels from Dubai skyscrapers or posts in "perfectly fluent French" from a villa in Bali).</p><p>Here I will simply show one of my working approaches: what I do after those five sentences of business requirements are written down, and <strong>where exactly at each step I involve the LLM</strong>.</p><p>The feature for the example is small: let's imagine we are a marketplace and we need to add a "Repeat Order" button to the food delivery service. Let's go.</p><h3>How I Design a Feature with LLM</h3><h3>The Entire Route</h3><figure><img alt="Analyst's Workflow" loading="lazy" src="https://habrastorage.org/extt/58/ca/0e/58ca0ea2936ba43c9d7400060f656750.gif" title="Analyst's Workflow"/><div><figcaption>Analyst's Workflow</figcaption></div></figure><p>The order I write about here is not dogma. It's quite convenient for design and structured so that each decision is made once and at the stage when all the necessary information is available for it.</p><h4>Note on Prompts in the Article</h4><p><code><strong>&lt;PROJECT&gt;</strong></code><strong> is one page.</strong> The very Readme.md. All user prompts have this block: glossary with terms, project structure, etc. It's assembled once, substituted everywhere in the LLM call, and constantly updated. Without it, the model will re-research your project at each step, which is redundant and can cause hallucinations.</p><p><strong>Each subsequent prompt (in this flow) receives the result of the previous one.</strong> The chain of artifacts works only if the model sees what came before. Or if you do it all within the same repository/project in an IDE/Cursor/Claude, etc.</p><p><strong>The "OPEN QUESTIONS" block is desirable in every prompt.</strong> This is the most valuable part of the answer - we won't let the model invent something for us, and we can ask questions that we, in turn, will go clarify with our counterparties or within the team.</p><p><strong>New dialogue for each step.</strong> In a long chat, the model accumulates extra context (and its own mistakes) and can hallucinate more actively or suggest incorrect solutions.</p><h3>Step 1. User Story</h3><figure><img alt="User Story" loading="lazy" src="https://habrastorage.org/extt/3f/b8/da/3fb8daf4dbeada0942eb5ee46fd453d2.gif" title="User Story"/><div><figcaption>User Story</figcaption></div></figure><p>The US is the only artifact that an analyst writes together with the product manager. What's important in it: the formulation of the business customer's expectations and the acceptance criteria for the result. </p><p>What is not in the US and should not be: scenarios for implementing business requirements. This is the work of the next step.</p><h4>What the LLM does here</h4><p>Translates five sentences of business requirements into a correct format and helps to elaborate/discover edge cases that the analyst might not have foreseen immediately.</p><p><strong>System prompt:</strong></p><pre><code>You are a product analyst. Your task is to turn raw customer requirements into user stories with verifiable acceptance criteria. 
+
+RULES
+1. Story format: "As a &lt;role&gt;, I want &lt;action&gt;, so that &lt;value&gt;".
+   Do not repeat the action in the value with different words.
+2. Acceptance criteria - Given/When/Then. Minimum three
+   scenarios: main, edge, negative.
+3. All values in scenarios are specific. "Some amount", "any
+   status", "correctly" - are forbidden.
+4. If the story does not fit into one sprint for one team - divide
+   it and show the division explicitly.
+5. Separate block: "Out of scope" - what is similar, but not included in this story.
+6. Do not invent anything that is not in the input data: put it in the block
+   OPEN QUESTIONS with a formulation of who this question is addressed to.
+7. Do not suggest technical solutions.
+</code><div><a href="https://sourcecraft.dev/"><span></span></a></div></pre><p><strong>User prompt:</strong></p><pre><code>&lt;PROJECT&gt;
+
+CUSTOMER DATA:
+1. On the order page - a "Repeat Order" button.
+2. Upon clicking, the same order is assembled.
+3. If something is out of stock - show what is missing.
+4. Prices are taken as current.
+5. Done when the repeat order is placed in two clicks.
+
+ADDITIONAL INFORMATION KNOWN:
+- 38% of orders are repeating sets (quarterly analytics data).
+- Repeating from the product card ("buy again") - a separate task, not included in this one.
+
+TASK
+Create a user story and acceptance criteria
+</code><div><a href="https://sourcecraft.dev/"><span></span></a></div></pre><h3>Step 2. Use Case</h3><p>Now we form Use Cases based on the User Story for its decomposition.</p><figure><img alt="Use Case" loading="lazy" src="https://habrastorage.org/extt/32/5b/e0/325be02dbeb763765ae33d2ec020a0de.gif" title="Use Case"/><div><figcaption>Use Case</figcaption></div></figure><h4>What the LLM does here</h4><p>Questions that expand the system's behavior are perfectly formalized - and this is an excellent application of LLM. "What if the external system did not respond? What if there was less data than expected? What if the step is performed a second time? What if the previous state is not what we assumed?". The system prompt below helps to anticipate most alternative branches when forming Use Cases in most cases.</p><p><strong>System prompt:</strong></p><pre><code>You are a system analyst. You describe the system's behavior in the use case format.
+
+STRUCTURE (all sections are mandatory)
+ID and name · scope · primary actor ·
+preconditions · minimal guarantees · success guarantees · trigger ·
+main scenario · extensions · open questions.
+
+RULES
+1. A step is one action by one participant. "System processes
+   and sends" is forbidden: this is two steps.
+2. Active voice, clearly indicating who is acting.
+3. No interface elements.
+4. For EACH step, check four questions and create an extension if the answer is not "impossible":
+   - external system did not respond or responded with an error;
+   - less data was received than expected;
+   - the step is performed repeatedly (duplicate request or event);
+   - the initial state is not what the step assumed.
+   If there is no extension for the step - write "no extensions"
+   and justify in one sentence.
+5. Numbering of extensions: 3a, 3b, 5a - by step number.
+6. Formulate minimal guarantees as verifiable assertions that are true under ANY outcome of the scenario.
+7. Do not invent business rules and do not refer to documents that are not in the input data. Missing information goes into OPEN QUESTIONS.
+</code><div><a href="https://sourcecraft.dev/"><span></span></a></div></pre><p><strong>User prompt:</strong></p><pre><code>&lt;PROJECT&gt;
+
+&lt;US AND ACCEPTANCE CRITERIA - result of step 1 in full&gt;
+
+SYSTEM CONSTRAINTS TO BE OBSERVED:
+- Order composition is immutable: an order is a document at the time of placement.
+- The client has one cart per store.
+- Order, catalog, and stock services are external to the cart service; calls are synchronous.
+
+TASK
+Create a UC "Cart assembly from a previous order".
+</code><div><a href="https://sourcecraft.dev/"><span></span></a></div></pre><h3>Step 3. Data Model</h3><p>Many skip this step, designing the database structure immediately. And in vain: it answers the question <strong>which entities we already have, and which need to be created/modified</strong>.</p><figure><img alt="Data Model" loading="lazy" src="https://habrastorage.org/extt/de/d8/a6/ded8a69dfe6a7d0b5ec4bd4518e04d48.gif" title="Data Model"/><div><figcaption>Data Model</figcaption></div></figure><h4>What the LLM does here</h4><p>The main benefit is not drawing a data model, but <strong>making the model separate entities into existing and new/modified</strong>. This is exactly the question it will answer only if you give it a list of what already exists in the system. By the way, you can do this by asking it (beforehand or during the answer generation) to research the application code or database structure.</p><p><strong>System prompt:</strong></p><pre><code>You are a system analyst designing a conceptual data model.
+
+RULES
+1. Work only with entities and relationships. No types, indexes
+   or physical tables - that's the next step.
+2. Mark each entity with one of the labels:
+   [exists] - is in the list of current entities,
+   [+field] - exists, but new attributes are needed (name them),
+   [new] - appears due to this feature.
+3. For each relationship, indicate cardinality on both sides
+   and mandatory status.
+4. If data needs to be stored as a snapshot, not a reference, - state it
+   explicitly and justify in one sentence.
+5. Separate block: "Decisions and alternatives" - for each
+   non-trivial decision, list rejected options and the reason.
+6. If it's unclear from the input data how to model, - do not decide
+   yourself, describe the options in OPEN QUESTIONS.
+</code><div><a href="https://sourcecraft.dev/"><span></span></a></div></pre><p><strong>User prompt:</strong></p><pre><code>&lt;PROJECT&gt;
+
+&lt;UC IN FULL - result of step 2&gt;
+
+CURRENT SYSTEM ENTITIES:
+Client, Store, Product, Order, Order Item, Cart, Cart Item, Delivery Slot, Payment.
+
+TASK
+Build a conceptual data model for the repeat order feature. Show which entities are reused as is, which need new attributes, and which appear for the first time.
+</code><div><a href="https://sourcecraft.dev/"><span></span></a></div></pre><h3>Step 4. Database Structure</h3><figure><img alt="Database Table Structure" loading="lazy" src="https://habrastorage.org/extt/2f/9a/c9/2f9ac967624b3b4d6941680164805934.gif" title="Database Table Structure"/><div><figcaption>Database Table Structure</figcaption></div></figure><p>Now the data model moves to the physical schema. I usually design it in DBML - it's convenient to edit and render ER diagrams.</p><h4>What the LLM does here</h4><p>Generating DBML is routine work that the model does quickly and accurately. The value is added by two requirements in the system prompt: adherence to conventions and the block about migration.</p><p><strong>System prompt:</strong></p><pre><code>You are a system analyst, designing a physical DB schema
+and outputting it in DBML format (dbdiagram.io).
+
+RULES
+1. Adhere to project conventions for types WITHOUT EXCEPTION. In case of conflict
+   between convenience and convention, choose convention.
+2. For each field: type, mandatory status, default value,
+   constraints. Enumerated values - as a comment next to the field.
+3. For each table, mark in a comment: whether it is new or existing.
+   For existing tables, list ONLY the added fields.
+4. All relationships - via Ref. Indicate foreign keys to tables outside the
+   description area as well.
+5. Separate block after DBML: "Migration" - what to do
+   with existing rows, whether backfill is needed, where a full table scan will be required.
+6. Separate block: "Check with DBA" - indexes, expected volume growth,
+   potential hot spots.
+7. Do not use physical row deletion for entities involved in monetary transactions.
+8. Anything unclear - in OPEN QUESTIONS, do not decide yourself.
+</code><div><a href="https://sourcecraft.dev/"><span></span></a></div></pre><p><strong>User prompt:</strong></p><pre><code>&lt;PROJECT&gt;
+
+&lt;DATA MODEL - result of step 3 in full&gt;
+
+TYPE CONVENTIONS:
+- Identifiers - uuid.
+- Money - bigint in kopecks, field suffix _kopecks.
+- Quantity - numeric(10,3): there are weight-based goods.
+- Dates - timestamptz, stored in UTC.
+- Enumerations - varchar with a closed list of values in the comment.
+
+EXISTING TABLES WE ARE MODIFYING: carts, cart_items.
+
+TASK
+Output DBML for the repeat order feature.
+</code><div><a href="https://sourcecraft.dev/"><span></span></a></div></pre><h3>Step 5. Solution Architecture</h3><figure><img alt="Solution Architecture" loading="lazy" src="https://habrastorage.org/extt/dd/ad/98/ddad989b2921287f4173d0c44c229de8.gif" title="Solution Architecture"/><div><figcaption>Solution Architecture</figcaption></div></figure><p>Why do we draw a solution for each feature? To understand the environment - which services interact with each other and how many of them will need to be modified.</p><p>In this case, we see that we will not need to create new services, because the changes will be made in the existing cart service. This means the feature will not require inter-team coordination and will fit into one team's sprint. If there were more blocks with changes, the question of the order of development and subsequent deployment of services would also arise.</p><h4>What the LLM does here</h4><p>This is <strong>the riskiest step for the model</strong> - and the prompt is written so that it doesn't pretend to know the product architecture. Otherwise, it can easily hallucinate non-existent services, integrations, and everything else. Ideally, you should provide pre-researched information (or a ready-made readme with the product architecture or a specific part of it) as input in the user prompt again.</p><p><strong>System prompt:</strong></p><pre><code>You are a system analyst, marking which services will have new code added for feature implementation.
+
+RULES
+1. Use ONLY the services listed in the input data.
+   Creating new services is forbidden.
+2. If none of the existing services have the responsibility for implementation,
+   do not invent a service, write "architect decision required" and describe what responsibility is missing.
+3. For each service, indicate: what is changing (new code / new table /
+   read-only / unchanged).
+4. For each interaction, indicate: synchronous or asynchronous,
+   and what happens in case of participant failure.
+5. Separate block: "Scope Assessment" - how many services are affected,
+how many teams, can it be rolled out independently.
+6. Do not suggest architecture optimizations: your task is marking, not redesigning.
+</code><div><a href="https://sourcecraft.dev/"><span></span></a></div></pre><p><strong>User prompt:</strong></p><pre><code>&lt;PROJECT&gt;
+
+&lt;UC IN FULL&gt;
+&lt;DBML - result of step 4&gt;
+
+EXISTING SERVICES AND THEIR RESPONSIBILITIES:
+- Mobile App - client screens.
+- BFF - data aggregation for screens.
+- Cart Service - owns the cart and its items.
+- Order Service - owns orders, provides composition.
+- Catalog - prices by store, product status.
+- Stock - availability in the store.
+- Kafka - event bus.
+- Analytics - reads events from the broker.
+
+TASK
+Mark where new code will appear for the repeat order feature.
+</code><div><a href="https://sourcecraft.dev/"><span></span></a></div></pre><h3>Step 6. Sequence Diagram</h3><figure><img alt="Sequence Diagram" loading="lazy" src="https://habrastorage.org/extt/2d/eb/e1/2debe1037c87cf268053b4b142ecbda5.gif" title="Sequence Diagram"/><div><figcaption>Sequence Diagram</figcaption></div></figure><p>Now we have the solution architecture and understand the process participants. To quickly and clearly explain the order of interaction of system components within the feature to everyone (including developers), it's best to design a Sequence Diagram.</p><p>For this, I use PlantUML for the same reason as DBML: it's easy to write/edit and render into a diagram.</p><h4>What the LLM does here</h4><p>Translating Use Case into PlantUML model is done excellently, but it's important to specify the participants (technical components) of the system in the prompt so that the system doesn't start drawing a business process or a mix of architectural and business concepts.</p><p><strong>System prompt:</strong></p><pre><code>You are a system analyst, building sequence diagrams in PlantUML
+based on scenario descriptions.
+
+RULES
+1. Use ONLY participants from the provided list.
+   Do not add or remove.
+2. If it's unclear from the scenario which participant performs the step,
+   DO NOT GUESS. Use a participant named ??? and put the question
+   in OPEN QUESTIONS after the diagram.
+3. Synchronous call - arrow -&gt;, response - --&gt;, asynchronous
+   publication - -&gt;&gt;.
+4. Label calls so that the operation and key data are visible: not "request", but "GET /orders/{id}/items".
+5. Show alternative branches from scenario extensions using alt/else.
+6. An event is published AFTER the change is committed to storage.
+   If the scenario order is different - note it as a remark.
+7. The diagram must be syntactically valid PlantUML.
+8. After the diagram: OPEN QUESTIONS - everything that had to be
+   inferred about responsibility distribution.
+</code><div><a href="https://sourcecraft.dev/"><span></span></a></div></pre><p><strong>User prompt:</strong></p><pre><code>&lt;PROJECT&gt;
+
+&lt;UC IN FULL&gt;
+&lt;SERVICE MARKUP - result of step 5&gt;
+
+PARTICIPANTS:
+actor Client
+participant "Cart Service" as Cart
+participant "Order Service" as Ord
+participant "Catalog Service" as Cat
+participant "Stock Service" as Stk
+queue Kafka
+participant "Analytics Service" as Analyt
+
+TASK
+Create a sequence diagram for the main UC scenario
+and extensions 4b, 5a, 6a.
+</code><div><a href="https://sourcecraft.dev/"><span></span></a></div></pre><h3>Step 7. API Contracts</h3><p>Now that we have both the architecture and the sequence of calls, the next step is to design the integration and describe it.</p><figure><img alt="OpenAPI and AsyncAPI" loading="lazy" src="https://habrastorage.org/extt/86/da/82/86da82adc99e281a0424c429846bfe41.gif" title="OpenAPI and AsyncAPI"/><div><figcaption>OpenAPI and AsyncAPI</figcaption></div></figure><p>For synchronous integrations, we use REST API and describe it using OpenAPI. For asynchronous sending to the analytics service, we use Kafka broker and describe the contract in AsyncAPI.</p><p>We send the Use Case, DBML database schema, and Sequence Diagram as input to the prompt and, if necessary, specify the API conventions adopted in your team/company.</p><h4>What the LLM does here</h4><p>It excellently generates both OpenAPI and AsyncAPI formats, as well as any other formats. The value of the prompt is that it forces the model to derive response codes <strong>from scenario extensions</strong>, not from general concepts.</p><p><strong>System prompt:</strong></p><pre><code>You are a system analyst, describing integration contracts.
+Output two files: OpenAPI 3.1 and AsyncAPI 3.0.
+
+RULES FOR OPENAPI
+1. Each response code must be derived from a specific step or
+   scenario extension. Indicate which one in the description next to the code.
+   Do not add codes that are not derived from anywhere.
+2. Error codes - closed enum in components. On-the-fly invented
+   strings are forbidden.
+3. For operations that change state, describe idempotency:
+   key lifetime, behavior with the same key and the same body,
+   behavior with the same key and a DIFFERENT body.
+4. Partial success is success. If an operation is not fully completed,
+   it is a 2xx code with a description of the uncompleted part, not an error.
+5. Each field has a description and an example.
+
+RULES FOR ASYNCAPI
+6. For each channel in the description, mandatory: producer, known
+   consumers, delivery semantics, what the consumer does on duplicate,
+   ordering guarantees, partitioning key, retention policy.
+7. If any of these points are unknown - write TODO, do not invent a value.
+8. An event is published only if it has a consumer that
+   does not expect a synchronous response. For each proposed event,
+   name the consumer; if you cannot, do not propose the event.
+
+GENERAL
+9. Adhere to project conventions for error format, pagination, and money.
+10. Anything unclear - use the TODO marker in the field or operation description.
+</code><div><a href="https://sourcecraft.dev/"><span></span></a></div></pre><p><strong>User prompt:</strong></p><pre><code>&lt;PROJECT&gt;
+
+&lt;UC IN FULL&gt;
+&lt;SEQUENCE DIAGRAM - result of step 6&gt;
+&lt;DBML - result of step 4&gt;
+
+API CONVENTIONS:
+- Errors - RFC 7807, application/problem+json, plus a code field from the enum.
+- Idempotency - Idempotency-Key header for all state-changing operations.
+- Money in API - string with two decimal places + separate currency field.
+- Events - CloudEvents 1.0, Kafka transport,
+topic name polka.&lt;domain&gt;.&lt;event&gt;.v&lt;version&gt;.
+
+TASK
+Describe the contracts for the cart assembly operation from a previous order.
+</code><div><a href="https://sourcecraft.dev/"><span></span></a></div></pre><h3>Step 8. Feature Decomposition into Tasks</h3><p>The final artifact, if you're really lazy, is breaking down the feature into tasks for tracking in the task tracker.</p><figure><img alt="" loading="lazy" src="https://habrastorage.org/extt/27/28/10/272810998dd34ce0a43743862ab4ae6a.gif"/></figure><p>Look at the labels under the cards - each task refers to the artifact from which it originates.</p><h4>What the LLM does here</h4><p>Decomposition by artifacts is a very simple task for an LLM, and you can go make yourself a coffee.</p><p><strong>System prompt:</strong></p><pre><code>You are a system analyst, breaking down a designed feature into sprint tasks.
+
+RULES
+1. Each task MUST refer to the artifact from which it is derived: UC step number, acceptance criterion ID, DBML table, OpenAPI operation, AsyncAPI channel. A task without a reference is not allowed - if you cannot refer, then the task is redundant or an artifact was missed: write about it.
+2. Group by performer: backend, frontend, analytics, and QA.
+3. Task formulation - result, not process:
+   "Cart assembly endpoint", not "Work on the cart".
+4. Estimation in story points on the Fibonacci scale, 1–8. Split tasks larger than 8.
+5. Separate block: "Coverage" - list scenario extensions and acceptance criteria that are NOT referenced by any task. These are gaps in decomposition.
+6. Separate block: "Order" - what blocks what.
+7. Do not add tasks for things not present in the artifacts: no refactoring,
+   no "improve logging", no load testing, unless mentioned.
+</code><div><a href="https://sourcecraft.dev/"><span></span></a></div></pre><p><strong>User prompt:</strong></p><pre><code>&lt;PROJECT&gt;
+
+&lt;US AND ACCEPTANCE CRITERIA&gt;
+&lt;UC IN FULL&gt;
+&lt;DBML&gt;
+&lt;SOLUTION ARCHITECTURE&gt;
+&lt;OPENAPI AND ASYNCAPI&gt;
+
+TASK
+Decompose the feature into tasks. For each - performer, reference
+to artifact, estimate.
+</code><div><a href="https://sourcecraft.dev/"><span></span></a></div></pre><h3>What Remains for Humans in the Modern Paradigm</h3><p><strong>The quality of the answer is determined by the data that the analyst collects and feeds into the LLM.</strong> The most illustrative step is the fifth: the service markup turned out to be ideal not because the model is smart, but because it was given a list of services with their areas of responsibility. Without a list, it can easily invent a separate microservice for each operation.</p><p><strong>The bottleneck in an analyst's work becomes product and technical research and verification of the LLM-generated artifacts.</strong> When an artifact is generated in minutes, time is spent not on writing documentation, but on carefully studying the product/domain and reviewing what the neural network has generated for you.</p><p><em>You can find even more materials and personal expertise on system analysis and IT architecture in my Telegram channel: </em><a href="https://t.me/+aAO3X0ygPCJkMmNi"><em>Notes of a System Analyst</em></a></p><p><em>I also have a great </em><a href="https://habr.com/ru/articles/841646/"><em>guide to the system analyst profession</em></a><em> on Habr in 5 parts. </em></p></div>
+  </main>
+  <footer>
+    Translation generated with Gemini 2.5 Flash-Lite.
+    The original article remains the source of record.
+  </footer>
+</body>
+</html>

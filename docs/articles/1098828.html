@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>How I Made a Claude Limits Widget, and a Crab Moved In</title>
+  <meta name="description" content="This is the story of how a small widget for Claude limits grew over a month to include a pixel crab, weather, chat, and a whole wardrobe of skins. And about what happens when Claude writes all the code, and you only explain what you want. Read more">
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.65;
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 32px 20px 64px;
+      color: #1f2328;
+    }
+    header {
+      border-bottom: 1px solid #d8dee4;
+      margin-bottom: 28px;
+      padding-bottom: 20px;
+    }
+    .source {
+      color: #57606a;
+      font-size: 0.95rem;
+    }
+    img, video, iframe {
+      max-width: 100%;
+      height: auto;
+    }
+    pre {
+      overflow-x: auto;
+      padding: 16px;
+      background: #f6f8fa;
+      border-radius: 6px;
+    }
+    code {
+      font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+    }
+    blockquote {
+      border-left: 4px solid #d0d7de;
+      margin-left: 0;
+      padding-left: 16px;
+      color: #57606a;
+    }
+    footer {
+      border-top: 1px solid #d8dee4;
+      margin-top: 40px;
+      padding-top: 20px;
+      color: #57606a;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>How I Made a Claude Limits Widget, and a Crab Moved In</h1>
+    <p>This is the story of how a small widget for Claude limits grew over a month to include a pixel crab, weather, chat, and a whole wardrobe of skins. And about what happens when Claude writes all the code, and you only explain what you want. Read more</p>
+    <p class="source">
+      Machine-translated from Habr.
+      <a href="https://habr.com/ru/articles/1098828/?utm_campaign=1098828&amp;utm_source=habrahabr&amp;utm_medium=rss">Read the original Russian article</a>.
+      Sat, 24 Oct 2026 07:07:50 GMT
+    </p>
+  </header>
+  <main>
+<div><p>This is the story of how a small widget for Claude limits grew over a month to include a pixel crab, weather, chat, and a whole wardrobe of skins. And about what happens when Claude writes all the code, and you only explain what you want.</p><figure><img alt="Session starts working, finishes, and waits for a response" loading="lazy" src="https://habrastorage.org/extt/38/81/bc/3881bc2f300c62e3a1c924306f929f49.gif" title="Session starts working, finishes, and waits for a response"/><figcaption>Session starts working, finishes, and waits for a response</figcaption></figure><h3>How It All Began</h3><p>I started using Claude not too long ago: in March, I got a $20 trial subscription to check out this "vibecoding" and what the popular LLM was really capable of. It wasn't that it hooked me much back then. I barely used it for almost the entire month. I mostly asked it to generate short code snippets, which I then corrected to fit my style.</p><p>Nevertheless, in April, I subscribed for $100. I didn't even exceed the limits of the previous plan, but it was psychologically uncomfortable when they filled up to half or more within a few requests. By then, I realized that the tool was generally useful and I might need more limits someday, and the price for such an assistant wasn't that high.</p><p>Gradually, I started getting used to it and offloaded more and more tasks, especially log analysis, problem diagnostics, and other uninteresting admin routines. For research, I already asked it to run multiple agents simultaneously.</p><p>Along with this, I found myself checking my limits more and more often, mainly by visiting the website or using the terminal. But all this was inconvenient and I got tired of constantly checking.</p><p>Then the idea struck me – I needed a small widget on my screen that would show my limits in real-time. By that time, the new Opus model had just been released, which was clearly better at coding than I was, and I had to correct it less and less often.</p><p>Thus, the first version of the widget appeared: a couple of hundred lines in a single PowerShell file without any third-party dependencies. The limits no longer bothered me; I had fully satisfied my need.</p><figure><img alt="First version of the widget" loading="lazy" src="https://habrastorage.org/r/w1560/extt/5a/a3/ac/5aa3ac1e74354d49f7e7c9e5e3cb3b31.png" title="First version of the widget"/><figcaption>This is what the widget looked like on September 16th.</figcaption></figure><h3>Too Much Empty Space</h3><p>The story could have ended here, but one evening, glancing at the widget again, I thought there was too much empty space above the five-hour limit bar. The next thought was that I needed to put an animated mascot there.</p><p>Claude Code already has its own mascot – the pixel crab Clawd from the welcome screen. I asked to port him to the widget using the same block characters and animations as in the terminal.</p><p>He got bored just sitting there, so very soon he started reacting to what was happening. When nothing is running, he sleeps; while a session is active, he scurries back and forth; and when the session is waiting for my response, he waves his paw. He starts sweating near the limit, and when the limit runs out, he lies on his back.</p><figure><img alt="Claude Code not running: burying himself in the sand and sleeping" loading="lazy" src="https://habrastorage.org/extt/a4/3b/a6/a43ba6817b65c016fc317b8cba546320.gif" title="Claude Code not running: burying himself in the sand and sleeping"/><figcaption>Claude Code not running: burying himself in the sand and sleeping</figcaption></figure><figure><img alt="Session limit reached: paws up, spirit emerges on click" loading="lazy" src="https://habrastorage.org/extt/27/43/70/27437018b97345e11626840bb642e89d.gif" title="Session limit reached: paws up, spirit emerges on click"/><figcaption>Session limit reached: paws up, spirit emerges on click</figcaption></figure><h3>New Ideas</h3><p>Once the crab started living in its own space, I immediately wanted to add a background for it. Naturally, the idea came to add the real weather outside the window. And at night, a moon in the correct phase, if it wasn't hidden by clouds.</p><figure><img alt="The sky reflects the real time of day and weather" loading="lazy" src="https://habrastorage.org/extt/d1/fe/56/d1fe566dcd1e1009d2404723c1403e13.gif" title="The sky reflects the real time of day and weather"/><figcaption>The sky reflects the real time of day and weather</figcaption></figure><p>Then I wanted Clawd to be more than just decoration. So he got his own chat panel. Once every half hour, he can check the system and report that the disk is full or something new has appeared in the startup programs. Next came reminders, to-do lists, and recurring scheduled tasks. The tasks politely wait if the limit is almost exhausted, after all, the widget is about limits. Along the way, a weekly usage graph, top projects, and sessions from other machines were added.</p><p>I posted the widget on GitHub and wrote about it on Reddit. It turned out that people liked it and actually started using it. And someone wrote that they installed it for their entire office. That's when I realized that personalization was urgently needed, because a whole office of identical crabs is somehow not right.</p><p>Thus, widget themes and crab skins appeared.</p><figure><img alt="Themes" loading="lazy" src="https://habrastorage.org/r/w1560/extt/2c/cc/08/2ccc0817b76a92b6893ace37294adbfa.png" title="Themes"/><figcaption>Themes</figcaption></figure><figure><img alt="Skins" loading="lazy" src="https://habrastorage.org/r/w1560/extt/dd/e3/2c/dde32c71dfd87c7245cd3036c285b10e.png" title="Skins"/><figcaption>Skins</figcaption></figure><p>As a result, in a month, a couple of hundred lines turned into over 10,000 lines and 36 modules, and it's still pure PowerShell without a single third-party dependency.</p><h3>All the Code is Written by Claude</h3><p>I didn't write a single line by hand, but only explained in detail what I wanted and how it should work, reviewed the result, and sent it back for revision if something was wrong. It's like working with a team, only the team doesn't get tired and doesn't argue why the crab needs a ushanka hat.</p><p>It's funny that in the end, Claude Code created a widget that monitors the limits of Claude Code itself.</p><h3>What Came Out of It</h3><p>Now it's a small window on top of the desktop plus an icon in the system tray. All you need is Windows and Claude Code itself: no Node, npm, or installers.</p><ul><li><p><strong>Limits.</strong> Percentage of the five-hour session, weekly, time until reset. The numbers are official: provided by <code>claude -p "/usage"</code>, and this command does not interact with the model and does not consume tokens.</p></li><li><p><strong>Sessions.</strong> How many Claude Code sessions are running, which ones are active, and which ones are waiting for a response. It's convenient for catching a forgotten agent that is quietly draining the limit.</p></li><li><p><strong>History.</strong> A 7-day limit usage graph and top projects.</p></li><li><p><strong>Service Status</strong> from <a href="http://status.claude.com">status.claude.com</a> and Claude Code version.</p></li><li><p><strong>Clawd and the Sky.</strong> Moods based on sessions and limits, weather and moon phase, eight themes, and over twenty skins.</p></li><li><p><strong>Clawd Panel.</strong> Chat, computer tips, reminders, lists, and scheduled tasks.</p></li><li><p><strong>Self-Updating.</strong> The widget installs new versions itself, and if a new version doesn't work, it rolls back.</p></li><li>English, Russian, and French interface.</li></ul><details><summary>Screenshots: details and weekly graph</summary><div><figure><img alt="Details: limits, sessions, statistics, and Claude Code version" loading="lazy" src="https://habrastorage.org/r/w1560/extt/02/08/e2/0208e28244b82e7cb2712690029ac9ac.png" title="Details: limits, sessions, statistics, and Claude Code version"/><figcaption>Details: limits, sessions, statistics, and Claude Code version</figcaption></figure><figure><img alt="7-day limit graph and top projects" loading="lazy" src="https://habrastorage.org/r/w1560/extt/92/cf/4b/92cf4b06dcd05850852da3a219d5c3af.png" title="7-day limit graph and top projects"/><figcaption>7-day limit graph and top projects</figcaption></figure></div></details><h3>Response</h3><p>In a couple of days, the repository was viewed by over 200 people, and the project has almost 60 stars. People started creating ports for other systems: macOS, Linux, Android, and iPhone; links to them can be found in the <a href="https://github.com/Enhed/clawd-usage-winwidget#ports">README</a>.</p><h3>How to Install</h3><p>You need Windows 10/11 and Claude Code installed with a logged-in session. Clone the repository (or download the ZIP) and run <code>start-widget.vbs</code>:</p><pre><code>git clone https://github.com/Enhed/clawd-usage-winwidget.git</code><div><a href="https://sourcecraft.dev/"><span></span></a></div></pre><p>Repository: <a href="https://github.com/Enhed/clawd-usage-winwidget">github.com/Enhed/clawd-usage-winwidget</a>. I would appreciate new stars and issues.</p></div>
+  </main>
+  <footer>
+    Translation generated with Gemini 2.5 Flash-Lite.
+    The original article remains the source of record.
+  </footer>
+</body>
+</html>

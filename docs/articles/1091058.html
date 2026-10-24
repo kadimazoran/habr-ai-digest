@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>RAG bot based on expert materials: how I measured search quality and why hybrid was worse than pure vector</title>
+  <meta name="description" content="The expert asked for a bot that would respond in his voice and only use his own materials: PDF courses, video transcripts, and class notes. If the answer isn&#x27;t in the materials, the bot should honestly direct the user to the live expert, not make things up. I built such a bot using Python and T">
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.65;
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 32px 20px 64px;
+      color: #1f2328;
+    }
+    header {
+      border-bottom: 1px solid #d8dee4;
+      margin-bottom: 28px;
+      padding-bottom: 20px;
+    }
+    .source {
+      color: #57606a;
+      font-size: 0.95rem;
+    }
+    img, video, iframe {
+      max-width: 100%;
+      height: auto;
+    }
+    pre {
+      overflow-x: auto;
+      padding: 16px;
+      background: #f6f8fa;
+      border-radius: 6px;
+    }
+    code {
+      font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+    }
+    blockquote {
+      border-left: 4px solid #d0d7de;
+      margin-left: 0;
+      padding-left: 16px;
+      color: #57606a;
+    }
+    footer {
+      border-top: 1px solid #d8dee4;
+      margin-top: 40px;
+      padding-top: 20px;
+      color: #57606a;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>RAG bot based on expert materials: how I measured search quality and why hybrid was worse than pure vector</h1>
+    <p>The expert asked for a bot that would respond in his voice and only use his own materials: PDF courses, video transcripts, and class notes. If the answer isn&#x27;t in the materials, the bot should honestly direct the user to the live expert, not make things up. I built such a bot using Python and Telegram, and most of the time was spent not on prompts, but on search: the first live questions revealed that the bot simply couldn&#x27;t find the necessary material. In this article, I&#x27;ll explain how the search in this bot works, how I built a test stand for measurement (recall@6 and MRR metrics), why the hybrid search, which everyone recommends, lost to pure vector search for me, and what I had to change when I hit the embedding provider&#x27;s limits. The client agreed to publication only if names were omitted, so the expert, his materials, and the topic are not named here, and the example questions in the article are my own and have no relation to his texts. The code below is taken from working files, with extraneous parts removed.</p>
+    <p class="source">
+      Machine-translated from Habr.
+      <a href="https://habr.com/ru/articles/1091058/?utm_campaign=1091058&amp;utm_source=habrahabr&amp;utm_medium=rss">Read the original Russian article</a>.
+      Sat, 24 Oct 2026 07:05:49 GMT
+    </p>
+  </header>
+  <main>
+<div><p>The expert asked for a bot that would respond in his voice and only use his own materials: PDF courses, video transcripts, and class notes. If the answer isn't in the materials, the bot should honestly direct the user to the live expert, not make things up. I built such a bot using Python and Telegram, expecting to tinker with prompts, but the first live questions revealed that the bot simply couldn't find the necessary material, and almost all the time was spent on search.</p><p>I'll explain how the search in this bot works and how I built a test stand for measurement (recall@6 and MRR metrics). There will also be a discussion of hybrid search, which everyone recommends and which lost to pure vector search for me, and about what I had to change when I hit the embedding provider's limits. The client agreed to publication only if names were omitted, so the expert, his materials, and the topic are not named here, and the example questions in the article are my own and have no relation to his texts. The code below is taken from working files, with extraneous parts removed.</p><h3>What kind of bot is it and how does it respond</h3><p>The stack is simple: Python 3.12, aiogram 3 in long-polling mode (the bot itself fetches updates from Telegram, no incoming ports needed), the <code>claude-sonnet-5-5</code> model via the official SDK, SQLite for user logs. The bot runs in Docker on a small VPS where my other bots also reside, so extra memory and new services were a problem for me.</p><p>The corpus of materials is stored in a repository as markdown files. At startup, the bot splits them into "pages" of approximately 4500 characters each, respecting paragraph boundaries (constant <code>TARGET_PAGE_CHARS</code>), and builds an index for full-text SQLite FTS5 search from them. At the time of the last measurement, the index contained 53 materials and 630 pages.</p><p>Next, a standard tool-use loop operates. The model doesn't see the entire database; it only has two tools: <code>search_materials(query, k)</code> and <code>read_page(page_id)</code>. It formulates the query itself, gets a list of pages, reads those that seem relevant, and responds strictly based on what it read. The system prompt (persona plus material map) is cached by Anthropic via <code>cache_control</code>.</p><p>I didn't even try to put everything into the context: after cleaning, the corpus occupies about 2.25 million characters, which is about a million tokens, and even if it fit into the window, I didn't want to pay for it with every response.</p><p>A separate note on grounding. Prompt rules alone were not enough: in response to a clarifying question ("so this is normal?"), the model once answered from the chat history without referring to search at all, and missed the expert's caveats. Therefore, the code includes a safeguard: if the model is about to answer without ever calling <code>search_materials</code>, the code discards the answer and restarts the turn with a system message "search the materials first." A forced <code>tool_choice</code> for Sonnet 5.5 rejects this with a 400 error, so the safeguard only nudges the model and guarantees nothing. After implementing the safeguard, in seven test pairs of "question 	 clarification," the number of responses without search dropped from one to zero.</p><p>Everything else in the article is about how the <code>search_materials</code> tool finds pages.</p><h3>First search version and why it didn't work</h3><p>Initially, I used FTS5. The query is broken down into words, stop words are removed, the rest are joined with <code>OR</code>, and results are ranked by bm25. In a mini-test of eight questions, it all worked: 8 out of 8. Then a complaint came in: a user asked something like "I'm looking through the materials, but nothing is sticking in my head, what should I do?", and the relevant page with the answer wasn't found at all. The page described the process using words like "received, understood, accepted, applied," but these words weren't in the question. FTS5 searches by words, and a conversational question with the author's terminology doesn't match. Changing the model didn't fix this: I tested both Sonnet and Opus, and both failed to retrieve the material because they had nothing to search with.</p><p>That first mini-test, as I later realized, was unfair: the questions in it were phrased close to the material titles, something like "Why is product X harmful?" for a file with the same title. Real people don't write like that.</p><h3>Test stand: how I measured quality</h3><p>Before changing anything, I built a test stand because without numbers, I wouldn't be able to distinguish search improvement from my own impression. The stand consists of a file with cases and a script that runs them through the selected search mode.</p><p>A case is a question, a list of materials where the answer is located, and a type:</p><ul><li><p><code>lexical</code>: the question contains words from the relevant material; FTS5 should handle it; this is a safeguard against regression;</p></li><li><p><code>semantic</code>: the answer exists in the material but is phrased differently; this is the blind spot;</p></li><li><p><code>negative</code>: the answer is not in the corpus, and the bot's correct behavior is to refer the user to the expert. Such cases are not counted in the metrics; I only read them visually.</p></li></ul><p>There were 24 cases in total: 8 <code>lexical</code>, 12 <code>semantic</code>, and 4 <code>negative</code>. The main rule for selection: I wrote all questions before looking at the corpus, using conversational language, with typos and slang, and only then searched for where the answer was located. I did not rewrite a single question to match what the search found. The structure of the cases looks like this (example questions are invented; I don't provide real ones):</p><pre><code>CASES = [ # (question, [materials where answer is located], type) (
+  </main>
+  <footer>
+    Translation generated with Gemini 2.5 Flash-Lite.
+    The original article remains the source of record.
+  </footer>
+</body>
+</html>

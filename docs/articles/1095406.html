@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>How to add your own LLM to aish</title>
+  <meta name="description" content="Hello, my name is Natasha, I am a project manager at Selectel. I recently talked about how and why we created aish — an AI agent in the terminal of a server OS. I suggest moving on to practice and connecting a third-party LLM to it. In this article, I will show you how to choose a suitable model, co">
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.65;
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 32px 20px 64px;
+      color: #1f2328;
+    }
+    header {
+      border-bottom: 1px solid #d8dee4;
+      margin-bottom: 28px;
+      padding-bottom: 20px;
+    }
+    .source {
+      color: #57606a;
+      font-size: 0.95rem;
+    }
+    img, video, iframe {
+      max-width: 100%;
+      height: auto;
+    }
+    pre {
+      overflow-x: auto;
+      padding: 16px;
+      background: #f6f8fa;
+      border-radius: 6px;
+    }
+    code {
+      font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+    }
+    blockquote {
+      border-left: 4px solid #d0d7de;
+      margin-left: 0;
+      padding-left: 16px;
+      color: #57606a;
+    }
+    footer {
+      border-top: 1px solid #d8dee4;
+      margin-top: 40px;
+      padding-top: 20px;
+      color: #57606a;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>How to add your own LLM to aish</h1>
+    <p>Hello, my name is Natasha, I am a project manager at Selectel. I recently talked about how and why we created aish — an AI agent in the terminal of a server OS. I suggest moving on to practice and connecting a third-party LLM to it. In this article, I will show you how to choose a suitable model, configure it correctly, and avoid common integration mistakes. Read more</p>
+    <p class="source">
+      Machine-translated from Habr.
+      <a href="https://habr.com/ru/companies/selectel/articles/1095406/?utm_campaign=1095406&amp;utm_source=habrahabr&amp;utm_medium=rss">Read the original Russian article</a>.
+      Sat, 24 Oct 2026 08:00:55 GMT
+    </p>
+  </header>
+  <main>
+<div><p>Hello, my name is Natasha, I am a project manager at Selectel. I recently talked about <a href="https://habr.com/ru/companies/selectel/articles/1042034/">how and why we created aish</a> — an AI agent in the terminal of a server OS. I suggest moving on to practice and connecting a third-party LLM to it. In this article, I will show you how to choose a suitable model, configure it correctly, and avoid common integration mistakes.</p><figure><img loading="lazy" src="https://habrastorage.org/r/w1560/extt/0a/37/35/0a37350039c1eef4964e60eaab18ac8a.png"/></figure><p>aish is a terminal AI agent of the <a href="https://selectel.ru/services/selectel-os/?utm_source=habr.com&amp;utm_medium=referral&amp;utm_campaign=selectelos_article_aish_241026_content">SELECTOS operating system</a>. Since version 0.3, it has become possible to add models: locally deployed or from third-party providers. Let's see how to connect a model to the agent step by step — and for example, we'll take GLM-5.2 <a href="https://promo.selectel.ru/ai-router?utm_source=habr.com&amp;utm_medium=referral&amp;utm_campaign=airouter_article_aish_241026_content">from Selectel's AI router.</a></p><blockquote><p>AI router is a unified access service to generative language models. It allows you to use models from different providers without separate integrations, vendor contracts, and currency payments. You can get access to models in a few minutes <a href="https://docs.selectel.ru/ai-router/quickstart/?utm_source=habr.com&amp;utm_medium=referral&amp;utm_campaign=airouter_article_aish_241026_content">following the instructions</a>.</p></blockquote><h2>Compatible Models</h2><p>With aish, you can use models that support the OpenAI Chat Completions API and Tool Calling. For example, in the AI router, you can see the presence of <strong>tool</strong> and <strong>chat</strong> right in the list of models.</p><figure><img loading="lazy" src="https://habrastorage.org/r/w1560/extt/96/08/3f/96083fe1da5d5559f53eaaa6a5e554ef.png"/></figure><h2>Adding a Model Through the Interface</h2><h3>Step 1</h3><p>Open the <strong>Commands</strong> menu by pressing <strong>Alt+C</strong> or <strong>F9</strong>. On macOS Terminal, use the <strong>Option</strong> key instead of <strong>Alt</strong>.</p><figure><img loading="lazy" src="https://habrastorage.org/r/w1560/extt/45/40/a3/4540a32100522b144bb20c031f512109.png"/></figure><p>In the <strong>Commands</strong> menu, the <strong>Select model</strong> option is selected by default — press <strong>Enter</strong>.</p><h3>Step 2</h3><p>In the <strong>Models</strong> window, use the <strong>↑↓</strong> or <strong>Tab</strong> keys to move the focus to the <strong>+ Add</strong> button in the lower right corner of the window and press <strong>Enter</strong>.</p><figure><img loading="lazy" src="https://habrastorage.org/r/w1560/extt/fb/9f/a1/fb9fa122d3e3195494f2bb5560d1c50b.png"/></figure><h3>Step 3</h3><p>Specify the provider in the <strong>Select provider</strong> window. In our example, we will look at how to connect the GLM-5.2 model <a href="https://promo.selectel.ru/ai-router?utm_source=habr.com&amp;utm_medium=referral&amp;utm_campaign=airouter_article_aish_241026_content">from Selectel's AI router</a>.</p><blockquote><p>An LLM provider is a company or service that provides infrastructure for working with artificial intelligence and grants access to it through a software interface (API) or web interface. To connect to a provider's models, you need an API key and the provider's URL. Typically, the provider provides this when you sign up for a subscription. If you are connecting a corporate model, this information is provided by the service administrator.</p></blockquote><p>If this is your first time adding a model, the list of providers will be empty. The <strong>New provider</strong> option will be selected in the <strong>Select provider</strong> window — press <strong>Enter</strong>.</p><figure><img loading="lazy" src="https://habrastorage.org/r/w1560/extt/06/ce/f1/06cef12e1c6f962ff36765b45f7f4c9f.png"/></figure><p><strong>If you have added models before</strong> and want to add another model to a previously registered provider, select it using the <strong>↑↓</strong> or <strong>Tab</strong> keys and press <strong>Enter</strong>.</p><figure><img loading="lazy" src="https://habrastorage.org/r/w1560/extt/c8/8f/c8/c88fc849341045871e37579eec989dbd.png"/></figure><p>If you want to add another provider, select the <strong>New provider</strong> option and press <strong>Enter</strong>.</p><figure><img loading="lazy" src="https://habrastorage.org/r/w1560/extt/de/96/81/de96813375683cd27f2c599256bbd167.png"/></figure><h3>Step 4</h3><p>After selecting the provider, fill out the <strong>Connect Models</strong> form. You can paste data from the clipboard. Navigate through the fields using the <strong>↑↓</strong> or <strong>Tab</strong> keys.</p><figure><img loading="lazy" src="https://habrastorage.org/r/w1560/extt/8c/cd/ad/8ccdadb712390c410fc84272f32e3804.png"/></figure><p>If you are creating a new provider, make sure to fill in all the fields in the form — we'll explain how to do this below. If you are adding another model within an already connected provider, enter only its identifier, press <strong>Enter</strong>, and then <strong>Save</strong>. The model input field will be in focus immediately.</p><figure><img loading="lazy" src="https://habrastorage.org/r/w1560/extt/96/11/b0/9611b0c3696b6c416d8727029322c143.png"/></figure><p><strong>How to fill in the fields</strong></p><ul><li><p><strong>Provider name</strong> — the name of the provider. Enter it in a free format, as you prefer. We recommend choosing short names; in our example, it's AI-router.</p></li><li><p><strong>Provider URL</strong> — the network address that points to the provider's API. The value has a link format: https://ai.provider.example.ru. <a href="https://promo.selectel.ru/ai-router?utm_source=habr.com&amp;utm_medium=referral&amp;utm_campaign=airouter_article_aish_241026_content">In the AI router</a>, this link is located within the router card in the <strong>Overview → Base URL</strong> section.</p></li><li><p><strong>API key</strong> — a private access key to the provider's service in UUID format, possibly with prefixes depending on the provider. In the AI router, the API key is displayed once when the router is created — copy it immediately. If you missed it or forgot to do so, add a new key in the <strong>Keys and Limits</strong> tab.</p></li><li><p><strong>Models (ID)</strong> — model identifiers in the format qwen3.6-27b, glm-5.2, etc. We recommend copying the exact identifier from the provider's panel.</p></li></ul><div><figure><img loading="lazy" src="https://habrastorage.org/getpro/habr/upload_files/dbd/50d/bb6/dbd50dbb6316408a3d20c62b3ced3f3c.gif"/></figure><p><strong>AI Router — access to 400+ models from one panel</strong></p><p>Connect an OpenAI-compatible gateway with a single API key. Configure end-to-end analytics, track limits, and quota resources.</p><p><a href="https://promo.selectel.ru/ai-router/?utm_source=habr.com&amp;utm_medium=referral&amp;utm_campaign=airouter_article_aish_241026_banner_ord"><strong>Launch AI Router →</strong></a></p></div><blockquote><p><strong>Important:</strong> after entering the model identifier, be sure to press <strong>Enter</strong>. The model line should appear below the input field. You can add multiple models available to you at once.</p></blockquote><figure><img loading="lazy" src="https://habrastorage.org/r/w1560/extt/af/a6/b3/afa6b36045fff5c4f3068c5c749120fc.png"/></figure><p>If you decide to delete a model within a provider, focus on it and press the <strong>Delete</strong> key (or <strong>Option+Backspace</strong> on macOS).</p><figure><img loading="lazy" src="https://habrastorage.org/r/w1560/extt/49/a2/73/49a27387348171b18c68ce1fa622f2cd.png"/></figure><p>When you finish filling out the form, save the changes. To do this, move the focus to the <strong>Save</strong> button using the <strong>↑↓</strong> or <strong>Tab</strong> keys.</p><p><strong>Please note:</strong> to save changes, it is important that all fields in the form are filled and at least one model is specified. If there is a save error, return the focus to the field and fill it in. In the case of a model, press <strong>Enter</strong> so that it is added to the list below the input field.</p><figure><img loading="lazy" src="https://habrastorage.org/r/w1560/extt/21/23/dc/2123dc422b81d5c7837274908b73e70a.png"/></figure><h3>Step 5</h3><p>After saving, you will return to the list of models. Select the model from the list using the <strong>↑↓</strong> or <strong>Tab</strong> keys and press <strong>Enter</strong>.</p><figure><img loading="lazy" src="https://habrastorage.org/r/w1560/extt/13/a6/11/13a611877d100bfec77b7ee71a2a2b92.png"/></figure><p>A circular marker should appear to the left of the model:</p><figure><img loading="lazy" src="https://habrastorage.org/r/w1560/extt/b2/29/1a/b2291aebbb40386358b25a3f740f7aff.png"/></figure><p>We don't display which specific model is responding in the chat yet, but if the connection is successful, the chat will continue to work with the previous context.</p><figure><img loading="lazy" src="https://habrastorage.org/r/w1560/extt/4e/aa/f1/4eaaf1a3eac8671cad69d1b6bb49e9d7.png"/></figure><p>And if something goes wrong — the model is incompatible, the provider has issues, or there are errors in the configuration — an error message will appear in the chat for any request:</p><figure><img loading="lazy" src="https://habrastorage.org/r/w1560/extt/46/aa/c1/46aac1b451a1e8189aa5a141c97d9c82.png"/></figure><h2>Adding a Model Through a Configuration File</h2><p>You can also add a model or provider through a configuration file using the method described below.</p><blockquote><p><strong>Note:</strong> we recommend adding providers and models, as well as editing data, through the TUI. However, deleting a provider through the TUI is not yet supported — it is only available by editing the configuration file.</p></blockquote><p>Example command for the nano editor:</p><pre><code>nano /root/.local/share/aish/llm_registry.json</code><div><a href="https://sourcecraft.dev/"><span></span></a></div></pre><p>Example configuration file:</p><pre><code>{  "map": {    "AI-provider": {      "api_key": "exampleAPIkey1",      "endpoint": "https://provider.example.ru",      "models": [        "qwen3-6-27b"      ]    }    "AI-router": {      "api_key": "exampleAPIkey2",      "endpoint": "https://ai.provider.example.ru",      "models": [        "z-ai/glm-5.2"      ]    }  },  "selected": [    "aish",    "aish_model"  ]</code><div><a href="https://sourcecraft.dev/"><span></span></a></div></pre><h2>Conclusion</h2><p>We have covered two ways to add a model to aish: through the interface and a configuration file. You can add other models using the same principle — from the AI router or locally deployed ones. It is important that the models support the OpenAI Chat Completions API and Tool Calling.</p><p>Try aish and share your experience <a href="https://t.me/+_LknG4VE2AwxZDU6">in our community</a>.</p></div>
+  </main>
+  <footer>
+    Translation generated with Gemini 2.5 Flash-Lite.
+    The original article remains the source of record.
+  </footer>
+</body>
+</html>

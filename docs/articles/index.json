@@ -2287,6 +2287,14 @@
     "summary": "Many of you have already heard the story of how AI created a page on the internet, after which it began to refer to it in its answers as an authoritative source. You can read about such problems, for example, in this article. Not to mention the numerous videos on social networks on this topic. However, naturally, this is by no means a problem of AI. This is a problem of sociology, and also, first and foremost, of humans. After all, it was people who came up with the socio-behavioral formula: information + reference to an authoritative source = truth. This formula was the basis for, for example, Wikipedia. This formula is the basis of the worldview of billions of people around the world. And it is this formula that people themselves began to use to deceive each other. After all, the weakest point in it is the authoritative source. Before the advent of social networks, the media were an authoritative source. However, with the development of the internet, thanks to social networks, up-to-date information began to spread faster than the media published it. And then the story of the Rothschild family and the telegraph, familiar to many, was repeated. I recall, according to legend, the Rothschilds were the first to receive news of world events (especially military actions) and could take action for personal gain before others. But it wasn't just about reacting to events. Soon, people learned not only to transmit data quickly but also to control which data should be disseminated. This is called propaganda. Propaganda can be called an integral part of civilization. It is a common phenomenon that has existed for thousands of years. Remember Sparta and Athens? This is just another way to control information for the benefit of a certain group of people. In search of truth, people came up with a standard countermeasure against propaganda - expert opinion. However, it turned out that this opinion could also be controlled, even for money. And the question of finding the truth arose again. Then honor came onto the scene. A person who respects himself and is respected in society will not lie. And the longer a person is respected, as people have devised, the more valuable his word is. By the way, the methodology is also ancient, rooted in the prophets. However, even respected people in crisis situations turned out to be ordinary people who also had their own interests, which prevented them from telling the whole truth. And the question of finding the truth arose again. Finally, people thought: if a person cannot be trusted, a soulless machine can be trusted. But they did not take into account that the machine learns precisely from human social behavior formulas. And so, all this led us to the very beginning of the article: using human behavior formulas, even a machine has stopped telling the truth. Since a new way of finding truth is currently actively being sought, let's focus on the deception that AI has learned. For general education, so to speak, and a more objective civic stance. Read more",
     "title": "How to convince people of what doesn't exist, or the crisis of freedom of speech"
   },
+  "https://habr.com/ru/articles/1091058/?utm_campaign=1091058&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Sat, 24 Oct 2026 07:05:49 GMT",
+    "slug": "1091058",
+    "source_url": "https://habr.com/ru/articles/1091058/?utm_campaign=1091058&utm_source=habrahabr&utm_medium=rss",
+    "summary": "The expert asked for a bot that would respond in his voice and only use his own materials: PDF courses, video transcripts, and class notes. If the answer isn't in the materials, the bot should honestly direct the user to the live expert, not make things up. I built such a bot using Python and Telegram, and most of the time was spent not on prompts, but on search: the first live questions revealed that the bot simply couldn't find the necessary material. In this article, I'll explain how the search in this bot works, how I built a test stand for measurement (recall@6 and MRR metrics), why the hybrid search, which everyone recommends, lost to pure vector search for me, and what I had to change when I hit the embedding provider's limits. The client agreed to publication only if names were omitted, so the expert, his materials, and the topic are not named here, and the example questions in the article are my own and have no relation to his texts. The code below is taken from working files, with extraneous parts removed.",
+    "title": "RAG bot based on expert materials: how I measured search quality and why hybrid was worse than pure vector"
+  },
   "https://habr.com/ru/articles/1091084/?utm_campaign=1091084&utm_source=habrahabr&utm_medium=rss": {
     "model": "gemini-2.5-flash-lite",
     "published": "Tue, 06 Oct 2026 12:21:40 GMT",
@@ -3399,6 +3407,22 @@
     "summary": "I gave Claude Code (Opus 5.5) a test assignment: to draw a scene from Blade Runner 2049 in SVG. The agents I tried all failed similarly: they didn't look at the actual frame, drew from memory, and reported completion mindlessly. So, I started prompting the agent with questions: is there documentation, what should the result be compared against, when should it stop? These questions evolved into AutoHarness – a skill that forces the agent to prepare for a task before starting it. Read more",
     "title": "How I Made AI Agents Gather Their Own Harness for a Specific Task"
   },
+  "https://habr.com/ru/articles/1098158/?utm_campaign=1098158&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Sat, 24 Oct 2026 07:04:19 GMT",
+    "slug": "1098158",
+    "source_url": "https://habr.com/ru/articles/1098158/?utm_campaign=1098158&utm_source=habrahabr&utm_medium=rss",
+    "summary": "You've probably recognized the quote I used for the title. It belongs to Arthur Barbidge, a young idealist who died on his way to the Golden Sphere in the Strugatskys' \"Roadside Picnic.\" I can't promise to play the role of the Golden Sphere, but the conclusion I've reached after many years of reflection, I believe, can lead to such a result. How to achieve universal happiness...",
+    "title": "\"Happiness for all, for free, and let no one be left behind\""
+  },
+  "https://habr.com/ru/articles/1098168/?utm_campaign=1098168&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Sat, 24 Oct 2026 08:40:46 GMT",
+    "slug": "1098168",
+    "source_url": "https://habr.com/ru/articles/1098168/?utm_campaign=1098168&utm_source=habrahabr&utm_medium=rss",
+    "summary": "In this article, the author discusses the high cost of using Claude Code's agent teams, particularly the 'leader' agent, which incurs significant token costs due to waiting and context management. To address this, the author developed 'supertick,' a plugin that offloads waiting to a script, thus reducing model-related expenses. The article details the problem, the author's attempts to solve it, the architecture of supertick, its installation and usage, cost analysis, integration with external engines like GPT, and lessons learned.",
+    "title": "Saving Claude Code Tokens with Event Loop Principles"
+  },
   "https://habr.com/ru/articles/1098250/?utm_campaign=1098250&utm_source=habrahabr&utm_medium=rss": {
     "model": "gemini-2.5-flash-lite",
     "published": "Fri, 23 Oct 2026 10:07:22 GMT",
@@ -3478,6 +3502,54 @@
     "source_url": "https://habr.com/ru/articles/1098516/?utm_campaign=1098516&utm_source=habrahabr&utm_medium=rss",
     "summary": "I once needed to remove an unnecessary piece of the screen. A deletion task, what could be simpler? The final diff: 99 files, +5218 -5495. To delete 5 thousand lines of code, I had to write 5 thousand lines of specs: proposal, design, tasks, and REMOVED deltas. Then I wondered: why do we generate, store, and commit a bunch of artifacts that a modern model doesn't need? Thus, SlimSpec, a plugin for Claude Code, was born. Specs in it don't lead the work but remain after it. On a real project, a comparable change cost 29.7M tokens versus 45.7M for OpenSpec, and not a single line of process files ended up in git. I'll tell you how it works, show the numbers, and what had to be paid. Read more",
     "title": "SDD in Reverse: Not Programming to Specs, but Getting Them as a Bonus"
+  },
+  "https://habr.com/ru/articles/1098774/?utm_campaign=1098774&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Sat, 24 Oct 2026 07:39:51 GMT",
+    "slug": "1098774",
+    "source_url": "https://habr.com/ru/articles/1098774/?utm_campaign=1098774&utm_source=habrahabr&utm_medium=rss",
+    "summary": "One AI skill can be set up like a small department with its own specialists. But what to do when you need several such departments for a task? Using the example of text preparation and page assembly, I'll explain how I link independent skills through a coordinator and what benefits this brings to daily work. Read more",
+    "title": "From Department to Company: How to Combine AI Skills"
+  },
+  "https://habr.com/ru/articles/1098788/?utm_campaign=1098788&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Sat, 24 Oct 2026 07:05:49 GMT",
+    "slug": "1098788",
+    "source_url": "https://habr.com/ru/articles/1098788/?utm_campaign=1098788&utm_source=habrahabr&utm_medium=rss",
+    "summary": "System analysis in the era of LLMs - a paradigm shift and the role of the analyst, and one of the approaches to designing features. Read more",
+    "title": "System Analysis in the Era of LLMs"
+  },
+  "https://habr.com/ru/articles/1098796/?utm_campaign=1098796&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Sat, 24 Oct 2026 08:06:56 GMT",
+    "slug": "1098796",
+    "source_url": "https://habr.com/ru/articles/1098796/?utm_campaign=1098796&utm_source=habrahabr&utm_medium=rss",
+    "summary": "On October 22, 2026, Hugging Face co-founder and CEO Clément Delangue announced the release of Carbon-X, an open-source 14.8 billion parameter language model for reading, analyzing, and generating DNA sequences. In the same post, he shared a telling detail: when he asked a commercial closed-source model to simply proofread a draft of his tweet before publishing, a safety filter triggered and blocked the request. Delangue's tweet read: Read more",
+    "title": "How Censorship in Closed AI Models is Changing Science and Development: The Case of the Carbon-X DNA Model and the Debate on \"Shallow Guardrails\""
+  },
+  "https://habr.com/ru/articles/1098802/?utm_campaign=1098802&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Sat, 24 Oct 2026 03:18:31 GMT",
+    "slug": "1098802",
+    "source_url": "https://habr.com/ru/articles/1098802/?utm_campaign=1098802&utm_source=habrahabr&utm_medium=rss",
+    "summary": "How four everyday use cases evolved into an agent-based investment office, and why humans remain in the loop. When terms like SDD, AI PDLC, or HG PDLC are mentioned, ordinary people often perceive these acronyms as distant from real life and belonging to the rigid corporate IT sphere. I will explain through a series of personal experiences (from simple to complex) how these abstract concepts are implemented for personal ideas and projects. Read more",
+    "title": "The Evolution of Personal AI Agents: From Summarization to Autonomous Organization"
+  },
+  "https://habr.com/ru/articles/1098828/?utm_campaign=1098828&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Sat, 24 Oct 2026 07:07:50 GMT",
+    "slug": "1098828",
+    "source_url": "https://habr.com/ru/articles/1098828/?utm_campaign=1098828&utm_source=habrahabr&utm_medium=rss",
+    "summary": "This is the story of how a small widget for Claude limits grew over a month to include a pixel crab, weather, chat, and a whole wardrobe of skins. And about what happens when Claude writes all the code, and you only explain what you want. Read more",
+    "title": "How I Made a Claude Limits Widget, and a Crab Moved In"
+  },
+  "https://habr.com/ru/articles/1098866/?utm_campaign=1098866&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Sat, 24 Oct 2026 09:39:03 GMT",
+    "slug": "1098866",
+    "source_url": "https://habr.com/ru/articles/1098866/?utm_campaign=1098866&utm_source=habrahabr&utm_medium=rss",
+    "summary": "Honestly, I didn't understand why SKILLs were needed for LLM agents. With MCP, it's clear: a useful tool to give LLM access to a database or Figma. The only drawback is that to avoid wasting tokens, it's best not to connect 30 MCP servers at once. And in general, it's better to disable unnecessary ones and connect only those that are truly needed for the task. In this light, SKILLs seemed like useless overhead that devours tokens like crazy. I often saw TikTok rants like: connect this SKILL or a whole bunch of them, and you'll be happy. I immediately thought: if I connect them all, subscription limits will run out not by lunch, but by morning. Read more",
+    "title": "I thought SKILLs were a useless waste of tokens until I wrote my own"
   },
   "https://habr.com/ru/companies/1c/articles/1071340/?utm_campaign=1071340&utm_source=habrahabr&utm_medium=rss": {
     "model": "gemini-2.5-flash-lite",
@@ -4783,6 +4855,14 @@
     "summary": "Hello, Habr! In September, the Selectel team updated the AI platform and expanded the list of models in the AI router, introduced a set of services for working with data, and released other updates. Details are under the cut. Read more",
     "title": "Set of services for working with data and expansion of the AI platform: what's new at Selectel in September"
   },
+  "https://habr.com/ru/companies/selectel/articles/1095406/?utm_campaign=1095406&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Sat, 24 Oct 2026 08:00:55 GMT",
+    "slug": "1095406",
+    "source_url": "https://habr.com/ru/companies/selectel/articles/1095406/?utm_campaign=1095406&utm_source=habrahabr&utm_medium=rss",
+    "summary": "Hello, my name is Natasha, I am a project manager at Selectel. I recently talked about how and why we created aish — an AI agent in the terminal of a server OS. I suggest moving on to practice and connecting a third-party LLM to it. In this article, I will show you how to choose a suitable model, configure it correctly, and avoid common integration mistakes. Read more",
+    "title": "How to add your own LLM to aish"
+  },
   "https://habr.com/ru/companies/simpleone/articles/1085172/?utm_campaign=1085172&utm_source=habrahabr&utm_medium=rss": {
     "model": "gemini-2.5-flash-lite",
     "published": "Tue, 22 Sep 2026 12:09:40 GMT",
@@ -4982,6 +5062,14 @@
     "source_url": "https://habr.com/ru/companies/studyai/articles/1097316/?utm_campaign=1097316&utm_source=habrahabr&utm_medium=rss",
     "summary": "How did the ancient and arguably most elegant punctuation mark become a marker of AI-generated text? Let's try to figure it out. Read more",
     "title": "Why does AI love em dashes so much?"
+  },
+  "https://habr.com/ru/companies/studyai/articles/1098540/?utm_campaign=1098540&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Sat, 24 Oct 2026 10:01:06 GMT",
+    "slug": "1098540",
+    "source_url": "https://habr.com/ru/companies/studyai/articles/1098540/?utm_campaign=1098540&utm_source=habrahabr&utm_medium=rss",
+    "summary": "A character sheet is needed to better understand who our hero or heroine is. It serves as a reference for the game development team and helps keep character improvement more or less in \"unison.\" Today, we will try to create high-quality character sheets for fantasy game characters using three models: Grok Image 2.0, Krea 2, and Nano Banana Pro. Read more",
+    "title": "Creating Character Sheets with Nano Banana, Krea 2, and Grok"
   },
   "https://habr.com/ru/companies/svoi_ru/articles/1078124/?utm_campaign=1078124&utm_source=habrahabr&utm_medium=rss": {
     "model": "gemini-2.5-flash-lite",

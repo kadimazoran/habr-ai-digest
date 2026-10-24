@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>I thought SKILLs were a useless waste of tokens until I wrote my own</title>
+  <meta name="description" content="Honestly, I didn&#x27;t understand why SKILLs were needed for LLM agents. With MCP, it&#x27;s clear: a useful tool to give LLM access to a database or Figma. The only drawback is that to avoid wasting tokens, it&#x27;s best not to connect 30 MCP servers at once. And in general, it&#x27;s better to d">
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.65;
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 32px 20px 64px;
+      color: #1f2328;
+    }
+    header {
+      border-bottom: 1px solid #d8dee4;
+      margin-bottom: 28px;
+      padding-bottom: 20px;
+    }
+    .source {
+      color: #57606a;
+      font-size: 0.95rem;
+    }
+    img, video, iframe {
+      max-width: 100%;
+      height: auto;
+    }
+    pre {
+      overflow-x: auto;
+      padding: 16px;
+      background: #f6f8fa;
+      border-radius: 6px;
+    }
+    code {
+      font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+    }
+    blockquote {
+      border-left: 4px solid #d0d7de;
+      margin-left: 0;
+      padding-left: 16px;
+      color: #57606a;
+    }
+    footer {
+      border-top: 1px solid #d8dee4;
+      margin-top: 40px;
+      padding-top: 20px;
+      color: #57606a;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>I thought SKILLs were a useless waste of tokens until I wrote my own</h1>
+    <p>Honestly, I didn&#x27;t understand why SKILLs were needed for LLM agents. With MCP, it&#x27;s clear: a useful tool to give LLM access to a database or Figma. The only drawback is that to avoid wasting tokens, it&#x27;s best not to connect 30 MCP servers at once. And in general, it&#x27;s better to disable unnecessary ones and connect only those that are truly needed for the task. In this light, SKILLs seemed like useless overhead that devours tokens like crazy. I often saw TikTok rants like: connect this SKILL or a whole bunch of them, and you&#x27;ll be happy. I immediately thought: if I connect them all, subscription limits will run out not by lunch, but by morning. Read more</p>
+    <p class="source">
+      Machine-translated from Habr.
+      <a href="https://habr.com/ru/articles/1098866/?utm_campaign=1098866&amp;utm_source=habrahabr&amp;utm_medium=rss">Read the original Russian article</a>.
+      Sat, 24 Oct 2026 09:39:03 GMT
+    </p>
+  </header>
+  <main>
+<div><p>Honestly, I didn't understand why SKILLs were needed for LLM agents. With MCP, it's clear: a useful tool to give LLM access to a database or Figma. The only drawback is that to avoid wasting tokens, it's best not to connect 30 MCP servers at once. And in general, it's better to disable unnecessary ones and connect only those that are truly needed for the task. In this light, SKILLs seemed like useless overhead that devours tokens like crazy. I often saw TikTok rants like: connect this SKILL or a whole bunch of them, and you'll be happy. I immediately thought: if I connect them all, subscription limits will run out not by lunch, but by morning.</p><figure><img loading="lazy" src="https://habrastorage.org/r/w1560/extt/54/d0/37/54d0378d825633ce26c38d2a4eae9a58.png"/></figure><p>So why are SKILLs useful and necessary after all? Well, firstly, compared to MCP, SKILLs don't bloat the context: each connected SKILL adds not tens of thousands of tokens, but 1-2 hundred. Since only the SKILL's name and description are initially included in the context, you can add 30 of your own SKILLs without significant consequences. When a SKILL needs to be used, the LLM agent will pull its description itself if it understands from the task context that it's necessary, or the user will tell it to use such a SKILL for the job. </p><figure><img loading="lazy" src="https://habrastorage.org/r/w1560/extt/0e/16/68/0e1668354e15be9a918e5e20cad77cba.png"/></figure><p>Secondly, LLM models are trained on the most popular and well-known things. For example, it's obvious to everyone that an LLM can work with Git or write a Python program without issues. But if you've developed your own program or need to use an obscure tool or technology for your work, a SKILL is simply indispensable. You just need to create a SKILL.md file and describe how to work with this program or technology in it. This way, you make life easier for the LLM: when performing your tasks, it won't have to search for documentation online and browse websites to understand how to use it. Especially if there's nothing online because your program is not publicly accessible. </p><figure><img loading="lazy" src="https://habrastorage.org/r/w1560/extt/2e/0d/da/2e0ddae086ad4bc9cb01d99cc8028850.png"/></figure><p>Thirdly, an LLM model usually doesn't know how your development process is structured. For example, an agent knows how to use Git, run tests, build a project, and create releases. It doesn't need to be taught this. But it doesn't know how releases are typically made in your company. A SKILL can describe a sequence of actions: check changes, run tests, update CHANGELOG.md, increment the version, build the package, create a Git tag, and publish the release. That is, a SKILL helps to master not a technology, but a specific business process. </p><figure><img loading="lazy" src="https://habrastorage.org/r/w1560/extt/2e/4a/39/2e4a39e2260a87d625649366647ef1b3.png"/></figure><p>Fourthly, a SKILL is not just an instruction, but a whole set of tools. Besides SKILL.md, you can include ready-made scripts, documentation, templates, and other files. And the most interesting part: all these files are not automatically loaded into the context. The agent reads them only when necessary, and it can simply run ready-made scripts without spending tokens on code generation. Thus, a SKILL allows you to combine instructions, documentation, and executable code into one package without bloating the LLM's context. For example, the structure might look like this: </p><pre><code>my-skill/&#10;├── SKILL.md&#10;├── scripts/&#10;│   ├── generate.py&#10;│   └── validate.py&#10;├── references/&#10;│   └── api.md&#10;└── assets/&#10;    └── template.html</code><div><a href="https://sourcecraft.dev/"><span></span></a></div></pre><figure><img loading="lazy" src="https://habrastorage.org/r/w1560/extt/81/99/97/819997a383c9b8affb0882d19574d96b.png"/></figure><p>The funniest thing is: I only appreciated SKILLs when I wrote my own program, blueprint4llm. The idea to create it arose after I asked an LLM agent to generate a plan.md file describing a task. Usually, it outputs a large block of text that is slow and tedious to read. I wanted to shorten the text and add more flowcharts, tables, diagrams, and user interface prototypes. As you know, in .md files (Markdown), only tables and Mermaid diagrams are available as visualization tools. They lack charts, graphs, histograms, full UML diagrams, and UI prototypes. As a result, with the help of blueprint4llm, I added support for formats like PlantUML, draw.io, Pencil, Balsamiq, Graphviz, Figma, OpenAPI, Excalidraw, Vega-Lite, ECharts, and D2 to .md. </p><figure><img loading="lazy" src="https://habrastorage.org/r/w1560/extt/83/05/82/8305823c0a7232d8593fc03b9c0112e3.png"/></figure><p>By connecting the blueprint4llm SKILL, you will receive plan.md not as a kilometer-long text, but as flowcharts, prototypes, graphs, etc. By the way, blueprint4llm doesn't necessarily have to be used only for creating plan.md. For example, I used this SKILL to add an illustration to each paragraph of the article and make it more engaging to read. This SKILL is also convenient to use when you task an agent with compiling a comprehensive dossier on a company, technology, or person and ask it to format the final result.md file using blueprint4llm. It can then be converted to HTML or PDF, or you can ask the agent to display it directly in the browser with graphs. </p><figure><img loading="lazy" src="https://habrastorage.org/r/w1560/extt/ce/6d/74/ce6d747f78289c2baf29cabedc3fae89.png"/></figure><p>Here's how you can install the blueprint4llm SKILL.</p><pre><code># Codex&#10;npx skills add evgenyigumnov/blueprint4llm --skill blueprint4llm --agent codex&#10;&#10;# Claude Code&#10;npx skills add evgenyigumnov/blueprint4llm --skill blueprint4llm --agent claude-code</code><div><a href="https://sourcecraft.dev/"><span></span></a></div></pre><figure><img loading="lazy" src="https://habrastorage.org/r/w1560/extt/2d/e1/a8/2de1a8dd577ccfc992b4572e35fb7345.png"/></figure><p>If you're interested in seeing the source code of blueprint4llm, the tool that generates all this beauty, or want to send a pull request, you're welcome: <a href="https://github.com/evgenyigumnov/blueprint4llm">https://github.com/evgenyigumnov/blueprint4llm</a> </p><figure><img loading="lazy" src="https://habrastorage.org/r/w1560/extt/7b/33/5b/7b335bbc35b2dc56c93b2ff72c02d4be.png"/></figure></div>
+  </main>
+  <footer>
+    Translation generated with Gemini 2.5 Flash-Lite.
+    The original article remains the source of record.
+  </footer>
+</body>
+</html>

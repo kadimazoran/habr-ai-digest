@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>From Department to Company: How to Combine AI Skills</title>
+  <meta name="description" content="One AI skill can be set up like a small department with its own specialists. But what to do when you need several such departments for a task? Using the example of text preparation and page assembly, I&#x27;ll explain how I link independent skills through a coordinator and what benefits this brings ">
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.65;
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 32px 20px 64px;
+      color: #1f2328;
+    }
+    header {
+      border-bottom: 1px solid #d8dee4;
+      margin-bottom: 28px;
+      padding-bottom: 20px;
+    }
+    .source {
+      color: #57606a;
+      font-size: 0.95rem;
+    }
+    img, video, iframe {
+      max-width: 100%;
+      height: auto;
+    }
+    pre {
+      overflow-x: auto;
+      padding: 16px;
+      background: #f6f8fa;
+      border-radius: 6px;
+    }
+    code {
+      font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+    }
+    blockquote {
+      border-left: 4px solid #d0d7de;
+      margin-left: 0;
+      padding-left: 16px;
+      color: #57606a;
+    }
+    footer {
+      border-top: 1px solid #d8dee4;
+      margin-top: 40px;
+      padding-top: 20px;
+      color: #57606a;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>From Department to Company: How to Combine AI Skills</h1>
+    <p>One AI skill can be set up like a small department with its own specialists. But what to do when you need several such departments for a task? Using the example of text preparation and page assembly, I&#x27;ll explain how I link independent skills through a coordinator and what benefits this brings to daily work. Read more</p>
+    <p class="source">
+      Machine-translated from Habr.
+      <a href="https://habr.com/ru/articles/1098774/?utm_campaign=1098774&amp;utm_source=habrahabr&amp;utm_medium=rss">Read the original Russian article</a>.
+      Sat, 24 Oct 2026 07:39:51 GMT
+    </p>
+  </header>
+  <main>
+<div><p>In the <a href="https://habr.com/ru/articles/1044978/">first article</a>, I talked about AI skills. In such a skill, we gather instructions for a task that we regularly assign to it, so we don't have to explain everything anew each time. Using the example of trip planning, we discussed how to distribute these instructions among specialists. One handles the route, another calculates expenses, and the manager chooses whose instructions are needed for our request.</p><p>This results in something like a small department. But over time, there can be several such "departments." One skill helps prepare texts, another works with websites. As long as we address each one separately, everything is quite clear. But what if both are needed for a single task?</p><p>Then we have to decide ourselves which skill to start with and what to pass to the next. If it lacks something, we go back to the previous one and ask it to supplement the result. Instructions already exist for each skill, but how they work together, we explain as we go.</p><p>This is where we want to continue the comparison with a company. Within each department, the work has already been distributed. Now we need to figure out how to organize it between departments.</p><h3>When a Single Task Requires Multiple Skills</h3><p>Suppose we want to announce a new product on the website. We have already prepared two skills for this. One helps write texts, the other knows how to assemble pages. We ask the first to write the material, pass it to the second, and wait for the finished page.</p><p>During assembly, it turns out that an explanation is missing for one of the sections. The text makes it clear what the product does, but it's unclear who it's for. We need to go back to the material, supplement it, and send the corrected version to the website.</p><p>As a result, we have to explain to the editor what's missing, and after the edits, resubmit the text for page assembly. And if a similar issue arises with the next task, we'll have to intervene again. We want the AI to be able to return to the necessary skill itself when something needs to be added during the workflow.</p><p>We could try to combine everything into one large skill. However, text preparation is also needed without the website, and pages need to be created from already prepared materials. It's inconvenient to permanently merge them for a single joint task. We want to keep both skills and agree on how they will interact.</p><h3>Why Skills Need a Coordinator</h3><p>To organize joint work, I use a separate skill that I call a coordinator. In the first article, the manager selected specialists within a single skill. Here, the coordinator selects between independent skills and links their work. In our example, it needs to take the task from text preparation to a viewable page.</p><p>First, the coordinator clarifies what the final result should be. Then, it selects the appropriate skills and determines the work order. If a gap in the material is discovered during page assembly, it returns the issue to the text preparation task. If it's unclear what exactly we want to say about the product, it asks us instead of inventing an answer on our behalf.</p><p>The coordinator doesn't need to become the best editor itself or know all the intricacies of website construction. It needs clear skill descriptions and rules for transferring results. Who can prepare the text? To whom should the approved version be passed? What needs to be checked before declaring the page ready?</p><p>Similarly, in a company, a manager isn't required to personally perform all the work of the departments. But it's important for them to notice when the result of one department cannot yet be passed to another. In this sense, the comparison with a company helps me separate the work itself from its organization.</p><p>Like other skills, the coordinator contains instructions for the AI. One model can first use these instructions to select the necessary skill and then read its rules and perform the work. It's not necessary to run a separate AI assistant for each role.</p><p>I call this combination of skills a skill federation, or federation for short. Each skill retains its area of work, and common rules allow them to be used together. By federation here, I mean this approach, not a separate program that must be installed.</p><h3>What Changes for the User</h3><p>Returning to our example, we can immediately ask the AI to prepare a page about the product and provide it with the source materials. We explain who it's intended for and what we want to convey. We separately agree that we will review the finished page ourselves first, and it should not be published yet.</p><p>Next, the AI works according to the coordinator skill's instructions. We no longer need to separately ask the AI to proceed to page assembly after text preparation. If a question about the product arises during the process, the coordinator contacts us. For example, the materials don't specify who the product is for. This needs to be clarified with a human, and the choice of skill and passing the answer to it can be left to the coordinator.</p><p>In the end, we receive a page for review and decide if we are satisfied with the result. If something couldn't be assembled or verified, the coordinator should report it. This way, we still participate in the work, but we contribute with answers and feedback, rather than explaining every transition from one skill to another.</p><h3>Where to Start</h3><p>I would start with a recurring task where you already have to switch between two skills. It's enough to record what is passed from one to another and at what point the overall work is considered complete. This will be the basis for the coordinator's instructions.</p><p>For the page example, it's worth noting that the website skill receives a specific approved version of the text. If it lacks material, it reports what exactly is missing. After assembly, we review the page, and publishing is a separate decision. Details of editing and website structure remain within the skills themselves.</p><p>The coordinator can be given a short list of these skills with descriptions and links to instructions. The AI selects the appropriate one and reads its file, if the working environment allows. For a first attempt, it's best to use a test page without access to public publishing. This way, you can see if the AI follows the agreements without the risk of accidentally posting unfinished material.</p><p>If one skill is sufficient, or if it's easier to manually transfer the text once, there's no need to complicate the work yet. The need for a coordinator becomes clearer when you find yourself explaining a familiar sequence of actions again.</p><p>For me, the meaning of federation is precisely this. You can assign more cohesive tasks to the AI while preserving individual skills that are convenient to develop and use in other tasks. And you can get involved where your understanding and decisions are truly needed.</p></div>
+  </main>
+  <footer>
+    Translation generated with Gemini 2.5 Flash-Lite.
+    The original article remains the source of record.
+  </footer>
+</body>
+</html>

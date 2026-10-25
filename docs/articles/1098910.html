@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Glafira for Apache Kafka: An Open-Source Rust Desktop Client That Lets LLMs Read Your Cluster, But Not Touch It</title>
+  <meta name="description" content="Glafira for Apache Kafka is a free desktop client for Kafka on macOS, Windows, and Linux, built with Tauri 2, Rust, and librdkafka, with open-source code under Apache 2.0. It offers message viewing with filters and JSONPath, a Producer with templates, consumer sessions, topic and group management, o">
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.65;
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 32px 20px 64px;
+      color: #1f2328;
+    }
+    header {
+      border-bottom: 1px solid #d8dee4;
+      margin-bottom: 28px;
+      padding-bottom: 20px;
+    }
+    .source {
+      color: #57606a;
+      font-size: 0.95rem;
+    }
+    img, video, iframe {
+      max-width: 100%;
+      height: auto;
+    }
+    pre {
+      overflow-x: auto;
+      padding: 16px;
+      background: #f6f8fa;
+      border-radius: 6px;
+    }
+    code {
+      font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+    }
+    blockquote {
+      border-left: 4px solid #d0d7de;
+      margin-left: 0;
+      padding-left: 16px;
+      color: #57606a;
+    }
+    footer {
+      border-top: 1px solid #d8dee4;
+      margin-top: 40px;
+      padding-top: 20px;
+      color: #57606a;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Glafira for Apache Kafka: An Open-Source Rust Desktop Client That Lets LLMs Read Your Cluster, But Not Touch It</h1>
+    <p>Glafira for Apache Kafka is a free desktop client for Kafka on macOS, Windows, and Linux, built with Tauri 2, Rust, and librdkafka, with open-source code under Apache 2.0. It offers message viewing with filters and JSONPath, a Producer with templates, consumer sessions, topic and group management, offset resets, and built-in cluster checks. Its most interesting feature is the MCP gateway for LLMs. Claude, GigaCode, Cursor, or any other MCP-compatible client can connect to Glafira to read cluster metadata, identify issues, and suggest changes, but cannot make any modifications. The article explains how this works, why it&#x27;s a guarantee rather than a promise, and includes two real dialogues with Claude Code. Read on.</p>
+    <p class="source">
+      Machine-translated from Habr.
+      <a href="https://habr.com/ru/articles/1098910/?utm_campaign=1098910&amp;utm_source=habrahabr&amp;utm_medium=rss">Read the original Russian article</a>.
+      Sat, 24 Oct 2026 13:39:31 GMT
+    </p>
+  </header>
+  <main>
+<div><figure><img alt="Main window: connection tree on the left, topic tab with message table and details panel on the right" loading="lazy" src="https://habrastorage.org/r/w1560/webt/45/0b/e6/450be6d43c0adfa97efb74dd12907f03.png"/><div><figcaption>Main window: connection tree on the left, topic tab with message table and details panel on the right</figcaption></div></figure><p>I'm developing Glafira for Apache Kafka, a free desktop client for Kafka on macOS, Windows, and Linux. The code is open-source under Apache 2.0, and all features are available without keys or subscriptions. In this article, I'll explain why another GUI for Kafka is needed, how it's built internally (Tauri 2 + Rust + librdkafka), and its most unusual part: a built-in MCP gateway. This gateway allows clients like Claude, GigaCode, Cursor, or any other MCP-compatible client to diagnose the cluster, leave comments, and suggest changes, but without the ability to modify anything in the cluster.</p><p>The most exciting part—the LLM gateway—is at the very end, so keep reading! )</p><h3>Why Another GUI for Kafka</h3><p>If you work with Kafka not as an administrator but as a developer or tester, your typical day looks like this: <code>kafka-console-consumer</code> with five flags, <code>kcat</code> with another five flags, a custom script to "find a message by substring in value," and another one to "reset group offsets before running autotests." Every time, you have to recall the syntax, and every time, you copy SASL settings into yet another config.</p><p>GUI tools exist, but each has its compromise: some are proprietary and paid, some require a JVM, some are deployed as server applications, which is overkill for "just looking at a topic on a dev environment." I wanted something simple: a regular application that installs in a minute, stores passwords in the system's secret store, and handles the six daily tasks I need.</p><p>Dreaming is not harmful, and I thought I couldn't bring this to reality. Then I met a smart fellow named Claude, who helped me out like a brother.</p><p>Here are those six things, which also served as criteria for my MVP:</p><ol><li><p>Connect to a cluster with the required authentication faster than a minute, including importing certificates.</p></li><li><p>Find a message in a topic by a substring in the key, value, or headers, limiting the search by time or offset.</p></li><li><p>Send a message with a key and headers, including a batch of generated ones.</p></li><li><p>Read a topic as a consumer group member and commit offsets manually.</p></li><li><p>Create a topic, change configurations, add partitions, clear, or delete it.</p></li><li><p>View consumer groups, their lag per partition, and reset offsets.</p></li></ol><p>Why the name Glafira? I just liked the name ) I also like to call her affectionately—Glasha ) I plan to create a whole family of tools for my work; currently, I'm working on Glafira for PostgreSQL, a similar tool for PostgreSQL and Patroni clusters, so Glafira for Kafka is just the first of them.</p><h3>What It Can Do</h3><p>Briefly, without marketing fluff.</p><p><strong>Connections.</strong> PLAINTEXT, SSL, SASL PLAIN and SCRAM-SHA-256/512, mTLS with client certificates in PEM, PKCS#12, or JKS. Trusted CA—also PEM, PKCS#12, or JKS, or system root certificates. Connections are organized into nested folders, exported to a file without passwords, and imported on another machine with a preview. Passwords and key passwords are stored in Keychain, Credential Manager, or Secret Service, not in a JSON file nearby.</p><p><strong>Message Viewing.</strong> Reading without <code>group.id</code> via <code>assign</code>, so the cluster doesn't notice the observer. Initial position: last N, from the beginning, from offset, from timestamp, "last X minutes." Filters are applied in Rust before sending to the interface: substring or regex on key, value, and headers, JSONPath condition like <code>$.order.status == "FAILED"</code>, time range. Live tail with a circular buffer, limit up to 100,000 messages. Formats: auto, string, json, hex, base64.</p><p><strong>Producer.</strong> Key, value, headers, partition selection, <code>acks</code>, compression, idempotence. Templates with placeholders <code>{{uuid}}</code>, <code>{{now}}</code>, <code>{{seq}}</code>, <code>{{randomInt 1 100}}</code>, <code>{{env NAME}}</code>. Batch sending: N copies of the form or a JSON Lines / CSV file. "Resend" from the message table copies the key, value, and headers byte-for-byte, and the templating engine doesn't touch existing text.</p><p><strong>Consumer Sessions.</strong> Honest group joining with rebalancing, partition assignments, manual commit via buttons. Autocommit is off by default.</p><p><strong>Topics and Groups.</strong> Creation, config editor with "before → after" diff, adding partitions, clearing via <code>DeleteRecords</code>, deletion. For groups: lag per partition, members with hosts and <code>group.instance.id</code>, offset reset with mandatory preview, only for groups in the <code>Empty</code> state.</p><p><strong>Cluster Check.</strong> A set of built-in rules: no controller, under-replicated and offline partitions, replication factor of 1, <code>min.insync.replicas</code> greater than RF, unclean leader election, auto-topic creation, divergence of important settings between brokers, empty groups with lag, perpetual rebalancing, lag increased since the last check. Strictness depends on the connection environment: RF=1 is critical in prod, a warning on stage, and not shown on dev at all.</p><p><strong>Small things that turned out to be important.</strong> In this fast-paced world, there are fast people who don't have time to navigate links and search for information among "lots of text" in a not-so-clear language. Therefore, the interface is available in 12 languages. Built-in help with F1 search. "?" tooltips for every field and every topic configuration parameter. Everything in one place—right before your eyes. Corporate policy via MDM, GPO, or <code>/etc</code>: disable auto-updates, specify a mirror, fix the language, disable MCP. Paranoia is not an illness these days, but a useful skill.</p><figure><img alt=
+  </main>
+  <footer>
+    Translation generated with Gemini 2.5 Flash-Lite.
+    The original article remains the source of record.
+  </footer>
+</body>
+</html>

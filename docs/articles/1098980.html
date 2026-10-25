@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>A Brief Overview of Oh-My-Pi (OMP) — A Multifunctional Console Agent for Your Terminal</title>
+  <meta name="description" content="Hello! Today I&#x27;ll introduce you to the oh-my-pi (OMP) console agent, which isn&#x27;t as well-known as cloude or opencode, but is very interesting in its capabilities. Read on">
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.65;
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 32px 20px 64px;
+      color: #1f2328;
+    }
+    header {
+      border-bottom: 1px solid #d8dee4;
+      margin-bottom: 28px;
+      padding-bottom: 20px;
+    }
+    .source {
+      color: #57606a;
+      font-size: 0.95rem;
+    }
+    img, video, iframe {
+      max-width: 100%;
+      height: auto;
+    }
+    pre {
+      overflow-x: auto;
+      padding: 16px;
+      background: #f6f8fa;
+      border-radius: 6px;
+    }
+    code {
+      font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+    }
+    blockquote {
+      border-left: 4px solid #d0d7de;
+      margin-left: 0;
+      padding-left: 16px;
+      color: #57606a;
+    }
+    footer {
+      border-top: 1px solid #d8dee4;
+      margin-top: 40px;
+      padding-top: 20px;
+      color: #57606a;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>A Brief Overview of Oh-My-Pi (OMP) — A Multifunctional Console Agent for Your Terminal</h1>
+    <p>Hello! Today I&#x27;ll introduce you to the oh-my-pi (OMP) console agent, which isn&#x27;t as well-known as cloude or opencode, but is very interesting in its capabilities. Read on</p>
+    <p class="source">
+      Machine-translated from Habr.
+      <a href="https://habr.com/ru/articles/1098980/?utm_campaign=1098980&amp;utm_source=habrahabr&amp;utm_medium=rss">Read the original Russian article</a>.
+      Sun, 25 Oct 2026 04:08:27 GMT
+    </p>
+  </header>
+  <main>
+<div><p>Hello! Today I'll introduce you to the oh-my-pi (OMP) console agent, which isn't as well-known as cloude or opencode, but is very interesting in its capabilities, for example:</p><ul><li><p><strong>advisor</strong> (a reviewer model that looks over every move) has already appeared in cloude, but only with a paid model;</p></li><li><p>creation of <strong>sub-agents with their own rules,</strong> which can be run in a carousel (agents loop) without leaving OMP;</p></li><li><p>flexibility in working with pluggable LLMs, which can be assigned to sub-agents, organizing control over code writing, testing, and planning for your harness.</p></li></ul><p>I'll be glad if this article saves the reader time; for me, it was an "experience, the son of difficult mistakes":)</p><h2>Installation and Launch.</h2><p>You can install <strong>omp</strong> (Oh My Pi) in several ways, choose the one convenient for you and your OS:</p><p>Linux / macOS: <code>curl -fsSL </code><a href="https://omp.sh/install"><code>https://omp.sh/install</code></a><code> | sh</code></p><p>Windows, PowerShell: <code>powershell irm </code><a href="https://omp.sh/install.ps1"><code>https://omp.sh/install.ps1</code></a><code> | iex</code></p><p>or simply <code>npm install -g @oh-my-pi/pi-coding-agent</code></p><h3>Launching with LiteLLM, Ollama, LM Studio, or llama.cpp</h3><p>If you are using local models through the LiteLLM proxy, launch it like this:</p><p><code>LITELLM_BASE_URL=“http://&lt;ip:port&gt;/v1” omp</code></p><p>If the proxy requires an API key:</p><p><code>LITELLM_BASE_URL=“http://&lt;ip:port&gt;/v1/ ” <br/> LITELLM_API_KEY=“your-key” omp</code></p><p>Ollama:<code>OLLAMA_BASE_URL=
+  </main>
+  <footer>
+    Translation generated with Gemini 2.5 Flash-Lite.
+    The original article remains the source of record.
+  </footer>
+</body>
+</html>

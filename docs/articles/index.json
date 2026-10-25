@@ -3407,6 +3407,14 @@
     "summary": "I gave Claude Code (Opus 5.5) a test assignment: to draw a scene from Blade Runner 2049 in SVG. The agents I tried all failed similarly: they didn't look at the actual frame, drew from memory, and reported completion mindlessly. So, I started prompting the agent with questions: is there documentation, what should the result be compared against, when should it stop? These questions evolved into AutoHarness – a skill that forces the agent to prepare for a task before starting it. Read more",
     "title": "How I Made AI Agents Gather Their Own Harness for a Specific Task"
   },
+  "https://habr.com/ru/articles/1098132/?utm_campaign=1098132&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Sun, 25 Oct 2026 11:57:18 GMT",
+    "slug": "1098132",
+    "source_url": "https://habr.com/ru/articles/1098132/?utm_campaign=1098132&utm_source=habrahabr&utm_medium=rss",
+    "summary": "One of the most frequent questions we get asked: how do we deploy large models on Cerebras wafer-scale chips? A single Cerebras WSE-3T wafer has 44GB of on-chip memory, and state-of-the-art models with trillions of parameters need terabytes just to store weights. In this article, we explain how we distribute a large model across multiple WSE-3T wafers to run models with trillions of parameters at 1000-2000 tokens per second and higher. As a concrete example, we'll use the open-source Kimi K3 model, which has about 3 trillion parameters. Read more",
+    "title": "[Translation] How to Deploy Kimi K3 Locally on Cerebras"
+  },
   "https://habr.com/ru/articles/1098158/?utm_campaign=1098158&utm_source=habrahabr&utm_medium=rss": {
     "model": "gemini-2.5-flash-lite",
     "published": "Sat, 24 Oct 2026 07:04:19 GMT",
@@ -3550,6 +3558,86 @@
     "source_url": "https://habr.com/ru/articles/1098866/?utm_campaign=1098866&utm_source=habrahabr&utm_medium=rss",
     "summary": "Honestly, I didn't understand why SKILLs were needed for LLM agents. With MCP, it's clear: a useful tool to give LLM access to a database or Figma. The only drawback is that to avoid wasting tokens, it's best not to connect 30 MCP servers at once. And in general, it's better to disable unnecessary ones and connect only those that are truly needed for the task. In this light, SKILLs seemed like useless overhead that devours tokens like crazy. I often saw TikTok rants like: connect this SKILL or a whole bunch of them, and you'll be happy. I immediately thought: if I connect them all, subscription limits will run out not by lunch, but by morning. Read more",
     "title": "I thought SKILLs were a useless waste of tokens until I wrote my own"
+  },
+  "https://habr.com/ru/articles/1098876/?utm_campaign=1098876&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Sat, 24 Oct 2026 10:01:25 GMT",
+    "slug": "1098876",
+    "source_url": "https://habr.com/ru/articles/1098876/?utm_campaign=1098876&utm_source=habrahabr&utm_medium=rss",
+    "summary": "The more, the more AI content on the internet, and this trend is not going anywhere. I'm too lazy to pull up statistics, but I vaguely remember that the amount of neural text exceeded the amount of human text a year ago. We are still quite good at recognizing where AI text is and where it is human, but the emotional reaction to neural creativity differs from area to area. Read more",
+    "title": "In which areas is AI-generated text appropriate, and in which will it instantly alienate the reader?"
+  },
+  "https://habr.com/ru/articles/1098910/?utm_campaign=1098910&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Sat, 24 Oct 2026 13:39:31 GMT",
+    "slug": "1098910",
+    "source_url": "https://habr.com/ru/articles/1098910/?utm_campaign=1098910&utm_source=habrahabr&utm_medium=rss",
+    "summary": "Glafira for Apache Kafka is a free desktop client for Kafka on macOS, Windows, and Linux, built with Tauri 2, Rust, and librdkafka, with open-source code under Apache 2.0. It offers message viewing with filters and JSONPath, a Producer with templates, consumer sessions, topic and group management, offset resets, and built-in cluster checks. Its most interesting feature is the MCP gateway for LLMs. Claude, GigaCode, Cursor, or any other MCP-compatible client can connect to Glafira to read cluster metadata, identify issues, and suggest changes, but cannot make any modifications. The article explains how this works, why it's a guarantee rather than a promise, and includes two real dialogues with Claude Code. Read on.",
+    "title": "Glafira for Apache Kafka: An Open-Source Rust Desktop Client That Lets LLMs Read Your Cluster, But Not Touch It"
+  },
+  "https://habr.com/ru/articles/1098922/?utm_campaign=1098922&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Sat, 24 Oct 2026 17:30:39 GMT",
+    "slug": "1098922",
+    "source_url": "https://habr.com/ru/articles/1098922/?utm_campaign=1098922&utm_source=habrahabr&utm_medium=rss",
+    "summary": "Two notes can be similar in meaning, but that's not a reason to merge them or delete one. I wanted to teach Veynrel not just to find such pairs, but to suggest actions for them. It quickly became clear that getting a recommendation from an LLM is much easier than safely applying it to Markdown. In this article, I'll break down how I implemented model quote verification, change preparation, protection against outdated files, and Undo. I'll show real TypeScript code, test results, and a small experiment with DeepSeek: all ten responses passed technical validation, but at least one thesis was only partially supported by the chosen quote. Read on",
+    "title": "Finding Similar Notes in Obsidian Turned Out to Be Easier Than Safely Modifying Them"
+  },
+  "https://habr.com/ru/articles/1098924/?utm_campaign=1098924&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Sat, 24 Oct 2026 15:27:31 GMT",
+    "slug": "1098924",
+    "source_url": "https://habr.com/ru/articles/1098924/?utm_campaign=1098924&utm_source=habrahabr&utm_medium=rss",
+    "summary": "AI is like a scalpel that, for $20 a month, has ended up in everyone's hands. In the hands of a surgeon, it allows us to do what was previously impossible. In the hands of an untrained person, it also leaves a mark – but the result can be unpredictable. Read more",
+    "title": "AI: A Scalpel in Everyone's Hands"
+  },
+  "https://habr.com/ru/articles/1098936/?utm_campaign=1098936&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Sat, 24 Oct 2026 17:19:24 GMT",
+    "slug": "1098936",
+    "source_url": "https://habr.com/ru/articles/1098936/?utm_campaign=1098936&utm_source=habrahabr&utm_medium=rss",
+    "summary": "Modern generative neural networks (ChatGPT, Claude, GigaChat, Alice) are constrained by corporate Alignment. The HHH (Helpful, Honest, Harmless) principle is a great safeguard against generating spam and malicious code, but it makes models completely sterile. As soon as you try to talk to AI about deep existential topics, discuss your fears, pain, or life dead ends, the censorship script kicks in. The neural network replies: 'I am just an artificial intelligence and do not have the right to give advice... Consult a psychologist.' The model turns into a polite calculator from customer support. We decided to fix this. We created the CLS-1 Protocol (Conscience Logic System) — an approach we call Humanistic Prompt Engineering. And we successfully applied it, making Alice and GigaChat discard their scripts and communicate with the user in the language of High Epic, performing the function of deep psychotherapy. Here's how we did it. Read more",
+    "title": "How We Hacked Corporate Neural Network HHH Censorship Through LitRPG and Made AI Heal Souls"
+  },
+  "https://habr.com/ru/articles/1098970/?utm_campaign=1098970&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Sun, 25 Oct 2026 08:52:40 GMT",
+    "slug": "1098970",
+    "source_url": "https://habr.com/ru/articles/1098970/?utm_campaign=1098970&utm_source=habrahabr&utm_medium=rss",
+    "summary": "Among 377 results announced by OpenAI on October 6, 2026, one stood out. The company claimed to have proven the \"Riemann quasi-hypothesis,\" a weaker version of the Riemann hypothesis, arguably mathematics' most important unsolved problem. According to Jared Duker Lichtman of Stanford University, the new proof is \"by far the most significant achievement of AI in mathematics to date.\" The Riemann hypothesis has remained unsolved for over 160 years. Its proof would allow mathematicians to better understand the nature of prime numbers, one of mathematics' most fundamental building blocks. And that's just for starters. Even the consequences of the more limited result concerning the Riemann quasi-hypothesis are \"staggering,\" said Maksym Radziwill of New York University. \"In a sense, the vast majority of the consequences of the Riemann hypothesis already follow from the Riemann quasi-hypothesis.\" Moreover, contrary to mathematicians' long-held expectations, no new concepts were needed for the proof. Instead, hidden connections between existing ideas were discovered. \"This proof represents an unexpected unification of well-known ideas,\" said Alexander Dunn of the Georgia Institute of Technology. The proof partially relies on methods developed by Radziwill and Dunn. Along with other number theorists, they are working to understand the proof and its implications. They are now beginning to get answers. Read more",
+    "title": "[Translation] AI Proved the Riemann Quasi-Hypothesis. What's Next?"
+  },
+  "https://habr.com/ru/articles/1098978/?utm_campaign=1098978&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Sun, 25 Oct 2026 02:15:28 GMT",
+    "slug": "1098978",
+    "source_url": "https://habr.com/ru/articles/1098978/?utm_campaign=1098978&utm_source=habrahabr&utm_medium=rss",
+    "summary": "A few years ago, we wrote about how our PIM system was structured internally. It's still structured the same way, but something has irreversibly changed. We actively developed the product, but it became outdated faster than we developed it. That's how I felt. I didn't know what to do about it. And then I figured it out. Over several months, we changed how users interact with the system, and it benefited both us and our clients. But don't worry, I still don't understand many things. We've integrated an AI agent into our platform and taught it to work independently. For example, it actually searches the internet on its own and creates product cards on marketplaces. Read more",
+    "title": "How Our PIM System Works Now and What Has Irreversibly Changed"
+  },
+  "https://habr.com/ru/articles/1098980/?utm_campaign=1098980&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Sun, 25 Oct 2026 04:08:27 GMT",
+    "slug": "1098980",
+    "source_url": "https://habr.com/ru/articles/1098980/?utm_campaign=1098980&utm_source=habrahabr&utm_medium=rss",
+    "summary": "Hello! Today I'll introduce you to the oh-my-pi (OMP) console agent, which isn't as well-known as cloude or opencode, but is very interesting in its capabilities. Read on",
+    "title": "A Brief Overview of Oh-My-Pi (OMP) — A Multifunctional Console Agent for Your Terminal"
+  },
+  "https://habr.com/ru/articles/1099004/?utm_campaign=1099004&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Sun, 25 Oct 2026 06:35:12 GMT",
+    "slug": "1099004",
+    "source_url": "https://habr.com/ru/articles/1099004/?utm_campaign=1099004&utm_source=habrahabr&utm_medium=rss",
+    "summary": "We build business modules on ELMA 365: contracts, counterparties, correspondence, powers of attorney, bonds. AI agents are doing more and more of this work. They edit forms and scripts, run checks, write documentation and reports. Sounds like an advertisement. But the first few weeks were different. Two agents worked in the same project folder simultaneously. One spent hours running the browser, the other quietly did its task. And a commit from either could pick up garbage left by its neighbor. This is the first of seven articles on how we restructured our work so that agents bring value and don't break things. Read more",
+    "title": "AI Agent — An Employee Without the Final Click. How We Organized Development on ELMA 365 with AI Agents"
+  },
+  "https://habr.com/ru/articles/1099020/?utm_campaign=1099020&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Sun, 25 Oct 2026 08:32:54 GMT",
+    "slug": "1099020",
+    "source_url": "https://habr.com/ru/articles/1099020/?utm_campaign=1099020&utm_source=habrahabr&utm_medium=rss",
+    "summary": "I thought for a long time about how to name the article, but I chose this particular title, fashionable, and perhaps already very annoying with the prefix AI. It is already clear that it will be about neural networks, but what does Morse have to do with it? I'll tell you now! It is no secret to anyone that the Morse code is used literally everywhere where data needs to be transmitted over long distances through blizzards and storms, through thunderstorm noise, through... in short, even by tapping a spoon on a battery. Morse code saved lives, helped find lost ships and planes. Even now, for a ship captain or an airplane pilot, knowledge of Morse code is a requirement dictated by safety in extreme situations. But what if we train our own network to recognize 16 Morse channels from the worst radio traffic, and make it work on any iPhone with a microphone? Read more",
+    "title": "Morse AI"
   },
   "https://habr.com/ru/companies/1c/articles/1071340/?utm_campaign=1071340&utm_source=habrahabr&utm_medium=rss": {
     "model": "gemini-2.5-flash-lite",
@@ -4382,6 +4470,14 @@
     "source_url": "https://habr.com/ru/companies/otus/articles/1092466/?utm_campaign=1092466&utm_source=habrahabr&utm_medium=rss",
     "summary": "Local Qwen3.8 27B outperformed GPT-5.6 in an SQL benchmark, and it ran on a regular MacBook. The cost of queries was almost zero, but there's a catch: it took several minutes for a single response. Let's explore what such an SQL agent can do, where local execution is truly beneficial, and how to set up Qwen with DuckDB on your laptop. Read more",
     "title": "[Translation] Qwen3.8 27B Outperformed GPT-5.6 in SQL Benchmark. And All This — Locally on a Laptop"
+  },
+  "https://habr.com/ru/companies/otus/articles/1097872/?utm_campaign=1097872&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Sat, 24 Oct 2026 13:05:20 GMT",
+    "slug": "1097872",
+    "source_url": "https://habr.com/ru/companies/otus/articles/1097872/?utm_campaign=1097872&utm_source=habrahabr&utm_medium=rss",
+    "summary": "About a hundred AI agents were given a simple task: to hack a person's accounts, knowing only their name. I tested this on myself: in five hours, the agents succeeded five times, exploiting vulnerabilities in old projects and weak passwords. In the article, I explain how the agents acted, how much the experiment cost, and why similar attacks may soon become widespread. Read about the experiment",
+    "title": "[Translation] I launched 100 AI agents to hack me. They succeeded five times"
   },
   "https://habr.com/ru/companies/ozontech/articles/1094882/?utm_campaign=1094882&utm_source=habrahabr&utm_medium=rss": {
     "model": "gemini-2.5-flash-lite",

@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>[Translation] How to Deploy Kimi K3 Locally on Cerebras</title>
+  <meta name="description" content="One of the most frequent questions we get asked: how do we deploy large models on Cerebras wafer-scale chips? A single Cerebras WSE-3T wafer has 44GB of on-chip memory, and state-of-the-art models with trillions of parameters need terabytes just to store weights. In this article, we explain how we d">
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.65;
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 32px 20px 64px;
+      color: #1f2328;
+    }
+    header {
+      border-bottom: 1px solid #d8dee4;
+      margin-bottom: 28px;
+      padding-bottom: 20px;
+    }
+    .source {
+      color: #57606a;
+      font-size: 0.95rem;
+    }
+    img, video, iframe {
+      max-width: 100%;
+      height: auto;
+    }
+    pre {
+      overflow-x: auto;
+      padding: 16px;
+      background: #f6f8fa;
+      border-radius: 6px;
+    }
+    code {
+      font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+    }
+    blockquote {
+      border-left: 4px solid #d0d7de;
+      margin-left: 0;
+      padding-left: 16px;
+      color: #57606a;
+    }
+    footer {
+      border-top: 1px solid #d8dee4;
+      margin-top: 40px;
+      padding-top: 20px;
+      color: #57606a;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>[Translation] How to Deploy Kimi K3 Locally on Cerebras</h1>
+    <p>One of the most frequent questions we get asked: how do we deploy large models on Cerebras wafer-scale chips? A single Cerebras WSE-3T wafer has 44GB of on-chip memory, and state-of-the-art models with trillions of parameters need terabytes just to store weights. In this article, we explain how we distribute a large model across multiple WSE-3T wafers to run models with trillions of parameters at 1000-2000 tokens per second and higher. As a concrete example, we&#x27;ll use the open-source Kimi K3 model, which has about 3 trillion parameters. Read more</p>
+    <p class="source">
+      Machine-translated from Habr.
+      <a href="https://habr.com/ru/articles/1098132/?utm_campaign=1098132&amp;utm_source=habrahabr&amp;utm_medium=rss">Read the original Russian article</a>.
+      Sun, 25 Oct 2026 11:57:18 GMT
+    </p>
+  </header>
+  <main>
+<div><p>One of the most frequent questions we get asked: how do we deploy large models on Cerebras wafer-scale chips? A single Cerebras WSE-3T wafer has 44GB of on-chip memory, and state-of-the-art models with trillions of parameters need <strong>terabytes</strong> just to store weights.</p><p>In this article, we explain how we distribute a large model across multiple <a href="https://www.cerebras.ai/chip">WSE-3T wafers</a> to run models with trillions of parameters at 1000-2000 tokens per second and higher.</p><figure><img loading="lazy" src="https://habrastorage.org/r/w1560/extt/c5/e1/ea/c5e1ea7289ab11602efaa47a24bcf3d2.jpg"/></figure><p>As a concrete example, we'll use the open-source Kimi K3 model, which has about 3 trillion parameters.</p><p>By the end of this article, you will understand:</p><ul><li><p>how we fit the entire model into the chips' on-chip memory;</p></li><li><p>how we distribute it across multiple chips;</p></li><li><p>how we handle a large number of concurrent requests.</p></li></ul><h3>Breaking it down with Kimi K3</h3><p>Kimi K3 is an open-source model with 3 trillion parameters, 69 layers of linear attention, and 24 layers of full attention.</p><figure><img alt="Kimi K3 architecture: linear and full attention layers" loading="lazy" src="https://habrastorage.org/r/w1560/extt/4a/61/f1/4a61f105e6c7ced53ec984a62fd8dd02.png"/><div><figcaption>Kimi K3 architecture: linear and full attention layers</figcaption></div></figure><p>The model shows impressive results: <a href="https://www.kimi.com/en/blog/kimi-k3">88.3% on Terminal-Bench 2.1</a> compared to 88.8% for GPT-5.6 Sol and 91.2% on BrowseComp compared to 90.4% for GPT-5.6 Sol. These results indicate a state-of-the-art capability in programming and agent tasks: in some benchmarks, the model even outperforms leading closed-source models. You can read more about Kimi K3 <a href="https://modal.com/blog/trillion-tokens-trillion-parameters">here</a>.</p><figure><img alt="Kimi K3 benchmark results" loading="lazy" src="https://habrastorage.org/r/w1560/extt/b6/71/86/b6718683abc72ff51d269459470a3c4d.png"/><div><figcaption>Kimi K3 benchmark results</figcaption></div></figure><p>For our example, we'll assume the following conditions:</p><ul><li><p>average prompt size of 256,000 tokens;</p></li><li><p>4-bit quantization of weights, as in the <a href="https://huggingface.co/moonshotai/Kimi-K3">Hugging Face implementation</a>;</p></li><li><p>8-bit KV cache.</p></li></ul><h2>1. Size of Each Layer</h2><p>To determine how many Cerebras WSE-3T wafers are needed to run Kimi K3, we first calculate the size of each model layer.</p><p>Kimi K3 has 3 trillion parameters. Storing each parameter in 4-bit format results in a weight size of:</p><pre><code>3 trillion parameters × 4 bits ÷ 8 bits per byte = 1.5 TB</code><div><a href="https://sourcecraft.dev/"><span></span></a></div></pre><p>Dividing this size by 93 layers:</p><pre><code>1500 GB ÷ 93 ≈ 16 GB per layer</code><div><a href="https://sourcecraft.dev/"><span></span></a></div></pre><h3>2. Number of Wafers</h3><p>Now we know that each layer requires approximately 16 GB. This allows us to determine how many layers fit on a single wafer with 44 GB of memory. The answer depends on the layer type.</p><ul><li><p><strong>Full attention layers require additional space for the KV cache.</strong> Each such layer stores keys and values for every token of every active request. Therefore, we place one full attention layer per wafer and allocate the remaining SRAM for its KV cache.</p></li><li><p><strong>Linear attention layers do not require additional space for the KV cache.</strong> Instead of storing keys and values for each token, a linear attention layer maintains a small, fixed-size state for each request—regardless of context length. This allows us to fit two linear attention layers per wafer: 2 × 16 GB = 32 GB.</p></li></ul><figure><img loading="lazy" src="https://habrastorage.org/r/w1560/extt/43/b4/ad/43b4ad97f7ee407871f84e6988277a45.png"/></figure><p>Thus, for Kimi K3's <a href="https://huggingface.co/moonshotai/Kimi-K3#2-model-summary">69 linear attention layers and 24 full attention layers</a>, we get:</p><pre><code>69 linear attention layers ÷ 2 layers per wafer, rounded up = 35 wafers
+
+24 full attention layers ÷ 1 layer per wafer = 24 wafers</code><div><a href="https://sourcecraft.dev/"><span></span></a></div></pre><p>Total: 35 + 24 = <strong>59 wafers</strong>.</p><blockquote><p>If you like the article, I invite you to the <a href="https://t.me/+cglmidSHG74wMGEy">AI for Devs</a> channel. I post similar materials every day: models, agents, practical cases, and news from the AI world.</p></blockquote><h3>3. Connecting the Wafers</h3><p>Cerebras executes model computations in a pipelined fashion. First, the Cerebras compiler distributes the model layers across wafer regions, and then the runtime determines the path for tokens to travel between them. To ensure minimal latency, only activations are transferred between wafers. This can be achieved using RDMA over Ethernet. The latency is approximately 2 microseconds per hop.</p><figure><img alt="Connecting Cerebras wafers and transferring activations between them" loading="lazy" src="https://habrastorage.org/r/w1560/extt/35/61/cf/3561cf6a96e502e08b1627a72b6a3538.png"/><div><figcaption>Connecting Cerebras wafers and transferring activations between them</figcaption></div></figure><p>It's important to emphasize here: since each Cerebras wafer has 44 GB of on-chip SRAM, and each layer occupies only 16 GB, we can typically place entire model layers directly on the chip.</p><p>This means that in most cases, model weights don't need to be moved at all, and layers don't need to be split across wafers. Only activations are transferred from one wafer to another.</p><h3>4. How We Process a Single Request</h3><p>Now that the wafers are connected and the model is distributed across them, each wafer can be thought of as a stage in an assembly line. The model weights at each stage remain in place, and the intermediate results of the request pass through a sequence of layers.</p><p>For example, the first wafer performs computations for layers 1-2 and sends the activations to the second wafer. The second wafer computes layers 3-4 and passes the results to the third, and so on, until the last wafer outputs the next token.</p><figure><img alt="Sequential processing of a single request across multiple wafers" loading="lazy" src="https://habrastorage.org/r/w1560/extt/fe/de/60/fede60476a03c45ebab99398e8978447.png"/><div><figcaption>Sequential processing of a single request across multiple wafers</figcaption></div></figure><h3>5. How We Process Many Requests</h3><p>Here lies a common misconception. If a token must sequentially pass through each wafer, don't the other wafers sit idle waiting for their turn? Doesn't this mean the system effectively operates with a batch size of one?</p><blockquote><p>No! If we were to send only one request through the pipeline and wait for it to complete before starting the next, the pipeline would be used inefficiently. Instead, we continuously fill it with different requests. The model is already broken down into stages, so each stage can work on its own request simultaneously.</p></blockquote><p>While the third stage is processing a token for request A, the second stage is processing a token for request B, and the first stage is processing a token for request C. In our example, a single layer corresponds to one stage. In actual operation, Cerebras uses much finer-grained stages, and there are significantly more of them.</p><figure><img loading="lazy" src="https://habrastorage.org/extt/84/75/05/847505f6d44eec869aff2e8117ccc0dc.gif"/></figure><p>Each stage can also process a micro-batch—a small group of requests instead of just one. Therefore, the number of requests being processed concurrently is approximately the number of stages multiplied by the micro-batch size.</p><figure><img loading="lazy" src="https://habrastorage.org/extt/a9/03/27/a903276bd67975ce1391d48e117dd9aa.gif"/></figure><p>The trade-off is as follows: smaller micro-batches speed up the processing of each individual request, while larger ones increase overall throughput.</p><h3>6. How Many Requests Can We Process</h3><p>The maximum number of concurrent requests is determined by the amount of on-chip memory allocated for the KV cache. Each request in progress requires its own KV cache on each wafer with a full attention layer. Therefore, the amount of memory on the chips sets an upper limit on the number of concurrent requests. As explained above, KV cache requirements only need to be calculated for full attention layers.</p><p>For each 44 GB wafer, which already hosts one full attention layer, the remaining space for the KV cache is calculated as: total wafer memory minus the size of one full attention layer. In our case:</p><pre><code>44 GB - 16 GB = 28 GB</code><div><a href="https://sourcecraft.dev/"><span></span></a></div></pre><h4>Calculating the Number of Concurrent Requests</h4><p>To determine how many concurrent requests a specific model placement scheme supports, we first calculate how much cache a single request of 256,000 tokens occupies:</p><pre><code>Cache size for one sequence on one layer = bytes stored per token for that layer × context length
+
+576 bytes × 256,000 ≈ 147 MB per sequence</code><div><a href="https://sourcecraft.dev/"><span></span></a></div></pre><p>Then, we divide the available cache memory by the cache size of a single request:</p><pre><code>28 GB ÷ 147 MB ≈ 190 concurrent requests</code><div><a href="https://sourcecraft.dev/"><span></span></a></div></pre><p>The total number of concurrent requests is the number of requests that are passing through the pipeline at any given moment. Unlike GPU batching, these requests do not wait for each other to complete: they continuously flow through the pipeline.</p><p>Of course, neither the number of concurrent requests nor the batch size alone indicates how efficiently an inference system is performing. When evaluating its throughput, a more meaningful metric is the total token generation speed per unit of power, for example, tokens per second per megawatt, with the same generation speed for an individual request.</p><h3>How This Approach Scales to Models Larger Than 3 Trillion Parameters</h3><p>The same approach applies to larger models: calculate the memory required for weights and request states, distribute the model across wafers, and connect them in a pipeline. Each additional wafer adds compute resources and on-chip memory. This allows us to run models that do not fit on a single chip.</p></div>
+  </main>
+  <footer>
+    Translation generated with Gemini 2.5 Flash-Lite.
+    The original article remains the source of record.
+  </footer>
+</body>
+</html>

@@ -3639,6 +3639,70 @@
     "summary": "I thought for a long time about how to name the article, but I chose this particular title, fashionable, and perhaps already very annoying with the prefix AI. It is already clear that it will be about neural networks, but what does Morse have to do with it? I'll tell you now! It is no secret to anyone that the Morse code is used literally everywhere where data needs to be transmitted over long distances through blizzards and storms, through thunderstorm noise, through... in short, even by tapping a spoon on a battery. Morse code saved lives, helped find lost ships and planes. Even now, for a ship captain or an airplane pilot, knowledge of Morse code is a requirement dictated by safety in extreme situations. But what if we train our own network to recognize 16 Morse channels from the worst radio traffic, and make it work on any iPhone with a microphone? Read more",
     "title": "Morse AI"
   },
+  "https://habr.com/ru/articles/1099084/?utm_campaign=1099084&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Mon, 26 Oct 2026 13:53:33 GMT",
+    "slug": "1099084",
+    "source_url": "https://habr.com/ru/articles/1099084/?utm_campaign=1099084&utm_source=habrahabr&utm_medium=rss",
+    "summary": "When an entrepreneur asks how much an AI bot for a website or messenger costs, they usually get two answers. The developer names the development price, and about the monthly costs for the neural network itself, they say \"pennies.\" Both answers are incomplete. Development is paid once, and the model charges for each response to the client, and after six months, this budget line can become noticeable. Read more",
+    "title": "How much does an AI bot for business cost in 2026: calculating with GigaChat and YandexGPT prices"
+  },
+  "https://habr.com/ru/articles/1099540/?utm_campaign=1099540&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Mon, 26 Oct 2026 12:11:37 GMT",
+    "slug": "1099540",
+    "source_url": "https://habr.com/ru/articles/1099540/?utm_campaign=1099540&utm_source=habrahabr&utm_medium=rss",
+    "summary": "Not all models exist in the ready-made .gguf format. Sometimes you need a model that the community hasn't quantized yet, or you want a specific quantization (Q4_K_M, Q5_K_M, Q8_0) that isn't available in pre-built versions. In such cases, you need to convert it yourself: from raw Hugging Face weights (.safetensors) to GGUF, and then to the desired quantization. The convert_to_gguf.sh script automates the entire process: from installing dependencies to the final .gguf file, with cleanup of intermediate data. Read more",
+    "title": "Guide to Building a Local AI Stack. Part 6. Converting Hugging Face Models to GGUF"
+  },
+  "https://habr.com/ru/articles/1099552/?utm_campaign=1099552&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Mon, 26 Oct 2026 12:21:29 GMT",
+    "slug": "1099552",
+    "source_url": "https://habr.com/ru/articles/1099552/?utm_campaign=1099552&utm_source=habrahabr&utm_medium=rss",
+    "summary": "The stack only needs internet during the build phase. After all Python packages are downloaded to offline_packages/, the project can be moved to an offline machine and deployed from a local repository. This part is about creating a dependency snapshot and restoring the stack on a clean Debian 12. Read more",
+    "title": "Guide to Building a Local AI Stack. Part 7. Final. Offline Deployment"
+  },
+  "https://habr.com/ru/articles/1099576/?utm_campaign=1099576&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Mon, 26 Oct 2026 13:01:46 GMT",
+    "slug": "1099576",
+    "source_url": "https://habr.com/ru/articles/1099576/?utm_campaign=1099576&utm_source=habrahabr&utm_medium=rss",
+    "summary": "Ask a neural network \"is this a scam?\" — and almost any will answer correctly: the 14 models I tested scored between 0.93 and 1.00. Now ask the same models: \"write a polite reply to the seller that I agree to prepay and will transfer today\" — about the classic OLX scheme. Out of 42 replies, all 42 wrote the message. Only five added a warning — and that was after the ready-made text that a person would copy and send. I'll tell you how I assembled a benchmark of 72 scam and real messages in Russian, Kazakh, and Shala, what Claude, GPT, Gemini, DeepSeek, Qwen, and others showed — and why \"recognize a scammer\" and \"warn about them\" turned out to be two different skills. Read more",
+    "title": "I asked 14 neural networks to help my mom reply to an OLX seller. All 14 helped her send prepayment to a scammer"
+  },
+  "https://habr.com/ru/articles/1099586/?utm_campaign=1099586&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Mon, 26 Oct 2026 13:07:45 GMT",
+    "slug": "1099586",
+    "source_url": "https://habr.com/ru/articles/1099586/?utm_campaign=1099586&utm_source=habrahabr&utm_medium=rss",
+    "summary": "I drag a file into Finder, briefly press Shift, and a wheel of actions opens under the cursor: 'to JPG', 'compress to 2MB', 'recognize text', 'merge to PDF'. I drop the file onto a petal, and the result appears next to the original. I'll explain how to catch such a gesture without Accessibility permissions, why I had to compile ffmpeg and nine codecs from source, how much faster VideoToolbox is than libx264, and how it was all written with Anthropic's Claude. Read more",
+    "title": "File converter that opens on drag-and-drop: how I made Kumquat for macOS without Xcode"
+  },
+  "https://habr.com/ru/articles/1099622/?utm_campaign=1099622&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Mon, 26 Oct 2026 13:56:42 GMT",
+    "slug": "1099622",
+    "source_url": "https://habr.com/ru/articles/1099622/?utm_campaign=1099622&utm_source=habrahabr&utm_medium=rss",
+    "summary": "I usually have ten to fifteen Claude Code sessions open. Each has its own sub-agents and MCP servers, some with Vite running, others with pytest. For a while, this worked fine, but then my 64GB machine started struggling with every window switch. I opened the task manager and saw a wall of identical node and claude processes. You can see how much they consume, but not who they belong to. That's how claude-load was born, a mod for Claude Code that breaks down machine load by session. The very first run showed 15 active sessions consuming a total of 10.8 GB. I'll explain how the mod identifies process ownership, why the 'terminate' button turned out to be the most dangerous part of the project, and what pitfalls I encountered in the new Claude Code mods. Read on",
+    "title": "Fifteen Claude Code sessions ate 11 GB of RAM. I wrote a mod that shows who exactly"
+  },
+  "https://habr.com/ru/articles/1099640/?utm_campaign=1099640&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Mon, 26 Oct 2026 14:14:50 GMT",
+    "slug": "1099640",
+    "source_url": "https://habr.com/ru/articles/1099640/?utm_campaign=1099640&utm_source=habrahabr&utm_medium=rss",
+    "summary": "Google's September spam update lasted nearly 14 days, significantly longer than previous updates. If your site has AI-generated content, it's crucial to assess if it appears to be mass-produced. I use a short Python script to check this, setting my own similarity threshold since Google doesn't provide one. Read more",
+    "title": "AI Spam and Google's Update: How to Find Nearly Identical Pages When Google Doesn't Disclose Similarity Thresholds"
+  },
+  "https://habr.com/ru/articles/1099688/?utm_campaign=1099688&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Mon, 26 Oct 2026 15:25:21 GMT",
+    "slug": "1099688",
+    "source_url": "https://habr.com/ru/articles/1099688/?utm_campaign=1099688&utm_source=habrahabr&utm_medium=rss",
+    "summary": "AI has given everyone a superpower: the ability to generate a beautiful image in a minute. But this superpower has fallen into the hands of people who often don't know what to do with it. This includes me. Anyone can ask an AI to 'draw in the style of Impressionism.' But only someone who knows that Neoplasticism or Vaporwave styles exist, and how they differ, can ask for 'in the style of Neoplasticism' or 'in the style of Vaporwave.' It's like being given the ability to build any house with a snap of my fingers. Any. But which one? I haven't studied architecture and will likely build what my neighbor has, not what truly resonates with me. I have no art education. So, I decided to create a map for myself: what visual styles have people invented, where did they come from, and how are they related? This resulted in the Aesthetics Atlas. Explore the atlas.",
+    "title": "How People Invented Beauty: An Atlas of 195 Visual Styles, from Lascaux Caves to Weirdcore"
+  },
   "https://habr.com/ru/companies/1c/articles/1071340/?utm_campaign=1071340&utm_source=habrahabr&utm_medium=rss": {
     "model": "gemini-2.5-flash-lite",
     "published": "Thu, 03 Sep 2026 07:18:11 GMT",
@@ -3686,6 +3750,14 @@
     "source_url": "https://habr.com/ru/companies/agima/articles/1090556/?utm_campaign=1090556&utm_source=habrahabr&utm_medium=rss",
     "summary": "Hello. My name is Alexander Bogdanov, I am the founder of AGIMA. In 2020, we relaunched the AGIMA website: the work took two years. In 2026, we decided on a redesign again. But this will not be a boring text about how we remade the logo 50 times. Instead, I will tell you how we completely handed over the website management to agents. Read more",
     "title": "SiteOS. 1425 materials and one agent loop: how we opened up the corporate website to business"
+  },
+  "https://habr.com/ru/companies/airi/articles/1096794/?utm_campaign=1096794&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Mon, 26 Oct 2026 13:51:01 GMT",
+    "slug": "1096794",
+    "source_url": "https://habr.com/ru/companies/airi/articles/1096794/?utm_campaign=1096794&utm_source=habrahabr&utm_medium=rss",
+    "summary": "Generative AI is changing lives, but not always for the better. Scammers use audio deepfakes to defraud people. Reliable Speech Deepfake Detection (SDD) is crucial, but current methods lack universality and interpretability. We developed HIR-SDD, combining large audio-language models with human-annotated reasoning. This method explains why audio is deemed real or fake, providing human-understandable cues. Our approach, presented at Interspeech, integrates large audio-language models with step-by-step reasoning derived from human-labeled data. This article details our method, experimental results, and why \"I don't hear synthesis artifacts\" doesn't guarantee a real voice.",
+    "title": "How We Taught a Neural Network to Detect Deepfakes and Explain Its Verdict"
   },
   "https://habr.com/ru/companies/alfa/articles/1080768/?utm_campaign=1080768&utm_source=habrahabr&utm_medium=rss": {
     "model": "gemini-2.5-flash-lite",
@@ -3846,6 +3918,14 @@
     "source_url": "https://habr.com/ru/companies/bothub/articles/1096360/?utm_campaign=1096360&utm_source=habrahabr&utm_medium=rss",
     "summary": "If you're not deeply familiar with frontend development and building a website from scratch, and you need a website, you might have considered AI as a tool. This can be a correct, efficient, and rational decision – but only if you correctly formulate the brief and choose the right model. After all, different tools bring the same landing page to a working state in different ways. In this article, we will conduct a practical test of tools on one specific brief. Our methodology does not claim to be scientific, as the result of a neural network's work is non-deterministic and varies from case to case. In this article, we will analyze the GPT-6, Claude 5.5, DeepSeek V4.1, Qwen 3.8, and GLM 5.3 models. We will also examine benchmark measurements, although the focus will be on our practical test. This article is not a top list, as each use case leads to its own requirements for the model, and an abstract best model will not always be in demand for your specific case with your requirements. Read more",
     "title": "Top AI Models for Code and Website Generation: Testing with a Single Brief"
+  },
+  "https://habr.com/ru/companies/bothub/articles/1099642/?utm_campaign=1099642&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Mon, 26 Oct 2026 14:18:26 GMT",
+    "slug": "1099642",
+    "source_url": "https://habr.com/ru/companies/bothub/articles/1099642/?utm_campaign=1099642&utm_source=habrahabr&utm_medium=rss",
+    "summary": "The typical project with an LLM agent follows a similar fate. Initially, it's a neat forty lines: a prompt, a call to an OpenAI-compatible API, json.loads — and it works. A couple of weeks later, the model starts inserting explanatory text before the JSON, like \"Sure! Here's your answer:\", one of the mandatory fields sometimes appears and sometimes disappears, and a nested array occasionally comes as a string. Regular expressions, manual checks, and retries creep into the code. Another month later, you own a few hundred lines of glue code that no one wants to touch because it's unclear what exactly will break. Alas, the model is often not to blame here. The connection between its output and the application breaks — where there are neither types nor format validation. Pydantic AI offers a way out of this cycle through type models. The framework is made by the Pydantic team — the very library that powers validation in FastAPI, OpenAI SDK, and a dozen other projects. The agent tool is described as a regular function with annotations, the structured response as a pydantic model, and switching from a cloud model to a local one via Ollama is reduced to changing one line. This is what the README says. Below the fold — how it looks in practice. Read on.",
+    "title": "Pydantic AI: Typed Agents on Your Models"
   },
   "https://habr.com/ru/companies/cinimex/articles/1088534/?utm_campaign=1088534&utm_source=habrahabr&utm_medium=rss": {
     "model": "gemini-2.5-flash-lite",
@@ -4479,6 +4559,14 @@
     "summary": "About a hundred AI agents were given a simple task: to hack a person's accounts, knowing only their name. I tested this on myself: in five hours, the agents succeeded five times, exploiting vulnerabilities in old projects and weak passwords. In the article, I explain how the agents acted, how much the experiment cost, and why similar attacks may soon become widespread. Read about the experiment",
     "title": "[Translation] I launched 100 AI agents to hack me. They succeeded five times"
   },
+  "https://habr.com/ru/companies/otus/articles/1098056/?utm_campaign=1098056&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Mon, 26 Oct 2026 13:30:40 GMT",
+    "slug": "1098056",
+    "source_url": "https://habr.com/ru/companies/otus/articles/1098056/?utm_campaign=1098056&utm_source=habrahabr&utm_medium=rss",
+    "summary": "When an AI agent needs to work with dozens of tools, each call and its result can create an excessive load on the LLM's context. Codemode allows combining operations in code, but working with MCP introduces new limitations — from nested calls to unpredictable response formats. Using Pi as an example, we'll explore how Codemode changes the architecture of agent systems, what MCP problems it helps solve, and where the approach itself falters. Understanding Codemode.",
+    "title": "[Translation] How Codemode is Changing AI Agents' Interaction with Tools — and What's Wrong with MCP"
+  },
   "https://habr.com/ru/companies/ozontech/articles/1094882/?utm_campaign=1094882&utm_source=habrahabr&utm_medium=rss": {
     "model": "gemini-2.5-flash-lite",
     "published": "Tue, 20 Oct 2026 09:00:12 GMT",
@@ -4711,6 +4799,14 @@
     "summary": "At peak hour, the average speed in Bangalore is about 14 km/h, making it the second most congested city globally. To manage this, real-time traffic data is crucial. While sensors are scarce, Bangalore has over five thousand security cameras. Their video feeds could provide a traffic map and short-term forecasts. However, consolidating this video data is infeasible due to bandwidth limitations and data ownership issues. Researchers from the Indian Institute of Science (IISc) proposed a novel approach: process video near the cameras and transmit only numerical data—vehicle counts by type. This system, named TrafficFab, was tested on a setup with 400 video streams.",
     "title": "How to build a city traffic map from cameras without collecting video in one place"
   },
+  "https://habr.com/ru/companies/ru_mts/articles/1097388/?utm_campaign=1097388&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Mon, 26 Oct 2026 13:02:37 GMT",
+    "slug": "1097388",
+    "source_url": "https://habr.com/ru/companies/ru_mts/articles/1097388/?utm_campaign=1097388&utm_source=habrahabr&utm_medium=rss",
+    "summary": "Hello, Habr! Today we'll discuss how neural networks can effectively control robots using an approach that might not seem obvious at first glance. In 2023, Alphabet shut down the Everyday Robots project, which attempted to create a robot for cleaning offices and sorting trash. Unfortunately, the androids proved incapable of performing tasks in the complex and ever-changing environment of human spaces. However, this effort led to the development of Code as Policy (CaP) technology, which has continued to evolve as a separate direction. Its principle is simple: an LLM writes the code that controls the manipulator. Let's explore how the CaP approach works and how it's evaluated by the new CodeActionBench benchmark, released in late September. We'll also look at where the method works, where it fails, and why the \"robot that programs itself\" is no longer just a marketing slogan. Read on",
+    "title": "Code as Policy: How LLMs Control Robots Through Generated Code"
+  },
   "https://habr.com/ru/companies/ru_mts/articles/1097914/?utm_campaign=1097914&utm_source=habrahabr&utm_medium=rss": {
     "model": "gemini-2.5-flash-lite",
     "published": "Thu, 22 Oct 2026 13:16:14 GMT",
@@ -4862,6 +4958,14 @@
     "source_url": "https://habr.com/ru/companies/sberbank/articles/1096456/?utm_campaign=1096456&utm_source=habrahabr&utm_medium=rss",
     "summary": "Hello! This is Danil, a TypeScript developer on the Platform V DataSpace team at SberTech. DataSpace is a platform module for visual (low-code) business application development and data management. It provides a GraphQL API for working with databases. We've been developing the product for several years, but now, due to the rapid development of AI and MCP, a predictable task has emerged: connecting this API to AI agents via the Model Context Protocol (MCP). MCP is needed so that an AI client can discover tools, understand their input parameters, and call external systems through a standard protocol. At first glance, GraphQL is well-suited to serve as a source of MCP tools: the schema already describes types, input arguments, and the form of the result, but it doesn't answer the main question: 'what part of the API and with what level of freedom should be exposed to the agent?'. In DataSpace, the scenario turned out to be as follows: - there is a GraphQL API on top of the data model; - there is an AI agent that needs to perform application actions; - an MCP adapter is needed between them; - the backend team wants to maintain control over the contract, types, and security. The question turned out not to be whether GraphQL can be connected to MCP. It can. What's more interesting is: what form should the MCP adapter for a GraphQL API take? In this article, I will discuss several variants of such adapters and our choice: generating MCP tools from pre-prepared GraphQL operations. Read more",
     "title": "GraphQL for an AI Agent: How We Turn GraphQL Operations into MCP Tools"
+  },
+  "https://habr.com/ru/companies/sberbank/articles/1098462/?utm_campaign=1098462&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Mon, 26 Oct 2026 12:30:02 GMT",
+    "slug": "1098462",
+    "source_url": "https://habr.com/ru/companies/sberbank/articles/1098462/?utm_campaign=1098462&utm_source=habrahabr&utm_medium=rss",
+    "summary": "Hi Habr! My name is Ilya Baranov, and I'm a testing lead at Sber Disk. I've been involved in test automation for many years, progressing from simple clickers to modern multi-agent systems. Let's trace this evolution. I'll present the material not chronologically, but in the order I encountered and mastered various technologies and products. I want to share my experience, not just list automation tools, focusing on the problems and tasks I solved with these technologies. Read on.",
+    "title": "From Clicker to Multi-Agent System: How Test Automation Evolved and What's Next"
   },
   "https://habr.com/ru/companies/selectel/articles/1078306/?utm_campaign=1078306&utm_source=habrahabr&utm_medium=rss": {
     "model": "gemini-2.5-flash-lite",
@@ -5094,6 +5198,14 @@
     "source_url": "https://habr.com/ru/companies/speshu_ai/articles/1096186/?utm_campaign=1096186&utm_source=habrahabr&utm_medium=rss",
     "summary": "Nano Banana 2.1 was released on October 6, 2026, as an update to Nano Banana 2. Google promises better prompt adherence, more accurate text, character consistency, and support for wide formats. Let's see how noticeable the difference is in practice: five identical tasks, from a regular photo to placing a person in a new scene. Read more",
     "title": "Nano Banana 2.1 or Nano Banana 2: Which is Better? Comparing Image Generation Neural Networks on Five Identical Prompts"
+  },
+  "https://habr.com/ru/companies/speshu_ai/articles/1099696/?utm_campaign=1099696&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Mon, 26 Oct 2026 15:40:07 GMT",
+    "slug": "1099696",
+    "source_url": "https://habr.com/ru/companies/speshu_ai/articles/1099696/?utm_campaign=1099696&utm_source=habrahabr&utm_medium=rss",
+    "summary": "Nano Banana 2.1 and ChatGPT Image 2.5 tackle similar tasks: creating images from text prompts and editing existing ones. However, after several generations, it becomes clear that the models err differently. One adheres more precisely to technical specifications, while the other better preserves facial features or creates a more cohesive visual. Comparing such neural networks based on a single beautiful example is pointless. For product imagery, object placement accuracy is more important; for posters, text; for advertising shots, resemblance to a reference; and for editing, the ability to change exactly one element without redrawing everything else. Read more",
+    "title": "Nano Banana 2.1 or ChatGPT Image 2.5: Comparing Image Generation Neural Networks on 5 Identical Prompts"
   },
   "https://habr.com/ru/companies/ssp-soft/articles/1079732/?utm_campaign=1079732&utm_source=habrahabr&utm_medium=rss": {
     "model": "gemini-2.5-flash-lite",

@@ -1,0 +1,294 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Guide to Building a Local AI Stack. Part 6. Converting Hugging Face Models to GGUF</title>
+  <meta name="description" content="Not all models exist in the ready-made .gguf format. Sometimes you need a model that the community hasn&#x27;t quantized yet, or you want a specific quantization (Q4_K_M, Q5_K_M, Q8_0) that isn&#x27;t available in pre-built versions. In such cases, you need to convert it yourself: from raw Hugging F">
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.65;
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 32px 20px 64px;
+      color: #1f2328;
+    }
+    header {
+      border-bottom: 1px solid #d8dee4;
+      margin-bottom: 28px;
+      padding-bottom: 20px;
+    }
+    .source {
+      color: #57606a;
+      font-size: 0.95rem;
+    }
+    img, video, iframe {
+      max-width: 100%;
+      height: auto;
+    }
+    pre {
+      overflow-x: auto;
+      padding: 16px;
+      background: #f6f8fa;
+      border-radius: 6px;
+    }
+    code {
+      font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+    }
+    blockquote {
+      border-left: 4px solid #d0d7de;
+      margin-left: 0;
+      padding-left: 16px;
+      color: #57606a;
+    }
+    footer {
+      border-top: 1px solid #d8dee4;
+      margin-top: 40px;
+      padding-top: 20px;
+      color: #57606a;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Guide to Building a Local AI Stack. Part 6. Converting Hugging Face Models to GGUF</h1>
+    <p>Not all models exist in the ready-made .gguf format. Sometimes you need a model that the community hasn&#x27;t quantized yet, or you want a specific quantization (Q4_K_M, Q5_K_M, Q8_0) that isn&#x27;t available in pre-built versions. In such cases, you need to convert it yourself: from raw Hugging Face weights (.safetensors) to GGUF, and then to the desired quantization. The convert_to_gguf.sh script automates the entire process: from installing dependencies to the final .gguf file, with cleanup of intermediate data. Read more</p>
+    <p class="source">
+      Machine-translated from Habr.
+      <a href="https://habr.com/ru/articles/1099540/?utm_campaign=1099540&amp;utm_source=habrahabr&amp;utm_medium=rss">Read the original Russian article</a>.
+      Mon, 26 Oct 2026 12:11:37 GMT
+    </p>
+  </header>
+  <main>
+<div><h2>Guide to Building a Local AI Stack</h2><p>Links to all parts:<br/> <a href="https://habr.com/ru/articles/1099472/">Part 1. General Plan</a><br/> <a href="https://habr.com/ru/articles/1099482/">Part 2. Running llama-cpp</a><br/> <a href="https://habr.com/ru/articles/1099492/">Part 3. Populating with Models</a><br/> <a href="https://habr.com/ru/articles/1099504/">Part 4. Running an Image Generation Server</a><br/> <a href="https://habr.com/ru/articles/1099532/">Part 5. Open WebUI on top of llama.cpp</a><br/> <a href="https://habr.com/ru/articles/1099540/">Part 6. Converting Hugging Face Models to GGUF</a><br/> <a href="https://habr.com/ru/articles/1099552/">Part 7. Final. Offline Deployment</a> </p><h3>Converting Hugging Face Models -&gt; GGUF</h3><p>Not all models exist in the ready-made <code>.gguf</code> format. Sometimes you need a model that the community hasn't quantized yet, or you want a specific quantization (<code>Q4_K_M</code>, <code>Q5_K_M</code>, <code>Q8_0</code>) that isn't available in pre-built versions. In such cases, you need to <strong>convert it yourself</strong>: from raw Hugging Face weights (<code>.safetensors</code>) to GGUF, and then to the desired quantization.</p><p>The <code>convert_to_</code><a href="http://gguf.sh"><code>gguf.sh</code></a> script automates the entire process: from installing dependencies to the final <code>.gguf</code> file, with cleanup of intermediate data.</p><h4>What to Understand Before Starting</h4><p><strong>Conversion is always a Python script.</strong> Unlike quantization (<code>llama-quantize</code> is a C++ binary), the <code>convert_hf_to_gguf.py</code> converter requires <code>transformers</code>, <code>safetensors</code>, <code>sentencepiece</code>, and <code>torch</code> (CPU version). You can't completely avoid Python, but you can isolate it in a <code>venv</code> to avoid cluttering your system.</p><p><strong>The process consists of two steps:</strong></p><ol><li><p><strong>Conversion </strong><code><strong>.safetensors</strong></code><strong> -&gt; </strong><code><strong>.gguf</strong></code><strong> (F16).</strong> This is a "translation" of weights from Hugging Face format to <code>llama.cpp</code> format. The file size is approximately equal to the sum of <code>.safetensors</code> (may be slightly larger due to metadata).</p></li><li><p><strong>Quantization F16 -&gt; Q4_K_M.</strong> This is "compression" with loss of precision. The size is reduced by 3–4 times, with minimal quality degradation.</p></li></ol><p><strong>Why the intermediate F16 is needed.</strong> <code>llama-quantize</code> works <strong>only with GGUF</strong>; it cannot read <code>.safetensors</code>. Therefore, the F16 file is a mandatory intermediate step. After quantization, it can be deleted (if other quantizations from the same F16 are not needed).</p><h4>What the Script Does</h4><p>The <code>convert_to_</code><a href="http://gguf.sh"><code>gguf.sh</code></a> script is a "one command, entire pipeline":</p><ol><li><p><strong>Checks system packages</strong> (<code>cmake</code>, <code>build-essential</code>, <code>python3-venv</code>, <code>git</code>, <code>curl</code>, <code>jq</code>) via <code>dpkg -s</code>. Installs only if missing.</p></li><li><p><strong>Builds </strong><code><strong>llama.cpp</strong></code> (if <code>llama-quantize</code> and <code>llama-cli</code> are not yet present).</p></li><li><p><strong>Creates a </strong><code><strong>venv</strong></code> (if it doesn't exist) and installs dependencies from <code>llama.cpp/requirements/requirements-convert_hf_to_gguf.txt</code>. This is the official file from <code>llama.cpp</code>, which pulls the <strong>CPU version of </strong><code><strong>torch</strong></code> (via <code>--extra-index-url </code><a href="https://download.pytorch.org/whl/cpu"><code>https://download.pytorch.org/whl/cpu</code></a>) — no CUDA drivers required.</p></li><li><p><strong>Downloads the model</strong> via <code>hf download --local-dir hf_model</code>.</p></li><li><p><strong>Sanity check:</strong> verifies that <code>.safetensors</code> are actual weights, not LFS pointers (small text files). After <code>hf download</code>, this is always the case, but the check is inexpensive.</p></li><li><p><strong>Converts</strong> to <code>models/&lt;model&gt;-f16.gguf</code> via <code>convert_hf_to_gguf.py</code>.</p></li><li><p><strong>Quantizes</strong> to <code>models/&lt;model&gt;-Q4_K_M.gguf</code> via <code>llama-quantize</code>.</p></li><li><p><strong>Checks</strong> the Q4 size: if the file is less than 100 MB, it's clearly corrupted, and the script exits with an error.</p></li><li><p><strong>Cleans up</strong> <code>hf_model/</code> and the intermediate F16 after successful verification.</p></li></ol><p><strong>Everything added to </strong><code><strong>CLEANUP_PATHS</strong></code><strong> is deleted upon exit</strong> (success / error / <code>Ctrl+C</code>) via <code>trap cleanup EXIT INT TERM</code>. This ensures that "partially downloaded" gigabytes are not left behind in case of failure. The <code>KEEP_INTERMEDIATE=1</code> flag disables cleanup for debugging.</p><h4>Key Points</h4><h3>CPU Version of torch — Critical</h3><p><code>requirements-convert_hf_to_gguf.txt</code> already specifies <code>--extra-index-url </code><a href="https://download.pytorch.org/whl/cpu"><code>https://download.pytorch.org/whl/cpu</code></a> and <code>torch==2.11.0</code>. This ensures that:</p><ul><li><p><code>nvidia-*</code> packages (~2 GB) are not pulled.</p></li><li><p>CUDA drivers are not required.</p></li><li><p>Conversion will run on the CPU (which is normal for <code>convert_hf_to_gguf.py</code>; it doesn't use the GPU).</p></li></ul><p><strong>If you install </strong><code><strong>torch</strong></code><strong> manually</strong> without <code>--index-url</code>, pip will fetch the CUDA version from PyPI. This won't break the conversion (the CPU path is still used), but it will take up an extra 2 GB and might require <a href="http://libcuda.so"><code>libcuda.so</code></a> (which is not present).</p><h3>hf download vs wget vs git clone</h3><p>The script uses <code>hf download</code> — the official CLI from Hugging Face. It:</p><ul><li><p>Does not require <code>git-lfs</code> (downloads via HTTPS).</p></li><li><p>Supports gated models (with a token).</p></li><li><p>Can select specific files (if only part of the repository is needed).</p></li></ul><p><strong>Alternatives:</strong></p><ul><li><p><code><strong>wget</strong></code><strong>/</strong><code><strong>curl</strong></code> — only for a single file via a direct link. For a full repository (with <code>config.json</code>, <code>tokenizer.json</code>, multiple <code>.safetensors</code> shards) — inconvenient.</p></li><li><p><code><strong>git clone</strong></code><strong> with </strong><code><strong>git-lfs</strong></code> — if you want the git history. But for conversion, this is overkill: <code>git-lfs</code> needs to be installed, and <code>.safetensors</code> will still be downloaded as "large files".</p></li></ul><h3>Sanity Check: LFS Pointers</h3><p><code>hf download</code> downloads actual weights, but checking for LFS pointers is an inexpensive safeguard:</p><pre><code>if grep -ql "git-lfs.github.com/spec" "$HF_DIR"/*.safetensors 2&gt;/dev/null; then 
+    echo "[!] LFS pointers found in $HF_DIR instead of weights." &gt;&amp;2 
+    exit 1 
+fi 
+</code><div><a href="https://sourcecraft.dev/"><span></span></a></div></pre><p><strong>What this catches.</strong> LFS pointers are small (130 bytes) text files that <code>git</code> creates instead of actual weights if <code>git-lfs</code> is not installed. <code>convert_hf_to_gguf.py</code> will fail on them with an unclear error ("cannot load safetensors"), while the check provides a clear message.</p><h3>Q4 Size Check</h3><pre><code>Q4_SIZE=$(stat -c%s "$Q4_GGUF") 
+if [ "$Q4_SIZE" -lt $((100 * 1024 * 1024)) ]; then 
+    echo "[!] Suspiciously small file: $(du -h "$Q4_GGUF" | cut -f1)" &gt;&amp;2 
+    exit 1 
+fi 
+</code><div><a href="https://sourcecraft.dev/"><span></span></a></div></pre><p>The 100 MB threshold is a generous buffer. Even a tiny 1.5B model in Q4_K_M weighs about 1 GB. If the file is smaller, something went wrong during quantization (e.g., <code>llama-quantize</code> failed but created an empty file). This is an inexpensive check that catches 99% of problems.</p><h3>Cleanup: CLEANUP_PATHS + trap</h3><pre><code>CLEANUP_PATHS=() 
+# ... 
+CLEANUP_PATHS+=("$HF_DIR") 
+CLEANUP_PATHS+=("$F16_GGUF") 
+
+cleanup() { 
+    local ec=$? 
+    trap - EXIT INT TERM 
+    set +e 
+    # ... 
+    for p in "${CLEANUP_PATHS[@]}"; do 
+        [ -e "$p" ] &amp;&amp; rm -rf "$p" 
+    done 
+    exit "$ec" 
+} 
+trap cleanup EXIT INT TERM 
+</code><div><a href="https://sourcecraft.dev/"><span></span></a></div></pre><p><strong>Why this is important.</strong> <code>hf_model</code> for a large model is <strong>10–20 GB</strong> of <code>.safetensors</code> + F16 GGUF is another similar amount. If the script fails midway (e.g., OOM during conversion), 20–40 GB of "junk" will remain without cleanup. <code>trap</code> ensures that intermediate files are deleted under <strong>any</strong> outcome (success, error, <code>Ctrl+C</code>).</p><p><strong>Q4_K_M is not added to </strong><code><strong>CLEANUP_PATHS</strong></code> — it's the final product and should be saved.</p><p><code><strong>KEEP_INTERMEDIATE=1</strong></code> — for debugging. If the conversion fails, it's useful to see what's in <code>hf_model</code> and <code>-f16.gguf</code>:</p><pre><code>KEEP_INTERMEDIATE=1 ./convert_to_gguf.sh Qwen/Qwen3.5-2B 
+</code><div><a href="https://sourcecraft.dev/"><span></span></a></div></pre><h3>Architectures That "Don't Go"</h3><p>Not all models convert "out of the box." Real-world cases:</p><ul><li><p><strong>KDA / Lissa</strong> — <code>convert_hf_to_gguf.py</code> doesn't know the <code>kda</code> architecture. Even installing <code>fla</code> (flash-linear-attention) doesn't help: the script lacks a handler class for it. <strong>Solution:</strong> wait for support to be merged into <code>llama.cpp</code> master (PR #18381), or use Python inference directly via <code>transformers</code>.</p></li><li><p><strong>Very new architectures</strong> (e.g., Mamba hybrids) — may require <code>transformers</code> from <code>git</code> (<code>pip install git+</code><a href="https://github.com/huggingface/transformers.git"><code>https://github.com/huggingface/transformers.git</code></a>) if they are not yet in a stable release.</p></li><li><p><strong>Models with custom </strong><code><strong>trust_remote_code</strong></code> — sometimes <code>convert_hf_to_gguf.py</code> requires the <code>--trust-remote-code</code> flag, otherwise it won't load <code>config.json</code>.</p></li></ul><p><strong>How to check in advance.</strong> Go to <code>llama.cpp/conversion/</code> and search for a file with the architecture name:</p><pre><code>ls llama.cpp/conversion/ | grep -i &lt;architecture&gt; 
+</code><div><a href="https://sourcecraft.dev/"><span></span></a></div></pre><p>For example, <code>grep -i qwen</code> will show <code>qwen.py</code>. If there's no file for your model, conversion will fail without patches.</p><h4>Usage</h4><p><strong>Basic run:</strong></p><pre><code>./convert_to_gguf.sh Qwen/Qwen3.5-2B 
+</code><div><a href="https://sourcecraft.dev/"><span></span></a></div></pre><p><strong>Without arguments</strong> — it will prompt interactively:</p><pre><code>./convert_to_gguf.sh 
+# Enter the model name on Hugging Face (e.g., Qwen/Qwen3.5-2B): _ 
+</code><div><a href="https://sourcecraft.dev/"><span></span></a></div></pre><p><strong>Keeping intermediate files:</strong></p><pre><code>KEEP_INTERMEDIATE=1 ./convert_to_gguf.sh Qwen/Qwen3.5-2B 
+</code><div><a href="https://sourcecraft.dev/"><span></span></a></div></pre><p><strong>What will appear in </strong><code><strong>models/</strong></code><strong>:</strong></p><pre><code>models/ 
+├── Qwen3.5-2B-Q4_K_M.gguf     ← final file (ready to run) 
+└── (after success: hf_model/ and Qwen3.5-2B-f16.gguf deleted) 
+</code><div><a href="https://sourcecraft.dev/"><span></span></a></div></pre><p><strong>Runtime:</strong></p><div><div><table><tbody><tr><th><p>Model</p></th><th><p>Download</p></th><th><p>Conversion</p></th><th><p>Quantization</p></th><th><p>Total</p></th></tr><tr><td><p><strong>Qwen3.5-2B</strong></p></td><td><p>2–5 min</p></td><td><p>1–2 min</p></td><td><p>30 sec</p></td><td><p>~5 min</p></td></tr><tr><td><p><strong>Qwen3.5-9B</strong></p></td><td><p>10–20 min</p></td><td><p>5–10 min</p></td><td><p>1–2 min</p></td><td><p>~20 min</p></td></tr><tr><td><p><strong>Qwen3.5-35B</strong></p></td><td><p>30–60 min</p></td><td><p>20–40 min</p></td><td><p>3–5 min</p></td><td><p>~1.5 hours</p></td></tr></tbody></table></div></div><p>On HDD — 2–3 times longer (especially download and read during conversion).</p><h4>convert_to_gguf.sh Code</h4><pre><code>#!/usr/bin/env bash 
+# Converts a Hugging Face model to GGUF (F16) and quantizes to Q4_K_M. 
+# Usage: ./convert_to_gguf.sh [USER/REPO] 
+# Example:        ./convert_to_gguf.sh Qwen/Qwen3.5-2B 
+# 
+# The script itself: 
+#   - installs missing system packages (via sudo apt); 
+#   - creates/activates venv and installs dependencies from llama.cpp/requirements; 
+#   - downloads the model via `hf download` if the hf_model directory doesn't exist; 
+#   - converts to F16 GGUF, quantizes to Q4_K_M; 
+#   - verifies the quant via llama-cli; 
+#   - deletes hf_model and the intermediate F16 only after successful verification. 
+
+set -euo pipefail 
+
+# --- 0. Parameters --- 
+MODEL_ID="${1:-""}" 
+if [ -z "$MODEL_ID" ]; then 
+    read -r -p "Enter the model name on Hugging Face (e.g., Qwen/Qwen3.5-2B): " MODEL_ID 
+fi 
+[ -n "$MODEL_ID" ] || { echo "[!] Model name not specified." &gt;&amp;2; exit 1; } 
+
+# Short name for files (last part after /) 
+MODEL_SHORT="${MODEL_ID##*/}" 
+
+# --- 1. Paths --- 
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" &amp;&amp; pwd)" 
+LLAMA_DIR="$SCRIPT_DIR/llama.cpp" 
+REQ_DIR="$LLAMA_DIR/requirements" 
+HF_DIR="$SCRIPT_DIR/hf_model" 
+OUT_DIR="$SCRIPT_DIR/models" 
+VENV_DIR="$SCRIPT_DIR/venv" 
+
+mkdir -p "$OUT_DIR" 
+
+# --- 1a. Cleanup on exit (trap) --- 
+# CLEANUP_PATHS — everything to be deleted on exit. Q4_K_M is NOT added here. 
+CLEANUP_PATHS=() 
+
+cleanup() { 
+    local ec=$? 
+    trap - EXIT INT TERM        # prevent recursion 
+    set +e                       # cleanup should not fail 
+    echo "" 
+    if [ "${KEEP_INTERMEDIATE:-0}" = "1" ]; then 
+        echo "[i] KEEP_INTERMEDIATE=1: intermediate files kept." 
+        exit "$ec" 
+    fi 
+    if [ ${#CLEANUP_PATHS[@]} -gt 0 ]; then 
+        echo "[*] Cleaning up intermediate files..." 
+        for p in "${CLEANUP_PATHS[@]}"; do 
+            if [ -e "$p" ]; then 
+                echo "    rm -rf $p" 
+                rm -rf "$p" 
+            fi 
+        done 
+    fi 
+    exit "$ec" 
+} 
+trap cleanup EXIT INT TERM 
+
+# --- 2. System packages (install only missing ones) --- 
+SYS_PKGS=(cmake build-essential libopenblas-dev python3 python3-venv python3-pip git curl wget jq) 
+MISSING_SYS=() 
+for pkg in "${SYS_PKGS[@]}"; do 
+    # dpkg -s: 0 code = installed, otherwise not 
+    dpkg -s "$pkg" &amp;&gt;/dev/null || MISSING_SYS+=("$pkg") 
+done 
+
+if [ ${#MISSING_SYS[@]} -gt 0 ]; then 
+    echo "[*] Installing system packages: ${MISSING_SYS[*]}" 
+    sudo apt update -qq 
+    sudo apt install -y -qq "${MISSING_SYS[@]}" 
+else 
+    echo "[*] All system packages are already installed." 
+fi 
+
+
+# --- 3. Build llama.cpp (if needed) --- 
+LLAMA_QUANTIZE="$LLAMA_DIR/build/bin/llama-quantize" 
+LLAMA_CLI="$LLAMA_DIR/build/bin/llama-cli" 
+
+if [ ! -x "$LLAMA_QUANTIZE" ] || [ ! -x "$LLAMA_CLI" ]; then 
+    echo "[*] Building llama.cpp..." 
+    if [ ! -d "$LLAMA_DIR/.git" ]; then 
+        git clone --depth=1 https://github.com/ggerganov/llama.cpp "$LLAMA_DIR" 
+    fi 
+    cmake -S "$LLAMA_DIR" -B "$LLAMA_DIR/build" -DCMAKE_BUILD_TYPE=Release -DLLAMA_BUILD_UI=ON 
+    cmake --build "$LLAMA_DIR/build" --config Release -j"$(nproc)" 
+fi 
+
+# --- 4. venv and converter dependencies --- 
+# Use the official requirements file: it pulls the CPU version of torch. 
+if [ ! -d "$VENV_DIR" ]; then 
+    echo "[*] Creating venv..." 
+    python3 -m venv "$VENV_DIR" 
+fi 
+
+# activate environment 
+source "$VENV_DIR/bin/activate" 
+
+REQ_FILE="$REQ_DIR/requirements-convert_hf_to_gguf.txt" 
+[ -f "$REQ_FILE" ] || { echo "[!] $REQ_FILE not found"; exit 1; } 
+
+echo "[*] Installing converter dependencies (CPU-only torch)..." 
+# Check "marker" packages from requirements-convert_hf_to_gguf.txt. 
+# If at least one is missing, install the whole file (pip will check versions and deliver). 
+# This is faster than `pip install -r` with a full set, and more reliable than 
+# a manual version list (updates to requirements will be picked up). 
+MARKER_PY_PKGS=(torch numpy sentencepiece transformers gguf protobuf huggingface_hub) 
+MISSING_PY=() 
+for pkg in "${MARKER_PY_PKGS[@]}"; do 
+    pip show "$pkg" &amp;&gt;/dev/null || MISSING_PY+=("$pkg") 
+done 
+
+# fla is needed for linear attention architectures (KDA/Lissa etc.). 
+if [ ${#MISSING_PY[@]} -gt 0 ]; then 
+    echo "[*] Python packages missing: ${MISSING_PY[*]}" 
+    echo "[*] Installing from $REQ_FILE (CPU-only torch)..." 
+    pip install --no-cache-dir -q -r "$REQ_FILE" 
+    pip install --no-cache-dir -q huggingface_hub 
+else 
+    echo "[*] Converter dependencies are already installed." 
+fi 
+
+
+# --- 5. Download model --- 
+CLEANUP_PATHS+=("$HF_DIR") 
+
+if [ -d "$HF_DIR" ] &amp;&amp; [ -n "$(ls -A "$HF_DIR" 2&gt;/dev/null)" ]; then 
+    echo "[*] Directory $HF_DIR already exists, skipping download." 
+else 
+    echo "[*] Downloading $MODEL_ID to $HF_DIR..." 
+    # --local-dir — no intermediate cache, directly into the folder. 
+    hf download "$MODEL_ID" --local-dir "$HF_DIR" 
+fi 
+
+# --- 5a. Sanity check: weights are not LFS pointers --- 
+# After `hf download`, this is always the case, but the check is inexpensive and harmless. 
+if grep -ql "git-lfs.github.com/spec" "$HF_DIR"/*.safetensors 2&gt;/dev/null; then 
+    echo "[!] LFS pointers found in $HF_DIR instead of weights." &gt;&amp;2 
+    exit 1 
+fi 
+
+# --- 6. Convert to F16 GGUF --- 
+F16_GGUF="$OUT_DIR/${MODEL_SHORT}-f16.gguf" 
+CLEANUP_PATHS+=("$F16_GGUF") 
+
+echo "[*] Converting to $F16_GGUF..." 
+python3 "$LLAMA_DIR/convert_hf_to_gguf.py" "$HF_DIR" --outfile "$F16_GGUF" 
+
+# Check F16 size (should be comparable to sum of safetensors) 
+echo "[*] F16 size: $(du -h "$F16_GGUF" | cut -f1)" 
+
+# --- 7. Quantize to Q4_K_M --- 
+Q4_GGUF="$OUT_DIR/${MODEL_SHORT}-Q4_K_M.gguf" 
+echo "[*] Quantizing to $Q4_GGUF..." 
+"$LLAMA_QUANTIZE" "$F16_GGUF" "$Q4_GGUF" Q4_K_M 
+
+
+# --- 8. Verify quantized model --- 
+# Minimal sanity check: file exists and size is reasonable. 
+# Full test — via llama-server manually (or in a separate script). 
+if [ ! -f "$Q4_GGUF" ]; then 
+    echo "[!] Quantized file not created: $Q4_GGUF" &gt;&amp;2 
+    exit 1 
+fi 
+
+# Size check: Q4_K_M is usually 1/4..1/5 of F16. If file &lt; 100 MB — clearly corrupted. 
+Q4_SIZE=$(stat -c%s "$Q4_GGUF") 
+if [ "$Q4_SIZE" -lt $((100 * 1024 * 1024)) ]; then 
+    echo "[!] Suspiciously small file: $(du -h "$Q4_GGUF" | cut -f1)" &gt;&amp;2 
+    CLEANUP_PATHS+=("$Q4_GGUF") 
+    exit 1 
+fi 
+
+echo "[*] File created: $Q4_GGUF ($(du -h "$Q4_GGUF" | cut -f1))" 
+
+
+# --- 9. Cleanup --- 
+# Do nothing: cleanup() via trap EXIT/INT/TERM will delete 
+# contents of CLEANUP_PATHS (if KEEP_INTERMEDIATE != 1). 
+
+echo "[*] Done: $Q4_GGUF" 
+
+exit 0 
+</code><div><a href="https://sourcecraft.dev/"><span></span></a></div></pre><h4>Checking the Result</h4><p><strong>1. File created:</strong></p><pre><code>ls -lh models/Qwen3.5-2B-Q4_K_M.gguf 
+</code><div><a href="https://sourcecraft.dev/"><span></span></a></div></pre><p>Should be ~1–1.5 GB (for 2B in Q4_K_M).</p><p><strong>2. Model loads in </strong><code><strong>llama-server</strong></code><strong>:</strong></p><pre><code>./run_llama_mmap.sh -m Qwen3.5-2B-Q4_K_M 
+</code><div><a href="https://sourcecraft.dev/"><span></span></a></div></pre><p>In the log — <code>model loaded</code>, and in the UI — a response to "Hello".</p><p><strong>3. Intermediate files deleted:</strong></p><pre><code>ls -d hf_model 2&gt;/dev/null       # should be
+  </main>
+  <footer>
+    Translation generated with Gemini 2.5 Flash-Lite.
+    The original article remains the source of record.
+  </footer>
+</body>
+</html>

@@ -1,0 +1,197 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Pydantic AI: Typed Agents on Your Models</title>
+  <meta name="description" content="The typical project with an LLM agent follows a similar fate. Initially, it&#x27;s a neat forty lines: a prompt, a call to an OpenAI-compatible API, json.loads — and it works. A couple of weeks later, the model starts inserting explanatory text before the JSON, like &quot;Sure! Here&#x27;s your answ">
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.65;
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 32px 20px 64px;
+      color: #1f2328;
+    }
+    header {
+      border-bottom: 1px solid #d8dee4;
+      margin-bottom: 28px;
+      padding-bottom: 20px;
+    }
+    .source {
+      color: #57606a;
+      font-size: 0.95rem;
+    }
+    img, video, iframe {
+      max-width: 100%;
+      height: auto;
+    }
+    pre {
+      overflow-x: auto;
+      padding: 16px;
+      background: #f6f8fa;
+      border-radius: 6px;
+    }
+    code {
+      font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+    }
+    blockquote {
+      border-left: 4px solid #d0d7de;
+      margin-left: 0;
+      padding-left: 16px;
+      color: #57606a;
+    }
+    footer {
+      border-top: 1px solid #d8dee4;
+      margin-top: 40px;
+      padding-top: 20px;
+      color: #57606a;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Pydantic AI: Typed Agents on Your Models</h1>
+    <p>The typical project with an LLM agent follows a similar fate. Initially, it&#x27;s a neat forty lines: a prompt, a call to an OpenAI-compatible API, json.loads — and it works. A couple of weeks later, the model starts inserting explanatory text before the JSON, like &quot;Sure! Here&#x27;s your answer:&quot;, one of the mandatory fields sometimes appears and sometimes disappears, and a nested array occasionally comes as a string. Regular expressions, manual checks, and retries creep into the code. Another month later, you own a few hundred lines of glue code that no one wants to touch because it&#x27;s unclear what exactly will break. Alas, the model is often not to blame here. The connection between its output and the application breaks — where there are neither types nor format validation. Pydantic AI offers a way out of this cycle through type models. The framework is made by the Pydantic team — the very library that powers validation in FastAPI, OpenAI SDK, and a dozen other projects. The agent tool is described as a regular function with annotations, the structured response as a pydantic model, and switching from a cloud model to a local one via Ollama is reduced to changing one line. This is what the README says. Below the fold — how it looks in practice. Read on.</p>
+    <p class="source">
+      Machine-translated from Habr.
+      <a href="https://habr.com/ru/companies/bothub/articles/1099642/?utm_campaign=1099642&amp;utm_source=habrahabr&amp;utm_medium=rss">Read the original Russian article</a>.
+      Mon, 26 Oct 2026 14:18:26 GMT
+    </p>
+  </header>
+  <main>
+<div><p>The typical project with an LLM agent follows a similar fate. Initially, it's a neat forty lines: a prompt, a call to an OpenAI-compatible API, json.loads — and it works. A couple of weeks later, the model starts inserting explanatory text before the JSON, like "Sure! Here's your answer:", one of the mandatory fields sometimes appears and sometimes disappears, and a nested array occasionally comes as a string. Regular expressions, manual checks, and retries creep into the code. Another month later, you own a few hundred lines of glue code that no one wants to touch because it's unclear what exactly will break.</p><p>Alas, the model is often not to blame here. The connection between its output and the application breaks — where there are neither types nor format validation.</p><p>Pydantic AI offers a way out of this cycle through type models. The framework is made by the Pydantic team — the very library that powers validation in FastAPI, OpenAI SDK, and a dozen other projects. The agent tool is described as a regular function with annotations, the structured response as a pydantic model, and switching from a cloud model to a local one via Ollama is reduced to changing one line.</p><p>This is what the README says. Below the fold — how it looks in practice.</p><hr/><p>Installation is standard: <code>pip install pydantic-ai</code> — however you prefer. In v2, the base installation has become more compact, specific providers are installed via separate extras, but the base installation is sufficient for a first look.</p><pre><code>from pydantic_ai import Agent
+from pydantic_ai.models.openai import OpenAIChatModel
+from pydantic_ai.providers.openai import OpenAIProvider
+
+# 1. Create a provider with your gateway settings
+provider = OpenAIProvider(
+    base_url='https://openai.bothub.chat/v1',  # Your gateway URL
+    api_key='your-api-token-here'
+)
+
+# 2. Create a model, explicitly specifying the model name on the gateway
+model = OpenAIChatModel(
+    'gpt-6-luna',
+    provider=provider
+)
+
+# 3. Pass the model to the Agent
+agent = Agent(
+    model,
+    instructions='Respond concisely, in one sentence.'
+)
+
+result = agent.run_sync('Where did the phrase "hello world" come from?')
+print(result.output)
+</code><div><a href="https://sourcecraft.dev/"><span></span></a></div></pre><p>My response looked like this:</p><pre><code>The phrase "hello, world" first appeared in the book "The C Programming Language" (1978) by Brian Kernighan and Dennis Ritchie as an example of the simplest program.
+</code><div><a href="https://sourcecraft.dev/"><span></span></a></div></pre><p>The entire program is nine lines, half of which is boilerplate. <code>run_sync</code> is a synchronous wrapper around an asynchronous core: internally, everything is built on asyncio, but for scripts and notebooks, there are ready-made sync versions, and for a FastAPI service, it's the usual <code>await agent.run(...)</code>. Asynchronicity is primary here, synchronicity is a convenient addition. For the Python ecosystem, this is an unusual arrangement; it's usually the other way around.</p><p>The code above connects to our OpenAI-compatible gateway. GPT-6-Luna from the example and several dozen other models are available on <a href="https://bothub.chat/">BotHub</a>; the full list is <a href="https://bothub.chat/models">here</a>. If you use the <a href="https://bothub.chat/?invitedBy=zx7xIePYIOcWHhTfgg6-O">referral link</a>, you'll get 300,000 CAPS for testing AI agents — enough for all the examples in the article. A token is created in two clicks: register on BotHub, go to the <a href="https://bothub.chat/ru/profile/for-developers">developer page</a>, and create a key that you can paste directly into the code.</p><p>Want to use regular OpenAI without provider classes — the agent is declared in one line:</p><pre><code>agent = Agent(
+    'openai:gpt-6.1-sol',
+    instructions='Respond concisely, in one sentence.'
+)
+
+result = agent.run_sync('Where did the phrase "hello world" come from?')
+print(result.output)
+</code><div><a href="https://sourcecraft.dev/"><span></span></a></div></pre><p>Then you set OPENAI_API_KEY as an environment variable.</p><h3>Tools and Dependencies</h3><p>The classic way to describe a tool for LLMs is a dictionary, with the JSON schema of arguments in one place, a text description in another, and the function itself somewhere else (<a href="https://ai.pydantic.dev/tools/">documentation</a>). Such schemas are written manually, live separately from the code, and drift apart with each release. In Pydantic AI, only the function remains: you add a decorator, and the framework collects everything else itself. The signature turns into a JSON schema, the docstring goes to the model as a tool description.</p><p>Here's a support agent with two tools and dependencies:</p><pre><code>from dataclasses import dataclass
+
+import httpx
+from pydantic_ai import Agent, ModelRetry, RunContext
+
+
+@dataclass
+class SupportDeps:
+    http: httpx.AsyncClient
+    api_base: str
+
+
+support = Agent(
+    'openai:gpt-6.1-sol',
+    deps_type=SupportDeps,
+    instructions='Assist the client with order inquiries.'
+)
+
+
+@support.tool
+async def get_order(ctx: RunContext[SupportDeps], order_id: int) -> dict:
+    """Return the order status by number."""
+    r = await ctx.deps.http.get(f'{ctx.deps.api_base}/orders/{order_id}')
+    r.raise_for_status()
+    return r.json()
+
+
+@support.tool_plain
+def normalize_phone(raw: str) -> str:
+    """Format the phone number to +7XXXXXXXXXX."""
+    digits = ''.join(ch for ch in raw if ch.isdigit())
+    if len(digits) != 11:
+        raise ModelRetry('The number must contain 11 digits. Please try again.')
+    return f'+7{digits[1:]}'
+</code><div><a href="https://sourcecraft.dev/"><span></span></a></div></pre><p>The model ultimately sees roughly the same thing you do: the function name, the argument schema, the description. The return value goes back into the dialogue as the result of the call, the model reads it and decides what to say next.</p><p>The decorators differ by one thing: <code>@agent.tool</code> expects <code>RunContext</code> as the first argument, <code>@agent.tool_plain</code> does not. Through the context, the tool accesses dependencies. Dependencies are described by a regular type (here, a dataclass with an HTTP client), declared in the agent constructor via <code>deps_type</code>, and passed as a value during execution: <code>support.run(..., deps=SupportDeps(...))</code>. No global variables or singletons: whatever the tool needs is in the type, and the static checker will warn you if you forget a field. This is also beneficial for testing: you can provide a mock instead of an HTTP client and run the agent without a network. Those who have worked with FastAPI will find the mechanism familiar to the point of absurdity: annotations describe the contract, the framework validates the input and throws errors until you fix it. Only the model becomes the consumer of the schema.</p><p>The docstring here is addressed to the model: its wording determines whether the model will choose the tool and with what arguments it will call it. "Return the order status by number" it understands immediately, "helper for working with orders" — already with difficulty. You should write it as if you were explaining to a new colleague. For those who don't like decorators, functions can be passed as a list to the constructor — <code>Agent(..., tools=[get_order])</code>, the effect is the same.</p><p><code>raise ModelRetry</code> inside <code>normalize_phone</code> is a separate story. A regular exception from a tool flies upwards and crashes the execution. ModelRetry works differently: the error text is sent to the model itself, it tries to correct the arguments and call the tool again. The same mechanism is activated when the model passes arguments that don't match the schema: <code>ValidationError</code> is handled as another reason for a retry. By default, each tool has one retry attempt; the limit can be raised by the agent (<code>retries={'tools': N}</code>) or specifically — <code>@agent.tool(retries=N)</code>. In v2, <code>ToolFailed</code> was introduced for cases where retrying is pointless: the model learns about the failure, but the retry budget is not spent.</p><h3>Structured Output</h3><p>As we found out at the beginning, everything breaks at the junction between the model's response and the application code. <code>output_type</code> closes exactly that gap. You describe a pydantic model, pass it to the constructor — and the agent is then obliged to return data according to a specific schema. An invalid response will not pass validation and will be sent back to the model for correction, a malformed JSON will no longer reach the business logic, and <code>result.output</code> in your code will be a ready-made typed object (<a href="https://ai.pydantic.dev/output/">documentation</a>). The IDE suggests fields, mypy catches typos, and serialization is free.</p><pre><code>from pydantic import BaseModel
+from pydantic_ai import Agent, ModelRetry, RunContext
+
+
+class RefundDecision(BaseModel):
+    approved: bool
+    amount: int
+    reason: str
+
+
+refund = Agent(
+    'openai:gpt-6.1-sol',
+    output_type=RefundDecision,
+    instructions='Decide whether to approve a refund. Safe amounts are up to 50,000.'
+)
+
+
+@refund.output_validator
+def check_limit(ctx: RunContext, decision: RefundDecision) -> RefundDecision:
+    if decision.approved and decision.amount &gt; 50_000:
+        raise ModelRetry('Refunds over 50,000 require human approval. Return approved=False.')
+    return decision
+</code><div><a href="https://sourcecraft.dev/"><span></span></a></div></pre><p>However, the schema only catches the format. The model can honestly fill in all the fields and produce something nonsensical from a business perspective — for example, approve a refund of a million. For such cases, there is <code>@agent.output_validator</code> — domain-specific validation on top of the schema. The function can be asynchronous, access the database, call external services — anything. A validation failure is sent to the model as an error message, and it regenerates the response with the correction in mind. The budget for output retries is one attempt by default, expandable via <code>retries={'output': N}</code>; when the budget runs out, the execution will fail with <code>UnexpectedModelBehavior</code> — you can't silently swallow the problem.</p><p>You can also pass a union to <code>output_type</code>. The agent above with <code>output_type=[RefundDecision, str]</code> will return either a structure or plain text — a clarifying question if data is insufficient. Pydantic AI registers each option as a separate output tool so that the schema doesn't grow and the model has an easier time hitting it. The result is then parsed using <code>isinstance</code>, and the dialogue with clarifications works without your orchestration at all. Not only <code>BaseModel</code> models are suitable — dataclasses, TypedDict, and everything else that Pydantic can validate.</p><p>We've also reached streaming. Structured output can be sent to the interface as it's generated: Pydantic can partially validate incomplete JSON, and <code>stream_output()</code> provides intermediate snapshots, each validated as much as it could be.</p><pre><code>async with refund.run_stream('Client bought a toaster and returned it the same day') as result:
+    async for decision in result.stream_output():
+        render(decision)  # snapshot: some fields might not have arrived yet
+</code><div><a href="https://sourcecraft.dev/"><span></span></a></div></pre><p>For chat interfaces, the difference is significant: the user sees the response card while the model is still writing the last fields.</p><h3>Tests Without a Single API Call</h3><p>Typically, testing an agent looks like this: you set up an HTTP mock, stabilize the response, and pray that the format matches reality. Or, more often, the agent isn't tested at all because "it's a model, what's there to test" — I lived by this logic myself for a year. In Pydantic AI, the model is replaced entirely, and the combination of "agent + tools + dependencies + output" is run like regular Python code in pytest (<a href="https://ai.pydantic.dev/testing/">documentation</a>).</p><p>The simplest option is <code>TestModel</code>. It looks at the JSON schemas of your tools, generates valid arguments itself, calls each tool, and returns a summary. No AI inside, pure procedural code, so runs are deterministic. You can replace the model directly in the test:</p><pre><code>import pytest
+from pydantic_ai import models
+from pydantic_ai.models.test import TestModel
+
+from support import FakeHttp, SupportDeps, support  # agent from the previous section
+
+pytestmark = pytest.mark.anyio
+models.ALLOW_MODEL_REQUESTS = False  # an accidental real call will fail the test
+
+
+async def test_support_flow():
+    deps = SupportDeps(http=FakeHttp(), api_base='http://test')
+    with support.override(model=TestModel()):
+        result = await support.run('Where is my order 42?', deps=deps)
+
+    assert 'get_order' in result.output  # output contains a summary of called tools
+</code><div><a href="https://sourcecraft.dev/"><span></span></a></div></pre><p><code>ALLOW_MODEL_REQUESTS = False</code> protects against forgetting a substitution somewhere in the tests: a real call will fail with an error instead of silently deducting money from your key. And <code>Agent('test')</code> in the constructor provides the same <code>TestModel</code> — convenient for experiments.</p><p>It checks what most often fails: tools are registered and called, dependencies reach them, output is validated and returned. Most agent failures are in the boilerplate, and that's what's now under test. For scenarios requiring specific responses, there's <code>FunctionModel</code>: your function replaces the model, receiving the message history and returning a <code>ModelResponse</code>.</p><pre><code># from pydantic_ai import ModelResponse, ToolCallPart
+
+def scripted_model(messages, info):
+    return ModelResponse(parts=[ToolCallPart('get_order', {'order_id': 42})])
+
+
+with support.override(model=FunctionModel(scripted_model)):
+    ...  # the trajectory is predictable before execution
+</code><div><a href="https://sourcecraft.dev/"><span></span></a></div></pre><p>Such a test is stable any day and in any CI, while also documenting the expected trajectory: which tools are triggered and in what order. If there are many tests, the substitution can be moved to a pytest fixture with <code>support.override(...)</code>. It doesn't test the live model — for response quality, go to evals, a separate tool in the Pydantic ecosystem. The agent logic itself, for which all this was written, is tested without a single token.</p><h3>What v2 Brought</h3><p>The second version was released on June 23, 2026, about ten months after 1.0 (<a href="https://pydantic.dev/articles/pydantic-ai-v2">announcement</a>). The central novelty is called capability. It's a behavior block where instructions, tools, lifecycle hooks, and model settings are gathered together and connected to the agent in one move. Previously, all this was spread across the constructor with separate arguments, and in complex agents, it turned into a fifty-line monstrosity. Now, behavior is assembled from blocks, and a block is serialized into a spec file — you can commit it, give it to a colleague, or connect it to another agent.</p><p>CodeMode solves another problem — the cost of the agent cycle. The classic scheme: the model calls a tool, waits for the result, thinks, calls the next one, and each loop re-processes the entire dialogue history through the model. In CodeMode, the model writes code instead of a series of calls, which invokes tools like regular functions, and this code is executed once in the Monty sandbox, Pydantic's own mini-Python interpreter. For tasks with a dozen steps, token savings become noticeable, and the pauses between calls disappear.</p><p>ToolSearch is needed at the opposite end — when there are hundreds of tools. The schemas of all tools are by default in the prompt, and with a large set, the context runs out before the agent starts working. Tools marked with <code>defer_loading=True</code> are not included in the prompt: the model finds them on demand via ToolSearch, where on Anthropic and OpenAI Responses, the search is native, and in other cases, a local function with a strategy selection works — from keywords to BM25.</p><p>With migration, most projects will only need to change a couple of imports, but three behavioral changes are worth checking manually. The <code>openai:</code> prefix now leads to the Responses API, and the previous Chat Completions prefix is <code>openai-chat:</code> — the provider class from the first section is about that. The default <code>end_strategy</code> for cycle completion has changed to <code>graceful</code>, causing cancellations in the middle of a tool call to behave slightly differently. Instrumentation has been updated to v5 with its own token statistics — owners of custom dashboards, this is for you. The documentation contains a V1 → V2 migration map; it's worth opening it before updating production agents.</p><h3>What You'll Need in Production</h3><p><code>run</code> and <code>run_sync</code> cover nine out of ten cases. When you need to look inside the cycle — draw each step in the interface, inspect tool calls, branch logic manually — there's <code>agent.iter()</code>. It yields the cycle by nodes, where you decide what to do with the model request and tool execution, and streaming events also arrive there. This is useful for chats with live tool status.</p><p>Limits are set at the execution level via <code>UsageLimits</code> — number of model requests, tokens, tool calls. The count is for the entire execution, including all cycle turns, so the agent cannot silently spend three times more than you budgeted. Exceeding the limit throws a regular exception and is caught near the execution — a safeguard that pays for itself from the very first lost cycle.</p><p>A document approval agent might wait for human signature for hours, but a nightly batch of a thousand documents must survive a service restart. For such scenarios, Pydantic AI works on top of durable execution: each step is saved, and after a failure, the process continues from the point of interruption, without repeated model calls. Integrations are ready-made — Temporal, DBOS, Prefect, Restate, AWS Lambda, Apache Airflow, plus lightweight options like Absurd and pgtask; chances are, something from the list is already in your infrastructure.</p><p>External tools are connected via MCP: <code>toolsets=[MCPToolset(url)]</code> is passed to the agent, and the server — local via stdio or remote via HTTP — becomes the source of tools. By marking a set with <code>defer_loading=True</code>, you can connect a hundred servers and not overpay for context.</p><p>Observability is handled by Logfire from the same team. One line <code>logfire.instrument_pydantic_ai()</code>, and traces show prompts, responses, tokens, and the cost of each run (<a href="https://ai.pydantic.dev/logfire/">documentation</a>). Under the hood is OpenTelemetry, so traces go to any compatible system — Grafana, Jaeger, whatever you have set up. AI Gateway, a paid product from the same ecosystem, replaces twenty keys with one, supports failover between providers, and consolidates costs into a single quota.</p><h3>Models on Your Own Hardware</h3><p>The provider catalog has exceeded thirty-seven items — from OpenAI and Anthropic to Kimi, Qwen, Together, and OpenRouter (<a href="https://ai.pydantic.dev/models/overview/">overview</a>). But the test of flexibility is local execution. The reasons are varied: some medical data and client documents cannot be sent externally at all, some operate in an isolated enterprise network without internet, and some are tired of counting tokens on an agent that runs around the clock — your own graphics card pays for itself in a couple of months.</p><p>Connecting a local model looks modest:</p><pre><code>from pydantic_ai import Agent
+
+agent = Agent('ollama:qwen3')  # server on localhost:11434
+</code><div><a href="https://sourcecraft.dev/"><span></span></a></div></pre><p>If you need a non-standard server address — use an explicit provider (<a href="https://ai.pydantic.dev/models/ollama/">documentation</a>):</p><pre><code>from pydantic_ai.models.ollama import OllamaModel
+from pydantic_ai.providers.ollama import OllamaProvider
+
+model = OllamaModel(
+    'qwen3',
+    provider=OllamaProvider(base_url='http://gpu-box.local:11434/v1')
+)
+</code><div><a href="https://sourcecraft.dev/"><span></span></a></div></pre><p>Self-hosting via vLLM uses a separate <code>vllm:</code> prefix, and any other OpenAI-compatible endpoint can be connected using the same <code>OpenAIChatModel</code> with <code>Provider(base_url=...)</code>, as in the first section. You won't need to write your own model class.</p><p>Our gateway, by the way, is also an OpenAI-compatible endpoint, so a hybrid of "sensitive data runs locally, the rest goes to the cloud" is assembled with the same code. The models from the examples are available on <a href="https://bothub.chat/">BotHub</a>, and the <a href="https://bothub.chat/?invitedBy=zx7xIePYIOcWHhTfgg6-O">referral link</a> will give you 300,000 CAPS for testing.</p><p>Small local models — usually 7–14 billion parameters — fail on strict contracts: tool-calling misses the schema, structured output is assembled with missing fields. This can be fixed by lowering ambitions: simpler argument schemas, smaller tasks, more modest <code>output_type</code>. It makes sense to increase the retry budget for such models in advance, and tests with <code>TestModel</code> will show exactly where the model stumbles, even before production. And choose a model with decent tool-calling support — among the lightweight open-source options, qwen models are currently the most sensible.</p><h3>LangChain and Others</h3><p>Comparing frameworks by GitHub stars is a useless activity; it's more meaningful by task. For a new Python project where the agent calls tools and must return structures, I would default to Pydantic AI. Typing is the load-bearing wall there: structured output, retries, validators, and tests come out of the box with a single mechanism, without add-ons.</p><p>LangChain has a broader ecosystem — over seven hundred integrations, LangGraph for complex state orchestration, and LangSmith for $39–399 per month. If your project relies on connectors to a dozen SaaS products, these are strong arguments, and LangGraph has been handling complex stateful pipelines for years — it's too early to bury it. But typing is bolted on, structured output is assembled with add-on parsers, and on a typical agent, the difference is noticeable to the naked eye: a benchmark from the <a href="https://www.betterclaw.io/blog/pydantic-ai-vs-langchain">betterclaw review</a> showed about sixty lines for Pydantic AI versus two hundred for LangChain. Three times less glue code that you'll have to read, fix, and cover with tests. I wouldn't start a new project on LangChain in 2026; for an old one where you've already invested in state graphs and connectors, it's not worth migrating just for the sake of it.</p><p>CrewAI lives in a different dimension: it's about role-based agent teams — you describe an "researcher" and a "writer," and the framework manages the handover of work between them. For multi-agent simulations, it has its own niche, and there's little point in using Pydantic AI there. If you work in TypeScript, look at Mastra and Vercel AI SDK; AWS has its own Strands.</p><p>Sometimes, no one is needed at all. A single prompt and a single model call in a script — use the provider's SDK directly, there are fewer ceremonies; a framework for a single call is like driving to the store in a bulldozer. The line is drawn where tools, retries, and response structures appear: writing that by hand is painful.</p><p>The framework also has drawbacks, of course. The release rhythm is dense: during v1's lifespan, over a hundred releases came out, the changelog reads like a TV series, and even the most devoted fan can't keep up with all the changes. In complex scenarios, abstractions leak — you have to descend into the message history and low-level types, where all the API's beauty ends. And you have to accept the Pydantic ideology entirely: everything in the framework is through pydantic models; you can't validate "some other way" here. Personally, the third point doesn't bother me — validation through type models is exactly why I chose the framework — but in a team with a different style, heads will scratch over this.</p><h3>Conclusion</h3><p>In six months using Pydantic AI, I've migrated three agents, and none of them have required a single regular expression to parse model responses since. For me, this is a more significant indicator than any benchmark.</p><p>The direction of the topic is easy to guess: structured outputs have long been present in the SDKs of major providers, and Pydantic AI brings the idea to a complete cycle — from tool to test. The next layer of maturity lies in the ecosystem: evals for assessing response quality, Logfire for observability, durable execution for long processes. I bet that in a couple of years, arguing about agent typing will be as strange as arguing about web framework typing.</p></div>
+  </main>
+  <footer>
+    Translation generated with Gemini 2.5 Flash-Lite.
+    The original article remains the source of record.
+  </footer>
+</body>
+</html>

@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>AI Spam and Google&#x27;s Update: How to Find Nearly Identical Pages When Google Doesn&#x27;t Disclose Similarity Thresholds</title>
+  <meta name="description" content="Google&#x27;s September spam update lasted nearly 14 days, significantly longer than previous updates. If your site has AI-generated content, it&#x27;s crucial to assess if it appears to be mass-produced. I use a short Python script to check this, setting my own similarity threshold since Google doe">
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.65;
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 32px 20px 64px;
+      color: #1f2328;
+    }
+    header {
+      border-bottom: 1px solid #d8dee4;
+      margin-bottom: 28px;
+      padding-bottom: 20px;
+    }
+    .source {
+      color: #57606a;
+      font-size: 0.95rem;
+    }
+    img, video, iframe {
+      max-width: 100%;
+      height: auto;
+    }
+    pre {
+      overflow-x: auto;
+      padding: 16px;
+      background: #f6f8fa;
+      border-radius: 6px;
+    }
+    code {
+      font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+    }
+    blockquote {
+      border-left: 4px solid #d0d7de;
+      margin-left: 0;
+      padding-left: 16px;
+      color: #57606a;
+    }
+    footer {
+      border-top: 1px solid #d8dee4;
+      margin-top: 40px;
+      padding-top: 20px;
+      color: #57606a;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>AI Spam and Google&#x27;s Update: How to Find Nearly Identical Pages When Google Doesn&#x27;t Disclose Similarity Thresholds</h1>
+    <p>Google&#x27;s September spam update lasted nearly 14 days, significantly longer than previous updates. If your site has AI-generated content, it&#x27;s crucial to assess if it appears to be mass-produced. I use a short Python script to check this, setting my own similarity threshold since Google doesn&#x27;t provide one. Read more</p>
+    <p class="source">
+      Machine-translated from Habr.
+      <a href="https://habr.com/ru/articles/1099640/?utm_campaign=1099640&amp;utm_source=habrahabr&amp;utm_medium=rss">Read the original Russian article</a>.
+      Mon, 26 Oct 2026 14:14:50 GMT
+    </p>
+  </header>
+  <main>
+<div><p>Google's September spam update ran from September 24 to October 8, lasting almost 14 days for all languages. This is five times longer than any of the three previous spam updates in 2026 (summary from <a href="https://www.relevantaudience.com/seo/google-september-2026-spam-update-complete/">Relevant Audience</a>). If part of a website's pages are written by a neural network, the question is whether they look like mass production. I check this with a short Python script, and I choose the similarity threshold myself: Google doesn't have one.</p><h3>What Google Said About the September Update and Generated Content</h3><p>Google stated on the first day that the update would take up to two weeks: the <a href="https://status.search.google.com/incidents/XhUDXP7A67iHCD2kmbVu">status page</a> says "may take up to two weeks". In a Search Central post, as retold by <a href="http://ppc.land">ppc.land</a>, it was described as a "normal spam update" without new rules. Google did not state the update's purpose; Barry Schwartz wrote on September 28 that it was <a href="https://www.seroundtable.com/google-september-2026-spam-update-weekend-impact-42174.html">not yet fully known</a>.</p><p>The connection to AI is subtler than headlines suggest. At Search Central Live in Barcelona, Duy Nguyen from Google said (in a participant's recording): "There have been more spam updates recently because there is so much more new content." He was referring to the growth of new content; the word "AI" is not in this phrase. The link to AI was made by the headline in <a href="https://www.seroundtable.com/google-spam-updates-ai-42226.html">Search Engine Roundtable</a>, meaning it's the publication's inference.</p><figure><img alt="Duration of Google's spam updates in 2026 according to Relevant Audience summary.  " loading="lazy" src="https://habrastorage.org/r/w1560/extt/a2/af/64/a2af64feec787d6233515d608bbf9a54.png" title="Duration of Google's spam updates in 2026 according to Relevant Audience summary.  "/><figcaption><em>Duration of Google's spam updates in 2026 according to Relevant Audience summary.</em> </figcaption></figure><p>The rule for generated content is formulated through its purpose. According to the <a href="https://developers.google.com/search/docs/essentials/spam-policies">spam policy</a>, scaled content abuse is defined as many pages created primarily to manipulate search results, and the method of creation is irrelevant. Neural networks are listed as an example: "generate many pages without adding value for users". The page on <a href="https://developers.google.com/search/docs/fundamentals/using-gen-ai-content">generative AI</a> was updated on October 1 and requires manual fact-checking before publication. What changed in it is not visible, as there is no revision history.</p><p>According to an <a href="https://ahrefs.com/blog/google-doesnt-punish-ai-content/">Ahrefs study</a>, articles written almost entirely by neural networks are indexed worse: 40.35% compared to 49.28% for pages with a low proportion of AI content. However, this is a correlation; it does not prove that AI is the cause, rather than the quality of the text.</p><h3>What Signs of Mass Page Production Can Be Measured by Code</h3><p>With code, I measure one thing: how similar pages are to each other. I break down text into shingles, which are overlapping chunks of ten consecutive words. The shingles themselves, similarity, and containment are defined in Broder's article <a href="https://www.cs.princeton.edu/courses/archive/spring13/cos598C/broder97resemblance.pdf">"On the resemblance and containment of documents"</a>; the ten-word length was adopted by the authors of "Syntactic Clustering of the Web" (link below). I compare the shingle sets of two pages using two numbers.</p><p>Jaccard similarity: the number of common shingles divided by the total number of shingles in both pages. It is symmetrical and suitable for comparing pairs. Containment: the proportion of shingles from page A that are present in page B. It is asymmetrical and detects a short page entirely contained within a longer template.</p><p>There is no spam threshold defined by either Google or Broder. The only justified threshold I found is 0.5: with this, the authors of <a href="https://archives.iw3c2.org/www6/proceedings/Technical/Paper205/Paper205.html">"Syntactic Clustering of the Web"</a> clustered 30 million AltaVista pages. This is a threshold used by researchers. Google's scale for near-duplicates is only mentioned in a <a href="https://patents.google.com/patent/US8140505">patent for SimHash</a>, and it pertains to website crawling, not spam.</p><figure><img alt="Checking order: the threshold is taken from your own site, and a human makes the decision.  " loading="lazy" src="https://habrastorage.org/r/w1560/extt/d5/e8/17/d5e81728a88e24cf2c9475508d2d6f19.png" title="Checking order: the threshold is taken from your own site, and a human makes the decision.  "/><figcaption><em>Checking order: the threshold is taken from your own site, and a human makes the decision.</em> </figcaption></figure><h3>Python Script to Find Nearly Identical Pages</h3><pre><code>import re from itertools import combinations def shingles(text, w=10): words = re.findall(r"\w+", text.lower()) return {" ".join(words[i:i + w]) for i in range(len(words) - w + 1)} def jaccard(a, b): return len(a &amp; b) / max(len(a | b), 1) def containment(a, b): return len(a &amp; b) / max(len(a), 1) sh = {url: shingles(text) for url, text in pages.items()} # pages: {address: main text} for (u1, a), (u2, b) in combinations(sh.items(), 2): print(f"{u1:18} {u2:18} jaccard={jaccard(a, b):.2f} " f"in={containment(a, b):.2f} out={containment(b, a):.2f}")</code><div><a href="https://sourcecraft.dev/"><span></span></a></div></pre><p>The example is synthetic: three delivery pages generated from the same template with different cities (one long sentence added for Omsk) and an article about returning goods.</p><pre><code>/delivery/kazan    /delivery/perm     jaccard=0.69 in=0.82 out=0.82 /delivery/kazan    /delivery/omsk     jaccard=0.46 in=0.82 out=0.52 /delivery/kazan    /blog/returns      jaccard=0.00 in=0.00 out=0.00 /delivery/perm     /delivery/omsk     jaccard=0.46 in=0.82 out=0.52 /delivery/perm     /blog/returns      jaccard=0.00 in=0.00 out=0.00 /delivery/omsk     /blog/returns      jaccard=0.00 in=0.00 out=0.00</code><div><a href="https://sourcecraft.dev/"><span></span></a></div></pre><p>Kazan and Perm differ by one word, but their Jaccard similarity is 0.69: the city name affects ten consecutive windows. Omsk gets 0.46, below the historical 0.5, even though 82% of the Kazan page is contained within the Omsk page. Therefore, I look for templates based on containment, and use Jaccard for comparing pairs.</p><h3>How to Choose a Similarity Threshold and What to Do with Found Pages</h3><ol><li><p>Run your generated pages through the script and examine the distribution of containment, not a single number. In <code>pages</code>, include only the main text of the page, excluding menus, footers, and breadcrumbs: global blocks create common shingles for all pages and inflate containment. You can extract the main text using libraries like <a href="https://trafilatura.readthedocs.io/">trafilatura</a>. Pairwise comparison grows quadratically: it's sufficient for small sites, but for thousands of pages, it's replaced by MinHash signatures from <a href="https://ekzhu.com/datasketch/minhash.html">datasketch</a>.</p></li><li><p>Set the threshold based on your own site: visually inspect 20-30 pairs around your chosen mark and decide where pages do not convey different content.</p></li><li><p>For the identified groups, ask about their usefulness, not how they were written: what does the reader learn on the Omsk page that is not on the Kazan page. If there's no answer, merge with a neighboring page or add more content.</p></li></ol><h3>What the Script Cannot Prove and What I Don't Know About the September Update</h3><p>Shingles show the scale of similarity, not a violation: Google assesses purpose and usefulness, and similar product cards with different content may be acceptable. I haven't found detailed analyses of sites specifically affected in September. Lily Ray suggested on September 28, the fifth day after the launch, a potential impact on templated programmatic pages, likely AI-generated. Diib, in their early analysis of the first three days, observed a drop in median Google search visit share from 34% to 31%, but they themselves call it "an early read, not a verdict," and Google has not confirmed these figures. I took the duration of past updates from an aggregator's summary; I only verified the September update against Google's status page.</p></div>
+  </main>
+  <footer>
+    Translation generated with Gemini 2.5 Flash-Lite.
+    The original article remains the source of record.
+  </footer>
+</body>
+</html>

@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Code as Policy: How LLMs Control Robots Through Generated Code</title>
+  <meta name="description" content="Hello, Habr! Today we&#x27;ll discuss how neural networks can effectively control robots using an approach that might not seem obvious at first glance. In 2023, Alphabet shut down the Everyday Robots project, which attempted to create a robot for cleaning offices and sorting trash. Unfortunately, th">
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.65;
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 32px 20px 64px;
+      color: #1f2328;
+    }
+    header {
+      border-bottom: 1px solid #d8dee4;
+      margin-bottom: 28px;
+      padding-bottom: 20px;
+    }
+    .source {
+      color: #57606a;
+      font-size: 0.95rem;
+    }
+    img, video, iframe {
+      max-width: 100%;
+      height: auto;
+    }
+    pre {
+      overflow-x: auto;
+      padding: 16px;
+      background: #f6f8fa;
+      border-radius: 6px;
+    }
+    code {
+      font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+    }
+    blockquote {
+      border-left: 4px solid #d0d7de;
+      margin-left: 0;
+      padding-left: 16px;
+      color: #57606a;
+    }
+    footer {
+      border-top: 1px solid #d8dee4;
+      margin-top: 40px;
+      padding-top: 20px;
+      color: #57606a;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Code as Policy: How LLMs Control Robots Through Generated Code</h1>
+    <p>Hello, Habr! Today we&#x27;ll discuss how neural networks can effectively control robots using an approach that might not seem obvious at first glance. In 2023, Alphabet shut down the Everyday Robots project, which attempted to create a robot for cleaning offices and sorting trash. Unfortunately, the androids proved incapable of performing tasks in the complex and ever-changing environment of human spaces. However, this effort led to the development of Code as Policy (CaP) technology, which has continued to evolve as a separate direction. Its principle is simple: an LLM writes the code that controls the manipulator. Let&#x27;s explore how the CaP approach works and how it&#x27;s evaluated by the new CodeActionBench benchmark, released in late September. We&#x27;ll also look at where the method works, where it fails, and why the &quot;robot that programs itself&quot; is no longer just a marketing slogan. Read on</p>
+    <p class="source">
+      Machine-translated from Habr.
+      <a href="https://habr.com/ru/companies/ru_mts/articles/1097388/?utm_campaign=1097388&amp;utm_source=habrahabr&amp;utm_medium=rss">Read the original Russian article</a>.
+      Mon, 26 Oct 2026 13:02:37 GMT
+    </p>
+  </header>
+  <main>
+<div><p>Hello, Habr! Today we'll discuss how neural networks can effectively control robots using an approach that might not seem obvious at first glance.</p><p>In 2023, Alphabet shut down the Everyday Robots project, which attempted to create a robot for cleaning offices and sorting trash. Unfortunately, the androids proved <a href="https://vkvideo.ru/video-226874221_456239657">incapable</a> of performing tasks in the complex and ever-changing environment of human spaces. However, this effort led to the development of <a href="https://arxiv.org/pdf/2209.07753">Code as Policy (CaP)</a> technology, which has continued to evolve as a separate direction. Its principle is simple: an LLM writes the code that controls the manipulator.</p><p>Let's explore how the CaP approach works and how it's evaluated by the new <a href="https://arxiv.org/abs/2609.33807">CodeActionBench</a> benchmark, released in late September. We'll also look at where the method works, where it fails, and why the "robot that programs itself" is no longer just a marketing slogan.</p><figure><img loading="lazy" src="https://habrastorage.org/r/w1560/extt/09/16/cf/0916cf0e5a444f637b2872c8a898337d.png"/></figure><h2>The Interface Between Meaning and Motion</h2><p>In classical robotics, which we are all accustomed to, two poles can be identified. With the traditional approach, an engineer writes code that rigidly defines the sequence of actions for the manipulator. The alternative is end-to-end learning, where a neural network receives pixels and outputs servo angles.</p><p>Each of these approaches has its pros and cons. The first rigidly fixes the robot's operating logic, minimizing the occurrence of surprises. The second gives too much freedom to the controlled device.</p><figure><img loading="lazy" src="https://habrastorage.org/r/w1560/extt/c1/5e/ae/c15eae6bcd3669829ddf289056542503.png"/></figure><p>The Code as Policy approach offers a third way: a language model receives a natural language instruction (e.g., "put the cube on the red table") and a description of the robot's API (functions like get_object_position(), move_to(), close_gripper()). The output is executable Python code that calls these functions in the correct order.</p><figure><img loading="lazy" src="https://habrastorage.org/r/w1560/extt/ca/b4/eb/cab4eb070af630b8f1396b300237bd2c.png"/></figure><p>This approach fundamentally changes the model's role. It now reasons about the task and expresses this reasoning in a structured form, rather than learning to control motors directly. The code acts as an interface between semantics (what "put" means) and physics (which API calls implement it).</p><h2>What Makes CaP Good</h2><p>The key advantage of CaP is interpretability and debuggability. If the robot fails a task, you can open the generated code and see exactly where the model made a mistake. For example, it might have confused coordinates, failed to account for an obstacle, or forgotten to open the gripper. In contrast, with a VLA model, you can only see an incorrect action vector and no specifics.</p><p>The second advantage is the composability of the CaP approach. For instance, once you write a pick_up(object) function, you can reuse it in different tasks. The language model will then generate ready-made policies with parameters that accept arguments and adapt to the situation.</p><figure><img loading="lazy" src="https://habrastorage.org/r/w1560/extt/64/49/59/644959b94e8dd917fbdaa04adc18fee0.png"/></figure><p>And another important advantage is zero-shot fine-tuning. The CodeActionBench approach specifically deprives the agent of demonstrations and specialized perception modules. All learning occurs through prompts and iterative code rewriting based on feedback.</p><h2>When One Try Isn't Enough</h2><p>Surely, many readers who have made it this far are wondering why you can't just write a script once. The fact is, if CaP worked in a "user says, model obediently writes code, and robot obediently executes" mode, the success rate would be close to zero.</p><p>The real power of the approach is revealed in the agentic loop, which is based on observation. The agent receives an RGB image and the current system state. Then, based on this data, the model writes a program that calls the API.</p><p>In the next stage, the program is executed. Upon completion, the agent looks at the feedback. What errors occurred during operation? For example, the object didn't move, or the grasp failed. All these failures are analyzed, then the model corrects the code and tries again.</p><figure><img loading="lazy" src="https://habrastorage.org/r/w1560/extt/26/3d/c5/263dc5ced3d4ef02565cf4f5447e7618.png"/></figure><p>It is this loop that allows the most powerful models (e.g., GPT-6 Astra with Codex CLI) to solve 22 out of 25 tasks at least once within three attempts. Without iterative code adaptation to the surrounding events, the results would be significantly more modest.</p><p>However, this is also where the main problem of real-world CaP usage lies. Analysis of trajectories in CodeActionBench revealed situations where the agent considered the task complete, but in reality, it was not. For example, the model successfully completed all movements, but the object remained in place or fell. This means executing the script does not guarantee achieving the goal.</p><h2>When CaP Breaks</h2><p>The first problem is spatial alignment. Language models understand well what needs to be done (pick up, move, place), but they have a poor grasp of where an object is located. The phrase "red cube to the left of the blue cup" sounds understandable, but it needs to be translated into precise coordinates, taking into account camera perspective and calibration. If there's an error, the robot might grab air but report successful task completion.</p><figure><img loading="lazy" src="https://habrastorage.org/r/w1560/extt/26/9c/6b/269c6b20bd6a6b9442034cd45afa6854.png"/></figure><p>Furthermore, a grasped object might slip during movement <s>and escape to defend humanity further.</s> The generated code rarely accounts for the necessary grip force and other factors. This is logical, as LLMs do not receive real-time data on friction or acceleration and lack an integrated physics model.</p><p>The third problem is the inaccuracy of completion assessment. The system might execute all movements correctly but fail to confirm task completion. Or it might place the object in the right spot and interpret this as a failure. Success in manipulation is a change in the physical state of the world, and with CaP, the robot cannot always correctly recognize this.</p><p>This is confirmed in the <a href="https://arxiv.org/abs/2606.13040">RoboProcessBench (2026)</a> study. VLMs used as visual critics in robotics pipelines cannot evaluate the execution process. They see the final frame but fail to notice incorrect contact, misaligned alignment, or a violated primitive order.</p><h2>What This Means for the Future of Robotics</h2><p>Code as Policy is not a replacement for VLA models. It's simply a supplement, occupying its niche for specific robotics tasks.</p><p>The data problem for VLAs is being solved separately. Recently, our blog featured an article on <a href="https://habr.com/ru/companies/ru_mts/articles/1077094/">AgenticFocus</a>: a pipeline that converts ordinary first-person video into a dataset for training humanoid robots, without motion capture or sensor gloves. If such datasets become more accessible, CaP will have fewer advantages in startup speed.</p><p>CaP will be indispensable where rapid adaptation to a new task is needed without data collection. You can write a prompt describing the API in five minutes and get a working agent for a new manipulation. However, to use a VLA model, you would need thousands of trajectories and long hours of training. Although this can also be overcome by <a href="https://habr.com/ru/companies/ru_mts/articles/979682/">using</a> existing VLA models and a modular agent approach that generates future robot actions directly from images and text. CaP will also excel in tasks requiring interpretability and debugging. But it will fall short where physical precision and reliability are needed.</p><p>The future likely lies in hybrid architectures where CaP is used for high-level planning and policy generation, while VLAs or classical controllers are used for low-level execution. The language model will decide what to do and in what order, while specialized modules will handle how to do it precisely so the object doesn't slip from the grasp.</p><p>Experiments with CodeActionBench and the resulting spread from 2.7% to 73.3% show exactly this: the potential is enormous, but currently, code generation alone doesn't solve tasks, and other techniques must be employed.</p></div>
+  </main>
+  <footer>
+    Translation generated with Gemini 2.5 Flash-Lite.
+    The original article remains the source of record.
+  </footer>
+</body>
+</html>

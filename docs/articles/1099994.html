@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Passing hh.ru Tests with a Local AI</title>
+  <meta name="description" content="The HeadHunter website offers skills tests that are supposed to distinguish successful candidates. These tests are also part of the national IT competency certification system, and you can get an electronic certificate for them on Gosuslugi. This sounds impressive and very useful, but how representa">
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.65;
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 32px 20px 64px;
+      color: #1f2328;
+    }
+    header {
+      border-bottom: 1px solid #d8dee4;
+      margin-bottom: 28px;
+      padding-bottom: 20px;
+    }
+    .source {
+      color: #57606a;
+      font-size: 0.95rem;
+    }
+    img, video, iframe {
+      max-width: 100%;
+      height: auto;
+    }
+    pre {
+      overflow-x: auto;
+      padding: 16px;
+      background: #f6f8fa;
+      border-radius: 6px;
+    }
+    code {
+      font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+    }
+    blockquote {
+      border-left: 4px solid #d0d7de;
+      margin-left: 0;
+      padding-left: 16px;
+      color: #57606a;
+    }
+    footer {
+      border-top: 1px solid #d8dee4;
+      margin-top: 40px;
+      padding-top: 20px;
+      color: #57606a;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Passing hh.ru Tests with a Local AI</h1>
+    <p>The HeadHunter website offers skills tests that are supposed to distinguish successful candidates. These tests are also part of the national IT competency certification system, and you can get an electronic certificate for them on Gosuslugi. This sounds impressive and very useful, but how representative are these tests in the current AI boom? Let&#x27;s find out. My name is Victor, and I&#x27;m a developer with many years of experience. I know Delphi, C++, and Java/Kotlin, but I&#x27;m not particularly familiar with web development, JavaScript, Python, and artificial intelligence. All the results described below were obtained using the browser version of Gemini: I simply followed the AI&#x27;s advice, ran scripts, reported errors, and so on. My personal edits are minimal. Overall, there&#x27;s nothing complicated here: while &#x27;housewives&#x27; would hardly be able to repeat it, any beginner IT professional can handle it, and more experienced guys and girls can do a hundred times better. Read more</p>
+    <p class="source">
+      Machine-translated from Habr.
+      <a href="https://habr.com/ru/articles/1099994/?utm_campaign=1099994&amp;utm_source=habrahabr&amp;utm_medium=rss">Read the original Russian article</a>.
+      Tue, 27 Oct 2026 10:03:12 GMT
+    </p>
+  </header>
+  <main>
+<div><p>The HeadHunter website offers skills tests that are supposed to distinguish successful candidates from the "main mass." These tests are also part of the national IT competency certification system, and you can get an electronic certificate for them on Gosuslugi. This sounds impressive and very useful, but how representative are these tests in the current AI boom? Let's find out. </p><p>My name is Victor, and I'm a developer with many years of experience (I won't talk about the quality of experience, let's leave that aside). I know Delphi, C++, and Java/Kotlin, but I'm not particularly familiar with web development, JavaScript, Python, and artificial intelligence. All the results described below were obtained using the browser version of Gemini: I simply followed the AI's advice, ran scripts, reported errors, and so on. My personal edits are minimal. Overall, there's nothing complicated here: while "housewives" would hardly be able to repeat it, any beginner IT professional can handle it, and more experienced guys and girls can do a hundred times better. </p><h2>Disclaimer</h2><p>This material is purely for research purposes. Using automation to pass professional tests may violate platform rules and hiring ethics.</p><p>This article intentionally does not provide ready-to-run automation code to prevent its misuse for mass cheating of testing systems. The focus is on the engineering aspects of the task: designing the system architecture, testing the capabilities of modern local LLMs, and evaluating their effectiveness and performance. </p><h2>In the Beginning, There Was a Thought</h2><p>It all started with the desire to create a database of tests. The website has protection: if you switch to other tabs or windows, the results are not counted. This means simply copying questions and saving them to a notepad is not an option. Recording the screen is too much effort. I needed a tool that could read and save text in the background without my intervention. I decided to create a system using a Tampermonkey script that would parse the page and send data to a local server. Since I'm currently gradually exploring the world of AI, the next logical thought was: "Why not integrate a neural network and automate this a bit?" This led to a fairly simple scheme: </p><figure><img alt="Test Passing Algorithm" loading="lazy" src="https://habrastorage.org/r/w1560/extt/17/96/8e/17968eaa6003f948d0db63f7fcff3c6f.png" title="Test Passing Algorithm"/><div><figcaption>Test Passing Algorithm</figcaption></div></figure><p>So, the next step was to create a local server. I went to Google for advice: "My light, Gemini! Tell me, tell me the whole truth: who in the IT world is the fairest, most convenient, and fastest?" And I heard in response: "It's Python, no doubt about it." The fairy tale is a lie, but there's a hint in it – arguing with AI is futile, so I tied the code into a knot and whipped up a server.</p><p>The first version had two functions: it could save the entire HTML page and the test texts separately to files. Then I added the ability to work with AI models through LM Studio to pester them with tricky questions from test creators.</p><p>In the code, I wrote a system prompt:</p><div><div><table><tbody><tr><td><p>Prompt</p></td><td><p>Explanation</p></td></tr><tr><td><p>Testing on Git: 1 question and several answers are given.</p></td><td><p>I specified the subject area just in case, to make it easier for the AI to understand the testing context.</p></td></tr><tr><td><p>Do not recheck yourself more than once.</p></td><td><p>I set a condition so that the model doesn't recheck itself too thoroughly, otherwise it might get stuck in self-checks, which wastes precious minutes.</p></td></tr><tr><td><p>Do not ask clarifying questions.</p></td><td><p>The work must be done in the background and completely autonomously, so it was necessary to get rid of clarifying questions (although I'm not sure if an AI model in API chat mode would even ask them).</p></td></tr><tr><td><p>Respond with a short message containing only the text of the selected answer and its number. Do not explain the answer.</p></td><td><p>I specified to truncate the answer to the suggested options to get rid of extra junk in the output.</p></td></tr><tr><td><p>Determine the correct answer. If there are multiple correct options, choose the most optimal one.</p></td><td><p>During the tests, I noticed that the model sometimes chooses a suboptimal option. I tried to improve this through the prompt, but the effect was 50/50.</p></td></tr></tbody></table></div></div><p>Another Python script was generated for testing. It took files with previously parsed tests and sent them to my local server. This way, I could test the main server, fine-tune the prompts, and see how different models handle the tasks.</p><p>After all the improvements, the final process looked like this: two windows on the screen – the browser with tests on the left, the terminal with the running server on the right. As soon as a question appears in the browser, it goes to the server to the AI, I wait for the answer, and manually select the correct option. And so on.</p><div></div><h2>Testing AI Models</h2><p>The basic scheme worked well, but I wanted to see how different models handle similar tasks. I chose the Qwen family of models for comparison. I was interested in evaluating the performance of recent, relatively large models with 27–35 billion parameters compared to smaller models with 7–9 billion parameters, testing older versions (Qwen 2.5), and also finding out how the test difficulty level affects the final score.</p><p>In the header of the final table, "questions" and "time" refer to the total number of questions and the maximum time allotted for one test. The body of the table shows the number of errors made and the time spent. Models took the tests 3 times each; the time indicated is the average, and the errors are the minimum and maximum.</p><p>For basic level tests (10–11 questions), it's acceptable to make 2 mistakes. For the advanced level, it's likely 3–4 mistakes are allowed (I don't know the exact threshold; I either got 2 mistakes or failed the test miserably). Obvious failures are highlighted in red in the table, and borderline results are highlighted in yellow.</p><p>The Qwen3.8–27B model on my PC outputs no more than 6 tokens/sec. This is too slow for reasoning mode, but I wanted to test the possibility of using models at this speed, so it was tested without reasoning. At the very end, I added the Qwen3.8–9B CPU model – it was fully loaded into RAM and ran on the processor, simulating very Spartan conditions.</p><figure><img alt="Model Testing Results" loading="lazy" src="https://habrastorage.org/r/w1560/extt/a6/60/94/a66094868c87623a1c0db517125675c6.png" title="Model Testing Results"/><div><figcaption>Model Testing Results</figcaption></div></figure><p>As we can see, almost all models successfully passed the tests, only the old Qwen2.5 faltered in some tasks. Test difficulty can be critical for weaker models, although all participants successfully passed even the advanced level on the OOP topic.</p><p>Among the disadvantages of small models: the answer format is extremely unstable. I asked to output only the full answer text and nothing else (the texts themselves always started with numbers), but the models still outputted:</p><ul><li><p>text, with the number removed;</p></li><li><p>only the number;</p></li><li><p>text, followed by the number;</p></li><li><p>the number of one answer and the text of another (the most unpleasant part);</p></li><li><p>"extra" information – the question text or a detailed explanation of their choice.</p></li></ul><h2>Conclusions</h2><p>I am not claiming to be the ultimate authority; this section is merely my assessment and personal opinion.</p><p>Essentially, the HeadHunter <strong>theoretical</strong> testing system today is a sham. It uses a simple protection mechanism developed in the pre-AI era. Now, anyone who wants to can bypass it, even those who are not very knowledgeable in the field. Consequently, the presence of these certificates for a candidate guarantees nothing at all.</p><p>Moreover, to bypass the protection, free software, the web version of Gemini, a weak PC, and a minimum of time are sufficient. But even if local AIs are not an option for you, you can always open Gemini in a second browser window and use it instead of a local LLM. Or you can go even further and do without automation altogether: just take pictures of the questions with your smartphone and send them to an AI chat with built-in vision – the model will instantly recognize the text from the PC screen and provide the correct answer, while the HeadHunter's protection system will piously believe that you haven't switched anywhere. But this is a completely different, boring story, not suitable for a curious IT mind.</p><h2>What's Next?</h2><p>I still want to experiment a bit more in the same direction with two topics:</p><ul><li><p>passing practical tests (Java and C++) using an AI agent. My plan is for the model to write code, the agent to compile it, run it through tests, fix it as needed, and provide me with the final result. Possible difficulties:</p><ul><li><p>need to deal with orchestration and agent management;</p></li><li><p>a local model may not have enough time to complete tasks within the allotted time;</p></li><li><p>it's unknown how the site's protection will react to clipboard operations (it might be necessary to write a text input emulator, which I really don't want to do).</p></li></ul></li><li><p>passing English language tests. Here, tasks will arise that I haven't encountered before:</p><ul><li><p>it is necessary to intercept and extract the audio stream directly from the browser;</p></li><li><p>it is necessary to implement a separate Speech-to-Text model for speech recognition and audio-to-text translation.</p></li></ul></li></ul><p>If you liked the topic or if anything remains unclear, you are welcome to the comments. And I would be glad to see recognized AI and automation gurus with constructive criticism: point out errors and bottlenecks that I haven't yet grown to fix.</p></div>
+  </main>
+  <footer>
+    Translation generated with Gemini 2.5 Flash-Lite.
+    The original article remains the source of record.
+  </footer>
+</body>
+</html>

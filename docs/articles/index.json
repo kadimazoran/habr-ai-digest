@@ -3415,6 +3415,14 @@
     "summary": "One of the most frequent questions we get asked: how do we deploy large models on Cerebras wafer-scale chips? A single Cerebras WSE-3T wafer has 44GB of on-chip memory, and state-of-the-art models with trillions of parameters need terabytes just to store weights. In this article, we explain how we distribute a large model across multiple WSE-3T wafers to run models with trillions of parameters at 1000-2000 tokens per second and higher. As a concrete example, we'll use the open-source Kimi K3 model, which has about 3 trillion parameters. Read more",
     "title": "[Translation] How to Deploy Kimi K3 Locally on Cerebras"
   },
+  "https://habr.com/ru/articles/1098144/?utm_campaign=1098144&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Tue, 27 Oct 2026 09:00:05 GMT",
+    "slug": "1098144",
+    "source_url": "https://habr.com/ru/articles/1098144/?utm_campaign=1098144&utm_source=habrahabr&utm_medium=rss",
+    "summary": "The beginning was spontaneous, and nothing foreshadowed the current process. The company where I worked experienced certain difficulties and sharply reduced staff, including me. From my last job, I had experience in developing complex systems and libraries written in languages previously unknown to me. Fortunately, the era of AI arrived, and after trying several assistants, I successfully solved these tasks. But this is not about work. Suddenly, I had a lot of free time and unspent enthusiasm. It was a coincidence. Almost on the same day, to save my nerves from the sudden happiness of unemployment, I was playing Jagged Alliance N-th series. Once again, after quickly completing a sector, I was slightly annoyed by some absurdities in the gameplay. I think many fans of the Jagged Alliance or XCOM series have noticed that the series are degenerating into primitive shooters, losing the spirit of the first parts. Every time I read an announcement of such a game, I hope that someone will finally bring back the spirit of the classics and consider the fans' wishes. In general, everything came together - the thought struck me that it's possible not only to reassemble/connect 20+ libraries in C and Go on other people's projects with the help of AI, but there's also a chance to create the game you want. Especially since, from a purely mobile developer, with the help of KMP, I smoothly migrated to desktop on several projects. Turning the idea over in my mind from all sides, I didn't notice any particular drawbacks and proceeded with the implementation. Developing a large-scale AA-level game alone is a project that is considered inherently impossible in the traditional industry. A full-fledged tactical RPG like Jagged Alliance 2 or Silent Storm requires simultaneous design of dozens of intersecting systems: fair ballistics, anatomical medicine, destructible 3D environments, enemy artificial intelligence, strategic meta-game, hiring economy, and multilingual interface. Read more",
+    "title": "How I Create an AA-Tactical RPG Using Architecture Indexes and 100+ Specifications"
+  },
   "https://habr.com/ru/articles/1098158/?utm_campaign=1098158&utm_source=habrahabr&utm_medium=rss": {
     "model": "gemini-2.5-flash-lite",
     "published": "Sat, 24 Oct 2026 07:04:19 GMT",
@@ -3703,6 +3711,54 @@
     "summary": "AI has given everyone a superpower: the ability to generate a beautiful image in a minute. But this superpower has fallen into the hands of people who often don't know what to do with it. This includes me. Anyone can ask an AI to 'draw in the style of Impressionism.' But only someone who knows that Neoplasticism or Vaporwave styles exist, and how they differ, can ask for 'in the style of Neoplasticism' or 'in the style of Vaporwave.' It's like being given the ability to build any house with a snap of my fingers. Any. But which one? I haven't studied architecture and will likely build what my neighbor has, not what truly resonates with me. I have no art education. So, I decided to create a map for myself: what visual styles have people invented, where did they come from, and how are they related? This resulted in the Aesthetics Atlas. Explore the atlas.",
     "title": "How People Invented Beauty: An Atlas of 195 Visual Styles, from Lascaux Caves to Weirdcore"
   },
+  "https://habr.com/ru/articles/1099790/?utm_campaign=1099790&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Tue, 27 Oct 2026 08:31:02 GMT",
+    "slug": "1099790",
+    "source_url": "https://habr.com/ru/articles/1099790/?utm_campaign=1099790&utm_source=habrahabr&utm_medium=rss",
+    "summary": "Model names in code become obsolete the day the next model is released. If you have ten services, you'll rewrite it ten times and distribute vendor keys across ten configurations. Keystone. The Model Switchboard. (KTMS) removes this from your code. A service indicates the task's complexity, and the gateway decides which model to call, with which key, and whether to use your own GPU. At rest, it uses 7 MiB of memory, and since version 1.0, its API within the 1.x range is backward compatible. Alongside the 1.0 gateway, the ktms-admin web console and light-tokenmeter cost tracking service were released, all three in Go and under Apache 2.0. Features are described below for the current version 1.3. Read more",
+    "title": "Keystone 1.0: The LLM Gateway That Doesn't Hardcode Models, Manages Its Own GPUs, and Doesn't Lose Keys"
+  },
+  "https://habr.com/ru/articles/1099802/?utm_campaign=1099802&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Tue, 27 Oct 2026 10:11:45 GMT",
+    "slug": "1099802",
+    "source_url": "https://habr.com/ru/articles/1099802/?utm_campaign=1099802&utm_source=habrahabr&utm_medium=rss",
+    "summary": "By saying 'AI slop,' we are avoiding questions that need discussion. When we call something AI slop, we are not just complaining about a particular generative AI product. Optimists use the term to separate failures from the promise of AI; critics use it to condemn the entire technology. By talking about slop, we think we are discussing important social issues, but we are not actually discussing them. Read more",
+    "title": "[Translation] The term 'AI slop' hides questions we need to discuss"
+  },
+  "https://habr.com/ru/articles/1099962/?utm_campaign=1099962&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Tue, 27 Oct 2026 09:20:01 GMT",
+    "slug": "1099962",
+    "source_url": "https://habr.com/ru/articles/1099962/?utm_campaign=1099962&utm_source=habrahabr&utm_medium=rss",
+    "summary": "According to statistics, among ordinary desktop computer users, the most common graphics card has 16 GB of video memory. According to GaugeDB surveys, such cards occupy 27.21% of the market. I have an NVIDIA GeForce RTX 4070 Ti SUPER with 16 GB of GDDR6X video memory, which currently costs $900. Until now, the main problem was that it was impossible to run an LLM agent on a graphics card of this class that would be smart and fast enough. If you run a smart model like Qwen 3.8 27B (Dense architecture), you get 10-20 tokens per second. And for comfortable work of a coding agent, you need 100-150 tokens per second. Read more",
+    "title": "125 tokens per second on RTX 4070 Ti SUPER: how I made a local LLM work as a full-fledged coding agent"
+  },
+  "https://habr.com/ru/articles/1099994/?utm_campaign=1099994&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Tue, 27 Oct 2026 10:03:12 GMT",
+    "slug": "1099994",
+    "source_url": "https://habr.com/ru/articles/1099994/?utm_campaign=1099994&utm_source=habrahabr&utm_medium=rss",
+    "summary": "The HeadHunter website offers skills tests that are supposed to distinguish successful candidates. These tests are also part of the national IT competency certification system, and you can get an electronic certificate for them on Gosuslugi. This sounds impressive and very useful, but how representative are these tests in the current AI boom? Let's find out. My name is Victor, and I'm a developer with many years of experience. I know Delphi, C++, and Java/Kotlin, but I'm not particularly familiar with web development, JavaScript, Python, and artificial intelligence. All the results described below were obtained using the browser version of Gemini: I simply followed the AI's advice, ran scripts, reported errors, and so on. My personal edits are minimal. Overall, there's nothing complicated here: while 'housewives' would hardly be able to repeat it, any beginner IT professional can handle it, and more experienced guys and girls can do a hundred times better. Read more",
+    "title": "Passing hh.ru Tests with a Local AI"
+  },
+  "https://habr.com/ru/articles/1100090/?utm_campaign=1100090&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Tue, 27 Oct 2026 12:34:00 GMT",
+    "slug": "1100090",
+    "source_url": "https://habr.com/ru/articles/1100090/?utm_campaign=1100090&utm_source=habrahabr&utm_medium=rss",
+    "summary": "This article discusses the development of Ankyra, a system that combines the strengths of large language models (LLMs) with symbolic solvers to achieve more reliable and verifiable reasoning. It addresses the issue of LLM hallucinations by introducing a deterministic symbolic solver that rigorously checks the facts and inferences generated by the LLM. The article details the neuro-symbolic concept, the formal description of the algorithm, the different logics supported, and presents testing results on various benchmarks, comparing Ankyra's performance against other neuro-symbolic approaches like Logic-LM and LINC. The author highlights the potential applications of such systems in fields where accuracy and verifiability are crucial, such as law, medicine, and technical documentation.",
+    "title": "Ankyra: Implementing Neuro-Symbolic Reasoning"
+  },
+  "https://habr.com/ru/articles/1100136/?utm_campaign=1100136&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Tue, 27 Oct 2026 13:30:20 GMT",
+    "slug": "1100136",
+    "source_url": "https://habr.com/ru/articles/1100136/?utm_campaign=1100136&utm_source=habrahabr&utm_medium=rss",
+    "summary": "In the previous article \"The Hard Problem of Consciousness: Not Why the Brain Gives Rise to Experience, but How Information Topology Ignites the 'Self'\", we delved into the architectural mechanics: why recurrent loops and predictive coding inevitably close the first-person reference point, rendering Chalmers' 'zombie' thought experiment physically untenable. However, this applied model did not arise from a vacuum. It was a direct consequence of a conceptual dispute with Professor Christof Koch's Integrated Information Theory (IIT) and my derived 'Axiom of Mind'. Below is the text of an open letter that initiated research into overcoming carbon chauvinism, and a systematic detailing of the dynamic Triad of consciousness processes. Read more",
+    "title": "Open Letter to Professor Koch: The Fractal Nature of Consciousness and Overcoming Carbon Chauvinism"
+  },
   "https://habr.com/ru/companies/1c/articles/1071340/?utm_campaign=1071340&utm_source=habrahabr&utm_medium=rss": {
     "model": "gemini-2.5-flash-lite",
     "published": "Thu, 03 Sep 2026 07:18:11 GMT",
@@ -3750,6 +3806,14 @@
     "source_url": "https://habr.com/ru/companies/agima/articles/1090556/?utm_campaign=1090556&utm_source=habrahabr&utm_medium=rss",
     "summary": "Hello. My name is Alexander Bogdanov, I am the founder of AGIMA. In 2020, we relaunched the AGIMA website: the work took two years. In 2026, we decided on a redesign again. But this will not be a boring text about how we remade the logo 50 times. Instead, I will tell you how we completely handed over the website management to agents. Read more",
     "title": "SiteOS. 1425 materials and one agent loop: how we opened up the corporate website to business"
+  },
+  "https://habr.com/ru/companies/agima/articles/1100006/?utm_campaign=1100006&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Tue, 27 Oct 2026 10:22:39 GMT",
+    "slug": "1100006",
+    "source_url": "https://habr.com/ru/companies/agima/articles/1100006/?utm_campaign=1100006&utm_source=habrahabr&utm_medium=rss",
+    "summary": "We break down the architecture of an enterprise AI platform for secure AI agent interaction with internal systems: from LLM Gateway and MCP to access control, DLP, and auditing. Read more",
+    "title": "How We Build a Secure On-Prem AI Platform for Enterprise AI Agents"
   },
   "https://habr.com/ru/companies/airi/articles/1096794/?utm_campaign=1096794&utm_source=habrahabr&utm_medium=rss": {
     "model": "gemini-2.5-flash-lite",
@@ -4359,6 +4423,14 @@
     "summary": "A month of developing a real product, a team of four strangers, and a client from a business unit waiting for results. In August, KORUS held an AI Lab where students learned to work with artificial intelligence, take responsibility for a project from day one, and overcome the fears that accompany first experiences. Colleagues from HR, the Corporate University, and business units, as well as the interns themselves who went through the AI Lab, share their experiences. Read more",
     "title": "A Month of Vibecoding with Strangers and Tools That KORUS Business Started Using"
   },
+  "https://habr.com/ru/companies/kts/articles/1099956/?utm_campaign=1099956&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Tue, 27 Oct 2026 09:48:06 GMT",
+    "slug": "1099956",
+    "source_url": "https://habr.com/ru/companies/kts/articles/1099956/?utm_campaign=1099956&utm_source=habrahabr&utm_medium=rss",
+    "summary": "Hi! I'm Katya Poslavskaya, working with RAG systems and AI agents at KTS. In my experience with RAG, I've seen many companies abandon RAG assistants after impressive prototyping results on a data subset. The reasons are simple: the 'wow' effect shatters when connected to a full corporate database – large, constantly growing, and noisy. Have you ever seen an up-to-date corporate Confluence where every article accurately describes an existing process, new articles are published promptly, and outdated ones are archived or deleted? I haven't. What do you do when you have many content owners, multiple data sources, and high risks of providing incorrect information to clients? I've been building RAG systems for corporate clients for over two years and have mastered some techniques to \"tame\" them, minimizing problems and successfully supporting solutions in production. Today, we'll delve into the nuances of assistant configuration, from chunks to generation, and discuss remedies for typical production failures. A small spoiler about hallucinations, which LLMs are constantly accused of: in practice, the model is most often NOT to blame. Read on",
+    "title": "How to Fix RAG"
+  },
   "https://habr.com/ru/companies/leader-id/articles/1091020/?utm_campaign=1091020&utm_source=habrahabr&utm_medium=rss": {
     "model": "gemini-2.5-flash-lite",
     "published": "Tue, 06 Oct 2026 11:22:37 GMT",
@@ -4886,6 +4958,14 @@
     "source_url": "https://habr.com/ru/companies/ruvds/articles/1097194/?utm_campaign=1097194&utm_source=habrahabr&utm_medium=rss",
     "summary": "Recently, I learned that a new profession has appeared in Russia — an artificial intelligence tutor. One of these tutors kindly agreed to give me an interview. From it, you will learn who these people are, how much they earn, who their clients are, what tools they use themselves, which AI influencers they follow, and much more. Read more",
     "title": "What kind of new profession is this — AI Tutor?"
+  },
+  "https://habr.com/ru/companies/ruvds/articles/1097980/?utm_campaign=1097980&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Tue, 27 Oct 2026 09:02:06 GMT",
+    "slug": "1097980",
+    "source_url": "https://habr.com/ru/companies/ruvds/articles/1097980/?utm_campaign=1097980&utm_source=habrahabr&utm_medium=rss",
+    "summary": "Based on my previous articles, it's clear I have a knack for finding irrational and niche hobbies that can consume months or even years. This time, I wanted to create a program to speed up the process of comparing upscaled images side-by-side. However, things quickly spiraled out of control, turning into a new, pointless hobby involving managing an army of AI agents. Read on",
+    "title": "How I Spent 2.5 Years Vibe-Coding Useless Software"
   },
   "https://habr.com/ru/companies/rwb/articles/1092120/?utm_campaign=1092120&utm_source=habrahabr&utm_medium=rss": {
     "model": "gemini-2.5-flash-lite",
@@ -5606,5 +5686,13 @@
     "source_url": "https://habr.com/ru/specials/1095232/?utm_campaign=1095232&utm_source=habrahabr&utm_medium=rss",
     "summary": "Various AI assistants have been around in fintech for a long time; every banking app has at least one. But what will they become when they \"grow up\"? We at SVOY Tech decided to explore the future of AI in financial services. Through a survey, we want to understand in what form AI in fintech will be in demand by users in the next five years, and then look at the same ideas through the eyes of developers: how difficult and expensive it is to implement AI, what prevents a solution from moving from pilot to production, and what architectures look realistic. Read more",
     "title": "Exploring AI in FinTech: What Users and Developers Actually Want"
+  },
+  "https://habr.com/ru/specials/1100100/?utm_campaign=1100100&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Tue, 27 Oct 2026 14:32:11 GMT",
+    "slug": "6d8b45834e7c",
+    "source_url": "https://habr.com/ru/specials/1100100/?utm_campaign=1100100&utm_source=habrahabr&utm_medium=rss",
+    "summary": "All year long, discussions pop up on Habr: will there be a place for programmers in a world where AI agents are taking on more and more tasks? But it's one thing to read armchair analytics and forecasts, and quite another to adapt to the new reality and see how it all works in production. On October 16, I went to the engineering day of GigaConf-2026 at Sber's headquarters to see firsthand how deeply AI has integrated into the market's engineering processes. My name is Danila, I'm a backend developer, I build microservices, and I actively follow the development of AI tools. In this article, I've gathered all the thoughts and presentations from the recent conference that seemed most interesting to me: from the harnesses and architecture of GigaAgent to running models on gaming video cards. I also learned what remains for an engineer in the era of scrambled eggs. Spoiler: we'll still have to write code. But gradually, it's becoming not the hardest part of the job. Read more",
+    "title": "AI at All Stages of Product Creation and Beyond. What Was Discussed at GigaConf for Engineers — 2026"
   }
 }

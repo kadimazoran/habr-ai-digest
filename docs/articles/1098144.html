@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>How I Create an AA-Tactical RPG Using Architecture Indexes and 100+ Specifications</title>
+  <meta name="description" content="The beginning was spontaneous, and nothing foreshadowed the current process. The company where I worked experienced certain difficulties and sharply reduced staff, including me. From my last job, I had experience in developing complex systems and libraries written in languages previously unknown to ">
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.65;
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 32px 20px 64px;
+      color: #1f2328;
+    }
+    header {
+      border-bottom: 1px solid #d8dee4;
+      margin-bottom: 28px;
+      padding-bottom: 20px;
+    }
+    .source {
+      color: #57606a;
+      font-size: 0.95rem;
+    }
+    img, video, iframe {
+      max-width: 100%;
+      height: auto;
+    }
+    pre {
+      overflow-x: auto;
+      padding: 16px;
+      background: #f6f8fa;
+      border-radius: 6px;
+    }
+    code {
+      font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+    }
+    blockquote {
+      border-left: 4px solid #d0d7de;
+      margin-left: 0;
+      padding-left: 16px;
+      color: #57606a;
+    }
+    footer {
+      border-top: 1px solid #d8dee4;
+      margin-top: 40px;
+      padding-top: 20px;
+      color: #57606a;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>How I Create an AA-Tactical RPG Using Architecture Indexes and 100+ Specifications</h1>
+    <p>The beginning was spontaneous, and nothing foreshadowed the current process. The company where I worked experienced certain difficulties and sharply reduced staff, including me. From my last job, I had experience in developing complex systems and libraries written in languages previously unknown to me. Fortunately, the era of AI arrived, and after trying several assistants, I successfully solved these tasks. But this is not about work. Suddenly, I had a lot of free time and unspent enthusiasm. It was a coincidence. Almost on the same day, to save my nerves from the sudden happiness of unemployment, I was playing Jagged Alliance N-th series. Once again, after quickly completing a sector, I was slightly annoyed by some absurdities in the gameplay. I think many fans of the Jagged Alliance or XCOM series have noticed that the series are degenerating into primitive shooters, losing the spirit of the first parts. Every time I read an announcement of such a game, I hope that someone will finally bring back the spirit of the classics and consider the fans&#x27; wishes. In general, everything came together - the thought struck me that it&#x27;s possible not only to reassemble/connect 20+ libraries in C and Go on other people&#x27;s projects with the help of AI, but there&#x27;s also a chance to create the game you want. Especially since, from a purely mobile developer, with the help of KMP, I smoothly migrated to desktop on several projects. Turning the idea over in my mind from all sides, I didn&#x27;t notice any particular drawbacks and proceeded with the implementation. Developing a large-scale AA-level game alone is a project that is considered inherently impossible in the traditional industry. A full-fledged tactical RPG like Jagged Alliance 2 or Silent Storm requires simultaneous design of dozens of intersecting systems: fair ballistics, anatomical medicine, destructible 3D environments, enemy artificial intelligence, strategic meta-game, hiring economy, and multilingual interface. Read more</p>
+    <p class="source">
+      Machine-translated from Habr.
+      <a href="https://habr.com/ru/articles/1098144/?utm_campaign=1098144&amp;utm_source=habrahabr&amp;utm_medium=rss">Read the original Russian article</a>.
+      Tue, 27 Oct 2026 09:00:05 GMT
+    </p>
+  </header>
+  <main>
+<div><h2>Introduction: From Chaotic Code Generation to Systemic AI-Disrupt PDLC</h2><figure><img alt="Logo of the "PMC Rhino" project. Like hundreds of other game assets, it is fully created and animated with the help of the AI assistant discussed below." loading="lazy" src="https://habrastorage.org/r/w1560/extt/59/33/3b/59333b276faeaecaa15931bf1ea0804b.png" title="Logo of the "PMC Rhino" project. Like hundreds of other game assets, it is fully created and animated with the help of the AI assistant discussed below."/><div><figcaption>Logo of the "PMC Rhino" project. Like hundreds of other game assets, it is fully created and animated with the help of the AI assistant discussed below.</figcaption></div></figure><p>The beginning was spontaneous, and nothing foreshadowed the current process. The company where I worked experienced certain difficulties and sharply reduced staff, including me. From my last job, I had experience in developing complex systems and libraries written in languages previously unknown to me. Fortunately, the era of AI arrived, and after trying several assistants, I successfully solved these tasks. But this is not about work. Suddenly, I had a lot of free time and unspent enthusiasm. It was a coincidence. Almost on the same day, to save my nerves from the sudden happiness of unemployment, I was playing <strong>Jagged Alliance</strong> N-th series. Once again, after quickly completing a sector, I was slightly annoyed by some absurdities in the gameplay. I think many fans of the <strong>Jagged Alliance</strong> or <strong>XCOM</strong> series have noticed that the series are degenerating into primitive shooters, losing the spirit of the first parts. Every time I read an announcement of such a game, I hope that someone will finally bring back the spirit of the classics and consider the fans' wishes. In general, everything came together - the thought struck me that it's possible not only to reassemble/connect 20+ libraries in C and Go on other people's projects with the help of AI, but there's also a chance to create the game you want. Especially since, from a purely mobile developer, with the help of KMP, I smoothly migrated to desktop on several projects. Turning the idea over in my mind from all sides, I didn't notice any particular drawbacks and proceeded with the implementation.</p><p>Developing a large-scale AA-level game alone is a project that is considered inherently impossible in the traditional industry. A full-fledged tactical RPG like <em>Jagged Alliance 2</em> or <em>Silent Storm</em> requires simultaneous design of dozens of intersecting systems: fair ballistics, anatomical medicine, destructible 3D environments, enemy artificial intelligence, strategic meta-game, hiring economy, and multilingual interface.</p><p>In a traditional studio, 15-20 highly specialized engineers and artists work on this. When I started the <strong>"PMC Rhino"</strong> project, I quickly realized: pinpoint use of coding assistants for generating individual functions does not solve the main problem. Without a systemic restructuring of the Product Development Life Cycle (PDLC), a solo developer inevitably drowns in architectural chaos, data desynchronization, and technical debt.</p><p>The key to achieving a real 10x leverage from artificial intelligence is building an <strong>AI-Disrupt PDLC</strong>. In this model, I act as the Chief Architect, Game Designer, and Strict Filter, while AI tools work as a unified ecosystem: from technical coordinator and asset generator to ballistics table analyst.</p><p>The foundation of my project is not chaotic code generation, but a fixed Master Index of technical documentation, including over 100 specifications. In this article, I want to move away from simply listing features and explain how AI has transformed my engineering process at various stages of game creation.</p><h2>1. From Chaos to SSOT: 100+ Specifications as the Project Foundation</h2><p>In the classic indie PDLC, a developer often keeps lore and balance in their head or in scattered Excel tables, immediately jumping into writing code. In a complex tactical project, this is guaranteed to lead to an architectural dead end.</p><p>My first development cycle began not with an IDE, but with the creation of a large-scale knowledge base. Together with <strong>Google Gemini</strong>, acting as a technical and narrative coordinator, I created over 100 strict Markdown specifications. They cover everything from Kotlin Multiplatform and Fleks ECS architecture rules to interface design guidelines.</p><figure><img alt=
+  </main>
+  <footer>
+    Translation generated with Gemini 2.5 Flash-Lite.
+    The original article remains the source of record.
+  </footer>
+</body>
+</html>

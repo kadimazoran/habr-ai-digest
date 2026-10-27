@@ -1,0 +1,110 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>125 tokens per second on RTX 4070 Ti SUPER: how I made a local LLM work as a full-fledged coding agent</title>
+  <meta name="description" content="According to statistics, among ordinary desktop computer users, the most common graphics card has 16 GB of video memory. According to GaugeDB surveys, such cards occupy 27.21% of the market. I have an NVIDIA GeForce RTX 4070 Ti SUPER with 16 GB of GDDR6X video memory, which currently costs $900. Unt">
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.65;
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 32px 20px 64px;
+      color: #1f2328;
+    }
+    header {
+      border-bottom: 1px solid #d8dee4;
+      margin-bottom: 28px;
+      padding-bottom: 20px;
+    }
+    .source {
+      color: #57606a;
+      font-size: 0.95rem;
+    }
+    img, video, iframe {
+      max-width: 100%;
+      height: auto;
+    }
+    pre {
+      overflow-x: auto;
+      padding: 16px;
+      background: #f6f8fa;
+      border-radius: 6px;
+    }
+    code {
+      font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+    }
+    blockquote {
+      border-left: 4px solid #d0d7de;
+      margin-left: 0;
+      padding-left: 16px;
+      color: #57606a;
+    }
+    footer {
+      border-top: 1px solid #d8dee4;
+      margin-top: 40px;
+      padding-top: 20px;
+      color: #57606a;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>125 tokens per second on RTX 4070 Ti SUPER: how I made a local LLM work as a full-fledged coding agent</h1>
+    <p>According to statistics, among ordinary desktop computer users, the most common graphics card has 16 GB of video memory. According to GaugeDB surveys, such cards occupy 27.21% of the market. I have an NVIDIA GeForce RTX 4070 Ti SUPER with 16 GB of GDDR6X video memory, which currently costs $900. Until now, the main problem was that it was impossible to run an LLM agent on a graphics card of this class that would be smart and fast enough. If you run a smart model like Qwen 3.8 27B (Dense architecture), you get 10-20 tokens per second. And for comfortable work of a coding agent, you need 100-150 tokens per second. Read more</p>
+    <p class="source">
+      Machine-translated from Habr.
+      <a href="https://habr.com/ru/articles/1099962/?utm_campaign=1099962&amp;utm_source=habrahabr&amp;utm_medium=rss">Read the original Russian article</a>.
+      Tue, 27 Oct 2026 09:20:01 GMT
+    </p>
+  </header>
+  <main>
+<div><p>According to statistics, among ordinary desktop computer users, the most common graphics card has 16 GB of video memory. According to GaugeDB surveys, such cards occupy 27.21% of the market. I have an NVIDIA GeForce RTX 4070 Ti SUPER with 16 GB of GDDR6X video memory, which currently costs $900. Until now, the main problem was that it was impossible to run an LLM agent on a graphics card of this class that would be smart and fast enough. If you run a smart model like Qwen 3.8 27B (Dense architecture), you get 10-20 tokens per second. And for comfortable work of a coding agent, you need 100-150 tokens per second.</p><figure><img loading="lazy" src="https://habrastorage.org/r/w1560/extt/17/3a/28/173a288c013707999251d4f099429f1d.png"/></figure><p>But recently I came across 2 models: Tiel-Coder-35B-A3B-GGUF-MTP (specialized for coding) and Cyber-Tiel-Coder-35B-A3B-GGUF-MTP (an uncensored abliterated model that doesn't refuse to write exploits and perform active hacks on anything you ask). And what else is noteworthy about them? Firstly, they use MTP (Multi-Token Prediction) technology, which allows the LLM to predict several next tokens at once instead of one, providing a 20% inference speed increase. Secondly, they use the MoE (Mixture of Experts) architecture, which allows achieving the quality of a large model by performing computations with only a part of its parameters for each token. The token generation speed increase is +200-450%. Thirdly, it's Sharp Template, an optimized Chat Template (Jinja) with a system prompt that forces the LLM to spend fewer tokens on reasoning and answers without losing necessary information. It reduces inference by 59%, ultimately doubling the coding agent's performance.</p><figure><img loading="lazy" src="https://habrastorage.org/r/w1560/extt/81/f8/70/81f87086e0da11e4026d70bd346e17b3.png"/></figure><p>As a result, on my graphics card, I run the following versions of these models: Cyber-Tiel-Coder-35B-A3B-MTP-UD-Q2_K_XL.gguf and Tiel-Coder-35B-A3B-MTP-UD-Q2_K_XL.gguf, and the launch parameters look like this:</p><figure><img loading="lazy" src="https://habrastorage.org/r/w1560/extt/ea/2b/51/ea2b51c1657f30fa664e4afea02d8a3b.png"/></figure><p>In the end, I get a speed of 125 tokens per second!</p><figure><img loading="lazy" src="https://habrastorage.org/r/w1560/extt/27/59/e8/2759e8307805805dc35e19d94cf97ab8.png"/></figure><p>This is a very good start, but as you can see, the context window is only 65535 tokens, which is not enough for agent work in coding. For this reason, I use 3 approaches.</p><p>Firstly, I don't use heavy coding agents like Codex or Claude Code, because out-of-the-box, with minimal interaction, they consume 10 to 14 thousand tokens for the system prompt, etc. That is, 15-20% of the context is consumed immediately, and local models lose context more easily, and such large system instructions distract them even more from the task the user formulates. I use the Pi coding agent; it requires 1.5 thousand tokens for its operation, which is 10 times less than Codex or Claude Code, significantly impacting the capabilities and quality of work on a user's local graphics card. Here is the configuration file for Pi to add these 2 models that will run on your graphics card: ~/.pi/agent/models.json</p><pre><code>{ 
+  "providers": {
+    "lmstudio": {
+      "baseUrl": "http://ВАШ_ЛОКАЛЬНЫЙ_IP:1234/v1",
+      "api": "openai-completions",
+      "apiKey": "lmstudio",
+      "models": [
+        { "id": "peculiar-ragdoll/tiel-coder-35b-a3b-mtp@q2_k_xl" ,
+          "contextWindow": 65536,
+          "maxTokens": 32768,
+          "input": ["text", "image"]
+       },
+        { "id": "peculiar-ragdoll/cyber-tiel-coder-35b-a3b-mtp" ,
+          "contextWindow": 65536,
+          "maxTokens": 32768,
+          "input": ["text", "image"]
+       }
+     ]
+   }
+  }
+}</code><div><a href="https://sourcecraft.dev/"><span></span></a></div></pre><figure><img loading="lazy" src="https://habrastorage.org/r/w1560/extt/5a/8b/16/5a8b16c1f1e0440e66b7751ba30ab705.png"/></figure><p>Secondly, I never ask the coding agent to attempt a major code change directly. I start a new session with the command '/new' and ask the coding agent to write a plan.md file that describes what needs to be changed in the code to implement my task. This way, my 65535 token context window is sufficient because, essentially, I break the task into two phases: planning and implementation. Consequently, if the task is not too large, after creating plan.md, I clear the coding agent's context window with the '/new' command and ask it to make code changes based on plan.md, and upon completion, document the results in plan.md.</p><figure><img loading="lazy" src="https://habrastorage.org/r/w1560/extt/74/3a/8e/743a8ed51e6c579cac3592e541b2a993.png"/></figure><p>Thirdly, for very large plan.md files, I use my SKILL called subtask4llm-pi, which breaks down the task into no more than 10 subtasks and executes them sequentially. Each subtask is launched in a separate instance of the coding agent, where only what pertains to the subtask is passed, and its 65535-token context window will be almost empty. The results of the subtasks are aggregated into the main Pi instance and do not overflow its main context window, which is responsible for coordination, planning, and verification. You can install the skill by running the command "npx skills add https://github.com/evgenyigumnov/subtask4llm --skill subtask4llm-pi". There is also a version for Codex - subtask4llm-codex. By the way, if anyone wants to add support for Claude or help in any other way, send pull requests to <a href="https://github.com/evgenyigumnov/subtask4llm">https://github.com/evgenyigumnov/subtask4llm</a>.</p><figure><img loading="lazy" src="https://habrastorage.org/r/w1560/extt/24/27/de/2427deec81c18d2b418811330de8ccbe.png"/></figure><p>Fourthly, I use the approach of Robert Martin, the author of "Clean Code," who recently stated that he stopped reading code generated by coding agents. He achieved this by imposing strict constraints on the LLM. Using these constraints, one can compensate for the fact that the models used are heavily quantized to the UD-Q2_K_XL level. This means they make more errors than 4-, 6-, or 8-bit models. To create these constraints, I propose using AGENTS.md, which controls the size of each generated file, enforces writing unit tests, clearly formulates decomposition and responsibility in the code, and ultimately requires running tests. Since we don't pay for each token on a local graphics card, we can painlessly go through a couple of extra iterations when the model sees its mistakes and corrects them. Here is a basic example of an AGENTS.md file for this:</p><pre><code># AGENTS.md
+
+## Code Writing Rules
+
+- Maximum size of a single code file - 300-500 lines. If a file becomes larger, perform decomposition.
+- The main principle is a single, cohesive responsibility per module.
+- Do not sacrifice logical coherence or code readability to adhere to arbitrary line count limits.
+- Separate files based on their functional purpose, not just line count.
+- All functions must be covered by unit tests.
+- When adding or modifying functionality, as well as fixing bugs, be sure to add corresponding unit tests.
+
+## Pre-submission Check
+
+- All tests and builds must pass without errors or warnings.
+- Do not weaken checks or remove tests to pass testing successfully.
+
+## Main Rule
+
+**Never commit changes without a direct user request.**</code><div><a href="https://sourcecraft.dev/"><span></span></a></div></pre><figure><img loading="lazy" src="https://habrastorage.org/r/w1560/extt/12/e9/64/12e9643066a11e98b09b541aa7dc52c5.png"/></figure><p>As a result, we have achieved a synergistic effect, or one might say, even emergence. MTP + Quantization + MoE + AGENTS.md (Clean Code) + Sharp Template + Pi agent + subtask4llm skill + plan.md = a working process with a coding agent, running on your home graphics card. Now your source code is under your control, and large corporations won't lay their dirty hands on it! You can also run an uncensored model for White Hat hacking and not suffer from constant refusals from proprietary models when trying to hack something.</p><figure><img loading="lazy" src="https://habrastorage.org/r/w1560/extt/96/04/ae/9604ae879d39c6751dd8938319981dbc.png"/></figure></div>
+  </main>
+  <footer>
+    Translation generated with Gemini 2.5 Flash-Lite.
+    The original article remains the source of record.
+  </footer>
+</body>
+</html>

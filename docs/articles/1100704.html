@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Eight AI agents and five ways to know what they are doing: how we connected OpenCode, Kilo, and Pi to the Mac notch</title>
+  <meta name="description" content="Lumio is a free app for the MacBook notch. It shows what your AI agents are currently doing: who is working, who has finished, who is waiting for command permission. You can grant permission directly from the notch, without switching to the terminal. There&#x27;s also a pixel office where each sessi">
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.65;
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 32px 20px 64px;
+      color: #1f2328;
+    }
+    header {
+      border-bottom: 1px solid #d8dee4;
+      margin-bottom: 28px;
+      padding-bottom: 20px;
+    }
+    .source {
+      color: #57606a;
+      font-size: 0.95rem;
+    }
+    img, video, iframe {
+      max-width: 100%;
+      height: auto;
+    }
+    pre {
+      overflow-x: auto;
+      padding: 16px;
+      background: #f6f8fa;
+      border-radius: 6px;
+    }
+    code {
+      font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+    }
+    blockquote {
+      border-left: 4px solid #d0d7de;
+      margin-left: 0;
+      padding-left: 16px;
+      color: #57606a;
+    }
+    footer {
+      border-top: 1px solid #d8dee4;
+      margin-top: 40px;
+      padding-top: 20px;
+      color: #57606a;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Eight AI agents and five ways to know what they are doing: how we connected OpenCode, Kilo, and Pi to the Mac notch</h1>
+    <p>Lumio is a free app for the MacBook notch. It shows what your AI agents are currently doing: who is working, who has finished, who is waiting for command permission. You can grant permission directly from the notch, without switching to the terminal. There&#x27;s also a pixel office where each session is a person at their desk. Until today, Lumio understood Claude Code, Codex, Cursor, GitHub Copilot, and Antigravity. In version 1.3, OpenCode, Kilo Code, and Pi were added. It might seem like just three more lines in the settings. In reality, it&#x27;s three different ways to connect and a week of work, two days of which were spent not on code, but on testing it with real agents without paid keys. Read more</p>
+    <p class="source">
+      Machine-translated from Habr.
+      <a href="https://habr.com/ru/articles/1100704/?utm_campaign=1100704&amp;utm_source=habrahabr&amp;utm_medium=rss">Read the original Russian article</a>.
+      Wed, 28 Oct 2026 14:36:02 GMT
+    </p>
+  </header>
+  <main>
+<div><figure><img loading="lazy" src="https://habrastorage.org/r/w1560/extt/c3/54/a9/c354a98b133b63e8ab7a95b82fdc1741.png"/></figure><p>Lumio is a free app for the MacBook notch. It shows what your AI agents are currently doing: who is working, who has finished, who is waiting for command permission. You can grant permission directly from the notch, without switching to the terminal. There's also a pixel office where each session is a person at their desk.</p><p>Until today, Lumio understood Claude Code, Codex, Cursor, GitHub Copilot, and Antigravity. In version 1.3, OpenCode, Kilo Code, and Pi were added. It might seem like just three more lines in the settings. In reality, it's three different ways to connect and a week of work, two days of which were spent not on code, but on testing it with real agents without paid keys.</p><figure><img loading="lazy" src="https://habrastorage.org/r/w1560/extt/63/82/28/6382281c3707ed3ab4aaa20f77129129.png"/></figure><h4>Each agent has its own language</h4><p>Here's how Lumio learns about events from different agents:</p><div><div><table><tbody><tr><th><p>Agent</p></th><th><p>How Lumio knows what's happening</p></th></tr><tr><td><p>Claude Code</p></td><td><p>hooks in <code>~/.claude/settings.json</code>, our script writes a line to the log</p></td></tr><tr><td><p>Codex</p></td><td><p>the only <code>notify</code> slot is already taken by many, so we read session files <code>~/.codex/sessions/…/rollout-*.jsonl</code></p></td></tr><tr><td><p>Cursor</p></td><td><p>hooks + a small Lumio extension, through which the reply to the permission request comes</p></td></tr><tr><td><p>GitHub Copilot</p></td><td><p>its own hooks file <code>~/.copilot/hooks/lumio.json</code></p></td></tr><tr><td><p>Antigravity</p></td><td><p>its hooks, our script writes a line to the log</p></td></tr><tr><td><p>OpenCode, Kilo</p></td><td><p>JS plugin in <code>~/.config/opencode/plugins/</code> and <code>~/.config/kilo/plugins/</code></p></td></tr><tr><td><p>Pi</p></td><td><p>extension in <code>~/.pi/agent/extensions/</code></p></td></tr></tbody></table></div></div><p>Inside Lumio, all this is reduced to one format — Claude Code hook events: <code>SessionStart</code>, <code>UserPromptSubmit</code>, <code>PreToolUse</code>, <code>PostToolUse</code>, <code>Stop</code>. We chose it not out of love for Anthropic, but because it was the first and cards, the office, and daily summaries are already written for it. Each new agent is a translator into this format, not a new branch in the interface.</p><p>For Pi, the translator is about 260 lines. The main function is one line in the log:</p><pre><code>function emit(ctx, name, fields) { 
+  try { 
+    const id = sessionID(ctx) 
+    if (!id) return 
+    const line = { session_id: `pi-${id}`, hook_event_name: name } 
+    const cwd = cwdOf(ctx) 
+    if (cwd) line.cwd = cwd 
+    line.ts = Date.now() / 1000 
+    line.lumio_agent =
+  </main>
+  <footer>
+    Translation generated with Gemini 2.5 Flash-Lite.
+    The original article remains the source of record.
+  </footer>
+</body>
+</html>

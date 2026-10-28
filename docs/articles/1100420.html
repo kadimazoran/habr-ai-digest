@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>I asked AI to teach me to communicate directly with hardware</title>
+  <meta name="description" content="I wanted to remove all layers of abstraction between myself and the computer. To leave my intention, AI, and the bytes that the processor executes. In the process, programs for RISC-V and ARM64 appeared, a flash drive with its own UEFI application, a physical Dell, colored objects on the screen, and">
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.65;
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 32px 20px 64px;
+      color: #1f2328;
+    }
+    header {
+      border-bottom: 1px solid #d8dee4;
+      margin-bottom: 28px;
+      padding-bottom: 20px;
+    }
+    .source {
+      color: #57606a;
+      font-size: 0.95rem;
+    }
+    img, video, iframe {
+      max-width: 100%;
+      height: auto;
+    }
+    pre {
+      overflow-x: auto;
+      padding: 16px;
+      background: #f6f8fa;
+      border-radius: 6px;
+    }
+    code {
+      font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+    }
+    blockquote {
+      border-left: 4px solid #d0d7de;
+      margin-left: 0;
+      padding-left: 16px;
+      color: #57606a;
+    }
+    footer {
+      border-top: 1px solid #d8dee4;
+      margin-top: 40px;
+      padding-top: 20px;
+      color: #57606a;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>I asked AI to teach me to communicate directly with hardware</h1>
+    <p>I wanted to remove all layers of abstraction between myself and the computer. To leave my intention, AI, and the bytes that the processor executes. In the process, programs for RISC-V and ARM64 appeared, a flash drive with its own UEFI application, a physical Dell, colored objects on the screen, and a cat to which a new world can be transferred via Bluetooth. Not all layers disappeared. But it became clearer what exactly they do and how much work they usually do for us. Read more</p>
+    <p class="source">
+      Machine-translated from Habr.
+      <a href="https://habr.com/ru/articles/1100420/?utm_campaign=1100420&amp;utm_source=habrahabr&amp;utm_medium=rss">Read the original Russian article</a>.
+      Wed, 28 Oct 2026 11:37:54 GMT
+    </p>
+  </header>
+  <main>
+<div><p>I wanted to remove all layers of abstraction between myself and the computer. To leave my intention, AI, and the bytes that the processor executes.</p><p>In the process, programs for RISC-V and ARM64 appeared, a flash drive with its own UEFI application, a physical Dell, colored objects on the screen, and a cat to which a new world can be transferred via Bluetooth. Not all layers disappeared. But it became clearer what exactly they do and how much work they usually do for us.</p><p>I named the project Rabbit Stack. My main job has now sucked it in: I most likely won't be able to work on it before the New Year. That's why I want to show what the AI and I have achieved, where the open questions remain, and try to find people who would be interested in continuing together.</p><figure><img alt="Home setup: Dell, screen, keyboard, and Mac from which the work was done." loading="lazy" src="https://habrastorage.org/r/w1560/extt/a2/db/40/a2db40d5f3fbaf6641812490e664d12f.png"/><div><figcaption>Home setup: Dell, screen, keyboard, and Mac from which the work was done.</figcaption></div></figure><h3>1. How close to the hardware can you get with AI?</h3><p>I wanted to understand how my description of what I want turns into machine action. Usually, a programming language, libraries, a compiler, an operating system, and drivers are in between. What happens if we start removing these layers? Can AI help a person who still understands how a computer works to go through this path?</p><p>One of the first experiments was literally a reference to "The Matrix." An ARM64 program offered a choice between a red or blue pill. For 'r' or 'R', it responded with 'Wake up, Neo.', and for 'b', with 'The story ends.'. For other bytes and the end of input, there was a separate response and exit code.</p><p>We checked all 256 single-byte values and the end of input. The program was small, its behavior could be fully described and then verified.</p><p>However, it still ran as a macOS process. It still had calls to <code>getchar</code> and <code>puts</code>, and the assembly used an assembler and linker. We removed C from the source code, but it was still very far from "only AI and hardware.".</p><p>We decided to make the next experiment so that the machine instructions could be seen in their entirety.</p><h3>2. Eight instructions, 32 bytes, and the letter A</h3><p>For this, we chose RV32I — the basic 32-bit RISC-V instruction set — and the QEMU emulator. The executable program had no OS, firmware, or standard library. It was a 32-byte file.</p><p>Eight instructions did several things: they placed the UART address in a register, wrote the ASCII code for the letter 'A' there, and then informed the QEMU test device of successful completion.</p><p>The task was small enough for precise expectations:</p><pre><code>Program size: 32 bytes
+Output: exactly A, no newline
+Exit code: 0
+</code><div><a href="https://sourcecraft.dev/"><span></span></a></div></pre><p>It's important here to distinguish between the machine we were working on and the machine we were simulating. On the Mac, there were still macOS and QEMU. Inside QEMU, our RISC-V instructions were executed without a guest OS. The emulator provided the processor, memory, and devices for this experiment.</p><p>The next step was changing 'A' to 'B'. In the instruction that placed a number in the register, the value changed from 65 to 66:</p><pre><code>A: 13 03 10 04
+B: 13 03 20 04
+</code><div><a href="https://sourcecraft.dev/"><span></span></a></div></pre><p>One byte changed. We could predict the change in advance, look at the file, and then check the behavior.</p><p>For me, this was the point of the small experiment. The result fit in my head: I could ask what a specific part of these 32 bytes was responsible for, change it, and see the consequence.</p><figure><img alt="Diagram from sources: changing A to B changes one instruction byte in the 32-byte image" loading="lazy" src="https://habrastorage.org/r/w1560/extt/76/88/16/7688162ce124445cc2fa90d9fa99bce8.png"/><div><figcaption>Diagram from sources: changing A to B changes one instruction byte in the 32-byte image</figcaption></div></figure><h3>3. AI explains. But who checks the result?</h3><p>The lower we went, the more important the verification method became. A convincing explanation of an instruction doesn't mean the program does what's expected.</p><p>The workflow revolved around small experiments. First, what should happen and what would be considered an error. Then, the AI's suggestion, analysis, assembly, and observation. For simple output, you can check the file size, the exact response bytes, and the exit code. For changes, compare artifacts and ensure that removing the patch restores the original result.</p><p>Incorrect inputs also needed to be checked. What happens if you request an unknown module, exceed the allowed size, or apply a change to a different version of the program? The system should refuse, not try to guess the intention.</p><p>A principle emerged in the project: AI suggests, the verification code accepts or rejects, the observed result changes the plan.</p><p>But this didn't absolve us from checking the checks themselves. If the AI wrote both the converter and the test, they could share a single error. Comparisons with other tools, precise expected results, and real runs were needed. Later, a physical computer vividly showed why one emulator is not enough.</p><h3>4. Behavior separate, computer separate</h3><p>When the first result worked, another question arose: how to describe the desired action so that the device addresses of a specific machine are not hardcoded into it?</p><p>In Rabbit, a separation was introduced. One description stored the behavior: for example, output a character and terminate. Another stored information about the target machine: architecture, output method, device addresses, result format, and execution method. We called this second set the Target Pack.</p><p>Schematically, the path looked like this:</p><figure><img alt=
+  </main>
+  <footer>
+    Translation generated with Gemini 2.5 Flash-Lite.
+    The original article remains the source of record.
+  </footer>
+</body>
+</html>

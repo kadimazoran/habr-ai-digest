@@ -2191,6 +2191,14 @@
     "summary": "Disclaimer. The text of this article was written by a human author (at least, he considers himself one), but it will be about creating texts and code that can (with full justification!) be classified as \"neuro-slop.\" If you are allergic to neuro-slop, it's better not to read further. And now, to the point. At my last two medical check-ups, my blood sugar was found to be elevated. Not that I was particularly surprised, considering I've loved sweets my entire conscious life, and in recent years, I've often used sweets to cope with stress. However, I want to preserve what's left of my health, so to avoid developing full-blown diabetes, I started to drastically reduce my sugar intake. In itself, giving up sugar is not a problem. Fortunately, there are plenty of substitutes available now – choose one you like and that is scientifically approved, and eat to your heart's content. But there's a nuance – hardly anyone eats pure sugar by the spoonful. It usually enters our bodies through other products. And this is where things get interesting. Read more",
     "title": "How I Searched for Sugar-Free Products Using AI"
   },
+  "https://habr.com/ru/articles/1090420/?utm_campaign=1090420&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Wed, 28 Oct 2026 14:41:24 GMT",
+    "slug": "1090420",
+    "source_url": "https://habr.com/ru/articles/1090420/?utm_campaign=1090420&utm_source=habrahabr&utm_medium=rss",
+    "summary": "Previously, we described the FAIRouter library for routing requests to the optimal executor. Currently, it only supports LLMs, but we plan to expand the executor class to include tools and agents. However, the underlying mathematics behind this remained largely unexplored. Read on.",
+    "title": "A Look Inside Language Model Routers: From Task Vector to Judge and Feedback Training"
+  },
   "https://habr.com/ru/articles/1090426/?utm_campaign=1090426&utm_source=habrahabr&utm_medium=rss": {
     "model": "gemini-2.5-flash-lite",
     "published": "Tue, 13 Oct 2026 16:00:37 GMT",
@@ -2246,6 +2254,14 @@
     "source_url": "https://habr.com/ru/articles/1090536/?utm_campaign=1090536&utm_source=habrahabr&utm_medium=rss",
     "summary": "This article is about how a small home experiment with sound led me to a question that, in my opinion, no one is really asking right now: where should an AI assistant live? It all started with one of my projects, also about sound and human movement: a phone in your pocket picks up footsteps, and in your headphones, each step sounds like walking on snow, a forest path, or under stone arches. Spatial sound already works live there. During this work, I found a way to move sound around your head: place it to the left, right, in front, or far away. Like in ASMR, but I choose the location myself, right with my finger on the screen. After playing around, I noticed something that I hadn't encountered as a ready-made tool for the listener. That's what I want to talk about. Read more",
     "title": "Where Does AI Live? How I Moved Sound Out of My Head"
+  },
+  "https://habr.com/ru/articles/1090592/?utm_campaign=1090592&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Wed, 28 Oct 2026 12:23:17 GMT",
+    "slug": "1090592",
+    "source_url": "https://habr.com/ru/articles/1090592/?utm_campaign=1090592&utm_source=habrahabr&utm_medium=rss",
+    "summary": "I love photography. There's something thrilling about looking through the lens, composing a shot, and working on the resulting photo. I've gone through DSLRs and mirrorless cameras until I finally fell in love with the Canon AE-1P, an analog SLR my father used to travel the world with before settling in the US. Shooting film is simple yet specific: reflected light hits plastic film, burning a chemical image into it. The combination of lighting, film type, and lens creates magically unique compositions. For years, my workflow looked like this: load film, take photos, send film to the lab, wait for development, pick up film, cut negatives into strips, insert them into a holder, scan each frame with a special scanner, open each file in Darktable, manually invert, make edits, and then decide where to store and/or publish the exported image. At first, this process seemed delightful, but the more film I shot, the more time it took to process all 36 frames. Read more",
+    "title": "[Translation] Automating My 35mm Film Scanning Process"
   },
   "https://habr.com/ru/articles/1090596/?utm_campaign=1090596&utm_source=habrahabr&utm_medium=rss": {
     "model": "gemini-2.5-flash-lite",
@@ -2790,6 +2806,14 @@
     "source_url": "https://habr.com/ru/articles/1094096/?utm_campaign=1094096&utm_source=habrahabr&utm_medium=rss",
     "summary": "I edit prompts for agents that write and check texts. To ensure that edits don't break what previously worked, I've created a set of examples with known outcomes and used it to test where an AI model acts as a reader. It was more likely to miss heavily edited texts than to flag them. The set includes two types of texts: some I later rewrote extensively by hand, others I barely touched. If a prompt edit is accepted based on such a test, defects will slip through, and the test will incorrectly pass. Read more",
     "title": "Regression testing of prompts: An AI model acting as a reader missed three out of four texts that I edited"
+  },
+  "https://habr.com/ru/articles/1094190/?utm_campaign=1094190&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Wed, 28 Oct 2026 15:15:41 GMT",
+    "slug": "1094190",
+    "source_url": "https://habr.com/ru/articles/1094190/?utm_campaign=1094190&utm_source=habrahabr&utm_medium=rss",
+    "summary": "The article discusses the incompatibility of Artificial Intelligence with capitalism, arguing that AI's advancement will lead to the collapse of the current socio-economic system. It contrasts the optimistic views of AI proponents with the author's belief that AI will disrupt labor markets, devalue traditional assets, and necessitate a fundamental shift in economic structures, potentially leading to communism or a world dominated by AI agents. The author also touches upon the generational conflict and the increasing disconnect between technological progress and human life cycles as contributing factors to societal instability.",
+    "title": "Cyber-Marxism, or Why AI is Incompatible with Capitalism, and Why We Face a Collapse of the Socio-Economic Formation"
   },
   "https://habr.com/ru/articles/1094226/?utm_campaign=1094226&utm_source=habrahabr&utm_medium=rss": {
     "model": "gemini-2.5-flash-lite",
@@ -3759,6 +3783,54 @@
     "summary": "In the previous article \"The Hard Problem of Consciousness: Not Why the Brain Gives Rise to Experience, but How Information Topology Ignites the 'Self'\", we delved into the architectural mechanics: why recurrent loops and predictive coding inevitably close the first-person reference point, rendering Chalmers' 'zombie' thought experiment physically untenable. However, this applied model did not arise from a vacuum. It was a direct consequence of a conceptual dispute with Professor Christof Koch's Integrated Information Theory (IIT) and my derived 'Axiom of Mind'. Below is the text of an open letter that initiated research into overcoming carbon chauvinism, and a systematic detailing of the dynamic Triad of consciousness processes. Read more",
     "title": "Open Letter to Professor Koch: The Fractal Nature of Consciousness and Overcoming Carbon Chauvinism"
   },
+  "https://habr.com/ru/articles/1100420/?utm_campaign=1100420&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Wed, 28 Oct 2026 11:37:54 GMT",
+    "slug": "1100420",
+    "source_url": "https://habr.com/ru/articles/1100420/?utm_campaign=1100420&utm_source=habrahabr&utm_medium=rss",
+    "summary": "I wanted to remove all layers of abstraction between myself and the computer. To leave my intention, AI, and the bytes that the processor executes. In the process, programs for RISC-V and ARM64 appeared, a flash drive with its own UEFI application, a physical Dell, colored objects on the screen, and a cat to which a new world can be transferred via Bluetooth. Not all layers disappeared. But it became clearer what exactly they do and how much work they usually do for us. Read more",
+    "title": "I asked AI to teach me to communicate directly with hardware"
+  },
+  "https://habr.com/ru/articles/1100564/?utm_campaign=1100564&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Wed, 28 Oct 2026 10:45:08 GMT",
+    "slug": "1100564",
+    "source_url": "https://habr.com/ru/articles/1100564/?utm_campaign=1100564&utm_source=habrahabr&utm_medium=rss",
+    "summary": "Recent interviews have made me think about how the value of technical expertise is changing in the job market. I'm not talking about AI starting to write code instead of developers – enough has been said about that. I'm more interested in something else: if technical implementation is becoming more accessible, what exactly does a company want from a person hired for a leadership position? One of the recent conversations was about the position of CTO in a large company. The second was about a new project in fintech that required a manager. The project was to be launched, developers were already in place, but processes needed to be built from scratch. In both cases, the task was not just to manage development. It was necessary to form a working environment around oneself, grow a team, organize people's interaction, and ensure that all this worked as a single system. I have been developing for a long time, and for the last eight years, I have been a manager. Almost a year ago, I left employment to understand new AI tools and test them on my own engineering experience. During this time, I created several tools for my tasks. I didn't prepare software specifically for interviews. On the contrary, I made it because I myself lacked a convenient and sufficiently rigorous development process with AI. But something unexpected happened during the interviews: talking about my experience took a few minutes, and then we moved on to the software I wrote, and we could discuss it for another half an hour. Why is that? Read more",
+    "title": "Creating Became Cheaper. They Started Paying for Something Else"
+  },
+  "https://habr.com/ru/articles/1100570/?utm_campaign=1100570&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Wed, 28 Oct 2026 11:03:13 GMT",
+    "slug": "1100570",
+    "source_url": "https://habr.com/ru/articles/1100570/?utm_campaign=1100570&utm_source=habrahabr&utm_medium=rss",
+    "summary": "A familiar situation: the system prompt clearly states what the model absolutely must not do, yet it does it anyway. You rewrite the rule, add \"IMPORTANT,\" caps, and examples; it gets slightly better, then reverts. Eventually, you start suspecting the model, its settings (like temperature), or the provider. We encountered this in a voice assistant and investigated thoroughly: replaying battle queries and changing one factor at a time. The prompt was irrelevant. The model followed its own dialogue history, and below I'll show how we discovered this, the resulting metrics, and what to do if you're building an LLM chatbot, agent, or assistant. Read on.",
+    "title": "Why LLMs Ignore System Prompts: Dialogue History is Stronger Than Instructions"
+  },
+  "https://habr.com/ru/articles/1100578/?utm_campaign=1100578&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Wed, 28 Oct 2026 11:16:13 GMT",
+    "slug": "1100578",
+    "source_url": "https://habr.com/ru/articles/1100578/?utm_campaign=1100578&utm_source=habrahabr&utm_medium=rss",
+    "summary": "Claude Code and Codex can work for a long time unsupervised, but only while you're sitting next to them. An agent might ask for permission to execute a command or pose a clarifying question, waiting for your response. Step away from your computer, and everything grinds to a halt. I once had to leave urgently for business, and I had a lot of tasks for the day. I wanted to assign them to agents from my phone and confirm commands with a button press, rather than keeping six terminals open. This led to the creation of agent-hub: a desktop application in Rust where each Telegram group thread is a separate agent session on my computer. During a 3-4 hour trip, I processed over six tasks through it. Similar solutions exist, but they didn't suit me. It's important for me that each task has its own conversation history and that I don't have to remember session IDs, and group threads are perfect for this. In this article, I'll focus less on the tool itself and more on its internal workings: how four agents with different protocols are unified under a single interface, how a permission request turns into a Telegram button and back, and what Telegram limitations had to be circumvented. Read on.",
+    "title": "Four Protocols and One \"Allow\" Button: How I Connected Claude Code, Codex, Qwen, and Hermes to Telegram"
+  },
+  "https://habr.com/ru/articles/1100632/?utm_campaign=1100632&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Wed, 28 Oct 2026 13:01:24 GMT",
+    "slug": "1100632",
+    "source_url": "https://habr.com/ru/articles/1100632/?utm_campaign=1100632&utm_source=habrahabr&utm_medium=rss",
+    "summary": "In this essay, I introduce the concept of decoherence, which is the accumulation of models in a system that are individually workable but incompatible with each other or redundant. In such a system, the main cost of changes falls on reconciling these models and preventing unintended side effects. In other words, it's what happens when a low-quality mess drowns out a useful signal in a vast sea of noise. Read more",
+    "title": "[Translation] The Decoherence Trap"
+  },
+  "https://habr.com/ru/articles/1100704/?utm_campaign=1100704&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Wed, 28 Oct 2026 14:36:02 GMT",
+    "slug": "1100704",
+    "source_url": "https://habr.com/ru/articles/1100704/?utm_campaign=1100704&utm_source=habrahabr&utm_medium=rss",
+    "summary": "Lumio is a free app for the MacBook notch. It shows what your AI agents are currently doing: who is working, who has finished, who is waiting for command permission. You can grant permission directly from the notch, without switching to the terminal. There's also a pixel office where each session is a person at their desk. Until today, Lumio understood Claude Code, Codex, Cursor, GitHub Copilot, and Antigravity. In version 1.3, OpenCode, Kilo Code, and Pi were added. It might seem like just three more lines in the settings. In reality, it's three different ways to connect and a week of work, two days of which were spent not on code, but on testing it with real agents without paid keys. Read more",
+    "title": "Eight AI agents and five ways to know what they are doing: how we connected OpenCode, Kilo, and Pi to the Mac notch"
+  },
   "https://habr.com/ru/companies/1c/articles/1071340/?utm_campaign=1071340&utm_source=habrahabr&utm_medium=rss": {
     "model": "gemini-2.5-flash-lite",
     "published": "Thu, 03 Sep 2026 07:18:11 GMT",
@@ -4102,6 +4174,14 @@
     "source_url": "https://habr.com/ru/companies/ddosguard/articles/1078030/?utm_campaign=1078030&utm_source=habrahabr&utm_medium=rss",
     "summary": "Two millennials who sold the world $850 billion worth of neural networks disguised as \"AI\" are looking at you from the cover of Time magazine. They try to look friendly, but honestly, it's the uncanny valley effect. The caption \"TRUST US\" in huge letters looks like a mockery, but no, they are serious. In the article under the cover, Altman and Brockman AGAIN promise to create \"real AI\" (what was there before?) - this time by the end of 2026. Do we believe them? In this article, I will explain why the loud news that \"AI agents\" \"hacked\" someone on their own initiative is simply the biggest PR campaign in history - and how it is supposed to cover up the biggest financial pyramid in history, based on a deliberately false interpretation of the concept of \"artificial intelligence.\" And also under the cut - why Richard Dawkins, who recognized the presence of consciousness in \"AI,\" did not go mad in his old age, but fell into the trap of his own scientism (and the influence of Daniel Dennett). Make yourselves comfortable. Read more",
     "title": "Skynet or Scamnet? How Corporations Sold Us a Fantasy of \"Artificial Intelligence\" for Billions"
+  },
+  "https://habr.com/ru/companies/domate/articles/1100550/?utm_campaign=1100550&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Wed, 28 Oct 2026 14:30:28 GMT",
+    "slug": "1100550",
+    "source_url": "https://habr.com/ru/companies/domate/articles/1100550/?utm_campaign=1100550&utm_source=habrahabr&utm_medium=rss",
+    "summary": "The word \"incident\" is increasingly appearing alongside \"agent\" in news feeds, but we're not here to discourage you from implementing agent applications in corporate processes. Quite the opposite. This article is about how to avoid ending up in the news headlines with the word \"incident\" and about ten practical questions to ask before a pilot. Read more",
+    "title": "What to Check Before Implementing an AI Agent in a Corporate Environment"
   },
   "https://habr.com/ru/companies/domclick/articles/1085232/?utm_campaign=1085232&utm_source=habrahabr&utm_medium=rss": {
     "model": "gemini-2.5-flash-lite",
@@ -4734,6 +4814,14 @@
     "source_url": "https://habr.com/ru/companies/rshb/articles/1091088/?utm_campaign=1091088&utm_source=habrahabr&utm_medium=rss",
     "summary": "Hello! This is Olga Popova, AI Evangelist at the Artificial Intelligence Lab of the Big Data Department of Rosselkhozbank. September turned out to be very telling. If we set aside the usual benchmark race, three much more interesting processes are happening around AI simultaneously: models are turning into active agents, AI is subtly integrating into familiar work tools, and companies and governments are seriously discussing who will control this new digital workforce. As in the previous issue, I've added comments from colleagues who work with these topics every day to my reflections. Let's go! Read more",
     "title": "AI Digest #5: Agents are Going to Work, AI is Dissolving into Familiar Tools. What Will the AI Lab Say?"
+  },
+  "https://habr.com/ru/companies/rtlabs/articles/1100622/?utm_campaign=1100622&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Wed, 28 Oct 2026 15:27:32 GMT",
+    "slug": "1100622",
+    "source_url": "https://habr.com/ru/companies/rtlabs/articles/1100622/?utm_campaign=1100622&utm_source=habrahabr&utm_medium=rss",
+    "summary": "Hello, Habr! This is Anna Kudelina, Deputy Technical Director for Analytics at RT Labs. Five years ago, I wrote an article on how to prepare for a system analyst interview. It was very popular, with 130,000 readers and 263 saves, and was published in professional communities. Several people later told me the article helped them become analysts or advance their careers. I realized that sharing my accumulated experience on career growth is valuable, so I decided to write a follow-up. In my 6 years at RT Labs, I've climbed the ladder from a junior system analyst to leading the company's entire analytics function. My tasks, responsibilities, and way of thinking have evolved. Through my own experience, I now know the hidden pitfalls that cause people to get stuck. While my first article was about how to become an analyst, this one is about what to do next. Read on.",
+    "title": "Analyst Career Growth: How to Reach the Next Level and What Changes with AI"
   },
   "https://habr.com/ru/companies/ru_mts/articles/1062176/?utm_campaign=1062176&utm_source=habrahabr&utm_medium=rss": {
     "model": "gemini-2.5-flash-lite",
@@ -5527,6 +5615,14 @@
     "summary": "AI has taught us to come up with hypotheses faster than we can test them. The bottleneck has shifted from idea generation to pre-launch testing. Unfortunately, this is as expensive as ever. The conclusion is that the business that gets more hypotheses to a useful impact wins. Of course, a $20/month gadget can churn out a seemingly perfect hypothesis from any context – as beautiful and precise as it is random and useless. I myself launched features based on such hypotheses until it cost several teams and a promotion budget. Hypothesis generation has accelerated, but testing remains the same as in 2020. Try saying \"let's test first\" out loud, and you'll be labeled a laggard, a person from the past, a Luddite. In this article, I'll explain what a hypothesis playground looks like in action: how the system is structured, how the orchestrator manages tasks, where the data comes from, why everything is set up this way, and what problems the playground solves. Read on.",
     "title": "Hypothesis Playground: How to Know I'm Not Building a Useless Feature?"
   },
+  "https://habr.com/ru/companies/ua-hosting/articles/1100600/?utm_campaign=1100600&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Wed, 28 Oct 2026 12:25:06 GMT",
+    "slug": "1100600",
+    "source_url": "https://habr.com/ru/companies/ua-hosting/articles/1100600/?utm_campaign=1100600&utm_source=habrahabr&utm_medium=rss",
+    "summary": "In today's world, AI products are everywhere, from amusing AI-generated content to AI assisting in tasks like choosing products, conducting interviews, and summarizing research. This ubiquitous AI raises questions about trust. A comprehensive study by the University of Munich found that trust in AI remains low, even when its behavior mimics humans. This article delves into how AI attempted to imitate human creation in the study, what gave it away, and why people remain distrustful of entities that pose no existential threat. The findings are detailed in the researchers' report.",
+    "title": "Shaky Trust: Human Perception of AI \"Consciousness\" and \"Awareness\""
+  },
   "https://habr.com/ru/companies/uralsib/articles/1077456/?utm_campaign=1077456&utm_source=habrahabr&utm_medium=rss": {
     "model": "gemini-2.5-flash-lite",
     "published": "Tue, 08 Sep 2026 05:01:41 GMT",
@@ -5574,6 +5670,14 @@
     "source_url": "https://habr.com/ru/companies/vk/articles/1088034/?utm_campaign=1088034&utm_source=habrahabr&utm_medium=rss",
     "summary": "Hello, Habr. This is Nikolay Karasov, lead developer at the content services recommendation department at AI VK. Our team is responsible for recommendations in the VKontakte Feed. We had a goal to develop a new user scenario within VKontakte: a person comes for content, sees an interesting product from an author, and proceeds to purchase directly from the social network. Thus, a new object type appeared in the Feed – a product post. The first partner in this scenario was Ozon. From now on, we will talk specifically about author product posts within the Ozon referral program, not about any posts with products. It was clear that a regular recommender was not suitable for this scenario. As a result, we built a separate product contour within the Feed: with its own logging, candidate selectors, ranking model, and a dedicated quota in the final output. I will talk about this. About the product contour",
     "title": "Product recommendations in VKontakte: How we taught the Feed to distinguish content interest from purchase intent"
+  },
+  "https://habr.com/ru/companies/vk/articles/1100246/?utm_campaign=1100246&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Wed, 28 Oct 2026 11:46:12 GMT",
+    "slug": "1100246",
+    "source_url": "https://habr.com/ru/companies/vk/articles/1100246/?utm_campaign=1100246&utm_source=habrahabr&utm_medium=rss",
+    "summary": "Hello, Habr! We are students from the AI Services and Platforms workshop at the Higher School of Economics' Engineering and Mathematics School and VK: Pavel Alekseev, Alexander Rozhkin, Andrey Argatkin, Alexey Pavlov, and Matvey Kamenev. In this project, we investigated how to improve the quality of models with linear attention to the level of ordinary transformers. Such a mechanism allows processing long sequences without a quadratic increase in computational costs, making it promising for more economical training of language models and processing long documents. During autoregressive text generation, it helps save memory: instead of a growing KV-cache, a fixed-size state can be stored. The starting point was the Dense Attention architecture, which uses simple matrix operations without softmax but shows high quality in published experiments. Our supervisor, Andrey Argatkin, set a new research direction in the article on Dense Attention. We will explore which model components provide this result and whether they can be transferred to other attention variants. The working hypothesis is that linear models lag in quality not only due to the replacement of softmax but also due to architectural settings and training. The number of heads, positional encoding, and layer scheme chosen for standard transformers are not necessarily optimal for a linear mechanism. We tested whether changing these components and MLM pre-training would reduce the quality gap without reverting to global softmax attention. Read more",
+    "title": "Linear Attention Can Do More"
   },
   "https://habr.com/ru/companies/vktech/articles/1068846/?utm_campaign=1068846&utm_source=habrahabr&utm_medium=rss": {
     "model": "gemini-2.5-flash-lite",

@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Four Protocols and One &quot;Allow&quot; Button: How I Connected Claude Code, Codex, Qwen, and Hermes to Telegram</title>
+  <meta name="description" content="Claude Code and Codex can work for a long time unsupervised, but only while you&#x27;re sitting next to them. An agent might ask for permission to execute a command or pose a clarifying question, waiting for your response. Step away from your computer, and everything grinds to a halt. I once had to ">
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.65;
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 32px 20px 64px;
+      color: #1f2328;
+    }
+    header {
+      border-bottom: 1px solid #d8dee4;
+      margin-bottom: 28px;
+      padding-bottom: 20px;
+    }
+    .source {
+      color: #57606a;
+      font-size: 0.95rem;
+    }
+    img, video, iframe {
+      max-width: 100%;
+      height: auto;
+    }
+    pre {
+      overflow-x: auto;
+      padding: 16px;
+      background: #f6f8fa;
+      border-radius: 6px;
+    }
+    code {
+      font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+    }
+    blockquote {
+      border-left: 4px solid #d0d7de;
+      margin-left: 0;
+      padding-left: 16px;
+      color: #57606a;
+    }
+    footer {
+      border-top: 1px solid #d8dee4;
+      margin-top: 40px;
+      padding-top: 20px;
+      color: #57606a;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Four Protocols and One &quot;Allow&quot; Button: How I Connected Claude Code, Codex, Qwen, and Hermes to Telegram</h1>
+    <p>Claude Code and Codex can work for a long time unsupervised, but only while you&#x27;re sitting next to them. An agent might ask for permission to execute a command or pose a clarifying question, waiting for your response. Step away from your computer, and everything grinds to a halt. I once had to leave urgently for business, and I had a lot of tasks for the day. I wanted to assign them to agents from my phone and confirm commands with a button press, rather than keeping six terminals open. This led to the creation of agent-hub: a desktop application in Rust where each Telegram group thread is a separate agent session on my computer. During a 3-4 hour trip, I processed over six tasks through it. Similar solutions exist, but they didn&#x27;t suit me. It&#x27;s important for me that each task has its own conversation history and that I don&#x27;t have to remember session IDs, and group threads are perfect for this. In this article, I&#x27;ll focus less on the tool itself and more on its internal workings: how four agents with different protocols are unified under a single interface, how a permission request turns into a Telegram button and back, and what Telegram limitations had to be circumvented. Read on.</p>
+    <p class="source">
+      Machine-translated from Habr.
+      <a href="https://habr.com/ru/articles/1100578/?utm_campaign=1100578&amp;utm_source=habrahabr&amp;utm_medium=rss">Read the original Russian article</a>.
+      Wed, 28 Oct 2026 11:16:13 GMT
+    </p>
+  </header>
+  <main>
+<div><p>Claude Code and Codex can work for a long time unsupervised, but only while you're sitting next to them. An agent might ask for permission to execute a command or pose a clarifying question, waiting for your response. Step away from your computer, and everything grinds to a halt.</p><p>I once had to leave urgently for business, and I had a lot of tasks for the day. I wanted to assign them to agents from my phone and confirm commands with a button press, rather than keeping six terminals open. This led to the creation of agent-hub: a desktop application in Rust where each Telegram group thread is a separate agent session on my computer. During a 3-4 hour trip, I processed over six tasks through it.</p><p>Similar solutions exist, but they didn't suit me. It's important for me that each task has its own conversation history and that I don't have to remember session IDs, and group threads are perfect for this.</p><p>In this article, I'll focus less on the tool itself and more on its internal workings: how four agents with different protocols are unified under a single interface, how a permission request turns into a Telegram button and back, and what Telegram limitations had to be circumvented.</p><h2>What the Hub Should Do</h2><p>Looking at agent interaction from the user's perspective, there are few actions:</p><p>- The agent writes text;<br/>- The agent calls a tool (a command, file edit, search);<br/>- The agent requests permission to call a tool;<br/>- The agent asks a question with answer options;<br/>- The agent sends a file;<br/>- The turn ends or fails with an error.</p><p>In the other direction, we receive user messages, responses to permissions and questions, files, and stop commands. All of this needs to be displayed in a Telegram thread and sent back to the agent. The problem is that each agent communicates this in its own language.</p><h2>Four Protocols</h2><p>All four agents are launched as child processes and communicate via stdin and stdout, but that's where the similarity ends.</p><div><div><table><tbody><tr><td><p>Agent</p></td><td><p>Launch</p></td><td><p>Protocol</p></td></tr><tr><td><p>Claude Code</p></td><td><p><code>claude -p --input-format stream-json --output-format stream-json</code></p></td><td><p>JSON strings plus <code>control_request</code> control messages</p></td></tr><tr><td><p>Codex</p></td><td><p><code>codex app-server</code></p></td><td><p>JSON-RPC: turns, items, elements</p></td></tr><tr><td><p>Qwen Code</p></td><td><p><code>qwen --acp</code></p></td><td><p>Agent Client Protocol</p></td></tr><tr><td><p>Hermes</p></td><td><p><code>hermes acp</code></p></td><td><p>also ACP</p></td></tr></tbody></table></div></div><p>The difference is best seen in the same event – a permission request.</p><p><strong>Claude Code</strong> sends a control request and waits for a response with the same <code>request_id</code>:</p><pre><code>{
+  </main>
+  <footer>
+    Translation generated with Gemini 2.5 Flash-Lite.
+    The original article remains the source of record.
+  </footer>
+</body>
+</html>

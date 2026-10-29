@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>How to Build a Self-Hosted RAG System with a LangGraph Agent on Local LLMs</title>
+  <meta name="description" content="Typically, RAG systems and AI agents are built around cloud APIs (OpenAI, Anthropic) and managed vector databases. However, for many tasks, complete autonomy is crucial: resilience to sanctions and independence from external providers. In this article, I&#x27;ll explain how I designed and built an a">
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.65;
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 32px 20px 64px;
+      color: #1f2328;
+    }
+    header {
+      border-bottom: 1px solid #d8dee4;
+      margin-bottom: 28px;
+      padding-bottom: 20px;
+    }
+    .source {
+      color: #57606a;
+      font-size: 0.95rem;
+    }
+    img, video, iframe {
+      max-width: 100%;
+      height: auto;
+    }
+    pre {
+      overflow-x: auto;
+      padding: 16px;
+      background: #f6f8fa;
+      border-radius: 6px;
+    }
+    code {
+      font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+    }
+    blockquote {
+      border-left: 4px solid #d0d7de;
+      margin-left: 0;
+      padding-left: 16px;
+      color: #57606a;
+    }
+    footer {
+      border-top: 1px solid #d8dee4;
+      margin-top: 40px;
+      padding-top: 20px;
+      color: #57606a;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>How to Build a Self-Hosted RAG System with a LangGraph Agent on Local LLMs</h1>
+    <p>Typically, RAG systems and AI agents are built around cloud APIs (OpenAI, Anthropic) and managed vector databases. However, for many tasks, complete autonomy is crucial: resilience to sanctions and independence from external providers. In this article, I&#x27;ll explain how I designed and built an analytical system that aggregated over 12,000 news items in two weeks: from collecting RSS feeds to a smart agent that calls tools itself. We&#x27;ll cover the journey from architecture to the pitfalls I encountered. Stack: Python 3.12, FastAPI, PostgreSQL + pgvector, Celery, LangGraph, Ollama (Qwen 2.5 14B, BGE-M3), Streamlit, Langfuse, Docker. Read more</p>
+    <p class="source">
+      Machine-translated from Habr.
+      <a href="https://habr.com/ru/articles/1101266/?utm_campaign=1101266&amp;utm_source=habrahabr&amp;utm_medium=rss">Read the original Russian article</a>.
+      Thu, 29 Oct 2026 12:59:00 GMT
+    </p>
+  </header>
+  <main>
+<div><h2>Introduction</h2><p>Typically, RAG systems and AI agents are built around cloud APIs (OpenAI, Anthropic) and managed vector databases. However, for many tasks, complete autonomy is crucial: resilience to sanctions and independence from external providers.</p><p>In this article, I'll explain <strong>the architectural decisions and engineering compromises</strong> that allowed me to build such a system entirely on local models. We'll cover the journey from collecting RSS feeds to a smart agent that calls tools itself, and discuss the pitfalls I encountered.</p><p><strong>Stack:</strong> Python 3.12, FastAPI, PostgreSQL + pgvector, Celery, LangGraph, Ollama (Qwen 2.5 14B, BGE-M3), Streamlit, Langfuse, Docker.</p><figure><img loading="lazy" src="https://habrastorage.org/r/w1560/extt/12/86/90/128690a58a74e472129f06c66700ee4e.png"/></figure><h2>Architecture</h2><p>The project is divided into layers (domain, db, scraper, rag, agents, api). The main principle is isolating domain logic from frameworks. This allows for easy swapping of LLMs or frameworks without rewriting business logic.</p><figure><img loading="lazy" src="https://habrastorage.org/r/w1560/extt/7c/a3/84/7ca384894312760679954a69889f085c.png"/></figure><h2>Search Selection</h2><p>We collected 12,000+ articles. We embedded them (BGE-M3) and started searching by cosine distance.</p><p>Simple queries worked fine. But with complex ones (e.g., 'central bank key rate'), vector search returned garbage. The most illustrative example was the query 'gold': the system honestly found articles where a figure skater 'won gold' in competitions, not news about metal prices. A classic problem of homonymy.</p><p>The solution: <strong>Hybrid Search</strong>. We combined semantic search (vectors) with precise lexical search (BM25 on PostgreSQL <code>tsvector</code>) using the <strong>RRF (Reciprocal Rank Fusion)</strong> algorithm. BM25 is excellent at capturing exact terms ('gold', 'OPEC', 'rate'), while vectors capture synonyms. Thanks to this, <code>Recall@5</code> increased from 0.2 to 0.53.</p><h2>The 'Garbage Pile' Problem: How LLM Hid in the 'Other' Category</h2><p>We asked the LLM to classify articles. The first result: <strong>74% of articles</strong> ended up in the <code>other</code> category. The model was afraid of making mistakes.</p><p>Solution: We rewrote the prompt, added clear descriptions for each category (including <code>retail</code>, <code>macro</code>, <code>incident</code>), and removed the phrase 'if in doubt, use other'.</p><p>Result: <code>other</code> was reduced to 0.03%. Now we have a structured dataset, not a pile of text.</p><p><strong>But this is not the final point.</strong> After completing background processing, I conducted a round of manual quality assessment (Data-Centric AI): I took a random sample of articles from different categories and checked if the LLM had indeed labeled them correctly. The classification accuracy was <strong>85%</strong>, confirming the approach's effectiveness.</p><h2>LangGraph: An Agent That Can Calculate</h2><p>A standard RAG answers questions like 'What's being written about oil?'. But we need analytics. We wrote a State Machine on LangGraph with three tools:</p><ul><li><p><code>search_articles</code>: standard hybrid search.</p></li><li><p><code>get_metrics</code>: SQL aggregation (how many articles about energy in 3 days).</p></li><li><p><code>search_by_entity</code>: search by extracted company names and sentiment (NER/Sentiment).<br/>Now, when asked 'Are there negative news about the Central Bank?', the agent decides which tool to call itself.</p></li></ul><h2>Observability: How We See What's Happening Inside</h2><p>We deployed a self-hosted <strong>Langfuse</strong>. We can see every agent step (Planner → Tools → Finalizer), how many tokens were consumed, and what arguments the LLM passed to the tools. This is invaluable for debugging.</p><figure><img loading="lazy" src="https://habrastorage.org/r/w1560/extt/de/6e/0b/de6e0b091393dcdcdb122400d69c14bc.png"/></figure><h2>Major Pitfalls (and How We Overcame Them)</h2><ol><li><p><strong>VRAM Ping-Pong</strong>: Ollama unloaded models when switching. A request took 60 seconds. Solved by setting <code>OLLAMA_MAX_LOADED_MODELS=2</code>.</p></li><li><p><strong>LangChain Overhead</strong>: <code>ChatOllama</code> internally uses streaming aggregation, causing a 9x slowdown. We removed LangChain from the RAG pipeline and switched to a direct <code>ollama.AsyncClient</code>.</p></li><li><p><strong>Celery + Async</strong>: SQLAlchemy binds the connection pool to the event loop. When Celery killed a task, connections became 'zombies'. Solved by using <code>await engine.dispose()</code> after each task.</p></li><li><p><strong>Ollama processed requests sequentially.</strong> Classification is a rather lengthy procedure; on my hardware, it took about 10 seconds per article. By increasing <code>OLLAMA_NUM_PARALLEL</code> from 1 to 2, I sped up the process by at least 1.5 times (there's still room for optimization here).</p></li></ol><h2>What's Next?</h2><p>The project is currently in Public MVP stage. It's an excellent foundation for demonstrating AI engineering expertise. The next step (already in private mode) will be to move from 'general news background' to <strong>personal stock market analytics</strong>: linking companies to Moscow Exchange tickers (SBER, GAZP), extracting specific market facts, and building predictive dashboards for individual stocks. The architecture (ADR-001) is specifically designed so that this expansion will not require rewriting the core. </p><p><em>The project code is open and available on GitHub: [</em><a href="https://github.com/tzar26/news_scrapper">https://github.com/tzar26/news_scrapper</a><em>].</em> </p><h2>Conclusion</h2><p>Building a production-ready AI system on local models is achievable. It not only saves money but also provides full control over data. The project is fully containerized (<code>docker compose up -d</code>) and covered by tests (GitHub Actions).</p></div>
+  </main>
+  <footer>
+    Translation generated with Gemini 2.5 Flash-Lite.
+    The original article remains the source of record.
+  </footer>
+</body>
+</html>

@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>vue-llm: AI SDK for Vue and Nuxt — streaming chat, Generative UI, and models directly in the browser</title>
+  <meta name="description" content="If you&#x27;ve built an AI feature in Vue, you&#x27;ve likely encountered the same issue: most LLM interface tools are designed for React, requiring adaptation for Vue or manual implementation of streaming, tool calling, and chat state. I created vue-llm, an open-source library that addresses this f">
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.65;
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 32px 20px 64px;
+      color: #1f2328;
+    }
+    header {
+      border-bottom: 1px solid #d8dee4;
+      margin-bottom: 28px;
+      padding-bottom: 20px;
+    }
+    .source {
+      color: #57606a;
+      font-size: 0.95rem;
+    }
+    img, video, iframe {
+      max-width: 100%;
+      height: auto;
+    }
+    pre {
+      overflow-x: auto;
+      padding: 16px;
+      background: #f6f8fa;
+      border-radius: 6px;
+    }
+    code {
+      font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+    }
+    blockquote {
+      border-left: 4px solid #d0d7de;
+      margin-left: 0;
+      padding-left: 16px;
+      color: #57606a;
+    }
+    footer {
+      border-top: 1px solid #d8dee4;
+      margin-top: 40px;
+      padding-top: 20px;
+      color: #57606a;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>vue-llm: AI SDK for Vue and Nuxt — streaming chat, Generative UI, and models directly in the browser</h1>
+    <p>If you&#x27;ve built an AI feature in Vue, you&#x27;ve likely encountered the same issue: most LLM interface tools are designed for React, requiring adaptation for Vue or manual implementation of streaming, tool calling, and chat state. I created vue-llm, an open-source library that addresses this for Vue 3, Nuxt, and even Vue 2.7. Here are the links to try it out: • Playground without an API key (model downloads and runs directly in the browser on WebGPU): https://vue-llm.js.org/ru/playground • Russian documentation: https://vue-llm.js.org/ru/ • GitHub: https://github.com/dadashi44/vue-llm • npm: npm i vue-llm Read on</p>
+    <p class="source">
+      Machine-translated from Habr.
+      <a href="https://habr.com/ru/articles/1101308/?utm_campaign=1101308&amp;utm_source=habrahabr&amp;utm_medium=rss">Read the original Russian article</a>.
+      Thu, 29 Oct 2026 14:35:14 GMT
+    </p>
+  </header>
+  <main>
+<div><p>If you've built an AI feature in Vue, you've likely encountered the same issue: most LLM interface tools are designed for React, requiring adaptation for Vue or manual implementation of streaming, tool calling, and chat state. I created <strong>vue-llm</strong> — an open-source library that addresses this for Vue 3, Nuxt, and even Vue 2.7.</p><p><br/>Here are the links to try it out:</p><ul><li><p><strong>Playground without an API key</strong> (model downloads and runs directly in the browser on WebGPU): <a href="https://vue-llm.js.org/ru/playground">https://vue-llm.js.org/ru/playground</a></p></li><li><p>Russian documentation: <a href="https://vue-llm.js.org/ru/">https://vue-llm.js.org/ru/</a></p></li><li><p>GitHub: <a href="https://github.com/dadashi44/vue-llm">https://github.com/dadashi44/vue-llm</a></p></li><li><p>npm: <code>npm i vue-llm</code></p></li></ul><p>Below is what the library can do and how it looks in code.</p><h3>Chat in ten lines</h3><p>The core is the <code>useChat</code> composable. It streams the model's response token by token into reactive state: messages, status, error, cancellation, regeneration.</p><pre><code>&lt;script setup lang="ts"&gt;import { useChat } from 'vue-llm'import { createProxyProvider } from 'vue-llm/server'const { messages, input, handleSubmit, status, stop } = useChat({provider: createProxyProvider('/api/chat'),model: 'gpt-4o',})&lt;/script&gt;&lt;template&gt;&lt;div v-for="m in messages" :key="m.id"&gt;&lt;b&gt;{{ m.role }}:&lt;/b&gt;&lt;template v-for="(part, i) in m.parts" :key="i"&gt;&lt;span v-if="part.type === 'text'"&gt;{{ part.text }}&lt;/span&gt;&lt;/template&gt;&lt;/div&gt;&lt;form @submit.prevent="handleSubmit"&gt;&lt;input v-model="input"&gt;&lt;button v-if="status === 'streaming'" type="button" @click="stop"&gt;Stop&lt;/button&gt;&lt;/form&gt;&lt;/template&gt;</code><div><a href="https://sourcecraft.dev/"><span></span></a></div></pre><p>Messages consist of 'parts' (<code>parts</code>): text, model reasoning, tool calls, files, sources. Therefore, the same template displays both a regular response, reasoning from Claude or Qwen3, and a tool call.</p><p>The API key remains on the server. The server part is a standard Web Request → Response handler that works in Nuxt/Nitro, Node, Bun, Deno, and edge runtimes:</p><pre><code>// server/api/chat.post.ts (Nuxt)import { createLLMHandler } from 'vue-llm/server'import { createAnthropic } from 'vue-llm/providers'const handler = createLLMHandler({provider: createAnthropic({ apiKey: process.env.ANTHROPIC_API_KEY! }),model: 'claude-sonnet-4-5',rateLimit: { maxRequests: 30, interval: 60_000 },})export default defineEventHandler(event =&gt; handler(toWebRequest(event)))</code><div><a href="https://sourcecraft.dev/"><span></span></a></div></pre><p>Out-of-the-box providers include: OpenAI (and any OpenAI-compatible API), Anthropic, Google Gemini, Ollama. If you already have your own backend with streaming, <code>createSSEProvider</code> connects <code>useChat</code> to it: you describe how your SSE events are converted into response chunks, and everything else works as is.</p><h3>Generative UI: the model responds with components</h3><p>The most interesting part for me. When the model calls a tool, you can display your Vue component instead of text. Arguments are streamed to the component as they are generated, meaning the card starts populating even before the model finishes the call.</p><pre><code>import { defineTool } from 'vue-llm'export const getWeather = defineTool&lt;{ city: string }, Weather&gt;({name: 'get_weather',description: 'Weather in the city',parameters: { type: 'object', properties: { city: { type: 'string' } }, required: ['city'] },execute: ({ city }) =&gt; fetch(`/api/weather?city=${city}`).then(r =&gt; r.json()),})</code><div><a href="https://sourcecraft.dev/"><span></span></a></div></pre><pre><code>&lt;MessagePartsv-for="m in messages" :key="m.id" :message="m" :components="{ get_weather: WeatherCard }" @tool-result="addToolResult"/&gt;</code><div><a href="https://sourcecraft.dev/"><span></span></a></div></pre><p>A tool with <code>execute</code> runs itself. A tool without <code>execute</code> pauses the chat and waits for a response from the interface — this is how human-in-the-loop is done: the model suggests booking a table, the user clicks
+  </main>
+  <footer>
+    Translation generated with Gemini 2.5 Flash-Lite.
+    The original article remains the source of record.
+  </footer>
+</body>
+</html>

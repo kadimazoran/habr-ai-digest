@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>MITRE ATT&amp;CK in Detective Guise: A New Format for Security Training</title>
+  <meta name="description" content="A rule can be read, but a habit can only be trained. This is the idea behind &quot;CyberDetective&quot; – a browser game where Avito employees investigate attacks on a fictional company. The company is fictional, but the attack schemes are real: a forged executive&#x27;s voice, an invoice from a dom">
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.65;
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 32px 20px 64px;
+      color: #1f2328;
+    }
+    header {
+      border-bottom: 1px solid #d8dee4;
+      margin-bottom: 28px;
+      padding-bottom: 20px;
+    }
+    .source {
+      color: #57606a;
+      font-size: 0.95rem;
+    }
+    img, video, iframe {
+      max-width: 100%;
+      height: auto;
+    }
+    pre {
+      overflow-x: auto;
+      padding: 16px;
+      background: #f6f8fa;
+      border-radius: 6px;
+    }
+    code {
+      font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+    }
+    blockquote {
+      border-left: 4px solid #d0d7de;
+      margin-left: 0;
+      padding-left: 16px;
+      color: #57606a;
+    }
+    footer {
+      border-top: 1px solid #d8dee4;
+      margin-top: 40px;
+      padding-top: 20px;
+      color: #57606a;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>MITRE ATT&amp;CK in Detective Guise: A New Format for Security Training</h1>
+    <p>A rule can be read, but a habit can only be trained. This is the idea behind &quot;CyberDetective&quot; – a browser game where Avito employees investigate attacks on a fictional company. The company is fictional, but the attack schemes are real: a forged executive&#x27;s voice, an invoice from a domain with a slight misspelling, a barrage of MFA requests, a stranger at an unlocked laptop. My name is Ilya Nikiforov, and at Avito, I&#x27;m responsible for Security Awareness in the GRC team: I train employees, conduct educational phishing campaigns, and work on generative AI security. I&#x27;m not a developer and have never made games. I conceived and built &quot;CyberDetective&quot; myself in 74 days: AI agents handled the code, tests, and reviews, and a colleague helped turn the prototype into a company service. I&#x27;ll share what we created, what real attacks the tasks are based on, how the work was divided between me and neural networks, and how it all works internally – for those interested in the code. And why I believe that today, someone outside of development can create a useful product in their field. Read more</p>
+    <p class="source">
+      Machine-translated from Habr.
+      <a href="https://habr.com/ru/companies/avito/articles/1099570/?utm_campaign=1099570&amp;utm_source=habrahabr&amp;utm_medium=rss">Read the original Russian article</a>.
+      Thu, 29 Oct 2026 13:54:37 GMT
+    </p>
+  </header>
+  <main>
+<div><p>A rule can be read, but a habit can only be trained. This is the idea behind "CyberDetective" – a browser game where Avito employees investigate attacks on a fictional company. The company is fictional, but the attack schemes are real: a forged executive's voice, an invoice from a domain with a slight misspelling, a barrage of MFA requests, a stranger at an unlocked laptop.</p><p>My name is <strong>Ilya Nikiforov</strong>, and at <a href="https://clc.to/LV3FBg"><strong>Avito</strong></a>, I'm responsible for Security Awareness in the GRC team: I train employees, conduct educational phishing campaigns, and work on generative AI security. I'm not a developer and have never made games. I conceived and built "CyberDetective" myself in 74 days: AI agents handled the code, tests, and reviews, and a colleague helped turn the prototype into a company service.</p><p>I'll share what we created, what real attacks the tasks are based on, how the work was divided between me and neural networks, and how it all works internally – for those interested in the code. And why I believe that today, someone outside of development can create a useful product in their field.</p><h3>Table of Contents</h3><ul><li><p><a href="https://habr.com/ru/companies/avito/articles/1099570/?utm_campaign=1099570&amp;utm_source=habrahabr&amp;utm_medium=rss#%D0%9E%D1%82%D0%BA%D1%83%D0%B4%D0%B0%20%D0%B2%D0%B7%D1%8F%D0%BB%D0%B0%D1%81%D1%8C%20%D0%B8%D0%B4%D0%B5%D1%8F">Where the idea came from</a></p></li><li><p><a href="https://habr.com/ru/companies/avito/articles/1099570/?utm_campaign=1099570&amp;utm_source=habrahabr&amp;utm_medium=rss#%D0%97%D0%B0%D1%87%D0%B5%D0%BC%20%D0%B8%D0%B3%D1%80%D0%B0,%20%D0%B5%D1%81%D0%BB%D0%B8%20%D0%B5%D1%81%D1%82%D1%8C%20%D0%BA%D1%83%D1%80%D1%81">Why a game if there's a course</a></p></li><li><p><a href="https://habr.com/ru/companies/avito/articles/1099570/?utm_campaign=1099570&amp;utm_source=habrahabr&amp;utm_medium=rss#%D0%9A%D0%B0%D0%BA%D0%BE%D0%B9%20%D0%BF%D0%BE%D0%BB%D1%83%D1%87%D0%B8%D0%BB%D0%B0%D1%81%D1%8C%20%D0%B8%D0%B3%D1%80%D0%B0">What the game turned out to be like</a></p></li><li><p><a href="https://habr.com/ru/companies/avito/articles/1099570/?utm_campaign=1099570&amp;utm_source=habrahabr&amp;utm_medium=rss#%D0%9D%D0%B0%20%D1%87%D1%91%D0%BC%20%D1%81%D1%82%D0%BE%D1%8F%D1%82%20%D1%81%D1%86%D0%B5%D0%BD%D0%B0%D1%80%D0%B8%D0%B8">What the scenarios are based on</a></p></li><li><p><a href="https://habr.com/ru/companies/avito/articles/1099570/?utm_campaign=1099570&amp;utm_source=habrahabr&amp;utm_medium=rss#%D0%9A%D0%B0%D0%BA%20%D1%8D%D1%82%D0%BE%20%D1%81%D0%B4%D0%B5%D0%BB%D0%B0%D0%BD%D0%BE%20%D1%81%20%D0%98%D0%98">How it was made with AI</a></p></li><li><p><a href="https://habr.com/ru/companies/avito/articles/1099570/?utm_campaign=1099570&amp;utm_source=habrahabr&amp;utm_medium=rss#%D0%94%D0%BB%D1%8F%20%D1%82%D0%B5%D1%85%D0%BD%D0%B0%D1%80%D0%B5%D0%B9:%20%D0%BA%D0%B0%D0%BA%20%D0%B2%D1%81%D1%91%20%D1%83%D1%81%D1%82%D1%80%D0%BE%D0%B5%D0%BD%D0%BE">For techies: how it's all structured</a></p></li><li><p><a href="https://habr.com/ru/companies/avito/articles/1099570/?utm_campaign=1099570&amp;utm_source=habrahabr&amp;utm_medium=rss#%D0%9A%D0%B0%D0%BA%20%D0%B8%D0%B3%D1%80%D0%B0%20%D0%BF%D0%BE%D0%BF%D0%B0%D0%BB%D0%B0%20%D0%B2%20%D0%90%D0%B2%D0%B8%D1%82%D0%BE">How the game came to Avito</a></p></li><li><p><a href="https://habr.com/ru/companies/avito/articles/1099570/?utm_campaign=1099570&amp;utm_source=habrahabr&amp;utm_medium=rss#%D0%93%D1%80%D0%B0%D0%B1%D0%BB%D0%B8">Pitfalls</a></p></li><li><p><a href="https://habr.com/ru/companies/avito/articles/1099570/?utm_campaign=1099570&amp;utm_source=habrahabr&amp;utm_medium=rss#AI%20First:%20%D1%87%D1%82%D0%BE%20%D1%8D%D1%82%D0%BE%20%D0%B7%D0%BD%D0%B0%D1%87%D0%B8%D1%82%20%D0%B4%D0%BB%D1%8F%20%D1%82%D0%B5%D1%85,%20%D0%BA%D1%82%D0%BE%20%D0%BD%D0%B5%20%D0%BF%D0%B8%D1%88%D0%B5%D1%82%20%D0%BA%D0%BE%D0%B4">AI First: what it means for those who don't write code</a></p></li><li><p><a href="https://habr.com/ru/companies/avito/articles/1099570/?utm_campaign=1099570&amp;utm_source=habrahabr&amp;utm_medium=rss#%D0%A7%D1%82%D0%BE%20%D0%B4%D0%B0%D0%BB%D1%8C%D1%88%D0%B5">What's next</a></p></li><li><p><a href="https://habr.com/ru/companies/avito/articles/1099570/?utm_campaign=1099570&amp;utm_source=habrahabr&amp;utm_medium=rss#%D0%98%D1%82%D0%BE%D0%B3">Conclusion</a></p></li></ul><figure><img loading="lazy" src="https://habrastorage.org/r/w1560/extt/51/bd/f1/51bdf160d838276b2cb56bf84338c536.jpg"/></figure><a></a><h3>Where the idea came from</h3><p>This summer, we held a Security Week. I've already discussed one of the formats from that week – a CTF for those not working in cybersecurity – in <a href="https://habr.com/ru/companies/avito/articles/1080584/">this</a> article. It was well-received, but CTFs are ultimately about individual tasks. In the feedback for Security Week, someone mentioned wanting "something more," and I also wanted to create a story that draws you in, where one small detail leads to the next.</p><p>So, on July 31st, I made the first commit – 1,544 lines, gray cells, and two little figures. Just 74 days later, on October 12th, at the start of the Security Awareness month, the game was released to all Avito employees.</p><p>Between these dates were over 100 hours of work after hours and on weekends. It was my personal initiative, but I did it for work: the game solves the very problem our team exists to address.</p><figure><img alt="Day 1: first commit, gray cells, and two little figures" loading="lazy" src="https://habrastorage.org/r/w1560/extt/ca/1a/55/ca1a55732d84dc5ce356b24a78e4618e.png" title="Day 1: first commit, gray cells, and two little figures"/><div><figcaption><em>Day 1: first commit, gray cells, and two little figures</em></figcaption></div></figure><a></a><h3>Why a game if there's a course</h3><p>We have a mandatory information security course. It's necessary, and we don't plan to get rid of it. However, a simple course with a test has its limits – it only checks if a person knows the rule. But a "real" attack in a game format will test if they can act correctly under pressure, when their supposed boss calls, when an invoice looks normal.</p><p>At the same time, it was important for me to create a format where a person finds themselves in a situation where they are asked to dictate a code, and they have to decide what to do about it themselves. They make a mistake, see the consequences, and learn.</p><div></div><p>This led to three requirements for the game.</p><ul><li><p><strong>Safe to make mistakes.</strong> An incorrect version can be corrected without any penalties. If you punish mistakes, people will just start guessing the right answer instead of thinking.</p></li><li><p><strong>An attack is a chain.</strong> Rarely does an attack fit into a single email. More often, it's a series of seemingly harmless details leading to serious losses. I wanted this chain to extend through the entire task in the game.</p></li><li><p><strong>Teach action, not just knowledge.</strong> After finishing the game, an Avito employee should not just "know about phishing," but know that they need to take a specific action – "report it according to the established algorithm."
+  </main>
+  <footer>
+    Translation generated with Gemini 2.5 Flash-Lite.
+    The original article remains the source of record.
+  </footer>
+</body>
+</html>

@@ -1,0 +1,255 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>From Teacher to Student: The Path to Isotropic Embeddings in a 29M Model. Part 1/10</title>
+  <meta name="description" content="Reviewing model layers, initial &quot;spotting&quot; tests to determine the general direction of work, and selecting a base model for distillation. This part is quite simple and short, but contains some important observations. Read more">
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.65;
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 32px 20px 64px;
+      color: #1f2328;
+    }
+    header {
+      border-bottom: 1px solid #d8dee4;
+      margin-bottom: 28px;
+      padding-bottom: 20px;
+    }
+    .source {
+      color: #57606a;
+      font-size: 0.95rem;
+    }
+    img, video, iframe {
+      max-width: 100%;
+      height: auto;
+    }
+    pre {
+      overflow-x: auto;
+      padding: 16px;
+      background: #f6f8fa;
+      border-radius: 6px;
+    }
+    code {
+      font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+    }
+    blockquote {
+      border-left: 4px solid #d0d7de;
+      margin-left: 0;
+      padding-left: 16px;
+      color: #57606a;
+    }
+    footer {
+      border-top: 1px solid #d8dee4;
+      margin-top: 40px;
+      padding-top: 20px;
+      color: #57606a;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>From Teacher to Student: The Path to Isotropic Embeddings in a 29M Model. Part 1/10</h1>
+    <p>Reviewing model layers, initial &quot;spotting&quot; tests to determine the general direction of work, and selecting a base model for distillation. This part is quite simple and short, but contains some important observations. Read more</p>
+    <p class="source">
+      Machine-translated from Habr.
+      <a href="https://habr.com/ru/articles/1100874/?utm_campaign=1100874&amp;utm_source=habrahabr&amp;utm_medium=rss">Read the original Russian article</a>.
+      Thu, 29 Oct 2026 15:00:50 GMT
+    </p>
+  </header>
+  <main>
+<div><h2>Part 1. Environment, Model Reconnaissance</h2><blockquote><p><strong>Important Warning:</strong><br/>All code according to my methodology was written by the DeepSeek neural network; I wouldn't have managed it myself (I'm not a programmer).<br/>Debugging, correcting inaccuracies, and errors are my responsibility.</p></blockquote><h3>1.1. Setting up the Environment</h3><pre><code># path is conditional, replace with your own
+mkdir -p ~/work/..../rubert-tiny2-distill
+cd ~/work/..../rubert-tiny2-distill
+python3 -m venv .venv
+source .venv/bin/activate
+pip install --upgrade pip
+
+# PyTorch CPU
+pip install torch --index-url https://download.pytorch.org/whl/cpu
+
+# Core libraries
+pip install \
+    transformers \
+    sentence-transformers \
+    datasets \
+    numpy \
+    scikit-learn \
+    tqdm \
+    huggingface_hub</code><div><a href="https://sourcecraft.dev/"><span></span></a></div></pre><p><strong>Verification:</strong></p><pre><code>python -c "import torch, transformers, sentence_transformers; print('OK')"
+</code><div><a href="https://sourcecraft.dev/"><span></span></a></div></pre><p>Expected output: <code>OK</code></p><h3>1.2. Why Inspect Models Before Training</h3><p>Before building a student, we need to answer <strong>two questions</strong>:</p><ol><li><p><strong>Which model to use as a base?</strong> <code>cointegrated/rubert-tiny2</code> and <code>sergeyzh/rubert-tiny-turbo</code> — both have 3 layers, 312 dim, 29.4M parameters (turbo is tiny2 fine-tuned on contrastive; the architecture is the same).</p></li><li><p><strong>How to aggregate tokens into a single sentence?</strong> The teacher uses mean pooling (from the model card), but we have our own attention head. We need to understand which layer provides the most "semantic" signal.</p></li></ol><p><strong>Metric for comparison — gap.</strong> Defined as:</p><pre><code>gap = mean(cos of similar pairs) - mean(cos of dissimilar pairs)
+</code><div><a href="https://sourcecraft.dev/"><span></span></a></div></pre><p>In the "dissimilar" part of the formula, hard and easy negatives are mixed; they are shown separately below to see the contribution of each type.</p><p>The larger the gap, the better the model distinguishes semantics, and the "cleaner" its space. An ideal model would have a large gap (similar — close, different — far).</p><p><strong>Test set</strong> — 10 pairs, specially selected:</p><ul><li><p><strong>4 positive</strong> (paraphrases): "cat on a chair" - "cat sat down", "died of a heart attack" - "life was cut short by a heart attack".</p></li><li><p><strong>3 hard negatives</strong> (negations): "he got a job" - "he did NOT get a job", "I love cats" - "I do NOT love", "appointed" - "canceled".</p></li><li><p><strong>3 regular negatives</strong> (different topics): "cat" - "airplane", "borscht" - "Pythagoras".</p></li></ul><p><strong>Iterating through combinations:</strong></p><ul><li><p><strong>Layers:</strong> embeddings, L0, L1, L2 (all model outputs).</p></li><li><p><strong>Pooling strategies:</strong> mean, cls, max, last-token.</p></li></ul><p>This is a <strong>reconnaissance set</strong>, not a quality assessment. These 10 pairs are needed to select the layer and pooling strategy. Quality conclusions are made separately — on <code>hnp_val</code> (590 pairs) and an external set (5000 pairs) in the following sections.</p><p><strong>Goal:</strong> find the combination with the maximum gap. It's also important to look at <strong>cos of hard negatives</strong>.</p><h3>1.3. Layer Inspection Script</h3><p>The first run of <code>inspect_layers.py</code> will download ~940 MB (DeepPavlov ~700 MB + turbo ~120 MB + tiny2 ~120 MB).</p><p><strong>File: </strong><code><strong>scripts/1.1_inspect_layers.py</strong></code></p><pre><code>"""Layer and pooling strategy reconnaissance.
+
+Comparing:
+- cointegrated/rubert-tiny2 (base LM, 3 layers, 312 dim)
+- sergeyzh/rubert-tiny-turbo (sentence encoder, 312 dim)
+- DeepPavlov/rubert-base-cased-sentence (teacher, 12 layers, 768 dim)
+
+Pooling: mean / CLS / max / last-token
+"""
+import sys
+from pathlib import Path
+
+import numpy as np
+import torch
+import torch.nn.functional as F
+from transformers import AutoModel, AutoTokenizer
+
+DEVICE = torch.device("cpu")
+
+torch.manual_seed(42); np.random.seed(42)
+
+MODELS = [
+    ("cointegrated/rubert-tiny2", "base LM"),
+    ("sergeyzh/rubert-tiny-turbo", "sentence enc"),
+    ("DeepPavlov/rubert-base-cased-sentence", "teacher"),
+]
+
+PAIRS = [
+    ("кошка сидит на стуле", "кот уселся на стуле", 1),
+    ("он умер от инфаркта", "его жизнь оборвал сердечный приступ", 1),
+    ("психология травмы и стадии горя", "этапы переживания утраты", 1),
+    ("студент сдал экзамен на отлично", "учащийся успешно прошёл испытание", 1),
+    ("он устроился на работу", "он не устроился на работу", 0),   # hard
+    ("я люблю кошек", "я не люблю кошек", 0),                      # hard
+    ("врач назначил лечение", "врач отменил лечение", 0),          # hard
+    ("кошка сидит на стуле", "самолёт летит в небе", 0), # тот же anchor, теперь с негативом
+    ("повар готовит борщ", "теорема Пифагора", 0),
+    ("история Древнего Рима", "строение ДНК", 0),
+]
+
+HARD_NEG_INDICES = [4, 5, 6]  # indices of hard negatives in PAIRS (0-based)
+
+
+def mean_pool(h, m):
+    mm = m.unsqueeze(-1).float()
+    return (h * mm).sum(1) / mm.sum(1).clamp(min=1e-9)
+
+def cls_pool(h, m):
+    return h[:, 0]
+
+def max_pool(h, m):
+    mm = m.unsqueeze(-1).float()
+    h = h.masked_fill(mm == 0, float("-inf"))
+    return h.max(1).values
+
+def last_pool(h, m):
+    # index of the last real token
+    lengths = (m.sum(1) - 1).clamp(min=0)  # [B]
+    return h[torch.arange(h.size(0)), lengths]
+
+POOLERS = {
+    "mean": mean_pool,
+    "cls": cls_pool,
+    "max": max_pool,
+    "last": last_pool,
+}
+
+
+def l2(x):
+    return F.normalize(x, dim=-1)
+
+
+def evaluate_model(model_id, tag):
+    print(f"\n{'='*80}")
+    print(f"Model: {model_id}  ({tag})")
+    print(f"{'='*80}", flush=True)
+
+    model = AutoModel.from_pretrained(model_id).to(DEVICE).eval()
+    tokenizer = AutoTokenizer.from_pretrained(model_id)
+
+    cfg = model.config
+    print(f"  layers={cfg.num_hidden_layers}  hidden={cfg.hidden_size}  " 
+          f"heads={cfg.num_attention_heads}  vocab={cfg.vocab_size}  " 
+          f"max_pos={cfg.max_position_embeddings}")
+    n_params = sum(p.numel() for p in model.parameters())
+    print(f"  params={n_params:,}  ({n_params*4/1e6:.1f} MB fp32)")
+
+    texts = [a for a, _, _ in PAIRS] + [b for _, b, _ in PAIRS]
+    labels = [lbl for _, _, lbl in PAIRS]
+    n = len(PAIRS)
+
+    enc = tokenizer(texts, padding=True, truncation=True, max_length=256,
+                    return_tensors="pt")
+
+    with torch.no_grad():
+        out = model(**enc, output_hidden_states=True)
+
+    hidden_states = out.hidden_states  # tuple (n_layers+1)
+
+    print(f"\n  {'layer':&lt;12} {'pool':&lt;6} {'sim+':&gt;7} {'sim-':&gt;7} {'gap':&gt;7} {'hard-':&gt;7}")
+    print(f"  {'-'*50}")
+
+    best = (None, -999)
+    for layer_idx, hidden in enumerate(hidden_states):
+        for pool_name, pool_fn in POOLERS.items():
+            emb = l2(pool_fn(hidden, enc["attention_mask"]))
+            pos_s, neg_s, hard_s = [], [], []
+            for i, (a, b, lbl) in enumerate(PAIRS):
+                s = float((emb[i] * emb[n + i]).sum())
+                if i in HARD_NEG_INDICES:
+                    hard_s.append(s)
+                if lbl == 1:
+                    pos_s.append(s)
+                else:
+                    neg_s.append(s)
+            p, nn, hh = np.mean(pos_s), np.mean(neg_s), np.mean(hard_s)
+            gap = p - nn
+            layer_name = f"emb" if layer_idx == 0 else f"L{layer_idx-1}"
+            print(f"  {layer_name:&lt;12} {pool_name:&lt;6} {p:&gt;7.3f} {nn:&gt;7.3f} " 
+                  f"{gap:&gt;7.3f} {hh:&gt;7.3f}")
+            if gap &gt; best[1]:
+                best = ((layer_name, pool_name, emb), gap)
+
+    # Analysis of the best
+    (layer_name, pool_name, emb), gap = best
+    print(f"\n  Best combination: layer={layer_name}  pool={pool_name}  gap={gap:.3f}")
+    print(f"  Pair analysis:")
+    for i, (a, b, lbl) in enumerate(PAIRS):
+        s = float((emb[i] * emb[n + i]).sum())
+        tag = "POS" if lbl == 1 else ("HRD" if i in HARD_NEG_INDICES else "NEG")
+        print(f"    [{tag}] {s:+.3f}  {a[:40]:&lt;42} &lt;-&gt; {b[:40]}")
+
+    return best
+
+
+def main():
+    print(f"Device: {DEVICE}")
+    results = {}
+    for model_id, tag in MODELS:
+        try:
+            best, gap = evaluate_model(model_id, tag)
+            results[model_id] = (best[0], best[1], gap)
+        except Exception as e:
+            print(f"\n[!] {model_id} failed: {e}")
+            results[model_id] = None
+
+    print(f"\n{'='*80}")
+    print("SUMMARY")
+    print(f"{'='*80}")
+    for model_id, r in results.items():
+        if r is None:
+            print(f"  {model_id:&lt;50} FAILED")
+        else:
+            layer, pool, gap = r
+            print(f"  {model_id:&lt;50} best={layer}/{pool}  gap={gap:.3f}")
+
+
+if __name__ == "__main__":
+    main()
+</code><div><a href="https://sourcecraft.dev/"><span></span></a></div></pre><p><strong>Running:</strong></p><pre><code>cd ~/work/..../rubert-tiny2-distill
+source .venv/bin/activate
+
+python scripts/inspect_layers.py
+</code><div><a href="https://sourcecraft.dev/"><span></span></a></div></pre><p><strong>Time:</strong> ~2 minutes (three models, minimal test).</p><h3>1.4. Inspection Results</h3><div><div><table><tbody><tr><th><p>Model</p></th><th><p>Best Combination</p></th><th><p>Gap</p></th></tr><tr><td><p><code>cointegrated/rubert-tiny2</code></p></td><td><p>L2 / cls</p></td><td><p><strong>0.064</strong></p></td></tr><tr><td><p><code>sergeyzh/rubert-tiny-turbo</code></p></td><td><p>L2 / mean</p></td><td><p><strong>0.125</strong></p></td></tr><tr><td><p><code>DeepPavlov/rubert-base-cased-sentence</code></p></td><td><p>L11 / mean</p></td><td><p><strong>0.329</strong></p></td></tr></tbody></table></div></div><p><strong>Three conclusions:</strong></p><ol><li><p><strong>Turbo is almost 2x stronger than tiny2.</strong> Both models have the same architecture (3 layers, 312 dim), but turbo is fine-tuned contrastively on Russian data (see model card). This gave it a ready understanding of semantics, whereas tiny2 remains a base MLM model; its representations are not optimized for text comparison.</p></li><li><p><strong>The teacher is 2.5x stronger than turbo.</strong> DeepPavlov with 12 layers and 768 dim has a much richer representation. Our task is not to match its absolute semantics, but to get close enough for retrieval and deduplication to work.</p></li><li><p>The teacher suffers from negation blindness (see 1.5).</p></li></ol><h3>1.5. The Negation Blindness Problem</h3><p>This is an important discovery from the inspection. Let's see what DeepPavlov yields on hard negatives (best combination — L11/mean):</p><div><div><table><tbody><tr><th><p>Pair</p></th><th><p>cos</p></th></tr><tr><td><p>
+  </main>
+  <footer>
+    Translation generated with Gemini 2.5 Flash-Lite.
+    The original article remains the source of record.
+  </footer>
+</body>
+</html>

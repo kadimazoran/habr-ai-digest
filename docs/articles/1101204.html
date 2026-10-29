@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>From Word via Email to AI Skills: Discussing the Evolution of Documentation and Why Neural Networks Need Business Context</title>
+  <meta name="description" content="We&#x27;ve come a long way from sending requirements in Word via email to automatically generating documentation with neural networks directly from a developer&#x27;s Merge Request. Often, this happens without analyst involvement until the final review stage. But does automation make our documentati">
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.65;
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 32px 20px 64px;
+      color: #1f2328;
+    }
+    header {
+      border-bottom: 1px solid #d8dee4;
+      margin-bottom: 28px;
+      padding-bottom: 20px;
+    }
+    .source {
+      color: #57606a;
+      font-size: 0.95rem;
+    }
+    img, video, iframe {
+      max-width: 100%;
+      height: auto;
+    }
+    pre {
+      overflow-x: auto;
+      padding: 16px;
+      background: #f6f8fa;
+      border-radius: 6px;
+    }
+    code {
+      font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+    }
+    blockquote {
+      border-left: 4px solid #d0d7de;
+      margin-left: 0;
+      padding-left: 16px;
+      color: #57606a;
+    }
+    footer {
+      border-top: 1px solid #d8dee4;
+      margin-top: 40px;
+      padding-top: 20px;
+      color: #57606a;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>From Word via Email to AI Skills: Discussing the Evolution of Documentation and Why Neural Networks Need Business Context</h1>
+    <p>We&#x27;ve come a long way from sending requirements in Word via email to automatically generating documentation with neural networks directly from a developer&#x27;s Merge Request. Often, this happens without analyst involvement until the final review stage. But does automation make our documentation better? In this article, I want to look back at the evolution of how we managed project documentation, discuss a non-obvious problem with AI that few consider, and show how to combat it. At the end, I&#x27;ll share useful resources – a documentation repository example for two approaches (classic waterfall with Kanban elements and pure Scrum) with a ready-made AI skill for analyzing code changes. Learn about the evolution of working with documentation.</p>
+    <p class="source">
+      Machine-translated from Habr.
+      <a href="https://habr.com/ru/articles/1101204/?utm_campaign=1101204&amp;utm_source=habrahabr&amp;utm_medium=rss">Read the original Russian article</a>.
+      Thu, 29 Oct 2026 11:44:23 GMT
+    </p>
+  </header>
+  <main>
+<div><figure><img alt="From dusty folders and a pile of emails to a unified documentation repository" loading="lazy" src="https://habrastorage.org/r/w1560/extt/d1/af/9a/d1af9a0f415616f5a273ef0671613970.png" title="From dusty folders and a pile of emails to a unified documentation repository"/><div><figcaption>From dusty folders and a pile of emails to a unified documentation repository</figcaption></div></figure><p>We've come a long way from sending requirements in Word via email to automatically generating documentation with neural networks directly from a developer's Merge Request. Often, this happens without analyst involvement until the final review stage. But does automation make our documentation better?</p><p>In this article, I want to look back at the evolution of how we managed project documentation, discuss a non-obvious problem with AI that few consider, and show how to combat it. At the end, I'll share useful resources – a documentation repository example for two approaches (classic waterfall with Kanban elements and pure Scrum) with a ready-made AI skill for analyzing code changes.</p><h3>Evolution of Approvals: From Network Drives to Git</h3><p>I'll start with a disclaimer: the beautiful evolution I'm about to describe happened in my career. Of course, Waterfall was replaced by Scrum in global practice long before I started working as an analyst. But, having worked on many projects and gone through hundreds of interviews, I've gathered a sample that shows general trends.</p><h4>The Era of Word and Email</h4><p>When I first entered system analysis 8 years ago, we wrote documentation in Word and sent it via email for approval. It was stored on network drives or Google Drive. Versioning was done directly in the file name (Requirements_v1.5_final_FINAL.docx). Clients left comments directly in the document, most often in colored text, and we transferred them into Excel tables, manually marking the status of open issues after meetings for internal control. The documentation was classic, following Wiegers' methodology: separate Vision and Scope documents, separate business requirements, a giant Functional Specification + Technical Specification (which grew to 250 pages over a year), user instructions with a million screenshots, and a detailed User Acceptance Testing plan. For projects with government clients, it was the same Word format, but with strict formatting requirements according to GOST standards.</p><h4>The Era of Confluence and Scrumban</h4><p>Next came a series of projects with documentation in Confluence. Both clients and we learned to work with it, and the registers of comments died out on their own – comments were conveniently highlighted directly on the pages. The process became closer to Scrum-Ban: increments, sprints, Jira boards, but without the strict rules of classic Scrum. Documentation was divided into three spaces: requirements in progress, current system state (AS-IS), and user instructions.</p><h4>The Era of Git, Sticky Notes, and AI</h4><p>Now I'm observing a new stage of evolution. There's less documentation, knowledge bases are moving from Confluence to Git (in the Docs-as-Code approach or simply in markdown), diagrams and comments in code are gradually replacing text, and meeting minutes and auto-generated protocols are replacing those signed off via email with "No objections." Requirements are often fixed only on sticky notes in Figma and in Jira tickets, and the documentation immediately reflects the current system state.</p><p>But a new problem has emerged. Documentation is already being generated extensively via AI, and often not generated at all, based on the thought: "The AI will read the code later anyway."</p><p>In my opinion, AI has not yet solved the main function of an analyst – maintaining context. When asked by a manager, "Why did we do this, and now it's interfering with that?" we still have to dig through boards, protocols, code, and call up team veterans.</p><h3>The Main Insight: Who Are We Writing Documentation For Now?</h3><p>This week I was reprocessing a huge volume of AI-generated documentation. And I was reprocessing it... also with AI. We have to write less and less by hand, but neural networks are just a tool, not a responsible, all-knowing team member for documentation.</p><p>Recently, I had a discussion with the development lead. He asked, "What are we going to do with documentation in the future? Will developers actually read it?"</p><p>Most likely, they won't. They'll continue to read code and chat messages. But here's what's truly important: besides business users, AI will also be reading the documentation in the next iteration of development.</p><p>What AI puts into the document by default (description of the diff, affected methods, used APIs) is practically useless for subsequent reading. The next AI agent, when planning further development, will look at the code itself, just as a live developer would.</p><p>But we, analysts, understand that the question "What changes are needed where?" is not the first one. The first question is: "Why do we need these specific changes, are we sure about them, and what will they affect?"</p><p>This is precisely the layer of knowledge that resided in the minds of managers, analysts, and in analytical documentation. When restructuring the process towards product engineering, it risks disappearing the fastest. If a developer receives a task from the business and immediately starts implementing it with AI, the machine will figure out how to do it technically. But it won't critically evaluate the proposal itself, and often won't evaluate it architecturally either, unless the developer sets out to do so. In large enterprises, this leads to a snowballing technical debt, where bells and whistles are added where there was never any logic inside, only a placeholder for future development that was forgotten in the very next sprint.</p><h3>How to Avoid Chaos: From Prompts to Skills</h3><p>We've already taken the first step – moved documentation to Git (Markdown) and update data there immediately. AI will be able to work with such a base and find artifacts of previous decisions.</p><p>The second step is creating AI skills. A skill is a pre-configured instruction for an AI agent that defines the workflow and quality criteria. You can't embed years of expertise and a senior analyst's mindset into an instruction, but such a skill can save hours on reviews and force the machine to retain business context, not just list affected endpoints.</p><p>It's important to note that creating the skill itself isn't the main difficulty here. Any AI can create a skill for you based on your precise request with a list of rules in 10 minutes. What's important is that its use becomes ingrained in the processes. In my case, the groundwork was already laid: the company itself is actively moving towards the concept of independent product engineers, repositories with various skills are already being prepared, and almost no one writes code or documentation manually anymore. Nevertheless, I went through the following steps:</p><ol><li><p>Highlighted the problem to management to justify my time investment;</p></li><li><p>Raised the issue at the analyst community and took the initiative to prepare the skill;</p></li><li><p>Developed the skill itself and tested it with analysts several times to ensure they were at least not against it, if not "for" it;</p></li><li><p>Discussed the correct placement of the skill and all links to it in the general repository with the development lead, so that it wouldn't gather dust in our repository, which no one visits anyway, but would be integrated into the AI-assisted feature development workflow.</p></li></ol><p>Will this help make documentation perfect? Without people interested in it – unlikely. Developers still won't focus on it if management doesn't consider it important. But at least including reminders for agents in general skills will make the documentation non-zero, which is already more useful than nothing. And then, I hope, with the first difficulties in further work without storing the history of decisions made, management will also start thinking and focusing not only on getting things done as quickly as possible, because without analysis and documentation, the quality of the final product suffers.</p><h3>Practice: Templates and AI Skills for Your Team</h3><p>I've prepared a public repository with my approach to organizing documentation in teams working with AI. Templates define the structure, and skills define the AI's workflow with it. A human reviews the result and makes decisions.</p><p>The repository contains two sets for different needs:</p><p><strong>1. Hybrid Kit (Iterative Development with Detailed Approval)</strong><br/>Suitable for teams that need to get business stakeholder approval for changes and preserve descriptions understandable without reading code.<br/>Feature: The development process goes from business requirements and functional specifications to architectural decisions (ADR). The documentation allows understanding system behavior independently of the initial task.<br/>It is aimed not only at the team but also at external stakeholders who can read the text and understand if their requests were implemented and how.<br/>This kit is more focused on human writing and reading, but a skill can be attached to it by reusing the skill's core from the second project.</p><p><strong>2. Scrum Kit (Up-to-date Documentation for AI Teams)</strong><br/>The developer, along with AI, studies the request, determines the impact on the product, and updates related documents directly during implementation.<br/>Feature: Implementation details remain in the code, while the business meaning, reasons for decisions, and connections are preserved in the documentation (in end-to-end business processes and AI Context blocks). This is ideal context for AI.</p><p>The repository contains a ready-made skill, document-scrum-mr. This is an instruction for an agent analyzing a Merge Request.<br/>How it works: You provide the agent with this skill, the task from the tracker, the code diff, and access to the working documentation. The agent:</p><ul><li><p>Correlates the implementation with the business goal.</p></li><li><p>Clarifies missing reasons for changes.</p></li><li><p>Determines which Markdown files need updating.</p></li><li><p>Prepares an agreed set of changes and updates the AI Context.</p></li></ul><p>All you need to do is conduct a human review (e.g., get two approvals from the team).</p><p><a href="https://gitlab.com/lyubov_koverdyaeva/analyst-docs-as-code-examples">Link to the repository with templates and the skill</a></p><p>The materials are available under the CC0 1.0 license – take them, adapt them for your projects, and share them with colleagues.</p><h3>What Do You Think?</h3><p>Do you already have experience writing such analytical skills? Or is no one in your company planning to lay off or automate analysts yet? Share in the comments!</p></div>
+  </main>
+  <footer>
+    Translation generated with Gemini 2.5 Flash-Lite.
+    The original article remains the source of record.
+  </footer>
+</body>
+</html>

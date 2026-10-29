@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Clean Room: An Agentic Laundry for Your Dirty Legacy Code</title>
+  <meta name="description" content="Two out of three API calls returned HTTP 500. Agents layered patches upon patches until the code became a tangled mess. Instead of another fix, I moved the system to a clean room, where an agent writes a new implementation without seeing the old one. This article details the migration mechanism, 15 ">
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.65;
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 32px 20px 64px;
+      color: #1f2328;
+    }
+    header {
+      border-bottom: 1px solid #d8dee4;
+      margin-bottom: 28px;
+      padding-bottom: 20px;
+    }
+    .source {
+      color: #57606a;
+      font-size: 0.95rem;
+    }
+    img, video, iframe {
+      max-width: 100%;
+      height: auto;
+    }
+    pre {
+      overflow-x: auto;
+      padding: 16px;
+      background: #f6f8fa;
+      border-radius: 6px;
+    }
+    code {
+      font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+    }
+    blockquote {
+      border-left: 4px solid #d0d7de;
+      margin-left: 0;
+      padding-left: 16px;
+      color: #57606a;
+    }
+    footer {
+      border-top: 1px solid #d8dee4;
+      margin-top: 40px;
+      padding-top: 20px;
+      color: #57606a;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Clean Room: An Agentic Laundry for Your Dirty Legacy Code</h1>
+    <p>Two out of three API calls returned HTTP 500. Agents layered patches upon patches until the code became a tangled mess. Instead of another fix, I moved the system to a clean room, where an agent writes a new implementation without seeing the old one. This article details the migration mechanism, 15 rules to prevent new workarounds, and an experiment with 36 DeepSeek runs to see how agent behavior changes based on the code and rules it&#x27;s shown. Enter the clean room.</p>
+    <p class="source">
+      Machine-translated from Habr.
+      <a href="https://habr.com/ru/articles/1101314/?utm_campaign=1101314&amp;utm_source=habrahabr&amp;utm_medium=rss">Read the original Russian article</a>.
+      Thu, 29 Oct 2026 14:32:05 GMT
+    </p>
+  </header>
+  <main>
+<div><p><em>Before it hit the fan</em></p><p>I inherited a B2B SaaS project at a stage any tech lead dreams of: "It's almost done. Release in two weeks." Two out of three API calls were returning HTTP 500.</p><p>The code had accumulated several generations of agentic fixes. When a new bug was found, we'd ask an agent to figure it out and fix it. The agent would insert a workaround as another conditional. The object's state was determined by indirect signs. In 21 places, a handler identified its type through negation: not A and not B, so it must be mine. The agents saw these approaches and continued the pattern, adding more tangled logic to the existing mess.</p><p>Claude dove headfirst into this substance. I provided the keys from the outside. When Claude surfaced, he looked like a cat after valerian. Never before had I encountered so many hallucinations from it on such a small context. It couldn't answer half the questions coherently.</p><p>After two days of this shit-diving, I decided fixing symptoms was pointless. We rewrote the module entirely, reconstructing the authors' intent from the sparse documentation and existing code. We, Claude and I, called the environment where the agent writes new code without seeing the old code the "clean room." Three days were spent on the migration contract: algorithms and snapshots of inputs and outputs. Another two on the new implementation. The algorithms described what needed to be done in prose, not how.</p><h3>Migration Mechanism</h3><p>I divided the work between two agents. The Analyst studied the old code, ran the system, and took snapshots of inputs, outputs, and database changes. It recorded the results in scenario cards, one per operation. These cards formed the migration contract. Each card contained:</p><ul><li><p>input</p></li><li><p>expected result</p></li><li><p>artifacts and states</p></li><li><p>codes</p></li><li><p>what is included in the snapshot</p></li><li><p>what confirmed it</p></li></ul><p>Each line had a tag: [measurement], [code], or [gap].</p><p>The Implementer wrote new code based on the cards. It did not see the old code: a prohibition in the task, a separate session, two linter prohibitions (new code does not call old, old does not call new), and a plagiarism checker that compared the abstract syntax trees of the old and new code, highlighting only matching parts.</p><p>Defects in working functions were migrated as-is and fixed in the clean room. Unused functions were not migrated.</p><p>We took the entire user scenario: from the input request to the result. After successful verification, we switched the calling code to the new implementation. The old path was deleted after acceptance.</p><figure><img alt=
+  </main>
+  <footer>
+    Translation generated with Gemini 2.5 Flash-Lite.
+    The original article remains the source of record.
+  </footer>
+</body>
+</html>

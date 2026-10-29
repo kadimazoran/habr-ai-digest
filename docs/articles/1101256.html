@@ -1,0 +1,121 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>There Was Never Software for Oil Formulations 
+— A Custom Neural Network Reduced Development from Six Months to One Month</title>
+  <meta name="description" content="There&#x27;s a job like this 
+— for several years in a row, calculating ratings of Russian industrial companies based on open data. In the last year, I&#x27;ve been seeing the same type of case more and more often: a company&#x27;s vendor is leaving, and there&#x27;s simply no ready-made product to ">
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.65;
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 32px 20px 64px;
+      color: #1f2328;
+    }
+    header {
+      border-bottom: 1px solid #d8dee4;
+      margin-bottom: 28px;
+      padding-bottom: 20px;
+    }
+    .source {
+      color: #57606a;
+      font-size: 0.95rem;
+    }
+    img, video, iframe {
+      max-width: 100%;
+      height: auto;
+    }
+    pre {
+      overflow-x: auto;
+      padding: 16px;
+      background: #f6f8fa;
+      border-radius: 6px;
+    }
+    code {
+      font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+    }
+    blockquote {
+      border-left: 4px solid #d0d7de;
+      margin-left: 0;
+      padding-left: 16px;
+      color: #57606a;
+    }
+    footer {
+      border-top: 1px solid #d8dee4;
+      margin-top: 40px;
+      padding-top: 20px;
+      color: #57606a;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>There Was Never Software for Oil Formulations 
+— A Custom Neural Network Reduced Development from Six Months to One Month</h1>
+    <p>There&#x27;s a job like this 
+— for several years in a row, calculating ratings of Russian industrial companies based on open data. In the last year, I&#x27;ve been seeing the same type of case more and more often: a company&#x27;s vendor is leaving, and there&#x27;s simply no ready-made product to replace it. Gazprom Neft faced exactly this situation with oil formulations 
+— there was absolutely no one to buy from, because such a product had never existed. I&#x27;m figuring out how the company built its &quot;Alchemist&quot; neural network and what this means for the rest of the industry. Find out the recipe</p>
+    <p class="source">
+      Machine-translated from Habr.
+      <a href="https://habr.com/ru/articles/1101256/?utm_campaign=1101256&amp;utm_source=habrahabr&amp;utm_medium=rss">Read the original Russian article</a>.
+      Thu, 29 Oct 2026 12:50:30 GMT
+    </p>
+  </header>
+  <main>
+<div><p><em>I am Anton Sokolov, an independent industry analyst. There's a job like this 
+— for several years in a row, calculating ratings of Russian industrial companies based on open data, and one of the areas I monitor particularly closely is how they are transitioning to domestic software. It doesn't sound particularly heroic, but in the last year, I've been seeing the same type of case more and more often: a company's vendor is leaving, and there's simply no ready-made product to replace it.</em></p><p><em>Usually, such stories are similar to each other: licenses were purchased, implemented, reported. I remembered this case because there was absolutely no one to buy a solution from 
+— not because of the price or sanctions, but because <strong>such a product had never existed</strong>.</em></p><p><em>Every such company, where production has been running on SAP or Oracle 
+— Enterprise Resource Planning systems, ERP 
+— for years, now has someone who has to answer the question: what happens when the license expires and there are no more updates. SAP has not been officially sold in Russia since 2022, and everyone has the same choice: buy a ready-made domestic solution or write their own. I've analyzed several stories in a row: some companies managed to buy ready-made solutions, others had to write their own, and some had no ready-made option at all.</em></p><p>
+— buy ready-made 
+— write your own 
+— solve what cannot be bought at all</p><p>According to RBC, in 2025, about <strong>40%</strong> of large holdings in energy, metallurgy, and machine building will still rely on SAP, not out of love for it: there are still few mature Russian ERP systems to replace it. At the same time, the registry of domestic software has grown 4 times since 2022, to 27,000 products. The numbers in the registry are growing faster than the number of products ready to take the place of SAP or Oracle today.</p><figure><img alt="Industrial control room" src="https://habrastorage.org/r/w1560/extt/b8/56/05/b85605343aa8bab4e85dd1369e458520.jpg" loading="lazy"/><div><figcaption>Industrial control room</figcaption></div></figure><p><em>Production control still relies on systems that are sometimes more than ten years old</em></p><h3>Path One: Assemble an Ecosystem from Ready-Made Solutions</h3><p>The Ministry of Digital Development has abandoned the idea of a single national ERP system as a replacement for SAP. Instead, a consortium is being formed under the auspices of the ANO "National Competence Center for Holding Information Management Systems." It includes representatives from metallurgy, oil and gas, chemistry, and transport, and the consortium has already gathered over 1300 business requirements for ERP products, matching them with what is available on the market.</p><p>The logic is understandable, but not fast. Magnitogorsk Iron and Steel Works has been building systems on Oracle E-Business Suite for years, and according to the plant's CIO, Vadim Feoktistov:</p><blockquote><p>There are no fully ready-made Russian ERP systems yet that can fully replace Oracle and SAP.</p></blockquote><p>The transition is not happening in a single release: the registry is growing, but specific products still lack maturity for specific processes. When I see such a quote from the CIO of a large plant in a rating, I always expect the next question 
+— "when will it be ready." There is no answer here either, and that's normal: an ecosystem isn't built in a quarter. Familiar engineers from similar production facilities in such conversations usually complain not about the lack of software, but about the fact that no one wants to be the first to migrate a critical process to an unproven system.</p><h3>Path Two: Write Your Own and Don't Stop</h3><p>Severstal chose the opposite strategy: at the Cherepovets Steel Mill, they implemented their own MES (Manufacturing Execution System) "Metallurgiya" developed by "Severstal-Infokom," completely replacing the Italian QMet Danieli. Development took three years, and for production facilities that had no MES before, the result is measurable: costs for data entry and retrieval decreased by <strong>30%</strong>, overall equipment effectiveness increased by <strong>20%</strong>, productivity by <strong>5%</strong>, and process energy consumption decreased by <strong>10%</strong>. The system is already being sold externally: contracts have been signed with another metallurgical corporation and a mining company.</p><p>KAMAZ followed the same path: the Kamotive platform, developed by the internal Innovation Center, replaced one of the modules of the foreign Teamcenter and is already in industrial operation. It is connected to more than <strong>600 users and 238 partner organizations</strong> 
+— by the standards of my ratings, this is no longer a pilot for show, but a working system used in practice.</p><p>Another example is when internal development grows into a separate product. Since 2009, Rosatom has been developing the "Logos" engineering software suite at RFNC-VNIIEF: solutions for calculations and mathematical modeling applicable from aircraft manufacturing to energy and the construction of large infrastructure facilities. The task is not just to create their own product, but to close a real gap: the CAD/CAE developers' consortium aims to reduce the share of foreign systems in the Russian market from 70-80% to <strong>20% by 2027</strong>. Currently, the state corporation is building a distribution network to sell "Logos" on the open market, including abroad 
+— an internal IT tool is turning into an independent business.</p><div><div><table><tbody><tr><th><p>Company</p></th><th><p>What was done</p></th><th><p>Result</p></th></tr><tr><td><p>Severstal</p></td><td><p>Own MES "Metallurgiya" instead of QMet Danieli</p></td><td><p>Data entry costs -30%, equipment efficiency +20%</p></td></tr><tr><td><p>KAMAZ</p></td><td><p>Kamotive platform instead of Teamcenter module</p></td><td><p>600+ users, 238 partner organizations</p></td></tr><tr><td><p>Rosatom</p></td><td><p>"Logos" suite for calculations and modeling</p></td><td><p>Part of the course to reduce the share of foreign CAE from 70-80% to 20% by 2027</p></td></tr><tr><td><p>Gazprom Neft</p></td><td><p>"Alchemist" neural network for oil formulations</p></td><td><p>Development time reduced by 6 times</p></td></tr></tbody></table></div></div><h3>Where There Was No Ready-Made Solution at All</h3><p>There is a separate class of tasks where the question "buy or develop" does not arise at all. There is nothing to buy 
+— this is what happened to Gazprom Neft with oil formulations.</p><p>Motor oil, transmission oil, or industrial oil is a combination of base oil and an additive package, and there are thousands of variations of this combination. The classic way to select a formulation is through laboratory trial and error: they take a base, add an additive package, test for viscosity, stability, performance under load, and if it doesn't work, they try the next combination. With so many variables, trial and error takes months, even when the laboratory has years of experience.</p><pre><code>for each base oil: 
+for each additive package: 
+compile formulation 
+test: viscosity, stability, load 
+if test passed -> candidate for implementation 
+else -> next combination 
+# with thousands of combinations 
+— trial and error takes months</code><div><a href="https://sourcecraft.dev/"><span></span></a></div></pre><p><em>A simplified illustration of the classic trial-and-error approach 
+— not the code of the "Alchemist" system, the architecture of which the company does not disclose</em></p><figure><img alt="Laboratory flask" src="https://habrastorage.org/r/w1560/extt/f3/8e/5e/f38e5e1b528e45a8885847a2b07e7e9f.jpg" loading="lazy"/><div><figcaption>Laboratory flask</figcaption></div></figure><p><em>Classic formulation selection 
+— is a physical test on a stand, which cannot be accelerated by the number of lab technicians</em></p><h3>Why Couldn't They Just Hire More Lab Technicians?</h3><p>The first thing that comes to mind is to increase the lab staff. It doesn't work: it's the same logic as in the old joke about nine midwives not being able to give birth in one month. Each combination still needs to be physically tested on a stand, and this is a matter of time, not just money. Ten lab technicians won't speed up this test tenfold 
+— <strong>the bottleneck is not in the number of hands, but in the physics of the process itself</strong>.</p><p>There was simply no ready-made solution on the market, so Gazprom Neft built its own neural network system "Alchemist." It iterates through thousands of combinations of base oils and additive packages, relying on data collected by the company over <strong>15 years</strong>. The company does not disclose the model's architecture or how the training data is labeled 
+— this is standard practice for industrial R&D, where the commercial value lies in the data itself. The result is measurable: the time to bring a new formulation to market has been reduced <strong>6-fold</strong>, from six months to 1-2 months, and the system has already been used to refine more than <strong>200 formulations</strong>. I found this 6-fold acceleration unbelievable 
+— it turned out to be due to fifteen years of accumulated data: no one else has such an archive.</p><p><em>The source provides a range of 1-2 months; "6 times" is calculated based on the lower end of the range.</em></p><p><strong>Result:</strong> 
+— the time to bring a new formulation to market has been reduced 6-fold 
+— from six months to 1-2 months 
+— the system has already been used to refine more than 200 formulations 
+— the model relies on 15 years of accumulated data, which no one else has</p><p>When a company has accumulated a large amount of its own data over many years, a model trained on it solves the problem faster than a ready-made license could be purchased 
+— simply because a license for such a narrow task does not exist.</p><hr/><h3>What This Means for Engineering Teams</h3><p>The Russian engineering software market has grown by 20% in a year, to 55 billion rubles, and the corporate software segment as a whole will grow twice as fast as the overall IT market: 24% versus 12% per year until 2030. Part of this growth comes from stories like "Logos," Kamotive, and MES "Metallurgiya": companies that developed a solution for their internal task eventually offer it to the open market or sell it externally, like Severstal. I always read the five-year forecast in my ratings with a caveat: the horizon is too long for nothing to change along the way.</p><p>A license for foreign software can be purchased if someone has a ready-made product for your task. The fifteen years of data that Gazprom Neft collected on oil formulations could not be bought from anyone 
+— that's why "Alchemist" appeared, not because it's trendy, but because there was no other choice. "Logos," Kamotive, and MES "Metallurgiya" have a similar story: they closed their own gap, and as a result, they got a product with a measurable effect 
+— some sell it externally, some build a distribution network.</p><h3>In Short</h3><p><strong>What is Gazprom Neft's "Alchemist"?</strong> A neural network system for selecting formulations for motor, transmission, and industrial oils, which the company built itself because there was no ready-made solution for this task on the market.</p><p><strong>How much did "Alchemist" speed up formulation development?</strong> The time to bring a new formulation to market has been reduced 6-fold 
+— from six months to 1-2 months. The system has already been used to refine more than 200 formulations.</p><p><strong>On what data is the system trained?</strong> On data that Gazprom Neft collected over about 15 years 
+— the company does not disclose the model's architecture or the labeling of the training data.</p><hr/><p><strong>Sources:</strong></p><p>
+— RBC, on the share of holdings on SAP: companies.rbc.ru/news/VpI4PrWYTs 
+— RBC, on the Ministry of Digital Development consortium: rbc.ru/technology_and_media/15/12/2025/693dcede9a79475216417a9c 
+— Klerk.ru, registry of domestic software: klerk.ru/buh/news/658475 
+— TAdviser, quote from MMK CIO Vadim Feoktistov: tadviser.ru, article about MMK CIO and ERP import substitution 
+— TAdviser, MES "Metallurgiya" at Severstal: tadviser.ru, project of production management system at Cherepovets Steel Mill 
+— ComNews, effect of MES "Metallurgiya" (-30% costs, +20% efficiency): comnews.ru/content/244842 
+— KAMAZ, press release on Kamotive platform: kamaz.ru/press/releases/platforma_kamotive 
+— TAdviser, "Logos" software package of RFNC-VNIIEF: tadviser.ru, product of RFNC-VNIIEF Logos 
+— ComNews, goal of CAD/CAE consortium on share of foreign systems: comnews.ru/digital-economy/content/218010 
+— Neftegaz.ru, "Gazprom Neft" and "Alchemist" system: neftegaz.ru/news/petroleum-products/780957 
+— RU-BEZH, growth of engineering software market: ru-bezh.ru/gossektor/news/26/01/30 
+— Strategy.ru, growth of corporate software market: strategy.ru/news/rossijskij-rynok-korporativnogo-po</div>
+  </main>
+  <footer>
+    Translation generated with Gemini 2.5 Flash-Lite.
+    The original article remains the source of record.
+  </footer>
+</body>
+</html>

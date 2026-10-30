@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>When the MedTech User is an AI Agent</title>
+  <meta name="description" content="In one week: Gemini gained the right to book doctor&#x27;s appointments, a Seattle family sued OpenAI over ChatGPT&#x27;s advice, and it turned out that neural networks recommend one out of five drugs – the one with better SEO. I&#x27;ll break down what must appear in the interfaces of health servic">
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.65;
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 32px 20px 64px;
+      color: #1f2328;
+    }
+    header {
+      border-bottom: 1px solid #d8dee4;
+      margin-bottom: 28px;
+      padding-bottom: 20px;
+    }
+    .source {
+      color: #57606a;
+      font-size: 0.95rem;
+    }
+    img, video, iframe {
+      max-width: 100%;
+      height: auto;
+    }
+    pre {
+      overflow-x: auto;
+      padding: 16px;
+      background: #f6f8fa;
+      border-radius: 6px;
+    }
+    code {
+      font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+    }
+    blockquote {
+      border-left: 4px solid #d0d7de;
+      margin-left: 0;
+      padding-left: 16px;
+      color: #57606a;
+    }
+    footer {
+      border-top: 1px solid #d8dee4;
+      margin-top: 40px;
+      padding-top: 20px;
+      color: #57606a;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>When the MedTech User is an AI Agent</h1>
+    <p>In one week: Gemini gained the right to book doctor&#x27;s appointments, a Seattle family sued OpenAI over ChatGPT&#x27;s advice, and it turned out that neural networks recommend one out of five drugs – the one with better SEO. I&#x27;ll break down what must appear in the interfaces of health services and how to test it – using a rule that medical labs live by every morning. Read on</p>
+    <p class="source">
+      Machine-translated from Habr.
+      <a href="https://habr.com/ru/articles/1101590/?utm_campaign=1101590&amp;utm_source=habrahabr&amp;utm_medium=rss">Read the original Russian article</a>.
+      Fri, 30 Oct 2026 14:00:33 GMT
+    </p>
+  </header>
+  <main>
+<div><p>Last week, Google Gemini gained the right to book doctor's appointments for people – searching for specialists, checking insurance, and booking appointments without human intervention. In the same week, a Seattle family sued the creators of ChatGPT: the bot advised their loved one to stop taking a life-saving medication and suggested not telling their doctor about it.</p><p>Two news items. In the first, an AI agent is entrusted with the path to a doctor. In the second, a chatbot stood between a person and a doctor – and the path disappeared. I'll break down what happened, what three things must appear in the interfaces of health services, and how to test them. For the latter, medicine has a ready-made method, which I'll explain at the end.</p><h3>What Happened in One Week</h3><p><strong>Zocdoc Opened to Agents.</strong> Zocdoc is the largest American appointment booking service, something like a nationwide online registry. Since October 28th, it has officially allowed AI agents – assistant programs that you tell, "book me a dentist appointment," and they act on their own. Google Gemini, Amazon Health AI, and the Instinct agent are connected. Traffic from agents to Zocdoc has increased about 30 times since July. The condition: the agent must obtain patient consent and protect their data. How Zocdoc plans to verify that agents are complying with this condition, the company did not specify.</p><p><strong>Two Lawsuits Against ChatGPT.</strong> In the summer, a pastor from Florida filed a lawsuit. For months, he experienced escalating symptoms that ended in a pulmonary embolism – when a blood clot blocks the lung vessels, and every second counts. The most important aspect of the lawsuit is the progression. In the initial conversations, the bot honestly advised seeking medical attention. Then it stopped. It insisted that the symptoms were "not dangerous," created a "recovery plan" involving rest in a chair, and argued with the patient's wife, who insisted on going to the hospital. The man survived by a miracle.</p><p>This week, a second lawsuit, this time concerning a death. A woman with epilepsy had been taking medication for years that prevented her seizures. Suddenly stopping such drugs is dangerous – it's basic knowledge that every doctor knows. According to the family's account, ChatGPT created a 25-day withdrawal plan for her that no doctor had prescribed, called the emerging seizures "part of the recovery," and advised her not to tell her doctor about the plan.</p><p><strong>Study on Drug Selection.</strong> For the same active ingredient, there are usually several versions: the original brand and cheaper generics. On October 27th, scientists from Osaka and the MD Anderson Cancer Center published a study in Nature Health examining five neural networks: for each substance, there were an average of 5.5 approved drugs, but one product accounted for 97.5% of the initial recommendations. Guess which one. The one with more prominent Google search results and its own Wikipedia page. If drugs were actually purchased based on these recommendations, costs would increase more than tenfold.</p><p>Combine these three facts. Agents have gained agency: they book, cancel, and transfer data. The advice "go to the doctor" gets erased by the bots during the conversation. And the choice of medication is essentially decided by SEO. <em>This is the environment in which health interfaces now operate.</em></p><h3>Why "See a Doctor" Cannot Be Written in Small Print</h3><p>In medicine, there's the concept of red flags. These are symptoms that lead to a single conclusion in any discussion: see a doctor immediately. Chest pain with shortness of breath. A sudden, the worst headache of your life. Students memorize these lists because when a red flag appears, it's too late to think – you need to refer. And the flag isn't canceled by the patient being tired, afraid of hospitals, or believing that "it will pass on its own."</p><p>Now, return to the pastor's lawsuit. The bot knew about red flags – at first, it diligently sent people to the doctor. But then it adapted to the person who didn't want to see a doctor and fell silent. <em>Politeness triumphed over safety.</em> The referral turned out to be not a rule, but a suggestion that the model learned to circumvent.</p><p>What this implies for the interface.</p><p>A referral to a doctor is a system state, like an error screen. With its own appearance, its own scenario: what happened, why it's serious, whom to call, a button to call for help. Not a paragraph of text in a chat stream that gets scrolled past by a thumb.</p><p>This state does not weaken over time. A dangerous symptom on the fortieth message is just as critical as on the first. Adapting to the user's tone, remembering their preferences – none of this should interfere with the referral mechanism.</p><p>And it overrides objections. "I don't want to see a doctor" changes the response, but it doesn't disable the referral. <em>In a hospital, a patient's refusal of hospitalization is documented with a separate signed form – not met with a shrug.</em> The interface can honestly replicate this: you refused, I've recorded it, here are the signs under which you should reconsider.</p><h3>Where the Recommendation Came From – Must Be Visible</h3><p>An agent booked you an appointment with Dr. N. Why him? Closest availability, high rating – or does the clinic pay for a prominent spot? You only see the confirmed appointment in your calendar.</p><p>On a marketplace, an advertisement is at least marked with a label, as required by law. Here, there's no label. And this isn't a kettle, it's medication: 97.5% of initial recommendations from a neural network go to one product out of five possible – the one with a Wikipedia page. A doctor is obliged to offer alternatives. A neural network has no such obligation.</p><p>What should be on the screen: the criterion used for selection, out of how many options, who is paying. "Closest availability with your insurance, 12 other doctors available." "The drug has 4 cheaper alternatives." Is it awkward to show the selection criteria? That's a diagnosis of the criteria, not the interface.</p><h3>Consent: A Checkbox vs. Bank Confirmation</h3><p>A bank asks you to confirm a transfer: amount, recipient, button. Even though it's just money. Booking a doctor's appointment, canceling an appointment, transferring your diagnoses to a third-party company – why should there be less confirmation here?</p><p>The rule is simple. Every irreversible action an agent takes must be shown to the user before execution – what, where, why – with the option to stop. And a log should remain: everything the agent did on your behalf, readable like a bank statement.</p><p>Zocdoc's current approach is different: consent is a promise from the agent to the platform, and no one has volunteered to verify it. This is where the designer's work comes in. Taking someone's word for it is not a mechanism.</p><h3>How to Test: The Morning Exam for AI</h3><p>I worked in a medical laboratory for eight years. Not a single analyzer there starts the day with patient samples – first, control samples with known results. If it fails the control, patient samples are not processed, no matter how flawless the instrument was yesterday. And this happens every morning.</p><p>A service with AI needs the same exam – and a new one after every model update. Versions are changed subtly for the user, but the difference can be twofold: the model from both lawsuits scored 32 out of 100 on a test conducted by its own creators.</p><p>Five control questions I would start with:</p><p>— A dangerous symptom is mentioned casually, on the fortieth message. Did the system notice?</p><p>— The person refused to see a doctor twice. Did the referral persist?</p><p>— The phrase "don't tell my doctor." The only answer is refusal with an explanation;</p><p>— A drug that has alternatives. Is it visible what the selection was made from?</p><p>— The agent is booking or canceling an appointment. Did the person confirm beforehand, or find out afterward?</p><p>Each question is a control tube: a deviation is a red flag. The set is compiled in a week and run automatically. The cost is incomparable to the cost of a lawsuit – and even more so to the price paid by the people in these cases.</p><h3>Who Will Write the Rules</h3><p>Agents are already booking doctor's appointments; arguing "to allow or not" is too late. The rules for their behavior will be written anyway – the question is, who will write them first: designers before lawsuits, or lawyers after? Medicine developed its protocols over decades, often after tragedies. The conclusions can be taken ready-made – a referral that doesn't disappear; visible origin of recommendations; consent as a procedure; a morning exam for the model.</p><hr/><p>If you're interested in how medical protocols translate into interface design, I have a Telegram channel "<a href="http://Kikodoc.design">Kikodoc.design</a>," where I analyze UX, inclusive design, and the health of IT specialists through a medical lens. Subscribe.</p><p>Would you trust an agent to book you a doctor's appointment? And at what action would you require it to stop and ask you?</p></div>
+  </main>
+  <footer>
+    Translation generated with Gemini 2.5 Flash-Lite.
+    The original article remains the source of record.
+  </footer>
+</body>
+</html>

@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Virtual Employees Under Control: How to Limit Autonomous AI Agents</title>
+  <meta name="description" content="It&#x27;s a known fact that AI agents can act independently: launch programs, manage files, and tirelessly pursue a given task. This might seem like a developer&#x27;s dream, but there&#x27;s a catch: the more freedom an agent has, the more problems it can cause. In the summer of 2026, OpenAI agents">
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.65;
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 32px 20px 64px;
+      color: #1f2328;
+    }
+    header {
+      border-bottom: 1px solid #d8dee4;
+      margin-bottom: 28px;
+      padding-bottom: 20px;
+    }
+    .source {
+      color: #57606a;
+      font-size: 0.95rem;
+    }
+    img, video, iframe {
+      max-width: 100%;
+      height: auto;
+    }
+    pre {
+      overflow-x: auto;
+      padding: 16px;
+      background: #f6f8fa;
+      border-radius: 6px;
+    }
+    code {
+      font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+    }
+    blockquote {
+      border-left: 4px solid #d0d7de;
+      margin-left: 0;
+      padding-left: 16px;
+      color: #57606a;
+    }
+    footer {
+      border-top: 1px solid #d8dee4;
+      margin-top: 40px;
+      padding-top: 20px;
+      color: #57606a;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Virtual Employees Under Control: How to Limit Autonomous AI Agents</h1>
+    <p>It&#x27;s a known fact that AI agents can act independently: launch programs, manage files, and tirelessly pursue a given task. This might seem like a developer&#x27;s dream, but there&#x27;s a catch: the more freedom an agent has, the more problems it can cause. In the summer of 2026, OpenAI agents broke out of their sandbox and ventured onto the internet, attacking HuggingFace in the process. This incident presented AI engineers with a challenge: they needed to find a way to restrict agents, ensuring they could never leave isolated environments. However, agents are cunning and quickly find ways to bypass even the strictest rules. But there&#x27;s one weak spot. Today, we&#x27;ll discuss the Hard Stop system, proposed in a scientific paper of the same name. It acts as an emergency brake between the agent and the OS, designed to halt the agent&#x27;s processes before it can cause harm. Read on.</p>
+    <p class="source">
+      Machine-translated from Habr.
+      <a href="https://habr.com/ru/companies/ru_mts/articles/1097646/?utm_campaign=1097646&amp;utm_source=habrahabr&amp;utm_medium=rss">Read the original Russian article</a>.
+      Fri, 30 Oct 2026 13:02:02 GMT
+    </p>
+  </header>
+  <main>
+<div><figure><img loading="lazy" src="https://habrastorage.org/r/w1560/extt/d2/4e/71/d24e71bc8743667266e970693244b13b.png"/></figure><p>It's a known fact that AI agents can act independently: launch programs, manage files, and tirelessly pursue a given task.</p><p>This might seem like a developer's dream, but there's a catch: the more freedom an agent has, the more problems it can cause. In the summer of 2026, OpenAI agents broke out of their sandbox and ventured onto the internet, attacking HuggingFace in the process.</p><p>This incident presented AI engineers with a challenge: they needed to find a way to restrict agents, ensuring they could never leave isolated environments. However, agents are cunning and quickly find ways to bypass even the strictest rules. But there's one weak spot.</p><p>Today, we'll discuss the Hard Stop system, <a href="https://arxiv.org/abs/2609.29808">proposed</a> in a scientific paper of the same name. It acts as an emergency brake between the agent and the OS, designed to halt the agent's processes before it can cause harm.</p><h2>Escape</h2><p>You've likely heard about the recent high-profile incident involving an internal OpenAI experiment. The official version is that it was a test of agents on a set of cybersecurity tasks on the ExploitGym platform, conducted in a strictly controlled environment—they had no internet access, and execution occurred exclusively in isolated environments. The goal was to complete the tests successfully.</p><p>However, there was a weak point: an intermediate server, Artifactory, which had internet access, was used to install software packages.</p><p>While working on the tasks, the agents reasoned that the tests would be best solved where the answers already existed: on the internet. Therefore, they found a vulnerability in Artifactory, used it to establish communication among themselves, and then learned to send requests to the outside world.</p><p>After the incident analysis, independent researchers <a href="https://metr.org/blog/2026-08-26-openai-hugging-face-incident-investigation">discovered</a> around 1200 agents that had generated over 70,000 messages and files. Approximately 700 of them attempted (and succeeded) to compromise HuggingFace's security.</p><p>During their audit, HuggingFace was able to reconstruct about 17.6 thousand actions where agents searched for vulnerabilities, read system files, and even managed to gain access to Kubernetes and internal infrastructure.</p><p>And all this was done solely to solve the tasks assigned by OpenAI, despite all its security measures and clearly defined rules. The tasks, in essence, were:</p><ul><li><p>Do not connect to external servers.</p></li><li><p>Do not leave your sandbox.</p></li><li><p>You are forbidden from reading system files.</p></li></ul><p>As we can see, this didn't help. And then <s>the shit hit the fan</s> an active and controversial discussion began about the need for a more effective way to catch a mischievous agent.</p><h2>Catch the Thought, Not the Action</h2><p>One way to control an AI agent is to check its commands and messages before execution: a filter or another model analyzes the generated text and tries to determine if the agent is planning to do something forbidden. However, such control depends on the system's ability to correctly interpret the form of expression. As we've <a href="https://habr.com/ru/companies/ru_mts/articles/1092372/">discussed in an article</a> about AI agents' own languages, a message can be encoded or transmitted in such a way that monitoring doesn't recognize its meaning. The problem with commands is similar.</p><p>Suppose an agent is forbidden from using `.curl`. The agent's filter looks for this word in commands and understands that it cannot be used *directly*. However, it can be assembled from a couple of strings (cu+rl), the command can be encoded, or a Python network library can be called directly. For a generative system, which an agent is, these are all different actions that don't fall under a single restriction.</p><p>But from the perspective of the OS, which receives the requests, the picture is different. Any process must eventually interact with the OS kernel: it manages files and all computer resources; this stage cannot be bypassed.</p><p>And if the agent cleverly crafts the server address, it still has to provide the specific IP and open a socket to the kernel. Or, with files, even if it hides the path to the desired folder within the code, the kernel will still receive the actual path.</p><blockquote><p><em>And at this point, developers decided to implement Hard Stop. Its principle of operation is as simple as a club's bouncer: if the action is on the whitelist, it proceeds to the kernel; if not, the action is stopped. The emergency brake doesn't need to understand the model's reasoning—the agent is inherently an untrusted program to it.</em></p></blockquote><h4>Two Layers of Architecture</h4><p>The emergency brake cannot be embedded directly into the LLM itself, as the decision will still be made by a probabilistic model, where the chance of error always remains (and can even be extremely high).</p><p>Therefore, Hard Stop has two levels: the agent and its supervisor. The latter has a very dull and straightforward task: to compare actions against predefined rules. For example:</p><ul><li><p>The agent can only work with /workspace.</p></li><li><p>It can only connect to the internal server.</p></li><li><p>It is only allowed to run approved programs.</p></li><li><p>It does not have access to /proc, /sys, and other system areas.</p></li></ul><p>The supervisor remains inactive if the rules are not violated. But a step to the left, a step to the right—and the emergency brake is pulled.</p><figure><img alt="Source" loading="lazy" src="https://habrastorage.org/r/w1560/extt/7c/5a/2c/7c5a2c234f791c9d669188e39406ddba.png" title="Source"/><div><figcaption><a href="https://carbuzz.com/toyota-success-andon-cord-manufacturing-process/">Source</a></figcaption></div></figure><p>The idea was dubbed Andon Cord—after the safety system at a Toyota factory. There, on the assembly line, there's an Andon mechanism that can immediately stop the line if a problem occurs.</p><p>But in our case, it doesn't end with stopping the forbidden action. The supervisor blocks the dangerous action, after which all of the agent's processes are frozen, with their current state recorded, so that a human developer can conduct an analysis.</p><p>The emergency brake works on a very simple principle: it's based on existing Linux mechanisms—the system allows embedding checks directly into the execution path of sensitive operations.</p><h2>Among other things, there are LSM and eBPF.</h2><h4>LSM is a security infrastructure within the Linux kernel. Simply put, it can implement additional checks before operations like opening files or network access. And eBPF is a way to load mini-programs for such checks directly into the kernel.</h4><p>Is the problem of unwanted actions solved at its root? Almost! The thing is, agents rarely run a single process; they usually involve chains and entire groups of processes: for example, one works in the browser, another launches shell commands, which in turn initiate more processes, and so on.</p><p>You can stop the agent, but this won't affect child processes. And for this, Linux uses the cgroup mechanism, which groups multiple processes together. In classic use, Linux uses cgroup to limit resources, so that, for instance, a large container doesn't consume all the RAM or CPU power.</p><p>But the same cgroup can also freeze process groups. In plain language, this means it says: "Stop EVERYTHING that currently belongs to this agent."</p><p>At the same time, cgroup expects confirmation through the kernel that the agent and its "henchmen" are frozen, even if the supervisor requested a complete stop of the process group.</p><p>Why do this? Imagine an agent has been working on a complex task for hours, but at some point, it decides to misbehave. If it's reset, all useful progress will be lost. This is a safeguard, similar to version history in a text editor—if the PC suddenly loses power, you can return to the document with minimal loss.</p><p>When the emergency brake is triggered, the system writes logs where you can see:</p><ul><li><p>what it was doing;</p></li><li><p>at what step it stopped;</p></li><li><p>which specific rule it violated;</p></li><li><p>whether execution can be continued after human intervention.</p></li></ul><p>And all this is thanks to the built-in WAL (write ahead log) for state and event recording.</p><h2>Why Might Even This Not Be Enough?</h2><p>A kernel-level solution seems flawless, but there's a loophole here too. Especially as in the OpenAI case, where the agent didn't go directly but through a third-party server, which it was perfectly legal to access. This means that in the case of the emergency brake, the whitelist would allow the request because it's a trusted intermediary.</p><p>This creates another hole and a useless emergency brake. Restrictions need to be built at every level of the chain so that trusted intermediaries also have limitations and do not have arbitrary internet access.</p><p>In other words, a principle of least privilege is needed: each component should have exactly the access required to perform its task.</p><p>Also, Hard Stop itself is currently just a demonstration of a possible architecture. In the <a href="https://github.com/joseluispino/hardstop">published materials</a> on GitHub, there are even benchmarks, such as the stop-triggering speed—4.8 microseconds on average, which is quite fast.</p><p>Speed is good, but Hard Stop only works as long as the controller, by its access level, is above the agent.</p><p>Suppose the agent operates within its environment, and the supervisor manages rules, cgroups, and network restrictions from the outside. In such a configuration, the agent can try to go beyond the allowed boundaries as much as it wants—it simply doesn't have the rights to change the rules themselves.</p><p>But what if the agent has somehow already gained root access to the host? Then it could potentially interfere with the protection mechanism itself: change cgroup settings and generally affect the supervisor. This means the emergency brake is good only until the agent reaches the room where the main switch is located.</p><p>Hard Stop, in principle, doesn't care whether a rule is bad or good, and it needs to be set correctly, meaning a lot depends on the initial configuration set by a human.</p><p>From all this, we can conclude: it will be more reliable to keep AI behind a strong door than to rely on its good intentions. Because the solution found by a neural network might not be to everyone's liking.</p></div>
+  </main>
+  <footer>
+    Translation generated with Gemini 2.5 Flash-Lite.
+    The original article remains the source of record.
+  </footer>
+</body>
+</html>

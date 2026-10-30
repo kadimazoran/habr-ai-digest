@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>HuggingFace for Beginners: How to Choose and Run a Model</title>
+  <meta name="description" content="If you&#x27;re interested in AI and data, you&#x27;ve likely encountered HuggingFace – an AI development platform and community, akin to GitHub for AI. It offers a centralized hub for sharing, discovering, and collaborating on open-source machine learning models, datasets, and applications. However,">
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.65;
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 32px 20px 64px;
+      color: #1f2328;
+    }
+    header {
+      border-bottom: 1px solid #d8dee4;
+      margin-bottom: 28px;
+      padding-bottom: 20px;
+    }
+    .source {
+      color: #57606a;
+      font-size: 0.95rem;
+    }
+    img, video, iframe {
+      max-width: 100%;
+      height: auto;
+    }
+    pre {
+      overflow-x: auto;
+      padding: 16px;
+      background: #f6f8fa;
+      border-radius: 6px;
+    }
+    code {
+      font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+    }
+    blockquote {
+      border-left: 4px solid #d0d7de;
+      margin-left: 0;
+      padding-left: 16px;
+      color: #57606a;
+    }
+    footer {
+      border-top: 1px solid #d8dee4;
+      margin-top: 40px;
+      padding-top: 20px;
+      color: #57606a;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>HuggingFace for Beginners: How to Choose and Run a Model</h1>
+    <p>If you&#x27;re interested in AI and data, you&#x27;ve likely encountered HuggingFace – an AI development platform and community, akin to GitHub for AI. It offers a centralized hub for sharing, discovering, and collaborating on open-source machine learning models, datasets, and applications. However, its interface can be quite challenging for newcomers. Faced with hundreds of thousands of models, it&#x27;s easy to feel overwhelmed, much like someone stepping into a bustling 1990s wholesale market: everything is available, but understanding where to start is a mystery. Within minutes, you might download the wrong datasets or abandon the endeavor altogether. The complexity isn&#x27;t just about HuggingFace being difficult; it&#x27;s about the platform requiring prior knowledge. This article serves as a beginner-friendly tutorial on navigating HuggingFace, working with its data and weights without getting lost.</p>
+    <p class="source">
+      Machine-translated from Habr.
+      <a href="https://habr.com/ru/companies/bothub/articles/1101764/?utm_campaign=1101764&amp;utm_source=habrahabr&amp;utm_medium=rss">Read the original Russian article</a>.
+      Fri, 30 Oct 2026 12:53:20 GMT
+    </p>
+  </header>
+  <main>
+<div><p>If you're interested in AI and data, you've likely encountered HuggingFace – an AI development platform and community, akin to GitHub for AI. It offers a centralized hub for sharing, discovering, and collaborating on open-source machine learning models, datasets, and applications.</p><p>However, its interface can be quite challenging for newcomers. Faced with hundreds of thousands of models, it's easy to feel overwhelmed, much like someone stepping into a bustling 1990s wholesale market: everything is available, but understanding where to start is a mystery. Within minutes, you might download the wrong datasets or abandon the endeavor altogether.</p><p>The complexity isn't just about HuggingFace being difficult; it's about the platform requiring prior knowledge. This article serves as a beginner-friendly tutorial on navigating HuggingFace, working with its data and weights without getting lost.</p><hr/><p>HuggingFace today is more than just a platform for ML engineers. It hosts models for text, images, audio, and code, along with datasets, demo applications, and a vast array of libraries. But it's not quite GitHub – HuggingFace has grown rapidly, with the platform expanding faster than its documentation for beginners.</p><figure><img loading="lazy" src="https://habrastorage.org/r/w1560/webt/c8/d8/21/c8d82199693ffcca0296f6b2217d5a14.png"/></figure><p>Model cards often assume you already know what quantization is, why <code>device_map</code> is necessary, and why <code>float16</code> is not the same as <code>bfloat16</code>. If you don't, you might feel like you're not part of the ML engineering community.</p><p>But we'll take a different approach. We'll explore what's available, the purpose of each tab, and how to read a model card without downloading an unnecessary 40 gigabytes. Then, we'll cover different ways to run models – with and without code, including local execution via GGUF and Ollama for those who want full control.</p><p>By the way, if you're not ready to deal with local installations and quantization right now, there's a workaround: at <a href="https://bothub.chat/?invitedBy=zx7xIePYIOcWHhTfgg6-O">BotHub</a>, <a href="https://bothub.chat/models">open-source models</a> are available through chat and an OpenAI-compatible API – without a VPN and payable with a Russian card. Using the <a href="https://bothub.chat/?invitedBy=zx7xIePYIOcWHhTfgg6-O">referral link</a> grants 300,000 CAPS, allowing you to experiment with what we'll discuss below before downloading even the first gigabyte of weights.</p><h2>What's on HuggingFace: The Tabs</h2><p>The main tabs on HuggingFace are <strong>Models</strong>, <strong>Datasets</strong>, and <strong>Spaces</strong>.</p><figure><img loading="lazy" src="https://habrastorage.org/r/w1560/webt/bd/6b/0d/bd6b0d5e866f3201fd49bb69c8707e9e.png"/></figure><p><strong>Models</strong> (<a href="https://huggingface.co/models">huggingface.co/models</a>) is a repository of weights. This is where you'll find the files downloaded and run locally or via <code>transformers</code>: Llama, Qwen, Stable Diffusion, Whisper, and millions of other checkpoints. A model in this section is a collection of tensors and configuration, not a ready-to-use application. To make it work, you need code, a GPU, or at least a Python <code>pipeline</code>.</p><p><strong>Datasets</strong> (<a href="https://huggingface.co/datasets">huggingface.co/datasets</a>) is a storage for training and evaluation data. It contains text corpora, images, audio, and tables that can be loaded with a single line: <code>load_dataset("name")</code>. We won't be covering this tab in this article, as it's intended for those who plan to fine-tune or build their own benchmarks, rather than run pre-trained weights.</p><p><strong>Spaces</strong> (<a href="https://huggingface.co/spaces">huggingface.co/spaces</a>) are live demos. Each Space is a small web application built with Gradio, Streamlit, or Docker, running on HuggingFace's infrastructure and accessible directly in your browser without installation. The model is already loaded, weights are downloaded, and a GPU is allocated. You input text or an image, get the result, and close the tab.</p><p>We'll primarily focus on the Models section, as that's where you choose what to download and what hardware resources to allocate. Spaces are useful for trying out a model before committing to downloading gigabytes of data.</p><h2>How to Read a Model Card Without Downloading Junk</h2><p>Let's examine a model card using a specific example: <a href="https://huggingface.co/zai-org/GLM-5.3">zai-org/GLM-5.3</a>, one of the top open-source models, released in August 2026.</p><p>At the top, you'll see tags: <code>Text Generation</code>, <code>Transformers</code>, <code>Safetensors</code>, <code>English</code>, <code>Chinese</code>, <code>glm_moe_dsa</code>, <code>conversational</code>. The first tag is the <strong>Task</strong> the model is trained for. <code>Text Generation</code> means the model produces text: answers questions, completes code, or engages in dialogue. If you need summarization or classification, you'll look for different tags, which will determine which class from the <code>transformers</code> library you'll load. <code>Safetensors</code> is a weight storage format that replaced <code>pytorch_model.bin</code> and is considered more secure and faster to load. <code>glm_moe_dsa</code> is an architectural tag, which we'll discuss later.</p><figure><img loading="lazy" src="https://habrastorage.org/r/w1560/webt/4e/01/6d/4e016d6127d456f040bb19710ba5b37d.png"/></figure><p>For GLM-5.3, the <code>License: glm-5.3</code> tag links to a <a href="https://huggingface.co/zai-org/GLM-5.3/blob/main/LICENSE">separate document</a>, indicating a custom license from Z.ai. This license permits commercial use with certain conditions (specifically, a revenue threshold of ten billion dollars, after which the terms change).</p><p>Model popularity is also crucial. At the time of writing, this model had <code>Downloads last month: 2,507,023</code>. Two and a half million downloads in a month is a rough but effective indicator that the model is not broken and that there are discussions available. If a model has only five hundred downloads and its issues section is silent, you're likely to be the first to encounter a bug. However, popularity doesn't tell you if the model is suitable for your specific task.</p><p>Model size is also important. In the screenshot within the <code>Safetensors</code> block, you can see the line <code>Model size 753B params</code>. This is the total number of parameters in the model. However, this model uses the <strong>MoE</strong> (Mixture of Experts) architecture, where only a portion of the weights are activated at each generation step – around 40 billion parameters. This is why a 753-billion-parameter model can sometimes run faster than a dense model of comparable size. Nevertheless, for local execution, this still means you'll need a server with substantial memory, not just a laptop.</p><figure><img loading="lazy" src="https://habrastorage.org/r/w1560/webt/4e/c3/ab/4ec3abd0af1f7b3e5461674cefa30850.png"/></figure><p>The image above shows the <code>Files and versions</code> tab. Here, you can see that the weights are split into shards – files like <code>model-00001-of-00141.safetensors</code> and so on, each approximately 5.36 GB. There are over a hundred such files, and the total snapshot size exceeds two hundred gigabytes. If you click
+  </main>
+  <footer>
+    Translation generated with Gemini 2.5 Flash-Lite.
+    The original article remains the source of record.
+  </footer>
+</body>
+</html>

@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>A week of manual work in two days: how I delegated part of the operational process to AI</title>
+  <meta name="description" content="Hello, Habr! My name is Anastasia, and I am the head of IT compliance at RGS. Before each planning cycle, I need to review and evaluate hundreds of tasks to determine which ones require attention first. This usually took a full working week, so I decided to find a way to simplify this process to fre">
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.65;
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 32px 20px 64px;
+      color: #1f2328;
+    }
+    header {
+      border-bottom: 1px solid #d8dee4;
+      margin-bottom: 28px;
+      padding-bottom: 20px;
+    }
+    .source {
+      color: #57606a;
+      font-size: 0.95rem;
+    }
+    img, video, iframe {
+      max-width: 100%;
+      height: auto;
+    }
+    pre {
+      overflow-x: auto;
+      padding: 16px;
+      background: #f6f8fa;
+      border-radius: 6px;
+    }
+    code {
+      font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+    }
+    blockquote {
+      border-left: 4px solid #d0d7de;
+      margin-left: 0;
+      padding-left: 16px;
+      color: #57606a;
+    }
+    footer {
+      border-top: 1px solid #d8dee4;
+      margin-top: 40px;
+      padding-top: 20px;
+      color: #57606a;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>A week of manual work in two days: how I delegated part of the operational process to AI</h1>
+    <p>Hello, Habr! My name is Anastasia, and I am the head of IT compliance at RGS. Before each planning cycle, I need to review and evaluate hundreds of tasks to determine which ones require attention first. This usually took a full working week, so I decided to find a way to simplify this process to free up time for more complex expert work. As a result, I managed to automate part of the routine using AI, and in this article, I want to share how, without a development budget or programming skills, I reduced the task review time from five working days to two. Read more</p>
+    <p class="source">
+      Machine-translated from Habr.
+      <a href="https://habr.com/ru/companies/rgs_it/articles/1101682/?utm_campaign=1101682&amp;utm_source=habrahabr&amp;utm_medium=rss">Read the original Russian article</a>.
+      Fri, 30 Oct 2026 11:08:06 GMT
+    </p>
+  </header>
+  <main>
+<div><figure><img loading="lazy" src="https://habrastorage.org/r/w1560/extt/5d/4c/a3/5d4ca3ad61aa9814d39d59530b86b734.png"/></figure><div><p>Hello, Habr! My name is Anastasia, and I am the head of IT compliance at RGS. Before each planning cycle, I need to review and evaluate hundreds of tasks to determine which ones require attention first. This usually took a full working week, so I decided to find a way to simplify this process to free up time for more complex expert work. As a result, I managed to automate part of the routine using AI, and in this article, I want to share how, without a development budget or programming skills, I reduced the task review time from five working days to two.</p></div><h2>Five hundred tasks and one expert</h2><p>Before each planning cycle, development teams collect hundreds of tasks, and each is evaluated against several criteria to decide what to work on first. One of the criteria is IT compliance: how much the implementation of a task in the information infrastructure helps the company comply with legal requirements. Missing an important task means risking a fine; overestimating an unimportant one means taking up a slot in the plan that could be used for a necessary improvement.</p><p>The prioritization procedure had just started, and only two "trains," meaning two major development directions, were participating in the pilot. The very first cycle brought about 500 tasks, and their review took the entire working week of the sole expert in the department. During this time, tasks for which compliance exists were on hold: analysis of new tasks for setting and implementing requirements, and support for complex projects.</p><p>And the connection of the remaining trains was yet to come. If nothing changed, task evaluation would have taken up most of the quarter, and there was no possibility to expand the team for peak load. Keyword filtering doesn't work in this case: the wording is too different across teams, and you need to search for meaning, not words.</p><p>The first idea was modest: to teach AI to at least separate tasks that the expert needs to look at from those that can be skipped. Not to replace the expert, but to relieve them of routine work. Spoiler alert: it turned out to be more than intended.</p><h2>Step #1: Test the hypothesis at minimal cost</h2><p>The logic for evaluating the prioritization criterion is always the same: read the task description, compare it with the criteria, assign a score, close the task. A language model can do exactly that. But first, the idea needed to be tested, and as cheaply as possible.</p><p>I made an anonymized dump of tasks and gave it to several external models along with instructions on the criteria. It didn't work the first time, but after several iterations of changing the prompt and instructions, the models started giving stable results.</p><p>Then I compared the models' scores with my expert evaluations. The initial accuracy was about 60%, and the errors were more often on the side of overestimation. This was a year ago, at the very beginning of the search for solutions. For my task, this was a key takeaway: an overcautious model can reliably filter out what definitely doesn't require the expert's attention, and only a small portion of tasks will remain for manual review. The scores could be uploaded back into the system via a script through an administrator.</p><p>For a start, this was an encouraging conclusion: the model is more likely to err on the side of caution than to miss something important. This means it can be used at least as a filter, which already saves the expert's time. But the result can be improved.</p><h2>Step #2: Local AI and automation</h2><p>The first option had three weaknesses:</p><ul><li><p><strong>Manual work.</strong> Preparation of dumps, transfer to the model, collection of responses ate up part of the savings.</p></li><li><p><strong>Anonymization.</strong> Along with details, some meaning was lost, which affected accuracy.</p></li><li><p><strong>Dependence on external services.</strong> The tool could stop working in Russia at any moment, and there were no resources to urgently find an alternative.</p></li></ul><p>There were two paths left: a corporate solution or a local model on a laptop. The corporate solution didn't work out immediately, so I went with the second. A local model runs directly on the computer: data doesn't go anywhere, and it doesn't depend on external services. However, a laptop's resources are limited, tasks have to be submitted in batches, and not every laptop can handle it. This means an orchestrator is needed to manage the process.</p><p>I managed to assemble a set of tools for my solution:</p><ul><li><p><strong>n8n</strong> as the orchestrator. This is a visual constructor where the process is assembled from ready-made blocks, and minimal programming skills are sufficient.</p></li><li><p><strong>LM Studio and Ollama</strong> for running local models. In the end, I stuck with Ollama.</p></li></ul><p>There might be a more elegant solution, but for a start and to save myself, this set was perfect: free, accessible, understandable to a non-specialist.</p><p>The pipeline is set up as follows: task dump, cleaning text from technical garbage, transfer to the model along with instructions, response in a strict format (score level and brief justification), saving the result.</p><figure><="lazy" src="https://habrastorage.org/r/w1560/extt/f0/4d/64/f04d64f4d39c62ef26473a27d1e79e52.png"/></figure><p>It looks neat on the diagram, but this is how the simplest assembly in n8n looks in reality.</p><figure><="lazy" src="https://habrastorage.org/r/w1560/extt/dd/1d/6e/dd1d6e3e234c84e662d8f15dca5a6b90.png"/></figure><p>The key element is the database of verified scores (RAG). Upon receiving a task, the model finds similar tasks that I have already evaluated and relies on them. Simply put, it doesn't guess; it looks at how similar cases were evaluated by an expert.</p><h2>How to check that the AI is not mistaken</h2><p>There were more and more assembly options for automation, and a system was needed to compare them honestly. Using AI for this is overkill: a regular program can compare scores and calculate proportions. I wrote it with the help of AI (it's faster). The program compares the scores of several algorithms with expert scores and calculates four indicators:</p><ol><li><p><strong>Exact match:</strong> the proportion of tasks with the same score as the expert.</p></li><li><p><strong>Match with tolerance:</strong> the error is no more than one scale step.</p></li><li><p><strong>Filtering out the unnecessary:</strong> whether the algorithm misses important tasks and sends unnecessary ones to the expert.</p></li><li><p><strong>Where errors are biased:</strong> overestimation means an unnecessary check, underestimation means a risk of missing something.</p></li></ol><p>This is how the conversation "it seems to have gotten better" turned into concrete numbers.</p><h2>From 20% to 80%</h2><p>The first assemblies in n8n gave a dismal 20% accuracy: there was no database of verified scores yet. Then came modifications to the example selection from the database, prompt refinement, and selection of local models. Overly heavy models would completely freeze the laptop.</p><p>The first good working assembly on Qwen and GPT-oss models gave 70–80% accuracy on a test sample and processed 500 tasks in about 12 hours. However, on real tasks, it gives 55–60%: in a live stream, there are more new formulations and systems, as well as tasks from trains that are just being connected to prioritization.</p><p>Then came options for algorithm development:</p><ul><li><p>multiple scores from different models or from the same model with different parameters;</p></li><li><p>additional knowledge;</p></li><li><p>enriched knowledge: embedded in the algorithm or connected via MCP.</p></li></ul><p>The selection criterion was simple: if the accuracy of an option dropped when new trains were connected, it was discarded. The surviving options work longer than the initial assembly but provide 78–82% accuracy on real data, and the errors towards overestimation and underestimation are now balanced. As a result, it turned out to be more than intended: instead of a filter for the expert, it became an algorithm that immediately assigns the necessary values, and the expert checks them as needed. Computer time is cheaper than expert time: the more accurate the algorithm, the less manual verification is required.</p><figure><="lazy" src="https://habrastorage.org/r/w1560/extt/05/98/8f/05988f81ea0733ed284cb256dc743c87.png"/></figure><h2>Process and results</h2><p><strong>Before:</strong> only new tasks were evaluated manually, and it took a week for 500 tasks. Changed tasks were not re-checked due to lack of time.</p><p><strong>Now:</strong> the prioritization system has changed, but the process has survived. The algorithm itself dumps new tasks and tasks with changed descriptions before implementation, assigns scores, sends the file for review, and records the criterion value in the field for priority calculation. Values can be recorded immediately or after review, as decided by the expert.</p><p><strong>Results</strong>:</p><ul><li><p><strong>Time:</strong> 12–24 hours of algorithm operation for 500 tasks, including verification, two days instead of a week.</p></li><li><p><strong>Accuracy:</strong> 78–82% on real data.</p></li><li><p><strong>Coverage:</strong> changed tasks are also evaluated.</p></li><li><p><strong>Scale:</strong> there were two trains, now there are nine, and the process handles it.</p></li><li><p><strong>Cost:</strong> free tools, no development resources.</p></li></ul><figure><="lazy" src="https://habrastorage.org/r/w1560/extt/07/1b/22/071b220cadc6e080e5500b6cc111b006.png"/></figure><h2>What's next</h2><p>80% accuracy for a local solution is a good and stable result, and I will stop there and periodically check if the accuracy is not decreasing. It's time to return to corporate tools so that the process doesn't depend on a laptop or a single expert. A corporate instance of the algorithm already exists. For now, it operates in a limited mode but provides comparable accuracy six times faster. The limitations need to be removed for full use of all functions.</p><p>The approach itself, "read, compare with rules, evaluate," is suitable for many operational processes, and other functions can reuse this experience. A similar process is already being launched in a test mode using AI.</p><p>AI has not replaced the expert, but it has changed their role: instead of assigning numbers, the expert manages the process and makes decisions where they are truly needed.</p><p></p></div>
+  </main>
+  <footer>
+    Translation generated with Gemini 2.5 Flash-Lite.
+    The original article remains the source of record.
+  </footer>
+</body>
+</html>

@@ -1,0 +1,199 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>OpenWebUI Pipes: Why Write Code When Settings Have Everything?</title>
+  <meta name="description" content="Configuring a custom model with tools and RAG in OpenWebUI is easy. Making it work predictably in production is harder. Our support bot on Gemma 4 initially responded plausibly but lacked system data. We figured out why and turned a &quot;single model in the interface&quot; into a deterministic pipe">
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.65;
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 32px 20px 64px;
+      color: #1f2328;
+    }
+    header {
+      border-bottom: 1px solid #d8dee4;
+      margin-bottom: 28px;
+      padding-bottom: 20px;
+    }
+    .source {
+      color: #57606a;
+      font-size: 0.95rem;
+    }
+    img, video, iframe {
+      max-width: 100%;
+      height: auto;
+    }
+    pre {
+      overflow-x: auto;
+      padding: 16px;
+      background: #f6f8fa;
+      border-radius: 6px;
+    }
+    code {
+      font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+    }
+    blockquote {
+      border-left: 4px solid #d0d7de;
+      margin-left: 0;
+      padding-left: 16px;
+      color: #57606a;
+    }
+    footer {
+      border-top: 1px solid #d8dee4;
+      margin-top: 40px;
+      padding-top: 20px;
+      color: #57606a;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>OpenWebUI Pipes: Why Write Code When Settings Have Everything?</h1>
+    <p>Configuring a custom model with tools and RAG in OpenWebUI is easy. Making it work predictably in production is harder. Our support bot on Gemma 4 initially responded plausibly but lacked system data. We figured out why and turned a &quot;single model in the interface&quot; into a deterministic pipeline using pipes. Read on</p>
+    <p class="source">
+      Machine-translated from Habr.
+      <a href="https://habr.com/ru/companies/hostkey/articles/1101710/?utm_campaign=1101710&amp;utm_source=habrahabr&amp;utm_medium=rss">Read the original Russian article</a>.
+      Fri, 30 Oct 2026 11:32:18 GMT
+    </p>
+  </header>
+  <main>
+<div><p><em>Author: Alexander Kazantsev, Head of Documentation and Content Department</em></p><p>OpenWebUI can utilize many things: custom models, knowledge bases (RAG), tools (MCP/tools), skills, etc. With each version, the environment offers more capabilities, and it seems that for a support AI bot, it's enough to create a custom model based on something open-source like Qwen-3.8 or Gemma 4, attach the necessary tools in the settings, fill in and connect the knowledge base – and you're done!</p><p>Honestly: we at HOSTKEY started exactly like that. And then we wrote several pipes for each support channel served by its own bot, because relying on settings, to put it mildly, yielded unpredictable results.</p><p>In this article, we won't explain "how to enable tools" – that's all in the OpenWebUI documentation – but rather "why enabling them is not enough" and how pipes for bots are currently structured, using the Remote Hands Request support as an example.</p><div><div><table><tbody><tr><td><p><strong>AI Chatbot with OpenWebUI and Ollama on Your Own Server</strong><br/><br/>Order a server with a personal AI chatbot on your own server.</p><p><a href="https://hostkey.ru/apps/machine-learning/ollama-ai-chatbot/">View</a></p></td></tr></tbody></table></div></div><h3>What Happens When You Rely on Model Settings</h3><p>For example, let's take the custom model <strong>hostkeyrurhr</strong>, based on <strong>gemma4:26b-a4b-it-qat</strong>. Its settings (as seen in the OpenWebUI screenshot) include the following parameters:</p><ul><li><p>Function Calling — Legacy;</p></li><li><p>Temperature — 0.2, think (Ollama) — Off, draft_num_predict — 1;</p></li><li><p>Knowledge — hostkey_ru collection, based on our client documentation;</p></li><li><p>Tools — status_ru_mcp, docs_url_ru (checking the status of websites, Invapi, and data centers in Russia, and MCP tool for requesting configurations of VPS and dedicated servers, and network traffic).</p></li></ul><figure><img loading="lazy" src="https://habrastorage.org/r/w1560/extt/90/fe/96/90fe96d528573f53410b9ad041d2515e.png"/></figure><p>Let's ask a question for which the model has a suitable tool. The <strong>get_vps_list</strong> tool from the external MCP returns a list of VPS with prices by location, so let's ask about a cheap VPS in Germany.</p><figure><img loading="lazy" src="https://habrastorage.org/r/w1560/extt/49/76/1c/49761cfd7e942274bf6f8a62fcd68c8e.png"/></figure><p>The current list of servers and prices can be requested via API in Invapi, and our MCP server does exactly that, but the model doesn't access it. The response is built solely on RAG: it looks plausible, but it's not data from the system, but a retelling of instructions from the documentation. If you switch to Native mode, it gets even worse, and RAG also "drops out".</p><p>When requesting via API (e.g., via CURL), the situation is even more amusing: we get a bare <strong>tool_call</strong> with empty <strong>content</strong>. The client is obliged to call it and re-ask the model (which OpenWebUI effectively does). At the same time, there's no guarantee that the tool will be called, that the data will be included in the response, that it won't be mixed with RAG, and that the response will definitely be in Russian.</p><p>But before we dive into pipes, it's worth explaining why the model settings use Legacy and why you can't just switch to Native.</p><p><strong>Legacy (Default).</strong> OpenWebUI doesn't rely on the model itself "knowing" how to call the right tools. Data from all connected tools are added to the general request context (usually mixed into the system prompt), and the model should then generate a response in the expected format based on this data, which is then parsed. This method works with any supported model, but its reliability is variable: the model might overcomplicate the call, generate invalid JSON, or simply ignore the tool.</p><p><strong>Native (Agentic).</strong> Only the list of tools is passed to the model via a special API parameter, not as text in the prompt. A model trained on the tool calling format recognizes the parameter and generates a call in a structured form. OpenWebUI receives the ready response from the tool and doesn't have to guess what the model intended.</p><p>While Qwen3 family neural network models work well in both modes, Gemma 4 Native mode, even for the it (Instruction-Tuned) version, requires a specialized approach. This is precisely the work that the pipe handles (and not only this).</p><p>Why Gemma and not Qwen? It's about speed. With the thinking mode disabled, Gemma 4 provides a comparable (honestly, slightly worse) response in 5–7 seconds on a pair of 16 GB A4000s, while Qwen 3 "thinks" for 30–40 seconds.</p><h3>Pipe (function) and Valves</h3><p>A Pipe (also known as a function) is an <a href="https://docs.openwebui.com/features/extensibility/plugin/functions/pipe/">OpenWebUI plugin</a> that intercepts the request before it's sent to the model. Technically, it's a Python class with a pipe method that receives the request body and returns a string, JSON, or stream; inside, the pipe is free to call the LLM, MCP tools, edit the prompt, and enable/disable RAG as many times as needed.</p><p>It transforms "a single model in the interface" into a deterministic pipeline: the pipe is displayed in OpenWebUI as a separate model, meaning it can be assigned permissions, have its own settings, and be called "externally" via API. External clients only need to replace the custom model with the pipe model in their calls.</p><p>Valves are a configurable part of the pipe that controls how data "flows" through it. It's a nested class within Pipe, inheriting from BaseModel (plus a separate UserValves for user settings): it holds configurable parameters (keys, URLs, thresholds) that are saved in the database, displayed in the admin panel, and re-read on each request. These are essentially "handles" that configure the pipe's behavior without code edits, through the menu.</p><figure><img loading="lazy" src="https://habrastorage.org/r/w1560/extt/f3/74/57/f37457fc69873dddb3d9db59acf29f82.png"/></figure><p>Valves have their limitations, and some things are not worth exposing in them, so we don't use them in our pipes at all – it's easier for us to rewrite prompts and parameter values in the pipe's code.</p><p>Pipes themselves are created in the <strong>Admin Panel - Function</strong> section.</p><figure><img loading="lazy" src="https://habrastorage.org/r/w1560/extt/0e/21/97/0e219719e6cb9a1c495ea614a4ff84c9.png"/></figure><h3>Why Model Settings Are Not Enough</h3><p>Besides non-functional tool calls, here's what else we found unsatisfactory with OpenWebUI's standard mechanisms:</p><ul><li><p>The decision-making is done by the same model that provides the answer. There's no role separation into "fast router" and "responder model with RAG," etc. Everything goes through one model with the same settings, system prompt, temperature, and so on.</p></li><li><p>There's no control over the phase order. Standard tool calling doesn't guarantee the correct order of tool execution. For instance, we needed to get a keyword search first, then server availability and MCP Invapi tools, and only then the RAG response.</p></li><li><p>RAG cannot be disabled for specific steps, for example, during tool calls, to prevent data mixing.</p></li><li><p>There's no post-processing – language checks, trimming of trailing service information, discarding "placeholders," fallback. You can try to do this at the system prompt level, but it doesn't work very well.</p></li><li><p>Mandatory manual parsing of tool_calls when calling via API, as the model returns a bare call, not a ready response.</p></li><li><p>The user doesn't see what's happening inside the pipeline when multiple LLM requests and MCP calls appear as a "frozen" interface.</p></li></ul><h3>Anatomy of a Pipe</h3><p>Let's break down the pipe using the <strong>hostkeyru_rhr_pipe</strong> example. It serves HOSTKEY's Russian-language support: answers questions about VPS, documentation, and common issues, while MCP tools pull up-to-date data from the systems. The final generation is then done by the custom model <strong>hostkeyrurhr</strong>, meaning the pipe intercepts the request, performs all preparatory work, and at the last step, sends an enriched prompt to the model with RAG enabled.</p><p>The pipe receives several arguments from OpenWebUI. Key ones include: <strong>body</strong> (messages, model, flags, tool_ids, features), <strong>tools</strong> (a dictionary of available MCP tools with callable functions), and <strong>__event_emitter__</strong> (a status channel in the UI):</p><pre><code>async def pipe( 
+    self, 
+    body: dict, 
+    user: Optional[dict] = None, 
+    tools: Optional[dict] = None, 
+    metadata: Optional[dict] = None, 
+    __event_emitter__=None, 
+) -&gt; Union[str, Generator, Iterator, Dict[str, Any]]: 
+    messages = list(body.get("messages", [])) 
+    if not messages: 
+        return "Ошибка: пустой запрос." 
+    user_wanted_stream = body.get("stream", False)</code><div><a href="https://sourcecraft.dev/"><span></span></a></div></pre><p>Next, the text is extracted from the user's last message – carefully, because the message can be multimodal (just text or a list of "text + image" blocks):</p><pre><code>for i, msg in enumerate(reversed(messages)): 
+    if msg.get("role") == "user": 
+        user_msg_index = len(messages) - 1 - i 
+        original_content = msg.get("content", "") 
+        if isinstance(original_content, str): 
+            user_query_text = original_content 
+        elif isinstance(original_content, list): 
+            text_parts = [item.get("text", "") for item in original_content if item.get("type") == "text"] 
+            user_query_text = " ".join(text_parts).strip() 
+        break</code><div><a href="https://sourcecraft.dev/"><span></span></a></div></pre><p>At this stage, only code is executed without involving neural networks.</p><p>A special mention for <strong>__event_emitter__</strong>. This is an argument that OpenWebUI passes to the pipe. It's implemented as an async function through which events can be sent to the chat: intermediate statuses, notifications, message updates.</p><p>The user sees them directly in the interface, where instead of an uninformative "frozen" progress bar, a changing stream of events appears: "Analyzing request > Extracting keywords > Searching documentation > Checking need for tool calls > Using tool > Forming final response.".</p><p>Technically, this is a wrapper around sending a <strong>status</strong> event:</p><pre><code>async def emit_status(description: str, done: bool = False): 
+    if __event_emitter__: 
+        await __event_emitter__( 
+            { 
+                "type": "status", 
+                "data": {"description": description, "done": done} 
+            } 
+        )</code><div><a href="https://sourcecraft.dev/"><span></span></a></div></pre><p>Displaying the operational status is critical for pipes that involve multiple sequential LLM requests and MCP calls. Without statuses, the user doesn't understand what's happening and often leaves the chat before receiving a result.</p><h4>Phase -1. RHR Responsibility Zone Check: A Cascade of Three Echelons</h4><p>The initial pipe lacked a check for "Is this an RHR request?" altogether. Consequently, requests like "issue me an invoice" and "SSH is not working" received the same response. This increased the workload on the department serving the servers, so we decided to ease their burden at the bot's response stage.</p><p>To achieve this, the new <strong>hostkeyru_rhr_pipe</strong> pipe introduced <strong>Phase -1</strong>, which is not a single LLM request but a cascade where each subsequent echelon is activated only if the previous one didn't provide a definitive answer.</p><p><strong>Echelon 1 — Keyword Guard (_keyword_prefilter)</strong></p><p>Written in pure Python, without LLM. The code searches the text for two sets of markers: <strong>RHR_KEYWORDS</strong> (ssh, reboot, raid, network, dns, not responding...) and <strong>CLIENT_SOFTWARE_SIGNALS</strong> (website code, nginx config, wordpress, laravel...). If only RHR keys are present, we set the parameter values to <strong>in_scope=True, edge, 0.9</strong>. If only software signals are present, then <strong>in_scope=False, client_software, 0.9</strong>. If both or neither are present, we return <strong>None</strong> and proceed.</p><p>This handles typical inquiries without a single model request.</p><p><strong>Echelon 2 — LLM Classifier (_classify_rhr_scope + RHR_SCOPE_SYSTEM_PROMPT)</strong></p><p>Here, we make a request to the <strong>gemma4nothink</strong> model with a temperature of zero. The prompt for the request embeds the full <strong>RHR_REGULATION</strong>, five critical rules ("grammatical form doesn't change the zone," "KEYWORD GUARD," "client_software requires explicit signals," "borderline cases = edge," "confidence calibration"), eight few-shot examples, and a strict JSON response format. The latter is parsed and converted into a digestible format for the third echelon. In case of any failure, we set the response: <strong>in_scope=True, unknown, 0.0</strong>.</p><p><strong>Echelon 3 — Recheck (_recheck_rhr_scope + RHR_RECHECK_SYSTEM_PROMPT)</strong></p><p>This is a safeguard against false negatives: a client with a real access problem won't be directed to billing. Recheck is triggered only if the first pass returned <strong>in_scope=False</strong>, the category <strong>client_software</strong> or <strong>unknown</strong>, and the <strong>confidence</strong> falls within the range <strong>[0.7, 0.85]</strong>. For categories like billing, client_area, legal, sales, abuse (where confidence is high) and for edge (where in_scope=True), recheck is not triggered.</p><p>The user sees changing statuses: "Checking Remote Hands responsibility zone...", "Borderline case – rechecking zone..." (only during recheck), "Request outside RHR zone, adding warning" / "Request within RHR zone, proceeding.".</p><p>Quick cascade map:</p><div><div><table><tbody><tr><th><p><strong>Request</strong></p></th><th><p><strong>Echelon</strong></p></th><th><p><strong>Verdict</strong></p></th><th><p><strong>What the user sees</strong></p></th></tr><tr><td><p>ssh not working</p></td><td><p>1</p></td><td><p>True, edge, 0.9</p></td><td><p>Normal response</p></td></tr><tr><td><p>how to fix nginx config</p></td><td><p>1</p></td><td><p>False, client_software, 0.9</p></td><td><p>Warning</p></td></tr><tr><td><p>I want a refund</p></td><td><p>2</p></td><td><p>False, billing, 0.95</p></td><td><p>Warning</p></td></tr><tr><td><p>DO NOT CONNECT VIA SSH!</p></td><td><p>2</p></td><td><p>True, edge, 0.95</p></td><td><p>Normal response</p></td></tr><tr><td><p>website not working, ssh too</p></td><td><p>2→3</p></td><td><p>True, edge, &gt;=0.85</p></td><td><p>Normal response</p></td></tr><tr><td><p>something strange with the server</p></td><td><p>2, fail-open</p></td><td><p>True, unknown, 0.0</p></td><td><p>Normal response</p></td></tr></tbody></table></div></div><h4>Phase 0. Preliminary Documentation Search</h4><p>The first short request is made simply to the <strong>gemma4nothink</strong> model (a base model, but with thinking disabled). Here, we need to transform the user's question into 2–3 keywords for searching.</p><p>The prompt (which we set specifically in the pipe, as it's a general model) strictly limits the query length, because long phrases yield poor search results:</p><pre><code>router_messages = [{ 
+    "role": "system", 
+    "content": ( 
+        "Перефразируй сообщение пользователя в поисковый запрос из 2-3 слов для поиска по документации HOSTKEY. " 
+        "Выведи ТОЛЬКО ключевые слова через пробел. Ничего больше. " 
+        "Хорошо: 'ssh подключение', 'gpu nvidia', 'ip адрес', 'смена ip адреса', 'резервные копии'. " 
+        "Плохо: 'смена ip адреса или дополнительный ip' (слишком много слов). " 
+        "Строгое ограничение: 2-3 слова." 
+    ) 
+}, {"role": "user", "content": user_text}]</code><div><a href="https://sourcecraft.dev/"><span></span></a></div></pre><p>Result: the model forms the desired query, which is sent to the MCP documentation search tool. In effect, we open the client documentation on behalf of the user, enter our query into the search bar, and retrieve the first results. The tool call goes directly (the entire MCP toolset "runs" locally on the same server as Ollama and OpenWebUI). The code has two paths: first, the tool is searched for in <strong>tools</strong> (where OpenWebUI sees it), and if it's not there, there's an HTTP fallback to the local MCP server:</p><pre><code>MCP_BASE_URL = "http://host.docker.internal:8000" 
+tool_path = "/docs_url_ru" 
+tool_name = "search_hostkey_docs_ru" 
+url = f"{MCP_BASE_URL}{tool_path}/{tool_name}" 
+response = await self.client.post(url, json={"query": query, "limit": 5})</code><div><a href="https://sourcecraft.dev/"><span></span></a></div></pre><p>If the result is too short (less than the <strong>docs_retry_threshold</strong> value, which defaults to 400 characters), the pipe makes a repeat request with the raw user text to avoid losing relevant links.</p><p>The found links are saved in <strong>docs_result</strong> until the main model is called, which helps to get a more relevant answer and, importantly, relevant links to specific documentation sections, as we don't have them explicitly in our knowledge base.</p><p>In the status display, the user sees three events: "Extracting keywords for search..." before the LLM request, "Searching documentation: {query}" before the MCP call, and "Documentation found" after success. In case of an error – "Failed to retrieve documentation, proceeding..."</p><h4>Phase 1. MCP Router</h4><p>The second request is also made to <strong>gemma4nothink</strong>, but now as a "tool router." The model preliminarily decides whether a particular MCP tool is needed and calls it if necessary.</p><p>Here, we use a minimalist system prompt:</p><pre><code>tool_checking_messages = [ 
+    {"role": "system", "content": ( 
+        "Ты — системный маршрутизатор. Твоя единственная цель — определить, " 
+        "нужно ли вызвать инструменты MCP под запрос пользователя. " 
+        "Если инструмент нужен, вызови его немедленно с правильными аргументами. " 
+        "Если инструменты не нужны, ничего не вызывай и просто напиши: 'skip'.")}, 
+    {"role": "user", "content": user_query_text}, 
+]</code><div><a href="https://sourcecraft.dev/"><span></span></a></div></pre><p>Before executing the request, the pipe modifies its body: it removes knowledge/search tools, leaves only Russian-language tool options, disables RAG, and strictly replaces the model:</p><pre><code>if "tool_ids" in body and body["tool_ids"]: 
+    body["tool_ids"] = [t for t in body["tool_ids"] if "knowledge" not in t and "search" not in t] 
+    body["tool_ids"] = self._filter_tool_ids_by_lang(body["tool_ids"]) 
+body["docs"] = [] 
+if "features" in body: 
+    body["features"]["retrieval"] = False  # RAG выключен на время работы роутера 
+body.setdefault("options", {})["temperature"] = 0 
+body["model"] = "gemma4nothink" 
+body["stream"] = False 
+body["messages"] = tool_checking_messages</code><div><a href="https://sourcecraft.dev/"><span></span></a></div></pre><p>The response is parsed by the code. The <strong>tool_calls</strong> arguments are parsed using <strong>json.loads</strong>, the called function is searched for in <strong>tools</strong> (with a fallback by partial name match, because the function name in <strong>tool_call</strong> and the key in <strong>tools</strong> might not match), and the result is compiled into a final text summary:</p><pre><code>for tc in tool_calls: 
+    func_name = tc.get("function", {}).get("name") 
+    func_args_str = tc.get("function", {}).get("arguments", "{}") 
+    try: 
+        args = json.loads(func_args_str) if isinstance(func_args_str, str) else func_args_str 
+    except (json.JSONDecodeError, TypeError): 
+        args = {} 
+    callable_func = None 
+    if tools: 
+        if func_name in tools: 
+            callable_func = tools[func_name].get("callable") 
+        else: 
+            for key, tool_data in tools.items(): 
+                if func_name in key or key.endswith(f"_{func_name}"): 
+                    callable_func = tool_data.get("callable") 
+                    break 
+    if callable_func: 
+        try: 
+            if asyncio.iscoroutinefunction(callable_func): 
+                raw_result = await callable_func(**args) 
+            else: 
+                raw_result = callable_func(**args) 
+            if isinstance(raw_result, dict): 
+                mcp_data_summary += json.dumps(raw_result, ensure_ascii=False, default=str) + "\n" 
+            else: 
+                mcp_data_summary += str(raw_result) + "\n" 
+        except Exception as e: 
+            mcp_data_summary += f"[Ошибка MCP]: {str(e)}\n"</code><div><a href="https://sourcecraft.dev/"><span></span></a></div></pre><p>At this stage, the user (if in the chat) sees the message "Checking need for tool calls..." before the request, and before each MCP call: "Using tool: {func_name}". In case of an error, they receive the text: "Tool error: {error text}".</p><p>If the tool is not found in <strong>tools</strong> at all (e.g., the gemma4nothink model doesn't see this tool in OpenWebUI), the pipe also doesn't call anything, and the final response is built solely on RAG. Therefore, an important note: the same tools must be connected to both the general model and the specialized one! Otherwise, the router simply won't be able to call them.</p><h4>Phase 2. Prompt Enrichment</h4><p>There are almost no neural networks here. At this stage, we perform the final prompt assembly in code. If data from tools is available, it's added to the message along with documentation and instructions; if tools are not needed, only documentation is included. If even that is missing, only the instruction to respond in Russian is added to avoid getting an answer in English or Chinese:</p><pre><code>strict_ru_instruction = ( 
+    "\n\n[СТРОГАЯ ИНСТРУКЦИЯ: Сформируй итоговый ответ ИСКЛЮЧИТЕЛЬНО на русском языке. " 
+    "Не используй английский, китайский, арабский или любой другой язык. " 
+    "Сохраняй профессиональный стиль службы поддержки.]" 
+) 
+if mcp_data_summary and user_msg_index != -1: 
+    enriched_text = ( 
+        f"\n\nПользователь спрашивает: {user_query_text}\n\n" 
+        f"АКТУАЛЬНЫЕ ДАННЫЕ ИЗ СИСТЕМЫ INVAPI (MCP TOOL RESULT):\n{mcp_data_summary}\n\n" 
+        f"РЕЛЕВАНТНАЯ ДОКУМЕНТАЦИЯ:\n{docs_result}\n\n" 
+        f"Инструкция: Сформируй итоговый ответ для пользователя. Полностью опирайся на данные из системы INVAPI выше и на документы из твоей встроенной Базы Знаний (RAG)." 
+        f"{strict_ru_instruction}" 
+    ) 
+    if isinstance(original_content, list):                # не ломаем блок со скриншотом 
+        original_content.append({"type": "text", "text": enriched_text}) 
+    else: 
+        messages[user_msg_index]["content"] = f"{original_content}{enriched_text}"</code><div><a href="https://sourcecraft.dev/"><span></span></a></div></pre><p>The instruction about Russian language is added to the message exactly once: either within the enriched_text or as a separate block if no enrichment occurred.</p><p>At this stage, it's important to erase traces of tools and bring RAG back:</p><pre><code>if "tools" in body: del body["tools"] 
+if "tool_ids" in body: del body["tool_ids"] 
+if "docs" in body: del body["docs"] 
+if "features" in body: body["features"]["retrieval"] = True   # возвращаем RAG обратно 
+body["model"] = "hostkeyrurhr"</code><div><a href="https://sourcecraft.dev/"><span></span></a></div></pre><h4>Phase 3. Final Generation</h4><p>In this phase, the main request goes to the custom model <strong>hostkeyrurhr</strong> with RAG and streaming enabled, if the user requested it:</p><pre><code>messages.insert(0, { 
+    "role": "system", 
+    "content": ( 
+        "КРИТИЧЕСКОЕ ПРАВИЛО: Ты ДОЛЖЕН отвечать ТОЛЬКО на русском языке. " 
+        "Никогда не используй английский, китайский, арабский или любой другой язык. " 
+        "Если ты в чём-то не уверен, отвечай на русском. " 
+        "Это обязательное требование — нарушения недопустимы." 
+    ) 
+}) 
+body["messages"] = messages 
+body["stream"] = user_wanted_stream 
+final_response = await self._post_with_retry(body, headers)</code><div><a href="https://sourcecraft.dev/"><span></span></a></div></pre><p>In this phase, the user will see "Forming final response...". This is the last "long" stage, and until its completion, the user sees that the pipeline is still working.</p><h4>Phase 4. Post-processing: Language Check, Placeholder Trimming, and Fallback</h4><p>This is a layer that is completely absent in OpenWebUI's settings. Here, the finished response goes through code using regular expressions.</p><p>First, we look for Cyrillic characters, and if none are found but Latin characters are present, we consider the response not to be in Russian and that it needs to be redone or a fallback should be provided.</p><pre><code>def checklanguage_heuristic(self, text: str) -&gt; bool: 
+    if not text or not text.strip(): 
+        return True 
+    cyrillic_pattern = re.compile(r'[\u0400-\u04FF]', re.UNICODE) 
+    cleaned = re.sub(r'``[\s\S]*?``', '', text) 
+    cleaned = re.sub(r'[^]+`', '', cleaned) 
+    cleaned = re.sub(r'https?://\S+', '', cleaned) 
+    if cyrillic_pattern.search(cleaned): 
+        return True 
+    latin_pattern = re.compile(r'[A-Za-z]', re.UNICODE) 
+    if latin_pattern.search(cleaned): 
+        print("[PIPE] Проверка языка НЕ ПРОЙДЕНА: Кириллица не обнаружена, вероятно не русский язык") 
+        return False 
+    return True</code><div><a href="https://sourcecraft.dev/"><span></span></a></div></pre><p>Inline code and links are removed before the check to avoid false positives on technical terms like SSH, IP, VPS. If the check fails, we re-request with an enhanced instruction, and after exhausting attempts, we provide a Russian fallback instead of a technical error.</p><p>The retry mechanism is as follows: a reminder is added to <strong>messages</strong> that the previous response contained non-Russian text, and the request is repeated. If, after all attempts, the language is still not Russian, the <strong>FALLBACK_RESPONSE</strong> is returned.</p><p>In addition to language checking, post-processing performs two other important functions worth mentioning separately.</p><p><strong>Trimming the trailing "Continue" phrase</strong></p><p>The final model adds a prompt at the end of the response: "If your question is not resolved and needs to be sent to our staff, click 'Continue' to send." This phrase is embedded in both the system prompt and the fallback placeholder, so it might be duplicated in the response or not needed at all if the request is not HR-related. Therefore, it needs to be trimmed.</p><p>The problem is that within the pipe, we don't know in advance if this phrase will be at the end, and simply cutting off the last N characters is not an option. Therefore, the pipe holds back a certain number of characters (the length of the longest trailing phrase + buffer) and only releases them when it's confident that it's not the end of the response. The tail is checked using <strong><em>strip</em>prompt_footer</strong> with normalization of quotes and case.</p><p><strong>Trimming placeholder paragraphs</strong></p><p>If the response is short (less than 800 characters) and a fallback placeholder marker (FALLBACK_MARKERS) is found in the first 400 characters ("to be studied by our specialists," "click 'continue'," "escalate the issue to our team," etc.), the pipe cuts the response by paragraphs and discards those containing the marker. This is a safeguard against cases where the model itself inserts a placeholder template into the response, even though the question was within the RHR scope.</p><p>As a result, we get a response to our query with a warning. Yes, it's still not perfect, and there's room for improvement.</p><figure><img loading="lazy" src="https://habrastorage.org/r/w1560/extt/e4/93/3f/e4933f6e01abc49d12570a5cd2fc1296.png"/></figure><p>In terms of speed, the pipe adds an extra 5 to 10 seconds to the response time for additional LLM requests. However, this is not critical for us, and instead of 5-10 seconds, the response is delivered in 10-20 seconds, which is a very good result for our hardware and model.</p><h3>Problems with Pipes</h3><p>Let's be honest: a pipe is not just a plugin with settings, but code that needs maintenance. And any changes require edits to it.</p><ul><li><p>The signature of <strong>pipe()</strong> and the format of <strong>tools</strong> are part of the OpenWebUI contract. When the environment is updated, they might change, and the pipe will need to be adapted.</p></li><li><p>Debugging is more complex than configuring a model. Instead of one prompt (in our case), we get five phases, three LLM requests, MCP calls, and post-processing.</p></li><li><p>A pipe doesn't negate normal RAG and system prompts with flexible custom model configuration. It only provides control over phase order and ensures that tools are called and data doesn't mix with RAG. If the knowledge base is empty or the prompts are poor, the pipe won't save you.</p></li><li><p>The same tools must be connected to both the general model and the specialized one. Otherwise, the router won't see them and will silently skip the call.</p></li></ul><h3>Summary</h3><p>Configuring a custom model in OpenWebUI remains the simplest and fastest way to use a knowledge base, connect tools, and fine-tune model calls. However, for production support, this is unfortunately no longer sufficient.</p><p>The standard tool doesn't guarantee call order (and often cannot automatically call tools via API), doesn't allow "dampening" RAG during tool operation, doesn't separate the roles of "router" and "responder," and doesn't perform post-processing.</p><p>A pipe transforms "a single model in the interface" into a deterministic pipeline: a keyword guard and an LLM classifier filter out requests outside the responsibility zone, a separate step searches for documentation, another calls MCP tools with RAG disabled, the final model receives an already enriched prompt, and post-processing checks the language, trims service tails and placeholders, and provides a fallback response as a safety net.</p><p>It is precisely this scheme with phase separation, explicit RAG management, and post-processing that allows us to keep our support bots predictable: system data doesn't mix with documentation retellings, tools are triggered at the right moment, and responses are delivered in the correct language.</p><div><div><table><tbody><tr><td><p><strong>AI Chatbot with OpenWebUI and Ollama on Your Own Server</strong><br/><br/>Order a server with a personal AI chatbot on your own server.</p><p><a href="https://hostkey.ru/apps/machine-learning/ollama-ai-chatbot/">View</a></p></td></tr></tbody></table></div></div></div>
+  </main>
+  <footer>
+    Translation generated with Gemini 2.5 Flash-Lite.
+    The original article remains the source of record.
+  </footer>
+</body>
+</html>

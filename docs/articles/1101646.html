@@ -1,0 +1,97 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>22 Billion Parameter Video Model on an RTX 3080: What It Took to Fit It into 10GB</title>
+  <meta name="description" content="I have an RTX 3080 with 10GB of VRAM. LTX-2.5 has 22 billion parameters, 39GB for transformer weights, and another 24.5GB for the text encoder. Based on these numbers, the acquaintance could have ended there. However, I managed to run the model locally on Windows and integrate it into a short video ">
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.65;
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 32px 20px 64px;
+      color: #1f2328;
+    }
+    header {
+      border-bottom: 1px solid #d8dee4;
+      margin-bottom: 28px;
+      padding-bottom: 20px;
+    }
+    .source {
+      color: #57606a;
+      font-size: 0.95rem;
+    }
+    img, video, iframe {
+      max-width: 100%;
+      height: auto;
+    }
+    pre {
+      overflow-x: auto;
+      padding: 16px;
+      background: #f6f8fa;
+      border-radius: 6px;
+    }
+    code {
+      font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+    }
+    blockquote {
+      border-left: 4px solid #d0d7de;
+      margin-left: 0;
+      padding-left: 16px;
+      color: #57606a;
+    }
+    footer {
+      border-top: 1px solid #d8dee4;
+      margin-top: 40px;
+      padding-top: 20px;
+      color: #57606a;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>22 Billion Parameter Video Model on an RTX 3080: What It Took to Fit It into 10GB</h1>
+    <p>I have an RTX 3080 with 10GB of VRAM. LTX-2.5 has 22 billion parameters, 39GB for transformer weights, and another 24.5GB for the text encoder. Based on these numbers, the acquaintance could have ended there. However, I managed to run the model locally on Windows and integrate it into a short video pipeline. Read on</p>
+    <p class="source">
+      Machine-translated from Habr.
+      <a href="https://habr.com/ru/articles/1101646/?utm_campaign=1101646&amp;utm_source=habrahabr&amp;utm_medium=rss">Read the original Russian article</a>.
+      Fri, 30 Oct 2026 11:17:53 GMT
+    </p>
+  </header>
+  <main>
+<div><p>I have an RTX 3080 with 10GB of VRAM. LTX-2.5 has 22 billion parameters, 39GB for transformer weights, and another 24.5GB for the text encoder. Based on these numbers, the acquaintance could have ended there. However, I managed to run the model locally on Windows and integrate it into a short video pipeline.</p><p>Along the way, I had to figure out weight loading, memory freeing, and a nasty safetensors error. Then it turned out that most of the time the computer is busy preparing the model: denoising itself takes less than 10% of the time. I'll explain how it works and what you pay for when you have little VRAM.</p><h3>What We're Running</h3><p>My task is quite practical: to assemble a vertical video from 6-8 shots. For this, several models work sequentially on one computer. Gemma via llama.cpp helps with the script, FLUX.2 [klein] creates frames with a consistent character face, LTX-2.5 animates them. Then comes the voice via Qwen3-TTS, music via ACE-Step, and editing in ffmpeg.</p><p>In this article, I'll focus on LTX. It receives the finished image, which needs to be turned into a short video shot. It might seem like just one step in a long chain, but it was precisely this step that caused memory issues.</p><p>I'm using a distilled version of LTX-2.5. The video is produced in two stages: first, the model works at a low resolution, then the result is upscaled and refined. The steps look like this:</p><ul><li><p>8 denoising steps at low resolution (~1.4s per step),</p></li><li><p>latent upscaler ×2,</p></li><li><p>3 steps at full resolution 576×1024 (~5s per step).</p></li></ul><p>The step times here are approximate: these are preliminary observations, not a separate reproducible benchmark.</p><h3>How 39GB Fits into 10GB</h3><p>The model, of course, doesn't fit entirely into VRAM. Therefore, we have to reduce the amount of weights on the GPU and feed them in parts. For this, the standard pipeline from the Lightricks/LTX-2 repository has two flags: <code>--quantization fp8-cast</code> and <code>--offload cpu</code>. My launch looks like this:</p><pre><code>python -m ltx_pipelines.distilled 
+  --transformer-path ltx-2.5-22b-distilled-transformer-bf16.safetensors 
+  --text-encoder-path gemma4-12b-with-proj-ltx-2.5-bf16.safetensors 
+  --spatial-upsampler-path ltx-2.5-latent-spatial-upscaler-x2-bf16-1.0.safetensors 
+  --quantization fp8-cast --offload cpu 
+  --width 576 --height 1024 --num-frames 121 --frame-rate 24 
+  --image first_frame.png 0 1.0 --prompt "..." 
+</code><div><a href="https://sourcecraft.dev/"><span></span></a></div></pre><ul><li><p><code>--quantization fp8-cast</code> — weights are stored in bf16 and cast to fp8 during loading onto the GPU. Half the memory, no separate fp8 checkpoint needed.</p></li><li><p><code>--offload cpu</code> — the transformer is assembled in a "streaming" mode: blocks reside in RAM and are fed to the graphics card sequentially as needed.</p></li><li><p><code>PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True</code> — without this, I encountered OOM errors due to fragmentation on long shots.</p></li></ul><p>The memory doesn't disappear from the equation; the load shifts from the graphics card to regular RAM. This setup requires at least 32GB of RAM, preferably 64GB, and a swap file of 32GB or more. So, just saying "runs on 10GB" isn't enough to describe the requirements.</p><h3>Pitfall 1: safetensors Crashes on Files Larger Than 2GB on Windows</h3><p>Before generation, the first launch didn't even get that far: it all ended with an access violation when opening weights. There was no clear message about what exactly was wrong.</p><p>In my environment, the problem was with reading large safetensors on Windows. For files larger than approximately 2GB, the library tried to map the storage entirely and crashed. This meant I first had to figure out how to read the model from disk.</p><p>I bypassed this by replacing <code>safe_open</code>: instead of the standard reading, I used read-only <code>np.memmap</code>. We parse the file header ourselves, and the tensors are provided as views over the memory-mapped file. This avoids consuming commit memory for a separate copy of the weights. The interface remains the same, so nothing changes for the LTX pipeline itself.</p><p>Below is the core of this replacement. It's a snippet to explain the idea, not a complete ready-to-use patch:</p><pre><code>class safe_open:  # repeats the original name
+    def __init__(self, filename, framework="pt", device="cpu", **_):
+        with open(filename, "rb") as fh:
+            n = struct.unpack("&lt;Q", fh.read(8))[0]
+            hdr = json.loads(fh.read(n))
+        self._meta = hdr.pop("__metadata__", None)
+        self._hdr, self._base = hdr, 8 + n
+        self._mm = np.memmap(filename, dtype=np.uint8, mode="r")
+    # keys(), metadata(), get_tensor(), get_slice() — operate on self._mm
+</code><div><a href="https://sourcecraft.dev/"><span></span></a></div></pre><p>It's integrated without modifying existing code: the file is placed in the environment's site-packages, and a <code>.pth</code> file with <code>import ltx_sft_patch</code> replaces the module at interpreter startup.</p><h3>Pitfall 2: "Unload Model" Doesn't Mean Free Memory</h3><p>Once LTX was working on its own, the next challenge was to fit it in with the other models. There's only one graphics card, and several models want to occupy its memory.</p><p>Initially, each model ran in a persistent worker process: finish work — call unload and pass the card to the next. But in my scheme with CPU offload, after such unloading, part of the VRAM and pinned RAM remained occupied. The next model wouldn't fit, even though the previous one was supposedly unloaded.</p><p>As a result, the most reliable option turned out to be terminating the process entirely. Each model runs in its own process and its own venv, and after its step, the process is closed:</p><pre><code>def release(self):
+    """Free VRAM for the next model: the process terminates entirely."""
+    if self.proc is not None and self.proc.poll() is None:
+        try:
+            self.proc.stdin.close()
+            self.proc.wait(timeout=20)
+        except Exception:
+            self.proc.kill()
+    self.proc = None
+</code><div><a href="https://sourcecraft.dev/"><span></span></a></div></pre><p>For LTX, a separate process is launched for each shot. This solved the memory freeing issue but added waiting time — more on that later. Separate venvs also proved useful because the models require incompatible versions of torch and diffusers. In their own environments, they at least don't interfere with each other.</p><h3>Where the Time Goes</h3><p>This is where the cost of constant restarts became apparent. According to preliminary observations, one shot takes about five minutes. Of this, denoising itself takes about 25 seconds.</p><p>Most of the time is spent waiting for the loading and preparation of approximately 65GB of weights: the transformer and the Gemma encoder. And this is for each subsequent shot. When you only look at the total time, it's easy to assume the graphics card is simply generating video slowly. But based on these measurements, the main waiting time is for preparation.</p><p>What this implies:</p><ul><li><p>The bottleneck is disk and RAM, not the GPU. Therefore, it's worth measuring weight loading speed and memory usage before buying a faster graphics card;</p></li><li><p>A 6-shot video takes about half an hour, a short one — a few minutes;</p></li><li><p>The next optimization step is to keep the encoder and transformer in memory between shots, instead of restarting the process. This option is yet to be tested.</p></li></ul><h3>How to Work Around Model Weaknesses</h3><p>After all the memory adventures, there's still another task: to get motion that can be left in the video. Here, a few simple tricks help me.</p><p>The starting frame should show the state <strong>before the action</strong>. If the door is already open, and we ask it to open in the prompt, the model has to invent what should happen next. It's better to give it a frame from which the desired action is still possible.</p><p>Hands are trickier. When interacting with an object, fingers might pass through the handle. Such an action is more conveniently split into two frames: in the first, the hand reaches out, then a cut, and in the next, the door is already open. The most problematic moment is simply left off-screen.</p><p>If the end of the movement is important, the final frame can be passed as a second <code>--image</code> for the last frame. Then the model has both the beginning and the point to reach.</p><p>For lip-syncing, the scheme is separate: a full, not distilled model, distilled LoRA, and the audio branch <code>a2vid_two_stage</code>. From the result, I only take the video, and leave the audio from the voiceover.</p><h3>Conclusion</h3><p>In the end, LTX-2.5 works on my RTX 3080 and participates in video assembly. Everything is local, without cloud services or subscriptions. However, for a small amount of VRAM, you pay with RAM, loading time, and environment hassle.</p><p>For short videos, this is already workable. The next task is to reduce the repeated loading of weights between shots. For now, the main practical result is this: a 22B model on a home card with 10GB turned out to be a perfectly viable option, with its limitations.</p><p>Example video: <a href="https://youtube.com/shorts/-jz5AJhnWxE">https://youtube.com/shorts/-jz5AJhnWxE</a> I wrote in detail about directing within the pipeline on DTF: <a href="https://dtf.ru/gamedev/5381388-kak-sozdat-video-s-pomoshchyu-rtx-3080-i-ltx-2-5">https://dtf.ru/gamedev/5381388-kak-sozdat-video-s-pomoshchyu-rtx-3080-i-ltx-2-5</a> Portfolio: <a href="https://arybashov.github.io">https://arybashov.github.io</a> · Channel: <a href="https://t.me/cg_pipeline_lab">https://t.me/cg_pipeline_lab</a></p></div>
+  </main>
+  <footer>
+    Translation generated with Gemini 2.5 Flash-Lite.
+    The original article remains the source of record.
+  </footer>
+</body>
+</html>

@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>From Teacher to Student: The Path to Isotropic Embeddings in a 29M Model. Part 3/10</title>
+  <meta name="description" content="In this part, we prepare the dataset for contrastive model training. We cover the rationale behind our choices, provide examples, and discuss efficient dataset assembly. We are nearing the completion of the training implementation setup. Read more">
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.65;
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 32px 20px 64px;
+      color: #1f2328;
+    }
+    header {
+      border-bottom: 1px solid #d8dee4;
+      margin-bottom: 28px;
+      padding-bottom: 20px;
+    }
+    .source {
+      color: #57606a;
+      font-size: 0.95rem;
+    }
+    img, video, iframe {
+      max-width: 100%;
+      height: auto;
+    }
+    pre {
+      overflow-x: auto;
+      padding: 16px;
+      background: #f6f8fa;
+      border-radius: 6px;
+    }
+    code {
+      font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+    }
+    blockquote {
+      border-left: 4px solid #d0d7de;
+      margin-left: 0;
+      padding-left: 16px;
+      color: #57606a;
+    }
+    footer {
+      border-top: 1px solid #d8dee4;
+      margin-top: 40px;
+      padding-top: 20px;
+      color: #57606a;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>From Teacher to Student: The Path to Isotropic Embeddings in a 29M Model. Part 3/10</h1>
+    <p>In this part, we prepare the dataset for contrastive model training. We cover the rationale behind our choices, provide examples, and discuss efficient dataset assembly. We are nearing the completion of the training implementation setup. Read more</p>
+    <p class="source">
+      Machine-translated from Habr.
+      <a href="https://habr.com/ru/articles/1100880/?utm_campaign=1100880&amp;utm_source=habrahabr&amp;utm_medium=rss">Read the original Russian article</a>.
+      Sat, 31 Oct 2026 09:00:52 GMT
+    </p>
+  </header>
+  <main>
+<div><h2>Part 3. Contrastive Dataset</h2><blockquote><p><strong>Important Warning:</strong><br/> All code according to my methodology was written by the DeepSeek neural network; I wouldn't have managed it myself (I am not a programmer).<br/> Debugging, correcting inaccuracies, and errors are my responsibility.</p></blockquote><h3>3.1. Choosing a Dataset for Contrastive Learning</h3><p><code><strong>deepvk/ru-HNP</strong></code> — a Russian hard negatives dataset generated using ChatGPT (see the <a href="https://huggingface.co/datasets/deepvk/ru-HNP"><code>deepvk/ru-HNP</code></a> card). It is well-suited for our task because it provides ready-made annotations without requiring us to invent anything ourselves.</p><p><strong>Data structure for one query:</strong></p><ul><li><p>1 query — the original sentence.</p></li><li><p>5 positives — paraphrases.</p></li><li><p>5 hard negatives — semantically similar but <strong>not</strong> paraphrases.</p></li></ul><p><strong>Example (from the dataset):</strong></p><pre><code>query:      Since 1952, after graduating from the Kuybyshev Industrial Institute named after V. V. Kuybyshev, he worked in the USSR atomic industry system. 
+
+positives:  After graduating from the Kuybyshev Industrial Institute named after V. V. Kuybyshev, he began working in the USSR atomic industry system in 1952.
+            Since 1952, after graduating from the Kuybyshev Industrial Institute named after V. V. Kuybyshev, he worked in the USSR atomic industry system.
+            ... 
+
+negatives:  Before 1952, prior to graduating from the Kuybyshev Industrial Institute named after V. V. Kuybyshev, he did not work in the USSR atomic industry system.
+            After graduating from the Kuybyshev Industrial Institute named after V. V. Kuybyshev, he did not get a job in the USSR atomic industry system in 1952.
+            ...</code><div><a href="https://sourcecraft.dev/"><span></span></a></div></pre><p><strong>Why this is suitable:</strong></p><ul><li><p>Positives — high-quality paraphrases with varying degrees of rephrasing.</p></li><li><p>Negatives — meaningful: negations, temporal shifts ("before/after"), replacements of verbs with antonyms.</p></li><li><p>Volume: 100K queries → 500K positives + 500K negatives in expanded form.</p></li></ul><p><strong>Split sizes:</strong></p><ul><li><p><code>train</code>: 100,000</p></li><li><p><code>validation</code>: 590</p></li><li><p><code>test</code>: 2,000</p></li></ul><h3>3.2. Data Format for Training</h3><p>Dynamic sampling instead of fixed combinations. We have 5 positives × 5 negatives = 25 possible triplets (1 pos + 1 neg). Using 1 pos and 2 negs yields 50 possible combinations per query (5 ways to choose pos × 10 ways to choose 2 negs out of 5); if stored expanded, this would result in 5M quadruplets (query, pos, neg1, neg2) instead of 2.5M triplets (query, pos, neg).</p><p>It's better to store the full lists (<code>query</code>, <code>pos[]</code>, <code>neg[]</code>) and randomly select on each epoch:</p><ul><li><p>1 positive out of 5;</p></li><li><p>2 hard negatives out of 5.</p></li></ul><p>This way, the model sees different combinations and does not overfit to specific pairs.</p><p>Internal <code>jsonl</code> format:</p><pre><code>{
+  </main>
+  <footer>
+    Translation generated with Gemini 2.5 Flash-Lite.
+    The original article remains the source of record.
+  </footer>
+</body>
+</html>

@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Demand Forecasting: Nothing More, Nothing Less</title>
+  <meta name="description" content="Sales forecasting is like weather forecasting – it can only be done with a certain degree of approximation. Tens of thousands of items, thousands of locations, promotions, logistics, and other influencing factors – you can account for the maximum number of details, and there will still be random eve">
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.65;
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 32px 20px 64px;
+      color: #1f2328;
+    }
+    header {
+      border-bottom: 1px solid #d8dee4;
+      margin-bottom: 28px;
+      padding-bottom: 20px;
+    }
+    .source {
+      color: #57606a;
+      font-size: 0.95rem;
+    }
+    img, video, iframe {
+      max-width: 100%;
+      height: auto;
+    }
+    pre {
+      overflow-x: auto;
+      padding: 16px;
+      background: #f6f8fa;
+      border-radius: 6px;
+    }
+    code {
+      font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+    }
+    blockquote {
+      border-left: 4px solid #d0d7de;
+      margin-left: 0;
+      padding-left: 16px;
+      color: #57606a;
+    }
+    footer {
+      border-top: 1px solid #d8dee4;
+      margin-top: 40px;
+      padding-top: 20px;
+      color: #57606a;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Demand Forecasting: Nothing More, Nothing Less</h1>
+    <p>Sales forecasting is like weather forecasting – it can only be done with a certain degree of approximation. Tens of thousands of items, thousands of locations, promotions, logistics, and other influencing factors – you can account for the maximum number of details, and there will still be random events that don&#x27;t fit into any formula. However, even if perfection is unattainable, you can build a forecast that deviates from it only slightly. My name is Yulia Trusova, and I am the Head of the Logistics domain at Lenta Tech. In this article, I will explain how demand forecasting works and how modern methods help minimize this error. For those who want to delve deeper into the topic and technical details, our article &quot;How Machine Learning Helps Lenta Group Forecast Demand&quot; may be of interest. Read more</p>
+    <p class="source">
+      Machine-translated from Habr.
+      <a href="https://habr.com/ru/companies/lentatech/articles/1097164/?utm_campaign=1097164&amp;utm_source=habrahabr&amp;utm_medium=rss">Read the original Russian article</a>.
+      Sat, 31 Oct 2026 08:25:50 GMT
+    </p>
+  </header>
+  <main>
+<div><p>Sales forecasting is like weather forecasting – it can only be done with a certain degree of approximation. Tens of thousands of items, thousands of locations, promotions, logistics, and other influencing factors – you can account for the maximum number of details, and there will still be random events that don't fit into any formula. However, even if perfection is unattainable, you can build a forecast that deviates from it only slightly. <br/><br/>My name is Yulia Trusova, and I am the Head of the Logistics domain at Lenta Tech. In this article, I will explain how demand forecasting works and how modern methods help minimize this error. For those who want to delve deeper into the topic and technical details, our article <a href="https://lenta.tech/expertise/proekty/ml-prognozirovanie-sprosa-v-lenta-tech">"How Machine Learning Helps Lenta Group Forecast Demand"</a> may be of interest.</p><p>Table of Contents:</p><ul><li><p><a href="https://habr.com/ru/companies/lentatech/articles/1097164/?utm_campaign=1097164&amp;utm_source=habrahabr&amp;utm_medium=rss#demand">Why Demand is So Hard to Predict</a></p></li><li><p><a href="https://habr.com/ru/companies/lentatech/articles/1097164/?utm_campaign=1097164&amp;utm_source=habrahabr&amp;utm_medium=rss#forecasting">How Forecasting Methods Work</a></p></li><li><p><a href="https://habr.com/ru/companies/lentatech/articles/1097164/?utm_campaign=1097164&amp;utm_source=habrahabr&amp;utm_medium=rss#inventory">From Forecast to Shelf Without Shortages or Overstocking</a></p></li></ul><a></a><p><strong>Why Demand is So Hard to Predict</strong></p><p>Demand is the result of many processes that overlap and rarely repeat in the same combination. Annual seasonality intersects with weekly seasonality, weekdays alternate with holidays and weekends, and unforeseen random events like road repairs near a store break any historical pattern at a specific sales point. Even a seemingly stable product is influenced by a stream of factors, some of which are impossible to know in advance.</p><figure><img loading="lazy" src="https://habrastorage.org/r/w1560/extt/1f/bd/a8/1fbda81a10a2bfc3d9c953bbe75904f3.png"/></figure><p><strong>Promotions also add complexity.</strong> Each promotion drastically changes both the sales volume and their pattern. A spike appears, followed, as a rule, by a dip because consumers stocked up. If a forecast learns from such history blindly, it takes a one-time spike as the norm. <br/><br/><strong>Concurrently, so-called cannibalization effects occur,</strong> where a discount on one product eats into the sales of a neighboring one. The opposite effect also happens, where a promotion boosts sales of related items – for example, discounts on dumplings also contribute to the sales of sour cream and sauces. It is almost impossible to separate these influencing factors from pure sales history.</p><p><strong>New products are a separate pain point:</strong> there is no history at all, yet a decision on the initial shipment must be made. We have to rely on analogues, expert assessments, and product characteristics. At the other extreme are a huge number of items that are bought rarely and irregularly. Therefore, conventional methods, tailored for smooth series, falter here as well.</p><p>Finally, the target metric itself is not fully visible.</p><p><strong>Why do you think zero sales don't always mean zero demand?</strong><br/><br/> A. Sales are reported with a delay of several days<br/> B. Customers came for the product, but it wasn't on the shelf<br/> C. Some purchases bypass the checkout<br/> D. Small sales are rounded down to zero by the system</p><details><summary>Hidden text</summary><div><p><strong>The correct answer is B. Sales are limited by product availability.</strong></p><p>If an item runs out, customers leave without it, and this demand is not recorded anywhere. <br/> <br/> Sales are monitored, but not demand. However, zero sales do not mean a lack of desire to buy, as the product might have been out of stock at some point. This is so-called censored demand: the true need is not fully visible because sales are limited by product availability, and when an item runs out, customers leave without a purchase, and this demand is not recorded anywhere. <br/><br/>And the stock level is determined by our own forecast. This creates a vicious cycle: the decision about stock itself limits the data on which the next forecast is built. That is, forecasting is an estimation of the distribution of a partially unobservable process.</p></div></details><p><strong>This is precisely why perfect accuracy is impossible.</strong> The success of the result lies only in how accurately the range can be defined and how narrow it turns out to be.</p><a></a><p><strong>How Forecasting Methods Work</strong></p><p>The main practical distinction between forecasting methods lies in what they can account for. Some work only with the sales series itself – they take the past dynamics of a product and extend its patterns into the future. Others can take into account external conditions – price, promotions, stock levels, weather – and this most often determines the choice.</p><figure><img loading="lazy" src="https://habrastorage.org/r/w1560/extt/e8/5a/8c/e85a8c044834ce88135f47d3762209ae.png"/></figure><p>If a product's sales are stable and there are few influencing factors, simple methods that only require the product's own history are sufficient. They rely on a few understandable patterns: average sales level, a stable upward or downward trend, and recurring seasonality – weekly, annual, holiday. <br/><br/>Such methods are transparent, undemanding in terms of data, and work well for stable, predictable items. But their weakness is that basic models often do not directly account for factors like price, promotions, and product availability, although in retail, these can significantly affect demand.</p><p><strong>When demand is influenced by many conditions, and there are thousands of items, the task is framed differently.</strong> For each product and day, a set of characteristics is collected – recent sales, day of the week and calendar, price, promotion flag, stock level, sometimes traffic and weather – and a model is trained to find the relationship between these characteristics and future sales. <br/><br/>This approach, based on machine learning, captures complex dependencies that simple formulas cannot – for example, that a discount has a different effect on weekdays and weekends. <strong>But the main work here is not in the algorithm itself, but in preparing these characteristics</strong> – it depends on them whether the model will recognize a promotion, a holiday shift, or a reaction to price.</p><p><strong>For products with infrequent and irregular demand, separate methods are used that consider not only the sales volume but also the frequency of demand occurrence.</strong> This leads to the main shift in recent years – the transition from a single number to a range estimate. <br/><br/>Businesses are interested not only in the expected demand but also in the possible spread of its values: this determines how much stock is needed to balance the risk of shortages and the costs of excess. Therefore, forecasts are increasingly built as a range of probable values and forecasts are harmonized across levels – product, store, region, network – so that they do not contradict each other.</p><a></a><p><strong>From Forecast to Shelf Without Shortages or Overstocking</strong></p><p>A forecast in itself solves nothing – it serves only as a springboard for estimating the necessary stock level. Between the forecast and the shelf lies a separate layer of calculations: how much to put into safety stock for demand spikes, how often to replenish stock, and what demand needs to be covered until the next delivery. <br/><br/>In this plane, the abstract accuracy of the forecast turns into money. And this is where a forecast range is useful: instead of one number, it shows possible demand values, allowing you to choose in advance which stock level to aim for.</p><p><strong>It is important to remember the asymmetry of error costs.</strong> The cost of a shortage is almost never equal to the cost of excess. For perishable goods, over-ordering leads to write-offs, and it's more profitable to order less. For high-margin or anchor products, conversely, an empty shelf is more costly than excess stock, and it makes sense to maintain a larger safety cushion. There is no single rule: the forecast boundary is tailored to the economics of a specific category.</p><figure><img loading="lazy" src="https://habrastorage.org/r/w1560/extt/21/ac/02/21ac0281b34685f43f4b69fe8cb38457.png"/></figure><p>Hence the approach to forecast evaluation. Technical accuracy metrics are needed to monitor model performance, but they are not an end in themselves. It is more important to see business metrics – how many sales were lost due to empty shelves, how much product was written off, how quickly stock turns over, and how much money is tied up in unsold inventory. <br/><br/>It is also important to promptly identify systematic errors, where the forecast consistently overestimates or underestimates demand. Such a systematic bias is usually more harmful than random fluctuations, as it accumulates in inventory from month to month.</p><p><strong>And the most important thing to remember is:</strong> forecasting is a continuous cycle. Models degrade, customer behavior changes, so forecasts must be constantly recalculated on fresh data, and anomalies must be handled carefully so that a one-time surge – for example, before a holiday or due to a successful promotion – does not distort future forecasts. <br/><br/>All of this only works when done collaboratively: the forecast, procurement, logistics, and promotion schedule must be coordinated, otherwise even an accurate number will be useless. Yes, there will never be a perfect forecast, but constant adjustment allows us to keep both undesirable extremes – shortages and overstocking – within acceptable limits.</p><p><em>What do you think, is it possible to break the vicious cycle where the forecast itself limits the data for the next forecast, or must we simply accept it?</em></p></div>
+  </main>
+  <footer>
+    Translation generated with Gemini 2.5 Flash-Lite.
+    The original article remains the source of record.
+  </footer>
+</body>
+</html>

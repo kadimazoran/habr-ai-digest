@@ -1,0 +1,149 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>FAIRouter is now on NuGet. Choose a language model for your task in a few lines of C#</title>
+  <meta name="description" content="Our open-source AI model router FAIRouter (C# version) is now on NuGet. The project&#x27;s goal is to provide an optimal balance of speed, cost, and quality, meaning getting a sufficiently good answer faster and cheaper. I&#x27;ll show you how to install the package, send your first request, train t">
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.65;
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 32px 20px 64px;
+      color: #1f2328;
+    }
+    header {
+      border-bottom: 1px solid #d8dee4;
+      margin-bottom: 28px;
+      padding-bottom: 20px;
+    }
+    .source {
+      color: #57606a;
+      font-size: 0.95rem;
+    }
+    img, video, iframe {
+      max-width: 100%;
+      height: auto;
+    }
+    pre {
+      overflow-x: auto;
+      padding: 16px;
+      background: #f6f8fa;
+      border-radius: 6px;
+    }
+    code {
+      font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+    }
+    blockquote {
+      border-left: 4px solid #d0d7de;
+      margin-left: 0;
+      padding-left: 16px;
+      color: #57606a;
+    }
+    footer {
+      border-top: 1px solid #d8dee4;
+      margin-top: 40px;
+      padding-top: 20px;
+      color: #57606a;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>FAIRouter is now on NuGet. Choose a language model for your task in a few lines of C#</h1>
+    <p>Our open-source AI model router FAIRouter (C# version) is now on NuGet. The project&#x27;s goal is to provide an optimal balance of speed, cost, and quality, meaning getting a sufficiently good answer faster and cheaper. I&#x27;ll show you how to install the package, send your first request, train the LLM router and agents on feedback, and connect your own candidates. Read more</p>
+    <p class="source">
+      Machine-translated from Habr.
+      <a href="https://habr.com/ru/articles/1101942/?utm_campaign=1101942&amp;utm_source=habrahabr&amp;utm_medium=rss">Read the original Russian article</a>.
+      Sat, 31 Oct 2026 08:53:46 GMT
+    </p>
+  </header>
+  <main>
+<div><figure><img loading="lazy" src="https://habrastorage.org/r/w1560/extt/8e/c3/48/8ec3489624e87f4555ef380739823ac7.png"/></figure><p>Previously, we talked about <a href="https://github.com/MASFractal/FAIRouter">FAIRouter</a>, our library for request routing. To briefly remind you, here's what it does. There are several language models, each with different costs, speeds, and strengths. FAIRouter itself selects the model for the task, verifies the generated response, and learns from feedback. The overall workflow is shown in Figure 1.</p><figure><img alt="Figure 1. How FAIRouter works: the router selects an executor, the judge accepts the response, and both learn" loading="lazy" src="https://habrastorage.org/r/w1560/extt/ca/0c/58/ca0c58f1e5af5f3a502ad1b41b27ffa7.png" title="Figure 1. How FAIRouter works: the router selects an executor, the judge accepts the response, and both learn"/><div><figcaption><em>Figure 1. How FAIRouter works: the router selects an executor, the judge accepts the response, and both learn</em></figcaption></div></figure><p>The C# version is now published on <a href="https://www.nuget.org/packages/FAI.Router">NuGet</a>, so you no longer need to build it from source. In this article, I'll show you how to install the package and what you can do with it. All examples below were created with package version 0.1.0.</p><h3>Installation</h3><p>You'll need .NET 10. Let's create a console project and add the package:</p><pre><code>dotnet new console -f net10.0 -n RouterDemo
+cd RouterDemo
+dotnet add package FAI.Router</code><div><a href="https://sourcecraft.dev/"><span></span></a></div></pre><p>You also need a model provider key. We'll use OpenRouter in the examples; put the key in an environment variable:</p><pre><code>$env:OPENROUTER_API_KEY = "your key"</code><div><a href="https://sourcecraft.dev/"><span></span></a></div></pre><h3>First Request</h3><p>Let's replace the contents of <code>Program.cs</code> with the following code:</p><pre><code>using FAI.Router;
+
+FaiRouter router = await FaiRouter.FromOpenRouterAsync(
+    apiKey: Environment.GetEnvironmentVariable("OPENROUTER_API_KEY")!,
+    modelIds:
+    [
+        "google/gemini-2.5-flash",
+        "openai/gpt-4.1-mini",
+        "anthropic/claude-haiku-4.5"
+    ],
+    databasePath: "fai-router.db");
+
+RouterAnswer answer = await router.AskAsync(
+    "Write a review of clustering methods in 1500 characters");
+
+Console.WriteLine($"{answer.Winner.Name}: {answer.Score}");
+Console.WriteLine(answer.Text);
+Console.WriteLine(answer.Critic);</code><div><a href="https://sourcecraft.dev/"><span></span></a></div></pre><p>Here, <code>modelIds</code> specifies the list of candidates, and the <code>fai-router.db</code> file stores weights and the turn log. If the file doesn't exist, it will be created. In the response, we are interested in four fields:</p><ul><li><p><code>Winner</code> shows which model was chosen;</p></li><li><p><code>Text</code> contains the model's response;</p></li><li><p><code>Score</code> contains the judge's score from 0 to 1;</p></li><li><p><code>Critic</code> shows, point by point, how the response differs from the request.</p></li></ul><p>The judge automatically verifies the response. For example, if the request specified four sections and a table, but the response has only one section without a table, this will be reflected in <code>Critic</code>.</p><p>You don't have to specify the list of models at all. In that case, the choice will be made from 54 popular models included in the package:</p><pre><code>FaiRouter router = await FaiRouter.FromOpenRouterAsync(
+    apiKey: Environment.GetEnvironmentVariable("OPENROUTER_API_KEY")!,
+    databasePath: "fai-router.db");</code><div><a href="https://sourcecraft.dev/"><span></span></a></div></pre><h3>Training on Feedback</h3><p>The most interesting part begins when the router receives feedback. Feedback is given as a number from 0 to 1, where 1 means an excellent response and 0.2 means a weak one:</p><pre><code>router.Feedback(answer.RoundId!.Value, score: 1.0);
+router.Train(epochs: 10);
+router.Save();</code><div><a href="https://sourcecraft.dev/"><span></span></a></div></pre><p>After this, the weights are saved to the database, and the router will consider the acquired experience for similar tasks. You can accumulate feedback and train the router less frequently, for example, once a day. It's worth noting that the request texts are stored in the log.</p><h3>What's More Important, Cost or Quality?</h3><p>The library has three predefined profiles: <code>Quality</code>, <code>Balance</code>, and <code>Price</code>. The default is <code>Balance</code>. You can change the profile for each request:</p><pre><code>RouterAnswer cheap = await router.AskAsync(
+    prompt, weights: RouteWeights.Price);
+
+RouterAnswer strong = await router.AskAsync(
+    prompt, weights: RouteWeights.Quality);</code><div><a href="https://sourcecraft.dev/"><span></span></a></div></pre><p>Another rule is often more convenient: find those who can handle the task, and among them, choose the cheapest and fastest. For this, there's a sufficiency threshold, i.e., the minimum probability that a human will like the response:</p><pre><code>RouterAnswer enough = await router.AskAsync(prompt, bar: 0.7);
+Console.WriteLine(enough.Reached);</code><div><a href="https://sourcecraft.dev/"><span></span></a></div></pre><p>The <code>Reached</code> field indicates whether any model met the threshold. The threshold starts working when at least three human feedbacks have been collected.</p><h3>Dialogue Instead of a Single Request</h3><p>You can pass an entire dialogue to <code>AskAsync</code>. The task is recognized by the last user utterance, and the model sees the entire history:</p><pre><code>using AI.LLM.Core.Models.Common.Messages;
+
+LLMMessage[] dialog =
+[
+    new(LLMMessage.UserRole, "What is clustering?"),
+    new(LLMMessage.AssistantRole, "It's the process of grouping objects."),
+    new(LLMMessage.UserRole, "Now explain it to a school student")
+];
+
+RouterAnswer replied = await router.AskAsync(dialog);</code><div><a href="https://sourcecraft.dev/"><span></span></a></div></pre><h3>Other Providers</h3><p>The package works not only with OpenRouter. There are three connection methods in total:</p><div><div><table><tbody><tr><td><p><strong>Method</strong></p></td><td><p><strong>Connects to</strong></p></td></tr><tr><td><p>FromOpenRouterAsync</p></td><td><p>OpenRouter</p></td></tr><tr><td><p>FromFractalRouterAsync</p></td><td><p>FractalRouter</p></td></tr><tr><td><p>FromOpenAiCompatibleAsync</p></td><td><p>any server with the OpenAI chat completions protocol</p></td></tr></tbody></table></div></div><p>The last option is suitable for your own model. You need to specify the cost of such a model yourself:</p><pre><code>FaiRouter local = await FaiRouter.FromOpenAiCompatibleAsync(
+    baseUrl: "http://localhost:8000/v1",
+    apiKey: "local",
+    modelIds: ["my-model"],
+    prices: new Dictionary&lt;string, Price&gt;
+    {
+        ["my-model"] = new Price(0, 0)
+    },
+    judgeModel: "my-model");</code><div><a href="https://sourcecraft.dev/"><span></span></a></div></pre><p>The judge works through the same provider, by default using the <code>openai/gpt-4o-mini</code> model. If your server doesn't have this model, specify another one in the <code>judgeModel</code> parameter, as shown in the example above.</p><h3>Not Just Models</h3><p>You can choose not only models but also tools and agents. To do this, pass your own candidates and a function that runs them to the constructor. Let's consider an example with two search options:</p><pre><code>using AI.LLM.Core.Models.Common.Messages;
+using AI.LLM.Services.LLM;
+using FAI.Router;
+using FAI.Router.LLM;
+using FAI.Router.RoutedElements;
+
+BaseRoutedElement deepSearch = new()
+{
+    Name = "deep-search",
+    DPMTInp = 5,
+    DPMTOutp = 20,
+    TPS = 30
+};
+
+BaseRoutedElement fastSearch = new()
+{
+    Name = "fast-search",
+    DPMTInp = 1,
+    DPMTOutp = 2,
+    TPS = 200
+};
+
+LLMBase judge = new OpenAiCompatibleLlm(
+    Providers.OpenRouter,
+    "your key",
+    "openai/gpt-4o-mini");
+
+FaiRouter tools = new(
+    [deepSearch, fastSearch],
+    (candidate, messages, token) =
+        RunSearchAsync(candidate.Name!, messages, token),
+    "tools.db",
+    llm: judge);</code><div><a href="https://sourcecraft.dev/"><span></span></a></div></pre><p>Here, <code>DPMTInp</code> and <code>DPMTOutp</code> define the cost per million tokens, and <code>TPS</code> is the speed in tokens per second. For a tool, these numbers are relative; only their ratio matters. You write the <code>RunSearchAsync</code> function yourself; it launches the required search and returns text. Such candidates start with random weights, so they need your feedback initially.</p><h3>Conclusion</h3><p>Thus, to try FAIRouter, all you need is the command <code>dotnet add package FAI.Router</code> and a few lines of code. The package is distributed under the Apache-2.0 license, the source code and detailed documentation are published on <a href="https://github.com/MASFractal/FAIRouter">GitHub</a>, and suggestions and questions can be left in the <a href="https://github.com/MASFractal/FAIRouter/issues">issues section</a>.</p><p>If you are interested in the theory behind the library, all the mathematics are explained in a <a href="https://habr.com/ru/articles/1090420/">separate article</a>: from the task vector and quality prediction to the judge and feedback learning.</p></div>
+  </main>
+  <footer>
+    Translation generated with Gemini 2.5 Flash-Lite.
+    The original article remains the source of record.
+  </footer>
+</body>
+</html>

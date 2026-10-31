@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>How AI Detectors Are Killing Higher Education</title>
+  <meta name="description" content="Students are increasingly using LLMs to write essays, term papers, and theses – essentially any assignment without constant instructor supervision. Naturally, the higher education system is unhappy and trying to combat this. The simplest solution is to detect and reject AI-generated texts. This arti">
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.65;
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 32px 20px 64px;
+      color: #1f2328;
+    }
+    header {
+      border-bottom: 1px solid #d8dee4;
+      margin-bottom: 28px;
+      padding-bottom: 20px;
+    }
+    .source {
+      color: #57606a;
+      font-size: 0.95rem;
+    }
+    img, video, iframe {
+      max-width: 100%;
+      height: auto;
+    }
+    pre {
+      overflow-x: auto;
+      padding: 16px;
+      background: #f6f8fa;
+      border-radius: 6px;
+    }
+    code {
+      font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+    }
+    blockquote {
+      border-left: 4px solid #d0d7de;
+      margin-left: 0;
+      padding-left: 16px;
+      color: #57606a;
+    }
+    footer {
+      border-top: 1px solid #d8dee4;
+      margin-top: 40px;
+      padding-top: 20px;
+      color: #57606a;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>How AI Detectors Are Killing Higher Education</h1>
+    <p>Students are increasingly using LLMs to write essays, term papers, and theses – essentially any assignment without constant instructor supervision. Naturally, the higher education system is unhappy and trying to combat this. The simplest solution is to detect and reject AI-generated texts. This article discusses the subtle ways AI detectors are impacting education. Read more</p>
+    <p class="source">
+      Machine-translated from Habr.
+      <a href="https://habr.com/ru/articles/1102058/?utm_campaign=1102058&amp;utm_source=habrahabr&amp;utm_medium=rss">Read the original Russian article</a>.
+      Sat, 31 Oct 2026 11:59:47 GMT
+    </p>
+  </header>
+  <main>
+<div><p>Students are increasingly using LLMs to write essays, term papers, and theses – essentially any assignment without constant instructor supervision. Naturally, the higher education system is unhappy and trying to combat this. The simplest solution is to detect and reject AI-generated texts.</p><p>This article discusses the subtle ways AI detectors are impacting education.</p><h2>Students</h2><p>Today, I see a well-established trajectory of developing the habit of using LLMs, starting from school and up to the thesis project, with subsequent continuation in the workplace.</p><p>A student expects a formulated task, which they feed into an LLM, receiving a ready-made and formatted solution. In my opinion, schools have largely let this process slide; moreover, some teachers admire the use of "new technologies," considering it a sign of student advancement.</p><p>First-year students continue the familiar algorithm in their initial classes. Homework assignments (absolutely all of them) are automatically completed using LLMs. Practical classes and seminars involve continuous chat with AI. Essays and term papers are generated with a one-line prompt; the more advanced ones even upload the methodological requirements for formatting term papers to the chat.</p><p>In fact, the average instructor is tempted to slack off and ask a few formal questions about the work, which the student can answer with great difficulty. If their zeal hasn't run out yet, a long, nerve-wracking war begins:</p><p>— You generated this. Redo it.</p><p>— I did it all myself. Want to see my notes? <em>(How notes are related to the work has never been clear to me).</em></p><p>And at this point, a choice arises: sit down with the student, ask questions, try to explain certain points, prove their lack of understanding, give an individual assignment, review it with them, give it again, and so on. Meanwhile, the instructor has at least a hundred more students in line, a family, a home, a personal life. Or, simply run their text through the first AI detector they find, point at it, and say: "This is generated, redo it."</p><h2>AI Detectors and Reward Hacking</h2><p>The instructor, of course, deeply hopes that the student will repent, delete the generated text, and then study the topic, form their own opinion, and express it in their work. In reality, this doesn't work in most cases. The student puts their text into the same AI detector and starts experimenting. Hooray! If this sentence is shortened, it turns from red to green. If participial phrases are removed, a list is presented as continuous text, or a term is replaced with a simpler synonym, more green appears. And the work begins to boil. The text becomes disjointed, inarticulate, and in places frankly stupid, but the goal is achieved – the AI detector shows 100% human.</p><p>The instructor checks and assigns a grade, depending on their conscience and the university's policy.</p><p>Did the student understand anything? Did they grasp the subject? I highly doubt it. Such work only stimulates the speed of text editing and the ability to formulate sentences similar in meaning to the presented samples. It absolutely does not lead to the student's understanding of the subject, and a reasonably literate high school student could handle it.</p><p>Moreover, we are observing a paradoxical situation in real-time: higher education has persistently taught students to write coherently, with arguments, and using strict terminology. Now, through AI detectors, universities are indirectly encouraging students to imitate (though sometimes it's not imitation) inarticulateness. This is simply because it is the smooth academic style that has low perplexity and is regularly flagged by detectors as machine-generated.</p><p>This situation is very familiar to ML engineers, and in neural network training, it's called reward hacking. A neural network is no less lazy than a student and, if possible, will find an easy way to get a reward. For a student, it's often easier to format text, practicing typing speed, than to cognitively strain (which they haven't done for a long time) and do it themselves. It's funny: in the end, you might get a paper where every letter is typed by the student themselves, but it will have been effectively done by an LLM, and the student will still not understand what they are trying to submit to the instructor – a kind of online Ship of Theseus. And this directly indicates that the quality of the student's work will not depend on the quality of the AI detector's work. Even with 100% reliability, the result will not change.</p><p>The student becomes a mechanical appendage of the LLM, whose task is to bypass the AI detector.</p><h2>Consequences</h2><p>Theoretically, the thesis advisor or thesis committee is obliged to verify the student's understanding of their work. However, the presence of official AI detectors makes them complacent (although in some universities, both before and now, the thesis defense was a formality).</p><p>The "approval" from the AI detector allows them to speak of the student's independent work: they don't have to ask uncomfortable questions and can generally assume that the student understands what they have written.</p><p>That is, if the question is about understanding their project, AI detectors are useless and even harmful. Because they provide a false sense of the student's independent work for money.</p><p><strong>But if a student's work passes the AI detector, it only means that it passes the AI detector.</strong></p><h2>What to Do</h2><p>Obviously, the only way to correctly assess a student is through an in-person final examination with a task generated at the start of the exam. You probably remember from your school history course the concept of a "masterpiece" among medieval artisans – when an apprentice, to prove their right to be called a master, would create something in front of other masters.</p><p>Similarly, today, I am already convinced that theses and projects should become a thing of the past, as should accepting any remote work as an assessment of a student or pupil. Only an in-person assessment of the candidate for a diploma will reveal whether they have the right to work in their specialty or not.</p><p>Give a heat engineer the initial data, generated by the same LLM at the start of the exam, along with reference materials and Excel – let them perform a thermal calculation of a boiler or network in front of the commission. An economist receives a huge table of raw data about an enterprise and conducts an analysis without internet access. A programmer writes working code, and an energy engineer draws a power supply diagram.</p><p>For disciplines like philosophy, one can, of course, change nothing. The potential damage from a poorly prepared philosopher is highly questionable.</p><p>But all of this is useless if the student only encounters such an approach at the end of their studies. Unfortunately, all of this must be implemented from school and required from the first courses. And this requires more teachers, more time, and more effort.</p><p>It is much more convenient to run the text through an AI detector and issue a diploma.</p></div>
+  </main>
+  <footer>
+    Translation generated with Gemini 2.5 Flash-Lite.
+    The original article remains the source of record.
+  </footer>
+</body>
+</html>

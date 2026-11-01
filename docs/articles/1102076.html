@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Fundamentals of Deep Learning. Part 2</title>
+  <meta name="description" content="Hello everyone! This article is the second in a series of articles on the fundamentals of deep learning. In the previous part, I covered many interesting and useful things for beginners, so I recommend rereading that post. In this part, we will delve deeper into convolutional neural networks. Read m">
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.65;
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 32px 20px 64px;
+      color: #1f2328;
+    }
+    header {
+      border-bottom: 1px solid #d8dee4;
+      margin-bottom: 28px;
+      padding-bottom: 20px;
+    }
+    .source {
+      color: #57606a;
+      font-size: 0.95rem;
+    }
+    img, video, iframe {
+      max-width: 100%;
+      height: auto;
+    }
+    pre {
+      overflow-x: auto;
+      padding: 16px;
+      background: #f6f8fa;
+      border-radius: 6px;
+    }
+    code {
+      font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+    }
+    blockquote {
+      border-left: 4px solid #d0d7de;
+      margin-left: 0;
+      padding-left: 16px;
+      color: #57606a;
+    }
+    footer {
+      border-top: 1px solid #d8dee4;
+      margin-top: 40px;
+      padding-top: 20px;
+      color: #57606a;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Fundamentals of Deep Learning. Part 2</h1>
+    <p>Hello everyone! This article is the second in a series of articles on the fundamentals of deep learning. In the previous part, I covered many interesting and useful things for beginners, so I recommend rereading that post. In this part, we will delve deeper into convolutional neural networks. Read more</p>
+    <p class="source">
+      Machine-translated from Habr.
+      <a href="https://habr.com/ru/articles/1102076/?utm_campaign=1102076&amp;utm_source=habrahabr&amp;utm_medium=rss">Read the original Russian article</a>.
+      Sun, 01 Nov 2026 10:37:59 GMT
+    </p>
+  </header>
+  <main>
+<div><h3>Hello everyone! This article is the second in a series of articles on the fundamentals of deep learning. In the previous part, I covered many interesting and useful things for beginners, so I recommend rereading that post. In this part, we will delve deeper into convolutional neural networks.</h3><h2>Let's explore Convolutional Neural Networks (CNNs), which are an adaptation of the neural network structure to specific data characteristics.</h2><h3>What is a Convolutional Neural Network?</h3><p>Convolutional Neural Networks were created for pattern recognition. The main task of this architecture was to create a network where the initial layer extracts local features, and subsequent layers combine them into higher-level features.</p><p>When using this approach, the fundamental task of pattern recognition is reduced to feature detection functions, i.e., functions capable of determining the presence or absence of local visual elements in an image. Moreover, it should understand that the element exists regardless of its location.</p><p>To achieve this spatial independence in feature detection, neurons in CNNs use shared weights.</p><p>In the context of pattern recognition, the function implemented by a neuron can be considered a visual feature detection mechanism.</p><p>For example, neurons in the first hidden layer of the network receive a set of pixel values as input. If a specific pattern (local visual element) is present, they activate strongly.</p><p>The fact that the function implemented by a neuron is determined by its weights means that two neurons with the same set of weights implement the same function (feature detection mechanism).</p><p>If two neurons have different input data (receptive fields), they collectively behave like a feature detection mechanism for their common dataset, activating if the feature is present in at least one set.</p><h3>Basic Operations for CNNs</h3><figure><img alt="Basic stages of a convolutional neural network's operation" loading="lazy" src="https://habrastorage.org/r/w1560/getpro/habr/upload_files/c1c/e10/c9f/c1ce10c9f987d0f55404752ea688ed74.jpeg" title="Basic stages of a convolutional neural network's operation"/><div><figcaption>Basic stages of a convolutional neural network's operation</figcaption></div></figure><p>The figure above illustrates different processing stages often found in CNNs.</p><p>The 6x6 matrix on the left represents the input image. To its right is a 4x4 matrix representing a layer of neurons that collectively scan the image for a specific local feature. Each neuron is connected to a 3x3 receptive field of the image, and all apply the same 3x3 weight matrix to their input.</p><p>Here, the receptive fields overlap because they have a stride of one. The stride is a hyperparameter chosen by the user.</p><p>Essentially, a convolution operation is performed: we sequentially apply the same weight matrix (convolution matrix or kernel) to different parts of the input data. The result of the scalar multiplication of the matrices is a number, which is written into one of the cells of the feature map.</p><p>It should be noted that the convolution operation does not include a non-linear activation function; that will be applied later.</p><p>After the feature map is filled, a non-linear activation function is applied to its elements.</p><h3>Pooling Operation</h3><p>After the convolutional layer has found features (e.g., edges, corners, textures), we proceed to pooling.</p><h4>What does pooling do?</h4><ul><li><p>Reduces the dimensionality of the feature map.</p></li><li><p>Makes the network more robust to small shifts and distortions in the image.</p></li><li><p>Extracts the most important features from each region.</p></li></ul><p>Essentially, we divide our feature map into smaller squares (this is called a pooling window). For each square, we take the maximum value (Max Pooling) or the average value (Average Pooling) and write it into a new, reduced map.</p><p>Typically, convolution, applying a non-linear activation function, and pooling are referred to as a convolutional layer. There can be many such layers, but ultimately, we obtain a dense or fully connected layer.</p><p>All neurons in the dense layer receive input from all neurons in the previous layer, and it is the dense layer that generates the final output.</p><h2>Implementing a Convolutional Neural Network in Practice</h2><p>It all starts with obtaining images of digits and their corresponding labels from the MNIST dataset. I explained this previously, so I won't dwell on it.</p><p>The `labels` matrix stores, for each row (image index), a value of 1 in the column corresponding to the target label for that image. The same applies to `test_labels`.</p><p>Next, we implement the necessary functions and their derivatives. The `np.sum` method sums along the first axis (starting from 0) and preserves the dimensionality of our original matrix (`keepdims`). If we had a table with rows, it would sum across the columns and output a matrix (n,1), where each row contains the sum of all elements in that row before the summation.</p><p>Then, we define the necessary constants for our convenience. `num_kernels` is the number of filters (different weights we will use to scan the image repeatedly, 16 times in total).</p><pre><code>import numpy as np from keras.datasets import mnist np.random.seed(1) (x_train, y_train),(x_test,y_test) = mnist.load_data() images, labels = (x_train[0:1000].reshape(1000,28*28)/255, y_train[0:1000]) one_hot_labels = np.zeros((len(labels),10)) for i,j in enumerate(labels): one_hot_labels[i][j] = 1 labels = one_hot_labels test_images = x_test.reshape(len(x_test),28*28)/255 test_labels = np.zeros((len(y_test),10)) for i,j in enumerate(y_test): test_labels[i][j] = 1 def tanh(x): return np.tanh(x) def tanh2deriv(output): return 1 - output**2 def softmax(x): temp = np.exp(x) return temp/np.sum(temp, axis=1, keepdims=True) alpha, iteration = 0.2, 300 batch_size = 128 pixels_per_image, num_labels = (784,10) input_rows, input_cols = (28,28) kernel_rows, kernel_cols = (3, 3) num_kernels = 16 # number of convolutional layers (filters), not neurons in a layer hidden_size = ((input_rows - kernel_rows +1)*(input_cols - kernel_cols +1)) * num_kernels # number of neurons in the layer multiplied by the number of convolutional layers kernel_weight = 0.02*np.random.random((kernel_rows * kernel_cols, num_kernels)) - 0.01 weight_2 = 0.2*np.random.random((hidden_size,num_labels)) - 0.1</code><div><a href=
+  </main>
+  <footer>
+    Translation generated with Gemini 2.5 Flash-Lite.
+    The original article remains the source of record.
+  </footer>
+</body>
+</html>

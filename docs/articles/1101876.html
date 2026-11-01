@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>[Translation] My favorite skill: /s</title>
+  <meta name="description" content="Not sarcasm) One line of instructions for the agent saves my brain: Your last response is too long. The user won’t read it. Shorten it. Keep only essential information. Read more">
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.65;
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 32px 20px 64px;
+      color: #1f2328;
+    }
+    header {
+      border-bottom: 1px solid #d8dee4;
+      margin-bottom: 28px;
+      padding-bottom: 20px;
+    }
+    .source {
+      color: #57606a;
+      font-size: 0.95rem;
+    }
+    img, video, iframe {
+      max-width: 100%;
+      height: auto;
+    }
+    pre {
+      overflow-x: auto;
+      padding: 16px;
+      background: #f6f8fa;
+      border-radius: 6px;
+    }
+    code {
+      font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+    }
+    blockquote {
+      border-left: 4px solid #d0d7de;
+      margin-left: 0;
+      padding-left: 16px;
+      color: #57606a;
+    }
+    footer {
+      border-top: 1px solid #d8dee4;
+      margin-top: 40px;
+      padding-top: 20px;
+      color: #57606a;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>[Translation] My favorite skill: /s</h1>
+    <p>Not sarcasm) One line of instructions for the agent saves my brain: Your last response is too long. The user won’t read it. Shorten it. Keep only essential information. Read more</p>
+    <p class="source">
+      Machine-translated from Habr.
+      <a href="https://habr.com/ru/articles/1101876/?utm_campaign=1101876&amp;utm_source=habrahabr&amp;utm_medium=rss">Read the original Russian article</a>.
+      Sun, 01 Nov 2026 06:49:12 GMT
+    </p>
+  </header>
+  <main>
+<div><p>Not sarcasm) One line of instructions for the agent saves my brain:</p><blockquote><p>Your last response is too long. The user won’t read it. Shorten it. Keep only essential information.</p></blockquote><details><summary>The rest in the skill file is metadata</summary><div><pre><code>--- 
+name: s 
+description: Shorten the last response. 
+disable-model-invocation: true 
+--- 
+
+Your last response is too long. The user won't read it. Shorten it. Keep only essential information.
+</code><div><a href="https://sourcecraft.dev/"><span></span></a></div></pre><p><code>disable-model-invocation</code> prevents the agent from invoking the skill itself.</p></div></details><p>My agent talks too much. Recently, Claude Code introduced a setting for this, <code>"outputStyle": "Concise"</code>, and it helps a little, but the responses are still often verbose. I don't know if other tools have this problem. Most likely, all of them do: at the core of any agent is a text generator.</p><details><summary>First, I tried a permanent rule in user instructions</summary><div><p>Over several months, my global <code>CLAUDE.md</code> has gone through more than a dozen versions. Some of them:</p><ul><li><p>“In all messages, commit messages, pull request descriptions and other interactions, be extremely concise and sacrifice grammar for the sake of concision.”</p></li><li><p>“Reason as deeply as needed; only the output must be dense. Cut filler, never substance.”</p></li><li><p>“Be concise.”</p></li><li><p>“Think a lot, talk little.”</p></li><li><p>“If a final response exceeds a couple of sentences, end it with a short summary prefixed with ‘Net:’.”</p></li><li><p>“The user doesn’t like to read. He skips long messages. Avoid long messages at all costs. Long messages = wasted work.”</p></li></ul></div></details><p>None of these rules really helped. The agent tries to be as helpful as possible, and from its point of view, the most helpful response is the one with the most information.</p><p>Thus, <code>/s</code> was born. Suppose I ask: "It works like this, right?" I only need "yes" or "no", maybe with a short clarification. But sometimes, even with the Concise style, the agent produces a whole wall of text: it considers some points important, and I don't. Then I press three keys: <code>/</code>, <code>s</code>, <code>enter</code>. The response comes back compact, with only what's important 🔪</p><p>The skill works where rules have failed, and there's a reason for that. Neither humans nor agents are good at multitasking: both can do several things at once, but each turns out worse. By focusing on one thing, they perform better. That's why I give each reviewer agent <a href="https://leksat.me/posts/one-reviewer-one-axis">one axis</a>.</p><p>With a general rule, the agent has to do the main task and simultaneously figure out which parts of the response are important to me and how to fit them into a minimum of words. With the skill, there's no need to juggle: first, the agent performs the task, and then, with the ready response in hand, it only focuses on shortening it.</p><p>When the stakes are low, I press <code>/s</code> as soon as a long response arrives. Sometimes twice in a row.</p><details><summary>It also tells the agent that I didn't read the long version</summary><div><p>Sometimes, the agent gives a long response, I skim it, and only answer the question at the end. Then the agent might decide that I've read, understood, and remembered everything, and build further conversation on that. But I haven't read it, so I might miss something later, possibly something important.</p><p>The skill says it directly: the user will not read this response. The idea is that the agent now knows that I've missed some nuances and can remind me of them later.</p></div></details><p>Now <code>/s</code> is my favorite skill: it really saves me from cognitive overload 😍</p></div>
+  </main>
+  <footer>
+    Translation generated with Gemini 2.5 Flash-Lite.
+    The original article remains the source of record.
+  </footer>
+</body>
+</html>

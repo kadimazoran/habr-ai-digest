@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>LLM Conversations: Risk Propensity of Different Noo-spheres / LLMs</title>
+  <meta name="description" content="Several works in the literature have studied the attitude of different noo-spheres / LLMs towards risk. This article presents a review of these works from the perspective of the author&#x27;s developing LLM theory. Interestingly, although in the general case the task (prompt) influences the riskines">
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.65;
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 32px 20px 64px;
+      color: #1f2328;
+    }
+    header {
+      border-bottom: 1px solid #d8dee4;
+      margin-bottom: 28px;
+      padding-bottom: 20px;
+    }
+    .source {
+      color: #57606a;
+      font-size: 0.95rem;
+    }
+    img, video, iframe {
+      max-width: 100%;
+      height: auto;
+    }
+    pre {
+      overflow-x: auto;
+      padding: 16px;
+      background: #f6f8fa;
+      border-radius: 6px;
+    }
+    code {
+      font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+    }
+    blockquote {
+      border-left: 4px solid #d0d7de;
+      margin-left: 0;
+      padding-left: 16px;
+      color: #57606a;
+    }
+    footer {
+      border-top: 1px solid #d8dee4;
+      margin-top: 40px;
+      padding-top: 20px;
+      color: #57606a;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>LLM Conversations: Risk Propensity of Different Noo-spheres / LLMs</h1>
+    <p>Several works in the literature have studied the attitude of different noo-spheres / LLMs towards risk. This article presents a review of these works from the perspective of the author&#x27;s developing LLM theory. Interestingly, although in the general case the task (prompt) influences the riskiness of the noo-sphere&#x27;s behavior, for popular models with identical starting conditions, a pattern in the riskiness of their behavior has been found: Claude Sonnet 4.5 &lt; DeepSeek V3.2 &lt; Gemini 3 Pro &lt; Qwen3 Max &lt; GPT-5.2. Read more</p>
+    <p class="source">
+      Machine-translated from Habr.
+      <a href="https://habr.com/ru/articles/1102280/?utm_campaign=1102280&amp;utm_source=habrahabr&amp;utm_medium=rss">Read the original Russian article</a>.
+      Sun, 01 Nov 2026 13:43:07 GMT
+    </p>
+  </header>
+  <main>
+<div><p>Several works in the literature have studied the attitude of different noo-spheres / LLMs towards risk. This article presents a review of these works from the perspective of the author's developing <a href="https://habr.com/ru/articles/1097718/">LLM theory</a>. Interestingly, although in the general case the task (prompt) influences the riskiness of the noo-sphere's behavior, for popular models with identical starting conditions, a pattern in the riskiness of their behavior has been found: Claude Sonnet 4.5 &lt; DeepSeek V3.2 &lt; Gemini 3 Pro &lt; Qwen3 Max &lt; GPT-5.2.</p><h2>Experiments:</h2><p>The situation of "LLM and risk" was investigated behaviorally by Sun et al. (2026), among others. Six noo-spheres and 100 humans solved three tasks with a common scheme but different domains: drone control under random winds, patient triage in a hospital, and forming an investment portfolio from assets with different properties. The LLMs, firstly, assessed the danger of the situation on a scale of 0–100, and secondly, made a decision: they piloted the drone, assigned a urgency level, and allocated capital. The researchers classified the demonstrated decisions into five classes, ordered by caution-riskiness. When collecting statistics, memory of the previous instance was reset, so the AI agent started the task "from scratch." In the drone task, the assessment was repeated post-factum, and this assessment was used in the presentation of the work's results.</p><p>It turned out that noo-spheres solve tasks with varying degrees of riskiness. Five of them maintained a consistent relative order of risk propensity across all tasks: Claude Sonnet 4.5 &lt; DeepSeek V3.2 &lt; Gemini 3 Pro &lt; Qwen3 Max &lt; GPT-5.2. The exception was Grok 4: the most risk-prone in the drone task and the least in the other two tasks.</p><p>Furthermore, Grok 4 and Qwen3 Max, unlike the others, exhibited high variability in danger assessment. For example, in the drone task, the relative standard deviation was 24% for Grok 4 and 52% for Qwen3 Max.</p><p>In comparison to humans, all six LLMs performed very homogeneously – within a narrow band of the distribution constructed from human performance metrics.</p><p>In other risk-related works (Zhu et al., 2025; Kocielnik et al., 2026), it was found that the choices of AI agents allow for the determination of their own axis, and shifts along this axis influence the chosen risk. These studies investigated the Gemma-2-9B-Instruct model by Zhu et al. (2025) and Qwen2.5-7B, Llama-3.1-8B, OLMo-3-7B, and Mistral-3-8B by Kocielnik et al. (2026). Notably, the axes constructed from the words "risk / safety" (Zhu et al., 2025) or from descriptions of a risk-taking person (Kocielnik et al., 2026) had little influence on the noo-sphere's choice. However, they did shift verbal assessments: in Zhu et al., it affected assessments of situation riskiness, and in Kocielnik et al., it affected responses to risk propensity questionnaires. The verbal axis is nearly orthogonal to the choice axis (Kocielnik et al., 2026).</p><h2>A Perspective from the Developing Theory:</h2><p>In experiments studying the attitude of LLM conversations towards risk, at least three forms of the i-layer are distinguishable. For two of these forms, separate axes have been found in the activation spaces:</p><ul><li><p>Form without an already identified axis:</p><ul><li><p>Assessment of situation danger in specific tasks (evaluative and modal-scenario classes – for <a href="https://kroopkin.livejournal.com/374916.html">already discovered classes of i-layer element forms</a>);</p></li></ul></li><li><p>Forms with axes in the activation space:</p><ul><li><p>Choice of behavior variant / action scheme (target and planning classes); axes are task-specific;</p></li><li><p>Verbal description of risk (evaluative class; in self-description – also the Ego model from the social class).</p></li></ul></li></ul><p>The properties of LLMs that influence the riskiness of noo-spheres' behavior do not require a separate class of forms in the i-layer.</p><p>The forms of assessment and choice are linked in many models but are specific to different tasks. It is also possible for forms from different tasks to be linked, establishing overall consistency in the degree of risk in the models' behavior.</p><p>These forms most likely arise from the sprouting of noo-sphere properties into the i-layer – similar to affective forms and forms related to attention heads. The specific riskiness in tasks appears to be a byproduct of pre-training and fine-tuning: designers typically aim for it only in the most general sense – as harmlessness (Ouyang et al., 2025), or as a preference for the most cautious of available actions (Anthropic, 2026).</p><p>Changing the task (prompt) (Wang et al., 2025) or its language (Liu et al., 2026) altered the riskiness of a specific noo-sphere, meaning the riskiness of an LLM conversation in its subsequent development is largely determined by its task. Although not in an obvious way: an explicit instruction to be risk-prone did not remove the caution introduced by fine-tuning (Ouyang et al., 2025), even though fine-tuning itself can shift a noo-sphere's riskiness: efforts towards LLM utility, harmlessness, and honesty increased its caution (Ouyang et al. 2025).</p><h2>Literature:</h2><p><strong><em>Sun, B., Min, R., Wang, Y., Wang, Q. R., Odegaard, B., Du, J.</em></strong> (2026) <em>Some Large Language Models Exhibit Consistent Risk Attitudes</em>. arXiv Preprint 2607.16197, 21 July 2026. URL: <a href="https://arxiv.org/abs/2607.16197">https://arxiv.org/abs/2607.16197</a>.</p><p><strong><em>Kocielnik, R., Song, P., Han, P., Marmarelis, M. G., Debnath, R., Mobbs, D., Alvarez, R. M.</em></strong> (2026) <em>Representational Control over Self-Report &amp; Behavior Coherence in LLM Risk-Taking</em>. arXiv Preprint 2610.04125. URL: <a href="https://arxiv.org/abs/2610.04125">https://arxiv.org/abs/2610.04125</a>.</p><p><strong><em>Zhu, J.-Q., Yan, H., Griffiths, T. L.</em></strong> (2025) <em>Steering Risk Preferences in Large Language Models by Aligning Behavioral and Neural Representations</em>. arXiv Preprint 2505.11615, 16 May 2025. URL: <a href="https://arxiv.org/abs/2505.11615">https://arxiv.org/abs/2505.11615</a>.</p><p><strong><em>Ouyang, S., Yun, H., Zheng, X.</em></strong> (2025) <em>AI as Decision-Maker: Ethics and Risk Preferences of LLMs</em>. arXiv Preprint 2406.01168v3. URL: <a href="https://arxiv.org/abs/2406.01168v3">https://arxiv.org/abs/2406.01168v3</a>.</p><p><strong><em>Liu, J., Song, B., Dixit, V., Wu, C., Jian, S.</em></strong> (2026) <em>Can large language models capture human risk preferences?</em> <em>A cross-cultural study</em>. Communications in Transportation Research, 6(2), 9640025. DOI: <a href="https://doi.org/10.26599/COMMTR.2026.9640025">10.26599/COMMTR.2026.9640025</a>.</p><p><strong><em>Wang, Y., Li, X., Chen, G.</em></strong> (2025) <em>Risk Profiling and Modulation for LLMs</em>. arXiv Preprint 2509.23058. URL: <a href="https://arxiv.org/abs/2509.23058">https://arxiv.org/abs/2509.23058</a>.</p><p><strong><em>Anthropic</em></strong> (2026) <em>Claude’s Constitution</em>. January 2026. URL: <a href="https://www.anthropic.com/constitution">https://www.anthropic.com/constitution</a>.</p></div>
+  </main>
+  <footer>
+    Translation generated with Gemini 2.5 Flash-Lite.
+    The original article remains the source of record.
+  </footer>
+</body>
+</html>

@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Not how much, but where: what I found out about noise in SDE samplers for flow-matching models</title>
+  <meta name="description" content="Not how much, but where: what I found out about noise in SDE samplers for flow-matching models Read more">
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.65;
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 32px 20px 64px;
+      color: #1f2328;
+    }
+    header {
+      border-bottom: 1px solid #d8dee4;
+      margin-bottom: 28px;
+      padding-bottom: 20px;
+    }
+    .source {
+      color: #57606a;
+      font-size: 0.95rem;
+    }
+    img, video, iframe {
+      max-width: 100%;
+      height: auto;
+    }
+    pre {
+      overflow-x: auto;
+      padding: 16px;
+      background: #f6f8fa;
+      border-radius: 6px;
+    }
+    code {
+      font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+    }
+    blockquote {
+      border-left: 4px solid #d0d7de;
+      margin-left: 0;
+      padding-left: 16px;
+      color: #57606a;
+    }
+    footer {
+      border-top: 1px solid #d8dee4;
+      margin-top: 40px;
+      padding-top: 20px;
+      color: #57606a;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Not how much, but where: what I found out about noise in SDE samplers for flow-matching models</h1>
+    <p>Not how much, but where: what I found out about noise in SDE samplers for flow-matching models Read more</p>
+    <p class="source">
+      Machine-translated from Habr.
+      <a href="https://habr.com/ru/articles/1102234/?utm_campaign=1102234&amp;utm_source=habrahabr&amp;utm_medium=rss">Read the original Russian article</a>.
+      Sun, 01 Nov 2026 11:48:28 GMT
+    </p>
+  </header>
+  <main>
+<div><p>Image generators based on flow matching can be run with a stochastic sampler: at each step, it mixes in fresh noise. The strength of this noise (the <code>eta</code> parameter) is usually set manually once and remains constant. I wanted to understand if the sampler could choose it itself, step by step, from the information it already has for free.</p><p><strong>Idea.</strong> A multi-step solver can, at each step, calculate how sharply the trajectory bends (curvature) and how much its prediction and correction (error estimate) diverge. If noise is detrimental where the field is "stiff" and beneficial where it is smooth, then a fixed noise budget distributed according to curvature should outperform a constant without a single extra network call.</p><p><strong>What was done.</strong> A node for ComfyUI, tested on three open models (Anima, Flux 3 Klein, MOSS-Image) in 6–15 steps. The main point of the methodology: each adaptive run is compared with a run with a constant <code>eta</code> and <strong>exactly the same total noise budget</strong>. Without this, the "adaptive" result most often turns out to be simply "less noise" (this is what happened in my previous work).</p><p><strong>Results</strong></p><ul><li><p><strong>Curvature did not work.</strong> There is no stable advantage on any model; the sign of the effect changes with the number of steps.</p></li><li><p><strong>The solver's own error estimate worked a little.</strong> If there is more noise where the error is small, on Flux 3 Klein there is an advantage of about 1–2% of the texture value. It was confirmed on new seeds according to criteria recorded before the run. On MOSS-Image, the effect is one-sided; I did not find it on Anima.</p></li><li><p><strong>Adaptation turned out to be unnecessary.</strong> A fixed schedule, averaged over independent runs and applied to all images, gives the same result. Noise at the edges of the noise window helps; in the middle, it is less important. What matters is where the noise lands, not what the sampler sees.</p></li><li><p><strong>People did not see the difference.</strong> In a survey of 39 people (which of the two images "looks more like AI"), people noticed a big difference between weak and strong noise, but could not distinguish the new distribution from the usual noise.</p></li></ul><p><strong>Limitations.</strong> Metrics are calculated in latent space, not visually; by default, 16 pairs of images per budget; the result on Krea 2 was unconvincing due to lack of power; a different version of ComfyUI was used on Anima than on the others; the survey is informal, without selection.</p><p>This is mostly a negative result, and I believe it's worth sharing. The code, per-image numbers, and survey analysis are open: <a href="https://github.com/YakovSava/flow-sde-research">https://github.com/YakovSava/flow-sde-research</a>. Preprint: <a href="https://doi.org/10.5281/zenodo.23857361">https://doi.org/10.5281/zenodo.23857361</a>.</p></div>
+  </main>
+  <footer>
+    Translation generated with Gemini 2.5 Flash-Lite.
+    The original article remains the source of record.
+  </footer>
+</body>
+</html>

@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Programming without an IDE, or using Qwen and Qwen Coder for software development</title>
+  <meta name="description" content="We will try to quickly write an NTFS alternate data streams scanner using a non-trivial stack and architecture. I did this primarily to test the capabilities of the Qwen family of models. A brief explanation for those who haven&#x27;t worked in this area. NTFS (an abbreviation for New Technology Fil">
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.65;
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 32px 20px 64px;
+      color: #1f2328;
+    }
+    header {
+      border-bottom: 1px solid #d8dee4;
+      margin-bottom: 28px;
+      padding-bottom: 20px;
+    }
+    .source {
+      color: #57606a;
+      font-size: 0.95rem;
+    }
+    img, video, iframe {
+      max-width: 100%;
+      height: auto;
+    }
+    pre {
+      overflow-x: auto;
+      padding: 16px;
+      background: #f6f8fa;
+      border-radius: 6px;
+    }
+    code {
+      font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+    }
+    blockquote {
+      border-left: 4px solid #d0d7de;
+      margin-left: 0;
+      padding-left: 16px;
+      color: #57606a;
+    }
+    footer {
+      border-top: 1px solid #d8dee4;
+      margin-top: 40px;
+      padding-top: 20px;
+      color: #57606a;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Programming without an IDE, or using Qwen and Qwen Coder for software development</h1>
+    <p>We will try to quickly write an NTFS alternate data streams scanner using a non-trivial stack and architecture. I did this primarily to test the capabilities of the Qwen family of models. A brief explanation for those who haven&#x27;t worked in this area. NTFS (an abbreviation for New Technology File System) is the standard file system for the Windows NT family of operating systems. One of its little-known features is the presence of Alternate Data Streams (ADS), which are metadata associated with an NTFS file system object. Thus, several data streams can be attached to a file that will not be visible through standard OS tools. Read more</p>
+    <p class="source">
+      Machine-translated from Habr.
+      <a href="https://habr.com/ru/articles/1102144/?utm_campaign=1102144&amp;utm_source=habrahabr&amp;utm_medium=rss">Read the original Russian article</a>.
+      Sat, 31 Oct 2026 18:18:48 GMT
+    </p>
+  </header>
+  <main>
+<div><p>We will try to quickly write an NTFS alternate data streams scanner using a non-trivial stack and architecture. I did this primarily to test the capabilities of the Qwen family of models.</p><p>A brief explanation for those who haven't worked in this area. NTFS (an abbreviation for New Technology File System) is the standard file system for the Windows NT family of operating systems. One of its little-known features is the presence of Alternate Data Streams (ADS), which are metadata associated with an NTFS file system object. Thus, several data streams can be attached to a file that will not be visible through standard OS tools.</p><h3>How ADS are structured</h3><ol><li><p>Main stream (default): Unnamed stream: $DATA contains the usual file content (text, code, image).</p></li><li><p>Alternate (named) streams: Can contain any data of arbitrary size and are attached to the file name via a colon, for example: file.txt:streamname:$DATA.</p></li><li><p>When writing data to ADS, the size of the main file in Windows Explorer does not change, which makes the hidden streams invisible to standard viewing tools (Explorer does not display their presence).</p></li><li><p>When copying a file to another drive with an NTFS file system, the streams are preserved. When transferring to FAT32, exFAT, or loading via most network protocols, alternate streams are lost.</p></li></ol><p>For legitimate use, ADS are used in the following cases:</p><ol><li><p>Metadata storage: Windows uses ADS for security labels (e.g., the famous Mark of the Web flag in the Zone.Identifier stream, which warns when launching files downloaded from the internet).</p></li><li><p>For compatibility: the feature was originally introduced to support Macintosh file systems (HFS), where a file could store an icon, a resource part, and text separately.</p></li><li><p>For data classification: Classification tools (e.g., Microsoft FCI) can store document labels within streams.</p></li></ol><h3>Task Definition for Qwen</h3><p>As a software stack for implementation, I decided to use Rust for the application core and Avalonia for the GUI, as there is a need to ensure operation on both Windows and Linux. The Linux version must be able to work with both ntfs3 and ntfs-3g. Everything that resulted is available on GitHub: <a href="https://github.com/BlackEric001/NtfsStreamsViewer">https://github.com/BlackEric001/NtfsStreamsViewer</a>.</p><p>To start, I sent the following prompt to <a href="https://chat.qwen.ai/">https://chat.qwen.ai/</a>: "I need to create an application with a GUI to scan NTFS drives for alternate data streams in files. It should be possible to view and download data from the streams.".</p><p>The program must be able to run on both Windows and Linux.</p><p>I envision the implementation as a disk interaction module that will scan disks, folders, and files, load and unload data into streams, create and delete them. And provide an API for the GUI.</p><p>The GUI will use the disk interaction module.</p><p>I would like the data interaction module to be implemented in Rust.</p><p>What is the best way to implement the GUI?</p><p>Evaluate the proposed architecture..."</p><p>By default, Qwen3.7-Plus is suggested.</p><figure><img alt="Fig. 1 Start of Qwen 3.7 response" loading="lazy" src="https://habrastorage.org/r/w1560/extt/64/a8/8e/64a88ea345f0a45d72dcdb2ead0eae88.png" title="Fig. 1 Start of Qwen 3.7 response"/><div><figcaption>Fig. 1 Start of Qwen 3.7 response</figcaption></div></figure><p>In general, it said that the proposed architecture is ideal, without detailed elaboration. Not good... Let's try Qwen3.8-Max, sending the same prompt. Here the response is much more detailed, with very sensible suggestions. The long and detailed response from Qwen3.8-Max can be read at the link: <a href="https://chat.qwen.ai/s/t_9566645d-b473-48b9-ac18-a00b79ee105c">https://chat.qwen.ai/s/t_9566645d‑b473-48b9-ac18-a00b79ee105c</a>. I am not including it here because there is a lot of it, but in short, 3.8 also agreed with my proposed architecture but suggested supplementing it with another command-line application, which was ultimately implemented.</p><p>In the end, I asked it to write a technical specification describing the implementation of the core in Rust for Qwen Coder. We save the technical specification in the ..\SPEC.md file and push it to the repo along with the initial directory structure.</p><h3>Working with Qwen Coder</h3><p>To start working with Qwen Coder (<a href="https://coder.qwen.ai/">https://coder.qwen.ai/</a>), we give it access to the GitHub repository:</p><figure><img alt="Fig. 2 Granting Qwen Coder access to the GitHub repository." loading="lazy" src="https://habrastorage.org/r/w1560/extt/c3/ca/0d/c3ca0d5f883197f6cd8f9d19cf1ea7c7.png" title="Fig. 2 Granting Qwen Coder access to the GitHub repository."/><div><figcaption>Fig. 2 Granting Qwen Coder access to the GitHub repository.</figcaption></div></figure><p>We write a short prompt: "Write an application according to the specification in the file <a href="https://github.com/BlackEric001/NtfsStreamsViewer/blob/master/SPEC.md">https://github.com/BlackEric001/NtfsStreamsViewer/blob/master/SPEC.md</a>" and the agent starts working.</p><figure><img alt="Fig. 3 Non-compiling code as a result of work" loading="lazy" src="https://habrastorage.org/r/w1560/extt/08/8f/ca/088fca0f8cc70379535e3a900181e020.png" title="Fig. 3 Non-compiling code as a result of work"/><div><figcaption>Fig. 3 Non-compiling code as a result of work</figcaption></div></figure><p>As a result of its work, it constantly tried to give me non-compiling code, so with the next prompt, I asked it to make the code compile. As a result, in a couple of iterations, each of which took no more than 10 minutes, we got a fully working console application.</p><p>The next step was to ask Qwen3.8-Max to write a technical specification for the GUI part. What we got after a short discussion, I again pushed to the repo: <a href="https://github.com/BlackEric001/NtfsStreamsViewer/blob/master/docs/GUI.md">https://github.com/BlackEric001/NtfsStreamsViewer/blob/master/docs/GUI.md</a>, after which I asked Qwen Coder to implement the interface in Avalonia. On the first attempt, it again produced non-compiling code. But here it should be noted that the agent does not have access to Windows; it checked everything on the Linux it had access to. I checked everything on Win 10. After I told it that the code was not compiling, it corrected it, and we got a decent, but very simple interface. After a short testing period on my part, I asked it to add logs and display them in a separate window, which was quickly done. I merged all pull requests from Qwen Coder without edits. After each stage, I asked Qwen3.8-Max to check the result. In this implementation, it found no problems and suggested moving to the next stage.</p><figure><img alt="Fig. 4 The resulting application" loading="lazy" src="https://habrastorage.org/r/w1560/extt/84/ae/1b/84ae1bd08f6f025ac3a140c3265de1b8.png" title="Fig. 4 The resulting application"/><div><figcaption>Fig. 4 The resulting application</figcaption></div></figure><h3>Conclusion</h3><p>Everything became very simple and fast, and it boils down to defining the task for the agent and checking the result. An IDE is also not needed. In fact, development is starting to look like analysis &gt; defining the task for the agent &gt; checking the agent's work results with a neural network to find errors, vulnerabilities, etc. &gt; testing the resulting application. Code is now generated at such a speed that an agent is also needed for review. People will not be able to review all of this manually as before. </p><p>Unfortunately, I didn't manage to measure the time spent on development, but all the programming and communication with the neural networks took me about 4 hours, no more. Estimate for yourself how long it would have taken to write this the old-fashioned way. Source code will soon be viewed as often as before the era of AI agents, people looked at what the compiler generated, because a person simply won't have time to study such a volume. And since neural networks don't care what language to write in, at least among the popular ones, traditional development is living its last years.</p><p>P.S. The goal of this article is primarily to demonstrate the capabilities of neural networks and agents in development, not to actually implement the application. That's why such a sprawling and somewhat redundant architecture was chosen.</p></div>
+  </main>
+  <footer>
+    Translation generated with Gemini 2.5 Flash-Lite.
+    The original article remains the source of record.
+  </footer>
+</body>
+</html>

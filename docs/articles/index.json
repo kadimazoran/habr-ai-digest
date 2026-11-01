@@ -3839,6 +3839,14 @@
     "summary": "Lumio is a free app for the MacBook notch. It shows what your AI agents are currently doing: who is working, who has finished, who is waiting for command permission. You can grant permission directly from the notch, without switching to the terminal. There's also a pixel office where each session is a person at their desk. Until today, Lumio understood Claude Code, Codex, Cursor, GitHub Copilot, and Antigravity. In version 1.3, OpenCode, Kilo Code, and Pi were added. It might seem like just three more lines in the settings. In reality, it's three different ways to connect and a week of work, two days of which were spent not on code, but on testing it with real agents without paid keys. Read more",
     "title": "Eight AI agents and five ways to know what they are doing: how we connected OpenCode, Kilo, and Pi to the Mac notch"
   },
+  "https://habr.com/ru/articles/1100830/?utm_campaign=1100830&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Sun, 01 Nov 2026 11:43:24 GMT",
+    "slug": "1100830",
+    "source_url": "https://habr.com/ru/articles/1100830/?utm_campaign=1100830&utm_source=habrahabr&utm_medium=rss",
+    "summary": "In my open-daimon pet project, routing between local and cloud models has long been available. I'll admit upfront: open-daimon isn't publicly updated because I develop it locally for speed. Based on it, I have a separate private project that expands its capabilities – an agent management studio. I tested everything there. The desire to do this seriously arose for a simple reason: the rules in the cloud are set by others and change without notice. In October, it resurfaced that Anthropic's consumer terms for EEA and Swiss residents explicitly state: do not use services 'for commercial or business purposes.' This applies to Claude.ai, Pro, and Max subscriptions. Thus, a developer in Europe writing working code in Claude Code with a Max subscription is formally violating them. For work, you need an API, Team, or Enterprise plan, which is a different league of cost. The second story is about what you're allowed to do with your own hardware. A Decrypt author asked Claude Opus 5.5 to help regain root access on their LG TV. The model's safety filters cut off the request and suggested switching to Opus 4.8. And a researcher, known for discovering a constantly active microphone in Samsung TVs, writes that OpenAI blocked his account for 'Cyber Abuse' after analyzing firmware via ChatGPT. Along with the account, about $500 in API balance disappeared. OpenAI hasn't commented, so for now, these are just his words. The direction is clear: probing third-party software will be increasingly forbidden, and the manufacturer decides what constitutes abuse. Read more",
+    "title": "Can We Abandon Opus and Codex? I Tested MacBook, Gaming Laptop, and DGX Spark on One Tricky Task"
+  },
   "https://habr.com/ru/articles/1100874/?utm_campaign=1100874&utm_source=habrahabr&utm_medium=rss": {
     "model": "gemini-2.5-flash-lite",
     "published": "Thu, 29 Oct 2026 15:00:50 GMT",
@@ -3854,6 +3862,14 @@
     "source_url": "https://habr.com/ru/articles/1100880/?utm_campaign=1100880&utm_source=habrahabr&utm_medium=rss",
     "summary": "In this part, we prepare the dataset for contrastive model training. We cover the rationale behind our choices, provide examples, and discuss efficient dataset assembly. We are nearing the completion of the training implementation setup. Read more",
     "title": "From Teacher to Student: The Path to Isotropic Embeddings in a 29M Model. Part 3/10"
+  },
+  "https://habr.com/ru/articles/1100882/?utm_campaign=1100882&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Sun, 01 Nov 2026 10:00:32 GMT",
+    "slug": "1100882",
+    "source_url": "https://habr.com/ru/articles/1100882/?utm_campaign=1100882&utm_source=habrahabr&utm_medium=rss",
+    "summary": "Finally, we create the student model, which will 'learn' the teacher's representations. We'll assemble a 'constructor' from the necessary layers and conduct initial test runs to ensure the model is usable. Read more",
+    "title": "From Teacher to Student: The Path to Isotropic Embeddings in a 29M Model. Part 4/10"
   },
   "https://habr.com/ru/articles/1100960/?utm_campaign=1100960&utm_source=habrahabr&utm_medium=rss": {
     "model": "gemini-2.5-flash-lite",
@@ -3927,6 +3943,14 @@
     "summary": "Two out of three API calls returned HTTP 500. Agents layered patches upon patches until the code became a tangled mess. Instead of another fix, I moved the system to a clean room, where an agent writes a new implementation without seeing the old one. This article details the migration mechanism, 15 rules to prevent new workarounds, and an experiment with 36 DeepSeek runs to see how agent behavior changes based on the code and rules it's shown. Enter the clean room.",
     "title": "Clean Room: An Agentic Laundry for Your Dirty Legacy Code"
   },
+  "https://habr.com/ru/articles/1101468/?utm_campaign=1101468&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Sun, 01 Nov 2026 10:00:32 GMT",
+    "slug": "1101468",
+    "source_url": "https://habr.com/ru/articles/1101468/?utm_campaign=1101468&utm_source=habrahabr&utm_medium=rss",
+    "summary": "A beginner designer asked me recently: should I learn WordPress to build websites from scratch? At first, I avoided the topic, suggesting they look at something newer, like Tilda or Webflow. I compared it to the situation in 2014, when there were few alternatives for building a website without coding knowledge. But then I decided. And I said what I was afraid to admit to myself: 'There is a serious possibility that our profession will soon cease to exist.' Why do courses still promise an easy entry into the industry, remote work from anywhere, and why do big tech leads earn money on consultations — and people go to them? Because, in my observation, the industry has split into two camps. They live in parallel universes, in one of which newcomers seek advice from seniors, confident in their indispensability. In the second — those who, without knowing the basics of web design, go and vibe-code websites, shining with the Dunning-Kruger effect, for which they get reprimanded by the 'old-timers.' By buying a ticket to the first, the newcomer is forced to move to the second, because employers increasingly demand proficiency in neural networks. And at the same time, senior designers scold in the comments works created through AI: 'It's impossible to generate a website that solves business problems without experience.' Quite recently, I also thought that with my vast experience, there was nothing to fear. Yeah) Read more",
+    "title": "Vibe coding vs. old school: what should designers do in the age of AI?"
+  },
   "https://habr.com/ru/articles/1101590/?utm_campaign=1101590&utm_source=habrahabr&utm_medium=rss": {
     "model": "gemini-2.5-flash-lite",
     "published": "Fri, 30 Oct 2026 14:00:33 GMT",
@@ -3967,6 +3991,14 @@
     "summary": "I set up paid traffic for dental clinics (and not only). For good creatives, you always need photos of doctors: the real face of a doctor in the office works better than stock photos. But for a clinic, a doctor photoshoot turns into a separate project with significant time and financial costs. Doctors are busy with patients, offices are occupied, a photographer needs to be paid, and a good one needs to be paid a lot. In a month, new shots are needed because the old creatives have burned out. In general, for dental clinics, this is a long and expensive hassle. I understood this from the very beginning and decided to go a different way. Read more",
     "title": "Photoshoot for Dentists Without a Photoshoot for $3: FLUX.3 klein + ComfyUI + RunPod = 290 Frames"
   },
+  "https://habr.com/ru/articles/1101876/?utm_campaign=1101876&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Sun, 01 Nov 2026 06:49:12 GMT",
+    "slug": "1101876",
+    "source_url": "https://habr.com/ru/articles/1101876/?utm_campaign=1101876&utm_source=habrahabr&utm_medium=rss",
+    "summary": "Not sarcasm) One line of instructions for the agent saves my brain: Your last response is too long. The user won’t read it. Shorten it. Keep only essential information. Read more",
+    "title": "[Translation] My favorite skill: /s"
+  },
   "https://habr.com/ru/articles/1101896/?utm_campaign=1101896&utm_source=habrahabr&utm_medium=rss": {
     "model": "gemini-2.5-flash-lite",
     "published": "Sat, 31 Oct 2026 11:30:31 GMT",
@@ -3991,6 +4023,14 @@
     "summary": "Students are increasingly using LLMs to write essays, term papers, and theses – essentially any assignment without constant instructor supervision. Naturally, the higher education system is unhappy and trying to combat this. The simplest solution is to detect and reject AI-generated texts. This article discusses the subtle ways AI detectors are impacting education. Read more",
     "title": "How AI Detectors Are Killing Higher Education"
   },
+  "https://habr.com/ru/articles/1102076/?utm_campaign=1102076&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Sun, 01 Nov 2026 10:37:59 GMT",
+    "slug": "1102076",
+    "source_url": "https://habr.com/ru/articles/1102076/?utm_campaign=1102076&utm_source=habrahabr&utm_medium=rss",
+    "summary": "Hello everyone! This article is the second in a series of articles on the fundamentals of deep learning. In the previous part, I covered many interesting and useful things for beginners, so I recommend rereading that post. In this part, we will delve deeper into convolutional neural networks. Read more",
+    "title": "Fundamentals of Deep Learning. Part 2"
+  },
   "https://habr.com/ru/articles/1102086/?utm_campaign=1102086&utm_source=habrahabr&utm_medium=rss": {
     "model": "gemini-2.5-flash-lite",
     "published": "Sat, 31 Oct 2026 13:55:04 GMT",
@@ -4006,6 +4046,78 @@
     "source_url": "https://habr.com/ru/articles/1102092/?utm_campaign=1102092&utm_source=habrahabr&utm_medium=rss",
     "summary": "Recent incidents with Anthropic blocking have made me seriously consider how I'll work if my account gets banned. In an instant, I realized how much my engineering profession has changed. It's only been about a year, but I already recall the previous way of doing things as something very distant from my past life. But the most important thing is this: I realized that I'm afraid of going back... and here's why.",
     "title": "Life After Blocking: Neural Networks Have Changed My Profession, and I Don't Want to Work the Old Way Anymore"
+  },
+  "https://habr.com/ru/articles/1102126/?utm_campaign=1102126&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Sat, 31 Oct 2026 16:32:37 GMT",
+    "slug": "1102126",
+    "source_url": "https://habr.com/ru/articles/1102126/?utm_campaign=1102126&utm_source=habrahabr&utm_medium=rss",
+    "summary": "One of the most common mistakes when choosing a speech analytics system is to evaluate it by the quality of audio transcription. You upload a recording. You get text. A few terms are recognized incorrectly, but overall the conversation is readable. It seems that the main technical task is solved. In practice, the most interesting part begins after transcription. Let's say a client asks a manager: — Is there an integration option with our CRM? — Yes, such an option is provided. — And how long will it take? — Usually not long. From the point of view of recognition, there is almost nothing to discuss here. Even a simple ASR model can reconstruct such a dialogue quite accurately. Now let's ask the system to evaluate the quality of the consultation. Did the manager answer the question? Yes. Did they find out which CRM is used? No. Did they clarify the integration requirements? No. Did they give a specific deadline? No. The phrase 'usually not long' does not contain any useful assessment of deadlines for the client. Read more",
+    "title": "Speech Analytics: Why a Speech Analytics Service Can Transcribe a Conversation Correctly but Evaluate It Incorrectly"
+  },
+  "https://habr.com/ru/articles/1102134/?utm_campaign=1102134&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Sat, 31 Oct 2026 16:41:11 GMT",
+    "slug": "1102134",
+    "source_url": "https://habr.com/ru/articles/1102134/?utm_campaign=1102134&utm_source=habrahabr&utm_medium=rss",
+    "summary": "An LLM voice bot sounds pleasant, but it regularly stumbles on real calls. It might find a free slot and fail to book a client, or interrupt someone who is just thinking mid-sentence. Some of these decisions can be offloaded from the LLM to a fast classifier model. The most discussed one now is Jev from TypeSafe, and it already has open-source alternatives. Below, I analyze how other teams use Jev-like models in voice bots and compare their cases with our experience at Voximplant. Read more",
+    "title": "Why a voice bot on LLM still needs a classifier like Jev"
+  },
+  "https://habr.com/ru/articles/1102140/?utm_campaign=1102140&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Sun, 01 Nov 2026 12:39:24 GMT",
+    "slug": "1102140",
+    "source_url": "https://habr.com/ru/articles/1102140/?utm_campaign=1102140&utm_source=habrahabr&utm_medium=rss",
+    "summary": "Everyone is discussing whether AI will replace programmers, but almost no one is discussing what will happen if it doesn't. I think it won't. Rather, there will be even more of us. It sounds like good news, but for most of us, it's the worst-case scenario. Why is this bad news?",
+    "title": "IT is no longer a cheat code"
+  },
+  "https://habr.com/ru/articles/1102144/?utm_campaign=1102144&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Sat, 31 Oct 2026 18:18:48 GMT",
+    "slug": "1102144",
+    "source_url": "https://habr.com/ru/articles/1102144/?utm_campaign=1102144&utm_source=habrahabr&utm_medium=rss",
+    "summary": "We will try to quickly write an NTFS alternate data streams scanner using a non-trivial stack and architecture. I did this primarily to test the capabilities of the Qwen family of models. A brief explanation for those who haven't worked in this area. NTFS (an abbreviation for New Technology File System) is the standard file system for the Windows NT family of operating systems. One of its little-known features is the presence of Alternate Data Streams (ADS), which are metadata associated with an NTFS file system object. Thus, several data streams can be attached to a file that will not be visible through standard OS tools. Read more",
+    "title": "Programming without an IDE, or using Qwen and Qwen Coder for software development"
+  },
+  "https://habr.com/ru/articles/1102182/?utm_campaign=1102182&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Sun, 01 Nov 2026 04:52:31 GMT",
+    "slug": "1102182",
+    "source_url": "https://habr.com/ru/articles/1102182/?utm_campaign=1102182&utm_source=habrahabr&utm_medium=rss",
+    "summary": "On an August summer day, I was researching the financial market and organizing notes in Obsidian. I uploaded two CSV files, deleted them via Windows Explorer, and noticed Obsidian started lagging. The editor and search worked fine, but switching settings sections caused a noticeable delay. This wasn't a simple bug bounty hunt. Read on.",
+    "title": "How ChatGPT Helped Me Spend Six Hours on a Five-Minute Problem"
+  },
+  "https://habr.com/ru/articles/1102234/?utm_campaign=1102234&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Sun, 01 Nov 2026 11:48:28 GMT",
+    "slug": "1102234",
+    "source_url": "https://habr.com/ru/articles/1102234/?utm_campaign=1102234&utm_source=habrahabr&utm_medium=rss",
+    "summary": "Not how much, but where: what I found out about noise in SDE samplers for flow-matching models Read more",
+    "title": "Not how much, but where: what I found out about noise in SDE samplers for flow-matching models"
+  },
+  "https://habr.com/ru/articles/1102266/?utm_campaign=1102266&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Sun, 01 Nov 2026 13:05:50 GMT",
+    "slug": "1102266",
+    "source_url": "https://habr.com/ru/articles/1102266/?utm_campaign=1102266&utm_source=habrahabr&utm_medium=rss",
+    "summary": "Developing an indie game is a constant struggle with resources. Usually, there isn't enough time, money, people, and, ideally, a couple more hours in the day. When I started making Morveyn (https://habr.com/ru/articles/1100432/) - a turn-based RPG for Telegram, inspired by classic fantasy strategies like King's Bounty - it quickly became clear that writing a game and filling it with content are two completely different tasks. The technical part was relatively clear: Next.js on the frontend, Java on the backend, game logic, server interaction, map generation. This is familiar territory for a developer. But the graphics turned out to be a separate adventure. The game needs dozens, and potentially hundreds, of images: units, character portraits, buildings, environmental objects, global map tiles, icons, and interface elements. Moreover, all of this must look as if it was created by a single artist for a single game. Hiring an artist for every experimental asset at the MVP stage was irrational. So I decided to try generative AI. Ultimately, Gemini became the main tool. And that's when the most interesting part began. Read more",
+    "title": "One Picture is a Masterpiece, a Hundred Pictures are a Catastrophe: How I Tried to Tame AI Asset Generation for an Indie RPG"
+  },
+  "https://habr.com/ru/articles/1102280/?utm_campaign=1102280&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Sun, 01 Nov 2026 13:43:07 GMT",
+    "slug": "1102280",
+    "source_url": "https://habr.com/ru/articles/1102280/?utm_campaign=1102280&utm_source=habrahabr&utm_medium=rss",
+    "summary": "Several works in the literature have studied the attitude of different noo-spheres / LLMs towards risk. This article presents a review of these works from the perspective of the author's developing LLM theory. Interestingly, although in the general case the task (prompt) influences the riskiness of the noo-sphere's behavior, for popular models with identical starting conditions, a pattern in the riskiness of their behavior has been found: Claude Sonnet 4.5 < DeepSeek V3.2 < Gemini 3 Pro < Qwen3 Max < GPT-5.2. Read more",
+    "title": "LLM Conversations: Risk Propensity of Different Noo-spheres / LLMs"
+  },
+  "https://habr.com/ru/articles/1102340/?utm_campaign=1102340&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Sun, 01 Nov 2026 15:26:46 GMT",
+    "slug": "1102340",
+    "source_url": "https://habr.com/ru/articles/1102340/?utm_campaign=1102340&utm_source=habrahabr&utm_medium=rss",
+    "summary": "I had 16 models, 7 search tools, 2 AI model providers, one company, and a bunch of questions about how AI models search for company information on the internet. What do they find, how do they process it, what conclusions do they draw, and how can we influence it. Read more",
+    "title": "Agentic Search on Open-Source Models: 7 Search Tools, 16 Models, and One Company"
   },
   "https://habr.com/ru/companies/1c/articles/1071340/?utm_campaign=1071340&utm_source=habrahabr&utm_medium=rss": {
     "model": "gemini-2.5-flash-lite",
@@ -4270,6 +4382,14 @@
     "source_url": "https://habr.com/ru/companies/bothub/articles/1101764/?utm_campaign=1101764&utm_source=habrahabr&utm_medium=rss",
     "summary": "If you're interested in AI and data, you've likely encountered HuggingFace – an AI development platform and community, akin to GitHub for AI. It offers a centralized hub for sharing, discovering, and collaborating on open-source machine learning models, datasets, and applications. However, its interface can be quite challenging for newcomers. Faced with hundreds of thousands of models, it's easy to feel overwhelmed, much like someone stepping into a bustling 1990s wholesale market: everything is available, but understanding where to start is a mystery. Within minutes, you might download the wrong datasets or abandon the endeavor altogether. The complexity isn't just about HuggingFace being difficult; it's about the platform requiring prior knowledge. This article serves as a beginner-friendly tutorial on navigating HuggingFace, working with its data and weights without getting lost.",
     "title": "HuggingFace for Beginners: How to Choose and Run a Model"
+  },
+  "https://habr.com/ru/companies/bothub/articles/1102346/?utm_campaign=1102346&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Sun, 01 Nov 2026 15:30:31 GMT",
+    "slug": "1102346",
+    "source_url": "https://habr.com/ru/companies/bothub/articles/1102346/?utm_campaign=1102346&utm_source=habrahabr&utm_medium=rss",
+    "summary": "By the end of 2026, Claude Code is no longer an exotic tool: Anthropic's CLI agent generates everything from videos and websites to applications, scripts, and articles, handling a significant portion of engineering routine. Some call it the best thing to happen to development in years; others point to limits that are reached faster than expected, complain about decisions the agent makes without permission, and the ongoing wave of account bans. This article is for those who haven't dived headfirst into the AI sphere and still copy code from browser to IDE, but now want to understand what Claude Code is all about. In this article, I'll explain how to use it, why a couple of hours instead of a couple of days is a realistic scenario for a small feature or service (I'll clarify this upfront). We'll cover what to configure before the first run, how to describe a project so the agent doesn't guess commands, and when it's time to stop and check everything manually. We'll also explore specific tools and innovations in Claude Code. Read more",
+    "title": "From Prompt to Production in Two Hours: Everything You Need to Know About Claude Code"
   },
   "https://habr.com/ru/companies/cinimex/articles/1088534/?utm_campaign=1088534&utm_source=habrahabr&utm_medium=rss": {
     "model": "gemini-2.5-flash-lite",

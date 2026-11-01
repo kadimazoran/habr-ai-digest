@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Speech Analytics: Why a Speech Analytics Service Can Transcribe a Conversation Correctly but Evaluate It Incorrectly</title>
+  <meta name="description" content="One of the most common mistakes when choosing a speech analytics system is to evaluate it by the quality of audio transcription. You upload a recording. You get text. A few terms are recognized incorrectly, but overall the conversation is readable. It seems that the main technical task is solved. In">
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.65;
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 32px 20px 64px;
+      color: #1f2328;
+    }
+    header {
+      border-bottom: 1px solid #d8dee4;
+      margin-bottom: 28px;
+      padding-bottom: 20px;
+    }
+    .source {
+      color: #57606a;
+      font-size: 0.95rem;
+    }
+    img, video, iframe {
+      max-width: 100%;
+      height: auto;
+    }
+    pre {
+      overflow-x: auto;
+      padding: 16px;
+      background: #f6f8fa;
+      border-radius: 6px;
+    }
+    code {
+      font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+    }
+    blockquote {
+      border-left: 4px solid #d0d7de;
+      margin-left: 0;
+      padding-left: 16px;
+      color: #57606a;
+    }
+    footer {
+      border-top: 1px solid #d8dee4;
+      margin-top: 40px;
+      padding-top: 20px;
+      color: #57606a;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Speech Analytics: Why a Speech Analytics Service Can Transcribe a Conversation Correctly but Evaluate It Incorrectly</h1>
+    <p>One of the most common mistakes when choosing a speech analytics system is to evaluate it by the quality of audio transcription. You upload a recording. You get text. A few terms are recognized incorrectly, but overall the conversation is readable. It seems that the main technical task is solved. In practice, the most interesting part begins after transcription. Let&#x27;s say a client asks a manager: — Is there an integration option with our CRM? — Yes, such an option is provided. — And how long will it take? — Usually not long. From the point of view of recognition, there is almost nothing to discuss here. Even a simple ASR model can reconstruct such a dialogue quite accurately. Now let&#x27;s ask the system to evaluate the quality of the consultation. Did the manager answer the question? Yes. Did they find out which CRM is used? No. Did they clarify the integration requirements? No. Did they give a specific deadline? No. The phrase &#x27;usually not long&#x27; does not contain any useful assessment of deadlines for the client. Read more</p>
+    <p class="source">
+      Machine-translated from Habr.
+      <a href="https://habr.com/ru/articles/1102126/?utm_campaign=1102126&amp;utm_source=habrahabr&amp;utm_medium=rss">Read the original Russian article</a>.
+      Sat, 31 Oct 2026 16:32:37 GMT
+    </p>
+  </header>
+  <main>
+<div><blockquote><p>Speech recognition accuracy is an important characteristic of a system, but not the only one. I'll explain why high-quality transcription doesn't necessarily mean high-quality analytics and how to verify AI conclusions on real calls.</p></blockquote><p>One of the most common mistakes when choosing a speech analytics system is to evaluate it by the quality of audio transcription.</p><p>You upload a recording. You get text. A few terms are recognized incorrectly, but overall the conversation is readable. It seems that the main technical task is solved.</p><p>In practice, the most interesting part begins after transcription.</p><p><strong>Let's say a client asks a manager:</strong></p><p>— Is there an integration option with our CRM?</p><p>— Yes, such an option is provided.</p><p>— And how long will it take?</p><p>— Usually not long.</p><p>From the point of view of recognition, there is almost nothing to discuss here. Even a simple ASR model can reconstruct such a dialogue quite accurately.</p><p><strong>Now let's ask the system to evaluate the quality of the consultation.</strong></p><p>Did the manager answer the question? Yes.</p><p>Did they find out which CRM is used? No.</p><p>Did they clarify the integration requirements? No.</p><p>Did they give a specific deadline? No.</p><p>Did they agree on the next action? No.</p><p>The phrase 'usually not long' does not contain any useful assessment of deadlines for the client.</p><blockquote><p>And this is where the line is drawn between speech recognition and full-fledged speech analytics.</p></blockquote><h3>Three Levels of Speech Analytics Errors</h3><h4>1. Recognition Errors</h4><p>At the first level, the system converts audio to text.</p><p>The problems are known: noise, simultaneous speech, technical terms, product names, accents, poor quality telephony.</p><p>But even a low WER doesn't guarantee that critically important words are restored correctly.</p><p><strong><em>For example, a missed "not" can change the meaning:</em></strong></p><p>"We can connect the integration."</p><p>"We cannot connect the integration."</p><p>The proportion of incorrectly recognized words may be small, but the error for business analytics can be significant.</p><p>Therefore, it is useful to supplement the overall transcription accuracy with a check of critical entities and statements.</p><h4>2. Interpretation Errors</h4><p>The second problem is more complex.</p><p>Suppose the transcription is correct, but the system needs to determine if the manager has addressed the client's objection.</p><p>In the conversation, we hear:</p><p>— Your solution is too expensive.</p><p>— I understand. Let's look at other options.</p><p><strong><em>Can addressing the objection be counted?</em></strong></p><p>It depends on the adopted standard. If it's enough to acknowledge the doubt and offer an alternative, then possibly. If it's necessary to find out the reason for the objection and justify the cost, then no.</p><p>The algorithm here must follow specific criteria, not invent its own definition of a good sale.</p><p>Therefore, any quality indicator should start with an operational definition: what exactly is considered a successful completion and what exceptions are allowed.</p><h4>3. Aggregation Errors</h4><p>The third level is reporting.</p><p>Suppose the system has correctly evaluated several thousand conversations. But then the manager is shown the average score of the operators without differentiation by type of inquiry.</p><p>One employee handles simple questions about working hours. Another deals with claims and conflict situations.</p><p><strong><em>Comparing them solely by average score is a dubious idea.</em></strong></p><p>When building analytics, it's important to consider the scenario, client type, inquiry task, and the set of criteria. Otherwise, correct evaluations of individual conversations can lead to incorrect management decisions.</p><figure><img alt=
+  </main>
+  <footer>
+    Translation generated with Gemini 2.5 Flash-Lite.
+    The original article remains the source of record.
+  </footer>
+</body>
+</html>

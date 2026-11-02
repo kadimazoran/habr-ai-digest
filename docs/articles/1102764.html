@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>&quot;Don&#x27;t fear the REAPer&quot; or how DS chose a local LLM</title>
+  <meta name="description" content="Over the past few months, I&#x27;ve tested a bunch of local LLMs that my hardware can handle and came to a conclusion that&#x27;s already obvious to many: for coding tasks, there are no real alternatives to Qwen models. So, I decided to delete all unnecessary models from my disk to keep only the &qu">
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.65;
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 32px 20px 64px;
+      color: #1f2328;
+    }
+    header {
+      border-bottom: 1px solid #d8dee4;
+      margin-bottom: 28px;
+      padding-bottom: 20px;
+    }
+    .source {
+      color: #57606a;
+      font-size: 0.95rem;
+    }
+    img, video, iframe {
+      max-width: 100%;
+      height: auto;
+    }
+    pre {
+      overflow-x: auto;
+      padding: 16px;
+      background: #f6f8fa;
+      border-radius: 6px;
+    }
+    code {
+      font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+    }
+    blockquote {
+      border-left: 4px solid #d0d7de;
+      margin-left: 0;
+      padding-left: 16px;
+      color: #57606a;
+    }
+    footer {
+      border-top: 1px solid #d8dee4;
+      margin-top: 40px;
+      padding-top: 20px;
+      color: #57606a;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>&quot;Don&#x27;t fear the REAPer&quot; or how DS chose a local LLM</h1>
+    <p>Over the past few months, I&#x27;ve tested a bunch of local LLMs that my hardware can handle and came to a conclusion that&#x27;s already obvious to many: for coding tasks, there are no real alternatives to Qwen models. So, I decided to delete all unnecessary models from my disk to keep only the &quot;workhorses.&quot; At that moment, a video with a tier-list caught my eye, where I recognized many familiar models. And then it all started...</p>
+    <p class="source">
+      Machine-translated from Habr.
+      <a href="https://habr.com/ru/articles/1102764/?utm_campaign=1102764&amp;utm_source=habrahabr&amp;utm_medium=rss">Read the original Russian article</a>.
+      Mon, 02 Nov 2026 12:34:24 GMT
+    </p>
+  </header>
+  <main>
+<div><p>Over the past few months, I've tested a bunch of local LLMs that my hardware can handle and came to a conclusion that's already obvious to many: for coding tasks, there are no real alternatives to Qwen models. So, I decided to delete all unnecessary models from my disk to keep only the "workhorses." </p><p>At that moment, a <a href="https://www.youtube.com/watch?v=fx_t8RL2bbU">video with a tier-list</a> caught my eye, where I recognized many familiar models. </p><figure><img alt="Gemma is stupid, Qwen is great." loading="lazy" src="https://habrastorage.org/r/w1560/extt/ec/75/1b/ec751b5f80b4b314884cabcf0c0fb6d7.png" title="Gemma is stupid, Qwen is great."/><div><figcaption>Gemma is stupid, Qwen is great.</figcaption></div></figure><p>But one point surprised me: the RIDGE version of Qwen3.8-27B was placed in D-tier, while GSQ-RCO was in A-list, although my subjective experience was diametrically opposite. RIDGE was even marked as my "favorite model" for the Qwen3.8 lineup, while I couldn't get a result from GSQ-RCO in standard tests on the first try.</p><p>And then I realized it was time to replace these tests.</p><p>All this time, I tested models with two prompts from a YouTuber: a sand simulator and a dungeon crawler. Both check the algorithmic skills of LLMs, take about 10-15 minutes to generate, and less than a minute to "click through" to verify that all points of the technical specification are met.</p><figure><img alt="Sand and water simulator in JS" loading="lazy" src="https://habrastorage.org/r/w1560/extt/22/9d/e4/229de4ba8256dae4a3f814122e55f04a.png" title="Sand and water simulator in JS"/><div><figcaption>Sand and water simulator in JS</figcaption></div></figure><figure><img alt="Dungeon Crawler in JS" loading="lazy" src="https://habrastorage.org/r/w1560/extt/35/61/22/3561222ccc7020c01eb8c83899006e5d.png" title="Dungeon Crawler in JS"/><div><figcaption>Dungeon Crawler in JS</figcaption></div></figure><p>In general, they are good for getting acquainted with models, but at the systematic testing stage, something is needed that doesn't require my manual intervention. Plus, most of the YouTuber tests I've seen are tailored for front-end, game-dev, and working with MCP, while my domain is data analysis, machine learning, and other Data Science.</p><p>Therefore, my choice fell on DS1000 — a benchmark presented at ICML 2023, covering exactly these tasks.</p><h2>DS1000: Who are the judges?</h2><p>The dataset for the benchmark is collected from StackOverflow questions across 7 DS-related libraries (+ number of tasks in the dataset):</p><ul><li><p>Pandas - 291</p></li><li><p>NumPy - 220</p></li><li><p>SciPy - 106</p></li><li><p>Sklearn - 115</p></li><li><p>Matplotlib - 155</p></li><li><p>PyTorch - 68</p></li><li><p>Tensorflow - 45</p></li></ul><p>To combat "rote memorization," in addition to the original tasks, the authors added augmentations (calling them perturbations), obtained in the following ways:</p><ul><li><p><strong>Surface</strong> — changing the wording without changing the answer code. For example, a simple rephrasing of the question in different words.</p></li><li><p><strong>Semantic </strong>— changing the task to be solved. For example, in a task about adding a column to pandas, asking to exponentiate the value of the original column instead of inverting it.</p></li><li><p><strong>Difficult Rewrite</strong> — complicating the task. For example, by combining the previous two augmentations or asking an additional question to the existing one.</p></li></ul><p>That is, out of 291 pandas tasks from SO, only 100 were taken, and the rest were obtained through augmentation. Of all three methods of augmentation, Difficult Rewrite most significantly reduced the % of correct answers: Codex002 from the paper lost 33 p.p. (47.8% -&gt; 14.8%) compared to the original question from SO.</p><p>The model was evaluated simply: the code it generated was substituted into a template and executed, and the result was compared with the reference. You can find more details about the benchmark on <a href="https://ds1000-code-gen.github.io/">its page</a>.</p><h2>Setup</h2><p>I solve coding agent tasks on my PC with an RTX 4070 Ti Super (16 GB VRAM) + 32 GB DDR5 RAM. Runtime in llama.cpp.</p><p>I chose 64k for the context window. Firstly, there isn't as much code in Data Science as in classic software development. Secondly, according to Matt Pocock, the context starts to degrade after about 140k, so I don't consider more than 124k at all. Thirdly, I haven't yet decided on the mode for using local LLMs (agent vs. Ralph loops), so I wanted a small buffer for the former, but be prepared for token-saving mode for the latter. Especially considering that in my future plans, I'll be working with local LLMs with weight ranges of 2-7B.</p><p>I didn't think much about the first run procedure: I just threw the benchmark repository link into the agent with the prompt "run this locally on the %LLM-NAME% model." The whole process took me 11.7 GPU hours. Ideally, it could have been significantly reduced by removing libraries I don't use from the test (Pandas, Tensorflow, Matplotlib), as Pandas alone took 36.1% of the total time. But the habit of running first and then figuring things out if successful hasn't gone away. Moreover, these libraries are quite popular, so for the first attempt, I decided to keep them.</p><h2>Results</h2><p>In terms of the number of solved tasks, REAP20-28B and 35B-A3B shared first place. This result can be considered logical on the one hand, as REAP technology (Router-weighted Expert Activation Pruning, <a href="https://arxiv.org/abs/2510.13999">arxiv</a>) implies preserving model capabilities while reducing weights, and on the other hand, surprising, as for once such magic from theory coincided with practice? The number 20 in the model name indicates that 20% of its weights were removed.</p><p>The third model, surpassing the Codex-002 benchmark by 38.8%, turned out to be the very GSQ-RCO that I had trouble getting along with. So, the tier-list that started it all turned out to be adequate.</p><figure><img alt=
+  </main>
+  <footer>
+    Translation generated with Gemini 2.5 Flash-Lite.
+    The original article remains the source of record.
+  </footer>
+</body>
+</html>

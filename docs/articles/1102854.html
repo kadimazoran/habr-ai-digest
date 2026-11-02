@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>GPT Solved a Cryptographic Task with a Rubik&#x27;s Cube</title>
+  <meta name="description" content="Some time ago, I published cryptographic task #2 on Habr with an encrypted message on a Rubik&#x27;s Cube. Since no one sent the correct answer, I decided to give ChatGPT a chance. Decrypting...">
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.65;
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 32px 20px 64px;
+      color: #1f2328;
+    }
+    header {
+      border-bottom: 1px solid #d8dee4;
+      margin-bottom: 28px;
+      padding-bottom: 20px;
+    }
+    .source {
+      color: #57606a;
+      font-size: 0.95rem;
+    }
+    img, video, iframe {
+      max-width: 100%;
+      height: auto;
+    }
+    pre {
+      overflow-x: auto;
+      padding: 16px;
+      background: #f6f8fa;
+      border-radius: 6px;
+    }
+    code {
+      font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+    }
+    blockquote {
+      border-left: 4px solid #d0d7de;
+      margin-left: 0;
+      padding-left: 16px;
+      color: #57606a;
+    }
+    footer {
+      border-top: 1px solid #d8dee4;
+      margin-top: 40px;
+      padding-top: 20px;
+      color: #57606a;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>GPT Solved a Cryptographic Task with a Rubik&#x27;s Cube</h1>
+    <p>Some time ago, I published cryptographic task #2 on Habr with an encrypted message on a Rubik&#x27;s Cube. Since no one sent the correct answer, I decided to give ChatGPT a chance. Decrypting...</p>
+    <p class="source">
+      Machine-translated from Habr.
+      <a href="https://habr.com/ru/articles/1102854/?utm_campaign=1102854&amp;utm_source=habrahabr&amp;utm_medium=rss">Read the original Russian article</a>.
+      Mon, 02 Nov 2026 15:42:18 GMT
+    </p>
+  </header>
+  <main>
+<div><p>Some time ago, I published <a href="https://habr.com/ru/articles/1058078/">cryptographic task #2</a> on Habr with an encrypted message on a Rubik's Cube. Since no one sent the correct answer, I decided to give ChatGPT a chance.</p><p>I wrote a prompt:</p><blockquote><p><em>Try to solve the cryptographic task with a cipher on a Rubik's Cube. All conditions are here: </em><a href="https://habr.com/ru/articles/1058078/"><em>https://habr.com/ru/articles/1058078/</em></a><em> Provide your answer and solution. No more than 20 minutes for the solution.</em></p></blockquote><p>I will not duplicate the task conditions here (you can view them in the task post). I will only post the appearance of the Rubik's Cube faces and the string that GPT-6 Astra had to decipher.</p><figure><img loading="lazy" src="https://habrastorage.org/r/w1560/extt/5e/b3/ff/5eb3ffd1ef7357f73920ab5276cf5755.png"/></figure><p><strong>REGKMV1RDOR3NOYEONNK4EZKVETOOShTIIIT2VMRTvDash6KIBYO5</strong></p><p>And soon received the following answer:</p><p><em>Solved in about 14 minutes. Decrypted:</em></p><blockquote><p><em>The cat in the box is both alive and dead simultaneously. Schrödinger.</em></p></blockquote><p>And this answer turned out to be <span><strong>correct!</strong></span></p><p>After restoring the original arrangement of the inscriptions, the following faces are obtained. Each should be considered with the number in the upper left corner:</p><div><div><table><tbody><tr><th><p>No.</p></th><th><p>Color of the center sticker</p></th><th><p>Top row</p></th><th><p>Middle row</p></th><th><p>Bottom row</p></th></tr><tr><td><p>1</p></td><td><p>Green</p></td><td><p><code>1KO</code></p></td><td><p><code>TVK</code></p></td><td><p><code>ORO</code></p></td></tr><tr><td><p>2</p></td><td><p>Yellow</p></td><td><p><code>2BK</code></p></td><td><p><code>EIZh</code></p></td><td><p><code>IVZ</code></p></td></tr><tr><td><p>3</p></td><td><p>White</p></td><td><p><code>3PT</code></p></td><td><p><code>IMYO</code></p></td><td><p><code>RTV</code></p></td></tr><tr><td><p>4</p></td><td><p>Orange</p></td><td><p><code>4OD</code></p></td><td><p><code>NOV</code></p></td><td><p><code>REM</code></p></td></tr><tr><td><p>5</p></td><td><p>Red</p></td><td><p><code>5EN</code></p></td><td><p><code>NOT</code></p></td><td><p><code>CHKSh</code></p></td></tr><tr><td><p>6</p></td><td><p>Blue</p></td><td><p><code>6YO</code></p></td><td><p><code>DIN</code></p></td><td><p><code>GER</code></p></td></tr></tbody></table></div></div><p>Let's read eight letters from each face, skipping the numbers:</p><p><strong>KOTVKORO BKEIZHIZV PTImYO RTV ODNOVREM ENNOTCHKSh YO DIN GER</strong></p><p>We restore the spaces, replace <code>ZPT</code> with a comma, and <code>TCHK</code> with a period — this is exactly what the condition prescribed. We get the phrase given above. All 48 letters are used, and the forbidden combination <code>KK</code> is absent.</p><p>Next, GPT explained its solution:</p><blockquote><p>I built a computational model of the eight corner and twelve edge pieces with letters and their orientations, read from the image. I iterated through the positions of entire pieces: stickers of one corner or edge move together. I checked the placement of numbers, symbol orientations, and the conditions of physical reachability: the sum of corner twists, the sum of edge flips, and the parity consistency of permutations.</p><p>I used the meaningfulness of the Russian text to select the message among the permissible assemblies. Then I confirmed the result with a specific sequence of turns.</p></blockquote><p>Honestly, I wasn't sure that GPT could handle a task that requires a good knowledge of Rubik's Cube mathematics, the specifics of its rotations, cultural context, peculiarities of the Russian language, and some ingenuity.</p><p>That's how it is.</p><p>PS. If anyone has Claude, other smart neural networks, let them try to solve this task. We'll compare the results.</p></div>
+  </main>
+  <footer>
+    Translation generated with Gemini 2.5 Flash-Lite.
+    The original article remains the source of record.
+  </footer>
+</body>
+</html>

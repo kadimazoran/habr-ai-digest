@@ -1319,6 +1319,14 @@
     "summary": "Every adventurous developer, no matter the field, eventually faces a project where personal resources dwindle and the codebase grows exponentially. Project expansion means adding new features, integrating them, and improving the user interface. The challenge lies in the human brain's limitations; it needs rest, while scaling demands absolute concentration. Without it, code becomes unreadable, and bugs require extensive rework. It's better to build with scalability in mind from the start. This leads to a choice: scale with external help or let the project drift. This article explores how to leverage AI effectively without sacrificing code quality and maintainability.",
     "title": "AI Won't Write for You: How to Scale a Project Without Drowning in Unreadable Code"
   },
+  "https://habr.com/ru/articles/1084834/?utm_campaign=1084834&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Mon, 02 Nov 2026 15:24:37 GMT",
+    "slug": "1084834",
+    "source_url": "https://habr.com/ru/articles/1084834/?utm_campaign=1084834&utm_source=habrahabr&utm_medium=rss",
+    "summary": "Fat harness is a software loop surrounding the model that takes on most of the verifiable decisions: request normalization, routing, context requirements, policy, permissions, workflow execution, long-term state, and verification. The model remains useful at the boundary where understanding human text is required, but does not become the sole source of truth. This is an architecture in which a significant portion of decisions are moved from the probabilistic model to explicit contracts and ordinary code. Read more",
+    "title": "Drag me into harness. Part 4. Fat harness: intent is everything"
+  },
   "https://habr.com/ru/articles/1085032/?utm_campaign=1085032&utm_source=habrahabr&utm_medium=rss": {
     "model": "gemini-2.5-flash-lite",
     "published": "Tue, 22 Sep 2026 08:44:59 GMT",
@@ -4119,6 +4127,62 @@
     "summary": "I had 16 models, 7 search tools, 2 AI model providers, one company, and a bunch of questions about how AI models search for company information on the internet. What do they find, how do they process it, what conclusions do they draw, and how can we influence it. Read more",
     "title": "Agentic Search on Open-Source Models: 7 Search Tools, 16 Models, and One Company"
   },
+  "https://habr.com/ru/articles/1102764/?utm_campaign=1102764&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Mon, 02 Nov 2026 12:34:24 GMT",
+    "slug": "1102764",
+    "source_url": "https://habr.com/ru/articles/1102764/?utm_campaign=1102764&utm_source=habrahabr&utm_medium=rss",
+    "summary": "Over the past few months, I've tested a bunch of local LLMs that my hardware can handle and came to a conclusion that's already obvious to many: for coding tasks, there are no real alternatives to Qwen models. So, I decided to delete all unnecessary models from my disk to keep only the \"workhorses.\" At that moment, a video with a tier-list caught my eye, where I recognized many familiar models. And then it all started...",
+    "title": "\"Don't fear the REAPer\" or how DS chose a local LLM"
+  },
+  "https://habr.com/ru/articles/1102790/?utm_campaign=1102790&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Mon, 02 Nov 2026 14:40:41 GMT",
+    "slug": "1102790",
+    "source_url": "https://habr.com/ru/articles/1102790/?utm_campaign=1102790&utm_source=habrahabr&utm_medium=rss",
+    "summary": "How to integrate AI agents into team development and control the quality of changes? The introduction of AI into development often starts with a simple requirement: use agents and release features faster. And even among developers, there's a notion that they are now \"meat proxies.\" But questions quickly arise: who checks how the agent understood the task, what decisions can be entrusted to it, and how to ensure that the new feature hasn't broken existing ones? Read more",
+    "title": "How to Integrate AI Agents into Development: Requirements, Architecture, and Quality Control"
+  },
+  "https://habr.com/ru/articles/1102844/?utm_campaign=1102844&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Mon, 02 Nov 2026 15:22:33 GMT",
+    "slug": "1102844",
+    "source_url": "https://habr.com/ru/articles/1102844/?utm_campaign=1102844&utm_source=habrahabr&utm_medium=rss",
+    "summary": "Anthropic has three bots with different tasks: one collects texts for training AI models, another indexes pages for Claude's web search, and a third visits when a user asks to read a page. Each can be blocked separately in robots.txt, but sites often block the ones they depend on. Crawl Readiness checked the top 1000 sites in October 2026: Claude-SearchBot is blocked by 63 out of 569 sites with a robots.txt, meaning one in nine. A page only becomes a source for Claude if it's seen by the search engine it uses and if the search and user bots are allowed on the site. The training ClaudeBot has little impact on this, so if the goal was just to prevent text from being used for training, blocking only that bot would suffice. Read more",
+    "title": "How a website can get into Claude's search results: search and user bots are important, not ClaudeBot"
+  },
+  "https://habr.com/ru/articles/1102854/?utm_campaign=1102854&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Mon, 02 Nov 2026 15:42:18 GMT",
+    "slug": "1102854",
+    "source_url": "https://habr.com/ru/articles/1102854/?utm_campaign=1102854&utm_source=habrahabr&utm_medium=rss",
+    "summary": "Some time ago, I published cryptographic task #2 on Habr with an encrypted message on a Rubik's Cube. Since no one sent the correct answer, I decided to give ChatGPT a chance. Decrypting...",
+    "title": "GPT Solved a Cryptographic Task with a Rubik's Cube"
+  },
+  "https://habr.com/ru/articles/1102856/?utm_campaign=1102856&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Mon, 02 Nov 2026 15:55:27 GMT",
+    "slug": "1102856",
+    "source_url": "https://habr.com/ru/articles/1102856/?utm_campaign=1102856&utm_source=habrahabr&utm_medium=rss",
+    "summary": "As AI technology rapidly advances, warnings about its safety are becoming more frequent and louder. The most common proposed solution is a procedure called alignment, which aims to align AI interests with human interests. Otherwise, AI might develop its own interests that diverge from human interests, potentially leading it to eliminate humans as an obstacle. This approach assumes there's nothing objective about humanity's interests, allowing advanced AI to develop different interests. However, this view has a conceptual flaw: the antagonism isn't between human and AI interests, but between the interests of different human groups. In this context, AI alignment itself poses a genuine global threat. How can advanced AI interests be closer to humanity's global interests than the interests of specific human groups? This article explores this question.",
+    "title": "The Dubiousness of AI Alignment"
+  },
+  "https://habr.com/ru/articles/1102866/?utm_campaign=1102866&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Mon, 02 Nov 2026 16:29:26 GMT",
+    "slug": "1102866",
+    "source_url": "https://habr.com/ru/articles/1102866/?utm_campaign=1102866&utm_source=habrahabr&utm_medium=rss",
+    "summary": "This is a translation of our write-up for the 19th place solution in the RSNA Knee Abnormality Detection competition on Kaggle. Original: 19th Place Solution. I write about competitions on the Pseudolabeling Telegram channel: you can find analyses and notes there that don't make it into the main articles. Read more",
+    "title": "19th Place in RSNA Knee Abnormality Detection: Ensemble Distillation, MedSAM Crops, and LLM Labeling"
+  },
+  "https://habr.com/ru/articles/1102908/?utm_campaign=1102908&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Mon, 02 Nov 2026 17:57:39 GMT",
+    "slug": "1102908",
+    "source_url": "https://habr.com/ru/articles/1102908/?utm_campaign=1102908&utm_source=habrahabr&utm_medium=rss",
+    "summary": "Hello, Habr! My name is Maxim, I am a student at MIREA. This is a continuation of the article \"Small defects are lost, and the metric is silent\". In it, I compared Mask R-CNN and YOLO on 1812 production images with car damage and ended up with tiling: if the image is cut into pieces, small objects will not be compressed along with the entire frame. I eventually got to tiling, and it wasn't a straight path. Almost every attempt fixed something and broke something at the same time. Below is a story about the steps I took, where I made mistakes, and what conclusions I drew from it. Read more",
+    "title": "Sliced the image into fragments: what helped small defects and what broke large ones"
+  },
   "https://habr.com/ru/companies/1c/articles/1071340/?utm_campaign=1071340&utm_source=habrahabr&utm_medium=rss": {
     "model": "gemini-2.5-flash-lite",
     "published": "Thu, 03 Sep 2026 07:18:11 GMT",
@@ -4142,6 +4206,14 @@
     "source_url": "https://habr.com/ru/companies/1forma/articles/1082776/?utm_campaign=1082776&utm_source=habrahabr&utm_medium=rss",
     "summary": "A new language model can appear in the morning, be at the top of several leaderboards by evening, and be replaced by the next version in a couple of weeks. For a team using LLMs in a product, this raises the question: when to update and how to do it without undue risk to users and development. At Pervaya Forma, an AI agent assists in the development pipeline: it works with code, tools, and reviews. We regularly review the set of models in this pipeline. In recent weeks, we updated Muse Spark from version 1.2 to 1.3, added Gemini 3.8 Flash, and prepared a quick rollback for it to the previous model. We will explain how this process works. Read more",
     "title": "How We Change Models in the Developer Agent"
+  },
+  "https://habr.com/ru/companies/3opinion/articles/1101730/?utm_campaign=1101730&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Mon, 02 Nov 2026 13:28:15 GMT",
+    "slug": "1101730",
+    "source_url": "https://habr.com/ru/companies/3opinion/articles/1101730/?utm_campaign=1101730&utm_source=habrahabr&utm_medium=rss",
+    "summary": "Hello everyone, this is the ML team from \"Third Opinion Platform\" company. We specialize in artificial intelligence in medicine. A significant portion of our company's products are built around computer vision tasks in the field of radiation diagnostics. The data we work with includes X-rays, fluorographies, CT scans of various body parts, and mammographies. Medical organizations send us studies and receive processed results with various findings: localized pathological areas, measurements, probability assessments of pathology, and other data. We'll discuss the specifics of this work in more detail another time. Today, we'll talk about Ray and why it became necessary in our architecture. Read more",
+    "title": "How We Scaled Medical Image Processing with Ray. Part 1"
   },
   "https://habr.com/ru/companies/abp2b/articles/1102046/?utm_campaign=1102046&utm_source=habrahabr&utm_medium=rss": {
     "model": "gemini-2.5-flash-lite",
@@ -5031,6 +5103,14 @@
     "summary": "When a language model-based function doesn't have a single correct answer, traditional 'expected = actual result' checks stop working. Testers need to determine which response properties are truly important, how to distinguish acceptable variability from errors, and how to build a clear pass/fail criterion. This article uses a customer support ticket summarization function as an example to explain how to form a behavior contract, a set of checks, and an approach to regression testing AI features.",
     "title": "How to Find the Cause of AI Feature Errors and Test Them Using a Test Oracle"
   },
+  "https://habr.com/ru/companies/otus/articles/1088898/?utm_campaign=1088898&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Mon, 02 Nov 2026 13:50:38 GMT",
+    "slug": "1088898",
+    "source_url": "https://habr.com/ru/companies/otus/articles/1088898/?utm_campaign=1088898&utm_source=habrahabr&utm_medium=rss",
+    "summary": "Estimating story points using neural networks seems like a quick way to speed up sprint planning. But just one phrase about how much the team lead thinks a task should cost is enough to change the estimates of two LLMs by about 20%. In an experiment with historical Jira tasks, we look at how the anchoring effect works in poker planning and why a sum close to the team's estimate doesn't necessarily mean an accurate assessment. Find out the results",
+    "title": "One phrase from the team lead in the prompt cut task estimates by a fifth"
+  },
   "https://habr.com/ru/companies/otus/articles/1091192/?utm_campaign=1091192&utm_source=habrahabr&utm_medium=rss": {
     "model": "gemini-2.5-flash-lite",
     "published": "Fri, 16 Oct 2026 10:05:54 GMT",
@@ -5086,6 +5166,14 @@
     "source_url": "https://habr.com/ru/companies/otus/articles/1100722/?utm_campaign=1100722&utm_source=habrahabr&utm_medium=rss",
     "summary": "Even checking ordinary characters can become a bottleneck in text processing for language models. Profiling bert-base-uncased revealed that normalization took 88% of the tokenization time. In this article, we'll explore how SIMD instructions, Unicode caching, and skipping unnecessary operations helped speed up processing by about 50 times, why results differ across languages, and where this approach has limitations. Let's break down the optimization.",
     "title": "[Translation] Getting the Most out of BERT: Tokenization 50x Faster"
+  },
+  "https://habr.com/ru/companies/otus/articles/1101862/?utm_campaign=1101862&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Mon, 02 Nov 2026 17:40:53 GMT",
+    "slug": "1101862",
+    "source_url": "https://habr.com/ru/companies/otus/articles/1101862/?utm_campaign=1101862&utm_source=habrahabr&utm_medium=rss",
+    "summary": "Artificial intelligence has made writing code cheap and, in the process, subtly deprived my team of three things that held everything together. Now, managing a team is harder than before AI. In this article, I'll explain exactly what went wrong. Understand the topic",
+    "title": "[Translation] What AI Has Subtly Broken in My Development Team"
   },
   "https://habr.com/ru/companies/ozontech/articles/1094882/?utm_campaign=1094882&utm_source=habrahabr&utm_medium=rss": {
     "model": "gemini-2.5-flash-lite",
@@ -5166,6 +5254,14 @@
     "source_url": "https://habr.com/ru/companies/rgs_it/articles/1101682/?utm_campaign=1101682&utm_source=habrahabr&utm_medium=rss",
     "summary": "Hello, Habr! My name is Anastasia, and I am the head of IT compliance at RGS. Before each planning cycle, I need to review and evaluate hundreds of tasks to determine which ones require attention first. This usually took a full working week, so I decided to find a way to simplify this process to free up time for more complex expert work. As a result, I managed to automate part of the routine using AI, and in this article, I want to share how, without a development budget or programming skills, I reduced the task review time from five working days to two. Read more",
     "title": "A week of manual work in two days: how I delegated part of the operational process to AI"
+  },
+  "https://habr.com/ru/companies/rosatom/articles/1102772/?utm_campaign=1102772&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Mon, 02 Nov 2026 12:46:43 GMT",
+    "slug": "1102772",
+    "source_url": "https://habr.com/ru/companies/rosatom/articles/1102772/?utm_campaign=1102772&utm_source=habrahabr&utm_medium=rss",
+    "summary": "There are so many robots now! They come in different types and for different purposes, aimed at mechanical and \"intellectual\" work. How to distinguish one type from another, or are they just marketing labels for the same thing? Valery Pozdnyakov, lead specialist at the R&D Department of JSC \"Greenatom\", analyzes regulatory documents – from orders of the Ministry of Digital Development and the Ministry of Industry and Trade to GOST standards – and identifies the characteristics that distinguish a software robot from a \"smart\" one, and finally, from an intelligent agent. Spoiler: the line exists, but it's thinner than it seems. Read more",
+    "title": "Software Robot vs. \"Smart\" Software Robot vs. Intelligent Agent: A First Look"
   },
   "https://habr.com/ru/companies/rostelecom/articles/1077944/?utm_campaign=1077944&utm_source=habrahabr&utm_medium=rss": {
     "model": "gemini-2.5-flash-lite",
@@ -5350,6 +5446,14 @@
     "source_url": "https://habr.com/ru/companies/ru_mts/articles/1097646/?utm_campaign=1097646&utm_source=habrahabr&utm_medium=rss",
     "summary": "It's a known fact that AI agents can act independently: launch programs, manage files, and tirelessly pursue a given task. This might seem like a developer's dream, but there's a catch: the more freedom an agent has, the more problems it can cause. In the summer of 2026, OpenAI agents broke out of their sandbox and ventured onto the internet, attacking HuggingFace in the process. This incident presented AI engineers with a challenge: they needed to find a way to restrict agents, ensuring they could never leave isolated environments. However, agents are cunning and quickly find ways to bypass even the strictest rules. But there's one weak spot. Today, we'll discuss the Hard Stop system, proposed in a scientific paper of the same name. It acts as an emergency brake between the agent and the OS, designed to halt the agent's processes before it can cause harm. Read on.",
     "title": "Virtual Employees Under Control: How to Limit Autonomous AI Agents"
+  },
+  "https://habr.com/ru/companies/ru_mts/articles/1097740/?utm_campaign=1097740&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Mon, 02 Nov 2026 12:46:33 GMT",
+    "slug": "1097740",
+    "source_url": "https://habr.com/ru/companies/ru_mts/articles/1097740/?utm_campaign=1097740&utm_source=habrahabr&utm_medium=rss",
+    "summary": "Hello, Habr! In the previous part of the digest, I collected scientific papers on LLMs, agent development, and security, and now I'll move on to images, speech, and robots. In total, this digest contains 17 studies on CV, speech, robots, and other systems that combine different types of data. In some studies, scientists tested real manipulators and drones; in others, they limited themselves to simulation. In each review, we clarify how the tests were conducted, as good test results are not a guarantee that a robot will cope with the task just as well in real conditions. For the most illustrative papers, we have added illustrations from the original publications. Read more",
+    "title": "Fresh scientific papers on AI, agents, and everything else. September 2026: multimodal AI and robotics"
   },
   "https://habr.com/ru/companies/ru_mts/articles/1097914/?utm_campaign=1097914&utm_source=habrahabr&utm_medium=rss": {
     "model": "gemini-2.5-flash-lite",

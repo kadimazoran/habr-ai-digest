@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>How a website can get into Claude&#x27;s search results: search and user bots are important, not ClaudeBot</title>
+  <meta name="description" content="Anthropic has three bots with different tasks: one collects texts for training AI models, another indexes pages for Claude&#x27;s web search, and a third visits when a user asks to read a page. Each can be blocked separately in robots.txt, but sites often block the ones they depend on. Crawl Readine">
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.65;
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 32px 20px 64px;
+      color: #1f2328;
+    }
+    header {
+      border-bottom: 1px solid #d8dee4;
+      margin-bottom: 28px;
+      padding-bottom: 20px;
+    }
+    .source {
+      color: #57606a;
+      font-size: 0.95rem;
+    }
+    img, video, iframe {
+      max-width: 100%;
+      height: auto;
+    }
+    pre {
+      overflow-x: auto;
+      padding: 16px;
+      background: #f6f8fa;
+      border-radius: 6px;
+    }
+    code {
+      font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+    }
+    blockquote {
+      border-left: 4px solid #d0d7de;
+      margin-left: 0;
+      padding-left: 16px;
+      color: #57606a;
+    }
+    footer {
+      border-top: 1px solid #d8dee4;
+      margin-top: 40px;
+      padding-top: 20px;
+      color: #57606a;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>How a website can get into Claude&#x27;s search results: search and user bots are important, not ClaudeBot</h1>
+    <p>Anthropic has three bots with different tasks: one collects texts for training AI models, another indexes pages for Claude&#x27;s web search, and a third visits when a user asks to read a page. Each can be blocked separately in robots.txt, but sites often block the ones they depend on. Crawl Readiness checked the top 1000 sites in October 2026: Claude-SearchBot is blocked by 63 out of 569 sites with a robots.txt, meaning one in nine. A page only becomes a source for Claude if it&#x27;s seen by the search engine it uses and if the search and user bots are allowed on the site. The training ClaudeBot has little impact on this, so if the goal was just to prevent text from being used for training, blocking only that bot would suffice. Read more</p>
+    <p class="source">
+      Machine-translated from Habr.
+      <a href="https://habr.com/ru/articles/1102844/?utm_campaign=1102844&amp;utm_source=habrahabr&amp;utm_medium=rss">Read the original Russian article</a>.
+      Mon, 02 Nov 2026 15:22:33 GMT
+    </p>
+  </header>
+  <main>
+<div><p>Anthropic has <a href="https://privacy.claude.com/en/articles/8896518-does-anthropic-crawl-data-from-the-web-and-how-can-site-owners-block-the-crawler">three bots</a> with different tasks: one collects texts for training AI models, another indexes pages for Claude's web search, and a third visits when a user asks to read a page. Each can be blocked separately in robots.txt, but sites often block the ones they depend on. Crawl Readiness checked the top 1000 sites in October 2026: Claude-SearchBot is blocked by 63 out of 569 sites with a robots.txt, meaning one in nine. A page only becomes a source for Claude if it's seen by the search engine it uses and if the search and user bots are allowed on the site. The training ClaudeBot has little impact on this, so if the goal was just to prevent text from being used for training, blocking only that bot would suffice.</p><h3>When Claude searches the web and when it answers from memory</h3><p>Claude decides on its own. In its <a href="https://www.anthropic.com/news/web-search-api?source=syndication">developer announcement</a>, Anthropic describes it this way: if a search would be helpful, Claude formulates a query, reads the results, and responds with links to sources. As of May 27, 2025, web search is available on all plans worldwide, and the new interface doesn't even have a toggle: according to October 2026 documentation, Claude searches when it's helpful. It doesn't search often. In the <a href="https://www.joshblyskal.com/research/state-of-aeo-2026">State of AEO 2026</a> study by Josh Blyskal and Jasman Singh, Claude enabled search in 36.6% of cases, slightly more than one in three. In other responses, it answers from memory, and a page cannot become a source in those cases.</p><p>Forcing a search is done by including the phrase <code>Search the web</code> or <code>Use web search</code> in the query, as Anthropic itself advises. Reading a page via a user-provided link is called web fetch by Anthropic: here, Claude doesn't search for anything; it opens exactly the page it was given.</p><h3>Which search engine does Claude use, and why do measurements point to Brave</h3><p>Anthropic does not disclose Claude's search provider, but traces lead to Brave Search. Simon Willison noted that since March 19, 2025, Brave Search has been listed in Anthropic's Trust Center as a subprocesser (<a href="https://crawlmind.ai/blog/claude-cites-from-brave-not-google">recounted in the Crawlmind blog</a>). Complete SEO <a href="https://completeseo.com/claude-web-search-runs-on-brave/">compared results for 1,481 queries</a>: 87.8% of the pages retrieved by Claude's search were in Brave's top 10, while only 45.6% were in Google's top 10 for the same queries. For 52 clients of the same company, the difference is even more stark: Claude cited a site from the 1st–3rd position in Brave in 92% of responses, and a site outside the top 20 in only 12%.</p><figure><img alt="Two tiles on the left compare search engines, two on the right show how Brave ranking affects the chance of becoming a source." loading="lazy" src="https://habrastorage.org/r/w1560/extt/96/15/8c/96158c828dd15d69730007d4ef0733aa.png"/><div><figcaption>Two tiles on the left compare search engines, two on the right show how Brave ranking affects the chance of becoming a source.</figcaption></div></figure><p>The overlap in results doesn't prove causation, and Anthropic itself hasn't confirmed Brave. However, based on these numbers, a site outside Brave's top 20 can hardly expect to be cited by Claude.</p><h3>Which Anthropic bot is responsible for what, and what happens if it's blocked</h3><p>Only ClaudeBot affects training; two others are responsible for visibility in Claude. The table is compiled from Anthropic's April 7, 2026, documentation for site owners.</p><div><table><tbody><tr><th><p>User-agent</p></th><th><p>Responsibility</p></th><th><p>What happens if blocked</p></th></tr><tr><td><p>ClaudeBot</p></td><td><p>collecting data for AI model training</p></td><td><p>future site content is excluded from training datasets</p></td></tr><tr><td><p>Claude-SearchBot</p></td><td><p>indexing pages for Claude's search</p></td><td><p>pages are not indexed, site visibility in Claude's search results may decrease</p></td></tr><tr><td><p>Claude-User</p></td><td><p>fetching a page upon user request</p></td><td><p>Claude cannot read the page upon request, visibility in search by user request may decrease</p></td></tr></tbody></table></div><p>Anthropic does not recommend blocking bots by IP: they won't be able to read robots.txt, and the denial might not work. Denials are configured in robots.txt, separately for each subdomain.</p><h3>How to block ClaudeBot in robots.txt and not block the bots Claude's answers depend on</h3><p>The fragment blocks the site only for training and explicitly allows the other two bots.</p><pre><code>User-agent: ClaudeBotDisallow: /User-agent: Claude-SearchBotAllow: /User-agent: Claude-UserAllow: /<div><a href=
+  </main>
+  <footer>
+    Translation generated with Gemini 2.5 Flash-Lite.
+    The original article remains the source of record.
+  </footer>
+</body>
+</html>

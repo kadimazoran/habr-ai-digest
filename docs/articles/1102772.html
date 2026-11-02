@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Software Robot vs. &quot;Smart&quot; Software Robot vs. Intelligent Agent: A First Look</title>
+  <meta name="description" content="There are so many robots now! They come in different types and for different purposes, aimed at mechanical and &quot;intellectual&quot; work. How to distinguish one type from another, or are they just marketing labels for the same thing? Valery Pozdnyakov, lead specialist at the R&amp;D Department o">
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.65;
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 32px 20px 64px;
+      color: #1f2328;
+    }
+    header {
+      border-bottom: 1px solid #d8dee4;
+      margin-bottom: 28px;
+      padding-bottom: 20px;
+    }
+    .source {
+      color: #57606a;
+      font-size: 0.95rem;
+    }
+    img, video, iframe {
+      max-width: 100%;
+      height: auto;
+    }
+    pre {
+      overflow-x: auto;
+      padding: 16px;
+      background: #f6f8fa;
+      border-radius: 6px;
+    }
+    code {
+      font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+    }
+    blockquote {
+      border-left: 4px solid #d0d7de;
+      margin-left: 0;
+      padding-left: 16px;
+      color: #57606a;
+    }
+    footer {
+      border-top: 1px solid #d8dee4;
+      margin-top: 40px;
+      padding-top: 20px;
+      color: #57606a;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Software Robot vs. &quot;Smart&quot; Software Robot vs. Intelligent Agent: A First Look</h1>
+    <p>There are so many robots now! They come in different types and for different purposes, aimed at mechanical and &quot;intellectual&quot; work. How to distinguish one type from another, or are they just marketing labels for the same thing? Valery Pozdnyakov, lead specialist at the R&amp;D Department of JSC &quot;Greenatom&quot;, analyzes regulatory documents – from orders of the Ministry of Digital Development and the Ministry of Industry and Trade to GOST standards – and identifies the characteristics that distinguish a software robot from a &quot;smart&quot; one, and finally, from an intelligent agent. Spoiler: the line exists, but it&#x27;s thinner than it seems. Read more</p>
+    <p class="source">
+      Machine-translated from Habr.
+      <a href="https://habr.com/ru/companies/rosatom/articles/1102772/?utm_campaign=1102772&amp;utm_source=habrahabr&amp;utm_medium=rss">Read the original Russian article</a>.
+      Mon, 02 Nov 2026 12:46:43 GMT
+    </p>
+  </header>
+  <main>
+<div><p>Hello, Habr! Valery Pozdnyakov, lead specialist at the R&D Department of JSC "Greenatom", is back with you. I am continuing a series of articles in which I explore how regulatory documents describe AI technologies – and where formality ends and meaning begins. Last time, we looked for a definition of an intelligent agent. Today, we will talk about its "younger brothers": software robots. More precisely, we will try to understand how an ordinary SR differs from a "smart" one and why an intelligent agent is a completely separate story.</p><p>With this post, I will try to step slightly over the line drawn in the sand separating software robots (SRs) from intelligent agents, and then run in panic for a cardiac medication.</p><p>However, doctors will confirm that a panic attack and a heart attack are incompatible things, so to avoid driving some readers to one and others to the other, I promise not to reveal secrets or debunk myths. Everything will be classic: we will go through definitions and look for what can be pondered in silence and tranquility.</p><p><strong>Three more or less concrete definitions have been found at the federal level.</strong></p><p>Let's start with the Classifier of Programs for Electronic Computing Machines and Databases, approved by Order of the Ministry of Digital Development of Russia No. 486 dated September 22, 2020, which, in the section "Process Management Tools for Organizations," includes the class "Process Robotic Systems (RPA)" with the following description:</p><blockquote><p><em>"Software that should allow the development of software robots designed to automate routine tasks and optimize business processes using computer vision, natural language processing, speech recognition and synthesis technologies, as well as modules for recommendation and decision support tools."</em></p></blockquote><p>This is not a normative definition, but some characteristics can be extracted: software robots are intended for <strong>(1) automating routine tasks, (2) optimizing business processes, (3) using computer vision, natural language processing, speech recognition and synthesis technologies. </strong>Hmm, isn't item "3" AI technologies? That is, the line between ordinary SRs and "smart" ones disappears just like that. Although no, this is not a vague wording, it is a grouping. However, looking far beyond the horizon, like a buoy marking the fairway, let's note: an SR that uses AI technologies and an SR that is itself such a technology (part of a technology) are different things.</p><p>The next document is the Concept for the Development of the State Information System of Industry, approved by Order of the Ministry of Industry and Trade of Russia No. 2091 dated June 23, 2016. 2016 is a bit of ancient history, don't you think? Although I am wrong: the provision indicated below was introduced by the amending Order of the Concept dated August 12, 2021. Be that as it may, the quote is:</p><blockquote><p>"RPA - Robotic Process Automation. A form of business process automation technology based on metaphorical software robots or artificial intelligence workers."</p></blockquote><p>From this, we extract <strong>(4) business process automation.</strong> At the same time, the question remains regarding "metaphorical software." What is it? "ConsultantPlus" does not provide other references. It strongly resembles a still philosophical idea/concept/paradigm. A quick surf of the web led to the term "metaphorical computing." And that's when it became scary: what depths of meaning are hidden behind this? The shallow waters of the Sea of Azov or the bottom of the Kuril-Kamchatka Trench (not the Mariana Trench, of course, but still deep)? In general, delving into the topic would be tempting.</p><p>Another source: GOST R 72343-2025 "Sustainable Digital Development. General Provisions, Methodology for Assessing the Impact of Information and Communication Technology Products on Sustainable Digital Development," effective January 1, 2026. As it turned out, the description of process robotic systems (RPA) in this document is exactly the same as in the aforementioned Classifier. In a word, nothing new.</p><p>But we must not forget that the Classifier and GOST are essentially regulatory documents, the first being normative and reference, the second being normative and technical. That is, if desired, a definition (description) can be taken from them. In this case, the mention of AI allows us not to multiply entities and not to divide SRs into simple and "smart" ones.</p><p>At the GK level, three sources were found, also three in number:</p><p>The first document: Unified Industry Methodological Guidelines for Providing Users with Access to Centralized IT Resources of Rosatom State Corporation and Organizations of Rosatom State Corporation, approved by Order of Rosatom State Corporation No. 1/1517-P dated December 30, 2019. It contains the following definition:</p><blockquote><p>"Software robot, robot | Business process automation program that interacts with software applications and IT resources through user interfaces. Performs actions analogous to user actions in IT resources."</p></blockquote><p>Business process automation – that was already mentioned. But <strong>(5) interaction with other programs through user interfaces and (6) performing actions "like a human" </strong>– these are new features.</p><p>Next, Unified Industry Methodological Guidelines for Process Optimization in IT Project Implementation, approved by Order of Rosatom State Corporation No. 1/991-P dated September 1, 2020 (as amended on November 15, 2021), clause 2.2:</p><blockquote><p>"Software robotics | Process automation using software robots (special applications capable of working with other applications, imitating human actions), performing actions in applications and information systems instead of users."</p></blockquote><p>The observed feature, designated as "the ability to work with other applications, imitating human actions," is semantically the same as in the above order.</p><p>Now we can consider what to do with the caveat: <em>"...performing actions in applications and information systems instead of users."</em> On the one hand, any voice assistant is quite a robot, but it acts <strong>not instead of, but together</strong> with the user. Does this mean increased and, one might even say, absolute autonomy of a software robot, unlike other programs? A nuance!</p><p>For now, let's take this caveat as a characteristic of an SR: <strong>(7) performing actions instead of users.</strong> Clumsy, like a programmer's handwriting "remotely," but still informative. Well, there is such a thing in machine learning as "feature engineering." We can do it too!</p><p>Finally, the most extensive definition is given in the Unified Industry Procedure for Managing the Lifecycle of Software Robots in Rosatom State Corporation and its Organizations, approved by Order of Rosatom State Corporation No. 1/1056-P dated August 20, 2021 (as amended on April 26, 2023):</p><blockquote><p>"Software robot/chatbot |</p></blockquote><blockquote><p> | A program for automating operations in a business process, interacting with software applications and IT resources. Performs actions analogous to user actions in IT resources, taking into account the specifics of software robotics technology.</p></blockquote><blockquote><p>Software robot/chatbot: does not make changes to the process executed in the IT resource; performs actions analogous to actions performed by a user of the IT resource, according to an operation pre-configured in the IT resource.</p></blockquote><blockquote><p>In documents regulating work with the IT resource within which the SR is used, the concept of "software robot/chatbot" may be considered identical to the concept of "user."</p></blockquote><blockquote><p>To automate complex operations, several software robots/chatbots can be developed.</p></blockquote><blockquote><p>A software robot/chatbot can be multi-system if it interacts with multiple IT resources or its operation involves the use of multiple accounts."</p></blockquote><p>Automation of operations in a business process – was mentioned.</p><p>Interaction with other programs – was mentioned, but only regarding GUI (Graphical User Interface); meanwhile, there are robots that use API (Application Programming Interface). Therefore, the fifth feature can be rephrased: <strong>(5) interaction with other programs through user (GUI) and programmatic (API) interfaces.</strong></p><p>And what about command-line interfaces (CLI)? For example, for uploading/downloading files from an FTP server? There are such robots too. In the future, voice interfaces (VUI, Voice User Interface) may appear. Thus, there is a proposal to further generalize the fifth feature, and it would be even better not to specify the specific types of interfaces: <strong>(5) interaction with other programs through various interfaces.</strong></p><p>Performing actions analogous to user actions – was mentioned.</p><p>The following wording needs to be pondered:</p><p>"Software robot/chatbot: does not make changes to the process executed in the IT resource; performs actions analogous to actions performed by a user of the IT resource, according to an operation pre-configured in the IT resource." This is a condition-limitation. But it's unlikely to be considered a characteristic of an SR. If a software robot is, in a sense, an automated process, then the inability of a robot to change itself is not a peculiarity; until recently, the vast majority of software could not change itself. And what could modify itself, as a rule, were viruses. At some point, machine learning entered our lives with great strides – and the number of self-modifying programs began to grow. In this sense, "Rosatom" with the above limiting condition prohibits the development of robots that can change both their code and the code of the application/system they interact with. A robot should not be allowed to do more than a user.</p><p>The next part of the definition is interesting:</p><blockquote><p>"To automate complex operations, several software robots/chatbots can be developed."</p></blockquote><p>Am I imagining things, or is this a claim for so-called "group interaction"? If I don't forget, I'll tell you a normative-detective story related to this sometime.</p><p>Regarding multi-system capability – yes, it's a feature, but not a defining one.</p><p>Let's look at another definition right away:</p><blockquote><p>"Software robotics | A type of business process automation technology based on the use of software robots and artificial intelligence."</p></blockquote><p>Here, the mention of AI is important for us.</p><p>And now let's put it all together. So, the aforementioned Classifier, Concept, and GOST indicate <strong>"what"</strong> a software robot does:</p><p>• automation of routine tasks,</p><p>• optimization and automation of business processes, </p><p>...and Rosatom's local acts indicate <strong>"how"</strong> to do it:</p><p>• interacting with other programs through interfaces,</p><p>• imitating human actions,</p><p>• instead of a human (autonomously).</p><p>Well, and the caveats about AI (the 3rd feature, "metaphorical AI worker software" in the Concept, and the definition of "Software Robotics" in the third Rosatom order) allow us to assert (at least cautiously and preliminarily) that a "smart" software robot and an intelligent agent are not the same thing.</p><p>P.S. "Metaphorical computing" – they come up with anything...</p></div>
+  </main>
+  <footer>
+    Translation generated with Gemini 2.5 Flash-Lite.
+    The original article remains the source of record.
+  </footer>
+</body>
+</html>

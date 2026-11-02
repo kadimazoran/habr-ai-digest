@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>[Translation] What AI Has Subtly Broken in My Development Team</title>
+  <meta name="description" content="Artificial intelligence has made writing code cheap and, in the process, subtly deprived my team of three things that held everything together. Now, managing a team is harder than before AI. In this article, I&#x27;ll explain exactly what went wrong. Understand the topic">
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.65;
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 32px 20px 64px;
+      color: #1f2328;
+    }
+    header {
+      border-bottom: 1px solid #d8dee4;
+      margin-bottom: 28px;
+      padding-bottom: 20px;
+    }
+    .source {
+      color: #57606a;
+      font-size: 0.95rem;
+    }
+    img, video, iframe {
+      max-width: 100%;
+      height: auto;
+    }
+    pre {
+      overflow-x: auto;
+      padding: 16px;
+      background: #f6f8fa;
+      border-radius: 6px;
+    }
+    code {
+      font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+    }
+    blockquote {
+      border-left: 4px solid #d0d7de;
+      margin-left: 0;
+      padding-left: 16px;
+      color: #57606a;
+    }
+    footer {
+      border-top: 1px solid #d8dee4;
+      margin-top: 40px;
+      padding-top: 20px;
+      color: #57606a;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>[Translation] What AI Has Subtly Broken in My Development Team</h1>
+    <p>Artificial intelligence has made writing code cheap and, in the process, subtly deprived my team of three things that held everything together. Now, managing a team is harder than before AI. In this article, I&#x27;ll explain exactly what went wrong. Understand the topic</p>
+    <p class="source">
+      Machine-translated from Habr.
+      <a href="https://habr.com/ru/companies/otus/articles/1101862/?utm_campaign=1101862&amp;utm_source=habrahabr&amp;utm_medium=rss">Read the original Russian article</a>.
+      Mon, 02 Nov 2026 17:40:53 GMT
+    </p>
+  </header>
+  <main>
+<div><p><em>Artificial intelligence has made writing code cheap and, in the process, subtly deprived my team of three things that held everything together. Now, </em><a href="https://otus.pw/mxcw/"><em>managing a team</em></a><em> is harder than before AI. In this article, I'll explain exactly what went wrong.</em></p><details><summary>What you will learn from the article:</summary><div><ul><li><p>Why cheap code doesn't speed up product roadmap execution and why deciding what and why to develop has become more difficult.</p></li><li><p>How artificial intelligence erases the distinctions between professional skill levels, undermines the authority of seniors, and allows self-confidence to override experience.</p></li><li><p>What a team loses when no one needs to ask colleagues for help anymore: relationships, professional communities, collective creativity, and the willingness to admit mistakes honestly.</p></li><li><p>What four approaches I am trying as a manager to counteract these changes.</p></li></ul></div></details><p>The beginning of this year was tough for me. The revolution in development with the help of <a href="https://otus.pw/ZxfO/">AI agents</a> began, and expectations soared. Everyone's, including mine, to be fair.</p><p>However, the metrics behind these expectations didn't keep up. No matter how hard we tried, we couldn't triple our task completion speed. I felt burned out and constantly asked myself, what's wrong with my team? Why can't we speed up threefold as everyone expects?</p><p>The same question, in different words, was heard everywhere:</p><blockquote><p><em>If AI writes code in minutes, why does a task still take a whole quarter?</em></p></blockquote><p><strong>The attempts to find an answer changed my perception of my own work.</strong></p><p>It was never about a task taking a whole quarter to write code.</p><p>Artificial intelligence has made this process cheap, but at the same time, it has removed three things that previously helped me manage the team on their own:</p><ul><li><p>The high cost of development that forced us to choose.</p></li><li><p>The career ladder that gave people status and a sense of professional identity.</p></li><li><p>The habit of asking each other for help, which kept the team cohesive.</p></li></ul><p>None of this is visible on the development speed chart. But now, I am responsible for all of it.</p><p>In this article, I will intentionally focus only on the negative consequences, so the perspective will be one-sided.</p><p>I still have a positive attitude towards artificial intelligence and believe we need to adapt. But it's hard to adapt to changes you don't even notice.</p><h2>Code is No Longer the Bottleneck</h2><p>The logic behind this question seems sound: AI writes code faster, so we release new features faster, which means we execute the product roadmap faster. However, only the first statement is true here. The speed of writing code was rarely what held us back. <strong>The real limitation is understanding what exactly needs to be developed.</strong></p><p>Frederick Brooks explained this forty years ago. In his work <em>No Silver Bullet</em>, he divided software development complexities into accidental, related to turning a project into code, and essential, related to defining what the system should be <a href="https://habr.com/ru/companies/otus/articles/1101862/?utm_campaign=1101862&amp;utm_source=habrahabr&amp;utm_medium=rss#1"><sup>[1]</sup></a>.</p><blockquote><p>The hardest part of creating a software system is to accurately define what it is you want to build.</p></blockquote><p>Customers only understand what they want when they try different versions of the product. And after each iteration, a person needs to look at the result, evaluate it, and possibly change their mind. All of this happens at human speed.</p><p>AI has reduced the accidental complexity in my team's work to almost zero. As a result, almost all our work now involves overcoming essential complexity. And it has become harder to deal with.</p><p><strong>It has become harder to answer the question "why?"</strong> Does the product align with who we are and what we do? I work in an educational company. Therefore, AI tutors are a logical direction for us: we can rely on our own educational materials, brand, and the trust we have already earned from teachers and students. For a team with no experience in education, the same tutor is just a weekend demo project.</p><p>When anyone can generate a working application in a day, code ceases to be a sustainable competitive advantage. Now, the advantage comes from the product's alignment with the company's mission. And someone must be able to assess this.</p><p><strong>It has also become harder to answer the question "what exactly?"</strong> When development was expensive, the cost itself served as a filter. We couldn't implement everything, so we had to choose.</p><p>Now, every stakeholder comes with their own idea and a working demo. We have to refuse solely based on our professional judgment – we can no longer cite the high cost of development.</p><p>The 2025 DORA report showed that teams implementing artificial intelligence without a clear user focus may even see a decrease in performance <a href="https://habr.com/ru/companies/otus/articles/1101862/?utm_campaign=1101862&amp;utm_source=habrahabr&amp;utm_medium=rss#2"><sup>[2]</sup></a>. Researchers call this a <a href="https://dora.dev/capabilities/user-centric-focus/?utm_source=chatgpt.com">feature factory</a>: "lots of activity, little value."</p><h3>Prototypes Hide the Most Complex Part</h3><p>Even the most useful changes have pitfalls. Today, interactive mockups and prototypes created with vibe-coding sometimes replace detailed technical specifications.</p><p>We show a prototype to a partner and quickly find out if we have the same vision for the future product. But Brooks warned that when creating a prototype, "no attempt is made to provide for exceptional cases"<sup> </sup><a href="https://habr.com/ru/companies/otus/articles/1101862/?utm_campaign=1101862&amp;utm_source=habrahabr&amp;utm_medium=rss#1"><sup>[1]</sup></a>. The mockup looks like a finished product, so others think the work is almost done.</p><p>Although behind the beautiful interface lie all the non-functional requirements:</p><ul><li><p>scalability;</p></li><li><p>the cost of a single user session, which must fit into the product's economics;</p></li><li><p>an architecture flexible enough to connect the next partner;</p></li><li><p>backups from which the system can be restored in minutes.</p></li></ul><p>Cheap prototypes also don't reduce the number of decisions; they increase it. If a team can build three options in a day, someone has to choose one, get it approved by all stakeholders, and abandon the other two.</p><p>This burden falls on product managers and team leads, and no increase in token count will help them make decisions faster. Accelerated development only lengthens the queue of tasks awaiting their decisions.</p><p><strong>Artificial intelligence has shifted the bottleneck from those who develop to those who make decisions.</strong></p><h2>The Career Ladder Is Becoming Flatter</h2><p>Before AI, there was an unwritten hierarchy in my teams. It was not related to the organizational structure. It was determined by the experience and personal inclinations of specialists. One engineer loved optimizing queries, reducing execution time from minutes to milliseconds.</p><p>Another managed to reduce latency by 100 ms by restructuring goroutine operations.</p><p>A third kept all dependencies in mind and, in a week, divided our main dialogue service into separate components: dialogues, feedback, and memory.</p><p>Such abilities were noticed and valued. Thanks to them, people felt their own significance and confidence within the team.</p><p>Juniors absorbed knowledge almost imperceptibly: they read good comments on others' pull requests, listened to how more experienced colleagues tackled performance issues.</p><p>Gradually, they climbed this ladder themselves: encountered a complex task, tried to solve it, found their own solution, or asked for help from someone who had already gone through something similar.</p><p>Each overcome step added knowledge, confidence, and strengthened professional identity: "I am the one who can handle this."
+  </main>
+  <footer>
+    Translation generated with Gemini 2.5 Flash-Lite.
+    The original article remains the source of record.
+  </footer>
+</body>
+</html>

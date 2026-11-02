@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Sliced the image into fragments: what helped small defects and what broke large ones</title>
+  <meta name="description" content="Hello, Habr! My name is Maxim, I am a student at MIREA. This is a continuation of the article &quot;Small defects are lost, and the metric is silent&quot;. In it, I compared Mask R-CNN and YOLO on 1812 production images with car damage and ended up with tiling: if the image is cut into pieces, small">
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.65;
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 32px 20px 64px;
+      color: #1f2328;
+    }
+    header {
+      border-bottom: 1px solid #d8dee4;
+      margin-bottom: 28px;
+      padding-bottom: 20px;
+    }
+    .source {
+      color: #57606a;
+      font-size: 0.95rem;
+    }
+    img, video, iframe {
+      max-width: 100%;
+      height: auto;
+    }
+    pre {
+      overflow-x: auto;
+      padding: 16px;
+      background: #f6f8fa;
+      border-radius: 6px;
+    }
+    code {
+      font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+    }
+    blockquote {
+      border-left: 4px solid #d0d7de;
+      margin-left: 0;
+      padding-left: 16px;
+      color: #57606a;
+    }
+    footer {
+      border-top: 1px solid #d8dee4;
+      margin-top: 40px;
+      padding-top: 20px;
+      color: #57606a;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Sliced the image into fragments: what helped small defects and what broke large ones</h1>
+    <p>Hello, Habr! My name is Maxim, I am a student at MIREA. This is a continuation of the article &quot;Small defects are lost, and the metric is silent&quot;. In it, I compared Mask R-CNN and YOLO on 1812 production images with car damage and ended up with tiling: if the image is cut into pieces, small objects will not be compressed along with the entire frame. I eventually got to tiling, and it wasn&#x27;t a straight path. Almost every attempt fixed something and broke something at the same time. Below is a story about the steps I took, where I made mistakes, and what conclusions I drew from it. Read more</p>
+    <p class="source">
+      Machine-translated from Habr.
+      <a href="https://habr.com/ru/articles/1102908/?utm_campaign=1102908&amp;utm_source=habrahabr&amp;utm_medium=rss">Read the original Russian article</a>.
+      Mon, 02 Nov 2026 17:57:39 GMT
+    </p>
+  </header>
+  <main>
+<div><p>Hello, Habr! My name is Maxim, I am a student at MIREA. This is a continuation of the article <a href="https://habr.com/ru/articles/1102760/">"Small defects are lost, and the metric is silent"</a>. In it, I compared Mask R-CNN and YOLO on 1812 production images with car damage and ended up with tiling: if the image is cut into pieces, small objects will not be compressed along with the entire frame.</p><p>I eventually got to tiling, and it wasn't a straight path. Almost every attempt fixed something and broke something at the same time. Below is a story about the steps I took, where I made mistakes, and what conclusions I drew from it.</p><h3>Why small things get lost</h3><p>The images in the dataset are small, with a median of about 714x479, and they are further reduced before being fed into the network. A paint chip that occupies several pixels in the original photograph shrinks to a size where only one or two cells remain in the most detailed FPN feature map after resizing. I already cited the figure in the previous article: with an input of 512, about 41% of defects become less than 8 pixels, and for body parts, there are only 1.6% of such defects.</p><p>If we calculate AP separately by object size, the ordinary model shows a staircase: the larger the object, the higher the quality, and for the smallest ones, it's almost zero. The overall metric looks decent only because large body parts pull it up. Hence the idea: since the network doesn't see small things, we need to show them larger.</p><h3>A textbook scheme</h3><p>The idea of tiling is as simple as can be:</p><ol><li><p>cut the image into fragments;</p></li><li><p>enlarge each fragment to the input size of the network;</p></li><li><p>detect objects in the fragments;</p></li><li><p>return the detected objects to the original image coordinates and remove duplicates;</p></li><li><p>process the entire image separately to avoid losing large objects.</p></li></ol><p>The scheme itself has long been described in the literature. The most difficult part here lies in two questions: on what data to train the model and how to combine what was found at different scales.</p><h3>What is already known about this</h3><p><strong>SAHI</strong> (<a href="https://arxiv.org/abs/2202.06934">Akyon et al., 2022</a>) cuts the image into overlapping pieces during inference, and any detector will work. The authors tested on VisDrone and xView: without retraining, tiling added 5.1–6.8% AP to FCOS, VFNet, and TOOD detectors, and with retraining on tiled data, it added 12.7–14.5%.</p><p><strong>SNIP</strong> (<a href="https://arxiv.org/abs/1711.08189">Singh, Davis, 2018</a>) shows that a change in scale between training and testing harms detectors. Therefore, training and testing are done on the same pyramid scales, and the gradient at each scale is provided only by objects of a size suitable for the network.</p><p><strong>SNIPER</strong> (<a href="https://arxiv.org/abs/1805.09300">Singh et al., 2018</a>) takes this further: instead of whole images, the network learns from chips around objects, and this uses only slightly more pixels than ordinary single-scale training.</p><h3>Step 0. Tiling only test images</h3><p>The cheapest experiment: keep the model as is, and only tile the test images. AP on small objects increased by 9.4%, mIoU by 8.8%. The cost: the image now takes 3–4 times longer to process because the model is run on each fragment separately. The result fits well with what the SAHI authors report, although our data and metrics are different, so the numbers cannot be directly compared.</p><p>Next, I retrained the model on fragments. With tiling on the test set, it improved, but on the whole frame, it performed worse than the original. This lesson was repeated at each step: if you train on one scale, you must test on the same scale. A model accustomed to fragments gets lost on the whole frame.</p><p>The opposite can also happen. In a preprint about defects on printed circuit boards (<a href="https://arxiv.org/pdf/2605.24726">arXiv:2605.24726</a>), YOLO12n, trained on whole images, found almost nothing during tiled inference, while the version trained on fragments worked fine. My Mask R-CNN, trained on whole frames, handled tiling on the test set without issues. Detectors and data are different, so my conclusion is: you need to check on your own model in which direction and how much the scale mismatch affects performance.</p><h3>Attempt 1. Enlarge everything significantly</h3><p>A fragment at native resolution doubles the size of objects compared to a downscaled whole frame. This is not enough for chips of a few pixels. So, I decided to cut very small pieces, enlarge them several times, and train the model almost exclusively on them.</p><p>It resulted in a failure. On the whole frame, the overall AP dropped by about a third, and the recall by half. Tiling on the test set also didn't help: the result remained worse than the baseline.</p><p>In hindsight, it's clear why. The model had almost no exposure to whole frames and large objects at a normal scale. Its internal statistics adapted to a world of heavily enlarged pieces, and a normal image became a foreign domain for it. Large classes suffered the most: a missing body part simply doesn't fit into a small fragment.</p><h3>Attempt 2. Mix scales</h3><p>The next step was obvious: train on a mix. Whole frames, fragments at native resolution, and heavily enlarged fragments were included in the training, mixed together.</p><p>The failure on the whole frame was almost resolved, and with tiling on the test set, it yielded the best result at that time. Objects of 10–20 pixels improved noticeably, and quality on small defects almost doubled.</p><p>The joy ended when I broke down the defects by size: the quality on large defects dropped by about half. The overall AP increased, and I wouldn't have noticed this without the breakdown by size.</p><p>The explanation is simple. A large dent or a broken part gets fragmented when cut. The model trains on pieces, the annotation of a piece doesn't resemble a whole object, and during testing, one defect breaks down into several partial detections. Enlargement helps small chips but harms large dents: only a part without edges remains in the fragment.</p><p>Later, I found a way to restore large defects without losing small ones. I will describe the full algorithm and a ready-made library in a separate article later.</p><h3>Why a large defect breaks into parts</h3><p>The breakdown of a large defect during merging deserves a separate discussion. Standard merging via NMS or NMM with an IoU threshold handles it poorly. The authors of the paper on Spatial Mask Merging (<a href="https://www.mdpi.com/2227-7390/13/19/3079">MDPI Mathematics, 2025</a>) write that the IoU threshold does not merge pieces that barely overlap. They connect adjacent masks of the same class into a graph, find clusters using correlation clustering, and merge each cluster into a single mask, while an R-tree prunes unnecessary comparisons.</p><p>In the preprint on printed circuit boards, the approach is different: if a detection at the edge of a fragment is confirmed by a neighboring fragment, its weight increases. The gain there is modest, and overly aggressive settings even worsened the metric.</p><p>Before implementing complex merging, it's worth measuring the fragmentation. Take large defects from the ground truth and for each, count how many predicted masks of the same class overlap with it. The proportion of defects covered by two or more masks will show how much quality is lost on large objects due to fragmentation, and how much due to classification errors. I haven't done such a measurement myself yet.</p><h3>Limitations</h3><ul><li><p><strong>The average AP across eight defect classes is still not higher than the baseline.</strong> The overall metric is increasing mainly due to body parts and small objects, while for some large defects, the ordinary model is still better.</p></li><li><p><strong>Rare classes are noisy.</strong> There are only a few large cracks in the test set, so I don't draw conclusions based on the AP of this class. For the smallest objects, the variation between runs is comparable to the effect itself.</p></li><li><p><strong>Tiling is orders of magnitude more expensive.</strong> Without tiling on the test set, the gain disappears, and with it, the image processing takes several times longer. This is acceptable for offline defect detection, but not for real-time streaming without optimization.</p></li><li><p><strong>It makes little sense on datasets with large objects.</strong> I tested on an open dataset where there are almost no objects that disappear during resizing, and there, the ordinary model on the whole frame remained the best. Tiling only wins on small objects.</p></li></ul><h3>What to check on your data</h3><ol><li><p>Based on a single annotation, even before training, calculate what proportion of objects become less than a few pixels after resizing before entering the network. If there are only a few percent of such objects, tiling will likely be detrimental.</p></li><li><p>Start with tiling only on the test set on top of an already trained model. No retraining is needed, and the potential is immediately visible.</p></li><li><p>If you retrain on fragments, test the model in the same mode as you trained it, and separately check the reverse direction on your detector.</p></li><li><p>Do not discard whole frames from training. A model that has only seen enlarged pieces is helpless on a whole image.</p></li><li><p>Calculate AP by object size. A single overall figure can easily hide regression on large objects.</p></li><li><p>If duplicates are merged by IoU, calculate what proportion of large objects received two or more masks.</p></li><li><p>If fragments overlap, check the recall at the fragment boundaries separately. In the preprint on printed circuit boards, overlap significantly increased recall for defects at the edge.</p></li><li><p>Train several independent runs and compare with paired tests. On a small test set, a difference of a few thousandths of AP often turns out to be noise.</p></li></ol><h3>Questions for readers</h3><p>Each time I improve small objects, I lose something on large ones. If you have solved a similar problem, please share: did you separate models by object size (one for large, another for small) or did you handle everything with a single model? How do you combine results from different scales in production so that a large defect doesn't break into multiple masks? And has anyone measured the fragmentation proportion with a separate metric?</p><h3>Sources</h3><ul><li><p>Akyon F. C., Altinuc S. O., Temizel A. <a href="https://arxiv.org/abs/2202.06934">Slicing Aided Hyper Inference and Fine-tuning for Small Object Detection</a>, 2022.</p></li><li><p>Singh B., Davis L. S. <a href="https://arxiv.org/abs/1711.08189">An Analysis of Scale Invariance in Object Detection: SNIP</a>, CVPR 2018.</p></li><li><p>Singh B., Najibi M., Davis L. S. <a href="https://arxiv.org/abs/1805.09300">SNIPER: Efficient Multi-Scale Training</a>, NeurIPS 2018.</p></li><li><p><a href="https://www.mdpi.com/2227-7390/13/19/3079">Enhancing Instance Segmentation in High-Resolution Images Using Slicing-Aided Hyper Inference and Spatial Mask Merging Optimized via R-Tree Indexing</a>, Mathematics 13(19), 2025.</p></li><li><p><a href="https://arxiv.org/pdf/2605.24726">From Full Boards to Tiny Defects: Scale-Aware Tile Inference</a>, preprint.</p></li></ul></div>
+  </main>
+  <footer>
+    Translation generated with Gemini 2.5 Flash-Lite.
+    The original article remains the source of record.
+  </footer>
+</body>
+</html>

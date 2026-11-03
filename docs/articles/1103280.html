@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Kodacode 1.3: The agent can now interact with applications and has its own browser</title>
+  <meta name="description" content="Kodacode 1.3 has been released, enabling interaction with computer applications. The Desktop version now includes a built-in browser for viewing web pages alongside the chat and easily sharing content with the agent. Additionally, the update introduces change previews without Git, interactive protot">
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.65;
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 32px 20px 64px;
+      color: #1f2328;
+    }
+    header {
+      border-bottom: 1px solid #d8dee4;
+      margin-bottom: 28px;
+      padding-bottom: 20px;
+    }
+    .source {
+      color: #57606a;
+      font-size: 0.95rem;
+    }
+    img, video, iframe {
+      max-width: 100%;
+      height: auto;
+    }
+    pre {
+      overflow-x: auto;
+      padding: 16px;
+      background: #f6f8fa;
+      border-radius: 6px;
+    }
+    code {
+      font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+    }
+    blockquote {
+      border-left: 4px solid #d0d7de;
+      margin-left: 0;
+      padding-left: 16px;
+      color: #57606a;
+    }
+    footer {
+      border-top: 1px solid #d8dee4;
+      margin-top: 40px;
+      padding-top: 20px;
+      color: #57606a;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Kodacode 1.3: The agent can now interact with applications and has its own browser</h1>
+    <p>Kodacode 1.3 has been released, enabling interaction with computer applications. The Desktop version now includes a built-in browser for viewing web pages alongside the chat and easily sharing content with the agent. Additionally, the update introduces change previews without Git, interactive prototypes, AI agent automation flows, and an improved CLI for CI integration. This article details these new features, including a look at the new pet.</p>
+    <p class="source">
+      Machine-translated from Habr.
+      <a href="https://habr.com/ru/companies/koda/articles/1103280/?utm_campaign=1103280&amp;utm_source=habrahabr&amp;utm_medium=rss">Read the original Russian article</a>.
+      Tue, 03 Nov 2026 16:02:05 GMT
+    </p>
+  </header>
+  <main>
+<div><p>Until now, Kodacode only worked with code and the terminal, for example, reading files, executing commands, and parsing their output. In version 1.3, it has expanded beyond the editor. The agent can now control applications on your computer, and the Desktop version features a built-in browser.</p><h3>Computer Use</h3><p>Kodacode can find the necessary window or launch an application, observe its state, click on UI elements, scroll, and input text. It interacts with applications just like a human user: by seeing the screen and interacting with UI elements.</p><p>Computer Use is available in the Desktop version and in IDE plugins, in Agent mode.</p><figure><img loading="lazy" src="https://habrastorage.org/extt/43/cd/68/43cd68d5d00476364e9be72ba96733b7.gif"/></figure><h3>Built-in Browser</h3><p>Previously, a link from the chat would open in an external browser, requiring you to switch back to Kodacode, which was inconvenient. Now, pages open directly within the Desktop application, next to the chat.</p><p>The browser includes navigation, text search on the page, element selection, and screenshots. Selected text can be sent to the agent with a single click.</p><figure><img loading="lazy" src="https://habrastorage.org/extt/41/e2/92/41e292ab40ae6d55f0f2b11151830d77.gif"/></figure><h3>What else is new in Desktop</h3><p><strong>Change Previews</strong></p><p>An agent can modify a dozen files in a single chat session, making it difficult to track exactly what was changed. Now, in Koda Desktop, all modifications are visible as a familiar diff view. Deleted lines are highlighted in red, and added lines in green.</p><figure><img loading="lazy" src="https://habrastorage.org/r/w1560/extt/b1/81/b9/b181b98c3572cb74a25fdb1e4c7297f8.png"/></figure><p>Changes can be viewed at two levels:</p><ul><li><p><strong>For the entire chat</strong>: all agent modifications from the beginning of the conversation in one place. This is useful for checking for extraneous additions before committing.</p></li><li><p><strong>For a single message</strong>: only the changes made by the agent in response to a specific request. This is helpful for pinpointing when something broke in a long dialogue.</p></li></ul><p>And what's great is that diffs work even in projects without Git. Kodacode tracks the agent's changes internally, so reviews are available even in script folders, draft prototypes, and any project where a repository hasn't been initialized yet.</p><p><strong>Screen Splitting and File Viewing</strong></p><p>The first thing you want to do after agent modifications is to open the file and see what it did. Now, you can do this without leaving the agent. The Desktop window can be split into two parts: the chat on the left and the workspace on the right, where the file opens directly. It includes syntax highlighting, line numbering, and more. You can also attach a specific part as content for the next message. Additionally, you can display a tree of all files in the selected directory next to it.</p><figure><img loading="lazy" src="https://habrastorage.org/r/w1560/extt/03/bd/3b/03bd3b32c79e4119195de91e66fd708f.png"/></figure><p><strong>Interactive Visualizations</strong></p><p>The agent generates interface diagrams and prototypes directly within the Kodacode workspace. On the board, you can compare mobile and desktop versions side-by-side and click through interactive screens. Prototypes are built from your project's components and styles, making them resemble the actual product.</p><figure><img loading="lazy" src="https://habrastorage.org/r/w1560/extt/13/59/01/135901c52412055828b047bf92e81544.png"/></figure><p><strong>Flows (beta)</strong></p><p>Flows are a visual automation builder within Koda Desktop. If you've used n8n or Zapier, the concept will be familiar: a scenario is assembled from blocks on a canvas and connected by arrows. The difference is that any step can be performed by an AI agent. The agent doesn't just pass data along; it reads, analyzes, writes, and makes decisions.</p><figure><img loading="lazy" src="https://habrastorage.org/r/w1560/extt/18/72/d7/1872d7adabf0d9fcde2f7f9b69d70075.png"/></figure><p>Flows can be triggered manually, on a schedule, via a webhook from an external service, or from another flow. Inside, you'll find everything needed for true automation:</p><ul><li><p>agents that can return responses strictly in JSON according to a specified schema;</p></li><li><p>HTTP requests and MCP tools for interacting with external services;</p></li><li><p>conditions, branching, and loops;</p></li><li><p>file and list operations: reading, writing, filtering, sorting;</p></li><li><p>manual approval: the flow pauses and waits for human verification of the result.</p></li></ul><p>For example, every morning a flow can fetch the latest AI news, select the most discussed ones, the agent writes a draft post about them, and you only need to approve it before saving. There are ready-made templates to get started, such as processing incoming events, scheduled reports, extracting data from documents into a table, and research with edits and reviews.</p><p>This feature is currently in beta. Enable it in Settings → General → "Flows (β)".</p><p><strong>The Pet.</strong> </p><p>Yes, we added one.</p><figure><img loading="lazy" src="https://habrastorage.org/r/w1560/extt/23/6a/43/236a43af8c092dac954b5d4c54b441e2.png"/></figure><h3>CLI: Kodacode in CI</h3><p>The headless mode in Kodacode CLI has been significantly expanded, allowing it to be integrated into pipelines.</p><ul><li><p>JSON output and streaming JSON;</p></li><li><p>usage metrics;</p></li><li><p>exit codes;</p></li><li><p>control over launch parameters.</p></li></ul><p>Multiple requests can be submitted consecutively via stdin with the --input-format stream-json flag. Slash commands also work without a TUI.</p><p>Previously, in non-interactive mode, Kodacode CLI only returned the final text, making it impossible to know what the agent did along the way. Now, you can enable streaming JSON: the CLI will output events as the agent works, with one JSON object per line.</p><p>Let's ask the agent to explain what a file with payment logic does:</p><figure><img loading="lazy" src="https://habrastorage.org/r/w1560/extt/22/8f/68/228f6888804e237b62cd02293fe6179b.png"/></figure><p>You can see each step: first, an init event with the session ID and model, then a tool_request where the agent decides to read the file, followed by a tool_result with the reading outcome. The response then arrives in chunks via content events, and finally, a result event with the overall outcome, number of turns, and token consumption.</p><p>This format is useful if you're integrating the agent into your own tool, such as a bot, an internal dashboard, or an IDE plugin. You can display the response to the user as it's generated, log every tool call, and immediately see where the agent made a mistake.</p><p>When the agent runs in a pipeline, the output isn't read by a human, so the script needs to understand how the run concluded. For this purpose, Kodacode CLI now has exit codes: 0 indicates success, and a non-zero code means the task could not be completed.</p><p>You can also limit the agent with the --max-turns flag to prevent infinite loops and token waste. Let's see what happens if we give it too few turns. We'll ask it to describe all project files but allow only one step.</p><figure><img loading="lazy" src="https://habrastorage.org/r/w1560/extt/4d/51/b7/4d51b72799c99f9dcc40212f271cd71b.png"/></figure><p>The agent hit the limit: the JSON response shows "stop_reason": "limit", and the CLI exited with code 2. In GitHub Actions, GitLab CI, or any other pipeline, the build will stop at this stage, and you'll immediately see that the agent did not complete the task.</p><p>Additionally, the CLI shell now works without PTY (which is often missing in containers and on runners). Tool selection and token counting have also been improved.</p><h3>Plugins</h3><p>In IDE plugins:</p><ul><li><p>Computer Use in Agent mode;</p></li><li><p>each chat displays creation and last modification dates;</p></li><li><p>history can be sorted by last activity: newest or oldest first. Sub-agent activity is considered, while they remain nested under the main chat.</p></li></ul><figure><img loading="lazy" src="https://habrastorage.org/r/w1560/extt/14/e6/b7/14e6b79f8eca26f0426417c04055c6f4.png"/></figure><h3>Agent Adheres More Closely to Task Boundaries</h3><p>We have refined the task boundaries in the agent's instructions:</p><ul><li><p>a question or request for explanation does not grant permission to modify files;</p></li><li><p>search must be related to the query;</p></li><li><p>work is considered complete when a result is obtained and necessary checks are passed.</p></li></ul><p>System instructions for different models have been unified, and general rules have been localized into Russian and English. User model validation and context evaluation have been improved.</p><h3>Update and Try</h3><p>Download or update Kodacode: <a href="https://download.kodacode.ru/"> </a><a href="http://download.kodacode.ru">download.kodacode.ru</a>. Documentation: <a href="https://docs.kodacode.ru/"> </a><a href="http://docs.kodacode.ru">docs.kodacode.ru</a>.</p><p>Computer Use and Flows are brand new. If the agent missed a button or did something incorrectly, please report it in the <a href="https://t.me/kodacommunity">community chat</a>. Product news can be found in the channel: <a href="https://t.me/kodacoderu"> </a><a href="http://t.me/kodacoderu">t.me/kodacoderu</a>.</p><figure><img loading="lazy" src="https://habrastorage.org/r/w1560/getpro/habr/upload_files/85c/951/be1/85c951be1da68bb14f1e219a1208dfaa.png"/></figure><p><br/></p></div>
+  </main>
+  <footer>
+    Translation generated with Gemini 2.5 Flash-Lite.
+    The original article remains the source of record.
+  </footer>
+</body>
+</html>

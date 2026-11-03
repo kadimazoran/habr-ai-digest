@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Finally, I Understood Andrey Karpatsky with the Help of Arkanoid</title>
+  <meta name="description" content="This is the last frame of DOS Arkanoid from 1988. The VAUS ship flies away because the boss DOH was defeated in round 33. The game has no API, meaning no ready-made programmatic entry, and no one hacks into its memory. There&#x27;s only a 320x200 pixel image, a keyboard, and a mouse. Before this fra">
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.65;
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 32px 20px 64px;
+      color: #1f2328;
+    }
+    header {
+      border-bottom: 1px solid #d8dee4;
+      margin-bottom: 28px;
+      padding-bottom: 20px;
+    }
+    .source {
+      color: #57606a;
+      font-size: 0.95rem;
+    }
+    img, video, iframe {
+      max-width: 100%;
+      height: auto;
+    }
+    pre {
+      overflow-x: auto;
+      padding: 16px;
+      background: #f6f8fa;
+      border-radius: 6px;
+    }
+    code {
+      font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+    }
+    blockquote {
+      border-left: 4px solid #d0d7de;
+      margin-left: 0;
+      padding-left: 16px;
+      color: #57606a;
+    }
+    footer {
+      border-top: 1px solid #d8dee4;
+      margin-top: 40px;
+      padding-top: 20px;
+      color: #57606a;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Finally, I Understood Andrey Karpatsky with the Help of Arkanoid</h1>
+    <p>This is the last frame of DOS Arkanoid from 1988. The VAUS ship flies away because the boss DOH was defeated in round 33. The game has no API, meaning no ready-made programmatic entry, and no one hacks into its memory. There&#x27;s only a 320x200 pixel image, a keyboard, and a mouse. Before this frame, a program written by AI reached this point in 10 out of 10 games. The AI itself didn&#x27;t play. It studied the game by looking at the screen and wrote a regular player program, which then played. Claude and I prepared access to the game and a separate verification program together, and I set the tasks. Six months ago, in April 2026, I watched Andrey Karpatsky&#x27;s presentation at the Sequoia AI Ascent conference (there&#x27;s also a Russian dub). He talked about three generations of software. In Software 1.0, humans write code. In Software 2.0, you collect data and train a neural network. In Software 3.0, &#x27;programming turns into prompting,&#x27; and what&#x27;s in the context window becomes &#x27;the lever with which you control the interpreter, i.e., the LLM.&#x27; I watched, nodded, and, as I understand now, understood nothing. I am not a professional programmer. Words about vibe-coding, agents, and the new paradigm have long become an abstraction for me: they sound smart, but you can&#x27;t touch them. Recently, I rewatched that presentation and was surprised that I now understand almost every word. Over these six months, I&#x27;ve recognized my own experience in his words. First, I tried to teach AI to play Arkanoid by training a neural network, and I failed. Then I set the task differently, and it worked. This article is about that: how a simple 1988 game explained to me what a lecture couldn&#x27;t. Read more</p>
+    <p class="source">
+      Machine-translated from Habr.
+      <a href="https://habr.com/ru/articles/1103182/?utm_campaign=1103182&amp;utm_source=habrahabr&amp;utm_medium=rss">Read the original Russian article</a>.
+      Tue, 03 Nov 2026 12:16:11 GMT
+    </p>
+  </header>
+  <main>
+<div><figure><img alt="Final frame of DOS Arkanoid: the VAUS ship flies away after defeating boss DOH" loading="lazy" src="https://habrastorage.org/r/w1560/extt/11/81/0e/11810e45906ac80a911669b86c72d7c8.png" title="Final frame of DOS Arkanoid: the VAUS ship flies away after defeating boss DOH"/><div><figcaption>Final frame of DOS Arkanoid: the VAUS ship flies away after defeating boss DOH</figcaption></div></figure><p>This is the last frame of DOS Arkanoid from 1988. The VAUS ship flies away because the boss DOH was defeated in round 33. The game has no API, meaning no ready-made programmatic entry, and no one hacks into its memory. There's only a 320x200 pixel image, a keyboard, and a mouse.</p><p>Before this frame, a program written by AI reached this point in 10 out of 10 games. The AI itself didn't play. It studied the game by looking at the screen and wrote a regular player program, which then played. Claude and I prepared access to the game and a separate verification program together, and I set the tasks.</p><p>Six months ago, in April 2026, I watched <a href="https://youtu.be/96jN2OCOfLs">Andrey Karpatsky's presentation</a> at the Sequoia AI Ascent conference (there's also a <a href="https://youtu.be/yZ3d0hTQfAg">Russian dub</a>). He talked about three generations of software. In Software 1.0, humans write code. In Software 2.0, you collect data and train a neural network. In Software 3.0, 'programming turns into prompting,' and what's in the context window becomes 'the lever with which you control the interpreter, i.e., the LLM.' I watched, nodded, and, as I understand now, understood nothing.</p><p>I am not a professional programmer. Words about vibe-coding, agents, and the new paradigm have long become an abstraction for me: they sound smart, but you can't touch them. Recently, I rewatched that presentation and was surprised that I now understand almost every word. Over these six months, I've recognized my own experience in his words. First, I tried to teach AI to play Arkanoid by training a neural network, and I failed. Then I set the task differently, and it worked.</p><p>This article is about that: how a simple 1988 game explained to me what a lecture couldn't.</p><h3>How I Did It Before: Software 2.0</h3><p>Six months ago, 'making an AI that plays a game' meant one thing to me: reinforcement learning (RL). A neural network looks at the screen, presses buttons, gets rewards for points scored, and thus learns from millions of attempts. This is how Atari game-playing networks were once trained. I didn't succeed then.</p><p>In this project, I went through the same process again, more carefully, and recorded every run. The agent saw a downscaled screen, could only move the paddle in small steps, and trained for about a day on a laptop's CPU: 17 million steps, approximately 17 hours of pure training. The average score increased and got stuck at 7-8 thousand points. It never cleared the first round of bricks; it sometimes reached the second round via a bonus capsule. I changed the reward, let it train from convenient positions, and increased the number of evaluation games. The edits helped a little, but it didn't go further.</p><p>All the training code was written by Claude, a large language model (LLM), acting as a programming assistant. It prepared the environment, reward calculation, and result verification. It found bugs and suggested edits. But all this was within the method I chose. The AI for me was a trainable network, and I used the LLM as a tool to create it. Now I understand that this is exactly Software 2.0 according to Karpatsky: the programmer 'sets up datasets and training goals.' When I tweaked the reward and starting positions, I was programming exactly like that.</p><p>Why it was so difficult for the agent became clear later. The bounce direction depends on the impact point: if you move the paddle within ±12 pixels of the ball's center, the angle changes from about 20° to 160°. On a screen halved in size, the ball turned into a blurry spot, and the paddle only moved in small steps. It was difficult for the agent to both notice this mechanism and use it. The agent itself didn't figure this out. I hinted at what the bounce depends on, and only then did we measure it. We later redid the vision and control, but didn't finish training the new run.</p><h3>How It Worked: Software 3.0</h3><p>Then I tried a different approach. A separate session of the same LLM was given not the task 'write code for training,' but a 'body' and a goal. The body was an emulator: it ran the old DOS game on a modern computer from the very beginning. The researcher could look at the screen, press keys, move the mouse, and return to saved game moments. The goal was stated as: 'figure out how to play yourself and write a player program.' I named the game and explained how the result would be verified. I didn't give hints on how to play.</p><p>The model was the same, Claude Opus 5.5. Its role changed, and with it, the conditions: precise mouse control, full frame instead of downscaled, save states for experiments.</p><p>And here's what I realized when I rewatched the presentation. My program here was no longer code, but text: a one-page assignment and a description of the body. The LLM, the very interpreter Karpatsky talked about, read it. And it wrote a completely ordinary player code, which doesn't need any LLM to play. Software 3.0 wrote Software 1.0. I controlled its work through the assignment: I explained the goal, the rules, and how we would verify the result.</p><figure><img alt=
+  </main>
+  <footer>
+    Translation generated with Gemini 2.5 Flash-Lite.
+    The original article remains the source of record.
+  </footer>
+</body>
+</html>

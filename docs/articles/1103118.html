@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>How to Tame the LLM Dragon. Corporate AI Gateway Architecture and Limitations of Classic Proxies in Working with Neural Networks</title>
+  <meta name="description" content="The first step in the spontaneous adoption of neural networks is to block direct external access and route requests through the familiar corporate proxy. However, generative AI has its own specifics: standard proxies cannot detect sensitive data in model responses, don&#x27;t see prompt leaks, and d">
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.65;
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 32px 20px 64px;
+      color: #1f2328;
+    }
+    header {
+      border-bottom: 1px solid #d8dee4;
+      margin-bottom: 28px;
+      padding-bottom: 20px;
+    }
+    .source {
+      color: #57606a;
+      font-size: 0.95rem;
+    }
+    img, video, iframe {
+      max-width: 100%;
+      height: auto;
+    }
+    pre {
+      overflow-x: auto;
+      padding: 16px;
+      background: #f6f8fa;
+      border-radius: 6px;
+    }
+    code {
+      font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+    }
+    blockquote {
+      border-left: 4px solid #d0d7de;
+      margin-left: 0;
+      padding-left: 16px;
+      color: #57606a;
+    }
+    footer {
+      border-top: 1px solid #d8dee4;
+      margin-top: 40px;
+      padding-top: 20px;
+      color: #57606a;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>How to Tame the LLM Dragon. Corporate AI Gateway Architecture and Limitations of Classic Proxies in Working with Neural Networks</h1>
+    <p>The first step in the spontaneous adoption of neural networks is to block direct external access and route requests through the familiar corporate proxy. However, generative AI has its own specifics: standard proxies cannot detect sensitive data in model responses, don&#x27;t see prompt leaks, and don&#x27;t protect against token overspending. Below is the first part of a series on building a corporate AI gateway: why classic load balancers are not designed for LLMs, how a specialized architecture works, and how the AI Optimum platform provides context control, transparent token accounting, and data security.</p>
+    <p class="source">
+      Machine-translated from Habr.
+      <a href="https://habr.com/ru/companies/hstx/articles/1103118/?utm_campaign=1103118&amp;utm_source=habrahabr&amp;utm_medium=rss">Read the original Russian article</a>.
+      Tue, 03 Nov 2026 10:21:35 GMT
+    </p>
+  </header>
+  <main>
+<div><p>The first step in the spontaneous adoption of neural networks is to block direct external access and route requests through the familiar corporate proxy. However, generative AI has its own specifics: standard proxies cannot detect sensitive data in model responses, don't see prompt leaks, and don't protect against token overspending.</p><p>This is the first part of a series on building a corporate AI gateway: why classic load balancers are not designed for LLMs, how a specialized architecture works, and how the <a href="https://hstx.ru/ai-optimum/?utm_source=blog&amp;utm_medium=habr&amp;utm_campaign=AIOptimum_release_10.2026">AI Optimum</a> platform provides context control, transparent token accounting, and data security.</p><figure><img loading="lazy" src="https://habrastorage.org/r/w1560/extt/6c/dd/d5/6cddd5f483a281d45f638a10145a2231.jpg"/></figure><h4>Part 1. Corporate AI Gateway Architecture and Why Classic Proxies Can't Handle Generative AI</h4><p>The need for a unified AI gateway did not arise out of nowhere: in most companies, the adoption of generative AI began spontaneously and decentrally. Direct requests to neural networks bypassing the general network perimeter deprive the company of control, making it impossible to track service expenses and understand where data is going. This creates a complex set of systemic risks:</p><ul><li><p><strong>Shadow AI.</strong> Development, customer support, and analytics use their own API keys. Expenses fall outside general financial accounting, and transmitted traffic is not under the control of information security systems.</p></li><li><p><strong>Prompt Leaks.</strong> Source code, contract texts, and personal data are sent to external neural networks without anonymization, preliminary checks, and logging of the transfer itself.</p></li><li><p><strong>Uncontrolled AI Agents.</strong> Autonomous agents are prone to looping. Without set limits, an avalanche of calls cannot be stopped in real-time, leading to uncontrolled expenses discovered post-factum.</p></li><li><p><strong>Lack of Audit Trail.</strong> The infrastructure lacks a centralized log storage. The security service or auditors cannot obtain a verifiable history.</p></li></ul><p>The natural first reaction of a team to the appearance of uncontrolled network traffic is to block direct external access and route model calls through the existing corporate application proxy perimeter (L7). In corporate infrastructure, this layer is usually already deployed and built on Nginx / Angie, Envoy, or Kong.</p><p>However, when attempting to route language model traffic through standard reverse proxies, engineers encounter the fact that classic HTTP/REST load balancers are not designed for the specifics of generative AI:</p><ul><li><p><strong>Server-Sent Events (SSE) Control in Accordance with Federal Law No. 152.</strong> Unlike standard REST APIs, language model responses are transmitted as a continuous stream of Server-Sent Events (SSE). A classic web server does not analyze token semantics on the fly: it does not support masking of passport data, SNILS, or account numbers directly in the stream when entities are split into multiple chunks. If the model starts outputting sensitive information (e.g., extracted via RAG), a standard proxy cannot intercept and properly terminate the SSE session at the application level with a security incident log.</p></li><li><p><strong>Hybrid Perimeter and Data Category Routing.</strong> The typical architecture of a large Russian company is a hybrid: local inference (stack on vLLM or test environments on Ollama with open weights Qwen and DeepSeek) on scarce graphics accelerators, plus external commercial APIs (GigaChat, YandexGPT) for non-critical tasks. A standard load balancer routes traffic by network paths or round-robin algorithm but cannot analyze the payload: it cannot classify data within the prompt to reliably direct closed source code or sensitive context to a local GPU cluster, and safe general requests to the external cloud, eliminating human error in endpoint selection.</p></li><li><p><strong>Inefficiency of Classic Rate Limiting and Risk of GPU Queue Degradation.</strong> Rate limiting (RPS) on standard load balancers is powerless against agent scenarios: a single call with an actual context volume of 64,000 tokens loads the accelerator's video memory more heavily than a hundred short requests.</p></li><li><p><strong>Lack of Granular Cost Accounting and Real-time Quoting.</strong> Ordinary proxies distribute network traffic in bytes and requests but do not understand the economics of generative models: they do not extract usage metrics from the response stream and do not separate the cost of input, output, and cached tokens. However, enterprises need billing in tokens and rubles with strict allocation by cost centers, projects, and service keys, as well as support for soft and hard quotas that block requests when limits are exhausted, preventing unexpected bills.</p></li><li><p><strong>Ignoring Context Architecture (Caching and Agent Protocols).</strong> A standard network gateway does not optimize the structure of transmitted data: it does not order system instructions for stable entry into the context cache, leading to repeated payment for the same text fragments. Furthermore, it does not control calls to external tools and the open MCP protocol, through which autonomous agents gain access to the internal network.</p></li></ul><p>A dedicated intermediate layer—an AI gateway—eliminates these limitations. In the <a href="https://hstx.ru/ai-optimum/?utm_source=blog&amp;utm_medium=habr&amp;utm_campaign=AIOptimum_release_10.2026">AI Optimum</a> platform, this approach is implemented through a single entry point between the corporate network and target models: routing rules, security checks, and limits are set centrally, and the gateway accepts traffic from any internal consumers:</p><ul><li><p>backend services and custom application code;</p></li><li><p>external development clients and editors;</p></li><li><p>interactive web interface;</p></li><li><p>autonomous agents and analytics scripts.</p></li></ul><p>The base latency of the AI gateway's network core processing for end-to-end traffic forwarding is in the tens of milliseconds. When payload inspection policies are enabled, timings are transparently divided into two phases:</p><ul><li><p><strong>Incoming Requests:</strong> the time for pre-validation, policy checks, and PII masking in the prompt body is added to the total time before the first token is received.</p></li><li><p><strong>Outgoing Response Streams:</strong> an adaptive sliding micro-buffer is used to detect sensitive data in the generated text. It maintains the minimum necessary context window, preventing the omission of entities split by token boundaries (e.g., a card number split into 3-4 chunks). This adds a predictable delta to the latency of the first visible token but does not degrade the speed and smoothness of subsequent streaming.</p></li></ul><p>To monitor latencies and request processing transparency, the platform provides profiling and end-to-end tracing tools. The console offers a detailed breakdown of the processing time for each request:</p><ul><li><p>time spent on checks within the security perimeter (personal data masking, policy checks, and content filtering);</p></li><li><p>network latency and pure generation duration on the model provider's side;</p></li><li><p>duration and status of each step in the call chains for external tools and databases.</p></li></ul><p>The AI gateway is compatible with the OpenAI API contract (/v1/chat/completions and /v1/models), so integrating existing pipelines simply involves changing the base_url and authentication key without code modifications.</p><p>Network compatibility solves the problem of quick switching, but the main operational complexity lies in costs and regulatory requirements. In subsequent articles in this series, we will delve into how much corporations actually spend on AI, how to track target data flows, and how to configure guardrails and streaming personal data protection in strict accordance with Federal Law No. 152.</p></div>
+  </main>
+  <footer>
+    Translation generated with Gemini 2.5 Flash-Lite.
+    The original article remains the source of record.
+  </footer>
+</body>
+</html>

@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>How We Reduced Content T2M from 7 Days to 1 Hour Using a Data-Driven Approach and Turning a Famous Meme Inside Out</title>
+  <meta name="description" content="Hello, Habr. I&#x27;m Mikhail Miroshnikov from Sber&#x27;s B2C Data and Recommendation Systems department. I&#x27;ll talk about changes in preparing banking communications: AI generation of text formats, their almost instant approval using LLM checks, and where this is leading content teams. Read mo">
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.65;
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 32px 20px 64px;
+      color: #1f2328;
+    }
+    header {
+      border-bottom: 1px solid #d8dee4;
+      margin-bottom: 28px;
+      padding-bottom: 20px;
+    }
+    .source {
+      color: #57606a;
+      font-size: 0.95rem;
+    }
+    img, video, iframe {
+      max-width: 100%;
+      height: auto;
+    }
+    pre {
+      overflow-x: auto;
+      padding: 16px;
+      background: #f6f8fa;
+      border-radius: 6px;
+    }
+    code {
+      font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+    }
+    blockquote {
+      border-left: 4px solid #d0d7de;
+      margin-left: 0;
+      padding-left: 16px;
+      color: #57606a;
+    }
+    footer {
+      border-top: 1px solid #d8dee4;
+      margin-top: 40px;
+      padding-top: 20px;
+      color: #57606a;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>How We Reduced Content T2M from 7 Days to 1 Hour Using a Data-Driven Approach and Turning a Famous Meme Inside Out</h1>
+    <p>Hello, Habr. I&#x27;m Mikhail Miroshnikov from Sber&#x27;s B2C Data and Recommendation Systems department. I&#x27;ll talk about changes in preparing banking communications: AI generation of text formats, their almost instant approval using LLM checks, and where this is leading content teams. Read more</p>
+    <p class="source">
+      Machine-translated from Habr.
+      <a href="https://habr.com/ru/companies/sberbank/articles/1103056/?utm_campaign=1103056&amp;utm_source=habrahabr&amp;utm_medium=rss">Read the original Russian article</a>.
+      Tue, 03 Nov 2026 16:00:24 GMT
+    </p>
+  </header>
+  <main>
+<div><p>Hello, Habr. I'm Mikhail Miroshnikov from Sber's B2C Data and Recommendation Systems department. I'll talk about changes in preparing banking communications: AI generation of text formats, their almost instant approval using LLM checks, and where this is leading content teams.</p><h2>Riding the Waves of Memory</h2><p>The old-timers remember the meme tweet about "invented by 3 people, approved by 33." There's probably no better anecdote about the shortcomings of processes in large tech companies. I remember well what content preparation looked like when I joined Sber. A typical push notification took about two weeks on average, and these two weeks included, besides a day "to think" and about 20 minutes of actual writing, the following approval stages:</p><ol><li><p>Client approval of the first draft;</p></li><li><p>Editing by marketers;</p></li><li><p>Internal editing within the department;</p></li><li><p>Approval of reputational risks;</p></li><li><p>Legal review;</p></li><li><p>Compliance approval (optional, depending on the product);</p></li><li><p>Another OK from the client that the draft can be shown to product people;</p></li><li><p>Approval from product managers or other partners.</p></li></ol><p>At this stage, the unfortunate push notification often resembled Uncle Fyodor's letter to his parents—in the best-case scenario. And in the worst—Kendrick Lamar's track with eight guest verses from various authoritative Grammy winners. I mean the length, far exceeding acceptable technical requirements and common sense. Therefore, the editor got involved again and helped to shorten the text to acceptable values.</p><p>9. Finally, the proofreader approved it, followed by a test sending of the communication, during which someone from the test group (about ten people) might still dislike something. </p><p>A waterfall of edits covered you from head to toe, and for a long time, no one particularly argued with this: a bank, after all, is a structure based on processes and rules. In some banks, everything still happens as I described. The content manager here, as a rule, felt like a character from another meme:</p><figure><img loading="lazy" src="https://habrastorage.org/r/w1560/extt/3a/4a/e7/3a4ae7b9712f212757a3cd422cdb2a9c.png"/></figure><p>I don't remember exactly when the redesign of this vicious approval circle began—it was more of an evolution than a revolution—but gradually we came to reduce the number of approvers. By the end of 2023, the standard preparation cycle took about a week—5-6 business days—and included an editor, reputational risks, lawyers, a proofreader, and compliance if necessary. Better, but still bad for an era when news breaks last half a day, and communication needs to hit the bullseye. And then we started actively implementing AI in content.</p><h2>The Era of AI and Numbers</h2><p>We didn't talk about AI agents back then; that hype started a bit later. At first, we just learned to create texts: writing prompts, considering segment and channel logic in them, correlating different <a href="https://vc.ru/marketing/733886-kak-my-pytalis-sdelat-reklamnye-pushi-kotorye-nikogo-ne-besyat">effectiveness rules</a> with different products, controlling effective message length, applying communication typology, and considering the nuances hidden under the big blue "Generate" button.</p><p>At the end of 2023, we had 0% generated texts and 10% generated images in emails and landing pages. By the end of 2024, 30% of our SMS and push notifications were generated using GigaChat and DeepSeek, and we almost completely abandoned purchasing images—they were generated. But at that stage, content was still checked by humans. The reasons were varied: uncertainty about generation quality, difficulty in approving a fundamental process redesign, and, let's be honest, a certain technophobia. The amount of content produced grew, but not exponentially: the bottleneck was precisely the approval process.</p><p>We understood the problem. By the end of 2025, 70% of short text formats were generated solely by GigaChat in Creator (this is the software where we prepare and approve texts), we started E2E generation of emails and landing pages, and finally began using AI checks instead of human approvals. So far, only for a portion of the content, with false positives, not in the target user interface, but via an email bot, but it worked. Given the agent hype, all approving departments at Sber were positively inclined to get involved in developing something with the letters "AI." </p><p>Naturally, the introduction of AI led to increased efficiency and deeper personalization. In 2023, we produced about 11,000 content units, and last year we exceeded 22,000, while significantly reducing resources. For example, in my team, we became twice as productive, with the number of content managers decreasing from 10 to 5: some changed roles to become project managers, others moved to different content teams.</p><h2>Checks and Balances</h2><p>Someone might ask, "Why are checks even needed? Why not just generate a perfect text that complies with all requirements and laws right away?" I'll explain with an analogy. Generating a cool text with one button and one prompt is possible, but let's imagine that a law was passed yesterday requiring a specific disclaimer in all online advertising, and today floods have started in Siberia, and both these factors need to be urgently considered in the communication. The first adds a corresponding phrase to the push notification text (only push, not SMS, because SMS is not the internet) and relates to legal review, while the second applies restrained style rules—no CTAs, cheerful emojis, or humorous delivery—and this is already a check for reputational risks. In the case of the ideal "one-button" scenario, you would need to change too much under the hood, and then approve these changes, which would take at least one sprint. Modifying filtering checks is significantly easier in terms of releases and operational development resources. It's like pulling a lever, putting the LLM into a temporary "red" mode.</p><p>We grouped all approval stages into three AI checks.</p><p><strong>AI-Boost</strong>. This helps with editing and proofreading. To determine the list of applicable rules, we downloaded all approved content from the last couple of years and studied the comments from editors and proofreaders. Despite tens of thousands of content units, all their comments were more or less uniform. They can be grouped into approximately 50-60 key rules by which GigaChat should check SMS and push notifications (75% of our communications). We added Orfograf, relevant product guidelines, the ability to check a list of borrowed words, and some other nuances. A feature of this check is that its rules are "set in stone." You cannot write with errors or not according to the guidelines. After fine-tuning the accuracy of the checks for a portion of the content in the email bot, we released the check in Creator and made it available for the entire B2C content stream. Now, there's no need to select an approver, include them in the approval chain, message them: "Zhenya, take a look when you have a minute," and wait for Zhenya to look.</p><p>The editor and proofreader haven't disappeared; we have emails, landing pages, and other channels for which checks are not yet implemented. But life has become easier for them: just imagine, in the previous iteration of the content process, with a volume of approximately 2000 content units per month, each approver would receive something every five minutes. I think it's easy to imagine how sensitivity to errors decreases on such a conveyor belt. And the editor's and proofreader's vacations are now stress-free for everyone.</p><p><strong>Smart ToV</strong>. This is an AI check for reputational risks. The approach was the same: look at edits and comments from recent years, cluster them, and divide them into critical and non-critical. Critical ones, marked with a "traffic light," are a specific list of toxic topics and phrases that content teams have in any large organization, as well as rules for activating a temporary communication mode in regions affected by emergencies. </p><p>We also pay attention to emojis in communications and how they should be linked to certain products, and monitor the rules for referencing current memes and news. The model can track the use of slang and highlight, for example, the word "cringe." But its use can be meaningful: for instance, if SberPrime is launching something for young people prone to using such vocabulary, then it's okay. Human approval is only needed when the model identifies a "red" risk.</p><p><strong>AI-Lawyer</strong>. This is the most complex thing, developed by colleagues from the GR block. It's important to understand that there are no risk-free advertising communications. Given that 75% of our backlog consists of short formats, where there is no technical possibility to display all product conditions or include full disclaimers of the required format—some of them are as long as an SMS—there is almost always some risk of a fine for the organization and the specific employee. What we did: we collected typical content for five key financial products, analyzed the risks encountered in them, and created so-called risk maps. They indicate formulations that increase the probability of risk occurrence, possible liability, and risk mitigation measures. The risk maps are approved for the Data department, but all B2C content teams can use the functionality without worrying. </p><figure><img alt=
+  </main>
+  <footer>
+    Translation generated with Gemini 2.5 Flash-Lite.
+    The original article remains the source of record.
+  </footer>
+</body>
+</html>

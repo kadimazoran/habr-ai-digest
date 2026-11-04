@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Torvalds: &quot;If you don&#x27;t trust AI, write in assembly&quot;</title>
+  <meta name="description" content="On October 13, 2026, Linus Torvalds responded in a work mailing list to a developer who wanted to restrict AI in the development of the Linux kernel. The response was quite sharp and sarcastic: Torvalds suggested that his opponent should abandon not only AI but also compilers. Read more">
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.65;
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 32px 20px 64px;
+      color: #1f2328;
+    }
+    header {
+      border-bottom: 1px solid #d8dee4;
+      margin-bottom: 28px;
+      padding-bottom: 20px;
+    }
+    .source {
+      color: #57606a;
+      font-size: 0.95rem;
+    }
+    img, video, iframe {
+      max-width: 100%;
+      height: auto;
+    }
+    pre {
+      overflow-x: auto;
+      padding: 16px;
+      background: #f6f8fa;
+      border-radius: 6px;
+    }
+    code {
+      font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+    }
+    blockquote {
+      border-left: 4px solid #d0d7de;
+      margin-left: 0;
+      padding-left: 16px;
+      color: #57606a;
+    }
+    footer {
+      border-top: 1px solid #d8dee4;
+      margin-top: 40px;
+      padding-top: 20px;
+      color: #57606a;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Torvalds: &quot;If you don&#x27;t trust AI, write in assembly&quot;</h1>
+    <p>On October 13, 2026, Linus Torvalds responded in a work mailing list to a developer who wanted to restrict AI in the development of the Linux kernel. The response was quite sharp and sarcastic: Torvalds suggested that his opponent should abandon not only AI but also compilers. Read more</p>
+    <p class="source">
+      Machine-translated from Habr.
+      <a href="https://habr.com/ru/companies/hexlet/articles/1103584/?utm_campaign=1103584&amp;utm_source=habrahabr&amp;utm_medium=rss">Read the original Russian article</a>.
+      Wed, 04 Nov 2026 15:39:49 GMT
+    </p>
+  </header>
+  <main>
+<div><figure><img loading="lazy" src="https://habrastorage.org/r/w1560/extt/e6/26/0a/e6260a26e0475be41cfb15687c37c5c9.png"/></figure><p>On October 13, 2026, Linus Torvalds responded in a work mailing list to a developer who wanted to restrict AI in the development of the Linux kernel. The response was quite sharp and sarcastic: Torvalds suggested that his opponent should abandon not only AI but also compilers.</p><p>Torvalds explained his position on AI in detail back in May at the Open Source Summit North America conference.</p><h3>"Here's a new rule just for you"</h3><p>The dispute began in a patch discussion: one of the developers suggested that commit descriptions should be written by humans themselves, without AI. The argument was that AI greatly speeds up work, and Torvalds himself mentioned that with AI, he accomplished in a couple of months what would have taken years. And if the commit author understands the code written by AI, then writing the commit description will take them very little time. In this case, it would be easier to filter out patches from those who mindlessly forward model responses.</p><p>"It's all about your hang-ups," Torvalds replied and sarcastically proposed his own rule:</p><p><em>Here's a new rule just for you: don't use compilers in any of your kernel patches.</em></p><p>He continued, suggesting the author write code in assembly and thus prove their understanding of what the machine is doing. And they should type the commit message without a text editor.</p><p><em>We are not going to introduce stupid rules like 'you can't use tools for X'.</em></p><p>There are things more important than tools:</p><p><em>I expect people to try their best and understand what they are doing. But that understanding depends very little on the tools they use.</em></p><p>Torvalds spoke separately about those who shy away from AI:</p><p><em>The people I respect and consider smart are not the ones who shy away from new and interesting tools.</em></p><h3>"AI doesn't change programming"</h3><p>According to Torvalds, AI is the next step in the chain of tools that began with machine code and continued with assembly and compilers. Torvalds is clearly annoyed by the counting of lines written by AI:</p><p><em>AI is a great new tool, but it's just a tool. And when I see people saying, 'Hey, 99% of our code is written by AI' — I get angry. Because I can almost guarantee: 100% of their code is written by compilers. But for some reason, they never talk about that.</em></p><p>At the Open Source Summit, Torvalds compared the productivity of AI and compilers:</p><p><em>AI will increase your productivity tenfold. And I argue that compilers have increased productivity a thousandfold. So AI is great, but AI doesn't change programming itself. It might change other areas, don't get me wrong. But I'm a programmer, and I don't care about that.</em></p><p>A developer must know their project, and there's no escaping that:</p><p><em>People who understand what they are doing and who understand systems will be able to correctly formulate requests for tools and get good code. But those who don't understand the complexity of systems will also write prompts and create processes — but these processes will fail. Therefore, I think you still need to understand how everything works.</em></p><h3>"It turned out I was wrong"</h3><p><em>I love these tools. I find them very useful and interesting. But they definitely create pain points.</em></p><p>In the last two releases, the kernel has seen about 20% more commits. Initially, Torvalds thought companies were rushing to push code into release 7.0. "It turned out I was wrong," says Torvalds. The additional commits are thanks to AI tools: they have improved significantly in the last six months, and writing a kernel patch has become easier. Development has accelerated in almost all directions.</p><p>Linux kernel developers are still managing the influx: over a thousand people participate in each release. Torvalds has already gone through a similar growth crisis:</p><p><em>Around the year 2000, I had to change the way I worked because I could no longer cope with the project as Linux grew.</em></p><h3>"They are really burning out"</h3><p>In the announcement for 7.1-rc4, Torvalds wrote that due to AI reports, the vulnerability mailing list had become "almost completely unmanageable." A bug found with AI should "essentially be considered public," says Torvalds: this bug has likely already been found by others. This means such a bug can be fixed openly, but it's still not advisable to release ready-to-use exploit code for it.</p><p>Some researchers, according to Torvalds, "want all the glory for the bug and publish it even before talking to the affected parties." Companies are willing to pay for bug discovery using AI, but rarely send patches for what they find.</p><p>Linux has the resources to handle such findings. Thousands of other projects do not:</p><p><em>There are projects that are not part of the Linux kernel — personal projects of a single developer. A person works on a project for ten years or more, and they have only one, at most three people, who are involved in fixing bugs and releasing patches. And they are really burning out.</em></p><p>Burnout is exacerbated by "drive-by" reports: a person finds a bug using AI, reports it, and disappears.</p><p><em>When you ask for additional information, it turns out that the person just did a drive-by and doesn't even answer your question. That's the real problem with burnout.</em></p><p>Anyone can search for bugs using AI, but maintainers have to deal with the findings. Maintainers will constantly be playing catch-up, and Torvalds thinks this is unavoidable.</p><h3>"We use AI tools"</h3><p>Linux kernel maintainers actively use AI tools, but all edits are reviewed and accompanied by live people. Many leading kernel developers run models locally.</p><p><em>Don't become entirely dependent on large companies that might one day decide: oh, we need to make money too.</em></p><p>The main difficulty, according to Torvalds, is social:</p><p><em>The conflict is not that AI is bad. The conflict is that social barriers and pain points are emerging.</em></p><p>And yet:</p><p><em>Actually, I look at all of this very positively.</em></p><h3>"Learn to work in new conditions"</h3><p>Valentin Isipchuk, a mentor on the <a href="https://ru.hexlet.io/link/U24lgY">"Vibe Coding on Claude Code"</a> course at Hexlet and a practicing developer (Java, Kotlin, Golang, JavaScript/TypeScript):</p><p><em>We are entering a new stage of development, and not everyone is comfortable with it. And the fact that even Linus Torvalds, a known conservative, has noted this is the biggest confirmation. Therefore, instead of prohibitions, we need to learn to work in new conditions: find ways to automate checks and reviews, and reduce the load on maintainers.</em></p><h3>Sources</h3><ul><li><p><a href="https://lkml.iu.edu/2610.1/13255.html">Torvalds' letter to LKML, 13.10.2026</a></p></li><li><p><a href="https://lwn.net/Articles/1073761/">LWN: Dirk and Linus discuss AI and kernel development, 25.05.2026</a></p></li><li><p><a href="https://thenewstack.io/torvalds-ai-programming-productivity/">The New Stack: Torvalds on AI and programming productivity, 29.05.2026</a></p></li></ul></div>
+  </main>
+  <footer>
+    Translation generated with Gemini 2.5 Flash-Lite.
+    The original article remains the source of record.
+  </footer>
+</body>
+</html>

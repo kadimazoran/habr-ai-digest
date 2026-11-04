@@ -4175,6 +4175,14 @@
     "summary": "This is a translation of our write-up for the 19th place solution in the RSNA Knee Abnormality Detection competition on Kaggle. Original: 19th Place Solution. I write about competitions on the Pseudolabeling Telegram channel: you can find analyses and notes there that don't make it into the main articles. Read more",
     "title": "19th Place in RSNA Knee Abnormality Detection: Ensemble Distillation, MedSAM Crops, and LLM Labeling"
   },
+  "https://habr.com/ru/articles/1102888/?utm_campaign=1102888&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Wed, 04 Nov 2026 12:36:10 GMT",
+    "slug": "1102888",
+    "source_url": "https://habr.com/ru/articles/1102888/?utm_campaign=1102888&utm_source=habrahabr&utm_medium=rss",
+    "summary": "Hello everyone! This article is the third in a series of articles on the basics of deep learning. In the previous two parts, I covered a lot of interesting and useful information for beginners, so I recommend rereading them. In this part, we will delve deeper into Natural Language Processing (NLP) tasks and implement a two-layer neural network for text classification. Read more",
+    "title": "Basics of Deep Learning. Part 3"
+  },
   "https://habr.com/ru/articles/1102908/?utm_campaign=1102908&utm_source=habrahabr&utm_medium=rss": {
     "model": "gemini-2.5-flash-lite",
     "published": "Mon, 02 Nov 2026 17:57:39 GMT",
@@ -4182,6 +4190,14 @@
     "source_url": "https://habr.com/ru/articles/1102908/?utm_campaign=1102908&utm_source=habrahabr&utm_medium=rss",
     "summary": "Hello, Habr! My name is Maxim, I am a student at MIREA. This is a continuation of the article \"Small defects are lost, and the metric is silent\". In it, I compared Mask R-CNN and YOLO on 1812 production images with car damage and ended up with tiling: if the image is cut into pieces, small objects will not be compressed along with the entire frame. I eventually got to tiling, and it wasn't a straight path. Almost every attempt fixed something and broke something at the same time. Below is a story about the steps I took, where I made mistakes, and what conclusions I drew from it. Read more",
     "title": "Sliced the image into fragments: what helped small defects and what broke large ones"
+  },
+  "https://habr.com/ru/articles/1103058/?utm_campaign=1103058&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Wed, 04 Nov 2026 11:49:55 GMT",
+    "slug": "1103058",
+    "source_url": "https://habr.com/ru/articles/1103058/?utm_campaign=1103058&utm_source=habrahabr&utm_medium=rss",
+    "summary": "Have you ever wondered if machine learning can be used not only for surveillance and business but also for controlling people? Can one gain power over a person's mind and make them think, desire, speak, and act as the manipulator wishes, as if these were their own thoughts and beliefs? The article explores the theory of subject control and the role of machine learning, aiming to help readers recognize manipulation by various entities and enhance their preparedness against scams. Instead of analyzing specific cases, it delves into the fundamentals of exploiting personality traits, offering a training with examples and practical exercises. These skills are presented as an immunity booster in an era where AI is increasingly adept at hacking the human mind. Recommendations are provided at the end.",
+    "title": "Artificial Intelligence as a Control System: How States, Special Services, and Scammers Manipulate Your Consciousness"
   },
   "https://habr.com/ru/articles/1103160/?utm_campaign=1103160&utm_source=habrahabr&utm_medium=rss": {
     "model": "gemini-2.5-flash-lite",
@@ -4230,6 +4246,78 @@
     "source_url": "https://habr.com/ru/articles/1103276/?utm_campaign=1103276&utm_source=habrahabr&utm_medium=rss",
     "summary": "What gets lost when LLMs turn freeform notes into tables: 360 queries to three models, an example of prompt injection, and new possibilities with the free Veynrel plugin for Obsidian. Read more",
     "title": "How I Format Workouts and Nutrition in Obsidian Using LLMs, and What Gets Lost in Translation"
+  },
+  "https://habr.com/ru/articles/1103434/?utm_campaign=1103434&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Wed, 04 Nov 2026 08:30:03 GMT",
+    "slug": "1103434",
+    "source_url": "https://habr.com/ru/articles/1103434/?utm_campaign=1103434&utm_source=habrahabr&utm_medium=rss",
+    "summary": "INT8 is not to blame: how we measured samplers on quantized flow models and disproved our own idea Read more",
+    "title": "INT8 is not to blame: how we measured samplers on quantized flow models and disproved our own idea"
+  },
+  "https://habr.com/ru/articles/1103436/?utm_campaign=1103436&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Wed, 04 Nov 2026 08:34:35 GMT",
+    "slug": "1103436",
+    "source_url": "https://habr.com/ru/articles/1103436/?utm_campaign=1103436&utm_source=habrahabr&utm_medium=rss",
+    "summary": "I encountered a misunderstanding that testers have become a bottleneck in the software development process. Modern programmers, using subscription coding agents for $20 a month, can produce the volume of code and functionality in a day's work that they previously took a week or even a month to do. But what's the point? Until testers verify what the programmer, along with the LLM, has produced, it won't be released to production or made public for users. Read more",
+    "title": "Programmer with AI writes code in a day instead of a week. Do we need more testers now?"
+  },
+  "https://habr.com/ru/articles/1103448/?utm_campaign=1103448&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Wed, 04 Nov 2026 09:08:32 GMT",
+    "slug": "1103448",
+    "source_url": "https://habr.com/ru/articles/1103448/?utm_campaign=1103448&utm_source=habrahabr&utm_medium=rss",
+    "summary": "Everyone wants to automate support. Most user questions are repetitive, and you just want to wrap the answers in some kind of algorithm. There are many approaches, but one of the most common is vector search: we try to understand what the user is writing about, find semantically similar articles in the knowledge base, and ask an LLM to generate an answer based on them. In presentations, everything looks great. The bot understands the question, finds the necessary materials, and formulates an answer. All that's left is a little tweaking, and you can let employees focus on more interesting tasks. But it quickly becomes clear that users stubbornly refuse to follow the algorithm. They formulate questions as they please, omit important details, or limit themselves to a short \"it doesn't work\" or \"help.\" For vector search, such messages create a problem: there's too little information to confidently determine the meaning of the query. As a result, article selection becomes almost random: articles that are only loosely related to the request appear in the search results. It can be worse: the required article isn't in the database at all. Then the LLM tries to assemble an answer from what it found on related topics. The result is a coherent text that may have only a distant relation to the user's problem. The model, in general, tries its best, but no one provided it with the necessary input data. In this article, I'll explain how I decided to tackle both problems simultaneously: change the way requests and articles are matched, and then use the same thematic markup to identify gaps in the knowledge base and prepare drafts of new materials. Read more",
+    "title": "Not by Prompts Alone: How Interaction History Helps Develop a Knowledge Base"
+  },
+  "https://habr.com/ru/articles/1103506/?utm_campaign=1103506&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Wed, 04 Nov 2026 12:16:22 GMT",
+    "slug": "1103506",
+    "source_url": "https://habr.com/ru/articles/1103506/?utm_campaign=1103506&utm_source=habrahabr&utm_medium=rss",
+    "summary": "Hello, Habr! In April, I wrote about how I created an anti-spam bot for Telegram using my own neural network. Back then, the bot had two commands for admins, manual mode switching, and a promise to 'eventually create a public dashboard.' Half a year has passed since then. The bot is still free and remains a pet project that I refine in the evenings. However, it now has a proper environment: a website with statistics, clear instructions, and a personal account directly within Telegram. In short, for those who haven't read the first article: TAB (Telegram Antispam Bot) is a bot that automatically detects and removes spam in chats. Messages are checked by an LSTM model with an attention mechanism, trained on my own LANCETNIC library. I didn't use pre-trained models from HF; I wanted to create my own. Read more",
+    "title": "Anti-spam bot TAB half a year later: new website, instructions, and personal account"
+  },
+  "https://habr.com/ru/articles/1103522/?utm_campaign=1103522&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Wed, 04 Nov 2026 12:52:59 GMT",
+    "slug": "1103522",
+    "source_url": "https://habr.com/ru/articles/1103522/?utm_campaign=1103522&utm_source=habrahabr&utm_medium=rss",
+    "summary": "For several months, I've been actively experimenting with local language models on my Lenovo ThinkPad P16 Gen 2 laptop (Intel Core i7-13850HX, 128 GB RAM, Samsung 980 Pro 2 TB + 990 Pro 1 TB). The configuration is very powerful for any task, except... working with heavy AI models. The bottleneck here is obvious - the Nvidia RTX 2000 Ada Laptop graphics card with only 8 GB of VRAM. It's discrete, fast, and optimized for AI, but the video memory is catastrophically insufficient! Nevertheless, it's possible to fit an excellent local model, even with an 8192 token context, into these 8 gigabytes. This allows for long, meaningful dialogues without losing the thread of the discussion. After extensive searching and testing, I settled on one model - gemma-4-12B-it-QAT in q4_0 quantization. Why this one? Premium out-of-the-box: It's a Google model trained on their top solutions. The QAT (Quantization-Aware Training) method minimizes quality loss when \"packing\" into 4 bits. Minimal hallucinations: With proper settings (especially with a slightly lowered temperature), the model maintains context excellently and provides accurate encyclopedic data. Its knowledge cutoff is fresh, \"late 2025 - early 2026.\" A true local \"mini-Wikipedia\"! Good coding: The model writes code excellently (especially Python and PowerShell). Subsequent verification in the development environment is almost 100% accurate. Fits perfectly into VRAM: Along with an 8192 token context, it fits entirely into 8 GB of video memory. On my laptop using LM Studio, it delivers a genuine 12 tokens per second, which is more than enough for comfortable dialogue. Read more",
+    "title": "How to Make the gemma-4-12B-it QAT Model Almost \"Fly\" on a Laptop RTX 2000 Ada While Staying Cool and Quiet"
+  },
+  "https://habr.com/ru/articles/1103528/?utm_campaign=1103528&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Wed, 04 Nov 2026 13:13:27 GMT",
+    "slug": "1103528",
+    "source_url": "https://habr.com/ru/articles/1103528/?utm_campaign=1103528&utm_source=habrahabr&utm_medium=rss",
+    "summary": "In late October, I unexpectedly found myself without working Claude Code. After a request for identity verification, Anthropic suspended access to my paid organization. The Claude Max 20x subscription was subsequently canceled, and a refund was denied. I filed an appeal, but I didn't want to indefinitely halt project development. The problem wasn't so much choosing another neural network. Over time working with Claude Code, dozens of projects and dialogues accumulated. They contained architectural decisions, feature discussions, experiment results, bug fixes, development plans, and many small details that didn't always make it into the documentation. The source code is still there. Git repositories too. But how do you explain to a new agent why the project is structured this way, what options we've already rejected, and what we stopped at yesterday? I decided to switch to OpenAI Codex. First, I considered my own tool for transferring history, then I tried Codex's built-in import, but I wasn't satisfied with the result. Finally, I discovered Hansard – a tool that not only allows restoring work history across different AI agents but also offers additional capabilities for storing, searching, and reusing accumulated context. I'll share what worked, what didn't, and how to replicate this migration. Read on.",
+    "title": "Life after Claude Code: How I moved to Codex and preserved project history"
+  },
+  "https://habr.com/ru/articles/1103562/?utm_campaign=1103562&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Wed, 04 Nov 2026 14:40:59 GMT",
+    "slug": "1103562",
+    "source_url": "https://habr.com/ru/articles/1103562/?utm_campaign=1103562&utm_source=habrahabr&utm_medium=rss",
+    "summary": "\"AI agent\" is mentioned in 1,458 job postings on hh.ru, while \"prompt caching\" appears in only 13. However, it's the cache and tokens that determine an agent's cost. I'll break down 14 terms from job postings: agent, agent cycle, harness, MCP, skills, hooks, RAG, evals, and others. What they are, why they're needed, and how they work internally. Then, we'll crunch the numbers: over 30 steps, an agent read 1.63 million tokens, even though it was never given more than 100,000 at once, and caching made the same task 6.6 times cheaper. I also measured: Russian text in Claude tokens is 1.27 times \"more expensive\" than English. How much does an agent cost?",
+    "title": "AI Engineering for Beginners: Agents, MCP, Tokens, and Cache with Numbers"
+  },
+  "https://habr.com/ru/articles/1103592/?utm_campaign=1103592&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Wed, 04 Nov 2026 15:51:43 GMT",
+    "slug": "1103592",
+    "source_url": "https://habr.com/ru/articles/1103592/?utm_campaign=1103592&utm_source=habrahabr&utm_medium=rss",
+    "summary": "Andrey Karpathy compiled videos from 20 years of Hacker News comments that people have been recommending for years. I did the same for Habr: from 10 million comments, I got 388 videos with Russian descriptions, semantic search, and ad skipping. No registration required, and it's free. Read more",
+    "title": "I Recreated HackerTube for Habr in Two Hours. Here's What Happened."
+  },
+  "https://habr.com/ru/articles/1103596/?utm_campaign=1103596&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Wed, 04 Nov 2026 16:09:21 GMT",
+    "slug": "1103596",
+    "source_url": "https://habr.com/ru/articles/1103596/?utm_campaign=1103596&utm_source=habrahabr&utm_medium=rss",
+    "summary": "In 2025, Anthropic researcher Jack Lindsay began artificially amplifying activity patterns associated with specific concepts in Claude and asking the model if it noticed the implanted 'thought.' In 20% of attempts, the latest version correctly reported the implantation and described the concept, while the control group had zero false positives. Over the year, other groups replicated the experiment: describing concepts appears to be explained by the intervention itself, but the ability to notice the intervention has not yet been easily explained. Researchers still debate whether this constitutes introspection. Read more",
+    "title": "[Translation] AI 'Thought' Was Implanted, and Sometimes It Noticed: What a Year of Testing Revealed"
   },
   "https://habr.com/ru/companies/1c/articles/1071340/?utm_campaign=1071340&utm_source=habrahabr&utm_medium=rss": {
     "model": "gemini-2.5-flash-lite",
@@ -4798,6 +4886,14 @@
     "source_url": "https://habr.com/ru/companies/hexlet/articles/1092494/?utm_campaign=1092494&utm_source=habrahabr&utm_medium=rss",
     "summary": "Hello, Habr! I am a senior software engineer at Finam and the author of the \"LLM Developer\" course at Hexlet. We'll talk about LLM development practices and everyday details: who needs RAG, whether it's necessary to work with large models, what the LLM development market is like, and how to enter the profession – what skills are needed, how to search, and how much to ask for. If you're too lazy to read, I've covered all of this in a video. This material is for those who prefer letters to movies. Around 2024, the world began to understand the direction of AI and its applications. In 2025-2026, Russia also woke up: \"Goodness, artificial intelligence can be used!\" It's not really intelligence, but who cares: everyone wants to use it at work. How? We don't know. For what purpose? We don't know. Business doesn't quite understand what it needs – but it needs it because \"it's a revolution, Johnny!\" In reality, it is a revolution, but like any revolution, you need to understand how, for what, and where to use it. Your CEO might say: \"We want to use artificial intelligence everywhere: integrating it into development, CI/CD, assessment, code review, task assignment, and assistant work.\" AI can indeed be applied in all these areas, even allowing the CEO to order coffee via a chatbot. Read more",
     "title": "LLM Development in 2026: Skills, Cases, Requirements"
+  },
+  "https://habr.com/ru/companies/hexlet/articles/1103584/?utm_campaign=1103584&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Wed, 04 Nov 2026 15:39:49 GMT",
+    "slug": "1103584",
+    "source_url": "https://habr.com/ru/companies/hexlet/articles/1103584/?utm_campaign=1103584&utm_source=habrahabr&utm_medium=rss",
+    "summary": "On October 13, 2026, Linus Torvalds responded in a work mailing list to a developer who wanted to restrict AI in the development of the Linux kernel. The response was quite sharp and sarcastic: Torvalds suggested that his opponent should abandon not only AI but also compilers. Read more",
+    "title": "Torvalds: \"If you don't trust AI, write in assembly\""
   },
   "https://habr.com/ru/companies/hostkey/articles/1101710/?utm_campaign=1101710&utm_source=habrahabr&utm_medium=rss": {
     "model": "gemini-2.5-flash-lite",
@@ -5567,6 +5663,14 @@
     "summary": "Content production is getting cheaper. Even from a free neural network, you can get an illustration, a composition with the right mood, or even a book in seconds. But what are the scales of the problem? Have we reached the era of the generated internet, or not yet? Since we don't have a registry of everything on the internet, it's impossible to determine the share of human content. However, I managed to find studies on the share of generations in news, books, photos, and music. I suggest we discuss them. Spoiler: almost all segments show a kind of overproduction, which I recently mentioned in the context of scientific papers: it's much easier to create content than to check, edit, or advertise it. Disclaimer: academic research lags behind the development of models and people's habits of using them. Therefore, when providing a figure, I indicate the moment (and based on what analysis) it was calculated. Keep in mind that the situation has changed since 2025, and there haven't been many new studies since then. Also, for each study, one can make a reservation that researchers do not have reliable data on the share of AI; they use detectors, which are usually the same AI, just \"on the side of good.\" Read more",
     "title": "What part of the internet still belongs to people?"
   },
+  "https://habr.com/ru/companies/ru_mts/articles/1103346/?utm_campaign=1103346&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Wed, 04 Nov 2026 13:16:17 GMT",
+    "slug": "1103346",
+    "source_url": "https://habr.com/ru/companies/ru_mts/articles/1103346/?utm_campaign=1103346&utm_source=habrahabr&utm_medium=rss",
+    "summary": "Hello Habr! It's MTS again, and today we invite you to think about how to scale an artificial intelligence system without simply increasing the model size. Imagine that instead of one huge universal AI assistant, you have hundreds of small specialized agents from different developers, and together they solve tasks better than any single system, even one created with a budget several times larger. This is precisely the idea explored by the authors of the research paper \"The Wealth of Agents: Scaling Agentic AI Across Developers\". In this article, we will try to explain the problem being solved in plain language, what has been achieved so far, and what this means for the future of agentic AI as a whole. Read more",
+    "title": "\"The Wealth of Agents\": Scaling AI Without Increasing the Model"
+  },
   "https://habr.com/ru/companies/rubytech/articles/1089758/?utm_campaign=1089758&utm_source=habrahabr&utm_medium=rss": {
     "model": "gemini-2.5-flash-lite",
     "published": "Sat, 03 Oct 2026 08:06:48 GMT",
@@ -6246,6 +6350,14 @@
     "source_url": "https://habr.com/ru/companies/timeweb/articles/1092172/?utm_campaign=1092172&utm_source=habrahabr&utm_medium=rss",
     "summary": "\"I asked ChatGPT about your company - it named three competitors.\" If you work with websites, you've heard this phrase more than once. Even if your site is at the top, traffic from search is good, and conversions are fine. A neural network either doesn't know about you or provides outdated information. The first reaction is to rewrite texts, add expertise, and create an FAQ. We've been through this: the hypothesis of \"not enough content\" seems logical but is rarely confirmed. The neural network doesn't answer based on your text, but on what reached it. And this is where things get interesting. When we ran our site through queries to various models and examined what their infrastructure actually receives, the picture was prosaic. Some AI crawlers do not execute JavaScript. For a website built in the browser, this means one thing: an empty framework reaches the model instead of an article. The user sees a beautiful page, but the neural network sees an empty file. In this article, we will explore how AI systems read websites, where content gets lost on the way from the server to the model's response, and what can be checked and fixed.",
     "title": "Optimizing a website for neural networks"
+  },
+  "https://habr.com/ru/companies/timeweb/articles/1103368/?utm_campaign=1103368&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Wed, 04 Nov 2026 10:05:01 GMT",
+    "slug": "1103368",
+    "source_url": "https://habr.com/ru/companies/timeweb/articles/1103368/?utm_campaign=1103368&utm_source=habrahabr&utm_medium=rss",
+    "summary": "On September 15, 2026, TypeSafe AI released Jev, a \"System One\" class model that takes a state and typed questions, returning options, scores, and probabilities without a single word of text. Immediately after Jev's release, everyone rushed to create analogs: Liquid AI, for example, showcased d1 just two weeks later. Why should we be any different? Well, in terms of quality, probably worse. But at least it's free. Now, we'll break down what happens inside a language model when it \"answers\" with a single letter, and build a simple Jev analog on a T4 in Colab: a core of about 70 lines, probability calibration, and speed measurement. Read on.",
+    "title": "Building Our Own Jev Alternative on a Free GPU in Colab"
   },
   "https://habr.com/ru/companies/tn_digital/articles/1080052/?utm_campaign=1080052&utm_source=habrahabr&utm_medium=rss": {
     "model": "gemini-2.5-flash-lite",

@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>&quot;The Wealth of Agents&quot;: Scaling AI Without Increasing the Model</title>
+  <meta name="description" content="Hello Habr! It&#x27;s MTS again, and today we invite you to think about how to scale an artificial intelligence system without simply increasing the model size. Imagine that instead of one huge universal AI assistant, you have hundreds of small specialized agents from different developers, and toget">
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.65;
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 32px 20px 64px;
+      color: #1f2328;
+    }
+    header {
+      border-bottom: 1px solid #d8dee4;
+      margin-bottom: 28px;
+      padding-bottom: 20px;
+    }
+    .source {
+      color: #57606a;
+      font-size: 0.95rem;
+    }
+    img, video, iframe {
+      max-width: 100%;
+      height: auto;
+    }
+    pre {
+      overflow-x: auto;
+      padding: 16px;
+      background: #f6f8fa;
+      border-radius: 6px;
+    }
+    code {
+      font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+    }
+    blockquote {
+      border-left: 4px solid #d0d7de;
+      margin-left: 0;
+      padding-left: 16px;
+      color: #57606a;
+    }
+    footer {
+      border-top: 1px solid #d8dee4;
+      margin-top: 40px;
+      padding-top: 20px;
+      color: #57606a;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>&quot;The Wealth of Agents&quot;: Scaling AI Without Increasing the Model</h1>
+    <p>Hello Habr! It&#x27;s MTS again, and today we invite you to think about how to scale an artificial intelligence system without simply increasing the model size. Imagine that instead of one huge universal AI assistant, you have hundreds of small specialized agents from different developers, and together they solve tasks better than any single system, even one created with a budget several times larger. This is precisely the idea explored by the authors of the research paper &quot;The Wealth of Agents: Scaling Agentic AI Across Developers&quot;. In this article, we will try to explain the problem being solved in plain language, what has been achieved so far, and what this means for the future of agentic AI as a whole. Read more</p>
+    <p class="source">
+      Machine-translated from Habr.
+      <a href="https://habr.com/ru/companies/ru_mts/articles/1103346/?utm_campaign=1103346&amp;utm_source=habrahabr&amp;utm_medium=rss">Read the original Russian article</a>.
+      Wed, 04 Nov 2026 13:16:17 GMT
+    </p>
+  </header>
+  <main>
+<div><figure><img loading="lazy" src="https://habrastorage.org/r/w1560/extt/9c/8b/78/9c8b78535969c3b741348f690a5dfeb8.png"/></figure><p>Imagine that instead of one huge universal AI assistant, you have hundreds of small specialized agents from different developers, and together they solve tasks better than any single system, even one created with a budget several times larger. This is precisely the idea explored by the authors of the research paper <a href="https://arxiv.org/abs/2610.20518">The Wealth of Agents: Scaling Agentic AI Across Developers</a>.</p><p>In this article, we will try to explain the problem being solved in plain language, what has been achieved so far, and what this means for the future of agentic AI as a whole.</p><h2>One Developer - One Ceiling</h2><p>Today, agentic systems (those that plan, call tools, search the internet, and work with files on their own) are almost always built by a single development company (OpenAI, Anthropic, Google, etc.). Naturally, it fully controls all agents, their behavior, and orchestration, and such systems are called SDA (single-developer agentic systems).</p><p>On the one hand, this is convenient, as everything is under control, easy to change and debug. But on the other hand, serious difficulties and limitations arise. For example, there is a ceiling on capabilities, which is always determined by the resources of the largest developer. Another problem is the duplication of effort, where each developer is forced to reinvent the wheel <s>reinvent the wheel</s> build basic capabilities for their model (search, file handling, code) instead of relying on existing ones. Finally, there is a barrier to entry, where a small company with unique expertise (e.g., a retailer with a shopping agent) cannot compete with a frontier lab, even if its narrow capability is unique and useful.</p><p>For comparison, imagine that we have not a single internet, but many competing "internets" from individual developers. Yes, some of them will be safer and more optimized, but at the same time, each will have to rebuild what already exists, and the user will be forced to jump between incomplete options.</p><h2>Multi-Developer Agentic System (MDA)</h2><p>As an alternative, the authors of the research paper propose MDA (multi-developer agentic system). This is a system that, for each request, will coordinate agents from many independent developers, combining their complementary abilities.</p><p>Here we will gain a number of significant advantages. Thus, we have a new axis of scaling, where capabilities grow by combining efforts, and not just by the budget of one player. In addition, in MDA, specialization comes to the forefront, as a developer builds only what they are good at, and others handle the rest.</p><p>Thus, we can avoid duplication, where all developers are forced to solve the same problems.</p><p>But here it is important to distinguish MDA from classic multi-agent systems (MAS). In MAS, one developer controls all agents, but in MDA, they cannot dictate to third parties what to deploy. This means a mechanism of incentives is needed, i.e., an "invisible hand" that encourages self-interested developers to publish agents that are useful to the entire system.</p><figure><img loading="lazy" src="https://habrastorage.org/r/w1560/extt/ea/2b/80/ea2b80dfa11891a1e5acaf4fec66faff.png"/></figure><p>Essentially, we can draw a parallel here with open source, where developers intentionally make the code of their projects publicly available.</p><p>Now let's talk about how the MDA system is structured. The figure below shows three ways of interacting with AI. In the first case, a Single Developer Agent (SDA) solves the task entirely on its own.</p><p>When using Routed-SDA (rSDA), a router selects one system from the pool for the entire request. For example, this is how users work today, choosing Claude or ChatGPT for a specific task, but the winner will still solve everything alone.</p><p>But when using δ-MDA, the request is decomposed into subtasks, each is independently routed to the most suitable agent for it, and the obtained answers are composed. This combination is the essence of a full-fledged MDA.</p><figure><img loading="lazy" src="https://habrastorage.org/r/w1560/extt/21/04/c8/2104c8c3353ecb2c227e99679b066b12.png"/></figure><p>The difference between these interaction options is fundamental. In SDA and rSDA, the agent must be able to do everything at once, otherwise it will lose. Whereas in δ-MDA, an agent can be strong in one area and weak in another; its strengths will be leveraged, and its weaknesses will be covered by others. The price for this is the overhead of decomposition, communication, and composition. Whether they pay off will depend on the task and the qualifications of the development team.</p><h2>How MDA's Performance Was Tested</h2><p>The authors of the research paper honestly stated that there were no real developers in the experiment. Instead, they built a meta-agent pipeline that simulates the work of developers and automatically builds agents for a fixed budget:</p><p>Input data was formed as JSON descriptions of target functionality from an unlabeled dataset. One specification meant a generalist (k=1), a group of specialists (k>1).</p><p>A meta-agent was used to build agents, which created tools, dependencies, and system messages, then compiled a ReAct agent and iteratively improved it. The number of rounds was equal to the developer's budget.</p><p>Heterogeneity was achieved using different LLMs with different resource capabilities. Also, universal single-agents, specialized, and multi-agent SDAs with an orchestrator were used as agents.</p><p>A self-learning LLM router was responsible for routing. It sees agent descriptions (often embellished – a model of competition for traffic!) and accumulates interaction experience, building global and contextual rankings.</p><p>The following datasets were used:</p><ul><li><p>GAIA for a broad assistant benchmark: web search, audio/image handling, docx/.pptx/.pdf/.xlsx files, and combined skills.</p></li><li><p>SealQA – a narrow QA benchmark about web search.</p></li></ul><p>The efficiency of MDA was evaluated using metrics of accuracy, API cost, developer participation rate, and coordination costs.</p><figure><img loading="lazy" src="https://habrastorage.org/r/w1560/extt/9e/cd/a2/9ecda2c591997d0f760463f3f24e0df0.png"/></figure><h2>What Was the Result?</h2><p>The experiment's outcome was quite interesting, as a coalition of "small" agents managed to outperform the "big" ones. On GAIA, the median individual SDA achieved a result of 21%, the best individual SDA reached 35%, while δ-MDA achieved over 70%. This means the combination added +35 percentage points to the best specialist. The best multi-agent SDA reached 67% but cost $29 – more than twice as much as δ-MDA.</p><p>The router's training plays an important role, as developers embellish their agents' capabilities, and only interaction experience reveals their real strengths and weaknesses. For instance, when using an untrained σ-agent (based solely on descriptions), accuracy drops to 61% (−9.1 percentage points).</p><p>Another interesting feature of MDA is that it makes better use of "average" developers. A modified δ-MDA without high-tier agents achieved 67% at a cost of $9 – compared to 60% at $8 for the best medium/low-tier SDA. The router in MDA selects medium-tier agents 56% of the time versus 33% in rSDA. Specialization reduces the required breadth of competencies, and an average developer starts to win. Overall, this result aligns well with real life, where it is often cheaper to use two or three mid-level developers instead of one senior.</p><p>Separately, the authors conducted an experiment on "adding an agent." They took a pool for one task and added an agent specialized for another task.</p><p>The results were:</p><ul><li><p>GAIA → SealQA: +5 percentage points (53.2% → 58.2%); a_AUG in isolation – 35.4%.</p></li><li><p>SealQA → GAIA: +12 percentage points (40.4% → 53.2%); a_AUG in isolation – only 19.1%.</p></li></ul><p>This shows that isolated accuracy underestimates an agent's usefulness within an ecosystem. The question of "optimal resource allocation" should not be posed for an individual developer, but for the system as a whole.</p><p>However, the results also revealed cases where MDA loses. For example, when using a narrow task domain or only web search, δ-MDA consistently performs worse than rSDA at a higher cost. Decomposition adds errors and delays, and there are no diverse advantages to leverage.</p><h2>So What Does This All Mean in Practice?</h2><p>First and foremost, AI system developers must understand that autonomous scaling has its limits. Here, the ceiling of the "best single system" is the ceiling of the largest developer. Moreover, a system that is optimal in isolation may be suboptimal for the ecosystem if it duplicates existing capabilities instead of adding new ones.</p><p>Also, the main challenge here is how to incentivize and support a broad community of developers to build systems that promote MDA-based interaction? The main requirements for the ecosystem are to align developers' interests with collective progress, support contributions from developers with diverse resources and capabilities, and enable them to focus on their comparative advantages.</p><p>However, some questions remain open. The authors honestly admitted in their work that coordination costs can eat up theoretical gains, and real-world applicability depends on the task (SealQA case). Also, scaling routing and the actions for composition/decomposition are open engineering challenges requiring detailed technical solutions.</p><p>Considering the economic aspects separately, the issue of cost sharing for common MDA infrastructure and value distribution among agents remains unresolved. In other words, which agents will do more work and which will receive more compensation. Moreover, the models are not perfect, and there is no clear understanding of the budget constraint form and potential expenses.</p><p>Another unresolved issue is the question of trust in third-party agents. The MDA architecture assumes that tasks can be delegated to agents supported by third-party companies, and without a clearly formulated Non-Disclosure Agreement (NDA) and appropriate control, this is not feasible. It is important to understand that one malicious agent should not cause a cascading failure.</p><p>And, of course, the real test is only possible in the "wild."
+  </main>
+  <footer>
+    Translation generated with Gemini 2.5 Flash-Lite.
+    The original article remains the source of record.
+  </footer>
+</body>
+</html>

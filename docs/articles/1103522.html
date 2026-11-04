@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>How to Make the gemma-4-12B-it QAT Model Almost &quot;Fly&quot; on a Laptop RTX 2000 Ada While Staying Cool and Quiet</title>
+  <meta name="description" content="For several months, I&#x27;ve been actively experimenting with local language models on my Lenovo ThinkPad P16 Gen 2 laptop (Intel Core i7-13850HX, 128 GB RAM, Samsung 980 Pro 2 TB + 990 Pro 1 TB). The configuration is very powerful for any task, except... working with heavy AI models. The bottlenec">
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.65;
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 32px 20px 64px;
+      color: #1f2328;
+    }
+    header {
+      border-bottom: 1px solid #d8dee4;
+      margin-bottom: 28px;
+      padding-bottom: 20px;
+    }
+    .source {
+      color: #57606a;
+      font-size: 0.95rem;
+    }
+    img, video, iframe {
+      max-width: 100%;
+      height: auto;
+    }
+    pre {
+      overflow-x: auto;
+      padding: 16px;
+      background: #f6f8fa;
+      border-radius: 6px;
+    }
+    code {
+      font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+    }
+    blockquote {
+      border-left: 4px solid #d0d7de;
+      margin-left: 0;
+      padding-left: 16px;
+      color: #57606a;
+    }
+    footer {
+      border-top: 1px solid #d8dee4;
+      margin-top: 40px;
+      padding-top: 20px;
+      color: #57606a;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>How to Make the gemma-4-12B-it QAT Model Almost &quot;Fly&quot; on a Laptop RTX 2000 Ada While Staying Cool and Quiet</h1>
+    <p>For several months, I&#x27;ve been actively experimenting with local language models on my Lenovo ThinkPad P16 Gen 2 laptop (Intel Core i7-13850HX, 128 GB RAM, Samsung 980 Pro 2 TB + 990 Pro 1 TB). The configuration is very powerful for any task, except... working with heavy AI models. The bottleneck here is obvious - the Nvidia RTX 2000 Ada Laptop graphics card with only 8 GB of VRAM. It&#x27;s discrete, fast, and optimized for AI, but the video memory is catastrophically insufficient! Nevertheless, it&#x27;s possible to fit an excellent local model, even with an 8192 token context, into these 8 gigabytes. This allows for long, meaningful dialogues without losing the thread of the discussion. After extensive searching and testing, I settled on one model - gemma-4-12B-it-QAT in q4_0 quantization. Why this one? Premium out-of-the-box: It&#x27;s a Google model trained on their top solutions. The QAT (Quantization-Aware Training) method minimizes quality loss when &quot;packing&quot; into 4 bits. Minimal hallucinations: With proper settings (especially with a slightly lowered temperature), the model maintains context excellently and provides accurate encyclopedic data. Its knowledge cutoff is fresh, &quot;late 2025 - early 2026.&quot; A true local &quot;mini-Wikipedia&quot;! Good coding: The model writes code excellently (especially Python and PowerShell). Subsequent verification in the development environment is almost 100% accurate. Fits perfectly into VRAM: Along with an 8192 token context, it fits entirely into 8 GB of video memory. On my laptop using LM Studio, it delivers a genuine 12 tokens per second, which is more than enough for comfortable dialogue. Read more</p>
+    <p class="source">
+      Machine-translated from Habr.
+      <a href="https://habr.com/ru/articles/1103522/?utm_campaign=1103522&amp;utm_source=habrahabr&amp;utm_medium=rss">Read the original Russian article</a>.
+      Wed, 04 Nov 2026 12:52:59 GMT
+    </p>
+  </header>
+  <main>
+<div><p>For several months, I've been actively experimenting with local language models on my Lenovo ThinkPad P16 Gen 2 laptop (Intel Core i7-13850HX, 128 GB RAM, Samsung 980 Pro 2 TB + 990 Pro 1 TB, Nvidia RTX 2000 Ada 8Gb).</p><p>The configuration is very powerful for any task, except... working with heavy AI models. The bottleneck here is obvious - the Nvidia RTX 2000 Ada Laptop graphics card with only 8 GB of VRAM. It's discrete, fast, and optimized for AI, but the video memory is catastrophically insufficient! Nevertheless, it's possible to fit an excellent local model, even with an 8192 token context, into these 8 gigabytes. This allows for long, meaningful dialogues without losing the thread of the discussion.</p><p>After extensive searching and testing, I settled on one model - <strong>gemma-4-12B-it-QAT in q4_0 quantization.</strong></p><p>Why this one?<br/>Premium out-of-the-box: It's a Google model trained on their top solutions. The QAT (Quantization-Aware Training) method minimizes quality loss when "packing" into 4 bits. </p><p>Minimal hallucinations: With proper settings (especially with a slightly lowered temperature), the model maintains context excellently and provides accurate encyclopedic data. Its knowledge cutoff is fresh, "late 2025 - early 2026." A true local "mini-Wikipedia"!</p><p> Good coding: The model writes code excellently (especially Python and PowerShell). Subsequent verification in the development environment is almost 100% accurate. Fits perfectly into VRAM: Along with an 8192 token context, it fits entirely into 8 GB of video memory. On my laptop using LM Studio, it delivers a genuine <strong>12 tokens per second,</strong> which is more than enough for comfortable dialogue.</p><p>But there was one serious problem. When generating responses, the laptop would literally "take off": the processor would heat up to 96 °C, and the fans would roar like a good home vacuum cleaner.<br/>And, of course, I really wanted to fix this!</p><p><strong>In Search of Silence: A Hypothesis.</strong></p><p>Since the model fits entirely into VRAM and all computations are handled by the graphics chip, why should the processor work at its limit? It's obvious that the CPU doesn't need maximum frequency at this moment. If we artificially "throttle" the processor during LLM operation, can we radically reduce heat generation and unload the overall cooling system?<br/>To implement this idea, I used a combination of two utilities: <strong>TPFanControl and ThrottleStop</strong>.</p><p><strong>Step 1.</strong> Configuring TPFanControl (V2.15 Dual Fan). The original utility is still being developed by the community in a fork for dual-fan systems, which was perfect for my ThinkPad P16.</p><p>I adjusted the standard configuration file <code>TPFanControl.ini</code>, changing the fan logic in the <code>Smart Mode 1</code> section. Instead of the standard presets, I set up earlier and smoother speed transitions to prevent sharp temperature spikes:</p><pre><code>MenuLabelSM1=Smart Mode 1/ Label for Icon Menu, must be terminated by '/' // Old values (commented out): // Level=60 0 // Level=140 0 // Level=65 1 // Level=150 1 // Level=75 3 // Level=165 3 // Level=80 7 // Level=175 7 // Level=90 64 // Level=195 64 // New optimized values: Level=55 2 // Level2=70 0 Level=57 3 // Level2=90 1 Level=60 4 // Level2=100 2 Level=70 5 // Level2=110 3 Level=75 7 // Level2=130 7 Level=80 7 Level=90 7</code><div><a href=
+  </main>
+  <footer>
+    Translation generated with Gemini 2.5 Flash-Lite.
+    The original article remains the source of record.
+  </footer>
+</body>
+</html>

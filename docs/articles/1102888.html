@@ -1,0 +1,156 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Basics of Deep Learning. Part 3</title>
+  <meta name="description" content="Hello everyone! This article is the third in a series of articles on the basics of deep learning. In the previous two parts, I covered a lot of interesting and useful information for beginners, so I recommend rereading them. In this part, we will delve deeper into Natural Language Processing (NLP) t">
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.65;
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 32px 20px 64px;
+      color: #1f2328;
+    }
+    header {
+      border-bottom: 1px solid #d8dee4;
+      margin-bottom: 28px;
+      padding-bottom: 20px;
+    }
+    .source {
+      color: #57606a;
+      font-size: 0.95rem;
+    }
+    img, video, iframe {
+      max-width: 100%;
+      height: auto;
+    }
+    pre {
+      overflow-x: auto;
+      padding: 16px;
+      background: #f6f8fa;
+      border-radius: 6px;
+    }
+    code {
+      font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+    }
+    blockquote {
+      border-left: 4px solid #d0d7de;
+      margin-left: 0;
+      padding-left: 16px;
+      color: #57606a;
+    }
+    footer {
+      border-top: 1px solid #d8dee4;
+      margin-top: 40px;
+      padding-top: 20px;
+      color: #57606a;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Basics of Deep Learning. Part 3</h1>
+    <p>Hello everyone! This article is the third in a series of articles on the basics of deep learning. In the previous two parts, I covered a lot of interesting and useful information for beginners, so I recommend rereading them. In this part, we will delve deeper into Natural Language Processing (NLP) tasks and implement a two-layer neural network for text classification. Read more</p>
+    <p class="source">
+      Machine-translated from Habr.
+      <a href="https://habr.com/ru/articles/1102888/?utm_campaign=1102888&amp;utm_source=habrahabr&amp;utm_medium=rss">Read the original Russian article</a>.
+      Wed, 04 Nov 2026 12:36:10 GMT
+    </p>
+  </header>
+  <main>
+<div><h3>Hello everyone! This article is the third in a series of articles on the basics of deep learning. In the previous two parts, I covered a lot of interesting and useful information for beginners, so I recommend rereading them. </h3><h3>In this part, we will delve deeper into Natural Language Processing (NLP) tasks and implement a two-layer neural network for text classification.</h3><h2>Let's understand what the field of AI called Natural Language Processing entails</h2><h3>What tasks does NLP solve?</h3><p>This field is dedicated to the automated study of human language (not necessarily using deep learning specifically).</p><p><strong>Here are a few types of tasks solved using NLP:</strong></p><ul><li><p>determining the beginning and end of words by characters, sentences and phrases by words, as well as the beginning and end of named entities (people, cities, etc.) by words in a sentence;</p></li><li><p>determining the part of speech for each word in a sentence;</p></li><li><p>determining the person/place/object to which pronouns refer, based on assumptions in the document;</p></li><li><p>determining the emotional tone of a sentence based on the words within it;</p></li><li><p>machine translation;</p></li><li><p>text classification;</p></li><li><p>filling in missing information based on context;</p></li><li><p>processing and generating coherent text that resembles human language.</p></li></ul><p>It is obvious that the process of training a neural network to solve any of the listed tasks will not conceptually change much. We only need to figure out how to convert the input text into numbers, as it is numbers that the network works with.</p><p>We need to choose a conversion method that allows the network to effectively extract a function that will most accurately express the relationship between the input and output data.</p><p>To choose a specific method for representing input data that will make the correlation between input and output most apparent to the network, we need to look at the input and output datasets.</p><p>As an example, I will take the popular task of topic classification.</p><h2>Let's consider the task of sentiment classification for reviews</h2><p>I will use the Kinopoisk dataset with movie reviews. This dataset is a collection of 36591 pairs of "review text : rating" (if we omit the fields we don't need). You can obtain the dataset in various ways, for example, by downloading the file manually or, as I did, using the Hagging Face library. You can also train models on the IMDb dataset, which is available in keras.datasets, but it is in English.</p><p>We will need to train a neural network to determine the output rating (1/0 or positive/negative) from the input review text. For simplicity, reviews with neutral ratings have been removed from the dataset. Also, to avoid bias, 10,000 positive and 10,000 negative reviews have been selected and shuffled.</p><p>Here, we will immediately choose the token size (the minimum unit of text that a neural network perceives). A good idea for a token is to choose a word, as some words correlate well with the emotional tone of the text (good, bad, liked, hate). For the first stage, we will not consider word context for simplicity.</p><p>Since our neural network is a parametric model (i.e., it has a fixed number of weights, neurons, and consequently a fixed input layer size), the simplest way to convert input text is to create a vocabulary of all possible words from the reviews and convert the input text into a vector where ones will be placed at positions corresponding to a specific word in the vocabulary.</p><p>That is, if the vocabulary has 5 words (for example, the first word is "bad" and it corresponds to the vector [1,0,0,0,0]), and our input text contains the 1st, 3rd, and 4th words from this vocabulary, then we convert the input text to [1,0,1,1,0]. This storage format was used in previous parts and is called one-hot encoding.</p><p>Also, if the input text contains the same word from the vocabulary multiple times, we can either sum the vector for that word multiple times or add it just once. The second method is usually preferred.</p><p><strong>When writing the new neural network, we will rely on our two-layer neural network from previous parts, which had 100 neurons in the hidden layer and 1 in the output layer.</strong></p><p>First, we will download the necessary dataset and convert it into a more convenient format. Then, we will split each review into tokens (in our case, words) and get a list of sets of words for each review.</p><p>After that, we will create a vocabulary of all words and assign them their own index (identifier); the key will be the word, and the value will be the identifier. Essentially, this identifier is a more compact way of storing the one-hot encoding vector. We record not the entire vector, but the index where the one should be placed.</p><p>Next, we will create a list of reviews (or rather, a list where elements are lists with word identifiers for that review) that we will directly feed into the model. We will also convert the list of ratings from words to numbers.</p><pre><code>import numpy as np
+np.random.seed(1)
+from datasets import load_dataset
+import pandas as pd
+import re
+
+dataset = load_dataset("blinoff/kinopoisk")
+df = pd.DataFrame(dataset["train"])
+df = df[df["grade3"].isin(["Good", "Bad"])]
+
+df_good = df[df["grade3"] == "Good"].head(10000)
+df_bad = df[df["grade3"] == "Bad"].head(10000)
+df = pd.concat([df_good, df_bad]).sample(frac=1, random_state=1).reset_index(drop=True)
+
+def clean(text):
+    text = text.replace("\n", " ").replace("\xa0", " ").lower()
+    text = re.sub(r"[^а-яa-z\s]", "", text)
+    text = re.sub(r"\s+", " ", text)
+    return text.strip()
+
+raw_reviews = list(map(clean, df["content"].head(20000).tolist()))#список с отзывами
+raw_labels = df["grade3"].head(20000).tolist()
+tokens = list(map(lambda x: set(x.split(" ")), raw_reviews))
+
+vocab = set()
+for sent in tokens:
+    for word in sent:
+        if len(word) &gt; 0: vocab.add(word)
+vocab = list(vocab) #пока создадим просто список всех слов без повторений
+
+word2index = {} #а это уже будет наш словарь
+for i, word in enumerate(vocab):
+    word2index[word] = i
+
+input_dataset = list() #входные данные для модели
+for sent in tokens:
+    sent_indices = list()
+    for word in sent:
+        sent_indices.append(word2index[word])
+    input_dataset.append(list(set(sent_indices)))
+
+target_dataset = list() #переведём рейтинг в цифры
+for label in raw_labels:
+    if label == "Good": target_dataset.append(1)
+    else: target_dataset.append(0)</code><div><a href="https://sourcecraft.dev/"><span></span></a></div></pre><p>Now let's move on to training the model itself. However, it's worth noting something valuable here: since our input review is essentially a long vector with ones only at certain positions corresponding to words, during forward propagation, we don't need to multiply the input matrix by the weight matrix. Instead, we can simply sum up those rows in the weight matrix that correspond to the indices of our words. To verify this, just multiply a vector of ones and zeros by a matrix and compare.</p><p>This process of selecting rows and summing (or averaging) them defines the first linear layer (before applying the activation function to the weighted sum) as an Embedding layer. The concept of transforming data into a vector format is often called embedding. Using the first layer of the network (as we are doing now, and as GPT works) or another pre-trained model of such a network, one can embed different types of data. Different embedding models are required for different input data.</p><p>Once again, essentially, embedding represents the transformation of discrete objects into points in a continuous vector space. That is, first, we simply prepared the data by converting it into a convenient format for calculations (one-hot encoding), and it will become a vector representation of words only after summing the relevant rows of the weight matrix (after the embedding layer). We will look at this in more detail in the following parts when we get to GPT-like models.</p><p>Now let's proceed with the code. For simplicity, we will use stochastic gradient descent, but we will lose time in training. The indexing operator for a matrix returns the rows whose numbers we provide (if we provide the vector [1,3,5], we get a matrix of these three rows). Forward propagation should not cause any issues.</p><pre><code>def sigmoid(x):
+    return 1/(1+ np.exp(-x))
+
+alpha, iterations, hidden_size = (0.01, 2, 100)
+weights_1 = 0.2*np.random.random((len(vocab), hidden_size)) - 0.1
+weights_2 = 0.2*np.random.random((hidden_size, 1)) - 0.1
+
+correct, total = (0,0)
+for j in range(iterations):
+    for i in range(len(input_dataset) - 1000): #обучаем на первых 19000 отзывах
+        x, y = (input_dataset[i], target_dataset[i])
+        layer_1 = sigmoid(np.sum(weights_1[x], axis=0))
+        layer_2 = sigmoid(np.dot(layer_1, weights_2))
+        layer_2_delta = layer_2 - y
+        layer_1_delta = layer_2_delta.dot(weights_2.T)*layer_1*(1-layer_1)
+        weights_1[x] -= alpha*layer_1_delta #эта операция удобно вычтет градиент ошибки от нужных весов
+        weights_2 -= alpha*np.outer(layer_1, layer_2_delta)
+        
+        if(np.abs(layer_2_delta) &lt; 0.5):
+            correct +=1
+        total +=1
+        if (i%10 == 9): print(f"Iter: {j}-{i} Progress: {100*(i+1)/(len(input_dataset) - 1000):.4f}% TrainingAcc: {100*correct/float(total):.4f}%")
+
+print("\nТестируем")
+#протестируем на 1000 отложенных образцов
+correct, total = (0,0)
+for i in range(len(input_dataset)-1000, len(input_dataset)):
+    x, y = (input_dataset[i], target_dataset[i])
+    layer_1 = sigmoid(np.sum(weights_1[x], axis=0))
+    layer_2 = sigmoid(np.dot(layer_1, weights_2))
+    if(np.abs(layer_2-y) &lt; 0.5): correct +=1
+    total +=1
+print(f"TestAcc: {100*correct / total:.4f}%")</code><div><a href="https://sourcecraft.dev/"><span></span></a></div></pre><p>We move on to backpropagation. It's important that here we are not using cross-entropy as the error calculation method, but binary cross-entropy. Thanks to this, we have the same situation as with the derivative of cross-entropy with respect to softmax. The derivative of binary cross-entropy with respect to the input of sigmoid (i.e., to the weighted sum fed into the activation function) is the model's output minus the true value.</p><p>Therefore, the output layer delta is simply the result minus the truth. When calculating the delta for the first layer, we multiply the number (a matrix of one element, but essentially the same as multiplying by a number) by the weight vector. Don't forget to multiply by the derivative of the neuron's output with respect to the weighted sum (sigmoid'(x) = sigmoid(x)*(1 - sigmoid(x)) ).</p><p>We update the weights of the first layer using a convenient indexing operation that subtracts the gradient from the required rows (the original matrix will also change in these rows, as they refer to the same rows in memory). We subtract the gradient directly without multiplying by the input data because the input data only contains 1s and 0s, so multiplying by one changes nothing, and instead of multiplying by zero, we simply don't touch those rows.</p><p>We update the weights of the second layer simply using np.outer(), which multiplies each element of the first matrix by each element of the second matrix and places them row-wise according to the number of elements in the left matrix (i.e., it unfolds the left matrix into a column, the right into a row, and multiplies the first element of the left by all of the right one by one, etc.). The result is a column vector.</p><p>Finally, we count the correctly guessed reviews and test the model on 1000 held-out samples. As a result, the model achieved 94% accuracy on the test set.</p><figure><img alt="Testing the model" loading="lazy" src="https://habrastorage.org/r/w1560/extt/5a/58/fe/5a58fe012b29619f9b405e7f0cc2976a.png" title="Testing the model"/><div><figcaption>Testing the model</figcaption></div></figure><p>But this is not enough for me, let's write our own sentence and see if the model can determine it correctly.</p><pre><code>print("Теперь моё предложнение: это очень плохой и ужасный фильм смотреть было невыносимо скучно")
+text = "это очень плохой и ужасный фильм смотреть было невыносимо скучно".split()
+y = 0
+input_text = list()
+for i in text:
+    input_text.append(word2index[i])
+layer_1 = sigmoid(np.sum(weights_1[input_text], axis=0))
+layer_2 = sigmoid(np.dot(layer_1, weights_2))
+print(f"Результат модели: {layer_2} Настоящий результат:{y}")</code><div><a href="https://sourcecraft.dev/"><span></span></a></div></pre><p>In the end, it managed to guess, but unfortunately, it was on the edge, and all this is only because in the Kinopoisk dataset there are actually only 4751 bad reviews, and the rest are good. As a result, the bias remained towards good reviews, and we trained not on 20,000 reviews, but on 14,751 (10,000 good and 4,751 bad).</p><figure><img alt="Testing the model on my own sentence" loading="lazy" src="https://habrastorage.org/r/w1560/extt/db/c7/a9/dbc7a9a0adc7c78319b0b6e777910b2d.png" title="Testing the model on my own sentence"/><div><figcaption>Testing the model on my own sentence</figcaption></div></figure><h3>This concludes this part. Next time, we will delve deeper into word embeddings and continue working with this network. We will also implement a neural network that will predict missing words.</h3><h3>Write your questions in the comments.</h3></div>
+  </main>
+  <footer>
+    Translation generated with Gemini 2.5 Flash-Lite.
+    The original article remains the source of record.
+  </footer>
+</body>
+</html>

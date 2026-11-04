@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Life after Claude Code: How I moved to Codex and preserved project history</title>
+  <meta name="description" content="In late October, I unexpectedly found myself without working Claude Code. After a request for identity verification, Anthropic suspended access to my paid organization. The Claude Max 20x subscription was subsequently canceled, and a refund was denied. I filed an appeal, but I didn&#x27;t want to in">
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.65;
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 32px 20px 64px;
+      color: #1f2328;
+    }
+    header {
+      border-bottom: 1px solid #d8dee4;
+      margin-bottom: 28px;
+      padding-bottom: 20px;
+    }
+    .source {
+      color: #57606a;
+      font-size: 0.95rem;
+    }
+    img, video, iframe {
+      max-width: 100%;
+      height: auto;
+    }
+    pre {
+      overflow-x: auto;
+      padding: 16px;
+      background: #f6f8fa;
+      border-radius: 6px;
+    }
+    code {
+      font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+    }
+    blockquote {
+      border-left: 4px solid #d0d7de;
+      margin-left: 0;
+      padding-left: 16px;
+      color: #57606a;
+    }
+    footer {
+      border-top: 1px solid #d8dee4;
+      margin-top: 40px;
+      padding-top: 20px;
+      color: #57606a;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Life after Claude Code: How I moved to Codex and preserved project history</h1>
+    <p>In late October, I unexpectedly found myself without working Claude Code. After a request for identity verification, Anthropic suspended access to my paid organization. The Claude Max 20x subscription was subsequently canceled, and a refund was denied. I filed an appeal, but I didn&#x27;t want to indefinitely halt project development. The problem wasn&#x27;t so much choosing another neural network. Over time working with Claude Code, dozens of projects and dialogues accumulated. They contained architectural decisions, feature discussions, experiment results, bug fixes, development plans, and many small details that didn&#x27;t always make it into the documentation. The source code is still there. Git repositories too. But how do you explain to a new agent why the project is structured this way, what options we&#x27;ve already rejected, and what we stopped at yesterday? I decided to switch to OpenAI Codex. First, I considered my own tool for transferring history, then I tried Codex&#x27;s built-in import, but I wasn&#x27;t satisfied with the result. Finally, I discovered Hansard – a tool that not only allows restoring work history across different AI agents but also offers additional capabilities for storing, searching, and reusing accumulated context. I&#x27;ll share what worked, what didn&#x27;t, and how to replicate this migration. Read on.</p>
+    <p class="source">
+      Machine-translated from Habr.
+      <a href="https://habr.com/ru/articles/1103528/?utm_campaign=1103528&amp;utm_source=habrahabr&amp;utm_medium=rss">Read the original Russian article</a>.
+      Wed, 04 Nov 2026 13:13:27 GMT
+    </p>
+  </header>
+  <main>
+<div><h2>Life after Claude Code: How I moved to Codex and preserved project history</h2><p>In late October, I unexpectedly found myself without working Claude Code. After a request for identity verification, Anthropic suspended access to my paid organization. The Claude Max 20x subscription was subsequently canceled, and a refund was denied. I filed an appeal, but I didn't want to indefinitely halt project development.</p><p>The problem wasn't so much choosing another neural network.</p><p>Over time working with Claude Code, dozens of projects and dialogues accumulated. They contained architectural decisions, feature discussions, experiment results, bug fixes, development plans, and many small details that didn't always make it into the documentation.</p><p>The source code is still there. Git repositories too. But how do you explain to a new agent why the project is structured this way, what options we've already rejected, and what we stopped at yesterday?</p><p>I decided to switch to OpenAI Codex. First, I considered my own tool for transferring history, then I tried Codex's built-in import, but I wasn't satisfied with the result.</p><p>Finally, I discovered Hansard – a tool that not only allows restoring work history across different AI agents but also offers additional capabilities for storing, searching, and reusing accumulated context.</p><p>I'll share what worked, what didn't, and how to replicate this migration.</p><hr/><h3>I wasn't the only one</h3><p>As it turned out, other Claude users faced similar problems.</p><p>In late October, reports of blocks after identity checks began appearing in Russian and international publications. Some users reported losing access to active paid subscriptions, including after presenting Russian documents while residing abroad.</p><p>Here are a few articles published before this one:</p><ol><li><p><strong>October 29 — The Insider:</strong> <a href="https://theins.ru/news/298899">"Claude chatbot users report account blocks after verification with Russian international passports"</a>.</p></li><li><p><strong>October 29 — </strong><a href="http://vc.ru"><strong>vc.ru</strong></a><strong>:</strong> <a href="https://vc.ru/ai/3223657-blokirovki-polzovatelei-claude-iz-rossii-i-kitaya">"Claude users from Russia and China report blocks after passport checks"</a>.</p></li><li><p><strong>October 29 — Kommersant:</strong> <a href="https://www.kommersant.ru/doc/9064053">"Neural network introduced passport control"</a>.</p></li><li><p><strong>October 29 — Habr:</strong> <a href="https://habr.com/ru/companies/oplatym/articles/1101190/">"Claude Block and Passport Verification: What to Do If Claude Blocks Your Account"</a>.</p></li><li><p><strong>October 30 — Habr:</strong> <a href="https://habr.com/ru/companies/study_ai/articles/1101774/">"Claude AI Blocks Russians: Passport Verification, Claude Subscriptions, How to Use in Russia"</a>.</p></li></ol><p>On November 3, T-Business Secrets published a more detailed article — <a href="https://secrets.tbank.ru/trendy/claude-blokiruet-akkaunty-shpargalka/">"Claude Blocks Accounts After Passport Verification: What Businesses Should Do"</a>.</p><p>It discusses how to save work data, prepare alternative tools, and reduce dependence on a single provider.</p><p>In my opinion, these recommendations are valid not only for businesses.</p><p>A developer who has been working with an AI agent for months can also become dependent on the service. Especially if they manage multiple projects simultaneously and a significant portion of technical discussions remains in the agent's history.</p><p>The reasons for each specific block may vary. In my case, support cited a violation of terms of use, but I didn't receive a detailed explanation. Therefore, I won't draw conclusions about why the block was triggered.</p><p>I was more interested in the other side of the problem.</p><p>Most recommendations boil down to exporting data, saving documents, and switching to another neural network. For regular chats, this is sometimes enough.</p><p>But I used <strong>Claude Code for software development</strong>, not the web chat <a href="http://Claude.ai">Claude.ai</a>.</p><p>Here, the chat history is not just a set of questions and answers. It's effectively a development log that may contain information not even present in Git.</p><p>And I wanted to retain the ability not only to continue working in Codex but also to return to Claude Code someday if access was restored. Or to try other agents without starting from scratch each time.</p><h3>First attempt: built-in import from Claude Code to Codex</h3><p>Initially, it seemed like a relatively simple task.</p><p>Claude Code stores the history of local sessions, specifically in JSONL files in the <code>~/.claude/projects/</code> directory. Codex also uses local storage for dialogues and projects.</p><p>Why not transfer the history of one agent to another?</p><p>Especially since Codex already has a built-in import mechanism.</p><p>In <strong>Codex CLI</strong>, it's enough to open a session that isn't currently running a task and type:</p><pre><code>/import</code><div><a href="https://sourcecraft.dev/"><span></span></a></div></pre><p>Then, select Claude Code or Cursor and mark the data to be transferred: settings, instructions, skills, projects, and recent dialogues.</p><p>A similar option is available in the desktop ChatGPT application: <strong>Settings → Import</strong>. In some versions, the item is located under <strong>General → Import other agent setup</strong>.</p><p>Details are described in the <a href="https://learn.chatgpt.com/docs/import">official OpenAI instructions</a>.</p><p>There's an important limitation: the built-in Codex CLI import supports up to 50 chats from the last 30 days. For someone who has been working with Claude Code for a long time and manages many projects, this might not be enough.</p><p>I tried this mechanism with my own history.</p><p>During inventory, I managed to find 25 projects and 53 Claude Code dialogues. About 50 sessions were imported, but I wasn't satisfied with the result.</p><p>Some imported sessions were incorrectly mapped to projects. Some dialogues required manual linking, the history was inconvenient to view, and some service messages and incomplete data were just a hindrance.</p><p>Moreover, the mere appearance of an old dialogue in Codex didn't mean that the new agent actually understood the decision-making history.</p><p>I had to figure out which projects the imported sessions belonged to, which ones were actually needed, and how to delete incorrect mappings.</p><p>But even if I had managed to fix everything manually, there was still another problem.</p><p>What about the next migration? Back to Claude Code? To OpenCode? To Cursor or Kimi Code?</p><p>Convert formats and transfer dialogues again?</p><p>It turned out that we were only solving one specific task – migrating from Claude Code to Codex.</p><h3>Almost started writing our own solution</h3><p>After experimenting with the built-in import, the idea of a separate tool for exchanging context between AI agents seemed increasingly interesting.</p><p>I wanted it to be able to collect history from various sources, map dialogues to projects, consider instruction files, store agreements, and transfer them to a new agent.</p><p>Not only when switching tools but also during the parallel work of several agents on the same project.</p><p>As usual, I started designing the architecture for such a solution. However, during the research process, I looked for existing solutions and what could be built from other implementations.</p><p>Among the found options was Hansard.</p><p>And here, the approach turned out to be more interesting than the initial import.</p><h3>Hansard: development history separate from the AI agent</h3><p>Official website: <a href="http://hansard.dev">hansard.dev</a></p><p>Documentation: <a href="https://www.hansard.dev/getting-started/quickstart/">Hansard Docs</a></p><p><strong>Hansard is a tool for archiving, searching, analyzing, and reusing work history with AI agents.</strong></p><p>The main difference from our initial idea: it doesn't require converting all Claude Code sessions into native Codex sessions.</p><p>Instead, a separate archive is created, from which different agents can retrieve the necessary context.</p><figure><img alt=
+  </main>
+  <footer>
+    Translation generated with Gemini 2.5 Flash-Lite.
+    The original article remains the source of record.
+  </footer>
+</body>
+</html>

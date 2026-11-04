@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Programmer with AI writes code in a day instead of a week. Do we need more testers now?</title>
+  <meta name="description" content="I encountered a misunderstanding that testers have become a bottleneck in the software development process. Modern programmers, using subscription coding agents for $20 a month, can produce the volume of code and functionality in a day&#x27;s work that they previously took a week or even a month to ">
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.65;
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 32px 20px 64px;
+      color: #1f2328;
+    }
+    header {
+      border-bottom: 1px solid #d8dee4;
+      margin-bottom: 28px;
+      padding-bottom: 20px;
+    }
+    .source {
+      color: #57606a;
+      font-size: 0.95rem;
+    }
+    img, video, iframe {
+      max-width: 100%;
+      height: auto;
+    }
+    pre {
+      overflow-x: auto;
+      padding: 16px;
+      background: #f6f8fa;
+      border-radius: 6px;
+    }
+    code {
+      font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+    }
+    blockquote {
+      border-left: 4px solid #d0d7de;
+      margin-left: 0;
+      padding-left: 16px;
+      color: #57606a;
+    }
+    footer {
+      border-top: 1px solid #d8dee4;
+      margin-top: 40px;
+      padding-top: 20px;
+      color: #57606a;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Programmer with AI writes code in a day instead of a week. Do we need more testers now?</h1>
+    <p>I encountered a misunderstanding that testers have become a bottleneck in the software development process. Modern programmers, using subscription coding agents for $20 a month, can produce the volume of code and functionality in a day&#x27;s work that they previously took a week or even a month to do. But what&#x27;s the point? Until testers verify what the programmer, along with the LLM, has produced, it won&#x27;t be released to production or made public for users. Read more</p>
+    <p class="source">
+      Machine-translated from Habr.
+      <a href="https://habr.com/ru/articles/1103436/?utm_campaign=1103436&amp;utm_source=habrahabr&amp;utm_medium=rss">Read the original Russian article</a>.
+      Wed, 04 Nov 2026 08:34:35 GMT
+    </p>
+  </header>
+  <main>
+<div><p>I encountered a misunderstanding that testers have become a bottleneck in the software development process. Modern programmers, using subscription coding agents for $20 a month, can produce the volume of code and functionality in a day's work that they previously took a week or even a month to do. But what's the point? Until testers verify what the programmer, along with the LLM, has produced, it won't be released to production or made public for users.</p><figure><img alt="Code accelerated, testing queue also woke up" loading="lazy" src="https://habrastorage.org/r/w1560/extt/e8/5d/76/e85d76eb2abf5c199cef3c8d57c4c46f.png" title="Code accelerated, testing queue also woke up"/><div><figcaption>Code accelerated, testing queue also woke up</figcaption></div></figure><p>What was the ratio of programmers to testers before? It was considered half a tester per programmer. Ideally, one tester per programmer. And how has everything changed now? If one programmer produces 3–5 times more results, then even minimally, you need 2 testers per programmer instead of half a tester, as was previously thought.</p><figure><img alt="The testing team also had to grow" loading="lazy" src="https://habrastorage.org/r/w1560/extt/2a/21/6c/2a216cb806f48994d6ceef0b48762648.png" title="The testing team also had to grow"/><div><figcaption>The testing team also had to grow</figcaption></div></figure><p>The situation with programmers is also funny: no matter how many teams I've worked in, only 20% of programmers produce 80% of all code, while the other 80% produce only 20%. How is this possible? Usually, to increase the volume of work done, they hire programmers, while costs increase by 2–3 times, and the volume of work done increases by 50% at best. And this is because it's difficult to find productive programmers, and they hire whoever they can just to fill the gap. Then the question arises: why not redirect budgets from inefficient programmers to increase the number of testers? It's easier to add $20–100 to the salaries of programmers and testers for AI and cut at least 30% of programmers. There will even be extra money left over.</p><figure><img alt="It turned out to be easier to divide contributions than to hire without a plan" loading="lazy" src="https://habrastorage.org/r/w1560/extt/fb/b4/76/fbb4762a0c13c6fa1964e1a54c8e57cf.png" title="It turned out to be easier to divide contributions than to hire without a plan"/><div><figcaption>It turned out to be easier to divide contributions than to hire without a plan</figcaption></div></figure><p>And, by the way, I don't really understand why testers don't use coding agents? For example, a tester can have access to the latest codebase and connect via MCP to the ticket system. That is, the tester asks the coding agent to create a ticket according to all the rules and even look at the codebase for clarification when creating it. Screenshots can even be added to the request to the coding agent, and they will also be included in the ticket. Then I see that many people don't want to create and maintain UI autotests. And what if the tester has a coding agent at hand that will write autotests at their request, peeking into the project code? Wouldn't that be great and fast? It's hard and time-consuming for the tester to do it themselves, and it also requires constant maintenance because the product changes, but here it will all be done for them.</p><figure><img alt="Agent on standby: ticket and autotests" loading="lazy" src="https://habrastorage.org/r/w1560/extt/6f/c0/25/6fc025efa6ca7ee09f9d07d5c71d1db2.png" title="Agent on standby: ticket and autotests"/><div><figcaption>Agent on standby: ticket and autotests</figcaption></div></figure><p>I also heard that in one of the largest product companies with an online service, they went even further. Quoting from a correspondence: "Now the agent has entered Figma, checked the screen map. Launched everything itself on the emulator, checked everything. Fixed it, opened a merge request itself, made a description with screenshots, and moved all tasks in Jira to Done." In addition to reducing programmers, they got rid of testers. They say that the person who does the task tests it themselves. But this is a categorically wrong approach. The programmer's job is to prove that it works, and the tester's job is to prove that it doesn't work. As a result, as I was told, the quality of what goes into production has, of course, decreased. But they seem to be tolerating it for now. Maybe they are waiting for a major incident to bring testers back.</p><figure><img alt="Self-checking is a good start, independent verification is insurance" loading="lazy" src="https://habrastorage.org/r/w1560/extt/cb/9c/47/cb9c476b39d5b40b777227a465d6cd97.png" title="Self-checking is a good start, independent verification is insurance"/><div><figcaption>Self-checking is a good start, independent verification is insurance</figcaption></div></figure><p><strong>Update 1.</strong></p><p>So, AI shouldn't do the tester's job. You need to test yourself. AI can only speed up the tester's work when creating tickets or writing UI autotests. Testers have become so important now precisely because they manually check the neuro-slop from programmers. This is the last line of defense, which some companies have decided to remove altogether. Which is fundamentally wrong.</p><h4>Update 2. It seems the article has touched a nerve :)</h4><p>I see that the article is actively being downvoted, but no less actively commented on. This means the topic has really struck a nerve. :) Of course, it's tempting to joke that those very 80% of programmers I wrote about are downvoting it. But this is, of course, just a joke. Although the coincidence is amusing. :) But seriously, the acceleration of development with the help of AI will inevitably force companies to reconsider the efficiency of teams and the number of employees. And those whose contribution to the overall result turns out to be the least noticeable may be the first to be cut. This is, of course, sad. Behind every layoff, there is a real person. But technological progress has never promised to preserve the usual number of jobs. And the main point of the article is not at all that programmers need to be fired. But that <strong>if development is accelerated several times, then the resources for testing must be redistributed accordingly</strong>. Otherwise, we will simply learn to produce bugs much faster.</p><p><strong>Update 3.</strong> I've accumulated a lot of karma, and with it, unused invites. I decided to share! If you need an invite to Habr, check out my profile, there are several ways to contact me. Write, and I'll send you an invitation. Free of charge, of course. :)</p><p><strong>Update 4.</strong> I am a programmer with 30 years of experience, and I am defending testers. Doesn't that seem strange to you? You would think I should praise programmers and say that testers are not needed and should be replaced by AI. :)</p></div>
+  </main>
+  <footer>
+    Translation generated with Gemini 2.5 Flash-Lite.
+    The original article remains the source of record.
+  </footer>
+</body>
+</html>

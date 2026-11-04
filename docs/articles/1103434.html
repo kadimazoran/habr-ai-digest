@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>INT8 is not to blame: how we measured samplers on quantized flow models and disproved our own idea</title>
+  <meta name="description" content="INT8 is not to blame: how we measured samplers on quantized flow models and disproved our own idea Read more">
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.65;
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 32px 20px 64px;
+      color: #1f2328;
+    }
+    header {
+      border-bottom: 1px solid #d8dee4;
+      margin-bottom: 28px;
+      padding-bottom: 20px;
+    }
+    .source {
+      color: #57606a;
+      font-size: 0.95rem;
+    }
+    img, video, iframe {
+      max-width: 100%;
+      height: auto;
+    }
+    pre {
+      overflow-x: auto;
+      padding: 16px;
+      background: #f6f8fa;
+      border-radius: 6px;
+    }
+    code {
+      font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+    }
+    blockquote {
+      border-left: 4px solid #d0d7de;
+      margin-left: 0;
+      padding-left: 16px;
+      color: #57606a;
+    }
+    footer {
+      border-top: 1px solid #d8dee4;
+      margin-top: 40px;
+      padding-top: 20px;
+      color: #57606a;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>INT8 is not to blame: how we measured samplers on quantized flow models and disproved our own idea</h1>
+    <p>INT8 is not to blame: how we measured samplers on quantized flow models and disproved our own idea Read more</p>
+    <p class="source">
+      Machine-translated from Habr.
+      <a href="https://habr.com/ru/articles/1103434/?utm_campaign=1103434&amp;utm_source=habrahabr&amp;utm_medium=rss">Read the original Russian article</a>.
+      Wed, 04 Nov 2026 08:30:03 GMT
+    </p>
+  </header>
+  <main>
+<div><p>If you run models like Flux or Qwen-Image on a home video card, you are almost certainly using quantized weights. And you have almost certainly encountered the advice: "don't use fancy samplers on a quantized model, they accumulate error." We decided to check if this is true, and got a result that turned out to be inconvenient for ourselves.</p><p>In short:</p><ul><li><p>ComfyUI's actual INT8 kernels add noise that is almost invisible in the final image;</p></li><li><p>this noise is white, meaning it's uncorrelated between steps, and that's why high-order methods amplify it;</p></li><li><p>the choice of sampler and CFG has a much greater impact;</p></li><li><p>our own Flow-WLS, which we proposed in our previous work, lost to Euler with a small number of steps;</p></li><li><p>simple low-order methods (second order, and third order for distilled models) turned out to be the best, and we made them available in the ComfyUI dropdown list.</p></li></ul><h3>Where it all began</h3><p>In our previous work (<a href="https://doi.org/10.5281/zenodo.23337579">Flow-WLS, Zenodo</a>), we proposed a multi-step sampler with regularization: it fits a polynomial to the velocity history using weighted least squares and integrates it. The idea was that such smoothing would suppress high-frequency noise caused by weight quantization. It sounded reasonable, and we expected it.</p><p>Before writing "suppresses," we recorded hypotheses in the README (initially six, then nine more before an additional series: H1-H15) and the conditions under which they would be considered confirmed. This is an important habit: it prevents fitting the conclusion to the result. Some hypotheses were not confirmed and remained in the text as they were.</p><h3>What we measured</h3><ul><li><p>Models: Anima (bf16, plus simulation of FP8/INT8/INT4/NVFP4), Flux3-Klein INT8, Krea 2 INT8 (with ConvRot), Moss-Image INT8.</p></li><li><p>4 prompts, 2-3 seeds, 8-24 steps, CFG 1-5.</p></li><li><p>Reference: the solution of the same model with a large number of steps.</p></li><li><p>For Flux3, we compared two modes of the same INT8 model: <strong>Q</strong> (actual INT8 kernels with activation quantization) and <strong>D</strong> (the same weights unpacked to bf16, without activation quantization). The difference between Q and D purely shows the kernel error.</p></li></ul><p>Metrics: relative latent error (total, by geometry, and by details), SSIM, LPIPS, observed convergence order, error structure by steps, paired confidence intervals relative to Euler.</p><h3>Result 1: quantization is harmless, and the noise is white</h3><p>The error of actual INT8 kernels <code>e = v_Q − v_D</code> turned out to be white over time: the correlation between adjacent steps is -0.001, and the accumulated error matches the prediction for white noise. Magnitude: 1.3% of the velocity norm at CFG 1 and 5.7% at CFG 4. The 4.36x increase from CFG 1 to CFG 4 is understandable: the error is multiplied by the guidance, just like any difference in predictions.</p><p>This results in a final latent of 0.02 or less. In image space, the distance between the converged solutions of Q and D: LPIPS 0.014 at CFG 1 and 0.029 at CFG 4. They are indistinguishable to the eye.</p><p>Here's an honest disclaimer: we compared INT8 kernels with the same weights in bf16. We did not measure the error of the weight rounding itself relative to the unknown bf16 original.</p><h3>Result 2: high-order methods amplify noise</h3><p>Since the error is white, its amplification by methods can be calculated. Relative to Euler:</p><div><div><table><tbody><tr><th><p>Method</p></th><th><p>White Noise Amplification</p></th></tr><tr><td><p>AB-2</p></td><td><p>1.06</p></td></tr><tr><td><p>AB-3</p></td><td><p>1.21</p></td></tr><tr><td><p>AB-4</p></td><td><p>1.97</p></td></tr></tbody></table></div></div><p>AB-4 almost doubles the noise, AB-2 barely changes it. This matched our measurements: AB-4 was the most sensitive to INT8 in our runs. But its own excessive error (0.5-0.8) is tens of times larger than the effect of quantization (up to 0.02), so quantization is not the main factor here.</p><h3>Result 3: the main factor depends on CFG</h3><p>On Anima, we ran CFG 1, 3, and 5 at 8, 12, 16, and 24 steps, with nine methods. The result:</p><ul><li><p><strong>AB-2 is better than Euler in all 12 cells</strong> (by 0.03-0.12 in latent error, confidence intervals do not include zero).</p></li><li><p><strong>DPM++ 2M</strong> outperforms Euler with strong CFG from 16-24 steps.</p></li><li><p>At <strong>CFG 1</strong> (distilled Flux3-Klein and Krea 2 models), AB-3 and dynamic selection are best.</p></li><li><p>AB-4 and long windows of Flow-WLS at ≤12 steps were never the best choice.</p></li></ul><p>That is, the statement "Euler is the best" from our first experiment was only true for the set of methods that did not include AB-2. We discovered this when we added it and corrected the conclusions in the README. It's useful to show such things, not hide them.</p><h3>Why so</h3><p>We hypothesized, and then measured: the network output is not a smooth function of the step, but a smooth trend plus noise uncorrelated between steps. Its relative magnitude is about 1% of the norm at CFG 1, about 4% at CFG 3, and 6-7% at CFG 5. The CFG term <code>s·(v_c − v_u)</code> is regenerated at each step (relative change between adjacent steps is 0.88-1.12), while the conditional part changes by 0.05-0.13.</p><p>We measured by the energy of differences: for white noise, the normalized energy <code>‖Δᵏv‖²/C(2k,k)</code> is independent of the difference order k, while for a smooth field it drops rapidly. At CFG 3-5, the profile plateaus; at CFG 1, it does not.</p><p>Rules with large weights amplify such noise, and they only win while it's small. This is consistent with the CFG results.</p><p>We checked something else: perhaps the history filter just needs to be fitted to the data? Fitting a linear filter with constant weights (leave-one-out cross-validation) yielded a gain of no more than 3.4% over the best existing rule. This means a new sampler like Flow-WLS is not needed. A side result: the consistency metric at one step poorly predicts the final rating, while the accumulated trajectory predicts it well (Spearman 0.77 on average).</p><h3>What the pictures show</h3><figure><img alt="Anima, texture prompt" loading="lazy" src="https://habrastorage.org/r/w1560/extt/25/c6/09/25c609111d9a11a2bf2a54f3f20949fd.jpg"/><div><figcaption>Anima, texture prompt</figcaption></div></figure><p>Rows: Euler, DPM++ 2M, AB-2, AB-3, WLS-8. On the tile: LPIPS to the reference.</p><ul><li><p><strong>Anima, texture prompt, 8 steps.</strong> Euler leaves almost black noise (LPIPS 0.89), AB-3 also (0.73), WLS-8 gives a blurry spot (0.97). DPM++ 2M (0.35) and AB-2 (0.42) produce a finished image. At 16 steps, Euler is 0.34 vs 0.20 (DPM++ 2M), 0.21 (AB-3), and 0.23 (AB-2).</p></li><li><p><strong>Krea 2, 12 steps.</strong> Euler produces "plastic" skin (0.34). AB-2 (0.30), DPM++ 2M (0.27), and AB-3 (0.21) restore pores and freckles.</p></li><li><p><strong>Flux3-Klein, 12 steps.</strong> Euler, DPM++ 2M, AB-2, and AB-3 are visually identical (0.15). Only WLS-8 breaks at 8 steps. For this model, there's no need to change Euler.</p></li><li><p><strong>Anima, portrait.</strong> All methods at 8-16 steps produce a different frame than the reference at 96 steps; minor LPIPS differences are not visible to the eye, but AB-3 and WLS-8 break the face at 8 steps.</p></li></ul><h3>How to use</h3><p>Place the folder in <code>ComfyUI/custom_nodes/</code> and restart ComfyUI:</p><pre><code>git clone https://github.com/YakovSava/flow-wls-research</code></pre><div><a href="https://sourcecraft.dev/"><span></span></a></div><p>In the regular <code>sampler_name</code> list (KSampler, KSamplerSelect), you will find <code>flow_ab2</code>, <code>flow_ab3</code>, <code>flow_ab4</code>. Additionally, there is a Flow Easy Sampler node with a choice of two options. What to choose:</p><ul><li><p>regular model, CFG 3 and above: <code>flow_ab2</code>, at 16+ steps also <code>dpmpp_2m</code>;</p></li><li><p>distilled model, CFG 1: <code>flow_ab3</code>;</p></li><li><p>less than 12 steps: not <code>flow_ab4</code> and not long Flow-WLS windows.</p></li></ul><p>For those interested: AB-k is implemented as a recurrent expression on the sigma grid without additional model calls:</p><pre><code>spec = adams_bashforth_spec(2)</code><code>x = sample_history(model, x, sigmas, extra_args=extra_args, spec=spec)</code></pre><div><a href="https://sourcecraft.dev/"><span></span></a></div><p>Works with flow-prediction models (Anima, Flux3, Krea 2, Moss). Not tested on SDXL-like models.</p><h3>What we haven't proven</h3><ul><li><p>LPIPS measures the distance to an image obtained over many steps, not its beauty. There is no blind test on humans.</p></li><li><p>4 prompts and 4 models, one seed per image, the best was not selected.</p></li><li><p>For Moss-Image, there is no converged reference (the solution changes with the number of steps), so only large effects are reliable there. For Flux3 at CFG 4, the reference converges at 20-34%.</p></li><li><p>For Moss and Krea 2, only the Q mode was measured; the effect of kernels was measured on Flux3.</p></li><li><p>We added AB-2 and DPM++ 2M to some experiments after the initial results; this is noted in the README.</p></li><li><p>AB-2 is not a new method. The contribution of the work is in the measurements and in the negative result regarding our own idea.</p></li></ul><p>Repository with tables and grids: <a href="https://github.com/YakovSava/flow-wls-research">https://github.com/YakovSava/flow-wls-research</a> Preprint on Zenodo: <a href="https://doi.org/10.5281/zenodo.23939696">https://doi.org/10.5281/zenodo.23939696</a></p></div>
+  </main>
+  <footer>
+    Translation generated with Gemini 2.5 Flash-Lite.
+    The original article remains the source of record.
+  </footer>
+</body>
+</html>

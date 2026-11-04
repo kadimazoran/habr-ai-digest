@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>I Recreated HackerTube for Habr in Two Hours. Here&#x27;s What Happened.</title>
+  <meta name="description" content="Andrey Karpathy compiled videos from 20 years of Hacker News comments that people have been recommending for years. I did the same for Habr: from 10 million comments, I got 388 videos with Russian descriptions, semantic search, and ad skipping. No registration required, and it&#x27;s free. Read more">
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.65;
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 32px 20px 64px;
+      color: #1f2328;
+    }
+    header {
+      border-bottom: 1px solid #d8dee4;
+      margin-bottom: 28px;
+      padding-bottom: 20px;
+    }
+    .source {
+      color: #57606a;
+      font-size: 0.95rem;
+    }
+    img, video, iframe {
+      max-width: 100%;
+      height: auto;
+    }
+    pre {
+      overflow-x: auto;
+      padding: 16px;
+      background: #f6f8fa;
+      border-radius: 6px;
+    }
+    code {
+      font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+    }
+    blockquote {
+      border-left: 4px solid #d0d7de;
+      margin-left: 0;
+      padding-left: 16px;
+      color: #57606a;
+    }
+    footer {
+      border-top: 1px solid #d8dee4;
+      margin-top: 40px;
+      padding-top: 20px;
+      color: #57606a;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>I Recreated HackerTube for Habr in Two Hours. Here&#x27;s What Happened.</h1>
+    <p>Andrey Karpathy compiled videos from 20 years of Hacker News comments that people have been recommending for years. I did the same for Habr: from 10 million comments, I got 388 videos with Russian descriptions, semantic search, and ad skipping. No registration required, and it&#x27;s free. Read more</p>
+    <p class="source">
+      Machine-translated from Habr.
+      <a href="https://habr.com/ru/articles/1103592/?utm_campaign=1103592&amp;utm_source=habrahabr&amp;utm_medium=rss">Read the original Russian article</a>.
+      Wed, 04 Nov 2026 15:51:43 GMT
+    </p>
+  </header>
+  <main>
+<div><figure><img loading="lazy" src="https://habrastorage.org/r/w1560/extt/3d/18/de/3d18ded192ae5fe7ed7821d7fdd73d8e.png"/></figure><p>YouTube recommendations are optimized for watch time. They do a great job of finding the next video you'll click on. But a lecture you'll be thinking about a year later? Not so much.</p><p>On October 31st, Andrey Karpathy launched <a href="https://hackertube.org/">HackerTube</a>. He went through all Hacker News comments from 2007 to 2026 and curated 6,454 videos that people repeatedly recommend to each other. The site looks like YouTube, but instead of an algorithm, it uses community memory: for each video, you can see who recommended it and in which thread. No registration is required, and the data is open. And the most interesting part: according to Karpathy, the entire site was written by Claude in Claude Code in about 2 hours, and he only provided the tasks.</p><p>We have our own community like that – Habr. For almost twenty years, people in the comments have been sharing links like "watch this lecture" and "the best explanation I've ever seen." These recommendations are scattered across millions of threads. I've gathered them in one place – creating <strong>"Habtube"</strong>: videos recommended on Habr. Free, ad-free, and no login required. The site is already live, and fresh comments from 2023-2026 are being downloaded right now – the collection will continue to grow.</p><p>I'll be upfront: I'm not a data scientist or a programmer. I did this the same way Karpathy did: Claude Code wrote all the code for my tasks. Below, I'll explain where the data came from, how to distinguish a recommendation from a joke, what pitfalls I encountered along the way, and how it turned out better than the original.</p><hr/><h4>What it can do</h4><ol><li><p><strong>Feed of Habr user recommendations.</strong> It contains 388 videos. Each video has been recommended by at least three different users in different months.</p></li><li><p><strong>Video page with original comments.</strong> You can read what was specifically written about the video on Habr and navigate to the exact thread.</p></li><li><p><strong>Description in Russian.</strong> What the video is about, why it's liked, its type (lecture, explanation, documentary, etc.), its difficulty level, and whether it's outdated. English lectures are also described in Russian.</p></li><li><p><strong>Topics.</strong> 27 categories: from "OS, Kernel, and Systems" to "Space" and "Movies, Humor, and Culture.".</p></li><li><p><strong>Semantic search.</strong> A query like "how a processor works" will find videos about quantum computers, "Elbrus," and x86 backdoors, even if those specific words aren't in the video content.</p></li><li><p><strong>"The same users recommend more."</strong> Videos recommended by the same Habr users.</p></li><li><p><strong>Ad skipping within videos.</strong> Using the open SponsorBlock database, the player automatically skips sponsored segments, self-promotion, and calls to subscribe. As of 04.11.2026, 41 videos in the collection have this feature, with a total of 59 skipped segments, amounting to 42 minutes.</p></li><li><p><strong>Likes, "Watch Later," history</strong> – without an account, all data is stored only in your browser.</p></li><li><p><strong>Preview – a frame from the middle of the video</strong>, not a clickbait thumbnail (this is also how Karpathy's site works).</p></li></ol><figure><img loading="lazy" src="https://habrastorage.org/r/w1560/extt/4d/fd/f7/4dfdf7ab2a491f0e1a217a2ef59eb30c.png"/></figure><figure><img loading="lazy" src="https://habrastorage.org/r/w1560/extt/3d/62/90/3d629027ffb18282151db1622edb675f.png"/></figure><figure><img loading="lazy" src="https://habrastorage.org/r/w1560/extt/0d/1c/b0/0d1cb03284154ad70fa97fdf08bfc61c.png"/></figure><hr/><h4>The Numbers</h4><p>All data measured as of 04.11.2026.</p><div><div><table><tbody><tr><td><p>Habr articles in the archive</p></td><td><p>302,049 (2006 — February 2023)</p></td></tr><tr><td><p>Comments</p></td><td><p>10,107,575</p></td></tr><tr><td><p>Links to videos (in articles and comments)</p></td><td><p>121,379</p></td></tr><tr><td><p>Unique videos in comments</p></td><td><p>39,698</p></td></tr><tr><td><p>Unique videos within articles</p></td><td><p>66,363</p></td></tr><tr><td><p>Passed the threshold "≥3 people, ≥3 months"</p></td><td><p>568</p></td></tr><tr><td><p>Comments on them</p></td><td><p>2,973</p></td></tr><tr><td><p>Remaining after filtering (88 removed from YouTube, 84 jokes and junk, 8 no data)</p></td><td><p>388</p></td></tr><tr><td><p>Time to process one archive file (10k articles)</p></td><td><p>~3 seconds</p></td></tr></tbody></table></div></div><p>For comparison: HackerTube has 6,454 videos from 39,834 commented links. Hacker News has significantly more comments than Habr, so our collection is about 17 times smaller. However, each video in it has been genuinely recommended many times.</p><p>How the number of videos changes with the threshold (YouTube only):</p><div><div><table><tbody><tr><th><p>Threshold</p></th><th><p>≥2 months</p></th><th><p>≥3 months</p></th><th><p>≥4 months</p></th></tr><tr><td><p>≥2 people</p></td><td><p>2,132</p></td><td><p>671</p></td><td><p>292</p></td></tr><tr><td><p>≥3 people</p></td><td><p>655</p></td><td><p><strong>562</strong></p></td><td><p>261</p></td></tr><tr><td><p>≥4 people</p></td><td><p>279</p></td><td><p>271</p></td><td><p>229</p></td></tr><tr><td><p>≥5 people</p></td><td><p>150</p></td><td><p>149</p></td><td><p>140</p></td></tr></tbody></table></div></div><figure><img loading="lazy" src="https://habrastorage.org/r/w1560/extt/92/b3/f6/92b3f6bd6132ddbc83261c7fa2f5883b.png"/></figure><p>I used the same threshold as Karpathy: three different people and three different months. This avoids a single spike in a popular thread while capturing recommendations that have stood the test of time.</p><hr/><h4>How it's built</h4><ol><li><p><strong>Archive.</strong> A full dump of Habr with all comments is available on Hugging Face. It was compiled by Ilya Gusev, consisting of 31 parquet files, totaling 6.2 GB.</p></li><li><p><strong>Links.</strong> A script iterates through each comment and extracts links to YouTube, RuTube, VK Video, and Vimeo.</p></li><li><p><strong>Threshold.</strong> Videos are grouped by the number of unique users who recommended them and the number of distinct months in which they were recommended. A bare link without accompanying text is not counted.</p></li><li><p><strong>Analysis.</strong> Each comment associated with a candidate video, along with the article title, was processed by the Claude model. It determined the author's intent: strong recommendation, general recommendation, citation as a source, joke, criticism, or other. It also generated a Russian description for the video.</p></li><li><p><strong>Website.</strong> The result is a static site: a single <code>index.json</code> file for all videos and a separate file with comments for each video. Everything is hosted on Cloudflare Workers, eliminating the need for database servers.</p></li></ol><hr/><h4>Pitfall #1. The original archive is restricted</h4><p><strong>Symptom:</strong> The dataset <code>IlyaGusev/habr</code> returns a <code>401</code> error, even via API.<br/><strong>Reason:</strong> The author has made it gated, requiring agreement to terms and a Hugging Face account for download.<br/><strong>Solution:</strong> There are exact open copies on Hugging Face. I verified the schema and the number of rows – 302,049, matching the original – and used <code>vypivshiy/habr</code>. Tip: check not just the name, but also the schema and <code>num_examples</code> via <code>datasets-server</code>:</p><pre><code>curl -s
+  </main>
+  <footer>
+    Translation generated with Gemini 2.5 Flash-Lite.
+    The original article remains the source of record.
+  </footer>
+</body>
+</html>

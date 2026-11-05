@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Vibe coding ends in chaos: 637 places where AI did its own thing. What is architectural drift and how I cured it</title>
+  <meta name="description" content="&quot;Create an exact copy of this image, don&#x27;t change anything.&quot; A person repeated this request to ChatGPT 101 times. They gave a real photo of Dwayne Johnson, and with each iteration, it changed until it turned into a cartoonish mess. Read more">
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.65;
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 32px 20px 64px;
+      color: #1f2328;
+    }
+    header {
+      border-bottom: 1px solid #d8dee4;
+      margin-bottom: 28px;
+      padding-bottom: 20px;
+    }
+    .source {
+      color: #57606a;
+      font-size: 0.95rem;
+    }
+    img, video, iframe {
+      max-width: 100%;
+      height: auto;
+    }
+    pre {
+      overflow-x: auto;
+      padding: 16px;
+      background: #f6f8fa;
+      border-radius: 6px;
+    }
+    code {
+      font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+    }
+    blockquote {
+      border-left: 4px solid #d0d7de;
+      margin-left: 0;
+      padding-left: 16px;
+      color: #57606a;
+    }
+    footer {
+      border-top: 1px solid #d8dee4;
+      margin-top: 40px;
+      padding-top: 20px;
+      color: #57606a;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Vibe coding ends in chaos: 637 places where AI did its own thing. What is architectural drift and how I cured it</h1>
+    <p>&quot;Create an exact copy of this image, don&#x27;t change anything.&quot; A person repeated this request to ChatGPT 101 times. They gave a real photo of Dwayne Johnson, and with each iteration, it changed until it turned into a cartoonish mess. Read more</p>
+    <p class="source">
+      Machine-translated from Habr.
+      <a href="https://habr.com/ru/articles/1103890/?utm_campaign=1103890&amp;utm_source=habrahabr&amp;utm_medium=rss">Read the original Russian article</a>.
+      Thu, 05 Nov 2026 16:44:41 GMT
+    </p>
+  </header>
+  <main>
+<div><figure><img alt="rock-101" loading="lazy" src="https://habrastorage.org/extt/88/db/77/88db77f58b3b395df4e3726cc3a15488.gif" title="&#171;Create an exact copy of this image, don&#39;t change anything&#187; 101 times in a row. Author &#8212; u/Foreign_Builder_2238, r/ChatGPT, April 2025"/><figcaption>"Create an exact copy of this image, don't change anything" 101 times in a row. Author: u/Foreign_Builder_2238, r/ChatGPT, April 2025</figcaption></figure><p>A person asked ChatGPT to make an exact copy of an image and not change anything. They provided a real photograph of Dwayne Johnson. With each iteration, the photograph changed beyond recognition until it turned into a cartoonish mess. At each step, they asked not to change anything.</p><p>It's the same with code. You told the AI which fonts to use, and it uses the same font. But the sizes are flying all over the place: on every page, the font sizes are different. This causes the overall site style to be lost.</p><p>This is architectural drift. I'm giving an example from the frontend as the easiest to understand, but the principle applies to all other development areas. The main problem is that the source of truth is drifting apart.</p><p>I don't read code at all. I only control the specs. Below is how to fix drift in agent development.</p><p>Architectural drift is cured by three principles. The truth is not the code, but the documentation (specs).</p><ol><li><p>The single source of truth is defined by the specs.</p></li><li><p>The AI must first read the specs associated with the task before executing it.</p></li><li><p>Spec tests verify the code against the documentation in a deterministic way.</p></li></ol><figure><img alt="scheme-v3-crop" loading="lazy" src="https://habrastorage.org/r/w1560/extt/70/1f/49/701f49a78da3ab135d9cdfffef0c5344.png" title="Single source of truth is defined by specs &#8594; AI reads specs before task &#8594; spec tests verify code"/><figcaption>Single source of truth is defined by specs → AI reads specs before task → spec tests verify code</figcaption></figure><h3>1. The single source of truth is defined by the specs</h3><h4>The truth is not in the code</h4><p>How do we solve the drift problem? Using the single source of truth principle. The truth is in one place. And this truth is not in the code, but in the documentation.</p><p>Why is the truth in the spec and not in the code? The architectural principle works here: the spec acts as a blueprint, and the code is the part that is machined according to the pre-made blueprint. The part is checked against the blueprint, not against another part. If a project has two sources of truth, it leads to chaos and bad code.</p><h4>7 thousand documents, and it's not a dump</h4><p>All documentation is in one folder, `docs`, in the project root. There are now over 7,000 documents, and each is in its place. It's not a dump, but a structured folder with ten levels of nesting, where each folder in 90% of cases has no more than 7 files. I structure according to the 7 plus-minus 2 rule: no more than 9 objects for key entities in each folder. That's why I know where everything is.</p><div><div><table><tbody><tr><th><p>docs folder as of November 5, 2026</p></th><th><p></p></th></tr><tr><td><p>.md files</p></td><td><p>7,478</p></td></tr><tr><td><p>nesting levels under docs</p></td><td><p>11</p></td></tr><tr><td><p>folders with no more than 7 files</p></td><td><p>95.3%</p></td></tr><tr><td><p>folders with no more than 9 files</p></td><td><p>97.4%</p></td></tr></tbody></table></div></div><p>The spec itself is just an .md file that describes what is what. Specs are written by agents. They are also read by agents. As a user, I read the admin panel: each spec has its own page in the admin panel, which describes everything the same way, but in a more human-friendly format.</p><figure><img alt="PLACEHOLDER-spek-md" loading="lazy" src="https://habrastorage.org/r/w1560/extt/21/44/a0/2144a005afe71ac67d5ddace36a1ea08.jpg" title="Typography spec as a file: roles table, on the left is the folder tree with 17 brand core files"/><figcaption>Typography spec as a file: roles table, on the left is the folder tree with 17 brand core files</figcaption></figure><figure><img alt="PLACEHOLDER-admin-tipografika" loading="lazy" src="https://habrastorage.org/r/w1560/extt/c7/34/f8/c734f8f073056658d3cb8206f5a874fd.jpg" title="The same spec in the admin panel: role, family, size, weight, color, and live sample for each line. Screen as of November 2, 2026"/><figcaption>The same spec in the admin panel: role, family, size, weight, color, and live sample for each line. Screen as of November 2, 2026</figcaption></figure><h4>One file typography.md</h4><p>Using fonts as an example. All my typography rules are in one file, `typography.md`: all fonts, sizes, and colors, how they look on the site.</p><p>A snippet from the registry in `typography.md`, the full table has 22 roles:</p><div><div><table><tbody><tr><th><p>role</p></th><th><p>family</p></th><th><p>size (desktop · mob)</p></th><th><p>weight</p></th><th><p>color</p></th></tr><tr><td><p>H1 cards</p></td><td><p>Inter</p></td><td><p>52/56 · mob 34/38</p></td><td><p>700</p></td><td><p>#111111</p></td></tr><tr><td><p>H2 articles</p></td><td><p>Inter</p></td><td><p>38/45 · mob 28/32</p></td><td><p>700</p></td><td><p>#111111</p></td></tr><tr><td><p>article lead</p></td><td><p>Charis</p></td><td><p>27/35 · mob 23/30</p></td><td><p>400</p></td><td><p>#111111</p></td></tr><tr><td><p>article paragraph</p></td><td><p>Charis</p></td><td><p>21/30 · margin 25px</p></td><td><p>400</p></td><td><p>#111111</p></td></tr><tr><td><p>base</p></td><td><p>Inter</p></td><td><p>14/21</p></td><td><p>400</p></td><td><p>#111111</p></td></tr><tr><td><p>meta</p></td><td><p>Inter</p></td><td><p>13/19</p></td><td><p>400</p></td><td><p>#8A8A8A</p></td></tr><tr><td><p>caption</p></td><td><p>Inter</p></td><td><p>12/18</p></td><td><p>400</p></td><td><p>#8A8A8A</p></td></tr></tbody></table></div></div><p>Two families for the entire site: Charis for long reads, Inter for everything else. Weights are only 400 and 700. (From the same spec: "there are no states outside the registry: a new combination = a new line by verdict.")</p><p>When an agent works with a piece of a problem, it has a specific folder containing the necessary documentation. Because each doc is in its place, it's easy for the agent to ensure that nothing within the folder contradicts the design. The agent ensures that the specs are kept in a uniform format and that nothing within them contradicts each other.</p><h3>2. AI reads specs before the task</h3><p>It needs to be forced to read the correct document, and this is specified in the base document AGENTS.md. It outlines the rules: it must read documents that correspond to the task. When I need to make a change on the site, the agent always reads the folder with the source documentation first, and in 9 out of 10 cases, it doesn't violate the rules.</p><p>For example, I see that cloud costs have skyrocketed, and I set a task to audit and figure out what can be cut. The agent must go and read all the documentation on clouds. It will see that there is a separate folder specifically for this, it will see all cloud providers and analyze them.</p><p>From AGENTS.md, as is:</p><figure><img alt="agents-md-v2" loading="lazy" src="https://habrastorage.org/r/w1560/extt/ad/c9/d7/adc9d77dec42227c29be71f7d21df5db.png" title="Lines 19–22 and 541–556: reading order and three Spec-Driven principles"/><figcaption>Lines 19–22 and 541–556: reading order and three Spec-Driven principles</figcaption></figure><h3>3. Spec tests verify the code</h3><p>Specs and the admin panel are in an indeterminate plane: there's a chance the agent will follow the examples or not. On the tenth try, we have spec tests. We write a test based on the spec. The spec lists the allowed font sizes, and the spec test checks that no other sizes are being applied to the site. If we release something to the site that doesn't pass the spec test, it doesn't pass.</p><p>The test reads two tables from `typography.md`, collects allowed pairs from the "size" column, and traverses the entire frontend. A pair or size not found in the spec will fail the build with the filename and line number:</p><figure><img alt="spek-test-v2" loading="lazy" src="https://habrastorage.org/r/w1560/extt/a6/96/69/a69669ff8555b81fe609b27611083c08.png" title="lib/brand-type.test.ts as of November 6, as is: whitelist of pairs and sizes from typography.md"/><figcaption>lib/brand-type.test.ts as of November 6, as is: whitelist of pairs and sizes from typography.md</figcaption></figure><p>Until November 6, this test was a blacklist of nine disallowed pairs. When I was preparing this article, it turned out that there were about 150 pairs in the code that were outside the spec. In one go, the agent adjusted 637 usages to match the spec, added 4 missing lines to it, and rewrote the test to be a whitelist.</p><figure><img alt="red-run" loading="lazy" src="https://habrastorage.org/r/w1560/extt/1e/86/cc/1e86ccdf5a6ef77d844b882e799ccf63.png" title="The same test run on code before the November 6 cleanup: 637 font size usages outside the spec, build is red"/><figcaption>The same test run on code before the November 6 cleanup: 637 font size usages outside the spec, build is red</figcaption></figure><div><div><table><tbody><tr><th><p>when</p></th><th><p>what came from the agent</p></th><th><p>what the test did</p></th><th><p>how it ended</p></th></tr><tr><td><p>October 1, 2026</p></td><td><p>service page price cards with pairs 14/20 and 12/16</p></td><td><p>build is red: "disallowed typo-pair"</p></td><td><p>pairs replaced with 14/21 and 12/18 from the spec, commit 1797f67</p></td></tr></tbody></table></div></div><h4>When the doc and code diverge</h4><p>When the doc and code diverge, three things come into play. First, the testing phase, which should catch the problem. Second, self-healing, which will catch the problem in production. There will be a separate article about that. And if the first and second didn't work, I, as a human, step in. My job is not to catch the problem, but to understand why this mistake happened and to ensure that it doesn't happen again next time.</p><p>It often happens that the spec existed, but the agent did its own thing. This is often because the agent didn't read the correct spec. That's why we have strict rules for it to read. But sometimes you have to point it directly to the right spec.</p><h3>In short</h3><p>One of the main goals of the entire approach is to have a single source of truth. And how we enforce this with spec tests is how we solve the problem of architectural drift.</p><p>The term is not new: the pair architectural drift / architectural erosion was introduced by Perry and Wolfe in 1992 in the article <a href="https://users.ece.utexas.edu/~perry/work/papers/swa-sen.pdf">Foundations for the Study of Software Architecture</a>. With agents, it has come alive again: <a href="https://arxiv.org/pdf/2606.27045">The Spec Growth Engine</a>, October 2026. On Habr: <a href="https://habr.com/ru/articles/1021766/">"What to do with architectural drift in the age of AI?"</a>, April 2026.</p><h3>If you're starting from scratch</h3><p>If you want to implement this in your company: take my <a href="https://github.com/eugeneshilow/spec-driven-company">Spec Driven Company</a>. It's open-source, and it's exactly what I use myself: AGENTS.md, CLAUDE.md, and the docs folder, no code inside, only specs.</p><p>Where is your source of truth located: in the code, in the docs, or in people's heads? Write in the comments what started to diverge first in your case. Questions on Telegram: personal @shilovevgeny, channel @shilovtech.</p></div>
+  </main>
+  <footer>
+    Translation generated with Gemini 2.5 Flash-Lite.
+    The original article remains the source of record.
+  </footer>
+</body>
+</html>

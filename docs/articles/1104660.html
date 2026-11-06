@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Claude Blocks Some, But Not Others. Let&#x27;s Collect Statistics on VPNs, IPs, and Network Leaks</title>
+  <meta name="description" content="In recent months, there have been many stories on Habr about Claude and Claude Code being blocked. There are also many publications online. Some users lose access after identity verification, others after several months of stable work and a paid subscription. Some are denied refunds, while others ha">
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.65;
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 32px 20px 64px;
+      color: #1f2328;
+    }
+    header {
+      border-bottom: 1px solid #d8dee4;
+      margin-bottom: 28px;
+      padding-bottom: 20px;
+    }
+    .source {
+      color: #57606a;
+      font-size: 0.95rem;
+    }
+    img, video, iframe {
+      max-width: 100%;
+      height: auto;
+    }
+    pre {
+      overflow-x: auto;
+      padding: 16px;
+      background: #f6f8fa;
+      border-radius: 6px;
+    }
+    code {
+      font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+    }
+    blockquote {
+      border-left: 4px solid #d0d7de;
+      margin-left: 0;
+      padding-left: 16px;
+      color: #57606a;
+    }
+    footer {
+      border-top: 1px solid #d8dee4;
+      margin-top: 40px;
+      padding-top: 20px;
+      color: #57606a;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Claude Blocks Some, But Not Others. Let&#x27;s Collect Statistics on VPNs, IPs, and Network Leaks</h1>
+    <p>In recent months, there have been many stories on Habr about Claude and Claude Code being blocked. There are also many publications online. Some users lose access after identity verification, others after several months of stable work and a paid subscription. Some are denied refunds, while others have their accounts restored in a matter of hours. At the same time, the same questions constantly arise in discussions: Read more</p>
+    <p class="source">
+      Machine-translated from Habr.
+      <a href="https://habr.com/ru/articles/1104660/?utm_campaign=1104660&amp;utm_source=habrahabr&amp;utm_medium=rss">Read the original Russian article</a>.
+      Fri, 06 Nov 2026 14:41:45 GMT
+    </p>
+  </header>
+  <main>
+<div><p>In recent months, there have been many stories on Habr about Claude and Claude Code being blocked. There are also many publications online. Some users lose access after identity verification, others after several months of stable work and a paid subscription. Some are denied refunds, while others have their accounts restored in a matter of hours.</p><p>At the same time, the same questions constantly arise in discussions:</p><ul><li><p>Does the VPN a person uses matter?</p></li><li><p>Does the country of the exit server and frequent IP changes have an impact?</p></li><li><p>How important are WebRTC, DNS, and IPv6 leaks?</p></li><li><p>Could a mismatch between the time zone and the IP's geography be an additional factor?</p></li><li><p>Do "clean" IP addresses really help avoid blocks?</p></li></ul><p><strong>I suggest we stop guessing and try to collect statistics.</strong></p><p><a href="https://docs.google.com/forms/d/e/1FAIpQLScsRrdH4waieVFv1EzmYxxdjtup_2afZ4_kYeJpVH3CrC5i_g/viewform"><strong>Proceed to the anonymous survey — Google Forms</strong></a></p><hr/><p>For those who want to understand the research idea in more detail, here's a little background, methodology, and a description of the data we want to compare.</p><h3>What We Already Know</h3><p>In October, a study was published on Habr titled <a href="https://habr.com/ru/articles/1095254/">"I Collected 1693 Claude Ban Stories and Checked What Might Save an Account. Spoiler: Almost Nothing."</a></p><p>The author analyzed published user stories, trying to determine which factors were associated with blocks. The study showed how difficult it is to find clear patterns even with a large number of messages.</p><p>And on November 5, another interesting article appeared: <a href="https://habr.com/ru/articles/1104162/">"Claude Blocked Me After Russian Passport Verification. Three Hours Later, My Account Was Restored and My Money Refunded."</a></p><p>The author underwent verification with a Russian international passport, received a block, and about three hours after appealing, the account was restored. Moreover, Anthropic refunded him $78.97 for the unused portion of the subscription.</p><p>I had the opposite experience: after identity verification, a paid Claude Max 20x organization was blocked, and a refund was denied, citing a violation of the Consumer Terms.</p><p>Why the decisions differ is unknown. Anthropic does not disclose the individual criteria for its checks.</p><p>I became curious if it's possible to find at least some patterns by adding measurable characteristics of users' network connections to their stories.</p><h3>Two Tools for Comparison</h3><p>There are two independent services that evaluate connection parameters.</p><h4>1. Net.Coffee — Claude AI IP Risk Check</h4><p><a href="https://ip.net.coffee/claude/">https://ip.net.coffee/claude/</a></p><p>A Chinese service focused on diagnosing access to Claude.</p><p>It shows a Trust Score on a scale of 0 to 100, identifies characteristics of the external IP, provider, ASN, signs of VPN or proxy, DNS and WebRTC/UDP check results, as well as some browser parameters.</p><h4>2. "Pay Worldwide" — Connection Check</h4><p><a href="https://ip.platipomiru.com/">https://ip.platipomiru.com/</a></p><p>A Russian service primarily designed to assess connections for international online payments.</p><p>It also uses a scale up to 100 points and analyzes geography, IP address type, reputation, WebRTC, DNS, time zone, and some other parameters.</p><p><strong>Both services are third-party. Neither of them knows Anthropic's internal criteria.</strong></p><p>A high score does not guarantee that Claude will not block an account. A low score does not prove that an account is at risk.</p><p>But comparing their results with each other and with user experiences would be interesting.</p><h3>Why I Paid Attention to These Services</h3><p>When checking one of the connections via a VPN server in New York, I received rather unexpected results:</p><div><div><table><tbody><tr><th><p>Diagnostics</p></th><th><p>Score</p></th><th><p>Score at the time of ban</p></th></tr><tr><td><p><a href="http://Net.Coffee">Net.Coffee</a></p></td><td><p>88 out of 100</p></td><td><p>26</p></td></tr><tr><td><p><a href="http://ip.platipomiru.com">ip.platipomiru.com</a></p></td><td><p>40 out of 100</p></td><td><p>0</p></td></tr></tbody></table></div></div><p>The difference is 48 points on a single connection.</p><p>At the same time, Claude continued to work at the time of the check.</p><p>This is, of course, just one observation, from which no conclusions can be drawn. But it clearly shows why you shouldn't blindly trust a single rating.</p><p>Perhaps the services use different sets of indicators, evaluate data center IPs differently, or consider completely different factors.</p><p>I want to find out how often such discrepancies occur and if there is any connection between these scores and Claude blocks.</p><h3>Let's Collect Statistics</h3><p>I have prepared an anonymous Google Form:</p><p><a href="https://docs.google.com/forms/d/e/1FAIpQLScsRrdH4waieVFv1EzmYxxdjtup_2afZ4_kYeJpVH3CrC5i_g/viewform"><strong>Participate in the study</strong></a></p><p>The questionnaire consists of 16 questions, divided into three sections.</p><p><strong>The first is about the Claude usage experience.</strong></p><p>Current account status, product used, plan, date of last block, and identity verification status.</p><p><strong>The second is about the network connection.</strong></p><p>Commercial VPN or own server, provider, exit country, IP stability, and connection changes after blocking.</p><p><strong>The third is about diagnostics.</strong></p><p>Scores from <a href="http://Net.Coffee">Net.Coffee</a> and <a href="http://ip.platipomiru.com">ip.platipomiru.com</a>, WebRTC, DNS, and IPv6 results, time zone consistency with the exit IP's geography.</p><p>Filling it out takes a few minutes. It's not mandatory to complete both diagnostic tests – you can leave the scores blank.</p><p><strong>I especially ask those whose Claude is working without problems to participate.</strong></p><p>If only blocked users respond, we will get another collection of ban stories, but we won't be able to compare them with accounts that are still working.</p><p>Therefore, we are equally interested in users who have been working with Claude Code for a long time without restrictions, and those who have encountered a block or restored access after an appeal.</p><h3>Some Important Conditions</h3><p>We do not collect email addresses, real IPs, documents, card numbers, or Claude account identifiers.</p><p>Do not send screenshots with personal information, diagnostic checks with IP addresses, or payment confirmations.</p><p>It should be noted that the third-party diagnostic sites themselves may see your IP and technical connection parameters when you visit them. Their use is voluntary.</p><p>If you have changed your VPN provider, server, country, or IP address after being blocked, be sure to note this in the questionnaire. The current score of the new connection does not characterize the one you used before the block.</p><p>We also do not intend to claim that any discovered correlation proves the cause of the block. Anthropic's decisions may be influenced by circumstances that these tests do not measure at all.</p><h3>Results are Open</h3><p><strong>The aggregated survey results are open to participants.</strong> After submitting the questionnaire, you can proceed to the statistics and see how the answers are distributed. Data is updated as new questionnaires are received.</p><p>Thus, there is no need to wait for the next article – each participant can independently review the current results.</p><p>After accumulating sufficient data, I plan to publish a detailed analysis on Habr separately: a comparison of groups, the distribution of scores from the two services, information about leaks, and the limitations of the study.</p><p>It is important to understand that this is a voluntary survey of readers, not a representative sample of all Claude users. We will not be able to calculate the real probability of a block based on a single IP rating. But we will be able to test specific assumptions and see which questions deserve further study.</p><h3>Help Collect More Responses</h3><p><strong>Please share the link to the questionnaire with friends, colleagues, and acquaintances who use or have used Claude and Claude Code.</strong></p><p>It is especially useful to distribute it in developer communities, among Claude Max users, in professional chats, and among those who have not encountered blocks at all.</p><p>The more diverse the participants, the more useful the comparison will be.</p><p><strong>Link to the questionnaire:</strong></p><p><a href="https://docs.google.com/forms/d/e/1FAIpQLScsRrdH4waieVFv1EzmYxxdjtup_2afZ4_kYeJpVH3CrC5i_g/viewform">https://docs.google.com/forms/d/e/1FAIpQLScsRrdH4waieVFv1EzmYxxdjtup_2afZ4_kYeJpVH3CrC5i_g/viewform</a></p><p>If you have already encountered a block, share in the comments whether you managed to restore your account and get a refund.</p><p>And if your Claude has been working for many months without a single problem – your experience is no less valuable for the study.</p><p><strong>Let's try to separate real patterns from assumptions.</strong></p></div>
+  </main>
+  <footer>
+    Translation generated with Gemini 2.5 Flash-Lite.
+    The original article remains the source of record.
+  </footer>
+</body>
+</html>

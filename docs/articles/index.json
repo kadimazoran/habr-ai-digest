@@ -4119,6 +4119,14 @@
     "summary": "Several works in the literature have studied the attitude of different noo-spheres / LLMs towards risk. This article presents a review of these works from the perspective of the author's developing LLM theory. Interestingly, although in the general case the task (prompt) influences the riskiness of the noo-sphere's behavior, for popular models with identical starting conditions, a pattern in the riskiness of their behavior has been found: Claude Sonnet 4.5 < DeepSeek V3.2 < Gemini 3 Pro < Qwen3 Max < GPT-5.2. Read more",
     "title": "LLM Conversations: Risk Propensity of Different Noo-spheres / LLMs"
   },
+  "https://habr.com/ru/articles/1102338/?utm_campaign=1102338&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Fri, 06 Nov 2026 10:20:04 GMT",
+    "slug": "1102338",
+    "source_url": "https://habr.com/ru/articles/1102338/?utm_campaign=1102338&utm_source=habrahabr&utm_medium=rss",
+    "summary": "I recently wanted to test the quality of AI models for translation. I've already translated quite a few books and texts using cloud models like Qwen, Claude, OpenAI, and Gemini, and I'm increasingly satisfied with the results. I don't think translators need to look for new jobs just yet, but the reality today is that you can translate any book in any language into Russian and at least understand what it's about. Of course, nuances of style, language subtleties, and local life realities remain crucial for translating complex fiction, requiring that 'life context' that models lack. However, the latest versions of Claude and OpenAI have become quite adept at translating authorial style. If you need to read texts that aren't necessarily highly specialized, AI translation will likely satisfy you. There are still subtleties, of course—checks and prompts—but that's a matter of technique, solvable with skills and token budget. Yet, cloud translations aren't always accessible due to budget and copyright policies (and it's unclear how long they'll remain available), so I wondered how much I could rely on local models running on a modest setup by today's standards: NVIDIA GeForce RTX 5060 Ti 16 GB, Core Ultra 7 265, 96 GB DDR5. Translations were checked for various languages, all translated into Russian. To make the benchmark more representative, I chose several languages for testing: English, Spanish, Chinese, and Hebrew. I know most of them, so I can evaluate the translation visually, although it wasn't necessary. The reference translation was done with Claude models, then 'judge models' (Claude and OpenAI) evaluated each translation, assigning a score. Both translation quality and speed were measured. Translation goals: Read more",
+    "title": "Local LLMs for Text Translation — A Benchmark on RTX 5060 Ti with 16GB VRAM"
+  },
   "https://habr.com/ru/articles/1102340/?utm_campaign=1102340&utm_source=habrahabr&utm_medium=rss": {
     "model": "gemini-2.5-flash-lite",
     "published": "Sun, 01 Nov 2026 15:26:46 GMT",
@@ -4367,6 +4375,46 @@
     "summary": "About how we gained superpowers but sold our souls, and why it feels so good. When I was writing this article, you won't believe it, I came across a video that perfectly illustrates what I'm writing about. Coincidence? I've attached the video. Read more",
     "title": "Why AI Will Make You Helpless"
   },
+  "https://habr.com/ru/articles/1104178/?utm_campaign=1104178&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Fri, 06 Nov 2026 16:19:35 GMT",
+    "slug": "1104178",
+    "source_url": "https://habr.com/ru/articles/1104178/?utm_campaign=1104178&utm_source=habrahabr&utm_medium=rss",
+    "summary": "Obsidian's built-in search returned \"0 files\" for two out of three of my questions. Veynrel found the right notes even though I asked in my own words, and one model initially ranked the correct answer fourth. I'll show you the results and how to set it up locally for free. Read on",
+    "title": "\"I Wrote This Down Somewhere\": Why I Created Semantic Search for Obsidian"
+  },
+  "https://habr.com/ru/articles/1104618/?utm_campaign=1104618&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Fri, 06 Nov 2026 13:45:38 GMT",
+    "slug": "1104618",
+    "source_url": "https://habr.com/ru/articles/1104618/?utm_campaign=1104618&utm_source=habrahabr&utm_medium=rss",
+    "summary": "At that point, I was already using agents in my own work: connecting different models, organizing mutual checks, accumulating experience between sessions. I had experience implementing corporate systems, so training and support were not new to me. Now I had to assemble an analyst's workbench that would provide a different speed of creating software documentation. Along with the tools, I had to transfer the way of working: how to set a task, check the result, get help, and save the found solution for others. As implementation progressed, roles and skills were added: canon owner, update releases, messenger support, and several memory levels. In the article, I will explain what problems required these solutions and what had to be reconsidered along the way. Read more",
+    "title": "How I Built an AI Workbench for an Analyst in an IT Company"
+  },
+  "https://habr.com/ru/articles/1104642/?utm_campaign=1104642&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Fri, 06 Nov 2026 14:11:11 GMT",
+    "slug": "1104642",
+    "source_url": "https://habr.com/ru/articles/1104642/?utm_campaign=1104642&utm_source=habrahabr&utm_medium=rss",
+    "summary": "In the first part, I discussed how I built a RAG system with a LangGraph agent on local LLMs. It could search for news, answer questions, and extract entities. But for trading, this is not enough – you need to not just read, but predict. In this article, I will explain how I turned a news scraper into an ML pipeline that generates trading signals (BUY/SELL/NEUTRAL) with evidence. We will go from linking news to tickers to an Explainable UI, analyze pitfalls with small data, and look into the project's architectural future. Stack: Scikit-learn, Plotly, FastAPI, Streamlit, PostgreSQL, Ollama. Read more",
+    "title": "How I Crossed RAG, LLM, and RandomForest: An Architecture for Trading Signals with Evidence"
+  },
+  "https://habr.com/ru/articles/1104660/?utm_campaign=1104660&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Fri, 06 Nov 2026 14:41:45 GMT",
+    "slug": "1104660",
+    "source_url": "https://habr.com/ru/articles/1104660/?utm_campaign=1104660&utm_source=habrahabr&utm_medium=rss",
+    "summary": "In recent months, there have been many stories on Habr about Claude and Claude Code being blocked. There are also many publications online. Some users lose access after identity verification, others after several months of stable work and a paid subscription. Some are denied refunds, while others have their accounts restored in a matter of hours. At the same time, the same questions constantly arise in discussions: Read more",
+    "title": "Claude Blocks Some, But Not Others. Let's Collect Statistics on VPNs, IPs, and Network Leaks"
+  },
+  "https://habr.com/ru/articles/1104684/?utm_campaign=1104684&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Fri, 06 Nov 2026 15:10:51 GMT",
+    "slug": "1104684",
+    "source_url": "https://habr.com/ru/articles/1104684/?utm_campaign=1104684&utm_source=habrahabr&utm_medium=rss",
+    "summary": "How I built a bot that joins meetings in Teams, Yandex Telemost, and MTS Link, records conversations, and provides transcripts and summaries with action items within minutes. Why not Copilot or native Teams transcription, why two separate streams instead of one, what pitfalls I encountered, and what four months in production have shown. Read on.",
+    "title": "DIY Meeting Assistant: Anonymous Chrome in a Container, Calendar via EWS, and Two Thousand Meetings in Production"
+  },
   "https://habr.com/ru/companies/1c/articles/1071340/?utm_campaign=1071340&utm_source=habrahabr&utm_medium=rss": {
     "model": "gemini-2.5-flash-lite",
     "published": "Thu, 03 Sep 2026 07:18:11 GMT",
@@ -4494,6 +4542,14 @@
     "source_url": "https://habr.com/ru/companies/astrazeneca/articles/1103070/?utm_campaign=1103070&utm_source=habrahabr&utm_medium=rss",
     "summary": "In 2022, our team had a specific task: to prepare a local replacement for the global CRM so that employees could continue their usual work without interruption. The system was already part of daily processes. It was used to plan visits to healthcare professionals, record interaction results, and manage communications. The main driver for localization was the risk of the global solution being disconnected. But there were other reasons too: the desire for more flexibility in system development, simplification of certain processes, and consolidation of several existing local solutions into a single platform. At the time, no one was thinking about a digital assistant, artificial intelligence, automatic visit planning, or migrating other corporate systems into the CRM. The primary goal was to maintain business continuity and gain control over the platform's future development. Several years later, it became clear that the outcome was far more ambitious than initially conceived. Read more",
     "title": "From Risk Reduction to a Digital Platform: How We Localized CRM at AstraZeneca, Russia and Eurasia"
+  },
+  "https://habr.com/ru/companies/atom/articles/1104602/?utm_campaign=1104602&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Fri, 06 Nov 2026 13:28:08 GMT",
+    "slug": "1104602",
+    "source_url": "https://habr.com/ru/companies/atom/articles/1104602/?utm_campaign=1104602&utm_source=habrahabr&utm_medium=rss",
+    "summary": "When we first looked at automatic evaluations of AI reports for work meetings (on a five-point scale), it turned out that 45% of them received a C or lower. To understand if this was good or bad and where to look for the cause, we first had to learn how to count: who uses our services, whether they return to them, and what they get in the end. We will talk about this journey, from the list of visitors in the admin panel to the manual analysis of 56 reports, in this article. So",
+    "title": "45% of our AI reports received a C grade or lower: how we measured metrics and what we found"
   },
   "https://habr.com/ru/companies/aurorium/articles/1101594/?utm_campaign=1101594&utm_source=habrahabr&utm_medium=rss": {
     "model": "gemini-2.5-flash-lite",
@@ -4790,6 +4846,14 @@
     "source_url": "https://habr.com/ru/companies/domate/articles/1100550/?utm_campaign=1100550&utm_source=habrahabr&utm_medium=rss",
     "summary": "The word \"incident\" is increasingly appearing alongside \"agent\" in news feeds, but we're not here to discourage you from implementing agent applications in corporate processes. Quite the opposite. This article is about how to avoid ending up in the news headlines with the word \"incident\" and about ten practical questions to ask before a pilot. Read more",
     "title": "What to Check Before Implementing an AI Agent in a Corporate Environment"
+  },
+  "https://habr.com/ru/companies/domate/articles/1104700/?utm_campaign=1104700&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Fri, 06 Nov 2026 15:53:15 GMT",
+    "slug": "1104700",
+    "source_url": "https://habr.com/ru/companies/domate/articles/1104700/?utm_campaign=1104700&utm_source=habrahabr&utm_medium=rss",
+    "summary": "An article discusses a case where a Science publication contained a significant error (2.1 billion white herons, exceeding the global population) due to a data entry mistake (2^31 - 1). The author explores whether AI could have detected such errors before publication and concludes that while AI can assist in checking data consistency, references, and code, it cannot replace human judgment in assessing data suitability or defining 'normal' in a subject area. The article introduces two tools, Domate (for plagiarism and AI detection) and Dotrace (an AI-assisted editor for academic writing), and proposes developing AI presets for specific checks like bibliography verification, arithmetic control, logical consistency, and skeptical review to enhance research quality and train researchers in critical self-assessment, while emphasizing that ultimate responsibility remains with the human author.",
+    "title": "How to Separate Author Assistance from Scientific Work Substitution"
   },
   "https://habr.com/ru/companies/domclick/articles/1085232/?utm_campaign=1085232&utm_source=habrahabr&utm_medium=rss": {
     "model": "gemini-2.5-flash-lite",
@@ -5094,6 +5158,14 @@
     "source_url": "https://habr.com/ru/companies/infostart/articles/1103176/?utm_campaign=1103176&utm_source=habrahabr&utm_medium=rss",
     "summary": "27 years of coding, and then fully entrusting development to AI? Speeding up report generation 14 times? Connecting an AI agent to 1C, transforming the familiar Configurator, and finding a new job with a neural network? In the new Infostart selection, you'll find real cases, unexpected experiments, and practical solutions from community members. We explore which tools are already changing the work of 1C specialists, how they save time, and what opportunities they open up for developers. Read more",
     "title": "From AI Development to Job Search: Five Interesting Infostart Publications"
+  },
+  "https://habr.com/ru/companies/infostart/articles/1104668/?utm_campaign=1104668&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Fri, 06 Nov 2026 14:46:14 GMT",
+    "slug": "1104668",
+    "source_url": "https://habr.com/ru/companies/infostart/articles/1104668/?utm_campaign=1104668&utm_source=habrahabr&utm_medium=rss",
+    "summary": "A large language model doesn't know how a specific information base is structured. It cannot see configuration modules, active extensions, user rights, or document data until it gains controlled access. Therefore, the practical task isn't just choosing a model. It's about gathering relevant context for it, limiting its actions, and incorporating result verification. Let's explore how this process works in an AI assistant for 1C and where a specialist is still needed. Read more",
+    "title": "How an AI assistant gets 1C context and checks extensions"
   },
   "https://habr.com/ru/companies/infowatch/articles/1083954/?utm_campaign=1083954&utm_source=habrahabr&utm_medium=rss": {
     "model": "gemini-2.5-flash-lite",
@@ -5943,6 +6015,14 @@
     "summary": "Hello, Habr. I'm Mikhail Miroshnikov from Sber's B2C Data and Recommendation Systems department. I'll talk about changes in preparing banking communications: AI generation of text formats, their almost instant approval using LLM checks, and where this is leading content teams. Read more",
     "title": "How We Reduced Content T2M from 7 Days to 1 Hour Using a Data-Driven Approach and Turning a Famous Meme Inside Out"
   },
+  "https://habr.com/ru/companies/sberbank/articles/1104670/?utm_campaign=1104670&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Fri, 06 Nov 2026 14:53:30 GMT",
+    "slug": "1104670",
+    "source_url": "https://habr.com/ru/companies/sberbank/articles/1104670/?utm_campaign=1104670&utm_source=habrahabr&utm_medium=rss",
+    "summary": "Imagine: a technical specification on the table and three contractor proposals. Prices are for different periods, some conditions are in appendices, one proposal is missing an obligatory work item. You need to read everything, compare, recalculate under the same conditions, and prepare a memo with sources. You can ask an AI to explain how to do this, or you can give it documents and tools and assign the work itself: let it read, compare, calculate, and return the result. In the second case, the model is already managing the task execution. This is an agent. Under the hood, it's a familiar loop: the model selects a tool and call parameters, ordinary code executes the tool, and the result is returned to the model. And so on. This principle—reason, act, observe the result—is the basis of ReAct. An engine and four wheels are present in both a truck and a car, but they are not interchangeable. The same applies to agents: all the interesting stuff starts with questions that didn't make it into the pseudocode. -Is the proposed command even executable? —What to do if the tool returns a gigabyte of text? —How to continue working when the context window is full? —Is the model's phrase \"done\" enough to close the task? All this is assembled into a harness—the agent's execution environment: the loop, tools, memory, checks, limits, and action history. This is where most of the engineering work lies. We at GigaCode R&D develop models for agent tasks. We needed an executor with which we could experiment, get training data, and solve applied problems. Thus, GigaCode Universal Agent was born—an open-source Python project with model connections via chat/completions API. We'll explain what surrounds the agent loop and how a single core is used for working with documents, code, and external systems. Read more",
+    "title": "Most AI Agents Are the Same Inside. So What's the Difference?"
+  },
   "https://habr.com/ru/companies/selectel/articles/1078306/?utm_campaign=1078306&utm_source=habrahabr&utm_medium=rss": {
     "model": "gemini-2.5-flash-lite",
     "published": "Sun, 06 Sep 2026 08:00:45 GMT",
@@ -6038,6 +6118,14 @@
     "source_url": "https://habr.com/ru/companies/selectel/articles/1095406/?utm_campaign=1095406&utm_source=habrahabr&utm_medium=rss",
     "summary": "Hello, my name is Natasha, I am a project manager at Selectel. I recently talked about how and why we created aish — an AI agent in the terminal of a server OS. I suggest moving on to practice and connecting a third-party LLM to it. In this article, I will show you how to choose a suitable model, configure it correctly, and avoid common integration mistakes. Read more",
     "title": "How to add your own LLM to aish"
+  },
+  "https://habr.com/ru/companies/severstal/articles/1104690/?utm_campaign=1104690&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Fri, 06 Nov 2026 15:15:28 GMT",
+    "slug": "1104690",
+    "source_url": "https://habr.com/ru/companies/severstal/articles/1104690/?utm_campaign=1104690&utm_source=habrahabr&utm_medium=rss",
+    "summary": "At COMETAL, we are building a platform for industrial cooperation. Through it, we help customers find manufacturers for metal products, and manufacturers find orders. In this article, I'll tell you how we built the platform, why we abandoned ready-made solutions, and how we reached the point where neural networks test our platform at night, generate charts on demand in natural language, and even deploy code to production themselves (yes, that happened too). Read more",
+    "title": "How We Built a Platform from Scratch and Then Taught Neural Networks to Work on It"
   },
   "https://habr.com/ru/companies/sibur_official/articles/1101182/?utm_campaign=1101182&utm_source=habrahabr&utm_medium=rss": {
     "model": "gemini-2.5-flash-lite",
@@ -6574,6 +6662,14 @@
     "source_url": "https://habr.com/ru/companies/vkusvill/articles/1094732/?utm_campaign=1094732&utm_source=habrahabr&utm_medium=rss",
     "summary": "Hello! We have news: VkusVill has prepared an MCP server with authorization! The address is the same, mcp.vkusvill.ru/mcp, and to access the full functionality, please register at https://vkusvill.ru/oauth/registration/ and authorize via the link from your agent. More details below. Read more",
     "title": "MCP Server with Authorization: What We Did to Make It Secure"
+  },
+  "https://habr.com/ru/companies/vkusvill/articles/1104486/?utm_campaign=1104486&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Fri, 06 Nov 2026 11:16:21 GMT",
+    "slug": "1104486",
+    "source_url": "https://habr.com/ru/companies/vkusvill/articles/1104486/?utm_campaign=1104486&utm_source=habrahabr&utm_medium=rss",
+    "summary": "Hello everyone! My name is Oleg Malyshev, and I am one of the testing stack leads at TechVell. We continue our conversation about applying AI in testing to automate routine tasks. Read more",
+    "title": "Knowledge Base on Steroids: How AI Agents Use QA to Populate Shared Testing Memory"
   },
   "https://habr.com/ru/companies/vtb/articles/1086030/?utm_campaign=1086030&utm_source=habrahabr&utm_medium=rss": {
     "model": "gemini-2.5-flash-lite",

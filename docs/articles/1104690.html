@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>How We Built a Platform from Scratch and Then Taught Neural Networks to Work on It</title>
+  <meta name="description" content="At COMETAL, we are building a platform for industrial cooperation. Through it, we help customers find manufacturers for metal products, and manufacturers find orders. In this article, I&#x27;ll tell you how we built the platform, why we abandoned ready-made solutions, and how we reached the point wh">
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.65;
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 32px 20px 64px;
+      color: #1f2328;
+    }
+    header {
+      border-bottom: 1px solid #d8dee4;
+      margin-bottom: 28px;
+      padding-bottom: 20px;
+    }
+    .source {
+      color: #57606a;
+      font-size: 0.95rem;
+    }
+    img, video, iframe {
+      max-width: 100%;
+      height: auto;
+    }
+    pre {
+      overflow-x: auto;
+      padding: 16px;
+      background: #f6f8fa;
+      border-radius: 6px;
+    }
+    code {
+      font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+    }
+    blockquote {
+      border-left: 4px solid #d0d7de;
+      margin-left: 0;
+      padding-left: 16px;
+      color: #57606a;
+    }
+    footer {
+      border-top: 1px solid #d8dee4;
+      margin-top: 40px;
+      padding-top: 20px;
+      color: #57606a;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>How We Built a Platform from Scratch and Then Taught Neural Networks to Work on It</h1>
+    <p>At COMETAL, we are building a platform for industrial cooperation. Through it, we help customers find manufacturers for metal products, and manufacturers find orders. In this article, I&#x27;ll tell you how we built the platform, why we abandoned ready-made solutions, and how we reached the point where neural networks test our platform at night, generate charts on demand in natural language, and even deploy code to production themselves (yes, that happened too). Read more</p>
+    <p class="source">
+      Machine-translated from Habr.
+      <a href="https://habr.com/ru/companies/severstal/articles/1104690/?utm_campaign=1104690&amp;utm_source=habrahabr&amp;utm_medium=rss">Read the original Russian article</a>.
+      Fri, 06 Nov 2026 15:15:28 GMT
+    </p>
+  </header>
+  <main>
+<div><figure><img loading="lazy" src="https://habrastorage.org/r/w1560/extt/ab/f3/13/abf3131675b61ef674bc7100a1b1f88a.jpg"/></figure><p>Hello, Habr! My name is Sergey Protatskiy, I am the Product Director at <a href="https://cometal.ru">COMETAL</a>. We are building a platform for industrial cooperation, through which we help customers find manufacturers for metal products, and manufacturers find orders.</p><p>Over the past few years, we have gone from an external off-the-shelf solution that couldn't handle our tasks to our own platform with a strong IT team. In parallel, we have learned to use neural networks so that they not only write code but actually work for the business. Today, we have 14 AI agents, and they are doing things that seemed like science fiction just a couple of years ago.</p><p>In this article, I will tell you how we built the platform, why we abandoned ready-made solutions, and how we reached the point where neural networks test our platform at night, generate charts on demand in natural language, and even deploy code to production themselves (yes, that happened too).</p><p><strong>From Off-the-Shelf to Our Own Product: How We Realized There Were No Ready-Made Solutions</strong></p><p>When I joined the project as an analyst, it was still a hypothesis – a platform for selling metal products. We started with AMS CRM, and I proposed a bunch of integrations: telephony, business processes, various services. But it quickly became clear that classic CRMs were not suitable. Our model is different: we first purchase the product from a manufacturer, then sell it to a customer. This involves two different contracts, two different logics. A single request needs to account for both purchasing and selling. CRMs are not designed for this.</p><p>We took an off-the-shelf e-commerce solution and started modifying it. We rewrote about 80% of the code. But we ran into a problem – a monolithic architecture. We were growing rapidly, adding functionality, and the system started breaking. We'd fix one thing, and another would break. It became obvious that this was a dead end.</p><p>We abandoned it. We kept the main things – the developments and the knowledge of the business process. There are no analogues to our platform on the market; we are pioneers. Everything we do, we invent ourselves.</p><p>We found a new vendor and set the task. But here too, a surprise awaited us: the vendor tackled the job enthusiastically, but this burst of energy lasted only a couple of months. The speed dropped, the product turned out to be more complex than they thought. We received the first version only after six months, and by then we already knew: we wouldn't work with them anymore.</p><p>In May 2023, we had our first internal development team. In November, we ended our relationship with the vendor, took the code, settled financial matters, and the team started working at full capacity. Currently, COMETAL's IT department has 25 people: analysts, backend and frontend developers, testers, architects, DevOps engineers, designers, and technical support.</p><p><strong>Where Do AI Agents Live?</strong></p><p>The most challenging part was creating the infrastructure. Agents need a place to live, a platform to orchestrate them. We considered ready-made solutions, but they didn't fit: either too expensive, or lacking in functionality, or it turned out that the company was passing off open-source as their own development.</p><p>We decided to build it ourselves. And here we had an advantage: we already knew how to apply AI in our work. I built the platform myself with the help of neural networks. We ordered a pentest – we weren't hacked. After that, we started creating agents and launching them into action.</p><p>All agents live in Yandex.Messenger. We operate in a closed environment, tightly integrated with Yandex.Tracker and Yandex.Wiki. Users write to agents directly in their work chats – it's convenient: no need to switch between platforms.</p><p>An important point about security: we use local models. If we work with cloud models, all sensitive information passes through a masker. The masker replaces real data with masks, and upon returning the request, performs de-masking. The user thinks the model simply processed the request, but in reality, the data is protected. We do not disclose personal data or trade secrets.</p><p><strong>Our Agents: Who Are They and What Do They Do?</strong></p><p>We now have 14 full-fledged agents. I'll list the main ones to give you an idea of what exactly we've handed over to neural networks.</p><p><strong>"Arkady"</strong> – our first agent. Writes technical specifications. Any user can write to him in Yandex.Messenger, describe an idea, and "Arkady" will turn it into a structured technical specification that will immediately go into the task tracker. He is connected to Wiki and Tracker, knows everything about our system, and can answer any question about task status.</p><p><strong>"Iridа"</strong> – processes incoming emails. 80% of requests come via email. Previously, a manager would open the email, manually copy data, enter the INN, company name, contacts. Now "Iridа" takes the email and fills out the request within 30 seconds. Everything is automatic: INN, name, CEO, contacts. No manual input.</p><p><strong>"Gennady"</strong> – for the technical department. Cleans drawings of personal data and trade secrets. Previously, technologists would open each drawing and manually delete everything unnecessary. Now "Gennady" does it with a button. He also checks the completeness of design documentation: he can quickly tell which drawings are missing.</p><p><strong>"Nestor"</strong> – checks counterparties. You give him the INN and role (customer or contractor), and he collects information from open and closed sources, checks it through "Kontur.Focus," and provides a conclusion: whether it's worth working with this company or not. All in two minutes.</p><p><strong>"German"</strong> – handles pre-contractual work. He can write letters, collect a set of constituent documents, and fill out forms for tender submissions.</p><p><strong>"Prokhor"</strong> – a neuro-lawyer. You upload a contract, and he checks it against our risk map, highlighting all problem areas. The risk map was created by our lawyers; "Prokhor" simply applies it to each new contract.</p><p><strong>"Porphyry"</strong> – for production. Compares specifications against the standard, compiles tables from KMD (construction and assembly drawings), and checks certificates.</p><p><strong>"Analyst"</strong> – a new agent that appeared very recently. It works directly on the platform, connected to a replica of our production database (a copy is taken every hour). Now any employee can write to the agent in natural language: "Select customers with such-and-such contacts for such-and-such a rework" or "Build a dynamics chart for a period." The agent itself goes into the database, retrieves data, processes it, and provides the result. Now obtaining information takes minutes instead of days waiting in line. Fun fact: I wasn't planning to release it, but I threw some ideas at it on Friday night and went to sleep. On Saturday, a colleague writes: "Cool functionality." The agent finished everything itself and deployed it to production.</p><p><strong>"Context"</strong> – a second brain for the salesperson. A complete dossier on the customer and the deal. You can ask it any question about a request or counterparty, and it will provide all the information: what we did with them, what we sold, what agreements were made. A call comes in – it immediately transcribes it, records operational information, and updates the data every half hour. Remember how often in meetings you hear: "Give me the status on the requests"? Now this status will be collected by the agent. We will also refine it so that it shows at what stage the request was "stuck."</p><p><strong>"QA-Calibrator"</strong> – tests the platform. It takes a test case from Yandex.Wiki, opens the QA stand, logs in with the required role, and starts checking step-by-step: clicks buttons, observes the result. When it successfully completes the entire path, it generates a special script with precise locators. Then, this script, without a neural network, simply runs the buttons. Every night at 10:00 PM, a run is launched. By 7:00 AM, everything is ready. At 8:00 AM, a report arrives in the messenger: so many passed, so many failed. Previously, manually checking the entire platform took two person-days. Now the entire run takes literally an hour.</p><p><strong>"Triage"</strong> – sorts failed tests and helps understand where the problem is: was the code broken, or is the test case outdated?</p><p>There is also the <strong>"OCR-bot"</strong> – this is a function, not a full-fledged agent, but it's important. It recognizes text in any documents and scans, including those without a text layer. It works through Apple Vision or more powerful visual models if Apple Vision is insufficient.</p><p>And a few more agents for internal technical needs: they help developers with notifications and check merge requests for code quality.</p><p><strong>Plans and Thoughts for the Future</strong></p><p>It's difficult to predict development a year in advance. Everything depends on the global trend. If faster and higher-quality models are released, we will be able to implement 2027 plans faster and with fewer people. If new technological solutions emerge, we might completely rewrite the platform for agents to make them even better.</p><p>We don't chase trends. If a task can be solved with an algorithm, we solve it with an algorithm. It's cheaper, faster, and more stable. If indirect logic is needed, we use AI. Human control remains mandatory. Neural networks make mistakes, and we cannot afford to miss an error.</p><p>In a year or two, I see this picture: all employees of the IT department use AI in their work. Routine tasks are automated, people focus on complex tasks requiring professional judgment. Developers stop being coders – they become engineers who manage neural networks. Analysts write business requirements, not system technical specifications.</p><p><strong>An Argument for Those Who Doubt</strong></p><p>Many fear that AI will replace people. I think differently: specialists who know how to apply AI in their work will gain an advantage. If I have two developers – one uses neural networks, and the other doesn't – the first one will be able to solve some tasks faster. Speed is everything here. A feature that takes a month to develop can be done in a week with a neural network.</p><p>In our team, we are currently rotating staff, and that's normal. For a certain stage of product development, specific people are needed.</p><p>For those who are just thinking about starting: just try it. Working with AI is significantly easier than it seems. Start with the most routine task – offload it to a neural network and see the result. This is the best way to convince yourself.</p><p>If you have similar experience or questions, you are welcome in the comments. 🤝</p></div>
+  </main>
+  <footer>
+    Translation generated with Gemini 2.5 Flash-Lite.
+    The original article remains the source of record.
+  </footer>
+</body>
+</html>

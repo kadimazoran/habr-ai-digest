@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Local LLMs for Text Translation — A Benchmark on RTX 5060 Ti with 16GB VRAM</title>
+  <meta name="description" content="I recently wanted to test the quality of AI models for translation. I&#x27;ve already translated quite a few books and texts using cloud models like Qwen, Claude, OpenAI, and Gemini, and I&#x27;m increasingly satisfied with the results. I don&#x27;t think translators need to look for new jobs just y">
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.65;
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 32px 20px 64px;
+      color: #1f2328;
+    }
+    header {
+      border-bottom: 1px solid #d8dee4;
+      margin-bottom: 28px;
+      padding-bottom: 20px;
+    }
+    .source {
+      color: #57606a;
+      font-size: 0.95rem;
+    }
+    img, video, iframe {
+      max-width: 100%;
+      height: auto;
+    }
+    pre {
+      overflow-x: auto;
+      padding: 16px;
+      background: #f6f8fa;
+      border-radius: 6px;
+    }
+    code {
+      font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+    }
+    blockquote {
+      border-left: 4px solid #d0d7de;
+      margin-left: 0;
+      padding-left: 16px;
+      color: #57606a;
+    }
+    footer {
+      border-top: 1px solid #d8dee4;
+      margin-top: 40px;
+      padding-top: 20px;
+      color: #57606a;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Local LLMs for Text Translation — A Benchmark on RTX 5060 Ti with 16GB VRAM</h1>
+    <p>I recently wanted to test the quality of AI models for translation. I&#x27;ve already translated quite a few books and texts using cloud models like Qwen, Claude, OpenAI, and Gemini, and I&#x27;m increasingly satisfied with the results. I don&#x27;t think translators need to look for new jobs just yet, but the reality today is that you can translate any book in any language into Russian and at least understand what it&#x27;s about. Of course, nuances of style, language subtleties, and local life realities remain crucial for translating complex fiction, requiring that &#x27;life context&#x27; that models lack. However, the latest versions of Claude and OpenAI have become quite adept at translating authorial style. If you need to read texts that aren&#x27;t necessarily highly specialized, AI translation will likely satisfy you. There are still subtleties, of course—checks and prompts—but that&#x27;s a matter of technique, solvable with skills and token budget. Yet, cloud translations aren&#x27;t always accessible due to budget and copyright policies (and it&#x27;s unclear how long they&#x27;ll remain available), so I wondered how much I could rely on local models running on a modest setup by today&#x27;s standards: NVIDIA GeForce RTX 5060 Ti 16 GB, Core Ultra 7 265, 96 GB DDR5. Translations were checked for various languages, all translated into Russian. To make the benchmark more representative, I chose several languages for testing: English, Spanish, Chinese, and Hebrew. I know most of them, so I can evaluate the translation visually, although it wasn&#x27;t necessary. The reference translation was done with Claude models, then &#x27;judge models&#x27; (Claude and OpenAI) evaluated each translation, assigning a score. Both translation quality and speed were measured. Translation goals: Read more</p>
+    <p class="source">
+      Machine-translated from Habr.
+      <a href="https://habr.com/ru/articles/1102338/?utm_campaign=1102338&amp;utm_source=habrahabr&amp;utm_medium=rss">Read the original Russian article</a>.
+      Fri, 06 Nov 2026 10:20:04 GMT
+    </p>
+  </header>
+  <main>
+<div><p>I recently wanted to test the quality of AI models for translation. I've already translated quite a few books and texts using cloud models like Qwen, Claude, OpenAI, and Gemini, and I'm increasingly satisfied with the results. I don't think translators need to look for new jobs just yet, but the reality today is that you can translate any book in any language into Russian and at least <em>understand what it's about</em>. Of course, nuances of style, language subtleties, and local life realities remain crucial for translating complex fiction, requiring that 'life context' that models lack. However, the latest versions of Claude and OpenAI have become quite adept at translating authorial style. If you need to read texts that aren't necessarily highly specialized, AI translation will likely satisfy you. There are still subtleties, of course—checks and prompts—but that's a matter of technique, solvable with skills and token budget. Yet, cloud translations aren't always accessible due to budget and copyright policies (and it's unclear how long they'll remain available), so I wondered how much I could rely on local models running on a modest setup by today's standards: <strong>NVIDIA GeForce RTX 5060 Ti 16 GB, Core Ultra 7 265, 96 GB DDR5</strong></p><p>Translations were checked for various languages, all translated into Russian. To make the benchmark more representative, I chose several languages for testing: English, Spanish, Chinese, and Hebrew. I know most of them, so I can evaluate the translation visually, although it wasn't necessary. The reference translation was done with Claude models, then 'judge models' (Claude and OpenAI) evaluated each translation, assigning a score. Both translation quality and speed were measured. Translation goals:</p><ol><li><p>Translate websites as you browse, something like Google Translate for websites, but better quality.</p></li><li><p>Local book translation. Although frontier models objectively translate books better and faster, some have started to become picky about copyright, and I fear this loophole will soon be closed. I'd like to have something permanent and independent of trends. Although if the goal is to run texts through AI translation and sell them on Amazon, it's probably better to use cloud models.</p></li></ol><p>Ultimately, the two main evaluation criteria are translation quality and speed, as quick translation is needed in a browser, while a high-quality book translation can be left overnight.</p><p>Well, let's see what kind of texts participated in the competition. I decided to test translations not only from different languages but also of different types of texts.</p><ul><li><p>In English – a news column from WSJ, a medical article from PubMed, technical documentation for the kernel, a technical thread on Reddit with comments, and a Taoist breathing guide with interspersed Chinese. And as the cherry on top – a chapter from James Joyce's "Finnegans Wake."</p></li><li><p>In Spanish – an economics article from an online magazine, a chapter from a contemporary author's book, a chapter from a detective novel about drug cartels with North Mexican and drug slang, and Lorca's poems.</p></li><li><p>For Chinese – an article from a Chinese blog about how great and inclusive(!) Chinese culture is (cat-wife approves), tweets from Weibo (or should they be called "Weibits"?), a chapter from a contemporary book (Li Juan), and technical documentation. For extreme testing, I also added ancient and medieval treatises on Chinese medicine and two texts on Taoism – also ancient and medieval.</p></li><li><p>In Hebrew – a standard apartment lease agreement, a column from a news website, technical documentation for the kernel, two Facebook flame wars with comments, a Reddit thread, a chapter from Amos Oz's contemporary novel. For extreme testing – an ancient text (Ben Sira, 200 BCE), an excerpt from religious literature (3rd century CE), and an excerpt from the Kabbalah (16th century, I can tell you in advance that this turned out to be the most difficult for translation, and all local models failed on it).</p></li></ul><p>Since the text covered different levels, the benchmark was divided into two – the first for modern texts, news, internet, literature, and the second – various ancient and simply strange texts – for stress testing.</p><p><strong>Contents</strong></p><ul><li><p><a href=
+  </main>
+  <footer>
+    Translation generated with Gemini 2.5 Flash-Lite.
+    The original article remains the source of record.
+  </footer>
+</body>
+</html>

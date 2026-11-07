@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>SEO &amp; GEO: New AI Access Rules, Citation Analytics, and Audit Automation</title>
+  <meta name="description" content="SEO, GEO, and AI: Google&#x27;s AI Search participation settings, plans for a universal AI training signal, Bing&#x27;s thematic analytics, and Screaming Frog 25. Seven updates and research pieces with primary sources, limitations, and practical checks for the SEO team. Read more">
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.65;
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 32px 20px 64px;
+      color: #1f2328;
+    }
+    header {
+      border-bottom: 1px solid #d8dee4;
+      margin-bottom: 28px;
+      padding-bottom: 20px;
+    }
+    .source {
+      color: #57606a;
+      font-size: 0.95rem;
+    }
+    img, video, iframe {
+      max-width: 100%;
+      height: auto;
+    }
+    pre {
+      overflow-x: auto;
+      padding: 16px;
+      background: #f6f8fa;
+      border-radius: 6px;
+    }
+    code {
+      font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+    }
+    blockquote {
+      border-left: 4px solid #d0d7de;
+      margin-left: 0;
+      padding-left: 16px;
+      color: #57606a;
+    }
+    footer {
+      border-top: 1px solid #d8dee4;
+      margin-top: 40px;
+      padding-top: 20px;
+      color: #57606a;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>SEO &amp; GEO: New AI Access Rules, Citation Analytics, and Audit Automation</h1>
+    <p>SEO, GEO, and AI: Google&#x27;s AI Search participation settings, plans for a universal AI training signal, Bing&#x27;s thematic analytics, and Screaming Frog 25. Seven updates and research pieces with primary sources, limitations, and practical checks for the SEO team. Read more</p>
+    <p class="source">
+      Machine-translated from Habr.
+      <a href="https://habr.com/ru/articles/1104766/?utm_campaign=1104766&amp;utm_source=habrahabr&amp;utm_medium=rss">Read the original Russian article</a>.
+      Sat, 07 Nov 2026 07:42:16 GMT
+    </p>
+  </header>
+  <main>
+<div><p><strong>Digest #1 · November 7, 2026</strong></p><p>This issue covers changes from October and early November that are worth incorporating into the SEO team's workflow: AI Search participation settings, plans for a universal opt-out from training, Bing's thematic analytics, and the Screaming Frog update. Separately, we look at two September materials important for measurement: multimodal search and a study on the differences between APIs and user-facing AI interfaces.</p><p>The main practical task is to separate content access, its use in AI responses, and the measurement of results. Each of these issues requires its own settings and data.</p><h3>1. Screaming Frog 25: Crawl Configuration Becomes More Convenient for Automation</h3><p><strong>November 3, 2026 · tool release.</strong> SEO Spider 25.0 introduced JSON configuration format; the previous format is also supported. MCP tools and diagnostics have been updated, and settings for Issue types and priorities have been added. Automatic speed limiting responds to 429, 503 responses and connection issues. All these changes are described in the <a href="https://www.screamingfrog.co.uk/blog/seo-spider-25/">official announcement of Screaming Frog SEO Spider 25.0</a>.</p><p>For technical SEO, this is a reason to make crawl settings part of a reproducible process. Save a baseline configuration for each project, track changes, and compare results on an identical set of URLs. For GEO, such a process is useful as a basis for technical page accessibility checks, but the crawler itself does not measure the probability of citation by a model.</p><p><strong>What to do:</strong> run a small control set of URLs, check the export and new Issue priorities, then update regular tasks. The ability to assign configuration to an AI assistant does not replace verification of the resulting configuration. This is an analysis of the announced release features, not the result of a comparative speed or accuracy test.</p><h3>2. Google Plans to Support a Universal AI Training Preference Signal</h3><p><strong>October 30, 2026 · announcement of plans.</strong> Google announced its intention to support a universal signal in robots.txt based on IETF AIPREF work. The announcement mentions 2027; crawler documentation specifies early 2027 and the token <code>__usage_ai-training</code>. This is future support, not a currently active universal setting. Primary sources: <a href="https://developers.google.com/search/blog/2026/10/ai-training-control">Google's announcement</a> and <a href="https://developers.google.com/crawling/docs/crawlers-fetchers/google-common-crawlers#google-extended">Google-Extended description</a>.</p><p>Google describes the joint operation of the universal signal and individual provider settings: if no explicit Google-Extended is set, opting out of training via the universal signal is planned to be interpreted as a Google-Extended opt-out. The company also notes that Google-Extended does not affect site inclusion in Google Search and is not a ranking signal for it.</p><p><strong>What to do:</strong> create a separate decision matrix for training, grounding in Gemini, and participation in AI search features. Maintain current provider settings and monitor for launch confirmation. The announcement does not imply that all AI systems already respect the signal or that changing robots.txt will definitively alter GEO visibility.</p><h3>3. Participation in Google Search AI Features is Managed Separately from Training</h3><p><strong>October 21, 2026 · update to overview documentation.</strong> Google added Search generative AI control to the list of content management methods. The mechanism itself was not launched on this date; the help indicates a global rollout by August 31, 2026. Sources: <a href="https://developers.google.com/search/updates#october-2026">change history</a> and <a href="https://support.google.com/webmasters/answer/16908024">official Search generative AI control help</a>.</p><p>The setting in Search Console allows enabling or excluding site content and links from specified generative Search features, including AI Overviews and AI Mode. Google explicitly states: this choice does not serve as a ranking or inclusion signal for other parts of Search and does not control AI training. Child properties can inherit the setting from the parent.</p><p><strong>What to do:</strong> check the effective value for domain, subdomain, and URL-prefix properties, not just robots.txt. Before making changes, record the initial data and the experiment's goal. The documented absence of a direct ranking signal does not mean that total traffic will necessarily remain the same: the set of surfaces where users can see a link is changing.</p><h3>4. Bing Topics Portfolio Moves AI Citation Analysis to the Topic Level</h3><p><strong>October 13, 2026 · beta feature.</strong> Within Bing Webmaster Tools, AI Performance now includes Topics Portfolio: grouping grounding queries by thematic clusters, citation data, and Opportunity Queries lists. Microsoft describes the feature in the <a href="https://blogs.bing.com/webmaster/2026/10/introducing-topics-portfolio-beta-in-ai-performance/">official Topics Portfolio announcement</a>.</p><p>This is a useful shift from the question "were we cited?" to "in which topics does the site appear, and where are the gaps?". However, the numbers are approximate, classification is AI-generated, and topics with insufficient data may not be displayed. The company recommends using the metrics as guidelines for planning.</p><p><strong>What to do:</strong> correlate several thematic clusters with the editorial plan and manually check the suggested queries. Among the opportunities might be other brands' queries – automatically turning the entire list into tasks for authors is not advisable. The absence of the tab for a small site does not prove the absence of AI visibility. Bing's data also does not describe automatic presence in Google or other assistants.</p><h3>5. Google Clarifies Requirements for AI Content Verification, Including Metadata</h3><p><strong>October 1, 2026 · guidance update.</strong> Google's documentation states the need for manual verification of AI content accuracy and reliability before publication. This verification also applies to titles, descriptions, structured data, and image alt texts. Mass generation of pages without added value may violate the scaled content abuse policies. Primary source: <a href="https://developers.google.com/search/docs/fundamentals/using-gen-ai-content">Google Search - guidance on using generative AI content</a>.</p><p>For SEO automation, the entire path from source data to published page becomes a weak point. Verified text does not compensate for a fabricated characteristic in JSON-LD or an incorrect promise in the title.</p><p><strong>What to do:</strong> include metadata in editorial acceptance, cross-reference characteristics with source data, and validate markup. For mass templates, first check a small batch and recurring errors. The guidance update itself does not prove a new algorithmic penalty for any AI text; it cannot be used to infer a universal ranking drop for all sites using generation.</p><h3>6. September Context: Multimodal Search Gets a Separate Slice in Search Console</h3><p><strong>September 24, 2026 · reporting rollout announcement.</strong> Google announced a multimodal search filter in performance reports, including the generative AI features report. Lens, Circle to Search, image uploads, and image search from the Chrome context menu are listed. Data appears when there is relevant traffic. Primary source: <a href="https://developers.google.com/search/blog/2026/09/web-multimodal-in-sc">announcement of web multimodal Search reporting</a>.</p><p>For catalogs and visual content, this is an additional way to assess page discovery. Changes in this type of traffic should be analyzed separately from text queries before attributing overall growth or decline to a single SEO improvement.</p><p><strong>What to do:</strong> check for the slice's availability, download the available period, and correlate landing pages with visual content types. The presence of reporting does not imply a new ranking factor and does not guarantee growth from image replacement. This September update is included as context for analytics, not presented as a November news item.</p><h3>7. Study: API Measurement Does Not Replace Monitoring User-Facing AI Products</h3><p><strong>September 16, 2026 · preprint.</strong> Authors of a study on AI product recommendations analyzed 1,536 responses. In their sample, the average overlap of displayed domains between the interface and API was 12.0% for ChatGPT and 14.8% for Gemini. The Jaccard metric was used: the intersection of sets relative to their union. Primary source: <a href="https://arxiv.org/html/2609.18729v1">Uberti-Bona Marin et al. - Auditing AI-Generated Product Recommendations, arXiv:2609.18729v1</a>.</p><p><strong>What to do:</strong> in GEO reports, record the product, access method, region, date, query formulation, and repeat observations. Store visible citations, found pages, and grounding sources separately. This is a suggestion for an audit methodology, not a formula for guaranteed promotion.</p><p>The limitations of the results are significant: 117 queries about physical goods, three repetitions, predominantly English formulations, collected from the Netherlands. Differences cannot be attributed solely to the access method: model configurations and other components could have differed. The preprint does not establish universal percentages for all niches, languages, and assistants.</p><h3>What to Include in the Next Work Cycle</h3><div><div><table><tbody><tr><th><p>Area</p></th><th><p>Action</p></th><th><p>Verifiable Result</p></th></tr><tr><td><p>Technical SEO</p></td><td><p>Save crawl configuration and control set</p></td><td><p>Reproducible audit with known settings</p></td></tr><tr><td><p>AI Access Management</p></td><td><p>Separate decisions for training and AI search</p></td><td><p>Matrix of settings and responsible parties</p></td></tr><tr><td><p>GEO Analytics</p></td><td><p>Check Topics Portfolio and separate interface/API measurements</p></td><td><p>Report with clear measurement boundaries</p></td></tr><tr><td><p>Editing</p></td><td><p>Verify metadata along with text</p></td><td><p>Corrected factual errors before publication</p></td></tr><tr><td><p>Visual Search</p></td><td><p>Isolate multimodal traffic</p></td><td><p>Separate slice by landing pages</p></td></tr></tbody></table></div></div><p>Start with an inventory: what settings are active, what data the team has, and what exactly is considered visibility. After that, it will be easier to choose an experiment and define its success criteria.</p></div>
+  </main>
+  <footer>
+    Translation generated with Gemini 2.5 Flash-Lite.
+    The original article remains the source of record.
+  </footer>
+</body>
+</html>

@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>AI bots in MAX for rubles: what to decide before the first payment</title>
+  <meta name="description" content="I created an AI bot in MAX called &quot;Ask AI&quot;: you can ask ChatGPT or Gemini questions and generate images in Nano Banana. You can pay with a Russian card or via SBP, and you don&#x27;t need to install anything extra. The code turned out to be the easiest part. It was harder with money, check">
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.65;
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 32px 20px 64px;
+      color: #1f2328;
+    }
+    header {
+      border-bottom: 1px solid #d8dee4;
+      margin-bottom: 28px;
+      padding-bottom: 20px;
+    }
+    .source {
+      color: #57606a;
+      font-size: 0.95rem;
+    }
+    img, video, iframe {
+      max-width: 100%;
+      height: auto;
+    }
+    pre {
+      overflow-x: auto;
+      padding: 16px;
+      background: #f6f8fa;
+      border-radius: 6px;
+    }
+    code {
+      font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+    }
+    blockquote {
+      border-left: 4px solid #d0d7de;
+      margin-left: 0;
+      padding-left: 16px;
+      color: #57606a;
+    }
+    footer {
+      border-top: 1px solid #d8dee4;
+      margin-top: 40px;
+      padding-top: 20px;
+      color: #57606a;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>AI bots in MAX for rubles: what to decide before the first payment</h1>
+    <p>I created an AI bot in MAX called &quot;Ask AI&quot;: you can ask ChatGPT or Gemini questions and generate images in Nano Banana. You can pay with a Russian card or via SBP, and you don&#x27;t need to install anything extra. The code turned out to be the easiest part. It was harder with money, checks, and laws – I&#x27;ll tell you about them. This text will be useful for anyone thinking of creating a paid bot in MAX. Read more</p>
+    <p class="source">
+      Machine-translated from Habr.
+      <a href="https://habr.com/ru/articles/1104888/?utm_campaign=1104888&amp;utm_source=habrahabr&amp;utm_medium=rss">Read the original Russian article</a>.
+      Sat, 07 Nov 2026 12:46:01 GMT
+    </p>
+  </header>
+  <main>
+<div><p>I created an AI bot in MAX called "Ask AI": you can ask ChatGPT or Gemini questions and generate images in Nano Banana. You can pay with a Russian card or via SBP, and you don't need to install anything extra.</p><p>The code turned out to be the easiest part. It was harder with money, checks, and laws – I'll tell you about them. This text will be useful for anyone thinking of creating a paid bot in MAX.</p><h3>Why MAX</h3><p>MAX is pre-installed on smartphones sold in Russia, and there are few AI bots in it yet – the niche is not overheated like in Telegram. It has also become easy for self-employed individuals to enter.</p><p>Since June 2026, MAX has had an open partner platform for the self-employed. Registration is at <a href="http://business.max.ru">business.max.ru</a>, type "Self-employed", confirmation via Gosuslugi. A self-employed individual is given up to two bots, and the bot card is moderated for up to 48 hours.</p><p>Only residents of the Russian Federation can create bots: self-employed individuals, individual entrepreneurs, and legal entities. This is worth checking before writing code.</p><p>What is useful to know about the Bot API in advance:</p><ul><li><p>There are no built-in payments like Telegram Stars. We accept money via a link to an external payment system.</p></li><li><p>The API certificate is issued on the root certificate of the Ministry of Digital Development. It needs to be added to trusted certificates on the server, otherwise HTTPS requests will not go through.</p></li><li><p>The token is passed in the Authorization header without the Bearer prefix.</p></li><li><p>The webhook only accepts HTTPS on port 443. A 200 response is required within 30 seconds, so the request to the neural network goes into a background queue.</p></li><li><p>If the webhook does not respond successfully for 8 consecutive hours, MAX unsubscribes the bot itself. Without monitoring, you might wake up with a dead bot.</p></li><li><p>The limit is about 30 requests per second.</p></li><li><p>Check the secret in the X-Max-Bot-Api-Secret header to filter out unauthorized requests to the webhook.</p></li></ul><h3>Which models I chose</h3><p>The bot has two families of models for text and one for images. Each family has three tiers – from cheap to the smartest.</p><figure><img alt="AI bots in MAX for rubles: what to decide before the first payment" loading="lazy" src="https://habrastorage.org/r/w1560/extt/58/be/78/58be783ed6719fb5f6c22c0baedc6d6d.png"/><div><figcaption>AI bots in MAX for rubles: what to decide before the first payment</figcaption></div></figure><p>Three tiers are not just for show. The top OpenAI model in the bot is 20 times more expensive than the lower one – both for input and output. If you give everyone only the flagship, a simple "translate a paragraph" will cost as much as analyzing a contract.</p><p>For images, I chose Nano Banana 2.1. It was released in October and, at the same resolution, is about a quarter cheaper than Nano Banana 2. The second version remained as a backup – in case the new one started malfunctioning.</p><p>The models are connected through a common provider layer. Adding a new family or replacing a model requires a new adapter and a line in the catalog; the business logic does not change.</p><h3>Billing: how not to go into the red</h3><p>This was the main engineering challenge. The price of a request to a neural network is unknown in advance: no one knows how many tokens the model will write in response.</p><p>The naive scheme "check balance → send request → deduct" breaks immediately. A user with a balance of 100 credits sends two heavy requests – from their phone and from their laptop. Both pass the check, both are executed, and the balance goes into the negative. The bot owner will pay for this deficit.</p><p>Therefore, each request goes through four steps.</p><p>1. <strong>Top estimate</strong>. We count input tokens through the vendors' APIs: OpenAI has a token counting endpoint, Gemini has countTokens. Output is limited by the max_output_tokens parameter. The model's reasoning is included in this same limit, so the model physically cannot spend more. The price = input tokens × input price + output limit × output price. This is an upper bound, not a forecast. The user sees it before sending the request.</p><p>It's simpler with images: a fixed price per image based on resolution plus input tokens for the prompt.</p><p>2. <strong>Reserve (hold)</strong>. We reserve the amount in a single transaction in PostgreSQL. The balance check condition is directly in the UPDATE, so two parallel requests cannot pass the check simultaneously.</p><pre><code>BEGIN; &#x0A;&#x0A;-- idempotency key = MAX update ID: &#x0A;-- repeated webhook delivery will not create a second hold &#x0A;INSERT INTO holds (idem_key, user_id, amount)&#x0A; VALUES (:update_id, :user_id, :hold); &#x0A;&#x0A;UPDATE wallets&#x0A; SET held = held + :hold,&#x0A; active_holds = active_holds + 1&#x0A; WHERE user_id = :user_id&#x0A; AND balance - held &gt;= :hold&#x0A; AND active_holds &lt; 2;&#x0A;&#x0A;-- 0 rows updated → ROLLBACK &#x0A;-- and "insufficient credits" message&#x0A; COMMIT;</code><div><a href="https://sourcecraft.dev/"><span></span></a></div></pre><p>PostgreSQL locks the wallet row during the UPDATE. The second request waits and re-checks the condition, taking into account the first hold. I also limited the number of simultaneous requests to two – so one user doesn't clog the queue.</p><p>3. <strong>Deduct actual cost</strong>. When the model responds, we take the actual usage and deduct min(actual, hold). The remaining hold is returned to the balance. Usually, the actual cost is significantly less than the upper estimate, so the user overpays only temporarily.</p><p>4. <strong>Cleanup</strong>. If the process crashes mid-request, the hold will remain. It is released by a background task based on TTL. It is important that the timeout for the request to the vendor is shorter than the hold TTL – otherwise, the hold will be released while the model is still responding.</p><p>All money movements are written to an append-only journal. The balance can always be rebuilt from the journal, and you can find out where each credit went.</p><p>I tested race conditions on a real PostgreSQL, not mocks: tests launch parallel holds on one wallet and check that the balance does not go below zero.</p><figure><img alt="AI bots in MAX for rubles: what to decide before the first payment" loading="lazy" src="https://habrastorage.org/r/w1560/extt/56/ff/27/56ff2797e16f510533522bf8e4f1a160.png"/><div><figcaption>AI bots in MAX for rubles: what to decide before the first payment</figcaption></div></figure><p>The entire request path: money is reserved before calling the model, and deducted only after the response.</p><h3>How a self-employed person can accept payments in 2026</h3><p>I work as a self-employed individual, and here I encountered a surprise. The usual route through YooKassa no longer works: from December 29, 2025, it stopped sending self-employed checks to "My Tax".</p><p>Manually issuing checks is also not an option. When paying by card or SBP, a check must be generated at the moment of payment – this is required by the law on NP D (Part 3, Article 14, Federal Law 422-FZ). With a flow of small top-ups, you can't keep up manually.</p><p>As a result, I chose Robokassa with the "Robochecks SMZ" service. What's important for the bot:</p><ul><li><p>checks are sent to "My Tax" automatically, for free;</p></li><li><p>payment by link – exactly what is needed in MAX without built-in payments;</p></li><li><p>there is a server-side notification of payment (ResultURL);</p></li><li><p>commission on the "Starter" tariff according to their calculator – 3.9% for cards and 2.7% for SBP.</p></li></ul><p>Top-up looks like this. The user clicks "Top up" and selects a package. The bot sends a payment link. After payment, Robokassa calls ResultURL: we check the signature, credit the funds, and notify the user in the chat.</p><p>The ResultURL handler must be idempotent by account number. Payment systems repeat notifications, and without this, one payment will be credited twice.</p><p>Refund of unused balance is also automated: through the Robokassa refund API with check cancellation. Why it's needed – in the next section.</p><h3>What laws apply to such a bot</h3><p>There is no direct prohibition on such a service, but there are many mandatory conditions. I am not a lawyer – below is what I found myself and took into account in the product.</p><figure><img alt="AI bots in MAX for rubles: what to decide before the first payment" loading="lazy" src="https://habrastorage.org/r/w1560/extt/e6/ea/10/e6ea1002bf0ce8d3c22e83ee9b4664f7.png"/><div><figcaption>AI bots in MAX for rubles: what to decide before the first payment</figcaption></div></figure><p>Separately about the notification to Roskomnadzor. It is often missed, and from May 30, 2025, a citizen faces a fine of 5–10 thousand rubles for this. It is submitted online on the Roskomnadzor website, so it's cheaper to do it right away.</p><p>Another point in the offer, which is easy to forget: the prohibition of uploading photos of other people for processing without their consent. If the bot accepts photos for editing, people will upload others' pictures to it on the first day.</p><h3>What's the result</h3><p>The bot itself – dialogue, model selection, image generation – took less time. More time was spent on ensuring that money was accounted for honestly: no one goes into the negative, checks go to the tax office, and the balance can be returned.</p><p>If you are creating your own paid bot in MAX, start with three things:</p><ol><li><p>Check that you can register on the partner platform.</p></li><li><p>Choose a payment provider that automatically sends checks to "My Tax".</p></li><li><p>Design a funds reservation system before the first request to the model, not after the first deficit.</p></li></ol><p>To see how it works from the user's perspective, you can use the bot itself – "<a href="https://api.vc.ru/v2.8/redirect?to=https%3A%2F%2Fmax.ru%2Fse14891824_bot%3Fstart%3Dvc_billing&amp;postId=3241106">Ask AI</a>" in MAX. It shows the cost estimate before the request and how the reserve balance is returned.</p><p>If you have questions about billing, MAX Bot API, or self-employed checks, ask in the comments, and I will answer.</p></div>
+  </main>
+  <footer>
+    Translation generated with Gemini 2.5 Flash-Lite.
+    The original article remains the source of record.
+  </footer>
+</body>
+</html>

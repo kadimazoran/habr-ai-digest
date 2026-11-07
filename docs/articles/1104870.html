@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Is it true that neural networks invent links and why do deleted articles remain in their responses?</title>
+  <meta name="description" content="Under the neural network&#x27;s response, there is a link, it does not open, and the first thought is that the address is invented. I checked about six hundred addresses from the responses of five neural networks with a search about a month after I collected them. About nine out of ten opened. There">
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.65;
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 32px 20px 64px;
+      color: #1f2328;
+    }
+    header {
+      border-bottom: 1px solid #d8dee4;
+      margin-bottom: 28px;
+      padding-bottom: 20px;
+    }
+    .source {
+      color: #57606a;
+      font-size: 0.95rem;
+    }
+    img, video, iframe {
+      max-width: 100%;
+      height: auto;
+    }
+    pre {
+      overflow-x: auto;
+      padding: 16px;
+      background: #f6f8fa;
+      border-radius: 6px;
+    }
+    code {
+      font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+    }
+    blockquote {
+      border-left: 4px solid #d0d7de;
+      margin-left: 0;
+      padding-left: 16px;
+      color: #57606a;
+    }
+    footer {
+      border-top: 1px solid #d8dee4;
+      margin-top: 40px;
+      padding-top: 20px;
+      color: #57606a;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Is it true that neural networks invent links and why do deleted articles remain in their responses?</h1>
+    <p>Under the neural network&#x27;s response, there is a link, it does not open, and the first thought is that the address is invented. I checked about six hundred addresses from the responses of five neural networks with a search about a month after I collected them. About nine out of ten opened. There are very few dead ones, with 404 and 410 codes. These are addresses of ordinary materials on live platforms, not a random set of characters, so most likely they are deleted articles, not fabrications. It is unknown when exactly they were deleted. Therefore, the risk for the site is different: a link to a deleted page may remain in the sources and lead to emptiness. Read more</p>
+    <p class="source">
+      Machine-translated from Habr.
+      <a href="https://habr.com/ru/articles/1104870/?utm_campaign=1104870&amp;utm_source=habrahabr&amp;utm_medium=rss">Read the original Russian article</a>.
+      Sat, 07 Nov 2026 11:06:56 GMT
+    </p>
+  </header>
+  <main>
+<div><p>Under the neural network's response, there is a link, it does not open, and the first thought is that the address is invented. I checked about six hundred addresses from the responses of five neural networks with a search about a month after I collected them. About nine out of ten opened. There are very few dead ones, with 404 and 410 codes. These are addresses of ordinary materials on live platforms, not a random set of characters, so most likely they are deleted articles, not fabrications. It is unknown when exactly they were deleted. Therefore, the risk for the site is different: a link to a deleted page may remain in the sources and lead to emptiness.</p><h3>If a link from a neural network's response does not open, does that mean it was invented?</h3><p>Not in this check: I did not find any invented addresses among the ones that did not open, although I expected more. An invented link is a hallucination: an AI model creates a plausible page address that never existed. A neural network invents sources when it doesn't search the internet: in the <a href="https://pubmed.ncbi.nlm.nih.gov/37679503/">Walters and Wilder study</a>, 55% of scientific links for GPT-3.5 and 18% for GPT-4 were invented without searching.</p><p>I took the addresses from a single visibility measurement in the AI models' responses and opened each one with a request. Among those that did not open, there are two groups that should not be confused. About three dozen addresses did not return a page to the bot: this is site protection. There are very few dead ones: collections on vc.ru and DTF, and a blog on Tilda. These are ordinary materials from live platforms, not a random set of characters, so most likely they are deleted articles. I don't know when the pages disappeared. No single service stood out noticeably: the proportion of live links across services is similar, from 88% to 94%.</p><figure><img alt="There are no invented addresses among the unopened ones: pages closed to bots cannot be considered dead." src="https://habrastorage.org/r/w1560/extt/59/55/7a/59557a8278a5f284f6c562a653256d52.png"/><figcaption>There are no invented addresses among the unopened ones: pages closed to bots cannot be considered dead.</figcaption></figure><h3>What response code means a page is gone, and which means the site didn't let the bot in?</h3><p>A page is gone when the server responds with 404 or 410. Codes 401, 403, 429, and 503 indicate something else: the server did not return the page to the bot, although it may exist itself.</p><div><table><tbody><tr><td><p>Code</p></td><td><p>Meaning</p></td><td><p>Is the link invented?</p></td><td><p>Category</p></td></tr><tr><td><p>200</p></td><td><p>page returned</p></td><td><p>no</p></td><td><p>live</p></td></tr><tr><td><p>301, 302</p></td><td><p>page moved, script follows new address</p></td><td><p>no</p></td><td><p>live, if ends with 200</p></td></tr><tr><td><p>404</p></td><td><p>nothing at this address</p></td><td><p>not in this check, these are deleted articles; the code alone cannot distinguish invention from deletion</p></td><td><p>deleted</p></td></tr><tr><td><p>410</p></td><td><p>page intentionally and permanently deleted, no redirect address</p></td><td><p>no, it existed</p></td><td><p>deleted</p></td></tr><tr><td><p>401, 403</p></td><td><p>server does not allow bot access</p></td><td><p>no, page may exist</p></td><td><p>closed to bot</p></td></tr><tr><td><p>429</p></td><td><p>too many requests from one address in a short time</p></td><td><p>no, page may exist</p></td><td><p>closed to bot</p></td></tr><tr><td><p>503</p></td><td><p>service temporarily unavailable</p></td><td><p>no</p></td><td><p>closed to bot</p></td></tr></tbody></table></div><p>According to <a href="https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Status">MDN</a>, 410 means the content has been permanently deleted and there is no redirect address. 403 means the client does not have permission to access and the server refuses. 429 is a <a href="https://developers.cloudflare.com/support/troubleshooting/http-status-codes/4xx-client-error/error-429/">rate limiting</a>, the page itself may be intact. 503 is a temporary state, the server may indicate the recovery time in the Retry-After header. 401 can be a <a href="https://developers.cloudflare.com/cloudflare-challenges/troubleshooting/challenge-solve-issues/">standard response to a Cloudflare security check</a>: no visitor is blocked. A script that considers any page with an error code as dead would incorrectly mark an additional thirty addresses as dead.</p><h3>How to check links from a neural network response with a Python script</h3><p>The script categorizes addresses the same way as the code table, plus two auxiliary categories: no response and needs manual review. Save the code to a file named check.py, the addresses to a file named urls.txt, one per line, install the requests library, and run it in the terminal from that folder: <code>python3 check.py urls.txt</code>.</p><pre><code>import sys
+import requests
+
+s = requests.Session()
+s.max_redirects = 10
+s.headers["User-Agent"] = "link-check/1.0 (checking links from AI answers)"
+
+def check(url):
+    try:
+        r = s.get(url, timeout=(5, 15), allow_redirects=True, stream=True)
+        r.close()
+    except requests.exceptions.RequestException as e:
+        return "no response", type(e).__name__, url
+    code = r.status_code
+    if 200 <= code < 300:
+        return "live", code, r.url
+    if code in (404, 410):
+        return "deleted", code, r.url
+    if code in (401, 403, 429, 503):
+        return "closed to bot", code, r.url
+    return "manual review", code, r.url
+
+for url in open(sys.argv[1]).read().split():
+    print(url, *check(url), sep="\t")</code><div><a href="https://sourcecraft.dev/"><span></span></a></div></pre><ul><li><p><strong>GET instead of HEAD.</strong> HEAD returns <a href="https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Status">only headers without the body</a>, so the script won't see the page content. GET allows for adding content verification later; in the script above, I don't read the body.</p></li><li><p><strong>Up to 10 redirects.</strong> A link that leads to an article through redirection is live for the reader. The number 10 is taken from <a href="https://developers.google.com/crawling/docs/troubleshooting/http-status-codes">Google crawlers</a>: they follow a chain of up to 10 redirects by default. If you switch to HEAD, you'll need to explicitly enable redirects in Requests with the allow_redirects parameter.</p></li><li><p><strong>Timeout of 5 seconds for connection and 15 for reading.</strong> Without it, Requests might wait indefinitely for a response. The library reports timeouts and excessively long redirect chains with exceptions, which have no response code, so the script catches them separately and writes: no response. The numbers themselves are mine and can be debated.</p></li><li><p><strong>Custom User-Agent.</strong> The script identifies itself as a link checker and does not impersonate a browser. It will not pass Cloudflare's security check: it <a href="https://developers.cloudflare.com/cloudflare-challenges/troubleshooting/challenge-solve-issues/">works with JavaScript</a>, and instead of a page, the script will receive the check itself. Addresses categorized as closed to bots should be opened in a browser.</p></li><li><p><strong>Final address in the last column.</strong> If it differs from the original, the page has been moved or redirected to the homepage, and the script will mark it as live in both cases. Such lines should be read manually.</p></li></ul><h3>Why does a neural network with search link to a deleted article?</h3><p>Most likely, because the neural network's search database lags behind websites: the article has already been deleted, and the crawler has not yet reached it. Pages are constantly being deleted. According to <a href="https://www.pewresearch.org/data-labs/2024/05/17/when-online-content-disappears/">Pew Research Center</a>, a quarter of pages that existed in 2013–2023 became unavailable by October 2023, and most often, a single page on a working site was deleted. Perplexity <a href="https://www.perplexity.ai/en-GB/hub/blog/architecting-and-evaluating-an-ai-first-search-api">states</a> that it's often impossible to re-index every address, and the machine learning model decides what to crawl and when. Therefore, a deleted page may remain in its database until the crawler reaches it. OpenAI <a href="https://developers.openai.com/api/docs/bots">publishes a timeframe</a> only for robots.txt changes, about 24 hours, but does not specify a timeframe for deleting pages from ChatGPT's search.</p><figure><img alt="Between deletion and crawling, only a redirect keeps the link alive; other nodes are independent of the site owner." src="https://habrastorage.org/r/w1560/extt/7d/62/8a/7d628aabd6087b0a1bb18c23a60f3c44.png"/><figcaption>Between deletion and crawling, only a redirect keeps the link alive; other nodes are independent of the site owner.</figcaption></figure><p>Regular search engines at least describe what they do with deleted pages. Google, for 4xx responses (except 429), <a href="https://developers.google.com/crawling/docs/troubleshooting/http-status-codes">reports</a> that the content is gone, and previously indexed addresses are eventually removed from use. Yandex <a href="https://yandex.ru/support/webmaster/ru/yandex-indexing/removing-from-index?lang=ru">removes</a> a page with a 404, 403, or 410 response from its search database within a week after the bot detects it, but it can take time for crawling. Yandex's list also includes 403: it removes pages closed to bots from its database as well.</p><h3>What to do with your page before deleting it: set up a redirect to a page on the same topic</h3><p>A link to a deleted page may remain in neural network responses, so before deleting, it's advisable to set up a redirect from it to a current page on the same topic. Instruct the website administrator to configure a permanent redirect from the old address to the chosen new one and check in a browser that the old link opens the new page. This way, a person clicking on the old link from a response will land on live content. A redirect to the homepage will also be shown as live by the script, but the reader from the neural network's response won't find what was promised there. If there's no replacement, return 410: according to <a href="https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Status">MDN</a>, this is an explicit signal that the content has been permanently deleted.</p><p>In my check, there were about six hundred addresses from a single measurement, and none of them were invented. The fear that neural networks invent links is outdated for services with search: they link to real pages that once existed. The real problem is an outdated index: a deleted page continues to serve as a source. Therefore, it's necessary to check not whether the address exists, but whether it's live and whether the page says the same thing that the neural network summarized.</p><h3>Limitations: one measurement and checking only if the page opens</h3><p>This is one measurement: about six hundred addresses from the responses of five neural networks, checked a month later. It doesn't distinguish when dead articles were deleted, before the neural network's response or within this month. The picture can be worse with other data: <a href="https://www.cjr.org/tow_center/we-compared-eight-ai-search-engines-theyre-all-bad-at-citing-news.php">Tow Center</a> found invented or broken addresses in more than half of the responses from Gemini and Grok when citing news. I did not check whether the opened page says the same thing as the neural network summarized, and a live source can turn out to be unreliable: in a <a href="https://arxiv.org/abs/2610.11932">preprint on arXiv</a>, a fabricated concept appeared in the citations of 8 out of 10 AI search engines within a week on easily accessible platforms. I compared <a href="https://habr.com/ru/articles/1095330/">how long a link generally lives in a neural network's response</a> based on three measurements with 20 questions each. But how long does a deleted page remain in responses, are there any such measurements?</p></div>
+  </main>
+  <footer>
+    Translation generated with Gemini 2.5 Flash-Lite.
+    The original article remains the source of record.
+  </footer>
+</body>
+</html>

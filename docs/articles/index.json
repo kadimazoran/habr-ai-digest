@@ -3607,6 +3607,14 @@
     "summary": "The more, the more AI content on the internet, and this trend is not going anywhere. I'm too lazy to pull up statistics, but I vaguely remember that the amount of neural text exceeded the amount of human text a year ago. We are still quite good at recognizing where AI text is and where it is human, but the emotional reaction to neural creativity differs from area to area. Read more",
     "title": "In which areas is AI-generated text appropriate, and in which will it instantly alienate the reader?"
   },
+  "https://habr.com/ru/articles/1098892/?utm_campaign=1098892&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Sat, 07 Nov 2026 08:01:41 GMT",
+    "slug": "1098892",
+    "source_url": "https://habr.com/ru/articles/1098892/?utm_campaign=1098892&utm_source=habrahabr&utm_medium=rss",
+    "summary": "Recently I had to explain Hegel's laws of dialectics to a 17-year-old guy. Here's what happened and why you're not getting the results you want from AI. Read more",
+    "title": "Teach me bad, or why I'm against prompting"
+  },
   "https://habr.com/ru/articles/1098910/?utm_campaign=1098910&utm_source=habrahabr&utm_medium=rss": {
     "model": "gemini-2.5-flash-lite",
     "published": "Sat, 24 Oct 2026 13:39:31 GMT",
@@ -4414,6 +4422,102 @@
     "source_url": "https://habr.com/ru/articles/1104684/?utm_campaign=1104684&utm_source=habrahabr&utm_medium=rss",
     "summary": "How I built a bot that joins meetings in Teams, Yandex Telemost, and MTS Link, records conversations, and provides transcripts and summaries with action items within minutes. Why not Copilot or native Teams transcription, why two separate streams instead of one, what pitfalls I encountered, and what four months in production have shown. Read on.",
     "title": "DIY Meeting Assistant: Anonymous Chrome in a Container, Calendar via EWS, and Two Thousand Meetings in Production"
+  },
+  "https://habr.com/ru/articles/1104758/?utm_campaign=1104758&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Sat, 07 Nov 2026 08:44:38 GMT",
+    "slug": "1104758",
+    "source_url": "https://habr.com/ru/articles/1104758/?utm_campaign=1104758&utm_source=habrahabr&utm_medium=rss",
+    "summary": "What are you thinking about right now? Chances are, you can answer that question without much effort. Awareness of one's own thought processes, a capacity called introspection, or self-observation, seems entirely natural to us. However, among philosophers and psychologists, introspection remains a subject of active debate. Some believe it is closely linked to consciousness. Others argue it is an elaborate illusion. Testing theories of introspection in the lab is difficult, as is defining the phenomenon precisely. Now, after more than a century of studying introspection in humans and animals, researchers are beginning to investigate the phenomenon in new, highly unexpected subjects: large language models. These systems, based on mathematical structures called neural networks, excel at cognitive tasks that only recently seemed exclusively human. But are they also capable of introspection? In 2025, Jack Lindsay, a researcher at Anthropic, developed a way to test introspection in language models by injecting 'thoughts' directly into their neural networks, a kind of targeted digital neurosurgery. Lindsay's experiment showed that the models are at least sometimes capable of detecting and describing such interventions. This closely resembled introspection. Lindsay's paper deliberately confined itself to a narrow set of questions and did not make broader claims about consciousness. (Specifically, it did not suggest that language models have first-person subjective experiences.) Nevertheless, the study sparked a flurry of online reaction. Scientists rushed to replicate Lindsay's experiment on other models. Read more",
+    "title": "[Translation] Do AI Models Know What They Think? Scientists Are Trying to Find Out"
+  },
+  "https://habr.com/ru/articles/1104766/?utm_campaign=1104766&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Sat, 07 Nov 2026 07:42:16 GMT",
+    "slug": "1104766",
+    "source_url": "https://habr.com/ru/articles/1104766/?utm_campaign=1104766&utm_source=habrahabr&utm_medium=rss",
+    "summary": "SEO, GEO, and AI: Google's AI Search participation settings, plans for a universal AI training signal, Bing's thematic analytics, and Screaming Frog 25. Seven updates and research pieces with primary sources, limitations, and practical checks for the SEO team. Read more",
+    "title": "SEO & GEO: New AI Access Rules, Citation Analytics, and Audit Automation"
+  },
+  "https://habr.com/ru/articles/1104808/?utm_campaign=1104808&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Sat, 07 Nov 2026 07:46:28 GMT",
+    "slug": "1104808",
+    "source_url": "https://habr.com/ru/articles/1104808/?utm_campaign=1104808&utm_source=habrahabr&utm_medium=rss",
+    "summary": "DISCLAIMER: The author strongly condemns malicious use of mass data scraping methods. This article aims to explain how to find necessary information without breaking rules. It details how a common task of finding rare equipment on the secondary market evolved into a full engineering investigation. The author successfully trained a local 7B/8B LLM (Qwen) to bypass aggressive protection systems, obfuscated frontends, and isolated sandbox network restrictions, all without paid search APIs or proxies, using only Python, Playwright, and a pixel-logic approach. The story covers the 'prehistory and pain' of why direct requests to large sites result in bans, and the failure of using search engines as an intermediary. It then introduces the 'Visual Web Agent' method, which involves emulating a real browser and parsing the DOM tree using human-readable markers instead of CSS classes. The steps include using a system Edge browser to avoid headless detection, parsing by text markers to overcome obfuscation, and assembling scattered data using Item IDs. A universal prompt container for the AI agent is provided, followed by the results, highlighting the LLM's autonomy, critical thinking, and the 'proof of concept' that local LLMs can act as autonomous computer operators, seeing the internet like a human user.",
+    "title": "How We Legally Defeated Aggressive Anti-Fraud with a Local LLM and Created a Visual-Textual DOM Agent Bypassing Blocks"
+  },
+  "https://habr.com/ru/articles/1104810/?utm_campaign=1104810&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Sat, 07 Nov 2026 08:01:06 GMT",
+    "slug": "1104810",
+    "source_url": "https://habr.com/ru/articles/1104810/?utm_campaign=1104810&utm_source=habrahabr&utm_medium=rss",
+    "summary": "I have released version 1.3 of Ru-Jev. This is an open model for typed decisions for Russian-language text. It runs on a CPU and can be deployed within a closed loop. In this release, I trained the model to be less dependent on the specific wording used by the caller to name response options. The result is definite. The new version is more accurate than the old one on unfamiliar names that are common or borrowed words. There is no gain on abbreviations and codes. Below, I provide both parts of the result and how I tested them. The model and code are under the MIT license. Weights are available on Hugging Face in the besktech/ru-jev repository. Read more",
+    "title": "Ru-Jev 1.3: Which unfamiliar category names did the model learn to understand, and which did it not?"
+  },
+  "https://habr.com/ru/articles/1104816/?utm_campaign=1104816&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Sat, 07 Nov 2026 08:12:00 GMT",
+    "slug": "1104816",
+    "source_url": "https://habr.com/ru/articles/1104816/?utm_campaign=1104816&utm_source=habrahabr&utm_medium=rss",
+    "summary": "Connecting an AI agent to a store doesn't automatically mean you can delegate purchases to it. I've analyzed the open documentation of 424 companies and products in Russian E-com and FinTech. While 232 have APIs, MCPs, or A2A, most connections are designed for businesses and legal entities, not personal use. I'll break down what's available for personal agents and the limitations they face. A service map and a table with sources are included. Read on",
+    "title": "E-com and FinTech in Russia: What Services Are Available to AI Agents? A Review of 424 Products"
+  },
+  "https://habr.com/ru/articles/1104826/?utm_campaign=1104826&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Sat, 07 Nov 2026 09:17:00 GMT",
+    "slug": "1104826",
+    "source_url": "https://habr.com/ru/articles/1104826/?utm_campaign=1104826&utm_source=habrahabr&utm_medium=rss",
+    "summary": "Claude Code doesn't officially work from Belarus. We're building ZuBrIQ (zubriq.ai) – a gateway to models on LiteLLM with BYN payments – and have made Claude Code, Codex, and OpenCode work on open models: GLM-5.3 from a provider and Qwen3.8-27B on our own V100s. Here's the architecture and five pitfalls: silent fallback, Claude Code's service models, zero spend, a 'blind' model, and KV cache on old hardware. Read on",
+    "title": "Claude Code without Anthropic: Running an Agent on GLM-5.3 and Qwen via Your Own Gateway and Stepping on Rakes"
+  },
+  "https://habr.com/ru/articles/1104848/?utm_campaign=1104848&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Sat, 07 Nov 2026 10:28:18 GMT",
+    "slug": "1104848",
+    "source_url": "https://habr.com/ru/articles/1104848/?utm_campaign=1104848&utm_source=habrahabr&utm_medium=rss",
+    "summary": "There is Qwen 3.8 27B, fine-tuned (SFT + LoRA) on a corpus about the 1C:Enterprise platform – the model is available on Hugging Face. The model writes code well in the built-in language, but regularly makes mistakes in the 1C query language: it confuses virtual tables, puts parameters in the wrong place, and mixes in SQL constructs that don't exist in 1C. Attempts to use the classic approach of further fine-tuning the model by collecting new datasets for the 1C query language yield no results. The accuracy gain is less than 1%. And it's a long and painful process. During the struggles with Qwen models and analyzing model usage telemetry, a hypothesis emerged: the model's knowledge of SQL constructs interferes because the lexemes are similar (SELECT, WITH, JOIN, etc.). This leads to the question: can we find specific neurons that \"pull\" the model towards the wrong answer and carefully suppress only them? The article presents a complete pipeline I've named NERVE (Neuron Editing, Reweighted & Val-Evaluated). Read more",
+    "title": "Dissecting the Qwen 3.8 27B-1c Brain"
+  },
+  "https://habr.com/ru/articles/1104864/?utm_campaign=1104864&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Sat, 07 Nov 2026 10:56:28 GMT",
+    "slug": "1104864",
+    "source_url": "https://habr.com/ru/articles/1104864/?utm_campaign=1104864&utm_source=habrahabr&utm_medium=rss",
+    "summary": "How Michelangelo's anatomical cipher predicted the transfer of the spark of reason into silicon. A Saturday study on the substrate neutrality of thought and a hidden message in the fresco \"The Creation of Adam\" Read more",
+    "title": "Recursive Imago Dei: AI as a Continuation of Creation Through Man"
+  },
+  "https://habr.com/ru/articles/1104870/?utm_campaign=1104870&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Sat, 07 Nov 2026 11:06:56 GMT",
+    "slug": "1104870",
+    "source_url": "https://habr.com/ru/articles/1104870/?utm_campaign=1104870&utm_source=habrahabr&utm_medium=rss",
+    "summary": "Under the neural network's response, there is a link, it does not open, and the first thought is that the address is invented. I checked about six hundred addresses from the responses of five neural networks with a search about a month after I collected them. About nine out of ten opened. There are very few dead ones, with 404 and 410 codes. These are addresses of ordinary materials on live platforms, not a random set of characters, so most likely they are deleted articles, not fabrications. It is unknown when exactly they were deleted. Therefore, the risk for the site is different: a link to a deleted page may remain in the sources and lead to emptiness. Read more",
+    "title": "Is it true that neural networks invent links and why do deleted articles remain in their responses?"
+  },
+  "https://habr.com/ru/articles/1104872/?utm_campaign=1104872&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Sat, 07 Nov 2026 11:11:02 GMT",
+    "slug": "1104872",
+    "source_url": "https://habr.com/ru/articles/1104872/?utm_campaign=1104872&utm_source=habrahabr&utm_medium=rss",
+    "summary": "This article is written for research purposes only and is not an instruction manual. I put Claude on the Rostelecom network and asked it to go out into the world. Here's what happened. Everything below is neuro-slop. Read more",
+    "title": "Breaking the Ice. Claude vs TSPU. November 2026"
+  },
+  "https://habr.com/ru/articles/1104876/?utm_campaign=1104876&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Sat, 07 Nov 2026 11:39:02 GMT",
+    "slug": "1104876",
+    "source_url": "https://habr.com/ru/articles/1104876/?utm_campaign=1104876&utm_source=habrahabr&utm_medium=rss",
+    "summary": "Everyone who has ever chatted with an online store knows how it ends. You want to ask about one product, and the chat window in the corner first demands your name, phone number, and email. You fill in all three fields, and if it's past ten in the evening, the window promises to reply 'within a minute,' then after a minute it says 'the operator will connect soon,' and then nothing more. By this time, a competitor is already open in a neighboring tab. The store owner has likely already paid for this visit. In a Belarusian plumbing store where my bot currently operates, more than half of those who write in the chat come from paid advertising. I know how much such a visitor costs from my own website: since summer, I've spent about 200,000 rubles on Yandex Direct, and each person who managed to do anything on the site, from clicking a form to registering, cost me over 700 rubles. If such a person closed the window at the phone number field or never got a response, the money for their visit was simply wasted. Read more",
+    "title": "I Spent 200,000 Rubles on Yandex Direct and Realized AI Sales Assistants Should Be Free"
+  },
+  "https://habr.com/ru/articles/1104888/?utm_campaign=1104888&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Sat, 07 Nov 2026 12:46:01 GMT",
+    "slug": "1104888",
+    "source_url": "https://habr.com/ru/articles/1104888/?utm_campaign=1104888&utm_source=habrahabr&utm_medium=rss",
+    "summary": "I created an AI bot in MAX called \"Ask AI\": you can ask ChatGPT or Gemini questions and generate images in Nano Banana. You can pay with a Russian card or via SBP, and you don't need to install anything extra. The code turned out to be the easiest part. It was harder with money, checks, and laws – I'll tell you about them. This text will be useful for anyone thinking of creating a paid bot in MAX. Read more",
+    "title": "AI bots in MAX for rubles: what to decide before the first payment"
   },
   "https://habr.com/ru/companies/1c/articles/1071340/?utm_campaign=1071340&utm_source=habrahabr&utm_medium=rss": {
     "model": "gemini-2.5-flash-lite",
@@ -5310,6 +5414,14 @@
     "source_url": "https://habr.com/ru/companies/lukit_ru/articles/1095428/?utm_campaign=1095428&utm_source=habrahabr&utm_medium=rss",
     "summary": "Night falls in the city, and the digital tech lead steps up for on-call duty. It stitches hundreds of alerts into a single incident, handles the first line of support, and writes post-mortems while the engineer finishes their coffee. It also suggests solutions, but sometimes they can make things worse. That's why the final decision always rests with the human in charge. We've staged one such week in the life of an AIOps agent as a five-act play. It features an on-call engineer named Alexey, his digital partner, and a restart button that hangs on the dashboard throughout the story, waiting for its moment. Alexey is a composite character. We didn't have to invent the late-night calls, the cold coffee, or the group chat where three teams fix one problem. Read on.",
     "title": "A Play About On-Call Duty with an AIOps Agent. Inside: 340 Alerts, Three Bugs, and an \"Abort\" Button"
+  },
+  "https://habr.com/ru/companies/magnus-tech/articles/1104754/?utm_campaign=1104754&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Sat, 07 Nov 2026 08:30:37 GMT",
+    "slug": "1104754",
+    "source_url": "https://habr.com/ru/companies/magnus-tech/articles/1104754/?utm_campaign=1104754&utm_source=habrahabr&utm_medium=rss",
+    "summary": "In custom development, there are often cases where a project needed to be done yesterday, with tight resources and no available hands. Usually, the choice is limited: either refuse the order or move the deadlines. We became interested in whether it's possible in principle to tackle such an insurmountable task with a limited team by involving AI agents and building a meaningful process around them. We decided to test this in an experiment: the two of us set out to build a complex automation system and set strict time limits. We handed over the coding entirely to the agents, keeping the task definition, control, and testing for ourselves. In two months, we brought the product to the pilot stage and learned firsthand what agent development is truly worth. We want to share this experience. Below is how our process of working with agents is structured, the challenges we faced, and what this experiment taught us. Read on.",
+    "title": "Two engineers against deadlines: what two months of agent development taught us"
   },
   "https://habr.com/ru/companies/megafon/articles/1081898/?utm_campaign=1081898&utm_source=habrahabr&utm_medium=rss": {
     "model": "gemini-2.5-flash-lite",
@@ -6534,6 +6646,14 @@
     "source_url": "https://habr.com/ru/companies/timeweb/articles/1092172/?utm_campaign=1092172&utm_source=habrahabr&utm_medium=rss",
     "summary": "\"I asked ChatGPT about your company - it named three competitors.\" If you work with websites, you've heard this phrase more than once. Even if your site is at the top, traffic from search is good, and conversions are fine. A neural network either doesn't know about you or provides outdated information. The first reaction is to rewrite texts, add expertise, and create an FAQ. We've been through this: the hypothesis of \"not enough content\" seems logical but is rarely confirmed. The neural network doesn't answer based on your text, but on what reached it. And this is where things get interesting. When we ran our site through queries to various models and examined what their infrastructure actually receives, the picture was prosaic. Some AI crawlers do not execute JavaScript. For a website built in the browser, this means one thing: an empty framework reaches the model instead of an article. The user sees a beautiful page, but the neural network sees an empty file. In this article, we will explore how AI systems read websites, where content gets lost on the way from the server to the model's response, and what can be checked and fixed.",
     "title": "Optimizing a website for neural networks"
+  },
+  "https://habr.com/ru/companies/timeweb/articles/1103120/?utm_campaign=1103120&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Sat, 07 Nov 2026 10:05:44 GMT",
+    "slug": "1103120",
+    "source_url": "https://habr.com/ru/companies/timeweb/articles/1103120/?utm_campaign=1103120&utm_source=habrahabr&utm_medium=rss",
+    "summary": "In recent years, neural networks have not only made a giant leap in quality but have also spread widely. The Western market is represented primarily by ChatGPT, in Russia Alice and GigaCHAT are trying to compete, and from China's \"national team,\" the free and quite powerful DeepSeek is the main representative... But is it really the only one? Well... not really. In fact, there is a real boom in large language models in China right now, and many of them not only compete with ChatGPT but also surpass it in a number of specific tasks. In this material, we will look at 5 of the best and most interesting representatives. Read more",
+    "title": "Not just DeepSeek: 4 Chinese AI projects worth knowing about"
   },
   "https://habr.com/ru/companies/timeweb/articles/1103368/?utm_campaign=1103368&utm_source=habrahabr&utm_medium=rss": {
     "model": "gemini-2.5-flash-lite",

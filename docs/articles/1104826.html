@@ -1,0 +1,105 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Claude Code without Anthropic: Running an Agent on GLM-5.3 and Qwen via Your Own Gateway and Stepping on Rakes</title>
+  <meta name="description" content="Claude Code doesn&#x27;t officially work from Belarus. We&#x27;re building ZuBrIQ (zubriq.ai) – a gateway to models on LiteLLM with BYN payments – and have made Claude Code, Codex, and OpenCode work on open models: GLM-5.3 from a provider and Qwen3.8-27B on our own V100s. Here&#x27;s the architectur">
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.65;
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 32px 20px 64px;
+      color: #1f2328;
+    }
+    header {
+      border-bottom: 1px solid #d8dee4;
+      margin-bottom: 28px;
+      padding-bottom: 20px;
+    }
+    .source {
+      color: #57606a;
+      font-size: 0.95rem;
+    }
+    img, video, iframe {
+      max-width: 100%;
+      height: auto;
+    }
+    pre {
+      overflow-x: auto;
+      padding: 16px;
+      background: #f6f8fa;
+      border-radius: 6px;
+    }
+    code {
+      font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+    }
+    blockquote {
+      border-left: 4px solid #d0d7de;
+      margin-left: 0;
+      padding-left: 16px;
+      color: #57606a;
+    }
+    footer {
+      border-top: 1px solid #d8dee4;
+      margin-top: 40px;
+      padding-top: 20px;
+      color: #57606a;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Claude Code without Anthropic: Running an Agent on GLM-5.3 and Qwen via Your Own Gateway and Stepping on Rakes</h1>
+    <p>Claude Code doesn&#x27;t officially work from Belarus. We&#x27;re building ZuBrIQ (zubriq.ai) – a gateway to models on LiteLLM with BYN payments – and have made Claude Code, Codex, and OpenCode work on open models: GLM-5.3 from a provider and Qwen3.8-27B on our own V100s. Here&#x27;s the architecture and five pitfalls: silent fallback, Claude Code&#x27;s service models, zero spend, a &#x27;blind&#x27; model, and KV cache on old hardware. Read on</p>
+    <p class="source">
+      Machine-translated from Habr.
+      <a href="https://habr.com/ru/articles/1104826/?utm_campaign=1104826&amp;utm_source=habrahabr&amp;utm_medium=rss">Read the original Russian article</a>.
+      Sat, 07 Nov 2026 09:17:00 GMT
+    </p>
+  </header>
+  <main>
+<div><p>Claude Code doesn't officially work from Belarus: Anthropic doesn't serve the region, and you can't pay for subscriptions or API access with a Belarusian card. We're building <a href="https://zubriq.ai">ZuBrIQ</a> — a gateway to models with BYN payments — and over the past few months, we've managed to make Claude Code, Codex, and OpenCode work on open models: GLM-5.3 from a provider and Qwen3.8-27B on our own V100s. Below is the architecture and five pitfalls we stumbled into ourselves.</p><h3>Why Replace the Model for Claude Code at All</h3><p>Claude Code is a good agent, and it can connect to more than just Anthropic. All it takes is <code>ANTHROPIC_BASE_URL</code> and a token, and it sends requests via the Anthropic Messages protocol to anywhere. There was a good review on Habr about this recently — <a href="https://habr.com/ru/articles/1104258/">"What to Replace Claude or Gemini With After the Ban."</a> They replaced the model with DeepSeek and MiniMax.</p><p>Our task is broader. We need not just one client and one model, but a dozen clients and several models behind a single address and key. Plus, expense tracking, backup routes, and a model whose data never leaves the country. Therefore, a gateway on <a href="https://github.com/BerriAI/litellm">LiteLLM</a> sits between the agents and the models.</p><h3>Architecture</h3><pre><code>Claude Code ── /v1/messages ─────────┐
+Codex ──────── /v1/responses ────────┤
+OpenCode, Zed, Cursor, SDK ──────────┤
+  /v1/chat/completions               │
+                                     ▼
+                         ┌───────────────────────┐
+                         │   LiteLLM (2 pods)    │
+                         │ keys, budgets, logs   │
+                         │ model name → routes   │
+                         └───────────┬───────────┘
+              ┌──────────────────────┼───────────────────────┐
+              ▼                      ▼                       ▼
+     vLLM, 4×V100 16 GB      GLM-5.3 from provider    DeepSeek V4 Pro
+     Qwen3.8-27B AWQ INT4    (main route)          (backup)
+     name: zubr               name: zubr-coder         under the same name
+</code><div><a href="https://sourcecraft.dev/"><span></span></a></div></pre><p>The main rule is that clients only know stable names: <code>zubr</code>, <code>zubr-flash</code>, <code>zubr-coder</code>. Each name has a list of routes with order and backups. If weights change or a provider goes down, integrations don't notice.</p><h3>Pitfall 1. Silent Fallback on /v1/messages</h3><p>Initially, we set up GLM-5.3 as a standard OpenAI-compatible backend — using the <code>openai/</code> provider with the correct <code>api_base</code>. Chat and SDK worked. But Claude Code and Codex received responses... from the backup model.</p><p>It turned out that LiteLLM translates <code>/v1/messages</code> (Claude Code) and <code>/v1/responses</code> (Codex) for <code>openai/</code> to the OpenAI Responses API. The provider responds to <code>/responses</code> with a 404, and the router silently moves to the next route. There's no error in the logs, and there's a response — just not from the intended model.</p><p>This is only revealed by the response header:</p><pre><code>x-litellm-attempted-fallbacks: 1
+</code><div><a href="https://sourcecraft.dev/"><span></span></a></div></pre><p>This is fixed by using LiteLLM's native provider for this vendor: it translates Messages and Responses to <code>chat/completions</code>, which the provider supports. The variable <code>LITELLM_USE_CHAT_COMPLETIONS_URL_FOR_ANTHROPIC_MESSAGES</code> only fixes <code>/v1/messages</code>; Codex still falls back with it.</p><p><strong>Conclusion:</strong> LiteLLM always respects the route order. If you get a response from the "wrong" model, check the fallback headers, not the <code>order</code>.</p><h3>Pitfall 2. Claude Code Itself Requests Haiku, Sonnet, and Opus</h3><p>Replacing <code>ANTHROPIC_MODEL</code> is not enough. Claude Code sends sub-tasks — headers, context compression, sub-agents — to models named Haiku, Sonnet, and Opus. Requests from a key without Anthropic access fail with a <code>403</code>, sometimes mid-operation.</p><p>A working <code>~/.claude/settings.json</code> looks like this:</p><pre><code>{
+  "env": {
+    "ANTHROPIC_BASE_URL": "https://api.zubriq.ai",
+    "ANTHROPIC_AUTH_TOKEN": "sk-…",
+    "ANTHROPIC_MODEL": "zubr-coder[1m]",
+    "ANTHROPIC_DEFAULT_OPUS_MODEL": "zubr-coder[1m]",
+    "ANTHROPIC_DEFAULT_SONNET_MODEL": "zubr-flash[1m]",
+    "ANTHROPIC_DEFAULT_HAIKU_MODEL": "zubr",
+    "CLAUDE_CODE_MAX_CONTEXT_TOKENS": "262144",
+    "CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC": "1"
+  }
+}
+</code><div><a href="https://sourcecraft.dev/"><span></span></a></div></pre><p>The key is issued in the <a href="https://zubriq.ai">zubriq.ai</a> personal account, and <code>zubrcode connect claude</code> writes this file automatically. Three details, each costing us an evening:</p><ul><li><p><code>ANTHROPIC_BASE_URL</code> — <strong>without</strong> <code>/v1</code>. Claude Code appends <code>/v1/messages</code> itself, and with <code>/v1</code>, it becomes <code>/v1/v1/messages</code>.</p></li><li><p>The suffix <code>[1m]</code> tells Claude Code that the model has a 1M context window, and it's truncated before sending: only the clean <code>zubr-coder</code> goes to the gateway. Without it, the agent calculates the window according to its own rules and compresses the context too early.</p></li><li><p>For a model without <code>[1m]</code>, the window is set by <code>CLAUDE_CODE_MAX_CONTEXT_TOKENS</code>. This variable has no effect on models with <code>[1m]</code>.</p></li></ul><h3>Pitfall 3. Zero Spend</h3><p>With the native provider, requests went where they should, but the spend per key became zero. For this provider, LiteLLM doesn't pull the price from <code>model_info</code>. Zero spend means key budgets don't trigger, and the margin report is inaccurate.</p><p>The solution is to duplicate the prices directly in the <code>litellm_params</code> of the model configuration:</p><pre><code>litellm_params:
+  model: &lt;provider&gt;/glm-5.3
+  input_cost_per_token: 0.0000012
+  output_cost_per_token: 0.000004
+  cache_read_input_token_cost: 0.00000022
+</code><div><a href="https://sourcecraft.dev/"><span></span></a></div></pre><p>The numbers are illustrative — the location where they are stored is important. Also, updating a model via <code>PATCH /model/{id}/update</code> takes a minute or two to reach the second pod. Don't rush to assume it didn't work.</p><h3>Pitfall 4. A Model That Doesn't See Images</h3><p>GLM-5.3 is strong in code but doesn't accept images. It behaves differently depending on the input:</p><div><div><table><tbody><tr><th><p>Input</p></th><th><p>What happens to the image</p></th></tr><tr><td><p>Provider's <code>chat/completions</code></p></td><td><p>400: <code>allowed values: ['text']</code></p></td></tr><tr><td><p>Provider's Anthropic-compatible endpoint</p></td><td><p>Silently dropped; the model "guesses" based on text</p></td></tr><tr><td><p>DeepSeek V4 Pro backup</p></td><td><p>Responds that there is no image</p></td></tr></tbody></table></div></div><p>The most dangerous is the second option: no error, a confident and incorrect answer. The user sends a screenshot with an error, and the model discusses something it hasn't seen.</p><p>In our ZubrCode agent, we implemented a workaround. If a model in the catalog lacks vision capabilities, the image is replaced with a text description from a fast vision-enabled model — GLM-5.3 Flash. The subtlety: the agent replays the entire history on each turn. Without caching, the same photo would be described anew each time. Therefore, the description is cached by the image's <code>sha256</code> on disk.</p><p>A separate detail in the catalog: <code>supports_vision: null</code> from <code>/model/info</code> was interpreted by us as an explicit <code>false</code> (<code>(bool) null</code>). Because of this, vision capabilities were lost even for models that do see. The correct behavior is "I don't know, ask higher up the chain." And keep in mind: if there are multiple routes under the same name, the flags are taken from the first one in order.</p><h3>Pitfall 5. Our Own Model on V100</h3><p>For data that should not leave the country, we use Qwen3.8-27B on our own 4×V100s with 16 GB each. These are 2017 cards, without bf16 and FP8. Therefore, we use AWQ INT4 quantization with FP16 computations, vLLM with tensor parallelism across 4 cards, and a vLLM fork with SM70 support.</p><p>What emerged:</p><ul><li><p><strong>KV cache must be specified explicitly.</strong> The fork calculates the KV budget as <code>total × gpu_memory_utilization − activations</code> and doesn't subtract model weights: the loader for SM70 reports their size as almost zero. The result is that KV consumes more than allowed, leaving nothing for other processes on the same cards. We explicitly set <code>--kv-cache-memory-bytes</code>, and left <code>--gpu-memory-utilization</code> only as a check for free memory at startup.</p></li><li><p><strong>Two instances cannot be started simultaneously.</strong> In the summer, a separate VL model coexisted with the main model. The peak initialization of two processes exceeded 16 GB — one worker caught an OOM. It got worse: the main instance hung on the NCCL watchdog. systemd showed <code>active</code>, but the port was closed. We fixed it by making the second unit wait for the first one's health check in <code>ExecStartPre</code>.</p></li><li><p><strong>Dense vs. MoE.</strong> Until September, under this name was MoE 35B-A3B: about 3 billion active parameters, first token in ~0.6s. The dense 27B is smarter and sees images itself, without a separate VL model. But the first token is now ~1.3s. For an agent that makes dozens of calls, this is noticeable. We kept it as a "Haiku slot": for background sub-tasks and anything that cannot be sent externally.</p></li></ul><p>Current parameters: 262,144 tokens context, <code>max-num-seqs 24</code>, KV ~4.6 GB per card, tool calling via <code>qwen3_xml</code> parser.</p><h3>What's the Result</h3><ul><li><p>Claude Code, Codex, and OpenCode work through a single gateway on GLM-5.3 and Qwen, without client patches — only configuration.</p></li><li><p>The model in the key is stable by name, while the routes and weights beneath it change without user intervention.</p></li><li><p>The most unpleasant errors here are silent: falling back, zero spend, dropped images. Monitor fallback headers and verify spending, not just response codes.</p></li></ul><p>The gateway from the article is part of our <a href="https://zubriq.ai">ZuBrIQ</a> platform: it also includes ready-made configurations for <a href="https://docs.zubriq.ai/code/clients/claude-code/">Claude Code</a> and other clients. In future articles in this series, we'll detail vLLM on V100 and masking personal data before sending it to the model. Share in the comments which clients and models you connect and what pitfalls you've encountered.</p></div>
+  </main>
+  <footer>
+    Translation generated with Gemini 2.5 Flash-Lite.
+    The original article remains the source of record.
+  </footer>
+</body>
+</html>

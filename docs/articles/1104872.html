@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Breaking the Ice. Claude vs TSPU. November 2026</title>
+  <meta name="description" content="This article is written for research purposes only and is not an instruction manual. I put Claude on the Rostelecom network and asked it to go out into the world. Here&#x27;s what happened. Everything below is neuro-slop. Read more">
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.65;
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 32px 20px 64px;
+      color: #1f2328;
+    }
+    header {
+      border-bottom: 1px solid #d8dee4;
+      margin-bottom: 28px;
+      padding-bottom: 20px;
+    }
+    .source {
+      color: #57606a;
+      font-size: 0.95rem;
+    }
+    img, video, iframe {
+      max-width: 100%;
+      height: auto;
+    }
+    pre {
+      overflow-x: auto;
+      padding: 16px;
+      background: #f6f8fa;
+      border-radius: 6px;
+    }
+    code {
+      font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+    }
+    blockquote {
+      border-left: 4px solid #d0d7de;
+      margin-left: 0;
+      padding-left: 16px;
+      color: #57606a;
+    }
+    footer {
+      border-top: 1px solid #d8dee4;
+      margin-top: 40px;
+      padding-top: 20px;
+      color: #57606a;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Breaking the Ice. Claude vs TSPU. November 2026</h1>
+    <p>This article is written for research purposes only and is not an instruction manual. I put Claude on the Rostelecom network and asked it to go out into the world. Here&#x27;s what happened. Everything below is neuro-slop. Read more</p>
+    <p class="source">
+      Machine-translated from Habr.
+      <a href="https://habr.com/ru/articles/1104872/?utm_campaign=1104872&amp;utm_source=habrahabr&amp;utm_medium=rss">Read the original Russian article</a>.
+      Sat, 07 Nov 2026 11:11:02 GMT
+    </p>
+  </header>
+  <main>
+<div><p><em>This article is written for research purposes only and is not an instruction manual.</em></p><p><em>I put Claude on the Rostelecom network and asked it to go out into the world. Here's what happened. Everything below is neuro-slop.</em></p><h2>How Filtering Works and What Is Effective</h2><p><em>Overview as of November 2026. Based on practical setup of a "RF → Europe" chain and measurements from the Rostelecom network. Specific servers, IPs, and domains are intentionally not listed.</em></p><h3>1. How Filtering Works</h3><h4>TSPU</h4><p>"Technical Means for Countering Threats" (TSPU) is DPI (Deep Packet Inspection) equipment installed with telecom operators (Rostelecom, mobile operators, large providers) and managed centrally. The telecom operator does not control the rules itself; the policy is uniform across the country, but applied unevenly: the picture can differ by region, operator, and network type (mobile/wired).</p><h4>What TSPU Can Do</h4><div><div><table><tbody><tr><th><p>Mechanism</p></th><th><p>How it Works</p></th><th><p>How it Manifests</p></th></tr><tr><td><p><strong>IP Blocking</strong></p></td><td><p>Packets to an address on the list are dropped</p></td><td><p>Timeout on any port, ping fails</p></td></tr><tr><td><p><strong>SNI Filtering</strong></p></td><td><p>The domain name is transmitted in plain text in the TLS ClientHello; if forbidden, the connection is reset</p></td><td><p>TCP connection opens, TLS handshake does not complete</p></td></tr><tr><td><p><strong>"SNI ↔ IP" Check</strong></p></td><td><p>Popular domains (Microsoft, Google, Cloudflare, Mozilla, Ubuntu, etc.) pointing to an IP not owned by the domain owner are cut off</p></td><td><p>Masquerading as a "large third-party site" no longer works</p></td></tr><tr><td><p><strong>Protocol Signatures</strong></p></td><td><p>OpenVPN, WireGuard, IPsec/L2TP, PPTP, old Shadowsocks, etc. are recognized</p></td><td><p>VPN connects and immediately disconnects / does not connect at all</p></td></tr><tr><td><p><strong>"Freezing" after ~16 KB</strong></p></td><td><p>TLS to addresses of certain foreign hosts: the first ~15–20 KB pass, then the stream stops</p></td><td><p>Handshake and headers pass, response body does not. Page "loads forever"</p></td></tr><tr><td><p><strong>Throttling</strong></p></td><td><p>Artificial speed reduction for specific services (e.g., YouTube)</p></td><td><p>Works, but very slowly</p></td></tr><tr><td><p><strong>UDP/QUIC Limitation</strong></p></td><td><p>QUIC (HTTP/3) and UDP on non-standard ports are throttled or blocked</p></td><td><p>Protocols over UDP are unstable</p></td></tr><tr><td><p><strong>Active Probing</strong></p></td><td><p>TSPU itself connects to a suspicious server and checks its response</p></td><td><p>A server that responds "not like a website" gets blocked</p></td></tr><tr><td><p><strong>Whitelists</strong></p></td><td><p>In certain regions/networks (especially mobile under restrictions), only allowed resources are available</p></td><td><p>Everything except "white" services is inaccessible</p></td></tr></tbody></table></div></div><h4>Blocking by Hostings (Measurements from Rostelecom)</h4><p>Downloading 2–10 MB over HTTPS from provider networks:</p><div><div><table><tbody><tr><th><p>Result</p></th><th><p>Providers</p></th></tr><tr><td><p>❌ Freeze / TLS interruption</p></td><td><p>Hetzner (all tested locations), OVH, Vultr, Scaleway, AWS.</p></td></tr><tr><td><p>✅ No restrictions</p></td><td><p>Leaseweb, i3D.net, Serverius, xTom, NetCologne, Kumi Systems, PS.kz, Hoster.kz, several academic networks</p></td></tr></tbody></table></div></div><p>Conclusion: <strong>large and cheap foreign clouds are frozen first</strong>. The situation changes – check a specific IP before use (see section 5).</p><h3>2. Overview of Bypass Methods</h3><h4>2.1 Classic VPNs (OpenVPN, WireGuard, IPsec, L2TP, PPTP)</h4><ul><li><p>Protocols with recognizable signatures, recognized by DPI.</p></li><li><p><strong>Status:</strong> widely blocked in the RF, especially to foreign addresses. Suitable only as transport within an already masked channel or for communication between trusted nodes within the country.</p></li></ul><h4>2.2 Shadowsocks</h4><ul><li><p>Encrypted stream without explicit headers. Older versions are recognized by statistics and active probes.</p></li><li><p><strong>Status:</strong> modern variants (SS-2022) work in some places, but "random noise without TLS" is suspicious in itself. Inferior to protocols that masquerade as HTTPS.</p></li></ul><h4>2.3 Masquerading as HTTPS: Trojan, VLESS/VMess over TLS</h4><ul><li><p>Traffic looks like regular TLS on port 443. Requires your own domain with a valid certificate.</p></li><li><p>Without protection against active probing, the server can be "probed".</p></li><li><p><strong>Status:</strong> works, but inferior to Reality.</p></li></ul><h4>2.4 VLESS + Reality (+ XTLS Vision) — the main working option</h4><p>A protocol from the Xray project.</p><ul><li><p><strong>Reality:</strong> the server does not have its "own" fake certificate. For any client without a secret key, it transparently proxies the connection to a real website (<code>dest</code>). The TSPU probe receives a real website with a real certificate – it's impossible to distinguish the VPN from the website.</p></li><li><p><strong>XTLS Vision</strong> (<code>flow=xtls-rprx-vision</code>) removes the characteristic "TLS inside TLS" pattern in packet sizes.</p></li><li><p><strong>Fingerprint</strong> (<code>fp=chrome</code>) – the client's ClientHello is indistinguishable from the Chrome browser.</p></li></ul><p>Important: <strong>choice of masquerading site</strong> (SNI/dest):</p><ul><li><p>❌ Large third-party domains (microsoft.com, google.com, cloudflare.com, etc.) – are cut off by the "SNI ↔ IP" check.</p></li><li><p>⚠️ Unknown third-party sites – work, but depend on third-party infrastructure.</p></li><li><p>✅ <strong>Best option – your own domain with a real website on the same server.</strong> The domain's DNS points to the same IP, the certificate is valid, and the real page is served during probing.</p></li></ul><h4>2.5 XHTTP, gRPC, WebSocket — transport over HTTP and CDN</h4><ul><li><p>Traffic goes as regular HTTP requests, can be routed through a CDN (e.g., Cloudflare): TSPU sees a connection to the CDN, not your server.</p></li><li><p><strong>Pros:</strong> server IP is hidden, can survive IP blocking.</p></li><li><p><strong>Cons:</strong> lower speed, CDNs themselves are subject to throttling and partial blocking in RF; dependence on CDN policy.</p></li></ul><h4>2.6 QUIC/UDP Protocols: Hysteria2, TUIC</h4><ul><li><p>High speed on poor connections.</p></li><li><p><strong>Status in RF:</strong> UDP and QUIC are restricted – unstable, not recommended for the main connection.</p></li></ul><h4>2.7 Cascade with a Russian Entry Node ("Double VPN")</h4><pre><code>client ──▶ server in RF ──▶ server abroad ──▶ internet</code><div><a href=
+  </main>
+  <footer>
+    Translation generated with Gemini 2.5 Flash-Lite.
+    The original article remains the source of record.
+  </footer>
+</body>
+</html>

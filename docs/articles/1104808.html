@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>How We Legally Defeated Aggressive Anti-Fraud with a Local LLM and Created a Visual-Textual DOM Agent Bypassing Blocks</title>
+  <meta name="description" content="DISCLAIMER: The author strongly condemns malicious use of mass data scraping methods. This article aims to explain how to find necessary information without breaking rules. It details how a common task of finding rare equipment on the secondary market evolved into a full engineering investigation. T">
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.65;
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 32px 20px 64px;
+      color: #1f2328;
+    }
+    header {
+      border-bottom: 1px solid #d8dee4;
+      margin-bottom: 28px;
+      padding-bottom: 20px;
+    }
+    .source {
+      color: #57606a;
+      font-size: 0.95rem;
+    }
+    img, video, iframe {
+      max-width: 100%;
+      height: auto;
+    }
+    pre {
+      overflow-x: auto;
+      padding: 16px;
+      background: #f6f8fa;
+      border-radius: 6px;
+    }
+    code {
+      font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+    }
+    blockquote {
+      border-left: 4px solid #d0d7de;
+      margin-left: 0;
+      padding-left: 16px;
+      color: #57606a;
+    }
+    footer {
+      border-top: 1px solid #d8dee4;
+      margin-top: 40px;
+      padding-top: 20px;
+      color: #57606a;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>How We Legally Defeated Aggressive Anti-Fraud with a Local LLM and Created a Visual-Textual DOM Agent Bypassing Blocks</h1>
+    <p>DISCLAIMER: The author strongly condemns malicious use of mass data scraping methods. This article aims to explain how to find necessary information without breaking rules. It details how a common task of finding rare equipment on the secondary market evolved into a full engineering investigation. The author successfully trained a local 7B/8B LLM (Qwen) to bypass aggressive protection systems, obfuscated frontends, and isolated sandbox network restrictions, all without paid search APIs or proxies, using only Python, Playwright, and a pixel-logic approach. The story covers the &#x27;prehistory and pain&#x27; of why direct requests to large sites result in bans, and the failure of using search engines as an intermediary. It then introduces the &#x27;Visual Web Agent&#x27; method, which involves emulating a real browser and parsing the DOM tree using human-readable markers instead of CSS classes. The steps include using a system Edge browser to avoid headless detection, parsing by text markers to overcome obfuscation, and assembling scattered data using Item IDs. A universal prompt container for the AI agent is provided, followed by the results, highlighting the LLM&#x27;s autonomy, critical thinking, and the &#x27;proof of concept&#x27; that local LLMs can act as autonomous computer operators, seeing the internet like a human user.</p>
+    <p class="source">
+      Machine-translated from Habr.
+      <a href="https://habr.com/ru/articles/1104808/?utm_campaign=1104808&amp;utm_source=habrahabr&amp;utm_medium=rss">Read the original Russian article</a>.
+      Sat, 07 Nov 2026 07:46:28 GMT
+    </p>
+  </header>
+  <main>
+<div><p><strong>DISCLAIMER: </strong> The author strongly condemns the malicious use of methods and ways of mass and destructive automated data collection from any classified ad sites and the discussion of such methods. The purpose of the article is different - to tell how to search for what you need without violating the rules.</p><p>This story is about how a common task of searching for rare equipment on the secondary market turned into a full-fledged engineering investigation. As a result, I managed to teach a local 7B/8B class language model (Qwen) to bypass aggressive protection systems, obfuscated frontends, and network restrictions of an isolated sandbox. No paid search engine APIs, no proxies. Only Python, Playwright, and a pixel-logic approach. The article is written hot on the heels of our "technological breakthrough" with AI.</p><p><strong>Prehistory and Pain: Why requests to large sites are a guaranteed ban.</strong></p><p>The task seemed trivial: ask a local model in the Strata environment to find ads for a flagship mobile workstation in maximum configuration with a rare professional video card on a popular classifieds site. But modern large classified platforms have a simply ferocious bot protection system. An attempt to make a direct requests.get() or use standard BeautifulSoup instantly results in a banal "HTTP 403 Forbidden" or "HTTP 429 Too Many Requests". The WAF (Web Application Firewall) at the network level instantly blocked the model's work.</p><p>Then I tried to use a classic "intermediary" - to teach the model to search for ads through search engines (Google, Yandex, DuckDuckGo) with the operator site:<a href="http://domain.ru">domain.ru</a>. But here too, I was met with failure! One search engine displayed a typical "You are not a robot" captcha, which a text script could not pass. The text HTML mirror of the second search engine hung indefinitely due to timeouts because of the network allow-list within the isolated Strata environment. The third search engine returned live HTML, which, upon parsing, turned out to be an empty JavaScript redirection stub.</p><p>The model repeatedly returned zero results, got confused in regular expressions, and broke URLs. It became clear: standard web scraping methods, if not dead, then require extremely non-trivial methods on the verge of foul play. The interaction architecture itself needed to be changed.</p><p><strong>The Found Method: Direct Action Visual-Textual DOM Agent (Visual Web Agent).</strong></p><p>Instead of trying to deceive the network at the raw packet level, I decided to ask the model to simulate a human at the pixel and logical levels. The method is based on "two pillars": emulation of a real system browser and parsing the DOM tree by "human" markers instead of relying on CSS classes.</p><p><strong>Step 1. Browser "Invisibility Cloak" - Emulating System Edge.</strong></p><p>Anti-fraud systems easily detect headless Playwright or Selenium browsers by specific flags (e.g., navigator.webdriver = true). Therefore, I asked the model to intercept control of the Microsoft Edge browser already installed in the operating system, and the model quickly assembled a Python script.</p><p>The script runs in visible mode (headless=False), using the system browser binary via the channel="msedge" parameter. Additionally, the --start-maximized and --focus flags are passed to the arguments, and the page.bring_to_front() method is called in the code. This forcibly pushes the browser window from the tray directly onto the screen, on top of all other windows. For protection systems, this looks like an absolutely legitimate page launch by a user. An 8-second pause ensures that all protection scripts have time to execute and the page fully loads.</p><p><strong>Step 2. Victory Over Obfuscation: Parsing by Text Markers.</strong></p><p>The frontend of large platforms is overloaded with hashed dynamic classes (e.g., .styles-module-root-XyZ12), which are randomly generated by the server and change with each site update. But here too, the model proved to be on top of its game and fundamentally began to ignore CSS selectors. The agent scans the DOM tree in one pass, clinging to semantic text markers:</p><ol><li><p>Finds a text node containing a currency symbol (or other price marker) - this becomes the fixation point.</p></li><li><p>Moves up to the parent container and grabs the adjacent large text - this is the title.</p></li><li><p>Extracts a link from the same block, validating it with a regular expression for the pattern _
+{5,} (a unique digital ID of the ad in the URL tail of the card).</p></li></ol><p><strong>Step 3. Assembling Dispersed Data by Item ID (iid).</strong></p><p>The architecture of modern marketplaces often separates data for optimization purposes: the seller's name and city may lie outside the compact card container. The local model itself found an elegant solution: it discovered that store profile links in the page code have a hard parameter linking them to the card (e.g., ?iid=, where is the unique ad ID). The script, immediately and completely independently optimized by the model, began to take a full text dump of the page, find matches by iid, and stitch together "product + price + city + seller link" pairs with 100% accuracy, completely eliminating line shifts in the report output.</p><p>As a result, I practically took on the role of an observer who just sat and watched "the artist create," receiving parsed ads and links at the end of the model's work!</p><p><strong>Universal Prompt Container for Launching the AI Agent.</strong></p><p>As a result, a simple and universal prompt container was "born" for launching the AI agent for the described task. So that your local (or cloud) model immediately understands this method and applies it to any other complex site without falling back to requests and trying to download the built-in Chromium (which often breaks the environment), you can use the following proven prompt container:</p><p><em>Start the "Direct Action Visual-Textual DOM Agent" mode. Your task is to find [what we are looking for] on the site [site name here].</em></p><p><em>Act strictly according to the algorithm:</em></p><ol><li><p><em>Do not use requests and do not try to download the built-in browsers of the Playwright library.</em></p></li><li><p><em>Launch the browser in visible mode (headless=False), strictly specifying the use of the already installed Edge via the parameter: channel="msedge" (this will cancel downloading Chromium from the network).</em></p></li><li><p><em>To prevent the window from remaining minimized in the tray, be sure to pass the flags: "--start-maximized" and "--focus" to the browser launch arguments, and after creating the page, call the page.bring_to_front() method to forcibly bring the window to the foreground on the screen above all other windows.</em></p></li><li><p><em>Formulate a search URL with the query embedded within the link to open the results page directly.</em></p></li><li><p><em>Wait for 8 seconds after loading to bypass protection systems and Cloudflare.</em></p></li><li><p><em>Take a screenshot for visual control and OCR analysis.</em></p></li><li><p><em>Ignore hashed CSS classes. Collect data (name, price, link) by traversing the DOM structure, clinging to text markers (currency symbols, card ID patterns).</em></p></li><li><p><em>If the data is scattered in the DOM, take a full text dump of the page and match blocks by indices (e.g., via the Item ID of the ad).</em></p></li></ol><p>Write the script code, execute it right now using the launch tool, and output the ready report with the ads to the chat.</p><p><strong>Results: What did my "autonomous robot" bring in the end?</strong></p><p>Despite the fact that during the process of dense interactive debugging of the script, the target site eventually issued a temporary "429" restriction on the sixth attempt, the model showed a high level of autonomy. It did not get confused, blocked new network requests (until the IP ban "unfreezes"), and collected the final structured report from the local data buffers already stored in memory.</p><p>The most interesting part: the AI agent exhibited elements of critical thinking. In one of the ads, the title indicated a top-tier video card model, but the model scanned the description text DOM and found the seller's line: "Video card: lower series with 16 GB". The model itself included a warning in the report: "Attention, contradiction in the specifications of the title and description, clarify with the seller." Thus, the model made me understand that the ad was not suitable for me, even if it formally "matched" the request.</p><p><strong>Conclusion.</strong></p><p>The value of this experiment is not in the specific script files or JSON logs left on the disk, nor in "reinventing the wheel." Any professional would have found a much more serious solution. The main thing here is the proof of concept (PoC). A local 7B/8B class model is already quite capable of acting as a full-fledged autonomous AI operator of your computer!</p><p>By combining "eyes" (visual control through screenshots) and "hands" (DOM tree control through a system browser), a local LLM becomes practically invulnerable to standard network blocks. It can "see" the internet just as a live user sees it.</p><p>And this brings LLMs ever closer to that very, sacramental concept from the words of a legendary electronic composition: "I am your servant, I am your worker"*...</p></div>
+  </main>
+  <footer>
+    Translation generated with Gemini 2.5 Flash-Lite.
+    The original article remains the source of record.
+  </footer>
+</body>
+</html>

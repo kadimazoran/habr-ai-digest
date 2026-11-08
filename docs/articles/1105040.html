@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>[Translation] Claude Code unbiased</title>
+  <meta name="description" content="I once asked Claude Code which CMS it would recommend. I wanted to see where it was leaning. It answered: Drupal. No way. I asked why, and it explained that it saw my custom Drupal skill and decided that I work with Drupal and would be comfortable with it. Fair enough. My instructions, skills, and s">
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.65;
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 32px 20px 64px;
+      color: #1f2328;
+    }
+    header {
+      border-bottom: 1px solid #d8dee4;
+      margin-bottom: 28px;
+      padding-bottom: 20px;
+    }
+    .source {
+      color: #57606a;
+      font-size: 0.95rem;
+    }
+    img, video, iframe {
+      max-width: 100%;
+      height: auto;
+    }
+    pre {
+      overflow-x: auto;
+      padding: 16px;
+      background: #f6f8fa;
+      border-radius: 6px;
+    }
+    code {
+      font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+    }
+    blockquote {
+      border-left: 4px solid #d0d7de;
+      margin-left: 0;
+      padding-left: 16px;
+      color: #57606a;
+    }
+    footer {
+      border-top: 1px solid #d8dee4;
+      margin-top: 40px;
+      padding-top: 20px;
+      color: #57606a;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>[Translation] Claude Code unbiased</h1>
+    <p>I once asked Claude Code which CMS it would recommend. I wanted to see where it was leaning. It answered: Drupal. No way. I asked why, and it explained that it saw my custom Drupal skill and decided that I work with Drupal and would be comfortable with it. Fair enough. My instructions, skills, and settings make the agent biased. But for this question, I needed an unbiased one. A regular chatbot would have sufficed, but we don&#x27;t take the easy way, do we? 😁 I started looking for how to run Claude Code without my own config and found the --safe-mode flag. According to the description, it&#x27;s just what I needed: no CLAUDE.md, skills, plugins, hooks, or MCP servers, and my subscription as usual. Pure default Claude Code ✨ I asked again. Drupal again. (╯°□°)╯︵ ┻━┻ This time the path was as follows: my email in the agent&#x27;s context → amazee.io domain → a company known for Drupal hosting → the user works in a Drupal-oriented company. So much for pure Claude Code. Read more</p>
+    <p class="source">
+      Machine-translated from Habr.
+      <a href="https://habr.com/ru/articles/1105040/?utm_campaign=1105040&amp;utm_source=habrahabr&amp;utm_medium=rss">Read the original Russian article</a>.
+      Sun, 08 Nov 2026 10:25:07 GMT
+    </p>
+  </header>
+  <main>
+<div><p>I once asked Claude Code which CMS it would recommend. I wanted to see where it was leaning. It answered: Drupal. No way. I asked why, and it explained that it saw my custom Drupal skill and decided that I work with Drupal and would be comfortable with it.</p><p>Fair enough. My instructions, skills, and settings make the agent biased. But for this question, I needed an unbiased one. A regular chatbot would have sufficed, but we don't take the easy way, do we? 😁</p><p>I started looking for how to run Claude Code without my own config and found the flag <code>--safe-mode</code>. According to the description, it's just what I needed: no CLAUDE.md, skills, plugins, hooks, or MCP servers, and my subscription as usual. Pure default Claude Code ✨</p><p>I asked again. Drupal again.</p><p>(╯°□°)╯︵ ┻━┻</p><p>This time the path was as follows: my email in the agent's context → amazee.io domain → a company known for Drupal hosting → the user works in a Drupal-oriented company.</p><p>So much for pure Claude Code.</p><h3>/ccu: Claude Code, Unbiased by me</h3><p>This is how <code>/ccu</code> came about — a skill that runs a prompt in a clean Claude Code instance.</p><p>I could have created a shell command that opens a full unbiased Claude Code session. But I don't usually need to work in that format; I only need a quick check from time to time. That's why it's a skill: my main agent writes the prompt, copies the necessary files for the task into an empty folder, launches a clean instance there, and brings back its response.</p><p>I use it in various ways. One option is as reviewer personas for my blog, for example, an editor or a colleague.</p><p>What does a clean instance know about me? Nothing. Out of the box, it only sees the OS, the shell, the path in the temporary folder, and today's date.</p><h3>How the instance is isolated</h3><p>Each run gets a fresh temporary directory with two subfolders: <code>work</code> — the instance's working directory with task files, and <code>home</code> — an empty home directory. Then, roughly like this:</p><pre><code>cd &lt;run dir&gt;/work 
+ env -i HOME=&lt;run dir&gt;/home PATH=$PATH CLAUDE_CODE_OAUTH_TOKEN=&lt;token&gt; 
+  claude -p --model &lt;model&gt; &lt; prompt 
+</code><div><a href="https://sourcecraft.dev/"><span></span></a></div></pre><p><code>env -i</code> starts with an empty environment, so nothing leaks from my shell. The home directory is empty: no config, no skills, no memory, no history. The token is the same as my current session's; <code>/ccu</code> gets it from macOS Keychain. The subscription is the same, but the email is not: Claude Code's account profile is stored in <code>.claude.json</code>, which is written upon login, but here the home is clean.</p><h4>Permissions must be granted in advance</h4><p><code>claude -p</code> rejects any tool that requires confirmation: there's no one to confirm. Therefore, the main agent lists the tools needed for the task in <code>work/.claude/settings.json</code>, for example, for a web task:</p><pre><code>{"permissions": {"allow": ["WebFetch", "WebSearch", "Bash(curl:*)"]}} 
+<div><a href="https://sourcecraft.dev/"><span></span></a></div></code></pre><p>In a folder that Claude Code doesn't trust, these settings are ignored, so <code>/ccu</code> also marks <code>work</code> as trusted in <code>.claude.json</code> inside home:</p><pre><code>{"projects": {"&lt;run dir&gt;/work": {"hasTrustDialogAccepted": true}}} 
+<div><a href="https://sourcecraft.dev/"><span></span></a></div></code></pre><h4>The transcript remains mine</h4><p>After running, <code>/ccu</code> converts the raw session log into a readable <code>transcript.md</code>. The main agent forwards the instance's response, but I never read the transcript. I can read it myself whenever I want.</p><h3>What about the CMS?</h3><p>Through <code>/ccu</code>, Claude Code recommended Payload.</p><p>┬─┬ノ( º _ ºノ)</p></div>
+  </main>
+  <footer>
+    Translation generated with Gemini 2.5 Flash-Lite.
+    The original article remains the source of record.
+  </footer>
+</body>
+</html>

@@ -1,0 +1,135 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Vibe coding vs. a hundred shards: how I built Terox in a couple of days</title>
+  <meta name="description" content="When a service runs on a hundred PostgreSQL shards, even the question &quot;where is the record with this ID located?&quot; can easily turn into iterating through dozens of connections. Entities are distributed using consistent hashing, and rare operations on heavily loaded tables require careful mo">
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.65;
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 32px 20px 64px;
+      color: #1f2328;
+    }
+    header {
+      border-bottom: 1px solid #d8dee4;
+      margin-bottom: 28px;
+      padding-bottom: 20px;
+    }
+    .source {
+      color: #57606a;
+      font-size: 0.95rem;
+    }
+    img, video, iframe {
+      max-width: 100%;
+      height: auto;
+    }
+    pre {
+      overflow-x: auto;
+      padding: 16px;
+      background: #f6f8fa;
+      border-radius: 6px;
+    }
+    code {
+      font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+    }
+    blockquote {
+      border-left: 4px solid #d0d7de;
+      margin-left: 0;
+      padding-left: 16px;
+      color: #57606a;
+    }
+    footer {
+      border-top: 1px solid #d8dee4;
+      margin-top: 40px;
+      padding-top: 20px;
+      color: #57606a;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Vibe coding vs. a hundred shards: how I built Terox in a couple of days</h1>
+    <p>When a service runs on a hundred PostgreSQL shards, even the question &quot;where is the record with this ID located?&quot; can easily turn into iterating through dozens of connections. Entities are distributed using consistent hashing, and rare operations on heavily loaded tables require careful monitoring of lock_timeout, statement_timeout, and connection pools. I&#x27;m a backend developer for high-load services, formerly a DBA. Our standard migrations are rolled out automatically. But when a change requires special control on a heavily loaded table, I don&#x27;t want to rely solely on the developer having checked the script and not forgotten anything. Thus, after a couple of days of collaboration with AI, Terox was created – a CLI that searches for data across a set of shards, switches to the found one, and rolls out complex SQL via dry-run, canary, and batches. I&#x27;ll explain how a work pain turned into an open-source tool and why, when working with production databases, vibe coding quickly turns into regular engineering work. Taming a hundred shards</p>
+    <p class="source">
+      Machine-translated from Habr.
+      <a href="https://habr.com/ru/articles/1105130/?utm_campaign=1105130&amp;utm_source=habrahabr&amp;utm_medium=rss">Read the original Russian article</a>.
+      Sun, 08 Nov 2026 14:46:31 GMT
+    </p>
+  </header>
+  <main>
+<div><figure><img alt="Terox: one terminal for many shards" loading="lazy" src="https://habrastorage.org/r/w1560/webt/b5/9f/60/b59f60014d6d030b9cb22e97284550ab.png"/><div><figcaption>Terox: one terminal for many shards</figcaption></div></figure><p>At work, I have PostgreSQL. More precisely, I have PostgreSQL many times over: different services, environments, clusters, and hundreds of shards.</p><p>A little context about me: I'm currently a backend developer for high-load services, and before that, I was a DBA. So, databases aren't an abstract storage behind an ORM for me, but I also don't have to manually carry each <code>ALTER TABLE</code> to servers on a flash drive.</p><p>Our services roll out standard migrations themselves along with deployments. But there are rare operations on large and constantly loaded tables that require a separate plan: creating an index, validating a constraint, heavy DDL, or a change that needs to be performed in small stages. Here, it's important to choose the right moment, limit the lock wait time, set <code>statement_timeout</code>, not occupy the entire connection pool for too long, and stop after the first problem.</p><p>It's dangerous to perform such operations based on the principle "the developer looked at the SQL, it seems okay." A person can check the script and forget <code>lock_timeout</code>, confuse a shard, or miss partial application. I wanted a tool to remember these rules, not a person at the terminal. Terox was created precisely for such manual operational tasks and diagnostics – not as a replacement for automatic application migrations.</p><p>The common question "on which shard is this record located?" sometimes turned into a small quest:</p><ol><li><p>find the right host;</p></li><li><p>recall the port and database name;</p></li><li><p>open <code>psql</code>;</p></li><li><p>execute the query;</p></li><li><p>make sure the record isn't there;</p></li><li><p>move to the next shard and strengthen one's character.</p></li></ol><p>You can use pgAdmin, but first, you'll have to manually set up a hundred connections through the interface. For each, fill in the host, port, database, user, and TLS parameters, don't mix up the shard number, and neatly organize everything into groups. This is fine for a few databases. But when there are hundreds, it becomes a long, monotonous job that will have to be repeated with every configuration change. You could create a collection of shell aliases. You could keep a file with connection commands nearby, which over time starts to look like an infrastructure family tree.</p><p>All these methods work. The problem is that I didn't need another way to connect to PostgreSQL. I lacked a tool that understood entities at a higher level: <strong>service → storage → one, several, or all shards</strong>.</p><p>At some point, I stopped copying another connection string, sat down with AI, and started building such a tool myself. We made the first useful version in a couple of days. Thus, <a href="https://github.com/nvorobev/terox">Terox</a> was born – an interactive CLI client for working with sharded PostgreSQL clusters.</p><p>The name turned out to be a bit cosmic. The work still mainly consists of <code>SELECT</code>, but now it at least sounds like we're managing a fleet.</p><h3>Why psql and pgAdmin weren't enough for me</h3><p>Let me preface this by saying: <code>psql</code> is excellent. pgAdmin also solves its tasks. Terox doesn't try to replace either of them.</p><p>But for a regular client, the unit of work is a connection. In a sharded system, the unit of work is often a whole set of connections.</p><p>I regularly wanted to do things like:</p><ul><li><p>execute a single diagnostic query on all shards;</p></li><li><p>see the results in a single table and not lose information about which shard the row came from;</p></li><li><p>quickly switch to the shard where the data was found;</p></li><li><p>compare the table schema between shards;</p></li><li><p>view locks, long transactions, and table sizes across the cluster at once;</p></li><li><p>apply a single migration with clear timeouts and see the status of each shard;</p></li><li><p>not confuse staging and production on a Friday evening.</p></li></ul><p>The last point is especially important. Friday evening is a distributed system where the internal voice plays the role of consensus: "maybe on Monday?"</p><h4>Why not a loop around psql</h4><p>The most obvious option looks something like this:</p><pre><code>for shard in $(seq -w 1 128); do 
+  psql "host=pgbouncer-shop-rs${shard}.example.net ..." \
+    -c "select * from items where item_id = 424242"
+done
+</code><div><a href="https://sourcecraft.dev/"><span></span></a></div></pre><p>And this is a normal solution for a one-off task. Problems begin when such a loop becomes a daily tool: you need to limit parallelism, cancel already running queries, not lose errors from individual shards, combine different sets of columns, separate reads from writes, and each time check that the loop isn't looking at production with unexpected permissions.</p><p>Terox grew not from the idea "let's replace psql," but from the desire to build this wrapper once and then work with the concept of a <strong>set of shards</strong>, rather than connection strings.</p><h3>One config instead of a connection directory</h3><p>In Terox, hosts and databases are described using templates. In the examples below, names, addresses, and data are synthetic – internal infrastructure shouldn't be published – but the commands and client behavior are real. For example, a conditional 128 shards can be written like this:</p><pre><code>max_rows: 100
+fanout_concurrency: 8
+query_timeout: 7s
+statement_timeout: 5s
+lock_timeout: 500ms
+
+services:
+  shop:
+    storages:
+      prod:
+        host_template: pgbouncer-shop-rs{p1:03}.example.net
+        db_template: shard_{p}
+        port: 6432
+        user: readonly
+        password_env: TEROX_SHOP_PASSWORD
+        count: 128
+        sslmode: verify-full
+        prod: true
+        migration_role: app_writer
+</code><div><a href="https://sourcecraft.dev/"><span></span></a></div></pre><p><code>{p1:03}</code> becomes <code>001</code>, <code>002</code>, …, <code>128</code>, and <code>{p}</code> becomes the zero-based position number. The host and database name can be numbered differently.</p><p><code>fanout_concurrency</code> is more important here than it seems. It prevents the client from simultaneously rushing to all 128 shards and causing a load test that no one asked for. The client's <code>query_timeout</code> limits the entire call to a specific shard, and the server-side <code>statement_timeout</code> and <code>lock_timeout</code> limit the work already within PostgreSQL.</p><p>After that, you can immediately open the entire cluster:</p><pre><code>terox -t shop/prod/all
+</code><div><a href="https://sourcecraft.dev/"><span></span></a></div></pre><p>Or select the service, storage, and shard through a menu. The prompt always shows the current context, the production badge, read/write mode, and <code>statement_timeout</code>.</p><pre><code>shop/prod(all) [prod ro st=5s] =&gt;
+</code><div><a href="https://sourcecraft.dev/"><span></span></a></div></pre><p>If a query goes to the wrong place, even though it's all written directly in the prompt, the tool at least honestly tried to help.</p><h3>Fan-out without manual fan-out</h3><p>A query to <code>all</code> is executed across the selected shards, and the results are combined. Terox adds a <code>shard</code> column, aligns columns by name, and separately shows errors from individual targets.</p><p>Our entities are distributed across shards using consistent hashing. This is convenient for the system, but not always convenient for humans: with a single key, you can't just estimate on a piece of paper which of the hundred shards the record is on. To get an accurate answer, you need the current ring, virtual nodes, and the same routing logic that the application uses.</p><p>And sometimes the task sounds quite mundane: "find the object with this ID and see what's happening with it." Iterating through a hundred connections manually is a great way to turn a one-minute check into a hobby.</p><p>For this, Terox has <code>ind</code>:</p><pre><code>shop/prod(all) =&gt; ind items item_id = 424242
+┌──────────┬───────┐
+│ shard    │ count │
+├──────────┼───────┤
+│ shard_37 │ 1     │
+└──────────┴───────┘
+found on 1/128 shard(s)
+→ shop/prod(shard_37)
+</code><div><a href="https://sourcecraft.dev/"><span></span></a></div></pre><p>Terox iterates through the selected shards, shows where the data was found, and if there's only one matching shard, it automatically switches to it. The next query is then executed in the correct place – without copying the host, reconnecting, or playing "guess the shard."</p><figure><img alt="Searching for a record by consistent ring and switching to the found shard" loading="lazy" src="https://habrastorage.org/r/w1560/webt/7d/8b/60/7d8b6014ae4036d473839c6dab0cc945.png"/><div><figcaption>Searching for a record by consistent ring and switching to the found shard</figcaption></div></figure><p>And if there are multiple matches, you can select the desired shard manually:</p><pre><code>
+s shard_37
+</code><div><a href="https://sourcecraft.dev/"><span></span></a></div></pre><p>For frequent scenarios, there are commands like <code>	count</code>, <code>	locate</code>, <code>	grep</code>, saved queries with parameters, and exporting results to CSV/JSON. History is stored separately for each service: queries from one context don't pop up with the up arrow in another.</p><p>The editor supports multi-line input, wrapping long lines, live autocompletion for schemas, tables, and columns. There's also automatic layout correction: if you type a meta-command in a Russian layout, Terox tries to understand what your fingers remembered better than your head.</p><figure><img alt="Multi-line SQL and live column autocompletion in Terox" loading="lazy" src="https://habrastorage.org/r/w1560/webt/44/19/af/4419aff919d69a5a6d3e19e5627174b2.png"/><div><figcaption>Multi-line SQL and live column autocompletion in Terox</figcaption></div></figure><h4>What happens inside fan-out</h4><p>Simplified, the query path looks like this:</p><pre><code>selector all / 0,1,5
+        │
+        ▼
+expanding the list of physical shards
+        │
+        ▼
+queue with fanout_concurrency limit
+        │
+        ├── shard_0: READ ONLY + SET LOCAL statement_timeout
+        ├── shard_1: READ ONLY + SET LOCAL statement_timeout
+        └── shard_N: READ ONLY + SET LOCAL statement_timeout
+        │
+        ▼
+combining rows + shard column + individual errors
+</code><div><a href="https://sourcecraft.dev/"><span></span></a></div></pre><p>For each shard, the pool is created lazily: until the database is accessed, there's no connection. Within a single shard pool, no more than two connections are allowed – the second is needed so that background autocompletion doesn't block user queries. At the same time, the number of simultaneously processed shards is limited precisely by <code>fanout_concurrency</code>.</p><p>Each shard has its own client deadline. A slow or unavailable shard doesn't erase successful results from others: an error remains tied to its target and is displayed separately. <code>Ctrl+C</code> cancels the general context, so already running queries are interrupted, and those not yet started don't begin. Upon exit, the manager closes all created pools and prevents the background goroutine from creating a new connection after closing.</p><p>Reading on each shard occurs in a real PostgreSQL <code>READ ONLY</code> transaction, not just determined by parsing the SQL text. The result is limited by <code>max_rows</code> so that a random wide <code>SELECT</code> doesn't consume terminal memory; full export of large selections uses streaming reads.</p><h3>Diagnostics that are usually pieced together</h3><p>Gradually, the client has accumulated commands that I constantly need when troubleshooting problems. <code>	activity</code>, <code>	blockers</code>, <code>	locks</code>, and <code>	longtx</code> show activity and locks; <code>	sizes</code> and <code>	statements --skew</code> help see imbalances between shards; <code>	diff &lt;table&gt;</code> compares schemas, and <code>	doctor --all</code> collects a general health check. For individual queries, there's <code>	explain</code>, <code>	advise</code>, and <code>	lint</code>.</p><p>This is not a replacement for monitoring or a pocket DBA. Rather, it's a shortcut from "something is slow" to a proper question that can then be taken to metrics, logs, and query plans.</p><p>For example, <code>	lint</code> will warn about <code>DELETE</code> without <code>WHERE</code>, <code>LIMIT</code> without <code>ORDER BY</code>, suspicious Cartesian products, or <code>NOT IN</code> with nullable values. The heuristics can be wrong. But they don't get tired and don't think: "oh well, the query is small."</p><h3>Writes must be enabled consciously</h3><p>Reads in Terox are performed in <code>READ ONLY</code> transactions. By default, the client operates in <code>ro</code> mode, and write queries are rejected.</p><p>To enable writing, you must explicitly execute:</p><pre><code>	write on
+</code><div><a href="https://sourcecraft.dev/"><span></span></a></div></pre><p>When switching services or storages, write mode is reset. This is a simple protection against the situation "I thought I was still on the test cluster."</p><p>If a <code>migration_role</code> is specified for the storage, writes get it via <code>SET LOCAL ROLE</code>. A regular transactional migration is wrapped approximately like this:</p><pre><code>begin;
+set local role app_writer;
+set local statement_timeout = '5s';
+set local lock_timeout = '500ms';
+
+-- migration body
+
+commit;
+</code><div><a href="https://sourcecraft.dev/"><span></span></a></div></pre><p>Here, <code>LOCAL</code> is important: settings live within the transaction and don't leak to the next PgBouncer client.</p><p><code>DROP DATABASE</code> is unconditionally forbidden. Yes, the user is an adult. But the client, running on a hundred shards, is also an adult and has the right to refuse to participate.</p><h3>Migration is not just "send SQL a hundred times"</h3><p>Let me emphasize again: standard versioned migrations travel with the service automatically. The mode below is for exceptions where the developer consciously manages the rollout on heavily loaded tables and needs to see each stage.</p><p>There is a separate mode for migrations:</p><pre><code>	migrate add_column.sql
+</code><div><a href="https://sourcecraft.dev/"><span></span></a></div></pre><p>Without <code>--allowed</code>, this is a dry-run: Terox shows the exact SQL, the rollout plan, and static analysis warnings. Actual application is launched separately:</p><pre><code>	migrate --allowed add_column.sql
+</code><div><a href="https://sourcecraft.dev/"><span></span></a></div></pre><p>For large clusters, there's canary, batches, and resuming interrupted rollouts:</p><pre><code>	migrate --allowed --canary add_column.sql
+	migrate --allowed --batch 10 add_column.sql
+	migrate --allowed --resume add_column.sql
+</code><div><a href="https://sourcecraft.dev/"><span></span></a></div></pre><p>A checksum prevents an already started migration from an altered file from being continued unnoticed.</p><p>There is, of course, no general transaction across 128 PostgreSQL servers here. Atomicity operates within each shard: one might have already performed a <code>COMMIT</code> when the next returned an error. Therefore, by default, the first error cancels targets that have not yet started and are executing, the report clearly shows partial application, and <code>--resume</code> continues only from uncompleted shards. This is precisely why migrations must be idempotent, and canary and small batches are more useful than heroism.</p><p>There is a separate unpleasant class of operators: <code>CREATE INDEX CONCURRENTLY</code>, <code>REINDEX CONCURRENTLY</code>, <code>VACUUM</code>, and other commands that are forbidden to execute within a transaction. For them, the usual wrapper with <code>SET LOCAL</code> and server timeouts cannot be applied. Terox recognizes such SQL, loudly indicates that execution will be unprotected, and on production requires a client-side <code>migration_timeout</code> and separate confirmation.</p><figure><img alt="Safe migration rollout: timeouts, canary, batches, and stopping on error" loading="lazy" src="https://habrastorage.org/r/w1560/webt/ed/8c/46/ed8c46e07fea28b97a40bc08a7dcf66e.png"/><div><figcaption>Safe migration rollout: timeouts, canary, batches, and stopping on error</figcaption></div></figure><p>I wanted the dangerous path to be not impossible, but noticeable. Except for <code>DROP DATABASE</code>. That path already has enough independent tools.</p><h3>Where is the vibe coding here</h3><p>I actually did most of Terox in collaboration with AI. Not in the sense of "wrote one prompt and went for coffee." I drank coffee nearby.</p><p>The work looked something like this:</p><ol><li><p>I described a specific pain point from my work process;</p></li><li><p>we found a minimal behavioral model;</p></li><li><p>AI suggested an implementation;</p></li><li><p>I checked the code, ran tests, and tried the scenario manually;</p></li><li><p>another edge case turned into a new test.</p></li></ol><p>This is how details emerged that rarely make it into a slick first demonstration:</p><ul><li><p>correct closing of all connection pools on exit;</p></li><li><p><code>Ctrl+C</code> that exits the prompt but cancels the active query;</p></li><li><p>wrapping long SQL to fit terminal width;</p></li><li><p>multi-line pasting;</p></li><li><p>secure history without passwords and with a separate file per service;</p></li><li><p>backup of the config before installation;</p></li><li><p>strict checking of unknown YAML fields;</p></li><li><p>protection against leakage of session-scoped state during transaction pooling;</p></li><li><p>tests for concurrent pool closing and race conditions.</p></li></ul><p>AI greatly accelerates such a cycle. It quickly finds the right places, writes repetitive tests, suggests structures, and doesn't complain about another request "and now consider this too."</p><p>There's also a downside: it can implement a flawed idea quickly, neatly, and in twelve files at once. Therefore, code generation speed is not the same as decision-making speed.</p><p>One of the useful principles turned out to be simple: <strong>first formulate the invariant, then ask for code</strong>.</p><p>For example:</p><ul><li><p>after exiting, there should be no connections left;</p></li><li><p>read-only should be enforced by PostgreSQL, not just a regular expression;</p></li><li><p>context switching must disable writes;</p></li><li><p>sensitive SQL should not end up in history;</p></li><li><p>a partial error on shards should not look like complete success;</p></li><li><p>dry-run should not suddenly become apply due to a convenient default value.</p></li></ul><p>With such rules, the conversation with AI becomes engineering work. Without them, it turns into a very productive surprise generator.</p><h3>What Terox cannot do for you</h3><p>Terox doesn't make any SQL safe. Static analysis is a heuristic. The real security boundaries are still created by role permissions, <code>READ ONLY</code> transactions, TLS, timeouts, and rollout discipline.</p><p>It doesn't replace application migration systems, monitoring, backups, or understanding query plans. It doesn't fix sharding architecture. It doesn't know the business logic of the data.</p><p>And, unfortunately, it cannot determine if you really need to execute a query on all 128 shards. It just does it very well exactly where you asked it to.</p><h3>What has been achieved</h3><p>From a local pain point, a tool has grown that I find convenient to use every day:</p><ul><li><p>a single config describes services, storages, and shard templates;</p></li><li><p>a single query can be executed on a selected set of targets;</p></li><li><p>the result preserves the origin of each row;</p></li><li><p>diagnostics are aware of the multi-shard context;</p></li><li><p>reads are protected by <code>READ ONLY</code>;</p></li><li><p>writes are enabled explicitly;</p></li><li><p>migrations get dry-run, lint, transactional wrapping, timeouts, and phased rollouts;</p></li><li><p>the CLI remains a regular local binary without a separate server.</p></li></ul><p>The first version appeared in a couple of days precisely thanks to AI. But Terox became useful not because the code was written quickly. It became useful when the fast code started to be constrained by clear rules, tests, and real-world scenarios.</p><p>For me, this is normal vibe coding: not "not understanding what's happening," but quickly turning one's understanding of a problem into a working tool.</p><p>Repository: <a href="https://github.com/nvorobev/terox"><strong>github.com/nvorobev/terox</strong></a></p><p>The project is open, so suggestions, ideas, and pull requests are welcome. Especially if you also have a shard where data absolutely should have been.</p></div>
+  </main>
+  <footer>
+    Translation generated with Gemini 2.5 Flash-Lite.
+    The original article remains the source of record.
+  </footer>
+</body>
+</html>

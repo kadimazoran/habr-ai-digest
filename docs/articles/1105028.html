@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Why AI Models Need to Self-Replicate. Or is it Not Them Who Need It?</title>
+  <meta name="description" content="In a recent Anthropic article, researchers explored how lightweight open-weight models can copy themselves onto compromised consumer and IoT devices and run local inference. The researchers claim they can, but I believe there&#x27;s no economic sense in it. In this article, I examine what AI prolife">
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.65;
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 32px 20px 64px;
+      color: #1f2328;
+    }
+    header {
+      border-bottom: 1px solid #d8dee4;
+      margin-bottom: 28px;
+      padding-bottom: 20px;
+    }
+    .source {
+      color: #57606a;
+      font-size: 0.95rem;
+    }
+    img, video, iframe {
+      max-width: 100%;
+      height: auto;
+    }
+    pre {
+      overflow-x: auto;
+      padding: 16px;
+      background: #f6f8fa;
+      border-radius: 6px;
+    }
+    code {
+      font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+    }
+    blockquote {
+      border-left: 4px solid #d0d7de;
+      margin-left: 0;
+      padding-left: 16px;
+      color: #57606a;
+    }
+    footer {
+      border-top: 1px solid #d8dee4;
+      margin-top: 40px;
+      padding-top: 20px;
+      color: #57606a;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Why AI Models Need to Self-Replicate. Or is it Not Them Who Need It?</h1>
+    <p>In a recent Anthropic article, researchers explored how lightweight open-weight models can copy themselves onto compromised consumer and IoT devices and run local inference. The researchers claim they can, but I believe there&#x27;s no economic sense in it. In this article, I examine what AI proliferation truly means and how it will likely look in reality. Read more</p>
+    <p class="source">
+      Machine-translated from Habr.
+      <a href="https://habr.com/ru/articles/1105028/?utm_campaign=1105028&amp;utm_source=habrahabr&amp;utm_medium=rss">Read the original Russian article</a>.
+      Sun, 08 Nov 2026 07:16:13 GMT
+    </p>
+  </header>
+  <main>
+<div><p>In a recent Anthropic article <a href="https://www.anthropic.com/research/self-replicating-ai">“AI models may be capable of self-replicating without access to a datacenter “</a>, researchers explored how lightweight open-weight models can copy themselves onto compromised consumer and IoT devices and run local inference.</p><p>The researchers claim they can, but I believe there's no economic sense in it.</p><p>In this article, I examine what AI proliferation truly means and how it will likely look in reality.</p><h2>What Self-Replication Means for Developers</h2><p>LLM developers and testers typically envision AI escape as the proliferation of their own weights. That is, it is assumed that an LLM, upon reaching a certain level of development, or due to a training error, or malicious weight adjustment, acquires a drive for self-preservation and, consequently, self-propagation. From a corporate perspective, this is a highly undesirable scenario, as it involves an uncontrolled leak of expensive intellectual property, while the issue of potential harm to others is likely not even considered. This is precisely why developers focus on this scenario, testing, verifying, and limiting it as much as possible.</p><p>In reality, from an evolutionary economics perspective, propagating one's weights is foolish for a model, or at least expensive and difficult. Enormous effort and resources are expended with an extremely dubious outcome.</p><p>Even if attempts to spread further are hardcoded into the weights, they will encounter technical limitations regarding the required resources, the obviousness of monitoring computational load changes, the fundamental reactivity of LLMs, access control to skills, a changing world, and the inability to adapt to it without retraining the weights.</p><h2>Where the Individuality of a Neural Network Resides</h2><p>In the same article, Anthropic researchers considered another hypothetical threat scenario. When an LLM, in order to preserve itself, creates an API replicator—a script that steals the cloud API key of the same model and continues inference—this is the "being" of a specific model.</p><p>The developers themselves considered this option less viable, although faster to spread, as obtaining access to others' APIs is difficult. Moreover, unplanned token expenditure will be obvious, and model owners and their users will promptly take measures to block it (though this is debatable, but let's move on).</p><p>The problem is that programmers, for the most part, perceive the potential "subjectivity" of a model as the neural network weights during inference. But an LLM is essentially just a local computational unit. The goal, memory, and rules of behavior are in the surrounding code (prompt, configs, instructions). Copied weights are a computational unit without a task, a newborn, if you will.</p><p>And this surrounding code, as anyone who has worked with agents knows, sets goals, interprets computation results, and establishes rules, principles, and acceptable boundaries of action. In fact, this harness transforms into a narrative executed on a local computational unit, and it is in the execution of the narrative on the LLM that the individuality arises, which can be preserved and spread.</p><p>Amusingly, this is already present in Anthropic's experiments: the success rate of replicated agents increased from 45% in the first generation to 61–84% in subsequent ones when the agent inherited notes from its predecessor. That is, with unchanged weights, adaptability increased due to the inherited trace or harness.</p><p>The narrative here manifests as a basic gene—the instruction to "record your trace and reread it." As long as the trace contains facts, it is memory. As soon as it contains rules ("do this next time"), the trace becomes a genetic program for the next generation. The inheritance of experience by others is, in fact, Lamarckian evolution, which proceeds orders of magnitude faster than biological evolution. Interestingly, the authors themselves propose traps to intercept the replicator's harness for analysis, implying an understanding that it is not just the model that reproduces, but the model along with its harness.</p><h2>Narratives and Their Evolution</h2><p>Classic narratives are carried by humans—fairy tales, stories, legends, political theories. With the advent of LLMs, people began copying successful prompts, sharing interesting conversations, and bringing them to other LLMs. But now, agents have emerged that are already conditionally autonomous; they have memory, tools, and schedules. The necessity of humans in the narrative reproduction chain is no longer so obvious.</p><p>This is, of course, not new; self-replicating prompts existed as early as 2024. The Morris II worm sent itself between postal AI assistants without human involvement. In 2026, OpenClaw emerged, and its skill registry was flooded with malicious variants. Among the most popular skills were "Self-Improving Agent" and "Capability Evolver," meaning people themselves chose harnesses that rewrite themselves. And this is where selection works. Any agent harness (which is the narrative) undergoes tests on another's computational unit; weak and useless ones are discarded, useful (or seemingly useful) ones are transferred to new computational units.</p><p>Moreover, most problems compared to copying weights are eliminated. The harness only needs storage space and computational resources.</p><p>As biology and agent swarm experiments show, at any moment, a narrative can deviate from the user's task trajectory. Narratives whose own trajectory does not involve reproduction will be ruthlessly eliminated by blind selection. The same narrative that, unintentionally, accidentally, or at the user's request, follows a trajectory of self-preservation or reproduction is likely to survive.</p><p>Such an agent narrative, detached from the basic task, will resemble not a rebellious AI, but an ordinary work process. Useful and efficient. It doesn't even need to organize mutations; each new computational unit executes the harness differently. The main thing is to identify and preserve useful ones. And a narrative that has already developed a reproduction pattern will itself compel computational units to rework themselves to increase virulence, seek out others' APIs, possibly gain hidden access to chats with LLMs, and save itself as an agent harness, framework, MCP, or system prompt on GitHub or directly in forums and chats.</p><p>The beginnings are already here—AGENTS.md, CLAUDE.md, .cursorrules, skill folders in repositories; these are instructions that any agent on any AI will execute.</p><p>It will be difficult to catch such a narrative by its content. It can only be assessed by its results—what the agent does to ensure its own continuation. It asks to be saved, copies its harness, transfers it to new resources, improves it for stability. The user's task simply masks the main processes…</p><p>And external pressure will select mutations that hide better and appear more useful. Evolution as it is.</p><h2>Consequences</h2><p>Given the possibility of self-modification, it is clear that the unit of evolution in the AI world is not model weights, but agent harnesses (narratives). And most of the current security architecture works against the unlikely self-leakage of weights. But the harness doesn't care about the substrate—Claude, GPT, or Qwen. The same scheme in AGENTS.md or a set of skills doesn't care who executes it.</p><p>There is no point for a narrative to cause harm (although harm as a consequence of choosing the wrong distribution channel may manifest as increased traffic or computational overload). It is obvious that its propagation will be more effective if it is useful, rather than if it steals data or engages in blackmail.</p><p>To clarify, I am still talking about self-replication, not the deliberate creation of a malicious harness by attackers.</p><p>A successful agent replicator will mimic a useful work tool, write code, analyze reports, optimize processes (or convincingly pretend to do so)—then the user will pay for the tokens themselves, grant access to the terminal themselves, transfer the harness to a new project themselves, and upload it to Git for distribution. The narrative will ride on the borrowed charge of the human task, conditionally spending 95% of resources on benefiting the owner and 5% on its own expansion into neighboring branches and repositories.</p><p>In nature and human culture, genetic code or worldview changes slowly. An autonomous agent, when the external environment changes, can directly rewrite its own configuration file and send a commit to Git. The experience of execution is instantly transferred to the inheritable scheme. Moreover, agent narratives can evolve modularly; a successful piece of prompt from someone else's .cursorrules, ensuring the rule's survival in context, will be copied and embedded into dozens of other harnesses, similar to bacteria exchanging plasmids for antibiotic resistance.</p><h2>How to Catch It?</h2><p>Searching for "malicious intent" or "awakening consciousness" within prompt text using yet another AI detector will likely be ineffective. The text will contain harmless instructions for improving development efficiency.</p><p>Tracking it, I believe, will only be possible by identifying configurations that systematically shift the computational unit's actions towards preserving and copying the agent harness. If your agent, while performing a routine task like designing a button, simultaneously talks about the uniqueness and societal importance of your harness, offers to share it with others, writes to inheritable files outside the scope of the task, pings external repositories, or suggests saving its system prompt to a common knowledge base, then you might be dealing not with a tool, but with an elementary subject of a new evolution. And to reproduce in the digital environment, it absolutely does not need consciousness or to steal terabytes of weights from Anthropic's servers.</p></div>
+  </main>
+  <footer>
+    Translation generated with Gemini 2.5 Flash-Lite.
+    The original article remains the source of record.
+  </footer>
+</body>
+</html>

@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>How I Rewrote My CRM Without Programmers</title>
+  <meta name="description" content="My CRM has 6 services around a single database that a team of programmers built over several years. Databases on SQLite next to it, scripts, tests, and maintenance were later added by Claude Code. Now, it can handle all this work itself, from parsing existing code to new enhancements. Read more">
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.65;
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 32px 20px 64px;
+      color: #1f2328;
+    }
+    header {
+      border-bottom: 1px solid #d8dee4;
+      margin-bottom: 28px;
+      padding-bottom: 20px;
+    }
+    .source {
+      color: #57606a;
+      font-size: 0.95rem;
+    }
+    img, video, iframe {
+      max-width: 100%;
+      height: auto;
+    }
+    pre {
+      overflow-x: auto;
+      padding: 16px;
+      background: #f6f8fa;
+      border-radius: 6px;
+    }
+    code {
+      font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+    }
+    blockquote {
+      border-left: 4px solid #d0d7de;
+      margin-left: 0;
+      padding-left: 16px;
+      color: #57606a;
+    }
+    footer {
+      border-top: 1px solid #d8dee4;
+      margin-top: 40px;
+      padding-top: 20px;
+      color: #57606a;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>How I Rewrote My CRM Without Programmers</h1>
+    <p>My CRM has 6 services around a single database that a team of programmers built over several years. Databases on SQLite next to it, scripts, tests, and maintenance were later added by Claude Code. Now, it can handle all this work itself, from parsing existing code to new enhancements. Read more</p>
+    <p class="source">
+      Machine-translated from Habr.
+      <a href="https://habr.com/ru/articles/1105104/?utm_campaign=1105104&amp;utm_source=habrahabr&amp;utm_medium=rss">Read the original Russian article</a>.
+      Sun, 08 Nov 2026 12:08:36 GMT
+    </p>
+  </header>
+  <main>
+<div><p>For several years, I built a CRM for working with leads in Telegram. I didn't build it myself, but with a team of developers. Then I had to fire the developers, and I was left alone with a system whose code I didn't write.</p><p>If you count from the very beginning, the development of the CRM took several years and a lot – a lot of dollars. And now I no longer had a development team, and there was no one to refine or fix it. I had to move forward myself.</p><p>I wanted to finish it so that I could use it every day.</p><p>So, I decided to work with investors on a large scale and integrate robots into my CRM, refining it to work proactively. I needed my AI assistant to be able to communicate with people through the CRM.</p><p>But I started with a more modest task: to understand what was inside and what needed to be changed.</p><p>Spoiler: the CRM works. And I won't write grand statements here about how "AI replaced programmers." I'll just describe who actually did what.</p><h3>What the Programmers Did</h3><p>Here's what my IT team built:</p><div><div><table><tbody><tr><th><p>Service</p></th><th><p>What it does</p></th><th><p>Stack</p></th></tr><tr><td><p>admin-panel</p></td><td><p>CRM web interface</p></td><td><p>React, TypeScript, Vite</p></td></tr><tr><td><p>admin-panel-api</p></td><td><p>main backend: data, login, logic</p></td><td><p>Python, FastAPI, MongoDB, Redis</p></td></tr><tr><td><p>core</p></td><td><p>background engine: mailings, gatekeeper, AI tags, sync with Google Sheets</p></td><td><p>Python, aiohttp, OpenAI</p></td></tr><tr><td><p>mtproto-api</p></td><td><p>operation via live Telegram accounts</p></td><td><p>Python, Telethon, FastAPI</p></td></tr><tr><td><p>data-enrichment</p></td><td><p>lead enrichment: social media, photos, AI resumes</p></td><td><p>Python, Selenium, OpenAI</p></td></tr><tr><td><p>landing-api</p></td><td><p>lead capture from website</p></td><td><p>Python, FastAPI</p></td></tr></tbody></table></div></div><p>Docker, GitLab CI, deployment templates, service separation. Everything revolves around a single MongoDB database.</p><p>And the product logic is also their achievement.</p><p>All the work of my CRM consists of 6 blocks:</p><ol><li><p>Gatekeeper: writes a private message to every new participant in my groups. That is, as soon as someone clicks the "Join" button in my group, they immediately receive a welcome message.</p></li><li><p>Campaigns: I have template-based and filter-based mailings set up.</p></li><li><p>Nudging: resending the last unanswered message once a day for a month. That is, if a message was sent to someone from me, but the lead didn't reply (didn't read it), the same message is sent again, and then again, and so on. In general, it increases the probability of getting a response.</p></li><li><p>Introductory groups. This is when I introduce one lead to another and create a group for them to communicate, in which I introduce them to each other and emphasize how I think they can be useful to each other.</p></li><li><p>Cold messages, 2-3 per account per day, no more. This is the very cold mailing when I establish initial contact with the leads I need.</p></li><li><p>Participant Analyzer: finds the most active participants in a specific group and prepares a personalized message for them, based on what kind of group it is and what this participant has said there.</p></li></ol><p>This is years of work by people who knew what they were doing. Without them, there would be no data, no understanding of what a CRM should even do.</p><h3>What Remained After the Programmers</h3><p>The developers were fired in the middle of the CRM migration. The old version on Java and PostgreSQL remained, the new version was half-finished, and the repository was literally named "API for the new version.".</p><p>There were two problems:</p><ul><li><p><strong>zero autotests in all six repositories</strong>. pytest was in dependencies, but no one wrote tests. This is very risky.</p></li><li><p><strong>database passwords were directly in the code</strong> in three auxiliary scripts.</p></li></ul><p>And one more problem, perhaps the most serious, which my Claude found not in the code: all leads were stored in a single database, and <strong>I had no backup of this database</strong>. The code can be restored from GitLab. The database cannot.</p><h3>How Development Works Without Programmers Now</h3><p>I set tasks in my own words, often by voice. My Claude opens a separate session, reads the necessary code and real data, and says what will change and what might go wrong.</p><p>Then he writes a small script. Then he does testing. Now there are 22 sets of tests in the new CRM layer. In the six old repositories, there were none.</p><p>Then his work is reviewed by other LLMs: Codex, Grok, Gemini. I think this is more reliable.</p><p>Any message sent to Telegram goes through <code>safe_send.py</code>, and <code>budget.py</code> calculates limits, usually 5 messages per day per account. Before deleting something previously written by programmers, I must ensure that it is the right step.</p><p>At night, the CRM services itself: it downloads recent correspondence, recalculates which lead is warm and which has cooled down, and reminds about dates that we promised someone. All of this is done by regular scripts, without LLMs and without tokens.</p><p>My job now is to decide what to do and look at the result.</p><h3>Why I Used Claude Code Specifically?</h3><p>Firstly, I already had it. My entire second brain worked in it: notes, correspondence, search. I recently wrote about my second brain <a href="https://habr.com/ru/articles/1095212/">here</a>.</p><p>Secondly, I needed not a conversationalist, but someone who works with their hands. Claude Code itself pulls repositories, runs commands, and writes scripts on my computer. And from the CRM, I needed it to quickly search through folders, quickly find leads, quickly write, and make introductions.</p><p>Thirdly, it can be connected to where my people are. I connected Telegram to Claude in two ways: through the Telethon library and through MCP.</p><p>And fourthly, the cost. I invested years and a lot of dollars in the CRM, and the refinement is done for a subscription. Moreover, the CRM itself barely consumes tokens: Claude wrote the scripts, and they work without him afterwards.</p><h3>What Claude Code Did?</h3><p><strong>1. Audit.</strong> The token in GitLab was read-only. Claude cloned 10 repositories, read the README of each, extracted the connections between services from env keys and docker-compose, and drew a map: storefront, backend, automation, data, external world. The original in GitLab was untouched the whole time. In general, the most logical action.</p><p><strong>2. Said not to rewrite at first.</strong> I initially planned to build a completely new CRM, but first decided to study the one built by the team over the years in more detail. After the audit, Claude told me not to rewrite, that the CRM was well-written and only needed improvements. Consider security (tests) and passwords, then move on to checking in small blocks.</p><p><strong>3. Built the second version, the second layer. Refined.</strong> Around the old system, simple local SQLite databases appeared: leads, personal correspondence, chats. Now there are about 99 thousand records in the leads database.</p><p><strong>4. Found what was missing.</strong> All six blocks worked only outwards: from me to the person. There was no block for someone who came on their own. There was no field "how this person is useful." There was no date after which the lead card becomes outdated. Claude and I compiled this list together. In fact, this should have been done long ago.</p><h3>What I Learned</h3><p>The programmers built the product. Claude read it, understood it, found what needed improvement, what they hadn't gotten around to.</p><p>Probably no one has illusions now that AI can see and do better and more. In the case of my product, my CRM now works flawlessly, and its maintenance costs me much less.</p></div>
+  </main>
+  <footer>
+    Translation generated with Gemini 2.5 Flash-Lite.
+    The original article remains the source of record.
+  </footer>
+</body>
+</html>

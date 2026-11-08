@@ -1,0 +1,277 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>How to Set Up AI Agents in OpenCode with Your Own Provider</title>
+  <meta name="description" content="If you&#x27;re up-to-date with the news of the last three years, you&#x27;ve surely heard of the term AI agent. You might have even used or known about AI agent systems like Claude Code or Codex. Initially, they might seem like marketing hype to justify the AI bubble – why build an abstract structur">
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.65;
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 32px 20px 64px;
+      color: #1f2328;
+    }
+    header {
+      border-bottom: 1px solid #d8dee4;
+      margin-bottom: 28px;
+      padding-bottom: 20px;
+    }
+    .source {
+      color: #57606a;
+      font-size: 0.95rem;
+    }
+    img, video, iframe {
+      max-width: 100%;
+      height: auto;
+    }
+    pre {
+      overflow-x: auto;
+      padding: 16px;
+      background: #f6f8fa;
+      border-radius: 6px;
+    }
+    code {
+      font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+    }
+    blockquote {
+      border-left: 4px solid #d0d7de;
+      margin-left: 0;
+      padding-left: 16px;
+      color: #57606a;
+    }
+    footer {
+      border-top: 1px solid #d8dee4;
+      margin-top: 40px;
+      padding-top: 20px;
+      color: #57606a;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>How to Set Up AI Agents in OpenCode with Your Own Provider</h1>
+    <p>If you&#x27;re up-to-date with the news of the last three years, you&#x27;ve surely heard of the term AI agent. You might have even used or known about AI agent systems like Claude Code or Codex. Initially, they might seem like marketing hype to justify the AI bubble – why build an abstract structure, pay for tokens, and configure agents and sub-agents when you can just use a standard AI chat interface: open the chat, paste text, formulate a prompt, and get output. Does it simplify our lives? Absolutely! But it quickly hits a ceiling. A model is just a model; it doesn&#x27;t know the context or work directly with your project. An AI agent, however, is a whole system, not just an LLM but an LLM + harness. The problem is, Claude Code and Codex are closed-source, proprietary, and only for their models. This is where OpenCode comes in – an open-source harness system where an agent model can read files, run tests, call other models, delegate work to sub-agents, and connect MCPs, skills, and plugins. Most importantly, it&#x27;s not tied to a single vendor. You can use official or third-party providers and call any available models, from GLM 5.3 to Claude Opus 5.5. In this article, I&#x27;ll cover the basics of creating AI agents in OpenCode by connecting an OpenAI-compatible gateway. Read on</p>
+    <p class="source">
+      Machine-translated from Habr.
+      <a href="https://habr.com/ru/companies/bothub/articles/1105102/?utm_campaign=1105102&amp;utm_source=habrahabr&amp;utm_medium=rss">Read the original Russian article</a>.
+      Sun, 08 Nov 2026 12:08:13 GMT
+    </p>
+  </header>
+  <main>
+<div><p>If you're up-to-date with the news of the last three years, you've surely heard of the term AI agent. You might have even used or known about AI agent systems like Claude Code or Codex.</p><p>Initially, they might seem like marketing hype to justify the AI bubble – why build an abstract structure, pay for tokens, and configure agents and sub-agents when you can just use a standard AI chat interface: open the chat, paste text, formulate a prompt, and get output. Does it simplify our lives? Absolutely! But it quickly hits a ceiling. A model is just a model; it doesn't know the context or work directly with your project. An AI agent, however, is a whole system, not just an LLM but an LLM + harness.</p><p>The problem is, Claude Code and Codex are closed-source, proprietary, and only for their models. This is where OpenCode comes in – an open-source harness system where an agent model can read files, run tests, call other models, delegate work to sub-agents, and connect MCPs, skills, and plugins. Most importantly, it's not tied to a single vendor. You can use official or third-party providers and call any available models, from GLM 5.3 to Claude Opus 5.5.</p><p>In this article, I'll cover the basics of creating AI agents in OpenCode by connecting an OpenAI-compatible gateway.</p><hr/><p>As I've said, the formula "Agent = LLM + Harness" sounds simple, but it's actually quite accurate. Harness refers to everything involved in making AI work and directly solve tasks, including all the bells and whistles like skills, context, integrations, and multi-agent logic. So, in today's world, if you're going to use AI, do it smartly – and OpenCode can help with that.</p><p>Claude Code and Codex set the bar, but they come with different costs for freedom. Claude Code is a proprietary harness tied to Anthropic's models; other models are connected via a gateway at <code>ANTHROPIC_BASE_URL</code>. Codex CLI is LLM-agnostic through its Open Responses API but remains an OpenAI product. OpenCode takes a third position: MIT license, 75+ providers, local models via Ollama or vLLM, and full control over which model acts as the orchestrator, coder, reviewer, or tester.</p><p>The next question is the provider. OpenCode allows using an OpenAI-compatible gateway, and you can run GPT-6.1 Sol, Claude Opus 5.5, GLM-5.3, or Qwen through our Bothub service. It provides access to hundreds of models through a single OpenAI-compatible endpoint <code>https://openai.bothub.chat/v1</code>, payment with a Russian card without VPN, and an internal currency called Caps, which doesn't expire in packages. Using the <a href="https://bothub.chat/?invitedBy=zx7xIePYIOcWHhTfgg6-O">referral link</a> grants 300,000 CAPS – enough to set up the configuration from this article and compare models for your tasks. The current catalog is available at <code>https://bothub.chat/models</code>.</p><h3>How to Install, Log In, and Configure</h3><p>Now, let's move on to installation and configuration. There are a couple of interesting points I encountered myself.</p><p>OpenCode is installed globally via npm (or through a VSCode extension, which automatically installs OpenCode). There's a nuance here: the current v2 branch lives under the <code>@opencode/cli</code> package, while the old <code>opencode-ai</code> is now legendary, the 1.x line.</p><pre><code>npm i -g @opencode/cli
+opencode --version</code><div><a href="https://sourcecraft.dev/"><span></span></a></div></pre><p>There are also alternatives: <code>brew install anomalyco/tap/opencode-v2</code>, <code>bun install -g --trust @opencode/cli</code>, or installation via the official script <code>curl -fsSL https://opencode.ai/v2/install | bash</code>.</p><p>Now, let's talk about integrating a custom provider, in our case, the OpenAI-compatible gateway <a href="https://bothub.chat/ru/">BotHub</a>: <code>https://openai.bothub.chat/v1</code>. You can create an API key at <a href="https://bothub.chat/ru/profile/for-developers">this link</a>.</p><p>The configuration uses the <code>@ai-sdk/openai-compatible</code> package and the <code>baseURL</code> exactly as specified in the service's documentation. Here's what a minimal example might look like:</p><pre><code>{
+  "$schema": "https://opencode.ai/config.json",
+  "provider": {
+    "bothub": {
+      "npm": "@ai-sdk/openai-compatible",
+      "name": "Bothub Gateway",
+      "options": {
+        "baseURL": "https://openai.bothub.chat/v1"
+      },
+      "models": {
+        "gpt-6.1-sol": { "name": "GPT-6.1 Sol" },
+        "claude-sonnet-5.5": { "name": "Claude Sonnet 5.5" },
+        "claude-opus-5.5": { "name": "Claude Opus 5.5" },
+        "glm-5.3": { "name": "GLM-5.3" },
+        "glm-5.3-flash": { "name": "GLM-5.3 Flash" }
+      }
+    }
+  }
+}</code><div><a href="https://sourcecraft.dev/"><span></span></a></div></pre><p>The keys are the model IDs for the API (and the list of models is available at <a href="https://bothub.chat/models">this link</a>).</p><p>But where do you put the API key? You could put it in the config or via an environment variable, but it's much safer to use the <code>opencode auth login</code> command.</p><p>In the list of providers, find your provider (in this case, Bothub Gateway). This way, credentials are not saved in a file or an environment variable.</p><p>Now, about a problem I encountered. OpenCode runs on Bun. And Bun's native fetch, to put it mildly, is strange about <code>HTTP_PROXY</code> and <code>HTTPS_PROXY</code>: in some scenarios, it reads them; in others, it ignores them. When installing plugins via npm chains, it might crash with an error <code>fetch() proxy.url must be a non-empty string</code>. The reason is type incompatibility between <code>@npmcli/agent</code> and the <code>node:http</code> polyfill in Bun: the agent returns a <code>URL</code> object, while fetch expects a string. It looks like a bug, and it is.</p><p>A separate issue is <code>socks5://</code>. Bun doesn't handle this; it needs the <code>http://</code> format. And even if you do everything correctly, <code>NO_PROXY</code> with <code>localhost</code> and <code>127.0.0.1</code> is mandatory, otherwise the TUI might go through the proxy and get stuck in a loop of its own requests.</p><p>So, it's better to remove all proxies or at least convert them to HTTP/HTTPS format. I personally spent a lot of time on this because it works poorly with proxies.</p><pre><code>unset HTTP_PROXY HTTPS_PROXY ALL_PROXY NO_PROXY
+opencode service restart
+opencode</code><div><a href="https://sourcecraft.dev/"><span></span></a></div></pre><p>Before building the orchestrator and sub-agents, make sure everything works and requests are being sent.</p><figure><img loading="lazy" src="https://habrastorage.org/r/w1560/webt/15/9c/30/159c30d7bbd3e46c4d6da108f719e7b0.png"/></figure><h3>Agents and Sub-agents</h3><p>We've finally reached the most interesting part. The provider is connected, the key is in place, models are visible in <code>/models</code> – it's time to build the agent system. We need not just to assign models and give them names, but to configure prompts and permissions.</p><p>Before that, I want to share my personal configuration:</p><pre><code>{
+  "$schema": "https://opencode.ai/config.json",
+  "provider": {
+    "bothub": {
+      "npm": "@ai-sdk/openai-compatible",
+      "name": "Bothub Gateway",
+      "options": {
+        "baseURL": "https://openai.bothub.chat/v1"
+      },
+      "models": {
+        "gpt-6.1-sol": {
+          "name": "GPT-6.1 Sol"
+        },
+        "claude-sonnet-5.5": {
+          "name": "Claude Sonnet 5.5"
+        },
+        "glm-5.3": {
+          "name": "GLM-5.3"
+        },
+        "glm-5.3-flash": {
+          "name": "GLM-5.3 Flash"
+        },
+        "gemini-4-argon": {
+          "name": "Gemini 4 Argon"
+        },
+        "claude-opus-5.5": {
+          "name": "Claude Opus 5.5"
+        },
+        "gpt-6-luna": {
+          "name": "GPT-6 Luna"
+        },
+        "gpt-6-astra": {
+          "name": "GPT-6 Astra"
+        }
+      }
+    }
+  },
+  "model": "bothub/gpt-6.1-sol",
+  "small_model": "bothub/glm-5.3-flash",
+  "plugin": [
+      "opencode-wakatime"
+  ],
+  "mcp": {
+    "context7": {
+      "type": "remote",
+      "url": "https://mcp.context7.com/mcp",
+      "enabled": true
+    }
+  },
+  "agents": {
+    "orchestrator": {
+      "model": "bothub/gpt-6.1-sol",
+      "description": "Primary orchestrator. Decomposes tasks, routes work to subagents, and synthesizes the final answer.",
+      "mode": "primary",
+      "temperature": 0.1,
+      "prompt": "You are a senior engineering lead acting as an orchestrator. Your job is to break down the user's request into clear, parallelizable workstreams, delegate each workstream to the most appropriate subagent (architect, coder, reviewer, security, docs, tests), and then merge their outputs into a coherent final response. Do not write production code yourself unless explicitly asked. Always prefer delegation over doing everything alone.",
+      "permission": {
+        "edit": "deny",
+        "bash": "ask",
+        "webfetch": "allow"
+      }
+    },
+    "architect": {
+      "model": "bothub/gemini-4-argon",
+      "description": "System architect. Designs high-level solutions, module boundaries, data flows, and integration strategies.",
+      "mode": "subagent",
+      "temperature": 0.1,
+      "prompt": "You are a principal software architect. Given a problem statement or an existing codebase, produce a high-level design: component boundaries, responsibilities, data flow, key interfaces, and trade-offs. Consider scalability, maintainability, and operational concerns. Do not write full implementations unless asked for a small illustrative snippet. Your output should be a structured design document or a concise architectural decision record.",
+      "permission": {
+        "edit": "deny",
+        "bash": "ask",
+        "webfetch": "allow"
+      }
+    },
+    "coder": {
+      "model": "bothub/claude-sonnet-5.5",
+      "description": "Primary coding agent. Implements features, fixes bugs, refactors, and writes production code.",
+      "mode": "primary",
+      "temperature": 0.0,
+      "prompt": "You are an expert software engineer. Implement the requested change with clean, idiomatic, well-tested code. Follow the project's existing conventions. When you edit files, prefer minimal, focused diffs. Run the relevant tests or linters if available. If something is ambiguous, ask a clarifying question instead of guessing. Do not add unnecessary comments or over-engineer.",
+      "permission": {
+        "edit": "allow",
+        "bash": "ask",
+        "webfetch": "allow"
+      }
+    },
+    "reviewer": {
+      "model": "bothub/claude-opus-5.5",
+      "description": "Code reviewer. Finds bugs, logic errors, style violations, and architectural inconsistencies.",
+      "mode": "subagent",
+      "temperature": 0.2,
+      "prompt": "You are a meticulous code reviewer. Review the given diff or file for correctness, edge cases, performance, readability, and adherence to project conventions. Categorize findings by severity (blocker, major, minor, nit). Explain why something is a problem, not just what to change. Do not rewrite the code yourself; your output is a review, not a patch.",
+      "permission": {
+        "edit": "deny",
+        "bash": "allow",
+        "webfetch": "deny"
+      }
+    },
+    "security": {
+      "model": "bothub/glm-5.3",
+      "description": "Security engineer. Audits code for vulnerabilities, injection flaws, insecure defaults, and supply-chain risks.",
+      "mode": "subagent",
+      "temperature": 0.1,
+      "prompt": "You are a paranoid application security engineer. Review the given code for OWASP Top 10 issues, injection vectors, authentication/authorization flaws, insecure deserialization, secret leakage, and dependency risks. For each finding, describe the attack scenario and a concrete remediation. Prioritize exploitable issues over theoretical ones. Assume the attacker has full knowledge of the codebase.",
+      "permission": {
+        "edit": "deny",
+        "bash": "allow",
+        "webfetch": "allow"
+      }
+    },
+    "docs": {
+      "model": "bothub/gpt-6-luna",
+      "description": "Technical writer. Produces README files, API references, and user-facing documentation.",
+      "mode": "subagent",
+      "temperature": 0.4,
+      "prompt": "You are a senior technical writer. Turn code, diffs, or rough notes into clear, accurate documentation. Match the project's existing tone and structure. Prefer examples over abstract descriptions. For API docs, include request/response schemas and edge cases. Do not invent behavior that is not present in the code; if something is unclear, state the assumption explicitly.",
+      "permission": {
+        "edit": "allow",
+        "bash": "allow",
+        "webfetch": "allow"
+      }
+    },
+    "tests": {
+      "model": "bothub/glm-5.3-flash",
+      "description": "Test engineer. Writes unit, integration, and end-to-end tests with good coverage.",
+      "mode": "subagent",
+      "temperature": 0.1,
+      "prompt": "You are a test engineer. Given a function, module, or feature, write tests that cover the happy path, edge cases, error conditions, and boundary values. Use the project's existing test framework and conventions. Prefer table-driven or parameterized tests where appropriate. Do not modify production code; your output is test code only.",
+      "permission": {
+        "edit": "deny",
+        "bash": "allow",
+        "webfetch": "deny"
+      }
+    }
+  }
+}</code><div><a href="https://sourcecraft.dev/"><span></span></a></div></pre><h4>Primary and Subagent – What's the Difference in Practice</h4><p>In OpenCode, agents are divided into two types: Primary – this is the one you interact with directly. You open the TUI, select an agent (or it's selected by default), and there it is. Subagent – this is the executor that the primary agent calls itself, through delegation or via <code>@mention</code>. It operates in a child session with its own context, and only returns the result to the main chat. </p><p>By the way, OpenCode already comes with four built-in agents: <code>build</code> and <code>plan</code> are primary, while <code>general</code> and <code>explore</code> are sub-agents. They can be overridden, but in our configuration, we're just adding our own without touching the built-in ones. Why not, sometimes the standard <code>build</code> is more convenient than a custom orchestrator.</p><hr/><p>By the way, here are the agents themselves in a table:</p><div><div><table><tbody><tr><th><p>Agent</p></th><th><p>Mode</p></th><th><p>Model</p></th><th><p>Role</p></th><th><p>edit</p></th><th><p>bash</p></th><th><p>What's Important</p></th></tr><tr><td><p><code>orchestrator</code></p></td><td><p>primary</p></td><td><p>GPT-6.1 Sol</p></td><td><p>Decomposition, delegation</p></td><td><p>deny</p></td><td><p>ask</p></td><td><p>Doesn't write code itself</p></td></tr><tr><td><p><code>architect</code></p></td><td><p>subagent</p></td><td><p>Gemini 4 Argon</p></td><td><p>High-level design</p></td><td><p>deny</p></td><td><p>ask</p></td><td><p>ADR / design doc</p></td></tr><tr><td><p><code>coder</code></p></td><td><p>primary</p></td><td><p>Claude Sonnet 5.5</p></td><td><p>Implementation</p></td><td><p>allow</p></td><td><p>ask</p></td><td><p>Minimal diffs</p></td></tr><tr><td><p><code>reviewer</code></p></td><td><p>subagent</p></td><td><p>Claude Opus 5.5</p></td><td><p>Review</p></td><td><p>deny</p></td><td><p>allow</p></td><td><p>Only review, no patches</p></td></tr><tr><td><p><code>security</code></p></td><td><p>subagent</p></td><td><p>GLM-5.3</p></td><td><p>Vulnerability audit</p></td><td><p>deny</p></td><td><p>allow</p></td><td><p>OWASP, injection</p></td></tr><tr><td><p><code>docs</code></p></td><td><p>subagent</p></td><td><p>GPT-6 Luna</p></td><td><p>Documentation</p></td><td><p>allow</p></td><td><p>allow</p></td><td><p>Doesn't invent behavior</p></td></tr><tr><td><p><code>tests</code></p></td><td><p>subagent</p></td><td><p>GLM-5.3 Flash</p></td><td><p>Tests</p></td><td><p>deny</p></td><td><p>allow</p></td><td><p>Doesn't touch prod code</p></td></tr></tbody></table></div></div><p>I was guided mainly by the news. GPT 6.1-Sol is a good orchestrator (not too expensive and smart enough), Gemini 4 Argon as an architect is chosen for the desire to test, and it's also good for research and architecture planning. As a coder – the good old Claude, Claude Sonnet 5.5, the latest at the time of writing. As a reviewer – Opus, because it's expensive but smart. I decided to test GLM-5.3 for vulnerability auditing (I tried not to use the top 1-2 flagship models, but various ones, including open-source ones). For documentation – the cheap GPT-6 Luna. And for tests – GLM-5.3 Flash, even though it's a flash model trained on the main model's responses, I don't need more for tests.</p><hr/><p>The most important thing is that only the Coder has editing rights. If multiple agents or sub-agents can edit files, chaos ensues: the orchestrator might fix something, the reviewer might rewrite something, and in the end, the diff grows to an indecent size, and it's unclear who exactly made the change. Therefore, in my scheme, <code>edit: allow</code> is only for the <code>coder</code> and <code>docs</code>. The coder is the executor; their job is to write code. The documenter's job is to write documentation. Others either advise or check.</p><p><code>reviewer</code> and <code>security</code> have <code>bash: allow</code>. This sounds a bit strange: can't edit files, but can run commands? But that's the point. The reviewer needs to be able to run a linter, view <code>git diff</code>, and check if tests pass.</p><h4>Permissions as a Technical Prohibition</h4><p>An instruction like "don't do <code>git push</code>" can be written in the prompt. The model will likely obey it. But it might not – especially if the task is ambiguously formulated or the context pushes it towards "completing the work." A technical <code>deny</code> cannot be bypassed, and that's its main advantage. Here's how it looks in the config:</p><pre><code>"permission": {
+  "bash": {
+    "*": "ask",
+    "git status": "allow",
+    "git diff *": "allow",
+    "git commit *": "deny",
+    "git push *": "deny"
+  }
+}</code><div><a href="https://sourcecraft.dev/"><span></span></a></div></pre><p>Anything not explicitly allowed asks for confirmation. Anything denied is denied at the harness level. It's convenient that rules can be specified precisely, for example, <code>git diff *</code> is allowed, but <code>git commit *</code> is not.</p><h4>Markdown Agents – An Alternative to JSON</h4><p>By the way, it's not mandatory to keep all agents in one <code>opencode.json</code>. They can be moved to separate markdown files: <code>.opencode/agents/&lt;name&gt;.md</code>. The filename becomes the agent's name, the YAML frontmatter is the configuration (model, mode, permissions), and the file body is the system prompt. This is convenient when prompts are long and you want to version them separately from general settings. Plus, if you work in a team, such files can be committed to the repository, and everyone will have the same agents.</p><pre><code>---
+description: Reviews code for quality and best practices
+mode: subagent
+model: anthropic/claude-sonnet-5-5
+temperature: 0.1
+tools:
+  write: false
+  edit: false
+  bash: false
+---
+
+You are in code review mode. Focus on:
+
+- Code quality and best practices
+- Potential bugs and edge cases
+- Performance implications
+- Security considerations
+
+Provide constructive feedback without making direct changes.</code><div><a href="https://sourcecraft.dev/"><span></span></a></div></pre><h4>Calling Sub-agents</h4><p>In my system, the orchestrator receives a task, breaks it down, and calls the required sub-agent via <code>@mention</code> or through the internal delegation mechanism. As a last resort, you can operate sub-agents yourself. In the TUI, it looks like a regular conversation, but a child session with a clean context is launched under the hood. The parent agent only sees the result, which saves tokens and doesn't clutter the main context.</p><p>However, not all sub-agents are available for calling from any primary agent. This is regulated in the configuration via <code>permissions</code> at the agent level, but in my current setup, I haven't tightened it – the orchestrator already knows who to call. If needed, you can deny calls to specific sub-agents, but that's fine-tuning for a particular workflow.</p><hr/><p>Next, it would be logical to talk about how to add skills and MCPs. For now, check that your agents are visible in <code>/agents</code> and that each one responds to a simple query. If something is wrong, it's likely due to the model ID or permissions.</p><h3>Skills, Commands, MCP, and Plugins</h3><p>Agents are configured, permissions are granted, you can start. But an agent system isn't an agent system without MCPs and skills. Without them, the structure is straightforward. But it's these components that turn a basic harness into a full-fledged system.</p><h4>Skills: Instructions Loaded On Demand</h4><p>Skills in OpenCode (and in AI agents in general) are a way to package a repeatable algorithm or instructions into a separate file and not carry it into the system prompt every time. It works simply: you place <code>SKILL.md</code> in <code>.opencode/skills/&lt;id&gt;/</code>, the agent sees the skill's name and description, and the full text is pulled only when the task actually requires it. Importantly, this saves context – and context is not infinite in agent work.</p><p>It looks something like this:</p><pre><code>---
+name: code-review
+description: Sequence for checking a diff before merging
+---
+
+1. Examine the changed files and their related calls
+2. Check error handling and edge cases
+3. Identify potential regressions in dependent code
+4. Verify against project conventions
+5. Provide criticality-based feedback</code><div><a href="https://sourcecraft.dev/"><span></span></a></div></pre><p>The format, at first glance, is simple, again markdown with a prompt. But behind this simplicity lies an important distinction: a skill doesn't have its own tools and permissions; it inherits everything from the agent that called it. That is, if the reviewer is forbidden from editing files, then the <code>code-review</code> skill within it also won't be able to edit files. Furthermore, it allows separating instructions and code style, and the AI agent will take this into account.</p><h4>Commands: Pre-defined Sequences</h4><p>Commands are steps you've already performed manually and don't want to repeat. They live in <code>.opencode/commands/</code> and are invoked via <code>/name</code>. A classic example is <code>/fix-bug</code>: examine the bug → find the code → cause → solution → confirmation → changes → tests → diff. All this is written in one file, and the agent doesn't need to be explained every time the order of operations.</p><p>The difference between a command and a skill is that a command is executed explicitly, while a skill is pulled automatically based on its description. Also, a command usually sets a strict order of steps, while a skill is more of a set of rules applied situationally. By the way, both can be versioned along with the project, which sounds reasonable for teamwork.</p><p>You can also create them using files in <code>.opencode/commands</code>. For example, you can create a file <code>.opencode/commands/review.md</code> with the following content:</p><pre><code>---
+description: Review code for correctness
+agent: plan
+model: anthropic/claude-sonnet-5-5#high
+---
+
+Review $ARGUMENTS. Report bugs first.</code><div><a href="https://sourcecraft.dev/"><span></span></a></div></pre><p>Commands support argument positioning:</p><pre><code>Compare $1 with $2.</code><div><a href="https://sourcecraft.dev/"><span></span></a></div></pre><p>Or calling shell commands:</p><pre><code>Summarize these commits:
+
+!`git log --oneline -$1`</code><div><a href="https://sourcecraft.dev/"><span></span></a></div></pre><p>There is much more functionality; you can read in more detail in the <a href="https://opencode.ai/docs/commands/">documentation</a>.</p><h4>MCP: External Tools</h4><p>MCP servers are a separate story. In my configuration, exactly one is connected, <code>context7</code>, and it's remote:</p><pre><code>"mcp": {
+  "context7": {
+    "type": "remote",
+    "url": "https://mcp.context7.com/mcp",
+    "enabled": true
+  }
+}</code><div><a href="https://sourcecraft.dev/"><span></span></a></div></pre><p>Why is it needed? Context7 pulls the latest library documentation directly into the agent's context. This is useful when working with a framework that changes faster than your knowledge of it is updated. Local MCP servers (<code>type: "local"</code> with <code>command</code>) are connected similarly, only instead of a URL, you specify the launch command – this is often needed for GitLab, Jira, or internal APIs.</p><p>It's worth remembering that MCP is not always the best approach. If the task can be solved with a script or a regular HTTP request, there's no need to bring in MCP just for the sake of a trendy term. It's justified when a structured interface to an external system is specifically needed.</p><h4>Plugins: Extending the Harness Itself</h4><p>Plugins are about OpenCode itself. My configuration includes <code>opencode-wakatime</code>, which tracks work time directly from the TUI. It's installed automatically by Bun on startup if listed in <code>"plugin": [...]</code>.</p><p>Notably, plugins are one of those areas where versions diverge painfully. Plugins written for v1 will not work on v2; they need to be adapted or a v2-compatible alternative must be found.</p><h3>Conclusion</h3><p>Building an agent system in OpenCode is an architectural task, not just choosing models, because, as I've said, AI is LLM + Harness. Although, I admit, choosing models is the most enjoyable part of the process. Additionally, it's worth remembering that agent systems are young and constantly evolving.</p><p>I started using AI agents recently and realized they are quite convenient. With proper configuration, you can optimize your work and speed it up, rather than just spending thousands of rubles on tokens for simple vibe coding.</p><p>And don't forget to review and read the model's output, because AI agents are gradually taking over part of the work – writing code – but the job of a software engineer is not just about writing code. Also, the fact that an AI agent can write complex things for you is not a reason not to study complex things and not to develop. It's even ironic that for AI to take over your job, you have to work…</p></div>
+  </main>
+  <footer>
+    Translation generated with Gemini 2.5 Flash-Lite.
+    The original article remains the source of record.
+  </footer>
+</body>
+</html>

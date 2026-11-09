@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>We gave Claude our documentation, and it started writing us autotests</title>
+  <meta name="description" content="Testers are feeding documentation to Anthropic&#x27;s Claude language model and getting test cases and autotests from it. This works if the documentation is accurate and if a human checks the chain at two stages. I&#x27;ll explain how it works, where the pitfalls are, and what hasn&#x27;t worked yet">
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.65;
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 32px 20px 64px;
+      color: #1f2328;
+    }
+    header {
+      border-bottom: 1px solid #d8dee4;
+      margin-bottom: 28px;
+      padding-bottom: 20px;
+    }
+    .source {
+      color: #57606a;
+      font-size: 0.95rem;
+    }
+    img, video, iframe {
+      max-width: 100%;
+      height: auto;
+    }
+    pre {
+      overflow-x: auto;
+      padding: 16px;
+      background: #f6f8fa;
+      border-radius: 6px;
+    }
+    code {
+      font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+    }
+    blockquote {
+      border-left: 4px solid #d0d7de;
+      margin-left: 0;
+      padding-left: 16px;
+      color: #57606a;
+    }
+    footer {
+      border-top: 1px solid #d8dee4;
+      margin-top: 40px;
+      padding-top: 20px;
+      color: #57606a;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>We gave Claude our documentation, and it started writing us autotests</h1>
+    <p>Testers are feeding documentation to Anthropic&#x27;s Claude language model and getting test cases and autotests from it. This works if the documentation is accurate and if a human checks the chain at two stages. I&#x27;ll explain how it works, where the pitfalls are, and what hasn&#x27;t worked yet below. Read on.</p>
+    <p class="source">
+      Machine-translated from Habr.
+      <a href="https://habr.com/ru/articles/1105574/?utm_campaign=1105574&amp;utm_source=habrahabr&amp;utm_medium=rss">Read the original Russian article</a>.
+      Mon, 09 Nov 2026 14:52:29 GMT
+    </p>
+  </header>
+  <main>
+<div><figure><img alt=" *RTFM: Read The F*** Manual  " loading="lazy" src="https://habrastorage.org/r/w1560/extt/79/bc/b3/79bcb32d6cc18cd693de669b1fdc736f.png" title=" *RTFM: Read The F*** Manual  "/><figcaption> *RTFM: Read The F*** Manual  </figcaption></figure><p>Hello everyone! I am the CTO of Documenterra. We make a platform for documentation websites, so I can talk about documentation for hours. But today's story is not about the product. It's about how documentation, which testers previously checked as an afterthought, has become the main source for their autotests.</p><h3>How it was</h3><p>For as long as I've been writing software, documentation has lived at the very end of the pipeline. We wrote code, rolled out a feature, someone described it. Clients read the documentation. Within the company, it was needed by almost no one: developers know how everything works anyway (or so they think), and testers were asked to check it as a favor when time permitted. Time, as you can imagine, rarely permitted.</p><h3>How it is now</h3><p>This year, documentation gained an internal reader. Testers started feeding it to Claude and getting test cases and autotests from it. Documentation moved from the end of the pipeline to the beginning: testing now starts with it.</p><p>Here's what we can do now. At the beginning of 2025, I would have considered half of this list overly optimistic.</p><ul><li><p><strong>Autotests without fussing with selectors.</strong> An hour of prompting, five hours of Claude's work, and we have working autotests for a feature. No one picks selectors, no one invents steps manually. Only test case descriptions are provided.</p></li><li><p><strong>Tests for unfinished features.</strong> We write and fix tests by feeding the model documentation. If a new feature relies on old functionality, a test that prepares preconditions can be written even before the new part is available.</p></li><li><p><strong>"Test and write autotests."</strong> We give the model a new feature, PR, Jira ticket, and documentation. Manually clicking through the feature to understand how it works and what to check is no longer necessary.</p></li><li><p><strong>Tests for a feature the tester has never seen.</strong> If there's documentation for it, Claude will figure it out.</p></li><li><p><strong>Hunting for outdated test cases.</strong> We find manual and automated test cases that contradict the current documentation and update them.</p></li><li><p><strong>Bugs as a bonus.</strong> The model usually understands when it encounters a bug: from test cases, documentation, or simple logic (an error pops up, a button doesn't click). Another source of bugs is analyzing run logs.</p></li></ul><p>I'll show you how this looks in practice with a simple feature: password recovery.</p><p><strong>Step 1. Documentation.</strong> The model received this fragment via the MCP server:</p><ol><li><p>Open the portal and click the <strong>Login</strong> button to go to the login page.</p></li><li><p>On the login page, click <strong>Forgot password?</strong>.</p></li><li><p>On the password recovery page, enter your login or email address associated with your account, and click <strong>Reset password</strong>.</p></li><li><p>You will receive an email with a link to set a <strong>new password</strong>.</p></li></ol><p><strong>Step 2. Test cases.</strong> These were generated by an AI agent. The precondition for both is: the user is not authorized.</p><p><em>TC-1. The "Forgot password?" link opens the recovery page</em> (steps 1–2 from the documentation)</p><div><table><tbody><tr><td><p><strong>Step</strong></p></td><td><p><strong>Expected result</strong></p></td></tr><tr><td><p>1. Open /login/</p></td><td><p>The login form has a <strong>Forgot password?</strong> link</p></td></tr><tr><td><p>2. Click <strong>Forgot password?</strong></p></td><td><p>The /forgot-password/ page is open with a login field and a <strong>Reset password</strong> button</p></td></tr></tbody></table></div><p><em>TC-2. A request without a login is not submitted</em> (step 3, negative)</p><div><table><tbody><tr><td><p><strong>Step</strong></p></td><td><p><strong>Expected result</strong></p></td></tr><tr><td><p>1. Open /forgot-password/</p></td><td><p>The login field is empty</p></td></tr><tr><td><p>2. Click <strong>Reset password</strong> without entering a login</p></td><td><p>A validation error appears for the field, the page does not change</p></td></tr></tbody></table></div><p>Note TC-2: the documentation says nothing about an empty login. The model inferred the negative case itself, from the form's standard logic.</p><p><strong>Step 3. Autotest.</strong></p><pre><code>import {test, expect} from '@/fixtures/test'; import {ForgotPasswordPage} from '@/pages/Application/forgotPassword.page'; test.use({storageState: {cookies: [], origins: []}}); // anonymous user test('TC-1: "Forgot password?" opens the recovery page', async ({page}) =&gt; { const forgot = new ForgotPasswordPage(page); await test.step('1. Open the login page', async () =&gt; { await page.goto('/login/'); await expect(forgot.linkOnLoginPage).toBeVisible(); }); await test.step('2. Click "Forgot password?"', async () =&gt; { await forgot.linkOnLoginPage.click(); await expect(page).toHaveURL(///forgot-password///$); await expect(forgot.loginInput).toBeVisible(); await expect(forgot.resetButton).toBeVisible(); }); }); test('TC-2: an empty login is not submitted', async ({page}) =&gt; { const forgot = new ForgotPasswordPage(page); await test.step('1. Open the recovery page', async () =&gt; { await forgot.goto(); await expect(forgot.loginInput).toHaveValue(''); }); await test.step('2. Click "Reset password" without a login', async () =&gt; { await forgot.resetButton.click(); await expect(forgot.loginError).toBeVisible(); await expect(page).toHaveURL(///forgot-password///$); }); });</code><div><a href=
+  </main>
+  <footer>
+    Translation generated with Gemini 2.5 Flash-Lite.
+    The original article remains the source of record.
+  </footer>
+</body>
+</html>

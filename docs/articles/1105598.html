@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>gpu-unlock: How to Remove the FP16/BF16 Software Ceiling on RTX 20/30/40 Without Re-flashing</title>
+  <meta name="description" content="Your computer might have a graphics card that computes twice as slowly as it could, simply because the manufacturer decided so in the firmware. The gpu-unlock project by developer Zagitta removes this limit programmatically, at the Linux kernel level, without a patched driver or VBIOS re-flashing. D">
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.65;
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 32px 20px 64px;
+      color: #1f2328;
+    }
+    header {
+      border-bottom: 1px solid #d8dee4;
+      margin-bottom: 28px;
+      padding-bottom: 20px;
+    }
+    .source {
+      color: #57606a;
+      font-size: 0.95rem;
+    }
+    img, video, iframe {
+      max-width: 100%;
+      height: auto;
+    }
+    pre {
+      overflow-x: auto;
+      padding: 16px;
+      background: #f6f8fa;
+      border-radius: 6px;
+    }
+    code {
+      font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+    }
+    blockquote {
+      border-left: 4px solid #d0d7de;
+      margin-left: 0;
+      padding-left: 16px;
+      color: #57606a;
+    }
+    footer {
+      border-top: 1px solid #d8dee4;
+      margin-top: 40px;
+      padding-top: 20px;
+      color: #57606a;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>gpu-unlock: How to Remove the FP16/BF16 Software Ceiling on RTX 20/30/40 Without Re-flashing</h1>
+    <p>Your computer might have a graphics card that computes twice as slowly as it could, simply because the manufacturer decided so in the firmware. The gpu-unlock project by developer Zagitta removes this limit programmatically, at the Linux kernel level, without a patched driver or VBIOS re-flashing. Disclaimer: I haven&#x27;t tested this module myself (unlike the previous article on Qwen3.8 on a 1070, where all figures were my own measurements). Everything below is an analysis of the project&#x27;s repository and README, noting where figures are claims by the author and community, not independently verified benchmarks. The essence of the limitation: NVIDIA separates its product lines into gaming GeForce RTX and professional/data center cards (Tesla, A100, H100, etc.) not only by price but also by the throughput of tensor cores for FP16/BF16/TF32 with FP32 accumulation. The hardware is physically the same (or very similar), but on consumer cards, this computation is artificially limited – often by half of the stated peak speed of the tensor cores. This doesn&#x27;t matter for games, as this mode is rarely used. However, for local LLMs, fine-tuning, image, and video generation, this is precisely what computes most of the time during training and the prefill stage (processing the input prompt). Read more</p>
+    <p class="source">
+      Machine-translated from Habr.
+      <a href="https://habr.com/ru/articles/1105598/?utm_campaign=1105598&amp;utm_source=habrahabr&amp;utm_medium=rss">Read the original Russian article</a>.
+      Mon, 09 Nov 2026 15:31:57 GMT
+    </p>
+  </header>
+  <main>
+<div><p>Your computer might have a graphics card that computes twice as slowly as it could, simply because the manufacturer decided so in the firmware. The <a href="https://github.com/zagitta/gpu-unlock">gpu-unlock</a> project by developer Zagitta removes this limit programmatically, at the Linux kernel level, without a patched driver or VBIOS re-flashing.</p><p>Disclaimer: I haven't tested this module myself (unlike the previous article on Qwen3.8 on a 1070, where all figures were my own measurements). Everything below is an analysis of the project's repository and README, noting where figures are claims by the author and community, not independently verified benchmarks.</p><h3>The Essence of the Limitation</h3><p>NVIDIA separates its product lines into gaming GeForce RTX and professional/data center cards (Tesla, A100, H100, etc.) not only by price but also by the throughput of tensor cores for FP16/BF16/TF32 with FP32 accumulation. The hardware is physically the same (or very similar), but on consumer cards, this computation is artificially limited – often by half of the stated peak speed of the tensor cores.</p><p>This doesn't matter for games, as this mode is rarely used. However, for local LLMs, fine-tuning, image, and video generation, this is precisely what computes most of the time during training and the prefill stage (processing the input prompt).</p><h3>What gpu-unlock Does Technically</h3><p>It's a Linux kernel module that:</p><ol><li><p>Integrates into the initramfs (mkinitcpio/initramfs-tools/dracut) and loads <strong>before</strong> the standard <code>nvidia</code> driver is attached to the system.</p></li><li><p>Writes speed selector registers to the card: <code>SS0 = 0x88888888</code> (full BF16 speed) and a 4-bit <code>SS1 = 0x8</code> (IMLA4 mode).</p></li><li><p>Performs a Function-Level Reset (FLR) of the card, then releases it – and the unmodified original NVIDIA driver attaches to the card as if nothing happened.</p></li></ol><p>The approach combines techniques from the older cmpunlocker project (working with V67/PLM registers) with the idea of interception before the driver loads via UEFI. The NVIDIA driver is not patched or replaced; the driver archive is downloaded only to extract the firmware on which the unlock depends. According to the author, there is no dependency on a specific driver version.</p><p>Important: this is not a hack or cheating with calculation accuracy – the author claims that the calculation results are bitwise identical before and after, only the speed changes.</p><h3>Supported Cards</h3><div><div><table><tbody><tr><th><p>Generation</p></th><th><p>Cards</p></th><th><p>Status</p></th></tr><tr><td><p>Ampere (RTX 30)</p></td><td><p>RTX 3050 — 3090 Ti, including mobile 3070/3080</p></td><td><p>Stable</p></td></tr><tr><td><p>Ada Lovelace (RTX 40)</p></td><td><p>RTX 4060 — 4090 (including 4090 D), mobile 4050/4060</p></td><td><p>Experimental</p></td></tr><tr><td><p>Turing (RTX 20)</p></td><td><p>RTX 2060 — 2080 Ti, Titan RTX</p></td><td><p>Experimental</p></td></tr><tr><td><p>Blackwell (RTX 50)</p></td><td><p>—</p></td><td><p>Not supported, according to the author – “most likely, it won’t be”</p></td></tr></tbody></table></div></div><p>Exact PCI device IDs are in the <code>kernel/gpu_unlock/recipes.c</code> file in the repository.</p><p>As you can see, Pascal (10-series, the GTX 1070 from my previous article) is not on the list at all – these cards do not have a separate, limited tensor-core BF16 mode that can be unlocked (Pascal simply lacks tensor cores in the required form). So, this project is not relevant for the 1070, but it's perfect for owners of the 20/30/40 series.</p><h3>Performance Figures (According to README)</h3><p><strong>Pure BF16 matmul at stock power limits:</strong></p><div><div><table><tbody><tr><th><p>Card</p></th><th><p>Before</p></th><th><p>After</p></th><th><p>Increase</p></th></tr><tr><td><p>RTX 3060 12GB</p></td><td><p>27 TFLOPS</p></td><td><p>51 TFLOPS</p></td><td><p>+87%</p></td></tr><tr><td><p>RTX 3080 10GB</p></td><td><p>65 TFLOPS</p></td><td><p>113 TFLOPS</p></td><td><p>+73%</p></td></tr><tr><td><p>RTX 3090</p></td><td><p>75 TFLOPS</p></td><td><p>125 TFLOPS</p></td><td><p>+65%</p></td></tr><tr><td><p>RTX 4080</p></td><td><p>104 TFLOPS</p></td><td><p>193 TFLOPS</p></td><td><p>+87%</p></td></tr><tr><td><p>RTX 4090</p></td><td><p>165 TFLOPS</p></td><td><p>329 TFLOPS</p></td><td><p>+100% (peak speed)</p></td></tr></tbody></table></div></div><p>For the RTX 4090, the author notes separately: the card hits its power limit before the tensor core ceiling, so the increase for large GEMMs will be less than the peak figure in the table.</p><p><strong>Real-world workloads (typical increases, based on community reports, not independent benchmarks):</strong></p><ul><li><p>LLM Prefill (FP16/BF16, AWQ/GPTQ): +25–55%, time to first token reduced by 25–30%</p></li><li><p>LoRA and full-finetuning (BF16): +25–50%</p></li><li><p>Image generation (FP16/BF16): +30–55%</p></li><li><p>Video generation (Wan 2.2, BF16): +15–20%</p></li><li><p>FlashAttention/SDPA: +50–60%</p></li><li><p>llama.cpp/Ollama with GGUF: 0–15%, more noticeable with long context</p></li><li><p>No change: LLM decode (limited by memory, not computation), INT8/FP8/INT4 models, games, FP32 CUDA</p></li></ul><p>Note the last point – this is a key limitation for local LLMs. If you run models in INT8/INT4 quantization (as most local setups on home hardware do) and are interested in generation speed (decode), not just prefill – the boost might be zero. The gain is maximal with BF16/FP16 weights and specifically during prompt processing or training.</p><h3>Installation</h3><pre><code>git clone https://github.com/zagitta/gpu-unlock.git cd gpu-unlock make install</code></pre><div><a href=
+  </main>
+  <footer>
+    Translation generated with Gemini 2.5 Flash-Lite.
+    The original article remains the source of record.
+  </footer>
+</body>
+</html>

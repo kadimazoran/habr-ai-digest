@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Synthetic Melts in DSP-3: How to Generate Data Without Deceiving Yourself</title>
+  <meta name="description" content="Hello, Habr! This story began when I was invited to discuss working at a metallurgical company. They asked briefly: &#x27;Are you ready?&#x27;. I assessed my strengths, the scale of the task, and answered directly – I&#x27;m ready to start immediately as Head of AI to build the process from scratch.">
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.65;
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 32px 20px 64px;
+      color: #1f2328;
+    }
+    header {
+      border-bottom: 1px solid #d8dee4;
+      margin-bottom: 28px;
+      padding-bottom: 20px;
+    }
+    .source {
+      color: #57606a;
+      font-size: 0.95rem;
+    }
+    img, video, iframe {
+      max-width: 100%;
+      height: auto;
+    }
+    pre {
+      overflow-x: auto;
+      padding: 16px;
+      background: #f6f8fa;
+      border-radius: 6px;
+    }
+    code {
+      font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+    }
+    blockquote {
+      border-left: 4px solid #d0d7de;
+      margin-left: 0;
+      padding-left: 16px;
+      color: #57606a;
+    }
+    footer {
+      border-top: 1px solid #d8dee4;
+      margin-top: 40px;
+      padding-top: 20px;
+      color: #57606a;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Synthetic Melts in DSP-3: How to Generate Data Without Deceiving Yourself</h1>
+    <p>Hello, Habr! This story began when I was invited to discuss working at a metallurgical company. They asked briefly: &#x27;Are you ready?&#x27;. I assessed my strengths, the scale of the task, and answered directly – I&#x27;m ready to start immediately as Head of AI to build the process from scratch. And then the classic corporate football began. Despite a substantive conversation, they started giving me a hard time due to my lack of a specialized programming degree. For the harsh industry, a diploma turned out to be more important than real experience and understanding of processes. Realizing that this bureaucracy couldn&#x27;t be broken through the standard way, I decided to go head-on: in a couple of weeks, assemble a working MVP, showcase it, and strongly stand out from other candidates with &#x27;correct&#x27; diplomas. Spoiler: there will be no beautiful happy ending. My MVP never reached senior management, and I was ultimately turned away at the door. But why let the effort go to waste? The project turned out too interesting to just bury it on a hard drive. This article is solely dedicated to the generator. We will analyze how it works &#x27;under the hood,&#x27; what non-obvious mistakes I made in it, and how to check that the synthetic data isn&#x27;t lying to itself. Training CatBoost and creating a working microservice advisor will be left for the second part. The article is written so that you don&#x27;t need the repository: all the code is provided right here, in the order that is convenient to read and reproduce. If you want to skip the theoretical explanations, at the end of each section, there is a ready-to-use code snippet that you can copy and run yourself. Read more</p>
+    <p class="source">
+      Machine-translated from Habr.
+      <a href="https://habr.com/ru/articles/1105616/?utm_campaign=1105616&amp;utm_source=habrahabr&amp;utm_medium=rss">Read the original Russian article</a>.
+      Mon, 09 Nov 2026 16:12:54 GMT
+    </p>
+  </header>
+  <main>
+<div><p>Hello, Habr! This story began when I was invited to discuss working at a metallurgical company. They asked briefly: 'Are you ready?'. I assessed my strengths, the scale of the task, and answered directly – I'm ready to start immediately as Head of AI to build the process from scratch.</p><p>And then the classic corporate football began. Despite a substantive conversation, they started giving me a hard time due to my lack of a specialized programming degree. For the harsh industry, a diploma turned out to be more important than real experience and understanding of processes. Realizing that this bureaucracy couldn't be broken through the standard way, I decided to go head-on: in a couple of weeks, assemble a working MVP, showcase it, and strongly stand out from other candidates with 'correct' diplomas.</p><p>Spoiler: there will be no beautiful happy ending. My MVP never reached senior management, and I was ultimately turned away at the door. But why let the effort go to waste? The project turned out too interesting to just bury it on a hard drive.</p><p>This article is solely dedicated to the generator. We will analyze how it works 'under the hood,' what non-obvious mistakes I made in it, and how to check that the synthetic data isn't lying to itself. Training CatBoost and creating a working microservice advisor will be left for the second part.</p><p>The article is written so that you don't need the repository: all the code is provided right here, in the order that is convenient to read and reproduce. If you want to skip the theoretical explanations, at the end of each section, there is a ready-to-use code snippet that you can copy and run yourself.</p><h2>Why Synthetic Data at All</h2><p>At metallurgical enterprises, data exists, but it cannot be made publicly available: it's a trade secret. As a result, those who are learning or want to test an idea have nothing to train a model on and compare approaches. A synthetic dataset does not replace real data, but it allows debugging the entire pipeline: from generation and training to the interface, and then substituting real melts.</p><p>The task is as follows. When producing steel from a furnace into a ladle, the steelmaker adds ferroalloys to return the burned-out silicon and manganese within GOST limits. Part of the alloy burns up, and how much exactly is unknown in advance. Therefore, the dose is taken with a margin, and the margin costs money. We want to estimate the minimum dose that is sufficient, based on what is known before the addition.</p><h2>What Will Be Produced in the End</h2><ul><li><p>A generator reproducible by seed</p></li><li><p>A dataset of 2000 melts with 18 columns and five GOST 977–88 compliance checks</p></li></ul><p>All figures in the article were obtained from data generated by this generator. They describe a simulator, not a real furnace, and I will remind you of this where it is important.</p><h2>What We Are Simulating</h2><p>We are simulating the melting of a casting of group 1 from 35L steel according to GOST 977–88, weighing 3 tons, in a DSP-3 electric arc furnace with a basic lining. The raw materials are ferrous scrap of categories 2A and 6A according to GOST 2787–2019 and pig iron. Scrap 2A is lumpy, clean, heavy steel, the basis of the charge. 6A is briquettes of pressed steel shavings: cheap raw material, but with oil and scale, which is where sulfur comes from. Pig iron is needed as a carburizer because the scrap itself has about 0.15% carbon.</p><p>The charge is always exactly 3300 kg: an underloaded furnace is unprofitable. About 10% of the metal is lost to oxidation, and we get about 3000 kg of liquid steel at tapping.</p><h2>Melting Stages</h2><ul><li><p><strong>Charging.</strong> Weigh and load scrap 2A, briquettes 6A, and pig iron.</p></li><li><p><strong>Melting.</strong> Arcs melt the charge; carbon content after melting is entirely determined by the charge.</p></li><li><p><strong>Oxygen Blowing.</strong> Oxygen burns off excess carbon and removes gases. If overdone, the metal becomes over-oxidized.</p></li><li><p><strong>Slag Formation.</strong> Lime provides basicity. High basicity binds sulfur and phosphorus; acidic slag (below 2.0) does not.</p></li><li><p><strong>Tapping.</strong> The metal is poured into the ladle at the specified temperature, measured by an immersion thermocouple.</p></li><li><p><strong>Ladle Alloying.</strong> Ferrosilicon FS75 and ferromanganese FMn78 are added. Part of the silicon and manganese is lost to oxidation, and the recovery rate depends on temperature, oxygen, and basicity.</p></li><li><p><strong>Quality Control.</strong> Final composition and overheating are checked against tolerances.</p></li></ul><h2>Input Parameter Ranges</h2><div><div><table><tbody><tr><td><p><strong>Parameter</strong></p></td><td><p><strong>Range</strong></p></td><td><p><strong>Units</strong></p></td></tr><tr><td><p>Scrap 2A</p></td><td><p>1600–2500</p></td><td><p>kg</p></td></tr><tr><td><p>Briquettes 6A</p></td><td><p>400–1300</p></td><td><p>kg</p></td></tr><tr><td><p>Pig Iron</p></td><td><p>200–400</p></td><td><p>kg</p></td></tr><tr><td><p>Oxygen</p></td><td><p>35–75</p></td><td><p>m³</p></td></tr><tr><td><p>Slag Basicity</p></td><td><p>1.8–2.9</p></td><td><p>—</p></td></tr><tr><td><p>Tapping Temperature</p></td><td><p>1530–1660</p></td><td><p>°C</p></td></tr><tr><td><p>FS75</p></td><td><p>15–30</p></td><td><p>kg</p></td></tr><tr><td><p>FMn78</p></td><td><p>20–40</p></td><td><p>kg</p></td></tr></tbody></table></div></div><h2>Five Conditions for Suitability</h2><p>A melt is considered suitable only if all five conditions are met simultaneously:</p><div><div><table><tbody><tr><td><p><strong>Condition</strong></p></td><td><p><strong>Tolerance</strong></p></td></tr><tr><td><p>Carbon</p></td><td><p>0.32–0.40%</p></td></tr><tr><td><p>Silicon</p></td><td><p>0.20–0.52%</p></td></tr><tr><td><p>Manganese</p></td><td><p>0.45–0.90%</p></td></tr><tr><td><p>Sulfur + Phosphorus (sum)</p></td><td><p>not more than 0.040%</p></td></tr><tr><td><p>Superheat above liquidus</p></td><td><p>+45…+70 °C</p></td></tr></tbody></table></div></div><p>If the superheat is less than 45 °C, the metal is too viscous, leading to underfilling during casting. If it's more than 70 °C, the metal will burn the mold, and the casting will be covered with gas pores. Note that this is a simplified model. In the GOST standard itself, sulfur and phosphorus are regulated separately, and the superheat window was invented by me for casting into XTS molds and is not taken from the standard.</p><h2>Iron-Carbon Diagram and Liquidus</h2><p>We consider the melting temperature of steel to be a linear approximation based on chemical composition:</p><img alt=
+  </main>
+  <footer>
+    Translation generated with Gemini 2.5 Flash-Lite.
+    The original article remains the source of record.
+  </footer>
+</body>
+</html>

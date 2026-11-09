@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Hunting the Goose</title>
+  <meta name="description" content="The &quot;Goose&quot; project is destined for a holy war. It&#x27;s no joke: an AI wrote a programming language that&#x27;s faster than C++ and Rust. A holy war is mostly about spectacle, and it&#x27;s clear who&#x27;s who. However, on the battlefields, in the form of &quot;bread,&quot; instructive ">
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.65;
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 32px 20px 64px;
+      color: #1f2328;
+    }
+    header {
+      border-bottom: 1px solid #d8dee4;
+      margin-bottom: 28px;
+      padding-bottom: 20px;
+    }
+    .source {
+      color: #57606a;
+      font-size: 0.95rem;
+    }
+    img, video, iframe {
+      max-width: 100%;
+      height: auto;
+    }
+    pre {
+      overflow-x: auto;
+      padding: 16px;
+      background: #f6f8fa;
+      border-radius: 6px;
+    }
+    code {
+      font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+    }
+    blockquote {
+      border-left: 4px solid #d0d7de;
+      margin-left: 0;
+      padding-left: 16px;
+      color: #57606a;
+    }
+    footer {
+      border-top: 1px solid #d8dee4;
+      margin-top: 40px;
+      padding-top: 20px;
+      color: #57606a;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Hunting the Goose</h1>
+    <p>The &quot;Goose&quot; project is destined for a holy war. It&#x27;s no joke: an AI wrote a programming language that&#x27;s faster than C++ and Rust. A holy war is mostly about spectacle, and it&#x27;s clear who&#x27;s who. However, on the battlefields, in the form of &quot;bread,&quot; instructive artifacts remain, a couple of which I propose to examine. Incredible? Incredible💎</p>
+    <p class="source">
+      Machine-translated from Habr.
+      <a href="https://habr.com/ru/articles/1105666/?utm_campaign=1105666&amp;utm_source=habrahabr&amp;utm_medium=rss">Read the original Russian article</a>.
+      Mon, 09 Nov 2026 18:18:45 GMT
+    </p>
+  </header>
+  <main>
+<div><h3>Context</h3><p>The <a href="https://aardappel.github.io/goose/">"Goose"</a> project is destined for a holy war. It's no joke: an AI wrote a programming language that's faster than C++ and Rust. A holy war is mostly about spectacle, and it's clear who's who. However, on the battlefields, in the form of "bread," instructive artifacts remain, a couple of which I propose to examine.</p><p>Upon learning about Goose, I became interested in how this thing works. I was particularly interested in the architecture, i.e., the key components underlying the system and their interrelationships. I expounded my view on the Goose architecture rather tediously in the article "<a href="https://habr.com/ru/articles/1102376/">Don't be afraid, it's Goose</a>." In the comments, amidst a rather sluggish exchange, a colleague <a href="https://habr.com/users/nin-jin">@nin-jin</a> left an "artifact," accompanying it with a laconic "I'll just leave this here." Meaning, like, hey, look, they're writing here... author, figure it out.</p><p>I'm figuring it out.</p><h3>Artifact</h3><p>In two videos, MrTeamlead systematically and effectively dismantles this Goose. In the second, saying "watch my hands," he takes the benchmark <a href="https://github.com/aardappel/goose/blob/963a79811c241928a296d3036f18d5be4c896c69/bench/goose/records_fixed.goose">records_fixed.goose</a>, where Goose beats Rust's <a href="https://github.com/aardappel/goose/blob/963a79811c241928a296d3036f18d5be4c896c69/bench/rust/records.rs">records.rs</a> by 1.8x in memory and 1.9x in speed, and shows how to blow away the Rust version by 6.7x (with parallelization). The original (Goose repository) benchmarks for <a href="https://github.com/aardappel/goose/blob/963a79811c241928a296d3036f18d5be4c896c69/bench/results.md#records">records</a>.</p><p>Incredible? Incredible.</p><p>Let's assume everything is as MrTeamlead claims. That is, the AI wrote bad Rust code for the benchmark, which a) loses to Goose and b) can be optimized to incredible results. To improve your skills for creating such optimizations, you can sign up for courses.</p><p>What follows from this? That for AI-driven development, especially in the "vibe coding" variant, Goose is better suited than Rust. Because the code turns out to be fast, safe, easy to read (subjective), and you don't need to finish courses. And in most cases, there won't be much time for review. <a href="https://www.google.com/search?q=AI+Coding+Made+Code+Review+the+Bottleneck">Most of the time there won't be much time for review</a>.</p><p>However, there are cases where speed and memory efficiency are crucial, and "cost is no object." Here we need to go deeper and look at how Goose works. Three pictures.</p><h3>Goose in Section</h3><p><strong>Picture number one</strong>. For memory management, Goose uses structures called data stacks. Their number is <strong>calculated at compile time</strong>.</p><figure><img alt="Compiler calculates N, runtime reserves N address space areas" src="https://habrastorage.org/r/w1560/webt/fb/43/0d/fb430d6d4ee512731bbfe40a91163023.png"/><figcaption>Compiler calculates N, runtime reserves N address space areas</figcaption></figure><p>Here, it should be noted that:</p><ul><li><p>These are NOT call stacks: they don't contain function frames, only data. But they are freed like a stack – upon exiting the scope, the top simply shifts back.</p></li><li><p>Memory is reserved but not immediately allocated to the process (lazy allocation).</p></li></ul><p><strong>Picture number two</strong>. Data stack structures are distributed among functions at compile time.</p><figure><img alt="Seven functions, three data stacks: N is independent of the number of functions" src="https://habrastorage.org/r/w1560/webt/d0/69/a3/d069a3b0621130e62b7f9a843ffabf51.png"/><figcaption>Seven functions, three data stacks: N is independent of the number of functions</figcaption></figure><p>Seven functions, three data stacks. The compiler calculates the number of data stacks based on the deepest call chain in the program, considering only functions that hold growing arrays: N is the maximum number of such arrays alive simultaneously. No new data stacks appear during runtime. Each growing array needs a separate data stack as long as it's alive, meaning if a function creates multiple growing arrays, each will have its own data stack. When a function finishes, its data stacks are passed to subsequent calls: in the picture, fn0, fn2, fn4, and fn5 take data stack 1 in turn.</p><p>This approach, of course, imposes limitations on recursive functions: at the moment of a recursive call, the function must not have any live growing arrays, otherwise each recursion level would require its own data stack. Anything that needs to survive the call is created externally and passed in by reference.</p><p><strong>Picture number three</strong>. Data packing.</p><figure><img alt="Model, Goose layout, and Rust layout" src="https://habrastorage.org/r/w1560/webt/82/d8/8f/82d88fde4c7cde3c515e65d9ff2fa34d.png"/><figcaption>Model, Goose layout, and Rust layout</figcaption></figure><p>Here's the structure:</p><pre><code>struct Item  { sku: u8[varint], qty: varint, cents: varint } struct Order { id: varint, customer: u8[varint], items: Item[varint] }</code><div><a href="https://sourcecraft.dev/"><span></span></a></div></pre><p>Filled with this data:</p><pre><code>{ "id": 1001, "customer": "alice", "items": [ { "sku": "SKU-441", "qty": 2, "cents": 1999 }, { "sku": "SKU-7", "qty": 1, "cents": 500 } ] }</code><div><a href="https://sourcecraft.dev/"><span></span></a></div></pre><p><a href="https://github.com/maxim-ge/goose/blob/mrteamlead/bench/mrteamlead/layout/results.md">Result</a> (in my fork on GitHub):</p><div><div><table><tbody><tr><th><p>Language</p></th><th><p>Bytes per order</p></th><th><p>Heap allocations</p></th></tr><tr><td><p>Goose</p></td><td><p>29</p></td><td><p>0</p></td></tr><tr><td><p>C++</p></td><td><p>160</p></td><td><p>1</p></td></tr><tr><td><p>Rust</p></td><td><p>233 / 153</p></td><td><p>4</p></td></tr></tbody></table></div></div><p>For Rust, 233 bytes is obtained by collecting items via <code>collect</code> (a vector with capacity for 4 elements), and 153 bytes is by precisely matching the capacity to 2 elements (<code>shrink_to_fit()</code>), as in the tutorial table. More details <a href="https://github.com/maxim-ge/goose/blob/mrteamlead/bench/mrteamlead/layout/README.md">here</a>.</p><h3>Who is whoosh?</h3><p>So, values in Goose do not live on the heap, and complex structures are packed as sequentially as possible.</p><p>Can this be done in C? Of course. Goose is a transpiler, here's the <a href="https://github.com/maxim-ge/goose/blob/mrteamlead/bench/mrteamlead/layout/order.goose.rs#L27">source in Goose</a> (named order.goose.rs so GitHub highlights the syntax), here's its <a href="https://github.com/maxim-ge/goose/blob/mrteamlead/bench/mrteamlead/layout/order.goose.c#L4102">equivalent in C</a>. You can look, but changing is dangerous.</p><p>Since values don't live on the heap, Goose is already faster than languages with a "heap" in scenarios with many memory allocations and single-threaded operation.</p><p>Full "dominance" is currently partial potential, not kinetics. To match other languages in computational capabilities, a number of features need to be implemented, such as parallel loops across threads (<code>par for</code>) and loop vectorization (<code>simd for</code>):</p><blockquote><p>The question […] is how a Goose program can split work over a large array across cores <em>without copying the array</em> […]. The second question is how such threads combine with the SIMD-level <code>par for</code> […]</p><p><a href="https://github.com/aardappel/goose/blob/master/docs/design/child_threads.md">Child threads: fork-join over shared memory inside one program, and how it meets par for</a></p></blockquote><p>For scale: Goose is less than three months old (the repository appeared in August 2026), while Rust took five and a half years to develop rayon, from June 2010 to December 2015.</p><h3>Watching the Hands</h3><p>I completely agree with MrTeamlead that Goose's benchmarks are specifically designed to demonstrate Goose's advantage in scenarios with intensive memory usage and minimal computation. From this perspective, there's no point in optimizing the measured code in the benchmarks.</p><p>But let's take a look. Again, in my Goose fork.</p><p><a href="https://github.com/maxim-ge/goose/commit/deba5247d8e79481723fae5c41c88ad4128f67c1">Change 1</a>. It was <code>Vec::new()</code>, now it's <code>Vec::with_capacity(N as usize)</code>.</p><p>Well, it's something. The benchmark models a situation – a stream of events hits us, we collect and process them. We don't know how many events there will be in advance. <code>N</code> is a benchmark parameter (500,000 for the author, 2,000,000 in the video), and for the code being tested, this number, in theory, is unknown.</p><p><a href="https://github.com/maxim-ge/goose/commit/8ba4434d922e2684935f2b371bc1ca9c96c78441">Change 2</a>. It was String, now it's MyString. In this case, the comparative optimization is justified, because <a href="https://github.com/aardappel/goose/blob/963a79811c241928a296d3036f18d5be4c896c69/bench/goose/records_fixed.goose#L16">the equivalent in Goose, records_fixed.goose</a>, also uses a fixed size.</p><p>The comment for records_fixed.goose states:</p><pre><code>// The same event log in fixed mode, which is the only mode Rust and C++ can // express.</code><div><a href="https://sourcecraft.dev/"><span></span></a></div></pre><p>This means it's supposedly how Rust would store the same events. But in records.rs, the text is stored on the heap (<code>String</code>), while in records_fixed.goose, it's directly inside the event (up to 15 characters). The layouts are different, and comparing them directly is unfair. When MrTeamlead places the text in Rust similarly, inside the event, the difference disappears: 46.7 vs. 46.5 ms in the video. Essentially, he wrote the missing records_fixed.rs.</p><p>However, Goose has another benchmark, <a href="https://github.com/aardappel/goose/blob/963a79811c241928a296d3036f18d5be4c896c69/bench/goose/records_var.goose#L19">records_var.goose</a>, and here it makes no sense (within the benchmark) to use a fixed size. A word of 4…15 letters is a parameter for generating benchmark data, not a size known in advance to the processing code. And <a href="https://github.com/aardappel/goose/blob/963a79811c241928a296d3036f18d5be4c896c69/bench/rust/records.rs">records.rs</a> is a suitable pair for it, illustrating the types of cases where Goose excels.</p><p>By the way, while writing the article, I discovered that the Goose author was informed <a href="https://github.com/aardappel/goose/issues/195">about the critical review</a>. The author replied that records_fixed.goose was just an illustration, and the real benchmark is records_var.goose, and removed records_fixed.goose from the repository…</p><h3>Conclusion</h3><p>The artifacts examined demonstrate the optimization capabilities of Rust programs well, but they do not diminish Goose's advantages (partially potential) in the scenarios modeled by Goose's benchmarks.</p><p>A few years ago, Goose would have been just a cool pet project, requiring years to develop. Now the situation is different. Our CEO once told me: "I'm using Orca to track business documents." I looked at this Orca… Started in March 2026, nearly 17,000 commits, over six million lines of code (with tests)… So black swan events are more possible than ever. However, Goose's <a href="https://github.com/aardappel/goose/blob/963a79811c241928a296d3036f18d5be4c896c69/docs/tutorial.md#18-limitations">fundamental problems</a> remain, and no one has canceled them.</p>.</p></div>
+  </main>
+  <footer>
+    Translation generated with Gemini 2.5 Flash-Lite.
+    The original article remains the source of record.
+  </footer>
+</body>
+</html>

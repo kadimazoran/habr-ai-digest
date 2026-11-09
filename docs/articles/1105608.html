@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>How We Built an AI Agent That Now Develops Products With Us</title>
+  <meta name="description" content="Not long ago, deciding which method to use for collection processing could send a developer searching through documentation, Stack Overflow, or Habr discussions. Sometimes the answer was there, other times it led to debates about project architecture, the author&#x27;s qualifications, and their very">
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.65;
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 32px 20px 64px;
+      color: #1f2328;
+    }
+    header {
+      border-bottom: 1px solid #d8dee4;
+      margin-bottom: 28px;
+      padding-bottom: 20px;
+    }
+    .source {
+      color: #57606a;
+      font-size: 0.95rem;
+    }
+    img, video, iframe {
+      max-width: 100%;
+      height: auto;
+    }
+    pre {
+      overflow-x: auto;
+      padding: 16px;
+      background: #f6f8fa;
+      border-radius: 6px;
+    }
+    code {
+      font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+    }
+    blockquote {
+      border-left: 4px solid #d0d7de;
+      margin-left: 0;
+      padding-left: 16px;
+      color: #57606a;
+    }
+    footer {
+      border-top: 1px solid #d8dee4;
+      margin-top: 40px;
+      padding-top: 20px;
+      color: #57606a;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>How We Built an AI Agent That Now Develops Products With Us</h1>
+    <p>Not long ago, deciding which method to use for collection processing could send a developer searching through documentation, Stack Overflow, or Habr discussions. Sometimes the answer was there, other times it led to debates about project architecture, the author&#x27;s qualifications, and their very suitability for the profession... Somewhere amidst these discussions, the required three lines of code were usually hidden. Then AI chats emerged, acting as an &#x27;advanced search engine&#x27;: clarifying details, showing code, discussing implementation options. You could even ask for a method name, preventing it from becoming processDataFinalReallyFinal. Later, models became better at larger tasks, and instead of hints, developers started receiving complete files. However, if a request for a small function resulted in a five-thousand-line novel, the saved time was spent deciphering it. A missed check might be flagged by a tester with a message like &#x27;A few remarks&#x27; and an attachment the size of a technical specification. Code appeared faster, but so did the load on reviews, testing, and maintenance. The developer also became a courier between the chat and the IDE. Now, it&#x27;s time for agents that, in addition to generating code, can work with project files, perform checks, and automatically deploy services in cloud environments. In this article, we&#x27;ll share how we built our own AI agent and gradually expanded its scope of tasks. We&#x27;ll discuss the reasoning behind adding specific features and how their implementation changed project work. Finally, we&#x27;ll explore how developer thinking has evolved and what remains for humans when writing code, creating tests, and verifying changes can be delegated.</p>
+    <p class="source">
+      Machine-translated from Habr.
+      <a href="https://habr.com/ru/articles/1105608/?utm_campaign=1105608&amp;utm_source=habrahabr&amp;utm_medium=rss">Read the original Russian article</a>.
+      Mon, 09 Nov 2026 15:48:05 GMT
+    </p>
+  </header>
+  <main>
+<div><p>Not long ago, deciding which method to use for collection processing could send a developer searching through documentation, Stack Overflow, or Habr discussions. Sometimes the answer was there, other times it led to debates about project architecture, the author's qualifications, and their very suitability for the profession... Somewhere amidst these discussions, the required three lines of code were usually hidden.</p><p>Then AI chats emerged, acting as an 'advanced search engine': clarifying details, showing code, discussing implementation options. You could even ask for a method name, preventing it from becoming processDataFinalReallyFinal.</p><p>Later, models became better at larger tasks, and instead of hints, developers started receiving complete files. However, if a request for a small function resulted in a five-thousand-line novel, the saved time was spent deciphering it. A missed check might be flagged by a tester with a message like 'A few remarks' and an attachment the size of a technical specification.</p><p>Code appeared faster, but so did the load on reviews, testing, and maintenance. The developer also became a courier between the chat and the IDE.</p><p>Now, it's time for agents that, in addition to generating code, can work with project files, perform checks, and automatically deploy services in cloud environments.</p><p>In this article, we'll share how we built our own AI agent and gradually expanded its scope of tasks. We'll discuss the reasoning behind adding specific features and how their implementation changed project work. Finally, we'll explore how developer thinking has evolved and what remains for humans when writing code, creating tests, and verifying changes can be delegated.</p><h2>Why Did We Decide to Integrate an AI Agent into Development?</h2><p>Neural networks are currently a huge hype, but simply wanting to add 'AI' to a product name wasn't enough for us. It's an excellent efficiency booster if used wisely. Quickly getting code is useful, but that code still needs to be reviewed, integrated into the project, and maintained. We wanted to delegate more work, not just get new tasks for ourselves faster.</p><p>We all understand: artificial intelligence is already significantly changing development—the classic approach where all code was written manually is becoming a thing of the past. Our team has always been open to new technologies, but we've always approached them with a degree of criticism, understanding that we shouldn't adopt a technology without fully grasping it and knowing the technical debt we might accumulate from its use. Therefore, we decided to say 'yes' to AI integration, but with a condition: we must clearly understand how what we're implementing works; we wanted to minimize the 'magic' effect. Our own agent is not only a development accelerator but also an opportunity to understand what's happening 'under the hood,' and also to customize the tool specifically for our team's requirements.</p><p>Our first 'try' was a plugin for automatic test generation using a language model. We started its development in 2024. It worked directly within the IDE and helped write tests, but it didn't have agent capabilities in its first version.</p><p>In the fall of the same year, we added a chat with a language model to the plugin. The necessary foundation already existed, so the ability to discuss tasks directly in the IDE was a logical continuation. And in January 2025, we learned about Windsurf's capabilities and decided to develop our own agent for Jetbrains IDE.</p><p>Gradually, it became clear that test generation wasn't the only possibility. Our next decision was to enable the plugin to work with files and perform actions: find the necessary code, make changes, and run checks. It was important for us that every team member could use the agent's capabilities. At the same time, the work had to remain a team effort, because working with artificial intelligence alone is simple. The developer has full context, provides prompts, monitors execution, and remembers which tasks are already completed. However, organizing collaborative work so that everyone can use the agent without losing context and understands what colleagues have already done is a more complex task, although the practice of developing according to specifications existed in our team even before the AI agent was created. Since we are accustomed to working in IntelliJ, we chose this IDE as our platform.</p><h2>How We Expanded the Agent's Capabilities</h2><p>Let's start with language models. In our agent, <strong>you can work with different LLMs</strong>: each has its own advantages and limitations, so we didn't want to tie all tasks to a single model. The agent supports all modern models from OpenAI, Anthropic, Google, DeepSeek, etc. It also includes the ability to add models run locally via ollama. New models are released every month, are added to our own aggregator platform on the day of release, and become available in the plugin. You can select a model manually or use the autopilot mode.</p><figure><img alt=
+  </main>
+  <footer>
+    Translation generated with Gemini 2.5 Flash-Lite.
+    The original article remains the source of record.
+  </footer>
+</body>
+</html>

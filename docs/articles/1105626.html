@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>The Original Winamp on Mac: How I Made My Childhood Player with AI Agents in SwiftUI and AppKit</title>
+  <meta name="description" content="MacAmp: an open-source reproduction of Winamp 2.95 for macOS in Swift. WSZ skins on the fly, magnetic windows, a 10-band equalizer, and near-zero CPU usage at idle. Read more">
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.65;
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 32px 20px 64px;
+      color: #1f2328;
+    }
+    header {
+      border-bottom: 1px solid #d8dee4;
+      margin-bottom: 28px;
+      padding-bottom: 20px;
+    }
+    .source {
+      color: #57606a;
+      font-size: 0.95rem;
+    }
+    img, video, iframe {
+      max-width: 100%;
+      height: auto;
+    }
+    pre {
+      overflow-x: auto;
+      padding: 16px;
+      background: #f6f8fa;
+      border-radius: 6px;
+    }
+    code {
+      font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+    }
+    blockquote {
+      border-left: 4px solid #d0d7de;
+      margin-left: 0;
+      padding-left: 16px;
+      color: #57606a;
+    }
+    footer {
+      border-top: 1px solid #d8dee4;
+      margin-top: 40px;
+      padding-top: 20px;
+      color: #57606a;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>The Original Winamp on Mac: How I Made My Childhood Player with AI Agents in SwiftUI and AppKit</h1>
+    <p>MacAmp: an open-source reproduction of Winamp 2.95 for macOS in Swift. WSZ skins on the fly, magnetic windows, a 10-band equalizer, and near-zero CPU usage at idle. Read more</p>
+    <p class="source">
+      Machine-translated from Habr.
+      <a href="https://habr.com/ru/articles/1105626/?utm_campaign=1105626&amp;utm_source=habrahabr&amp;utm_medium=rss">Read the original Russian article</a>.
+      Mon, 09 Nov 2026 16:22:10 GMT
+    </p>
+  </header>
+  <main>
+<div><p>I've long been looking for a simple player for Mac in the spirit of the old Winamp and couldn't find one: modern players are either bloated into all-in-one solutions with streaming and media libraries, or they're written in Electron and wastefully load the CPU. Three or four years ago, I started writing such a player myself, but it didn't get past the first screen and basic playback. The project lay dormant, and whenever I stumbled upon that folder, I'd remember it and think that someday I'd finish it. With the advent of neural networks, I finally succeeded.</p><p>The result is <strong>MacAmp</strong>: an open-source reproduction of Winamp 2.95 for macOS using Swift, SwiftUI, and AppKit. There's no Electron or web views in the interface, the build is universal (Apple Silicon and Intel), and it requires macOS 14 or newer.</p><h4>Functionality</h4><p>The windows, menus, settings, dialogs, and hotkeys in MacAmp are the same as in Winamp 2.95. All modern features are hidden inside or moved to a separate group at the end of the settings page.</p><ul><li><p>The main window, equalizer, and playlist magnetically dock with each other. There's a Shade mode and Double Size (2x) mode.</p></li><li><p>Any Winamp 2.x skins (.wsz or folder) are compatible and read on the fly. The basic 2.91 skin is included.</p></li><li><p>Plays MP3, AAC/M4A, FLAC, WAV/AIFF, Ogg Vorbis/Opus, MP2, AU, and MIDI. It has crossfade, and when you switch headphones or speakers, the sound automatically goes to the new device.</p></li><li><p>A ten-band equalizer with a pre-amp, presets, and auto-loading by genre, plus pitch/tempo and reverb.</p></li><li><p>M3U, PLS, XSPF, and CUE playlists, bookmarks, Jump to File.</p></li><li><p>SHOUTcast and Icecast internet radio; the station catalog is taken from <a href="http://radio-browser.info">radio-browser.info</a>.</p></li><li><p>Audio CDs can be listened to and copied to FLAC, ALAC, AAC, WAV, or AIFF.</p></li><li><p>Media library, Minibrowser, video window, Track Info with ID3 editor, spectrum analyzer, and oscilloscope.</p></li><li><p>The hotkeys from 2.95 work with the Russian keyboard layout as well (this required special effort).</p></li><li><p>An optional FFmpeg plugin adds support for MKV, WebM, AVI, WMV, WMA, APE, and WavPack.</p></li></ul><figure><img alt="MacAmp media library with skin and Cyrillic in tags" loading="lazy" src="https://habrastorage.org/r/w1560/extt/7f/40/1a/7f401a8e41431887e5fd3f01a5f9e811.png"/><div><figcaption>MacAmp media library with skin and Cyrillic in tags</figcaption></div></figure><p>The media library in the default skin displays Cyrillic in tags without any issues.</p><h4>Classic Outside, Modern Inside</h4><p>I've strived to make everything from Winamp 2.95 look and work the same way. Screenshots of the original are kept next to the code, and I refer to them. New features either work invisibly in the background, like support for modern formats and output device switching, or are moved to a separate settings group. There will be no cloud media libraries or subscriptions.</p><figure><img alt="MacAmp main menu with items and hotkeys like in Winamp" loading="lazy" src="https://habrastorage.org/r/w1560/extt/d4/8c/e0/d48ce0156ff116b8b37c1a363ca26bbc.png"/><div><figcaption>MacAmp main menu with items and hotkeys like in Winamp</figcaption></div></figure><figure><img alt="Track Info window with ID3 tag editor" loading="lazy" src="https://habrastorage.org/r/w1560/extt/e0/71/ca/e071cafbd8c6393cc989386cc388c6be.png"/><div><figcaption>Track Info window with ID3 tag editor</figcaption></div></figure><p>Track Info: ID3v1 and ID3v2 editor, just like in the original.</p><p>The second goal is for the player to sit quietly in the corner without draining the battery. On an M1, it uses about 0.01% of the CPU at idle, and 2–3% when playing with the spectrum analyzer active. When nothing is playing, the engine stops, and the analyzer stops sending frames after two seconds of silence. These two seconds are enough for the spectrum bars and peaks to fall.</p><h4>A Few Technical Details</h4><h3>Windows Move as One Unit</h3><p>The main window, equalizer, and playlist are three separate borderless <code>NSWindow</code>s, and there's no built-in way to group windows in macOS. When you drag the leading window, the others should move with it and not drift apart. Therefore, I recalculate the position of each window from where it was at the start of the drag, adding the total shift. If you were to add small increments for each mouse movement to the current position, rounding errors would accumulate. Magnetic snapping to screen edges and adjacent windows is calculated once based on the projected frames, and only then is the result applied to the entire group:</p><pre><code>let totalShiftX = roundedDeltaX + bestSnapX
+let totalShiftY = roundedDeltaY + bestSnapY
+
+for (gid, startOrigin) in startOrigins {
+    guard let win = windows[gid], win.isVisible else { continue }
+    win.setFrameOrigin(NSPoint(
+        x: round(startOrigin.x + totalShiftX),
+        y: round(startOrigin.y + totalShiftY)
+    ))
+}
+</code><div><a href="https://sourcecraft.dev/"><span></span></a></div></pre><p>Coordinates are rounded because in a pixel-based interface, window edges should not shift even by half a pixel, especially in 2x mode.</p><h3>Pixels Without Smoothing</h3><p>Winamp skins are raster BMPs drawn for old screen densities (<code>MAIN.BMP</code>, <code>EQMAIN.BMP</code>, <code>PLEDIT.BMP</code>, <code>TEXT.BMP</code>). If displayed using standard methods, fonts and timer digits would blur on Retina displays. Therefore, the windows draw themselves with interpolation turned off:</p><pre><code>public override func draw(_ dirtyRect: NSRect) {
+    guard let context = NSGraphicsContext.current?.cgContext else { return }
+    context.interpolationQuality = .none
+    // ...
+}
+</code><div><a href="https://sourcecraft.dev/"><span></span></a></div></pre><p>Sprites are cut out precisely according to the original pixels, and coordinates are stored in <code>SpriteCatalog</code>. I verified them against the Webamp source code.</p><h3>Equalizer</h3><p>The ten bands with frequencies like in Winamp (from 60 Hz to 16 kHz) and the pre-amp are handled by a standard <code>AVAudioUnitEQ</code>: the bands are parametric filters, and the pre-amp is its <code>globalGain</code>. The audio goes through <code>AVAudioEngine</code>, so the player automatically follows the system's output device.</p><h4>How It Was Written with AI</h4><p>The majority of the code was written by AI agents. I came up with the ideas, assigned tasks, reviewed the results, and decided what to release. This approach worked: I understand what needs to be achieved and notice when the architecture drifts off course, while the agent knows the specific AppKit calls.</p><p>Three things helped me. First, the project includes documentation: vision, a phased plan, a checklist, and a reference guide for Winamp 2.x sizes and behavior, along with screenshots of the original. The agent reads all of this before working, so I don't have to explain every time that "like in Winamp" means literally. Second, the rules in <code>AGENTS.md</code> and several skills about the project structure and how to safely modify the equalizer and playlist: thanks to these, the agent doesn't break what's already working. And finally, all tests can be run with a single command: <code>./</code><a href="http://build.sh"><code>build.sh</code></a><code> test</code>.</p><p>One thing I couldn't delegate to the agents was the feel. How it feels to drag and drop, whether the field shakes, if the color is right, how the crossfade sounds on actual tracks – these can only be checked by hand and ear. Some of this testing is still on my to-do list, mentioned below.</p><h4>What's Missing So Far</h4><p>Milkdrop visualizations via projectM are not yet available, nor is an MP3 or Ogg encoder for CD ripping (Winamp 2.95 had Ogg Vorbis). Tracker modules MOD, XM, S3M, and IT also don't play: they require libopenmpt, and I'm still considering whether to pull in such a dependency. There's also no Last.fm scrobbler, and if it's added, it will be as a separate option and disabled by default.</p><h4>Why No Apple Developer ID Signature</h4><p>I intentionally did not sign the application. In Winamp, on the File types page, you can select which formats the player opens, and at the same time, change the icons for files and playlists. These changes were made on the fly. On Mac, Finder gets document icons from the application itself, so MacAmp replaces the icon inside <code>MacAmp.app</code> and re-signs itself with a local (ad-hoc) signature. This wouldn't have been possible with a Developer ID signature: the modified bundle would break it, and the icons couldn't be changed.</p><p>The price for this is the Gatekeeper warning upon first launch. You can open the application via <strong>System Settings › Privacy & Security › Allow Anyway</strong> or by running:</p><pre><code>xattr -dr com.apple.quarantine /Applications/MacAmp.app
+</code><div><a href="https://sourcecraft.dev/"><span></span></a></div></pre><figure><img alt="MacAmp settings, File types page with icon selection" loading="lazy" src="https://habrastorage.org/r/w1560/extt/ca/89/77/ca8977e2b74a46419617b2317e07f857.png"/><div><figcaption>MacAmp settings, File types page with icon selection</figcaption></div></figure><p>Preferences › File types: the same associations and icon changes as in Winamp.</p><h4>Help Needed with Testing</h4><p>I use the player every day, but on a single computer and with a single music library, so much is still not manually tested, and I would appreciate your reports. The most interesting aspects for me are: crossfade on real tracks (with pauses and seeking in the middle of them), albums in a single FLAC with .cue files, radio stations with reconnection after network interruptions, Bluetooth headphones during playback, and Mac sleep/wake cycles. I also haven't tested playlists with thousands of tracks (scrolling, searching, sorting, CPU load with windows open), old skins from the Winamp Skin Museum with non-standard graphics, and Intel Macs running macOS 14.</p><h4>Links</h4><ul><li><p>Source code: <a href="https://github.com/alexrel/macamp">github.com/alexrel/macamp</a></p></li><li><p>Ready-to-use build (DMG): <a href="http://github.com/alexrel/macamp/releases">github.com/alexrel/macamp/releases</a></p></li></ul><p>The application is free, licensed under MIT. If anything goes wrong, please write in the comments or open an issue on GitHub.</p></div>
+  </main>
+  <footer>
+    Translation generated with Gemini 2.5 Flash-Lite.
+    The original article remains the source of record.
+  </footer>
+</body>
+</html>

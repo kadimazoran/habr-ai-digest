@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>How I stopped retelling the project to the agent every morning: memory for Claude Code, Codex, and other agents</title>
+  <meta name="description" content="There&#x27;s a moment familiar to anyone who has worked with AI agents for more than a week. You open a project, set a task, and the agent asks a question you&#x27;ve already answered. Yesterday. In detail, with examples. You answer again. Half an hour later, it suggests fixing something you decided">
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.65;
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 32px 20px 64px;
+      color: #1f2328;
+    }
+    header {
+      border-bottom: 1px solid #d8dee4;
+      margin-bottom: 28px;
+      padding-bottom: 20px;
+    }
+    .source {
+      color: #57606a;
+      font-size: 0.95rem;
+    }
+    img, video, iframe {
+      max-width: 100%;
+      height: auto;
+    }
+    pre {
+      overflow-x: auto;
+      padding: 16px;
+      background: #f6f8fa;
+      border-radius: 6px;
+    }
+    code {
+      font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+    }
+    blockquote {
+      border-left: 4px solid #d0d7de;
+      margin-left: 0;
+      padding-left: 16px;
+      color: #57606a;
+    }
+    footer {
+      border-top: 1px solid #d8dee4;
+      margin-top: 40px;
+      padding-top: 20px;
+      color: #57606a;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>How I stopped retelling the project to the agent every morning: memory for Claude Code, Codex, and other agents</h1>
+    <p>There&#x27;s a moment familiar to anyone who has worked with AI agents for more than a week. You open a project, set a task, and the agent asks a question you&#x27;ve already answered. Yesterday. In detail, with examples. You answer again. Half an hour later, it suggests fixing something you decided not to touch the day before yesterday. It suggests it convincingly – it doesn&#x27;t know why you decided that. And an hour later, the context overflows, the conversation shrinks to a retelling, and half of what was discussed turns into a couple of lines. Read more</p>
+    <p class="source">
+      Machine-translated from Habr.
+      <a href="https://habr.com/ru/articles/1105662/?utm_campaign=1105662&amp;utm_source=habrahabr&amp;utm_medium=rss">Read the original Russian article</a>.
+      Mon, 09 Nov 2026 18:03:27 GMT
+    </p>
+  </header>
+  <main>
+<div><p>There's a moment familiar to anyone who has worked with AI agents for more than a week. You open a project, set a task, and the agent asks a question you've already answered. Yesterday. In detail, with examples.</p><p>You answer again. Half an hour later, it suggests fixing something you decided not to touch the day before yesterday. It suggests it convincingly – it doesn't know why you decided that. And an hour later, the context overflows, the conversation shrinks to a retelling, and half of what was discussed turns into a couple of lines.</p><p>I work in the <a href="https://lamantin-ai.com">Lamantin AI</a> team, which makes <a href="https://lamantin-ai.com/products/kaeru/">kaeru</a> — memory for AI agents. When we <a href="https://habr.com/ru/articles/1102588/">analyzed our agents' logs</a>, we noticed that the agent sometimes re-asks things it has already recorded. In this article, I'll show how I work with memory throughout the day: what the agent sees at the start, what it records as it goes, and how it picks up a task in a new session.</p><p><strong>In short.</strong> kaeru is a local MCP server that gives AI agents (Claude Code, Codex, Cursor, OpenCode, and others) long-term memory between sessions. Memory is stored as a graph: observations, decisions, tasks, hypotheses with verification results, and connections between them. Each entry has a change history. The agent can write to memory during work. When entering a project, it or its client requests a summary. Data remains on your machine; for teams, there's a shared server that you set up yourself. The source code is on <a href="https://github.com/LamantinAI/kaeru">GitHub</a>.</p><h3>Why not a rules file</h3><p>The first thing everyone does is create a file. CLAUDE.md, AGENTS.md, .cursorrules, an Obsidian note — the names vary, but the essence is the same: text that the agent reads before working. I started this way too, and it works for a while. Problems arise about a month later:</p><ul><li><p><strong>The file is updated when someone remembers it.</strong> You or the agent at your request — usually three days after something was figured out, when most of the details have already slipped your mind.</p></li><li><p><strong>The file only grows.</strong> It's easy to add to it, but scary to delete. The agent trusts a rule you entered yesterday just as much as a rule you canceled a month ago and forgot to delete.</p></li><li><p><strong>The file records "what," but not "why."</strong> "Don't touch the parser" — but why? If the reason is long gone, there's no way to find out.</p></li><li><p><strong>Everyone has their own file.</strong> If you're not working alone, each agent knows something different about the project.</p></li></ul><p>There are more rigorous options. ADRs (Architecture Decision Records) solve the "why" problem but are written for major decisions. Task trackers for agents like <a href="https://github.com/gastownhall/beads">beads</a> are good at keeping track of the work plan but not what was discovered along the way.</p><p>These are all useful things, and we don't replace them. Rules files and ADRs are good for stable agreements that undergo review and live in git. But there's a working layer between commits: hypotheses, tests, specifics of environments, things the agent learned during work that didn't make it into a task or a document. Dragging it into the repository clutters the history; not recording it means losing it. Memory is made for this layer.</p><h3>What kaeru is: memory for agents in one minute</h3><p>kaeru is a server that runs on your machine and stores the agent's memory as a graph. The agent connects to it via MCP — a standard protocol through which Claude Code, Codex, Cursor, and other clients call external tools.</p><p>The memory contains entries of various types: observations ("customer files arrive in cp1251"), decisions, tasks with deadlines, hypotheses along with verification results, saved documents. A rule is an entry marked as a stable project constraint; a reminder is an entry that will surface on a specific date. Entries are linked, and each link has a meaning: this decision grew out of that observation, this entry replaces that one, this test disproved that hypothesis. The agent saves the entire chain from observation to decision — this is called a saved reasoning. Entries are organized by project: I have over thirty projects in one storage, and the agent works within the one it has open.</p><p>As it works, the agent chooses what to record. The server provides a short instruction upon connection via MCP, and in the project rules, I remind it when to read memory and what to put into it. For example, when recording a decision, the agent can link it to an observation with the same call.</p><p>kaeru is responsible for storage and summarization. When to request a summary and what to do when compressing the dialogue is decided by the client. For this, hooks are used — scripts that Claude Code or Codex run.</p><p>One reviewer of the draft put it best: the repository retains how things should be, while kaeru retains the "between the lines": how they got there, what was tried, and why something was abandoned.</p><p>Next, let's see how this looks throughout the day. For the example, I'll use a fictional but recognizable project: a service that receives files from a customer and uploads them to an accounting system. The screenshots below are from a demo repository that we populated with this project to avoid showing work data.</p><h3>Morning: the agent already knows where you left off</h3><p>When opening a project, one <code>context</code> call is needed. In my setup, a hook does this at the start of a session. It identifies the project by the working folder, requests a summary, and provides it to the agent before the first task. This is my hook; it's not yet part of kaeru. More details in the "How to Start" section.</p><figure><img alt=
+  </main>
+  <footer>
+    Translation generated with Gemini 2.5 Flash-Lite.
+    The original article remains the source of record.
+  </footer>
+</body>
+</html>

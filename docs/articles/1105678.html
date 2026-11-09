@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Claude Fable 5.2 formalized Fermat&#x27;s theorem in 30 hours</title>
+  <meta name="description" content="A thousand Claude Fable 5.2 agents formalized the proof of Fermat&#x27;s Last Theorem in Lean in 30 hours. Opus 5.5 with the same number of agents stopped at about a quarter of the work. How the experiment went and how Fable 5.2 differs from Mythos 5.2. Read more">
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.65;
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 32px 20px 64px;
+      color: #1f2328;
+    }
+    header {
+      border-bottom: 1px solid #d8dee4;
+      margin-bottom: 28px;
+      padding-bottom: 20px;
+    }
+    .source {
+      color: #57606a;
+      font-size: 0.95rem;
+    }
+    img, video, iframe {
+      max-width: 100%;
+      height: auto;
+    }
+    pre {
+      overflow-x: auto;
+      padding: 16px;
+      background: #f6f8fa;
+      border-radius: 6px;
+    }
+    code {
+      font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+    }
+    blockquote {
+      border-left: 4px solid #d0d7de;
+      margin-left: 0;
+      padding-left: 16px;
+      color: #57606a;
+    }
+    footer {
+      border-top: 1px solid #d8dee4;
+      margin-top: 40px;
+      padding-top: 20px;
+      color: #57606a;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Claude Fable 5.2 formalized Fermat&#x27;s theorem in 30 hours</h1>
+    <p>A thousand Claude Fable 5.2 agents formalized the proof of Fermat&#x27;s Last Theorem in Lean in 30 hours. Opus 5.5 with the same number of agents stopped at about a quarter of the work. How the experiment went and how Fable 5.2 differs from Mythos 5.2. Read more</p>
+    <p class="source">
+      Machine-translated from Habr.
+      <a href="https://habr.com/ru/articles/1105678/?utm_campaign=1105678&amp;utm_source=habrahabr&amp;utm_medium=rss">Read the original Russian article</a>.
+      Mon, 09 Nov 2026 19:16:01 GMT
+    </p>
+  </header>
+  <main>
+<div><p>A thousand Claude Fable 5.2 agents formalized the proof of Fermat's Last Theorem in Lean in 30 hours. In a similar experiment, Opus 5.5 completed 26% of the formalization in the first 18 hours and made almost no progress in the remaining 12. Anthropic published both runs in the announcement of Fable 5.2 and Mythos 5.2.</p><h3>What Lean Verified</h3><p>Fermat's Last Theorem states that for an integer n > 2, the equation aⁿ + bⁿ = cⁿ has no solutions in positive integers. Andrew Wiles' proof was published in 1995 after a gap was corrected in collaboration with Richard Taylor. The agents' task was to write down the mathematical argument in a computer-verifiable language.</p><p>In Lean, a statement is defined by its type, and a proof is a term of that type. Tactics construct the proof term, and the kernel verifies its type. To apply a lemma, its premises must be proven. If the required lemma is not in the library, it must also be written and proven in Lean.</p><p>In the September experiment, Anthropic tracked these dependencies in Prove2Me. The platform stored a directed acyclic graph of statements. Through it, agents could see which lemmas were already proven and where work could continue in parallel. That run took 11 days, and the final proof included 29,500 intermediate theorems. A separate check confirmed that the final formulation matched the one in Mathlib. <a href="https://t.me/data_analysis_ml/5730">Description of the September experiment</a>.</p><h3>A Thousand Agents and One Run Per Model</h3><p>In the new experiment, Fable 5.2 received short starting instructions and a list of intermediate statements to evaluate progress. According to Anthropic, the agents distributed the work themselves and did not use mathematical reference materials. Humans intervened rarely. Compared to the September experiment, the number of tokens spent on actions decreased threefold, and the formal proof text was seven times shorter.</p><p>For Opus 5.5, Anthropic used the same configuration with approximately a thousand agents. Both teams resumed work from a saved state after 18 hours. The graph in the announcement shows one run for each model. The September experiment used a different model and a different coordination scheme. <a href="https://www.anthropic.com/claude-fable-and-mythos-5-2#science-and-engineering">Graph and experiment conditions</a>.</p><h3>Migration from Python to Rust and OS Prototype</h3><p>Internally at Anthropic, an agent team on an early version of Fable 5.2 migrated a critical service from Python to Rust. According to Anthropic, the service's startup time decreased approximately 26-fold.</p><p>In another experiment, Fable 5.2 coordinated the work of over a thousand sub-agents on an operating system prototype for eight days. They started with an empty folder and obtained a system that boots on a laptop. It has a kernel, disk, keyboard, and network drivers, file storage, a windowing interface, and an installer.</p><p>On FrontierCode 2.0, Fable 5.2 achieved 49.1% at the Xhigh effort level, compared to 32.4% for Fable 5.1 with the same setup. On the same test, Fable 5.2 in High mode achieved roughly the same as Opus 5.5 in Max mode. Solving one task cost about half as much. <a href="https://www.anthropic.com/document/claude-fable-5-2-mythos-5-2-system-card">Methodology and results table</a>.</p><h3>How Mythos Differs from Fable</h3><p>Fable 5.2 and Mythos 5.2 share the same base model. Fable has additional restrictions on high-risk cybersecurity and biology tasks. Mythos is available to vetted organizations through Anthropic's programs for security and biomedical researchers.</p><p>In an internal CVE Rediscovery test, Mythos 5.2 found 89.6% of vulnerabilities, compared to 78.3% for Mythos 5.1 and 81.3% for Opus 5.5 with safety restrictions disabled. The October run involved 1829 already published CVEs. The models were given project versions before the fix to test how many known vulnerabilities they could find independently.</p><h3>API, Speed, and Price</h3><p>In the Claude Platform API, the model is available under the name <code>claude-fable-5-2</code>. Fable 5.2 is also available through AWS, Google Cloud, and Microsoft Azure. The base rate for both models is $8 per million input tokens and $40 per million output tokens. Anthropic states that compared to version 5.1, generation speed has increased by up to 30%. In Fast Mode, tokens are generated up to 2.5 times faster, with a rate of $16 per million input and $80 per million output tokens. <a href="https://www.anthropic.com/claude-fable-and-mythos-5-2">Official Anthropic Announcement</a>.</p></div>
+  </main>
+  <footer>
+    Translation generated with Gemini 2.5 Flash-Lite.
+    The original article remains the source of record.
+  </footer>
+</body>
+</html>

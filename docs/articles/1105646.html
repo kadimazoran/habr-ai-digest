@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>The Guy with a Laser in JetBrains IDE: What&#x27;s in His Goggles and Where Did These Splash Screens Come From</title>
+  <meta name="description" content="JetBrains has updated its IDE splash screens: now there&#x27;s a guy with a laser, a gemstone, and the tagline &#x27;powered with air.&#x27; Discussions are already demanding the old design back, but I&#x27;m on the side of those who are delighted. I&#x27;ve extracted the originals from the distribu">
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.65;
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 32px 20px 64px;
+      color: #1f2328;
+    }
+    header {
+      border-bottom: 1px solid #d8dee4;
+      margin-bottom: 28px;
+      padding-bottom: 20px;
+    }
+    .source {
+      color: #57606a;
+      font-size: 0.95rem;
+    }
+    img, video, iframe {
+      max-width: 100%;
+      height: auto;
+    }
+    pre {
+      overflow-x: auto;
+      padding: 16px;
+      background: #f6f8fa;
+      border-radius: 6px;
+    }
+    code {
+      font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+    }
+    blockquote {
+      border-left: 4px solid #d0d7de;
+      margin-left: 0;
+      padding-left: 16px;
+      color: #57606a;
+    }
+    footer {
+      border-top: 1px solid #d8dee4;
+      margin-top: 40px;
+      padding-top: 20px;
+      color: #57606a;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>The Guy with a Laser in JetBrains IDE: What&#x27;s in His Goggles and Where Did These Splash Screens Come From</h1>
+    <p>JetBrains has updated its IDE splash screens: now there&#x27;s a guy with a laser, a gemstone, and the tagline &#x27;powered with air.&#x27; Discussions are already demanding the old design back, but I&#x27;m on the side of those who are delighted. I&#x27;ve extracted the originals from the distributions and examined the splash screens of various IDEs. One laboratory, different colors, two angles, and details easily missed on startup. I also figured out how JetBrains has been experimenting with neural network graphics since 2020 and why the new scene fits well with the transition from chatbots to agents. Inside the images, the story of their creation, and a bit of the holy war around IDE startup screens. Let&#x27;s take a closer look.</p>
+    <p class="source">
+      Machine-translated from Habr.
+      <a href="https://habr.com/ru/articles/1105646/?utm_campaign=1105646&amp;utm_source=habrahabr&amp;utm_medium=rss">Read the original Russian article</a>.
+      Mon, 09 Nov 2026 17:01:24 GMT
+    </p>
+  </header>
+  <main>
+<div><p>JetBrains has updated its IDE splash screens, and a holy war has already begun around them. Tickets are asking to remove the AI images and bring back the old design. Since it's time to choose a side, I'm currently with those who are delighted.</p><p>In PyCharm 2026.3, a man in protective goggles is processing an emerald with a laser. Next to him are a laptop, a robotic arm, and a control panel. At the bottom is the inscription <strong>powered with air</strong>.</p><figure><img alt="PyCharm 2026.3 splash screen" loading="lazy" src="https://habrastorage.org/r/w1560/extt/8c/86/c8/8c86c82a6a435449c5734eccb8592c2e.png"/><div><figcaption>PyCharm 2026.3 splash screen</figcaption></div></figure><p>In version 2026.3, Air comes bundled with the IDE: you connect agents, assign tasks, monitor sessions, and check changes. I've already tried Air, and I like the logic itself: an agent performs a task, the IDE helps monitor its work and verify the result. And thanks to ACP for the ability to choose an agent separately from the editor. The protocol is legendary.</p><p>The Agent Client Protocol was introduced by the Zed team on <a href="https://zed.dev/blog/bring-your-own-agent-to-zed">August 27, 2025</a>, with Gemini CLI as the first reference integration. Via ACP, an agent connects with its harness: the logic for model calls and action execution remains with the agent tool. The IDE sends tasks, shows progress and changes, and allows responses to permission requests. It can also provide files, a terminal, and additional tools; the set of capabilities depends on the integration.</p><blockquote><p>So, you keep your usual agent, and the editor becomes an interface to its work. You choose the entire tool with its working logic, not just a model from a dropdown list.</p></blockquote><p>JetBrains <a href="https://blog.jetbrains.com/ai/2026/10/air-in-ides-eap/">explains the transition to Air</a> by stating that parallel work with agents requires a different interface. You delegate tasks to them, and then you analyze the changes and are responsible for the result. The company is restructuring its IDEs for this type of work. The man at the control panel well illustrates this transition: the robot works, the human manages the process. This is roughly what we've arrived at with agents, only instead of a laser, we have a terminal.</p><p>To examine the splash screen without rushing, I extracted the original from the distribution. I also grabbed the images from other IDEs and compared them.</p><h3>A Laboratory for Multiple Languages</h3><p>WebStorm, PhpStorm, and RubyMine share the same scene. The color of the gemstone, the lighting, a strand of hair, and the IDE name change.</p><figure><img alt="WebStorm 2026.3" loading="lazy" src="https://habrastorage.org/r/w1560/extt/f2/23/2a/f2232ae2869c349eaed43e25ce0fd0eb.png"/><div><figcaption>WebStorm 2026.3</figcaption></div></figure><figure><img alt="PhpStorm 2026.3" loading="lazy" src="https://habrastorage.org/r/w1560/extt/4b/e9/af/4be9af7178143f3ae7bf624ba4369d88.png"/><div><figcaption>PhpStorm 2026.3</figcaption></div></figure><figure><img alt="RubyMine 2026.3" loading="lazy" src="https://habrastorage.org/r/w1560/extt/83/38/65/833865c7905da059e3ec37d3db2e97cb.png"/><div><figcaption>RubyMine 2026.3</figcaption></div></figure><p>WebStorm has a yellow gemstone, PhpStorm has a purple one, and RubyMine has a red one. Notably, RubyMine has red-orange highlights spreading across the entire lab coat. Rubyists are shining. CLion, RustRover, and IntelliJ IDEA Ultimate also feature this man. And in PyCharm's resources, I found two angles of the laboratory: a color version with the person facing us and a tinted one where he is sitting with his back to us.</p><figure><img alt="PyCharm, front view" loading="lazy" src="https://habrastorage.org/r/w1560/extt/8c/86/c8/8c86c82a6a435449c5734eccb8592c2e.png"/><div><figcaption>PyCharm, front view</figcaption></div></figure><figure><img alt="PyCharm, rear view" loading="lazy" src="https://habrastorage.org/r/w1560/extt/a4/27/77/a42777008854fce858bfd6e1c8470c18.png"/><div><figcaption>PyCharm, rear view</figcaption></div></figure><p>From the rear angle, the control panel and workstation are more visible. IntelliJ IDEA also has two versions of the scene.</p><p>However, not all IDEs received the laboratory scene. DataGrip has its own abstract graphics:</p><figure><img alt="DataGrip 2026.3 splash screen" loading="lazy" src="https://habrastorage.org/r/w1560/extt/4d/cb/00/4dcb00e815d7e9c01b8cb6a45b03caf1.png"/><div><figcaption>DataGrip 2026.3 splash screen</figcaption></div></figure><p>And GoLand's checked resources contain a simple splash screen with the name. Rider EAP has a separate scene.</p><h3>Now Look Into His Goggles</h3><p>On the main image, small pictures are visible in the reflection. Let's zoom in:</p><figure><img alt="Kittens reflected in the goggles on the PyCharm splash screen" loading="lazy" src="https://habrastorage.org/r/w1560/extt/d7/82/25/d782256ff2f534010e24913da49a7cd4.jpg"/><div><figcaption>Kittens reflected in the goggles on the PyCharm splash screen</figcaption></div></figure><p>Kittens are on the screen reflected in the goggles)) A perfectly normal hint at what the developer is doing while the agent is working. And on the screen from behind, there's the gemstone, no kittens. As if the team lead walked by, and you managed to switch tabs and move the laptop.</p><h3>Neural Networks Appeared Here Back in 2020</h3><p>JetBrains support <a href="https://youtrack.jetbrains.com/issue/IJPL-257020/2026.3-EAP-startup-logo-is-AI-generated#focus=Comments-27-14469818.0-0">writes</a> that designers use ML models and refine the images manually. They experiment in EAP, and for releases, they use more hybrid methods. JetBrains shared its early generators long before this release.</p><p>In 2020, JetBrains already <a href="https://blog.jetbrains.com/blog/2020/09/29/intelligent-code-art/">showcased a neural network tool</a> for abstract images and animations. In it, you could select preferred options, mix parameters, and get new images. A separate model was trained to predict which parameter combinations people would like.</p><p>In a <a href="https://blog.jetbrains.com/blog/2023/10/16/ai-graphics-at-jetbrains-story/">review from 2023</a>, JetBrains explained how they used CPPN along with Stable Diffusion. CPPN can be thought of as a function: you input pixel coordinates and a set of parameters, and you get a color. Change the parameters, and the pattern changes; smoothly change them over time, and you get animation. For Stable Diffusion, styles were prepared based on designer references. The image from CPPN was used as a base to maintain the desired palette and composition. This way, they achieved variability while preserving recognizable product colors.</p><p>For comparison, here is an earlier splash screen for Rider 2025.2. It's also preserved within the checked distribution:</p><figure><img alt="Old Rider 2025.2 splash screen variant, preserved in resources" loading="lazy" src="https://habrastorage.org/r/w1560/extt/e0/e1/d9/e0e1d929a3159cf78773d4c85ed53619.png"/><div><figcaption>Old Rider 2025.2 splash screen variant, preserved in resources</figcaption></div></figure><p>JetBrains does not disclose which model was used for the current man with the laser in the answers I've read. Technical articles describe previous experiments, so I wouldn't attribute the same recipe to the new splash screen.</p><h3>Why So Many Complaints Then</h3><p>In a <a href="https://youtrack.jetbrains.com/issue/RUST-21499/RustRover-2026.3-splash-screen-new-artwork-is-full-of-artifacts">recent RustRover ticket</a>, a user points to the edges of the laptop and other details they consider artifacts.</p><details><summary>Author's opinion</summary><div><p> Come on, I see a processing style here that's being mistaken for artifacts. </p></div></details><p>Another user writes that such graphics cheapen the impression of professional software. Yet another asks to bring back the old splash screen or provide an option to choose another. They want to customize the appearance of the tool they use every day.</p><p>In threads started back in 2025, the debate was already ongoing. Some criticized AI graphics, while others replied that they barely notice the startup screen and evaluate the IDE based on its code handling.</p><blockquote><p>I'm all for products trying to change their design, even if it causes controversy. Here, it turned out fresh, unusual, and meaningful: the laboratory with a machine at work coincided with the IDE's transition to agents.</p></blockquote><p>But the splash screen greets the user with every IDE launch, and it's they who have to look at it. So, an option to choose the design would be useful here.</p><p>However, choosing is currently difficult. On November 6, support <a href="https://youtrack.jetbrains.com/issue/IJPL-260728/Splash-screen-artwork-Revert-it-or-add-an-option-to-show-a-different-startup-image">clarified</a> that a switch to a simplified splash screen is currently only available in IntelliJ IDEA. For PyCharm and CLion, they suggest hiding the startup screen via <code>Help | Edit Custom VM Options</code>:</p><pre><code>-Dnosplash=true</code></pre><div><a href="https://sourcecraft.dev/"><span></span></a></div><p>This disables the splash screen entirely. You can't set a different image this way.</p><h3>While the Robot Works</h3><p>Over several years, we've gone from a chatbot that answers code questions to agents that can be given entire tasks. The agent reads the project, makes changes, and runs checks on its own. While one is working, you can analyze the results of another. Along with this, what we do during the workday also changes.</p><p>You need to formulate a task so that the agent solves the intended problem, understand its changes, and verify that they haven't broken the rest of the project. Several parallel sessions add questions: who changed what, which results can be merged, where intervention is needed. Therefore, IDEs need tools to handle all this, and Air is precisely trying to assemble them.</p><p>The image itself is not the main thing here. You can love it, hate it, or disable it. Much more significant is the fact that the familiar work tool is being restructured for development with agents. The question now is how we will assign tasks, review each other's code, and assemble a working product from it. This transition is what makes the man at the control panel relevant.</p></div>
+  </main>
+  <footer>
+    Translation generated with Gemini 2.5 Flash-Lite.
+    The original article remains the source of record.
+  </footer>
+</body>
+</html>

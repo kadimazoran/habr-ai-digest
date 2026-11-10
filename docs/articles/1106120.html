@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Enthusiast Launches DeepSeek-V4-Flash on a PC Without a Graphics Card</title>
+  <meta name="description" content="The llama-modchip project, released under Apache 2.0, offers patches for ggml/llama.cpp kernels, quantization tools, and scripts to run sparse MoE models directly on the CPU. The author claims DeepSeek-V4-Flash (284 billion parameters, 13 billion active) runs on a machine with 64GB of RAM, without a">
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.65;
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 32px 20px 64px;
+      color: #1f2328;
+    }
+    header {
+      border-bottom: 1px solid #d8dee4;
+      margin-bottom: 28px;
+      padding-bottom: 20px;
+    }
+    .source {
+      color: #57606a;
+      font-size: 0.95rem;
+    }
+    img, video, iframe {
+      max-width: 100%;
+      height: auto;
+    }
+    pre {
+      overflow-x: auto;
+      padding: 16px;
+      background: #f6f8fa;
+      border-radius: 6px;
+    }
+    code {
+      font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+    }
+    blockquote {
+      border-left: 4px solid #d0d7de;
+      margin-left: 0;
+      padding-left: 16px;
+      color: #57606a;
+    }
+    footer {
+      border-top: 1px solid #d8dee4;
+      margin-top: 40px;
+      padding-top: 20px;
+      color: #57606a;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Enthusiast Launches DeepSeek-V4-Flash on a PC Without a Graphics Card</h1>
+    <p>The llama-modchip project, released under Apache 2.0, offers patches for ggml/llama.cpp kernels, quantization tools, and scripts to run sparse MoE models directly on the CPU. The author claims DeepSeek-V4-Flash (284 billion parameters, 13 billion active) runs on a machine with 64GB of RAM, without a graphics card or swap. This article explores what was achieved.</p>
+    <p class="source">
+      Machine-translated from Habr.
+      <a href="https://habr.com/ru/companies/selectel/articles/1106120/?utm_campaign=1106120&amp;utm_source=habrahabr&amp;utm_medium=rss">Read the original Russian article</a>.
+      Tue, 10 Nov 2026 13:30:05 GMT
+    </p>
+  </header>
+  <main>
+<div><figure><img loading="lazy" src="https://habrastorage.org/r/w1560/extt/24/ce/2a/24ce2a34920b81bbc08493f53051dff4.jpg"/></figure><p>The <a href="https://github.com/synchopate/llama-modchip">llama-modchip</a> project has been released under Apache 2.0. It is a set of patches for the ggml/llama.cpp kernels, quantization tools, and scripts that allow running sparse MoE models directly on the processor. The author claims that DeepSeek-V4-Flash (284 billion parameters, of which 13 billion are active) runs on a machine with 64 GB of RAM: without a graphics card and without swap. I will analyze what has been achieved below.</p><h2>What was achieved</h2><p>Peak memory consumption is around 58 GB with a context of 256,000 tokens. Prefill, i.e., "reading" the prompt, proceeds at a speed of 44 tokens per second, and generation yields 9 to 15 tokens per second. All of this was tested on a 16-core Ryzen<sup>TM</sup> 9 9955HX. For comparison, this is approximately the pace at which text is still convenient to read as it appears on the screen.</p><h2>Why this is even possible</h2><p>Two techniques converged here. The first is embedded in the model itself. MoE (mixture of experts) is like a large library where only the relevant expert books are opened for each question. DeepSeek-V4-Flash has 284 billion parameters, but only 13 billion are active per token, so in terms of computation, it's closer to medium-sized models. The problem is different: all 284 billion must be stored, and it's usually memory that hits the ceiling.</p><figure><img alt="Source." loading="lazy" src="https://habrastorage.org/r/w1560/extt/c9/52/fb/c952fb0e247d807655781b1dcde1e714.png" title="Source."/><figcaption><a href="https://github.com/synchopate/llama-modchip"><em>Source</em></a>.</figcaption></figure><p>The second technique is employed by the project author: aggressive quantization of routed experts, down to 1.56 bits per weight using the IQ1_S scheme, plus a custom file format. 284 billion weights at just over one and a half bits each result in slightly over 50 GB, which fits within 64 GB.</p><h2>Where's the catch</h2><p>The word "lossless" in the author's README only means that the logits match the unpatched build with the same quantized weights. There has been no comparison with a full-precision model, and at 1.56 bits per weight, a loss in quality is almost certain; the only question is its magnitude. All figures were obtained by the author himself; there have been no independent replications yet. The quantized files do not open in standard llama.cpp, Ollama, and LM Studio: a build from the project is specifically required.</p><h2>Why this is noteworthy</h2><p>Demand for HBM and DRAM is growing, while the memory and graphics card market is going through a difficult period. If such builds are confirmed, inference of last year's frontier-level models locally could move from expensive GPUs to home PCs and servers.</p><blockquote><p><strong>What do you think, will software optimization like this help reduce dependence on graphics cards, or is it just a pretty toy for enthusiasts?</strong> I await your opinion in the comments.</p></blockquote><div><figure><img loading="lazy" src="https://habrastorage.org/getpro/habr/upload_files/872/b78/ec9/872b78ec933ec8074db743484f4064c9.gif"/></figure><p><strong>Token Factory: Inference of Open AI Models on Servers in the Russian Federation</strong></p><p>Connect GLM, DeepSeek, Qwen, and Kimi via an OpenAI-compatible API and pay in rubles only for the tokens used.</p><p><a href="https://nogpu_101126_banner_ord"><strong>Learn more →</strong></a><strong> </strong></p></div></div>
+  </main>
+  <footer>
+    Translation generated with Gemini 2.5 Flash-Lite.
+    The original article remains the source of record.
+  </footer>
+</body>
+</html>

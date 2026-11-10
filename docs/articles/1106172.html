@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Meta* made its smallest model a workhorse for agents</title>
+  <meta name="description" content="After the release of giant and expensive neural networks, one wants to find something that fits the concepts of economy and specialization. And on November 9, Meta*&#x27;s Superintelligence Labs released Muse Ember, the smallest and cheapest model in its lineup. It is designed specifically for mass ">
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.65;
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 32px 20px 64px;
+      color: #1f2328;
+    }
+    header {
+      border-bottom: 1px solid #d8dee4;
+      margin-bottom: 28px;
+      padding-bottom: 20px;
+    }
+    .source {
+      color: #57606a;
+      font-size: 0.95rem;
+    }
+    img, video, iframe {
+      max-width: 100%;
+      height: auto;
+    }
+    pre {
+      overflow-x: auto;
+      padding: 16px;
+      background: #f6f8fa;
+      border-radius: 6px;
+    }
+    code {
+      font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+    }
+    blockquote {
+      border-left: 4px solid #d0d7de;
+      margin-left: 0;
+      padding-left: 16px;
+      color: #57606a;
+    }
+    footer {
+      border-top: 1px solid #d8dee4;
+      margin-top: 40px;
+      padding-top: 20px;
+      color: #57606a;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Meta* made its smallest model a workhorse for agents</h1>
+    <p>After the release of giant and expensive neural networks, one wants to find something that fits the concepts of economy and specialization. And on November 9, Meta*&#x27;s Superintelligence Labs released Muse Ember, the smallest and cheapest model in its lineup. It is designed specifically for mass and routine work: calling tools, routing, and parsing documents in AI pipelines. The new combination is described as follows: Muse Wonder plans the work, and Ember executes it. Let&#x27;s break down what the release is based on. Read more</p>
+    <p class="source">
+      Machine-translated from Habr.
+      <a href="https://habr.com/ru/companies/selectel/articles/1106172/?utm_campaign=1106172&amp;utm_source=habrahabr&amp;utm_medium=rss">Read the original Russian article</a>.
+      Tue, 10 Nov 2026 14:37:44 GMT
+    </p>
+  </header>
+  <main>
+<div><figure><img loading="lazy" src="https://habrastorage.org/r/w1560/extt/ae/d5/97/aed5974e435b90aa92703d59c1f70752.jpeg"/></figure><p>After the release of giant and expensive neural networks, one wants to find something that fits the concepts of economy and specialization. And on November 9, Meta*'s Superintelligence Labs <a href="https://research.meta.ai/blog/muse-ember">released</a> Muse Ember — the smallest and cheapest model in its lineup. It is designed specifically for mass and routine work: calling tools, routing, and parsing documents in AI pipelines. According to the description, Muse Wonder plans the work, and Ember executes it. Let's break down what the release is based on.</p><h2>Economy</h2><p>A million input tokens cost $0.10, output tokens cost $0.50, and cached input costs $0.004. For prompts longer than 200,000 tokens, the rate is three times higher. At first glance, the prices are identical to Claude Haiku 5.5 and GPT-6 Luna. But the devil is in the details. If the base price is the same, why does the new model outperform competitors in the Cost Per Task graphs? This means there is no price dumping here: all savings are built-in — in how Ember consumes tokens. This is the most interesting part of the release.</p><h2>$0.14 per task vs $0.41</h2><p>According to Meta*'s <a href="https://research.meta.ai/blog/muse-ember">own calculations</a> based on Artificial Analysis, running one task from the Intelligence Index costs Ember approximately $0.14, Haiku 5.5 costs $0.41, and Luna costs $0.15. With the same token price, a threefold difference means that Ember completes the same tasks significantly faster. </p><figure><img alt="Ratio of AI response quality to the cost of completing one task. Source." loading="lazy" src="https://habrastorage.org/r/w1560/extt/1d/ad/08/1dad08d299db562a029df0fe59a6684b.png" title="Ratio of AI response quality to the cost of completing one task. Source."/><div><figcaption><em>Ratio of AI response quality to the cost of completing one task. </em><a href="https://research.meta.ai/blog/muse-ember"><em>Source</em></a><em>.</em></figcaption></div></figure><p>For an agent pipeline, where a small model makes thousands of calls per hour, this is a significant inference cost and noticeable latency. For example, for partner <a href="http://You.com">You.com</a>, the p95 latency was 2.2 seconds.</p><p>Within Meta*'s own lineup, the gap is even more noticeable. Muse Spark 1.3 scores 37 points at $2.39 per task, while Ember scores 36 points at $0.14. The performance level is almost the same, but the price is 17 times lower. Anyone still running mass tasks on Spark needs to urgently recalculate their routing. Most likely, you are currently wasting a significant portion of your budget on traffic that Ember can handle more cheaply.</p><figure><img alt="Comparison of Muse Ember, Claude Haiku 5.5, and GPT-6 Luna results in various benchmarks (Agents, Coding, Multimodal, General). Source." loading="lazy" src="https://habrastorage.org/r/w1560/extt/7b/2a/65/7b2a65a719b11f273be88f79ccbf2f68.png" title="Comparison of Muse Ember, Claude Haiku 5.5, and GPT-6 Luna results in various benchmarks (Agents, Coding, Multimodal, General). Source."/><div><figcaption><em>Comparison of Muse Ember, Claude Haiku 5.5, and GPT-6 Luna results in various benchmarks (Agents, Coding, Multimodal, General). </em><a href="https://research.meta.ai/blog/muse-ember"><em>Source</em></a><em>.</em></figcaption></div></figure><h2>Where Ember falls short</h2><p>In the Artificial Analysis Intelligence Index at the maximum reasoning level, Ember and Haiku 5.5 share 36 points, while Luna lags behind with 28. In business process automation (AutomationBench), Ember has 37.8% compared to Haiku's 13.9% and Luna's 20.2%. The advantage is huge, but Meta* ran this benchmark through Artificial Analysis, and there are no independent repetitions yet. I would keep this figure in mind with a note to "verify".</p><p>Now for the weak spot. In FrontierCode 2.0, which tests whether maintainers will accept code changes, Haiku 5.5 is ahead: 34.9 versus 27.2. Some metrics, including the Personal Superintelligence Index, OSWorld 2.1, and PerceptionBench, are internal Meta* assessments, and should be taken as claims rather than verdicts. If you need code that will go into review, Ember is not the best choice yet: the edits will have to be manually reviewed.</p><h2>1 million tokens of context and 512,000 for output</h2><p>A context of one million tokens, output up to 512,000, text, images, audio, and video are accepted natively, without a separate model. Access is available through the Meta* Model API (compatible with Responses API), the Muse Code tool, as well as Google Cloud and Oracle Cloud. Among the early testers are Box, Cline, Oracle, and Cloudflare.</p><p>Weights are closed. The Meta* page does not mention a license, and TNW directly <a href="https://thenextweb.com/news/meta-muse-ember-small-ai-model-haiku-luna">writes</a> that Meta* keeps Ember's weights, as with previous Muse models. This continues the spring trend: the company, once the leading provider of open weights in the West, now only releases weakened "twins" like Glimmer.</p><p>Another detail: Ember is the first model trained using Muse Wonder Full. Meta* does not disclose the method. Most likely, it is distillation from a frontier model into a compact one, following the same scheme by which OpenAI and Anthropic create smaller models. If so, the price of small models is increasingly determined by the quality of the "teacher," and Meta* has had one since October.</p><h2>What to expect</h2><p>In AI development, the iron rule of division of labor has been firmly established: an expensive and intelligent frontier model acts as the "architect," and a cheap and fast one acts as the "worker." The success of this combination depends solely on the cost of labor.</p><p>The next few weeks will show the main outcome. If Artificial Analysis and third-party teams confirm the token consumption, a player will emerge in the market of cheap agent models, where Haiku, Luna, and Chinese Flash versions (DeepSeek V4.1 Flash, GLM-5.3 Flash) have been competing so far. This player will win not by price tag, but by spending less.</p><blockquote><p>Do you plan to test Ember in your agent pipelines, or will you stick with the proven Haiku / DeepSeek Flash for now? Share in the comments: which model is currently consuming the most traffic for you, and how much are you spending on tokens?</p></blockquote><div><figure><img loading="lazy" src="https://habrastorage.org/getpro/habr/upload_files/dbd/50d/bb6/dbd50dbb6316408a3d20c62b3ced3f3c.gif"/></figure><p><strong>AI Router — access to 400+ models from one panel</strong></p><p>Connect an OpenAI-compatible gateway with a single API key. Configure end-to-end analytics, track limits, and quota resources.</p><p><a href="https://promo.selectel.ru/ai-router/?utm_source=habr.com&amp;utm_medium=referral&amp;utm_campaign=airouter_news_ai-museember_101126_banner_ord"><strong>Launch AI Router →</strong></a></p></div><blockquote><p>*The company is recognized as an extremist organization in Russia; its activities are prohibited in the country by a decision of the Tverskoy District Court of Moscow dated March 21, 2022.</p></blockquote></div>
+  </main>
+  <footer>
+    Translation generated with Gemini 2.5 Flash-Lite.
+    The original article remains the source of record.
+  </footer>
+</body>
+</html>

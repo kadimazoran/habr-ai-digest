@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Mascot for Claude Code: How to know when the assistant is waiting for a response and not miss Windows notifications</title>
+  <meta name="description" content="I often give Claude Code a long task and switch to another window. After ten to fifteen minutes, I return and see that it has long been stuck on the question &quot;can I execute this command?&quot; and has been waiting all this time. The Windows system notification, of course, was shown, but for fiv">
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.65;
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 32px 20px 64px;
+      color: #1f2328;
+    }
+    header {
+      border-bottom: 1px solid #d8dee4;
+      margin-bottom: 28px;
+      padding-bottom: 20px;
+    }
+    .source {
+      color: #57606a;
+      font-size: 0.95rem;
+    }
+    img, video, iframe {
+      max-width: 100%;
+      height: auto;
+    }
+    pre {
+      overflow-x: auto;
+      padding: 16px;
+      background: #f6f8fa;
+      border-radius: 6px;
+    }
+    code {
+      font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+    }
+    blockquote {
+      border-left: 4px solid #d0d7de;
+      margin-left: 0;
+      padding-left: 16px;
+      color: #57606a;
+    }
+    footer {
+      border-top: 1px solid #d8dee4;
+      margin-top: 40px;
+      padding-top: 20px;
+      color: #57606a;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Mascot for Claude Code: How to know when the assistant is waiting for a response and not miss Windows notifications</h1>
+    <p>I often give Claude Code a long task and switch to another window. After ten to fifteen minutes, I return and see that it has long been stuck on the question &quot;can I execute this command?&quot; and has been waiting all this time. The Windows system notification, of course, was shown, but for five seconds in the corner while I was looking elsewhere. I didn&#x27;t want to remind myself with a timer; I needed something impossible to miss. As a result, I created a mascot: a small orange figure that peeks out from the bottom right corner of the screen, and if ignored, emerges completely, turns red, and starts stomping on the taskbar. Below, I&#x27;ll explain how it works. The main challenges turned out not to be in the animation, but in two things: how to know at all that Claude is waiting, and how to draw a window that is visible above everything else but doesn&#x27;t interfere with anything. Read more</p>
+    <p class="source">
+      Machine-translated from Habr.
+      <a href="https://habr.com/ru/articles/1106188/?utm_campaign=1106188&amp;utm_source=habrahabr&amp;utm_medium=rss">Read the original Russian article</a>.
+      Tue, 10 Nov 2026 14:46:30 GMT
+    </p>
+  </header>
+  <main>
+<div><p>I often give Claude Code a long task and switch to another window. After ten to fifteen minutes, I return and see that it has long been stuck on the question "can I execute this command?" and has been waiting all this time. The Windows system notification, of course, was shown, but for five seconds in the corner while I was looking elsewhere.</p><p>I didn't want to remind myself with a timer; I needed something impossible to miss. As a result, I created a mascot: a small orange figure that peeks out from the bottom right corner of the screen, and if ignored, emerges completely, turns red, and starts stomping on the taskbar. Below, I'll explain how it works. The main challenges turned out not to be in the animation, but in two things: how to know at all that Claude is waiting, and how to draw a window that is visible above everything else but doesn't interfere with anything.</p><figure><img loading="lazy" src="https://habrastorage.org/extt/00/b0/45/00b045f86b6ccff69af543170858c4b3.gif"/></figure><p>The code is open-source, MIT: <a href="https://github.com/OlegChe77/claude-mascot">https://github.com/OlegChe77/claude-mascot</a>. Stack: Electron and a bit of WinAPI via koffi.</p><h3>How to know that Claude is waiting</h3><p>This is the main question, and the answer depends on what you are using.</p><h4>Claude Code in the terminal: hooks</h4><p>Claude Code has hooks: in ~/.claude/settings.json, you can specify a command to be run on a certain event, and it will receive JSON with a description on stdin. The desired event is called Notification: it triggers when Claude wants to attract attention. The hook can be made very lightweight:</p><pre><code>{ 
+  "hooks": { 
+    "Notification": [ 
+      { "hooks": [ { "type": "command", 
+        "command": "curl -s -m 2 --data-binary @- http://127.0.0.1:47821/hook || exit 0" } ] } 
+    ] 
+  } 
+}</code><div><a href="https://sourcecraft.dev/"><span></span></a></div></pre><p>The program listens on HTTP at 127.0.0.1:47821, and the hook simply sends it what it received on stdin. The part || exit 0 is needed so that if the mascot is not running, the command silently exits with zero: otherwise, Claude Code would get a hook error on every event. Also, such a command works equally well in both bash and cmd.</p><p>Requests with the Origin header are rejected by the server. This is a protection against an arbitrary web page in a browser being able to access the local port and trigger the mascot. There's nothing critical there, but it's good practice to check such things.</p><h4>Desktop Claude: events that don't exist</h4><p>It's simple with the terminal version. The desktop application (Code tab) is trickier: when it requests permission for a tool or asks a question, it doesn't send a Notification event. I found this out not immediately, because it worked in the terminal, but the mascot was silent on the desktop.</p><p>I had to add two more events. PermissionRequest catches permission requests, and PreToolUse with matcher AskUserQuestion|ExitPlanMode catches tools that ask a question themselves or request plan approval. There's also an optional Stop, which triggers after each response; some people need this.</p><p>The mascot sets the hooks itself on startup. Before writing, it places a copy of settings.json.mascot-*.bak (keeps the last five) nearby and doesn't touch others' hooks. Another nuance: already open sessions might not pick up new hooks until restarted, so a second signal source is needed for the desktop.</p><h4>Windows notifications as a source of truth</h4><p>The second source is the notifications themselves. Windows writes every pop-up banner to the SQLite database %LOCALAPPDATA%\Microsoft\Windows\Notifications\wpndatabase.db. It's enough to open it for reading once per second and check if a record with an application ID like Claude_*!Claude has appeared:</p><pre><code>const { DatabaseSync } = require('node:sqlite'); 
+const db = new DatabaseSync(DB, { readOnly: true }); 
+const ids = db.prepare( 
+  "select PrimaryId as id from NotificationHandler where PrimaryId glob 'Claude_*!Claude'" 
+).all();</code><div><a href="https://sourcecraft.dev/"><span></span></a></div></pre><p>The node:sqlite module is built into Node, so no native dependencies or builds were required. This method also works for an already running Claude without injecting anything into it.</p><h3>A window that is visible but unobtrusive</h3><p>This is the second half of the task. We need a window that:</p><ul><li><p>is transparent and frameless;</p></li><li><p>stays on top of all windows, including full-screen applications;</p></li><li><p>does not appear in the taskbar;</p></li><li><p>does not take focus (otherwise, input will go to the mascot while typing);</p></li><li><p>passes clicks through to everything except the mascot itself.</p></li></ul><p>In Electron, most of this is handled by BrowserWindow settings:</p><pre><code>win = new BrowserWindow({ 
+  frame: false, transparent: true, backgroundColor: '#00000000', hasShadow: false, 
+  skipTaskbar: true, alwaysOnTop: true, focusable: false, 
+  /* ... */ 
+}); 
+win.setAlwaysOnTop(true, 'screen-saver'); 
+win.setIgnoreMouseEvents(true, { forward: true });</code><div><a href="https://sourcecraft.dev/"><span></span></a></div></pre><p>The most interesting part is the last line. setIgnoreMouseEvents(true, { forward: true }) makes the window "transparent" to clicks but continues to forward mouse movement events to the page. Therefore, the page knows when the cursor hovers over the mascot (mouseenter event), and then clicks are re-enabled; when the cursor moves away, they are disabled again. Without this, we would have to calculate the window shape manually.</p><p>The window spans the entire width of the workspace and has a height of 190 pixels above the taskbar. The mascot simply "stands" on the taskbar, and the animation with stomping and steam from its head is standard SVG and CSS. The sound also weighs nothing: "mumbling" is synthesized via WebAudio, and the mouth opens by syllables. To play sound without a user gesture, autoplayPolicy: 'no-user-gesture-required' had to be enabled.</p><figure><img loading="lazy" src="https://habrastorage.org/r/w1560/extt/0f/fb/fd/0ffbfdaab227097a8094961ac7e857f4.png"/></figure><h4>What koffi does</h4><p>To determine if the Claude window is active and to bring it to the foreground on click, WinAPI is needed: GetForegroundWindow, window search, SetForegroundWindow. For this, I used koffi: it calls functions from user32.dll without native compilation and without node-gyp. The rule for "Claude is active" is simple: the process is claude.exe or the word "claude" in the window title. If it's hidden in the tray, a click launches claude.exe again, and the application restores the existing window.</p><p>The active window is polled every 300 ms. For a timer at this frequency, the load is imperceptible.</p><h3>Windows notifications interfere with themselves</h3><p>If the mascot is displayed and Windows simultaneously draws a regular banner, you get two reminders at once, which is annoying. Therefore, there is an option "Replace Claude banner with mascot," enabled by default. It disables banners only for Claude. To do this, ShowBanner = 0 is set in the registry at HKCU\Software\Microsoft\Windows\CurrentVersion\Notifications\Settings\&lt;AUMID&gt;. Entries in the notification center still remain, and the wpndatabase.db database continues to be populated, so the mascot can still see them.</p><p>It's important here to restore everything as it was. The previous value (or the fact that there was no value) is saved in the config and restored when the option is turned off, on exit, on Windows session termination, and on the next startup if the program crashed before that. I write directly to the registry using reg.exe, as it's easier than pulling in another dependency.</p><h3>Behavior</h3><p>The scenario is taken from a small HTML demo that I drew before the program itself to debug the character:</p><ol><li><p>Three peeks from the corner, three phrases in each, a 7-second pause between peeks. In the first two, the mascot is calm; in the third, it frowns.</p></li><li><p>Then it comes out completely for 20 seconds: turns red, walks along the bottom of the screen, stomps, shakes its fists.</p></li><li><p>It leaves and repeats everything, until the user responds.</p></li><li><p>As soon as the Claude window becomes active or you click on the mascot, it runs away, and the cycle resets.</p></li></ol><p>Phrases are chosen randomly, without immediate repetition.</p><figure><img loading="lazy" src="https://habrastorage.org/extt/4f/6f/7c/4f6f7c166b495c2225c72419b2407f71.gif"/></figure><h3>Updates</h3><p>The program is built with electron-builder into an NSIS installer and a portable file. The installer uses electron-updater with GitHub Releases: checks 15 seconds after startup and then every 6 hours; a new version is downloaded in the background and installed on restart. The portable version cannot replace itself (it's run from a temporary unpacked location), so it only notifies about a new version and opens the release page.</p><p>A release is made with a tag v&lt;version&gt;: GitHub Actions builds and publishes the release. There was a trap here: electron-builder uploads files in parallel and sometimes creates duplicate releases, so the workflow first creates a release with the gh release create command, and then sends the files.</p><p>Autostart for the portable version also had a catch: process.execPath points to the temporary unpacked folder, so the path is taken from the PORTABLE_EXECUTABLE_FILE variable and re-registered on each start.</p><h3>What's in the menu</h3><figure><img loading="lazy" src="https://habrastorage.org/r/w1560/extt/b0/77/c3/b077c39fb9907ce151cb13a97091a825.png"/></figure><p>Size (1, 1.5, 2; default 1.5), sound, autostart, language (Russian, English, or system default), all signal toggles, update check. For safety, there's a "Show test" item.</p><h3>Installation</h3><p>You need to install either the installer or the single portable file. Both are on the release page:</p><ul><li><p><a href="https://github.com/OlegChe77/claude-mascot/releases/latest">https://github.com/OlegChe77/claude-mascot/releases/latest</a></p></li><li><p>source code: <a href="https://github.com/OlegChe77/claude-mascot">https://github.com/OlegChe77/claude-mascot</a></p></li></ul><p>The program is free, MIT. If you have ideas for what other Claude events to catch or what phrases to add, write in the comments or create an Issue.</p><ul><li></li></ul></div>
+  </main>
+  <footer>
+    Translation generated with Gemini 2.5 Flash-Lite.
+    The original article remains the source of record.
+  </footer>
+</body>
+</html>

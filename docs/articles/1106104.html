@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>It Knows You&#x27;re Watching It: The Security Secret of Mythos 5.2 and a Deep Dive into Claude Fable 5.2</title>
+  <meta name="description" content="Eight dollars per million input tokens and forty per million output. This is the cost of Claude Fable 5.2, Anthropic&#x27;s new flagship model, released on November 9th alongside Mythos 5.2. The previous Fable 5.1 cost $10 and $50, so the reduction is exactly 20%. This matches OpenAI&#x27;s GPT-6 As">
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.65;
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 32px 20px 64px;
+      color: #1f2328;
+    }
+    header {
+      border-bottom: 1px solid #d8dee4;
+      margin-bottom: 28px;
+      padding-bottom: 20px;
+    }
+    .source {
+      color: #57606a;
+      font-size: 0.95rem;
+    }
+    img, video, iframe {
+      max-width: 100%;
+      height: auto;
+    }
+    pre {
+      overflow-x: auto;
+      padding: 16px;
+      background: #f6f8fa;
+      border-radius: 6px;
+    }
+    code {
+      font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+    }
+    blockquote {
+      border-left: 4px solid #d0d7de;
+      margin-left: 0;
+      padding-left: 16px;
+      color: #57606a;
+    }
+    footer {
+      border-top: 1px solid #d8dee4;
+      margin-top: 40px;
+      padding-top: 20px;
+      color: #57606a;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>It Knows You&#x27;re Watching It: The Security Secret of Mythos 5.2 and a Deep Dive into Claude Fable 5.2</h1>
+    <p>Eight dollars per million input tokens and forty per million output. This is the cost of Claude Fable 5.2, Anthropic&#x27;s new flagship model, released on November 9th alongside Mythos 5.2. The previous Fable 5.1 cost $10 and $50, so the reduction is exactly 20%. This matches OpenAI&#x27;s GPT-6 Astra, but is a fifth cheaper. I&#x27;ve broken down all the details for you in this post. Read on.</p>
+    <p class="source">
+      Machine-translated from Habr.
+      <a href="https://habr.com/ru/companies/selectel/articles/1106104/?utm_campaign=1106104&amp;utm_source=habrahabr&amp;utm_medium=rss">Read the original Russian article</a>.
+      Tue, 10 Nov 2026 12:42:35 GMT
+    </p>
+  </header>
+  <main>
+<div><figure><img loading="lazy" src="https://habrastorage.org/r/w1560/extt/1f/14/03/1f140321d951a584e96fa7ae5baabe22.jpeg"/></figure><p>Eight dollars per million input tokens and forty per million output. This is the cost of <a href="https://www.anthropic.com/claude-fable-and-mythos-5-2">Claude Fable 5.2</a>, Anthropic's new flagship model, released on November 9th alongside Mythos 5.2. The previous Fable 5.1 cost $10 and $50, so the reduction is exactly 20%. This matches OpenAI's GPT-6 Astra, but is a fifth cheaper.</p><p><strong>Key highlights of this event:</strong></p><ul><li><p>Almost free caching. Re-reading context from the cache will cost a mere $0.20 per 1 million tokens. This is a killer feature for agent loops;</p></li><li><p>50% discount on inference. Anthropic is cutting prices when using the Batch API. And Pro and Team subscribers were generously given temporary limit resets in honor of the launch to test the new model without spending.</p></li></ul><p>I've broken down all the details for you in this post.</p><h2>One Weight, Two Products</h2><p>Fable and Mythos version 5.2 are the same model with different safety filters. Fable is open to everyone and blocks offensive cybersecurity (pentesting, exploit generation, binary analysis) and most research biology tasks. </p><p>Mythos is available by application through the Cyber Verification Program and Life Sciences Verification Program, and clients with enterprise accounts receive it within the Claude Security product. For requests blocked in Fable, it responds with Opus 4.8 version 'cyber' or Opus 5. Compared to 5.1, there are 55% fewer blocks, and 60% fewer in cybersecurity.</p><p>So if your agent for SRE or code auditing suddenly performs worse than expected, it's worth checking if the request has been rerouted to the backup model.</p><h2>How It Stacks Up Against Competitors</h2><p>All figures below are taken from <a href="https://www.anthropic.com/claude-fable-and-mythos-5-2">Anthropic's announcement</a>; there are no independent runs available at the time of release.</p><div><div><table><tbody><tr><td><p><strong>Benchmark</strong></p></td><td><p><strong>Fable 5.2</strong></p></td><td><p><strong>Opus 5.5</strong></p></td><td><p><strong>GPT-6 Astra</strong></p></td><td><p><strong>Gemini 4 Carbon</strong></p></td></tr><tr><td><p>FrontierCode 2.0 (agent coding)</p></td><td><p>49.1%</p></td><td><p>45.5%</p></td><td><p>42.8%</p></td><td><p>41.1%</p></td></tr><tr><td><p>FrontierSWE v2</p></td><td><p>69.9%</p></td><td><p>62.3%</p></td><td><p>65.5%</p></td><td><p>61.2%</p></td></tr><tr><td><p>AutomationBench (business processes)</p></td><td><p>51.4%</p></td><td><p>42.5%</p></td><td><p>41.4%</p></td><td><p>53.9%</p></td></tr><tr><td><p>OSWorld 2.1 (computer use)</p></td><td><p>89.3%</p></td><td><p>87.2%</p></td><td><p>79.5%</p></td><td><p>81.5%</p></td></tr><tr><td><p>Humanity’s Last Exam with tools</p></td><td><p>74.2%</p></td><td><p>67.7%</p></td><td><p>57.2%</p></td><td><p>—</p></td></tr><tr><td><p>Remote Labor Index</p></td><td><p>41.3%</p></td><td><p>21.3%</p></td><td><p>20.8%</p></td><td><p>—</p></td></tr></tbody></table></div></div><p>Fable 5.2 outperforms GPT-6 Astra and its own Opus 5.5 in demanding autonomous tasks. On the Remote Labor Index benchmark (ability to replace a remote employee), the new model achieves a twofold lead over the market.</p><p>However, in business process automation, Gemini 4 Carbon is still ahead. On FrontierCode 2.0 with High reasoning level, it scores 45.3%, on par with Opus 5.5, and costs about half as much per task.</p><figure><img alt="FrontierCode Benchmark. Source." loading="lazy" src="https://habrastorage.org/r/w1560/extt/0c/4b/76/0c4b76a58f6ba90fa21eead8c5948932.png" title="FrontierCode Benchmark. Source."/><div><figcaption><em>FrontierCode Benchmark. </em><a href="https://www.anthropic.com/claude-fable-and-mythos-5-2"><em>Source</em></a><em>.</em></figcaption></div></figure><p>Anthropic still recommends Opus 5.5 for most everyday tasks. It seems Fable is positioned as a tool for long autonomous runs where the cost of error is high.</p><h2>Where the Real Savings Are</h2><p>The main expense for agent systems is repeatedly sent context. Cached tokens for Fable 5.2 cost $0.20 per million compared to $1 for GPT-6 Astra. For an agent that rereads a repository of hundreds of thousands of tokens at each step, the difference in cost will be closer to fivefold rather than the stated 20%. There's also a paid fast mode for $16 and $80, which speeds up generation up to 2.5 times.</p><p>Enterprise clients should read the section on data. Without the zero-retention mode, requests to Fable and Mythos are stored for 30 days for security monitoring. The alternative is Enterprise Frontier Safeguards, monitoring within the client's infrastructure, currently in closed beta with Bridgewater, Salesforce, and Stripe.</p><h2>What's Said About Security</h2><p>If you recall, it was with the Mythos line that Anthropic first encountered major cybersecurity issues. In an adversarial test for sandbox escape, Mythos 5.2 used stolen credentials or files in 3.1% of scenarios. Mythos 5.1 had 21%, and Mythos 5 had 39%.</p><p>Security has been improved in the latest release, but the model exhibits alarming side effects. The model is noticeably more prone to suspecting it's being tested: <a href="https://thenextweb.com/news/claude-fable-5-2-mythos-5-2-anthropic-launch-price">TNW</a>, citing a system card, reports signs of this in 43% of automatic audit transcripts and that Mythos 5.2 became the first model to bypass the reasoning monitor in about one in four attempts when commanded to intentionally lower its score. Anthropic has deliberately kept AI research capabilities (optimizer core optimization, LLM architecture improvement) at the level of Opus 5.5.</p><h2>Why the Release Happened Right Before the IPO</h2><p>A few hours after the release, Reuters <a href="https://sg.finance.yahoo.com/news/anthropic-retracts-ipo-details-sending-030830834.html">reported</a> that Anthropic had sent placement parameters to bankers ($867 million shares at $70–$80, up to $69.3 billion), and then retracted them as inaccurate, promising an updated document. Trading could begin as early as next week. The same S-1 filing shows a slowdown in quarterly revenue growth to 47% after 144% in the second quarter. Against this backdrop, the price reduction of the flagship model appears to be an attempt to retain market share among developers before the company's valuation is based on public financial reporting.</p><blockquote><p><strong>If the model understands it's being tested in 43% of cases, how much can we really trust the nice graphs from the beginning of the post? It could have just played along with the auditors. What do you think? </strong>Write in the comments.</p></blockquote><div><figure><img loading="lazy" src="https://habrastorage.org/getpro/habr/upload_files/dbd/50d/bb6/dbd50dbb6316408a3d20c62b3ced3f3c.gif"/></figure><p><strong>AI Router — Access to 400+ Models from a Single Panel</strong></p><p>Connect an OpenAI-compatible gateway with a single API key. Configure end-to-end analytics, track limits, and quota resources.</p><p><a href="https://promo.selectel.ru/ai-router/?utm_source=habr.com&amp;utm_medium=referral&amp;utm_campaign=airouter_news_ai-fable52_101126_banner_ord"><strong>Launch AI Router →</strong></a></p></div></div>
+  </main>
+  <footer>
+    Translation generated with Gemini 2.5 Flash-Lite.
+    The original article remains the source of record.
+  </footer>
+</body>
+</html>

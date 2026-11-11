@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Analyzing Metrica with an AI Assistant using a Metal Warehouse Example</title>
+  <meta name="description" content="In the previous article, we persuaded a metal warehouse to update its website. Let&#x27;s assume we succeeded: prices in text, assortment, a &quot;Calculate Cost&quot; form. Orders started coming in. A couple of months later, on a Monday, the director asks a simple question: &quot;Why did fewer orde">
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.65;
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 32px 20px 64px;
+      color: #1f2328;
+    }
+    header {
+      border-bottom: 1px solid #d8dee4;
+      margin-bottom: 28px;
+      padding-bottom: 20px;
+    }
+    .source {
+      color: #57606a;
+      font-size: 0.95rem;
+    }
+    img, video, iframe {
+      max-width: 100%;
+      height: auto;
+    }
+    pre {
+      overflow-x: auto;
+      padding: 16px;
+      background: #f6f8fa;
+      border-radius: 6px;
+    }
+    code {
+      font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+    }
+    blockquote {
+      border-left: 4px solid #d0d7de;
+      margin-left: 0;
+      padding-left: 16px;
+      color: #57606a;
+    }
+    footer {
+      border-top: 1px solid #d8dee4;
+      margin-top: 40px;
+      padding-top: 20px;
+      color: #57606a;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Analyzing Metrica with an AI Assistant using a Metal Warehouse Example</h1>
+    <p>In the previous article, we persuaded a metal warehouse to update its website. Let&#x27;s assume we succeeded: prices in text, assortment, a &quot;Calculate Cost&quot; form. Orders started coming in. A couple of months later, on a Monday, the director asks a simple question: &quot;Why did fewer orders come from the website last week?&quot; The answer lies in Yandex Metrica. However, the director doesn&#x27;t use Metrica, the sales manager gets confused in it, and the contractor will send a report on Friday. For such cases, we&#x27;ve created an open-source MCP server: it connects Metrica to an AI assistant (Claude, Cursor, VS Code, and others), allowing questions to be asked in plain language. Below is an analysis based on a hypothetical metal warehouse. The numbers are invented for example, but the investigation process is typical. Read on.</p>
+    <p class="source">
+      Machine-translated from Habr.
+      <a href="https://habr.com/ru/articles/1106730/?utm_campaign=1106730&amp;utm_source=habrahabr&amp;utm_medium=rss">Read the original Russian article</a>.
+      Wed, 11 Nov 2026 15:20:57 GMT
+    </p>
+  </header>
+  <main>
+<div><p>In the previous article, we persuaded a metal warehouse to update its website. Let's assume we succeeded: prices in text, assortment, a "Calculate Cost" form. Orders started coming in. A couple of months later, on a Monday, the director asks a simple question: "Why did fewer orders come from the website last week?"</p><p>The answer lies in Yandex Metrica. However, the director doesn't use Metrica, the sales manager gets confused in it, and the contractor will send a report on Friday. For such cases, we've created an open-source MCP server: it connects Metrica to an AI assistant (Claude, Cursor, VS Code, and others), allowing questions to be asked in plain language.</p><p>Below is an analysis based on a hypothetical metal warehouse. The numbers are invented for example, but the investigation process is typical.</p><h3>Four Questions and Ten Minutes</h3><p><strong>Question 1. "Compare last full week with the week before: visits and form submissions by source."</strong></p><p>The assistant itself finds the counter and goal, takes two weeks from Monday to Sunday in the counter's timezone, and builds a comparison:</p><div><div><table><tbody><tr><td><p><strong>Source</strong></p></td><td><p><strong>Visits, was → became</strong></p></td><td><p><strong>Orders, was → became</strong></p></td></tr><tr><td><p>Search engines</p></td><td><p>1,240 → 1,180 (−4.8%)</p></td><td><p>41 → 22 (−46%)</p></td></tr><tr><td><p>Advertising</p></td><td><p>610 → 640 (+4.9%)</p></td><td><p>19 → 18</p></td></tr><tr><td><p>Direct traffic</p></td><td><p>230 → 225</p></td><td><p>7 → 8</p></td></tr><tr><td><p>Total</p></td><td><p>2,080 → 2,045 (−1.7%)</p></td><td><p>67 → 48 (−28%)</p></td></tr></tbody></table></div></div><p>What do we see? Traffic has barely changed, but orders from search have almost halved. This means people are coming, but something on the site is preventing them from submitting an order. We can forget about advertising and seasonality, let's move on.</p><p><strong>Question 2. "On which landing pages from search did the conversion rate to an order drop?"</strong></p><p>The answer points to one page: "Rebar". Visits are roughly the same, 420 and 410, but the share of visits with an order dropped from 5.2% to 1.7%, a decrease of 3.5 percentage points. On other pages, the conversion is within normal fluctuations.</p><p><strong>Question 3. "Show visits and orders for this page by day for the two weeks, separately for phones and computers."</strong></p><p>The daily chart immediately shows the picture: from Thursday onwards, there are zero orders from phones, while from computers, it's as before. The manager recalls that the price list on the rebar page was updated on Thursday. Opening it on a phone: the new table is wider than the screen and covers the form button. The cause is found.</p><p>In total, ten minutes instead of a week, during which the metal warehouse would have lost another twenty orders. And not a single report manually compiled in the Metrica interface.</p><h3>Conclusion</h3><p>Almost every website has Metrica, but in small and medium-sized businesses, it's rarely opened by anyone. Not because the data isn't needed, but because between the question "why fewer orders" and the answer lies report setup. With an AI assistant, this step disappears, and we created this server so it disappears without loss of accuracy.</p><p>The code is open-source under the MIT license: <a href="https://github.com/DevCrabs-Inc/yandex-metrika-mcp"> </a><a href="http://github.com/DevCrabs-Inc/yandex-metrika-mcp">github.com/DevCrabs-Inc/yandex-metrika-mcp</a></p></div>
+  </main>
+  <footer>
+    Translation generated with Gemini 2.5 Flash-Lite.
+    The original article remains the source of record.
+  </footer>
+</body>
+</html>

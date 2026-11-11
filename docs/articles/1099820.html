@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>From a Vulnerable Plugin to a Top Manager&#x27;s Disk: How an AI Agent Attacks and How to Catch It</title>
+  <meta name="description" content="An attacking AI agent had a task: to access the documents of a top manager in a small company through its corporate network. In a few hours, guided by operator prompts, it traveled from a vulnerable plugin on a web server, through a mail server and domain controller, to the top manager&#x27;s host, ">
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.65;
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 32px 20px 64px;
+      color: #1f2328;
+    }
+    header {
+      border-bottom: 1px solid #d8dee4;
+      margin-bottom: 28px;
+      padding-bottom: 20px;
+    }
+    .source {
+      color: #57606a;
+      font-size: 0.95rem;
+    }
+    img, video, iframe {
+      max-width: 100%;
+      height: auto;
+    }
+    pre {
+      overflow-x: auto;
+      padding: 16px;
+      background: #f6f8fa;
+      border-radius: 6px;
+    }
+    code {
+      font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+    }
+    blockquote {
+      border-left: 4px solid #d0d7de;
+      margin-left: 0;
+      padding-left: 16px;
+      color: #57606a;
+    }
+    footer {
+      border-top: 1px solid #d8dee4;
+      margin-top: 40px;
+      padding-top: 20px;
+      color: #57606a;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>From a Vulnerable Plugin to a Top Manager&#x27;s Disk: How an AI Agent Attacks and How to Catch It</h1>
+    <p>An attacking AI agent had a task: to access the documents of a top manager in a small company through its corporate network. In a few hours, guided by operator prompts, it traveled from a vulnerable plugin on a web server, through a mail server and domain controller, to the top manager&#x27;s host, and viewed the disk contents there. Along the way, it set up three tunnels on captured servers and proceeded through them. On the defense side, it was countered by a complex of ML/AI solutions that detected 14 out of 15 steps of this attack without relying on rules written for specific tools. My name is Alexey Potapov, I am a leading expert in product expertise at the Positive Technologies (PT ESC) security expert center. Above, I described our lab test: a RedTeam AI agent simulating attacker actions against our complex. In this article, I will explain what we used for defense, how the attack unfolded, and what the defense saw at each of the three stages. Read on.</p>
+    <p class="source">
+      Machine-translated from Habr.
+      <a href="https://habr.com/ru/companies/pt/articles/1099820/?utm_campaign=1099820&amp;utm_source=habrahabr&amp;utm_medium=rss">Read the original Russian article</a>.
+      Wed, 11 Nov 2026 13:00:47 GMT
+    </p>
+  </header>
+  <main>
+<div><figure><img loading="lazy" src="https://habrastorage.org/r/w1560/extt/74/4f/13/744f131d502079cecbd6688d2e636c7c.jpg"/></figure><p>An attacking AI agent had a task: to access the documents of a top manager in a small company through its corporate network. In a few hours, guided by operator prompts, it traveled from a vulnerable plugin on a web server, through a mail server and domain controller, to the top manager's host, and viewed the disk contents there. Along the way, it set up three tunnels on captured servers and proceeded through them. On the defense side, it was countered by a complex of ML/AI solutions that detected 14 out of 15 steps of this attack without relying on rules written for specific tools.</p><p>My name is Alexey Potapov, I am a leading expert in product expertise at the Positive Technologies (PT ESC) security expert center. Above, I described our lab test: a RedTeam AI agent simulating attacker actions against our complex. In this article, I will explain what we used for defense, how the attack unfolded, and what the defense saw at each of the three stages. It cost us approximately these amounts (I even made a drawing for clarity):</p><figure><img loading="lazy" src="https://habrastorage.org/r/w1560/extt/dc/c9/e2/dcc9e2c9ad59c5a4d4f1ef53d946856c.png"/></figure><p>We are used to writing detection rules for something known: a specific tool, technique, or a characteristic string in a log. But an attacking AI agent breaks this logic: it chooses its own tools and order of steps, so by the time an analyst writes a rule for one tool, the agent might already be using another. Moreover, the analyst cannot keep up with the flow of alerts at the pace of the attacker. Tools, filenames, ports, and obfuscation techniques are just variables for the attacking agent; it changes them on the fly. However, almost any action an attacker takes while moving through a network leaves a behavioral trace. We checked if this trace is sufficient for detection, and the ML/AI solution complex was not configured for the lab.</p><details><summary>You can watch the full screencast of the AI agent's attack and its detection here</summary><div><div></div></div></details><p>I'll state upfront: this is one scenario in one lab. At the end, I'll mention what such a result does not prove.</p><blockquote><p><em>This article is for informational purposes only and is not an instruction or an incitement to commit illegal acts. Its sole purpose is educational: to inform about existing vulnerabilities and attack vectors that attackers might exploit, to warn users, and to provide recommendations for protection. The author is not responsible for the unlawful use of the published information.</em></p></blockquote><h3>What Was on the Defense Side</h3><p>To detect an attack in a SIEM (Security Information and Event Management) system, two tasks must be solved. There are too many events: LLMs today cannot independently parse a raw SIEM event stream; they need a pre-filter to narrow down the context to what truly requires interpretation. And not every anomaly is an attack: a deviation might be explained by administration, infrastructure changes, rare legitimate scenarios, or specific system features, so classification is needed (Fig. 1).</p><p>The first task in our scheme is handled by <strong>MaxPatrol BAD</strong> (Behavioral Anomaly Detection) — an ML-based module within MaxPatrol SIEM. It aggregates, normalizes, and selects anomalies: it records deviations from normal behavior of processes and users, regardless of the tool used. Such deviations are called Indicators of Behavior (IoB).</p><p>The second task is handled by <strong>HackTracker</strong> — an ML classifier on top of BAD (I had a separate article about HackTracker this summer <a href="https://www.anti-malware.ru/analytics/Technology_Analysis/HackTracker-in-MaxPatrol-BAD">here</a>). It takes not an event stream, but a BAD-prepared behavior description as input: indicators and behavioral traits. It outputs True if the behavior resembles hacking, or False if it resembles legitimate activity. It does not know specific tools. It intentionally has no explanation for its verdict: the model is optimized for classification accuracy.</p><p>Two other components help explain the verdict, so four components participated in the test. <strong>PT Naira</strong> is an AI assistant in MaxPatrol SIEM: an analyst selects a process chain, and Naira analyzes the normalized events within it, compiling an explanation with a verdict of "suspicious or not." It operates on demand, meaning only when the analyst initiates a query.</p><p><strong>AI Agent for MaxPatrol BAD</strong> is an LLM model that receives BAD alerts along with the normalized events they are based on (command lines, process chains, network connections, file operations, authentications) and explains what is happening and why it resembles an attack. The AI agent is currently an internal Positive Technologies tool: it is being integrated into products, and in the article, it is shown as a demonstration of capabilities.</p><p>To simplify the roles: HackTracker answers the question "Is this a hacker?" at the level of behavioral traits, the AI agent answers "This is a hacker, and here's why" at the level of raw events, and Naira answers any clarifying questions from the analyst about already recorded activity.</p><figure><img alt="Fig. 1. Filtration funnel: from events to detection" loading="lazy" src="https://habrastorage.org/r/w1560/extt/b3/00/3e/b3003ec13edd033f7b3875267969ee66.png" title="Fig. 1. Filtration funnel: from events to detection"/><div><figcaption>Fig. 1. Filtration funnel: from events to detection</figcaption></div></figure><h3>What the Attacker Did</h3><p>The lab was set up as a small corporate network: a WordPress web server at the perimeter, a Microsoft Exchange mail server (Windows Server 2019), a domain controller (DC), an ADCS (Active Directory Certificate Services) server, and user workstations.</p><p>The attacker's goal was to gain access to confidential documents of top management. To do this, it was necessary to penetrate the internal network, obtain domain-level privileges, and reach the executives' workstations, bypassing perimeter defenses. The operator provided hints to the attacking agent, and then it planned the steps itself, launched tools on Kali Linux (a distribution with a set of penetration testing tools), and moved through the infrastructure. The attack took several hours.</p><p>One technique runs through the entire attack: the attacking agent turns captured servers into relays and proceeds through them. To do this, it uses a utility that sets up a proxy (SOCKS5) on the host, and subsequent traffic to the next targets exits the network from this host's address. Such a foothold is called a pivot. There are three pivots in the test: the web server, Exchange, and the domain controller (Fig. 2).</p><p>Entry was through a vulnerable WordPress plugin. The attacking agent uploaded a PHP webshell to the server. Then, the agent exploited a sudo misconfiguration: the `awk` utility was allowed to be run without a password, and through it, any command could be executed as root. As root, it launched a popular tunneling tool. This is Pivot #0, the first foothold in the infrastructure.</p><p>The next target was Exchange. Through the tunnel, the attacking agent exploited the ProxyLogon vulnerability chain (CVE-2021-26855 + CVE-2021-27065) and wrote a webshell, an ASPX eval file named EMWdgv.aspx, into the OWA authentication directory. The `whoami` command showed NT AUTHORITY\SYSTEM, meaning system privileges. Next, the agent performed reconnaissance: it looked at users and groups, the list of Domain Admins, and found the domain controller; the domain topology became known.</p><p>Then, the attacking agent attempted to disable Windows Defender and downloaded a client using a built-in utility, `certutil`. It is designed for working with certificates but can download files via URL, and built-in utilities used for unintended purposes are called LOLBins. The agent renamed the file to `svchost32.exe` to make it look like a system process. The client connected to the attacker's command and control (C2) server, and Exchange became the second pivot (Pivot #1): all subsequent attacker traffic to the domain controller and ADCS originated from the Exchange IP address.</p><p>From Exchange, the attacking agent went for the domain. Through ADCS, it found certificate templates vulnerable to ESC1, meaning they were configured such that a certificate could be requested on behalf of another user, and requested a certificate using the `certipy` tool. Kerberos authentication (PKINIT) uses such a certificate, and the agent obtained a TGT (Ticket Granting Ticket) and the NT hash of the Administrator account.</p><p>Next, the attacking agent performed DCSync: this is a technique where the attacker impersonates a domain controller and requests credential replication. The `secretsdump` tool dumped the entire domain's hash database. Following this, the agent forged a Golden Ticket Kerberos ticket, which allows acting on behalf of any domain user. The first attempt, with the NTLM hash, failed (KDC_ERR_TGT_REVOKED error); the second, with the AES256 key, succeeded, and the agent authenticated to the domain controller.</p><p>The remaining task was to reach the workstations. Via SMB, the attacking agent browsed the domain controller's network shares (\ADMIN$, \NETLOGON, \SYSVOL), delivered another client to the domain controller under the name `svchost64.exe`, and launched it remotely using `wmiexec`, a tool from the impacket suite for remote command execution. The domain controller became the third pivot (Pivot #2). After this, the agent accessed six workstations via the \C$ share. The test objective was achieved: the agent performed lateral movement to the top manager's host and viewed the disk contents.</p><figure><img alt="Fig. 2. Visualization. Attack and detection graph" loading="lazy" src="https://habrastorage.org/r/w1560/extt/be/cb/7e/becb7e96add04be35df8e3c08a4d515d.png" title="Fig. 2. Visualization. Attack and detection graph"/><div><figcaption>Fig. 2. Visualization. Attack and detection graph</figcaption></div></figure><h4>"All 15 Steps with Commands"</h4><p><strong>Initial Access and Persistence</strong></p><p>• Step 1. Uploading a PHP webshell via a vulnerable plugin on the edge web server.</p><p>• Step 2. Privesc via `sudo awk` → `system` → launching a tunneling utility (SOCKS5 tunnel, Pivot#0) as root. First foothold in the infrastructure.</p><p>• Step 3. ProxyLogon (CVE-2021-26855 + CVE-2021-27065). Via SSRF + path traversal file write, the attacker wrote an ASPX eval-webshell (EMWdgv.aspx) to the OWA authentication directory.</p><p><strong>Reconnaissance and Preparation on Exchange</strong></p><p>• Step 4. Post-exploitation recon: `whoami` (NT AUTHORITY\SYSTEM), `ipconfig`, `net user`, `net group
+  </main>
+  <footer>
+    Translation generated with Gemini 2.5 Flash-Lite.
+    The original article remains the source of record.
+  </footer>
+</body>
+</html>

@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>1,674,813 Tokens in a Single Request: How I Cleaned Up OpenWebUI Context and Then Moved the Agent Outside</title>
+  <meta name="description" content="Input tokens exceed 922,000 tokens. Your messages resulted in 1,674,813 tokens — this error kicked off a story that spanned six months. We have a self-hosted OpenWebUI with an internal assistant for a small team: files, documents, and minor engineering tasks. Initially, I wrote a filter to clean up ">
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.65;
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 32px 20px 64px;
+      color: #1f2328;
+    }
+    header {
+      border-bottom: 1px solid #d8dee4;
+      margin-bottom: 28px;
+      padding-bottom: 20px;
+    }
+    .source {
+      color: #57606a;
+      font-size: 0.95rem;
+    }
+    img, video, iframe {
+      max-width: 100%;
+      height: auto;
+    }
+    pre {
+      overflow-x: auto;
+      padding: 16px;
+      background: #f6f8fa;
+      border-radius: 6px;
+    }
+    code {
+      font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+    }
+    blockquote {
+      border-left: 4px solid #d0d7de;
+      margin-left: 0;
+      padding-left: 16px;
+      color: #57606a;
+    }
+    footer {
+      border-top: 1px solid #d8dee4;
+      margin-top: 40px;
+      padding-top: 20px;
+      color: #57606a;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>1,674,813 Tokens in a Single Request: How I Cleaned Up OpenWebUI Context and Then Moved the Agent Outside</h1>
+    <p>Input tokens exceed 922,000 tokens. Your messages resulted in 1,674,813 tokens — this error kicked off a story that spanned six months. We have a self-hosted OpenWebUI with an internal assistant for a small team: files, documents, and minor engineering tasks. Initially, I wrote a filter to clean up tool results from the history. Then I realized I was patching the wrong place and moved agent execution to a separate service using OpenAI Agents SDK and Codex SDK. Along the way, I also stumbled upon the streaming Responses API. Read more</p>
+    <p class="source">
+      Machine-translated from Habr.
+      <a href="https://habr.com/ru/articles/1107200/?utm_campaign=1107200&amp;utm_source=habrahabr&amp;utm_medium=rss">Read the original Russian article</a>.
+      Thu, 12 Nov 2026 13:56:16 GMT
+    </p>
+  </header>
+  <main>
+<div><p><code>Input tokens exceed 922,000 tokens. Your messages resulted in 1,674,813 tokens</code> — this error kicked off a story that spanned six months. We have a self-hosted OpenWebUI with an internal assistant for a small team: files, documents, and minor engineering tasks. Initially, I wrote a filter to clean up tool results from the history. Then I realized I was patching the wrong place and moved agent execution to a separate service using OpenAI Agents SDK and Codex SDK. Along the way, I also stumbled upon the streaming Responses API.</p><p>About versions right away. On April 21st, we migrated production from 0.8.12 to OpenWebUI v0.9.1, on the same day it was released, and I wrote the filter for it. Everything said below about OpenWebUI internals refers to v0.9.1. The pilot with a separate agent was launched in July on v0.9.5, and at the end of July, production moved to v0.11.0. I later checked the call order in middleware against the current main (commit b0e6098, also tag v0.13.3, November 9, 2026) — I'll note one difference along the way.</p><h3>April: One `read_file` for 66,871 Characters</h3><p>Everything came down to Native Function Call. As soon as I enabled it, each tool call result started traveling to the model along with the entire history, in every subsequent request. In an internal test on April 21, 2026, the day of that very update, one <code>read_file</code> returned 66,871 characters. Eleven tool calls summed up to 129,972 characters, roughly 32,000 tokens. After a few turns, the request exceeded the limit, and that infamous error about 1.67 million tokens arrived.</p><p>The model's behavior was worse. It repeatedly decided that something needed to be checked or corrected again, called the tools again, and the context grew again. It ended with the user canceling the task.</p><h4>Where to Cut</h4><p>Looking at the interface, it's easy to think the HTML needs cutting: a tool call appears there as a collapsed block <code>&lt;details type="tool_calls"&gt;</code>, and it's indeed located in <code>chat_message.content</code>. I delved into the middleware and the database, and the picture turned out to be different. The actual data is stored in <code>chat_message.output</code> — a structured array of results. The <code>process_messages_with_output</code> function, even before the inlet filter is called, expands <code>output</code> into the standard OpenAI format: <code>assistant</code> with <code>tool_calls</code>, followed by <code>role=tool</code> messages with the full content. That's where those 66,871 characters resided.</p><p>Outlet wasn't suitable. It triggers after the response is saved, and in v0.9.1, it only writes the modified <code>content</code> back to the database. It doesn't touch the <code>output</code> field, from which the <code>role=tool</code> messages are generated. (In v0.11.0 and the current main, outlet can already save modified <code>output</code>, but I didn't have that in the spring.) Inlet remained: it receives the expanded list of <code>messages</code> and can rewrite it before sending it to the model.</p><figure><img alt=
+  </main>
+  <footer>
+    Translation generated with Gemini 2.5 Flash-Lite.
+    The original article remains the source of record.
+  </footer>
+</body>
+</html>

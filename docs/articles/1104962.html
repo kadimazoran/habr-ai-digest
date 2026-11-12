@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Fundamentals of Deep Learning. Part 4</title>
+  <meta name="description" content="Hello everyone! This article is the fourth in a series of articles on the fundamentals of deep learning. In the previous three parts, I covered many interesting and useful things for beginners, so I recommend rereading them. In this part, we will continue working with a natural language processing (">
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.65;
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 32px 20px 64px;
+      color: #1f2328;
+    }
+    header {
+      border-bottom: 1px solid #d8dee4;
+      margin-bottom: 28px;
+      padding-bottom: 20px;
+    }
+    .source {
+      color: #57606a;
+      font-size: 0.95rem;
+    }
+    img, video, iframe {
+      max-width: 100%;
+      height: auto;
+    }
+    pre {
+      overflow-x: auto;
+      padding: 16px;
+      background: #f6f8fa;
+      border-radius: 6px;
+    }
+    code {
+      font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+    }
+    blockquote {
+      border-left: 4px solid #d0d7de;
+      margin-left: 0;
+      padding-left: 16px;
+      color: #57606a;
+    }
+    footer {
+      border-top: 1px solid #d8dee4;
+      margin-top: 40px;
+      padding-top: 20px;
+      color: #57606a;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Fundamentals of Deep Learning. Part 4</h1>
+    <p>Hello everyone! This article is the fourth in a series of articles on the fundamentals of deep learning. In the previous three parts, I covered many interesting and useful things for beginners, so I recommend rereading them. In this part, we will continue working with a natural language processing (NLP) neural network and implement a new network that will determine a missing word from the rest of the phrase. Read more</p>
+    <p class="source">
+      Machine-translated from Habr.
+      <a href="https://habr.com/ru/articles/1104962/?utm_campaign=1104962&amp;utm_source=habrahabr&amp;utm_medium=rss">Read the original Russian article</a>.
+      Thu, 12 Nov 2026 16:11:00 GMT
+    </p>
+  </header>
+  <main>
+<div><p>Hello everyone! This article is the fourth in a series of articles on the fundamentals of deep learning. In the previous three parts, I covered many interesting and useful things for beginners, so I recommend rereading them.</p><p>In this part, we will continue working with a natural language processing (NLP) neural network and implement a new network that will determine a missing word from the rest of the phrase.</p><h2>What results do we have from the previous part?</h2><p>In the previous part, we created a two-layer text classification neural network trained on movie reviews from Kinopoisk. Here, I'd like to talk a bit about the role of specific neurons in the final model. As we know, a neural network simply tries to implement a function that will describe the relationship between input features and the target value as accurately as possible. That is, it finds a correlation between input and output data.</p><p>From a research perspective, it would be interesting for us to know what language patterns the model was able to identify and which ones it didn't. It seems obvious that in our case, the model should at least begin to understand whether a word is bad or good, as this knowledge most helps to understand the emotional tone of a review. If we want the model to identify more language patterns, we need to expand the dataset itself, use a more complex network architecture, and/or choose something more complex as the output data (e.g., guess the missing word).</p><p>Previously, we always looked at the neural network's operation in a general sense. We discussed that each neuron is essentially just part of one large function that the network implements. We talked about the role of various layers with their activation functions (for implementing non-linear, more complex functions). Now, let's descend to the level of specific neurons in our hidden layer.</p><p>Essentially, hidden layers group data from the previous layer into n groups. Each neuron activates with a different magnitude, depending on whether the input data (data point) belongs to its group or not. The grouping method is useful if it helps predict the target value for subsequent layers, and it should also detect the desired pattern in the data.</p><p>At a high level, two data points (two movie reviews) are similar if they belong to the same set of groups (in practice, they will have close vector representations). Two inputs (words) are similar if they also have close vector representations, meaning similar weights connecting them to different hidden neurons (i.e., they have approximately equal measures of similarity with each group).</p><p>For us, words that correlate with similar labels (positive or negative review) will have similar weights connecting them to different hidden neurons. This is because the neural network learns to group them with similar hidden neurons (the groups they separate have a similar influence on the result and meaning) so that the last layer gives the correct prediction. In a more general sense, a neuron has a similar meaning to other neurons in the same layer if and only if it has similar weight values connecting it to the next and/or previous layer.</p><p>Now let's write a function that will return the 50 most similar words to a given word. To get the list of weights for a specific word, you just need to take the corresponding row in the weight matrix. To get the most similar words, we need to somehow compare the two vector representations of words; I will use the Euclidean distance between two points as the metric.</p><img alt=
+  </main>
+  <footer>
+    Translation generated with Gemini 2.5 Flash-Lite.
+    The original article remains the source of record.
+  </footer>
+</body>
+</html>

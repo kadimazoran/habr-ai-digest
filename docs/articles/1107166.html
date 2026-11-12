@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>How SpaceX Designs the Kessel Rack with an 84-Layer PCB for Orbital Data Centers</title>
+  <meta name="description" content="SpaceX and xAI are developing the Kessel server system. The platform is based on 36 NVIDIA® Vera™ CPUs and 72 Rubin™ GPUs, but instead of standard NVLink copper cable assemblies, engineers opted for a single 84-layer printed circuit board. The project is adapted for operation in both terrestrial dat">
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.65;
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 32px 20px 64px;
+      color: #1f2328;
+    }
+    header {
+      border-bottom: 1px solid #d8dee4;
+      margin-bottom: 28px;
+      padding-bottom: 20px;
+    }
+    .source {
+      color: #57606a;
+      font-size: 0.95rem;
+    }
+    img, video, iframe {
+      max-width: 100%;
+      height: auto;
+    }
+    pre {
+      overflow-x: auto;
+      padding: 16px;
+      background: #f6f8fa;
+      border-radius: 6px;
+    }
+    code {
+      font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+    }
+    blockquote {
+      border-left: 4px solid #d0d7de;
+      margin-left: 0;
+      padding-left: 16px;
+      color: #57606a;
+    }
+    footer {
+      border-top: 1px solid #d8dee4;
+      margin-top: 40px;
+      padding-top: 20px;
+      color: #57606a;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>How SpaceX Designs the Kessel Rack with an 84-Layer PCB for Orbital Data Centers</h1>
+    <p>SpaceX and xAI are developing the Kessel server system. The platform is based on 36 NVIDIA® Vera™ CPUs and 72 Rubin™ GPUs, but instead of standard NVLink copper cable assemblies, engineers opted for a single 84-layer printed circuit board. The project is adapted for operation in both terrestrial data centers and in orbit. Read more</p>
+    <p class="source">
+      Machine-translated from Habr.
+      <a href="https://habr.com/ru/companies/selectel/articles/1107166/?utm_campaign=1107166&amp;utm_source=habrahabr&amp;utm_medium=rss">Read the original Russian article</a>.
+      Thu, 12 Nov 2026 14:00:17 GMT
+    </p>
+  </header>
+  <main>
+<div><figure><img loading="lazy" src="https://habrastorage.org/r/w1560/extt/73/f3/a4/73f3a4df55ab2ac082d376a7d187231e.png"/></figure><p>SpaceX and xAI are <a href="https://www.tomshardware.com/tech-industry/artificial-intelligence/spacex-develops-its-own-kessel-rack-scale-system-featuring-72-nvidia-rubin-gpus-for-data-centers-in-space-report-claims-replaces-conventional-nvlink-cable-assemblies-with-a-massive-84-layer-printed-circuit-board">developing</a> the Kessel server system. The platform is based on 36 NVIDIA<sup>®</sup> Vera™ CPUs and 72 Rubin™ GPUs, but instead of standard NVLink copper cable assemblies, engineers have opted for a single 84-layer printed circuit board. The project is adapted for operation in both terrestrial data centers and in orbit.</p><h2>Rack Layout and NVLink Cable Elimination</h2><p>According to SemiAnalysis, the Kessel system retains the basic Vera™ Rubin™ NVL72 compute topology. A single rack houses 36 Vera™ CPUs and 72 Rubin™ accelerators (in 18 compute nodes), interconnected via 9 NVLink switch modules. The most interesting aspect of this design is the method of connection.</p><p>In NVIDIA's standard implementation, communication between compute nodes and switches is achieved through internal NVLink cable cartridges. SpaceX engineers are abandoning this approach, placing the compute and switch trays back-to-back around a passive printed circuit board backplane. This approach echoes the Kyber™ rack architecture, which also uses a cable-free connection of modules through a common backplane (midplane) within a single rack.</p><figure><img alt="Source." loading="lazy" src="https://habrastorage.org/r/w1560/extt/45/8b/2b/458b2bb9ce5d45ba9431717d62aa8ec7.png" title="Source."/><figcaption><a href="https://www.tomshardware.com/tech-industry/artificial-intelligence/spacex-develops-its-own-kessel-rack-scale-system-featuring-72-nvidia-rubin-gpus-for-data-centers-in-space-report-claims-replaces-conventional-nvlink-cable-assemblies-with-a-massive-84-layer-printed-circuit-board"><em>Source</em></a><em>.</em></figcaption></figure><h2>84-Layer PCB</h2><p>The core element of the Kessel design is an 84-layer printed circuit board manufactured using ultra-low signal loss M10 class copper-clad dielectric. For comparison, NVIDIA<sup>®</sup> Kyber™ architecture uses a significantly more complex 156-layer backplane based on M9. Reducing the number of layers by almost half improves manufacturing feasibility and yield, although the transition to the more expensive M10 increases material costs.</p><p>Manufacturing an 84-layer board involves high production risks. Modern server motherboards typically use 14 to 20 layers, and development boards use slightly over 20 layers to minimize parasitic electrical effects. With an 84-layer panel, any etching or alignment defect on the internal layers results in the entire blank being scrapped. Eliminating complex cable harnesses simplifies final rack assembly, but the overall economic efficiency of Kessel will depend on whether savings on cables and independent procurement cover the costs of complex multilayer boards.</p><div><figure><img loading="lazy" src="https://habrastorage.org/extt/27/3e/d0/273ed05f414485bfedea5fc7a7cba68d.gif"/></figure><p><strong>Rent a server delivered to your site</strong></p><p>We provide powerful servers for on-premise project deployment with monthly payments, full control over hardware during launch, and the option to purchase.</p><p><a href="https://selectel.ru/services/dedicated/server-stay-in-house/?utm_source=habr.com&amp;utm_medium=referral&amp;utm_campaign=serverinhouse_news_hw-spacex-84-layer-pcb_121126_banner_ord"><strong>Rent →</strong></a></p></div><h2>Transition to Direct Chip Procurement</h2><p>In addition to changes in connection topology, the project alters the supplier interaction model. With the release of Vera™ Rubin™, the manufacturer plans to supply partners primarily with ready-made L6 compute boards or fully assembled L10 server nodes. SpaceX intends to purchase packaged processors, graphics accelerators, switch chips, and network controllers directly from NVIDIA, taking on the board design and procurement of other components itself.</p><p>This approach allows for direct selection of contract PCB manufacturers, adaptation of designs to orbital deployment requirements (including specific heat dissipation in vacuum conditions and launch vibration loads), and reduction of markups for finished integration. SpaceX will handle all validation, quality control, and supply chain management tasks, including sourcing scarce memory.</p><h2>Market Significance</h2><p>For NVIDIA, a major customer transitioning to purchasing individual chips instead of complete server assemblies means reduced margins per rack. However, the successful implementation of the Kessel project could encourage other major AI market players to create their own server platforms based on NVIDIA accelerators, strengthening the company's position amidst growing competition from specialized AI processors developed by hyperscalers.</p></div>
+  </main>
+  <footer>
+    Translation generated with Gemini 2.5 Flash-Lite.
+    The original article remains the source of record.
+  </footer>
+</body>
+</html>

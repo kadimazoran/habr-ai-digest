@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>How I Studied Go at Night and Built an AI Interview Trainer: Voice Input, Spaced Repetition, and Docker in Production</title>
+  <meta name="description" content="Hi Habr! For the last six months, I&#x27;ve been trying to break into backend development with Go. By day, I tinker with cars in an auto repair shop, and by night, I sit at my computer trying to digest the runtime, scheduler, and memory management. At some point, there were just too many topics: sli">
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.65;
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 32px 20px 64px;
+      color: #1f2328;
+    }
+    header {
+      border-bottom: 1px solid #d8dee4;
+      margin-bottom: 28px;
+      padding-bottom: 20px;
+    }
+    .source {
+      color: #57606a;
+      font-size: 0.95rem;
+    }
+    img, video, iframe {
+      max-width: 100%;
+      height: auto;
+    }
+    pre {
+      overflow-x: auto;
+      padding: 16px;
+      background: #f6f8fa;
+      border-radius: 6px;
+    }
+    code {
+      font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+    }
+    blockquote {
+      border-left: 4px solid #d0d7de;
+      margin-left: 0;
+      padding-left: 16px;
+      color: #57606a;
+    }
+    footer {
+      border-top: 1px solid #d8dee4;
+      margin-top: 40px;
+      padding-top: 20px;
+      color: #57606a;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>How I Studied Go at Night and Built an AI Interview Trainer: Voice Input, Spaced Repetition, and Docker in Production</h1>
+    <p>Hi Habr! For the last six months, I&#x27;ve been trying to break into backend development with Go. By day, I tinker with cars in an auto repair shop, and by night, I sit at my computer trying to digest the runtime, scheduler, and memory management. At some point, there were just too many topics: slice headers, Swiss Tables, GMP, escape analysis. Simply reading endless notes and articles on the go wasn&#x27;t very effective – everything quickly evaporated from my mind, and I was afraid to go to real interviews due to a lack of confidence in the fundamentals. I didn&#x27;t want to create another To-Do list or a blog clone, so I decided to build a tool for myself: a Telegram bot that quizzes me on technical questions, evaluates my answers (text and voice) by strict criteria, and makes me repeat topics I struggled with. Ultimately, the project grew into a working service on a server. Below, I&#x27;ll explain how I built the backend and what pitfalls I encountered along the way. Read more</p>
+    <p class="source">
+      Machine-translated from Habr.
+      <a href="https://habr.com/ru/articles/1107126/?utm_campaign=1107126&amp;utm_source=habrahabr&amp;utm_medium=rss">Read the original Russian article</a>.
+      Thu, 12 Nov 2026 12:30:45 GMT
+    </p>
+  </header>
+  <main>
+<div><p>Hi Habr! For about six months now, I've been trying to get into backend development with Go. By day, I'm tightening bolts in an auto repair shop, and by night and on my commute, I'm sitting with code, trying to understand the runtime's inner workings.</p><p>At some point, there were just too many topics. Everything got mixed up in my head: slice headers, Swiss Tables, the GMP scheduler, escape analysis. Cramming articles from my phone on the go is not very effective, and going to real interviews is scary – I just couldn't articulate these concepts out loud. When you're asked about memory or goroutines in real-time, your mind goes blank, and your tongue gets tied.</p><p>I didn't want to create another checkbox-ticking To-Do list, so I decided to build something purely for myself: a Telegram bot that quizzes me on technical questions, listens to voice answers, evaluates them strictly, and makes me repeat what I'm struggling with. I eventually finished and deployed the project to a server. Below, I want to share how the backend is structured and what pitfalls I stumbled upon during the process.</p><h3>Stack and Architecture</h3><p>I didn't write everything in a single <code>main.go</code> file; I wanted to get used to a proper structure from the start. I divided the code according to Clean Architecture: domain models separately, use cases with scenarios separately, database interactions separately, and the Telegram layer with handlers separately.</p><p>The backend itself is written in Go 1.23 using the <code>telebot.v3</code> library. The database is PostgreSQL 16 via <code>pgx/v5</code> with a connection pool, and I manage migrations using <code>golang-migrate</code>. Session states and repetition queues are stored in Redis 7. For voice recognition, I integrated the Deepgram API, and DeepSeek evaluates answers via the Groq Cloud API. All of this runs in Docker Compose on a cheap VPS with Ubuntu.</p><pre><code>├── cmd/bot/          # Entry point, dependency initialization
+├── internal/│   
+├── domain/           # Business entities (Question, User, Attempt)│   
+├── usecase/          # Scenarios (interviews, mock, quizzes, progress)│   
+├── repository/       # Storage implementation (Postgres + Redis)│   
+├── delivery/telegram # Command handlers, inline buttons, and HTML rendering│   
+└── ai/               # Neural network and speech recognition clients
+└── migrations/       # Versioned SQL migrations</code><div><a href="https://sourcecraft.dev/"><span></span></a></div></pre><p>Many people write bots in Python, but this Go application consumes only 25–35 megabytes of RAM in production, starts up in a fraction of a second, and comfortably runs on a server for 200 rubles a month.</p><h3>Voice Input and Why Deepgram</h3><p>The whole point of the project was voice interaction, because in an interview, no one lets you write essays. Initially, I tried to set up a local Whisper instance, but on a cheap server without a graphics card, it completely maxed out the CPU at 100% with every audio message.</p><p>Ultimately, I switched to the cloud-based Deepgram with the Nova-2 model. It transcribes audio messages from Telegram (OGG/Opus) in less than a second, and importantly, it understands our Russian IT slang well. Words like 'goroutines,' 'mutex,' 'slice,' or 'generics' are not mangled into gibberish. The bot takes the voice message from Telegram, streams it to Deepgram, and then works with clean text.</p><h3>Evaluating Answers and How to Tame a Neural Network</h3><p>The main problem with neural networks is that they always try to agree with you. If you simply ask ChatGPT or DeepSeek, "How do you like my answer?", the model will almost always reply, "Great, excellent!", even if you've said something completely nonsensical.</p><p>To make it judge strictly, I compiled a database of 860 questions across 85 topics and for each question, I wrote down the benchmark criteria (key_points). The model works strictly according to a checklist:</p><pre><code>You are a strict technical interviewer for Go.
+Question: %s 
+Reference Answer: %s 
+Mandatory Key Criteria: %s 
+Candidate's Answer: %s 
+Your task:
+1. Check for the presence of each mandatory criterion in the candidate's answer.
+2. Assign an objective score from 1 to 10.
+3. Specify exactly which criteria the candidate missed.
+4. Provide a brief, strict critique without flattery.</code><div><a href="https://sourcecraft.dev/"><span></span></a></div></pre><p>Now, if a candidate says, "Well, a slice doubles when it overflows," but forgets to mention the 256-element threshold and the new formula from Go 1.18+, the model won't give a high score. Instead, it will point out exactly what was missed.</p><h3>Spaced Repetition with Redis and Mock Interview Mode</h3><p>Cramming questions one after another is useless, so I implemented spaced repetition using Redis. For each user, a queue of questions for a session is assembled. If you answer confidently with an 8–10 score, the question goes to the end of the queue. If you fumble the answer or score less than 6, the question will reappear in a couple of steps. All attempts and scores are logged in Postgres for later statistical analysis.</p><p>I also created a real interview simulation mode for different grades: you select from intern to senior, the bot compiles a pool of 10 questions, can ask follow-up questions during the answer, and at the end, provides a verdict: Hire or No Hire with a detailed breakdown of errors.</p><h3>What Pitfalls I Encountered</h3><p>The first pain point was HTML markup in Telegram. If the model returns code without backticks or a closing tag is lost somewhere, Telegram simply crashes with an error and doesn't send the message. I had to write a small sanitizer that catches Go code on the fly by keywords (<code>package</code>, <code>func</code>, <code>:=</code>) and carefully wraps it in <code>&lt;pre&gt;&lt;code&gt;</code> with proper escaping.</p><p>The second problem was double-clicking buttons. If you quickly press an inline button twice, Telegram sends two callbacks in succession, and a race condition would start in Redis, creating two parallel sessions. I fixed this by instantly disabling buttons using <code>EditReplyMarkup</code> before the backend even starts making heavy database queries.</p><p>And regarding security: Docker containers do not run as root; a separate user, <code>appuser</code>, is configured, and in the <code>docker-compose.prod</code> configuration file, flags like <code>read_only: true</code> are set, <code>cap_drop: ALL</code> capabilities are dropped, and system folders are mounted as <code>tmpfs</code>.</p><h3>Conclusion</h3><p>For me, this bot became a real opportunity to stop endlessly reading theory and finally get hands-on experience with databases, caches, external APIs, and deploying to a server.</p><p>The bot is completely free; I've made it available for everyone: <a href="https://t.me/go_SikkiMentor_bot">@go_SikkiMentor_bot</a>. The source code is open on GitHub: <a href="http://github.com/powood/Tg_GO_Mentor">github.com/powood/Tg_GO_Mentor</a>.</p><p>If any experienced developers have time to review the code or architecture and provide some criticism, I would be very grateful!</p></div>
+  </main>
+  <footer>
+    Translation generated with Gemini 2.5 Flash-Lite.
+    The original article remains the source of record.
+  </footer>
+</body>
+</html>

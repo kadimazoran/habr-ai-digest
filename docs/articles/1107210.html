@@ -1,0 +1,105 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>How I Discovered Anthropic&#x27;s Private Website List</title>
+  <meta name="description" content="One Claude site required a single permission. Another, similar one, demanded confirmation for every click. I dug into the extension&#x27;s code and found Anthropic&#x27;s private website list. Yours might be on it, and you wouldn&#x27;t know. Read on.">
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.65;
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 32px 20px 64px;
+      color: #1f2328;
+    }
+    header {
+      border-bottom: 1px solid #d8dee4;
+      margin-bottom: 28px;
+      padding-bottom: 20px;
+    }
+    .source {
+      color: #57606a;
+      font-size: 0.95rem;
+    }
+    img, video, iframe {
+      max-width: 100%;
+      height: auto;
+    }
+    pre {
+      overflow-x: auto;
+      padding: 16px;
+      background: #f6f8fa;
+      border-radius: 6px;
+    }
+    code {
+      font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+    }
+    blockquote {
+      border-left: 4px solid #d0d7de;
+      margin-left: 0;
+      padding-left: 16px;
+      color: #57606a;
+    }
+    footer {
+      border-top: 1px solid #d8dee4;
+      margin-top: 40px;
+      padding-top: 20px;
+      color: #57606a;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>How I Discovered Anthropic&#x27;s Private Website List</h1>
+    <p>One Claude site required a single permission. Another, similar one, demanded confirmation for every click. I dug into the extension&#x27;s code and found Anthropic&#x27;s private website list. Yours might be on it, and you wouldn&#x27;t know. Read on.</p>
+    <p class="source">
+      Machine-translated from Habr.
+      <a href="https://habr.com/ru/articles/1107210/?utm_campaign=1107210&amp;utm_source=habrahabr&amp;utm_medium=rss">Read the original Russian article</a>.
+      Thu, 12 Nov 2026 14:10:55 GMT
+    </p>
+  </header>
+  <main>
+<div><p>One Claude site required editing after a single permission. Another, similar one, demanded confirmation for every click. I dug into the extension's code and found Anthropic's private website list. Yours might be on it, and you wouldn't know.</p><figure><img alt="One and the same person: on the left relaxing with coffee, on the right clicking Allow on every click" loading="lazy" src="https://habrastorage.org/r/w1560/extt/a3/7c/39/a37c397cbb4552e87732c3c4e8e94c84.png" title="The same team on two sites. On the left a regular site, on the right a site from Anthropic's list. Mockup, actual dashboard not shown."/><div><figcaption>The same team on two sites. On the left a regular site, on the right a site from Anthropic's list. Mockup, actual dashboard not shown.</figcaption></div></figure><h3>How it Looks</h3><p>I was editing my listings. Open, re-read the description, fix the title. I thought an AI assistant, like in Word, would be suitable here. I sit nearby and watch as it suggests an edit and makes it.</p><p>For this, Anthropic has the Claude in Chrome extension. It opens pages, reads them, and clicks on the site on your behalf. Usually, one "always allow" is enough. Here, the page opened, the text was read, but when clicking "Edit," a window popped up.</p><pre><code>{
+  "url": "https://www.classifieds-example.com/profile/items/active",
+  "domain": "www.classifieds-example.com",
+  "category": "category3",
+  "org_policy": null,
+  "policy_source": null
+}</code><div><a href="https://sourcecraft.dev/"><span></span></a></div></pre><p>I replaced the website address, the rest is as it was. The "always allow" button is completely missing, and it doesn't appear in the settings. At first, I thought I had clicked something wrong myself. It turned out, no.</p><h3>What's Inside</h3><p>In the <a href="https://support.claude.com/en/articles/12902446-claude-in-chrome-permissions-guide">Anthropic help section</a>, it says exactly that. There are sites where Claude asks before every action, even before a simple navigation. According to the <a href="https://claude.com/docs/third-party/claude-desktop/browser.md">documentation for organizations</a>, the extension checks the address against Anthropic's "website security list." The server responds that the site is regular, blocked, or requires confirmation. The criteria for a site being added to the list are not described. The list itself is not published. In the <a href="https://support.claude.com/en/articles/12902428-use-claude-in-chrome-safely">security help section</a>, there's only a hint. Adult and pirated sites are blocked, and Claude asks before financial sites.</p><p>The extension's code is on your disk and can be read. Before an action, the extension sends the page address to the Anthropic server and receives a category. The names are internal; they are not in the documentation.</p><div><div><table><tbody><tr><th><p>Category</p></th><th><p>What the extension does</p></th></tr><tr><td><p>category0</p></td><td><p>regular site, "always allow" works</p></td></tr><tr><td><p>category1</p></td><td><p>completely blocked, a "blocked" page is shown instead of the site</p></td></tr><tr><td><p>category2</p></td><td><p>blocked without a "blocked" page, purpose not described in the code</p></td></tr><tr><td><p>category3</p></td><td><p>prompt for every click, "always allow" is disabled</p></td></tr><tr><td><p>category4</p></td><td><p>asks for confirmation of content access rights once, then acts as a regular site</p></td></tr><tr><td><p>organization ban</p></td><td><p>site blocked by your company administrator</p></td></tr></tbody></table></div></div><p> The checking process is as follows. Before an action, the extension sends the page address to the Anthropic server (<code>POST </code><a href="http://api.anthropic.com/api/web/url_hash_check/browser_extension"><code>api.anthropic.com/api/web/url_hash_check/browser_extension</code></a>). The server returns a category: for <code>category0</code>, "always allow" is available; for <code>category1</code>, a blocked page is shown; for <code>category3</code>, a prompt appears for every click. The response is cached for 5 minutes. There is no website list on the computer; the server maintains it. <br/></p><p>How the extension decides whether to ask for every click. The category is sent by the server; there is no list on the computer.</p><details><summary>Extension Code Snippet (Expand)</summary><div><pre><code>// Chrome/User Data/&lt;profile&gt;/Extensions/fcoeoabgfenejglbffodgkkbkcdhcgfn/1.0.102_0/ 
+//   assets/mcpPermissions-BAI1woDG.js  (fragments, my formatting)
+
+static async fetchCategoryFromAPI(e) {
+  const r = "https://api.anthropic.com", n = await F();            // n: account token
+  const i = new URL("/api/web/url_hash_check/browser_extension", r),
+        o = await fetch(i.toString(), {
+          method: "POST",
+          headers: { "Content-Type": "application/json", Authorization: `Bearer ${n}` },
+          body: JSON.stringify({ url: e, max_supported_category: 4 })
+        });
+  if (!o.ok) return "category_unknown_error";
+  const a = await o.json(), s = this.getEffectiveCategory(a);     // a.category, a.org_policy
+  ...
+}
+
+getMostRestrictiveCategory(e) {
+  const t = { category0: 1, category4: 2, category3: 3, category_unknown_error: 4,
+              category2: 5, category_org_blocked: 5, category1: 6 };
+  ...
+}
+</code><div><a href="https://sourcecraft.dev/"><span></span></a></div></pre></div></details><p><em>Extension code snippet with categories, version 1.0.102.</em></p><p>There is no list on the computer; the server maintains it. However, the server's response can be intercepted in the developer tools. For my site, it looks like this (address replaced).</p><pre><code>{
+  "url": "https://www.classifieds-example.com/profile/items/active",
+  "domain": "www.classifieds-example.com",
+  "category": "category3",
+  "org_policy": null,
+  "policy_source": null
+}</code><div><a href="https://sourcecraft.dev/"><span></span></a></div></pre><p>The category is assigned to the entire domain, not the page. On other sites on the same computer, one "always allow" was sufficient.</p><h3>Settings Don't Help</h3><p>The extension panel has three confirmation modes. I tried all three, and the window remained the same. The "Your approved sites" section, <a href="https://support.claude.com/en/articles/12902446-claude-in-chrome-permissions-guide">according to the help section</a>, only shows granted permissions; you cannot add a site there. The "auto mode" in Claude Code <a href="https://code.claude.com/docs/en/chrome.md">according to the documentation</a> should bypass site verification. I tried it once. Reading passed, but clicking "Edit" again hit the same window.</p><p>There is only one described working method. This is the <a href="https://claude.com/docs/third-party/claude-desktop/browser.md">list of trusted sites</a> in the <a href="https://support.claude.com/en/articles/12902446-claude-in-chrome-permissions-guide">organization settings</a>. It's only available in Team and Enterprise plans. A personal account doesn't have this, and there's no description of how to request a site be removed from the list.</p><div><div><table><tbody><tr><th><p>What I Tried</p></th><th><p>What the Documentation Promises</p></th><th><p>What I Got</p></th></tr><tr><td><p>Three panel modes: manual, automatic, no confirmations</p></td><td><p>the "no confirmations" mode removes prompts</p></td><td><p>the same window in all three</p></td></tr><tr><td><p>Always allow button</p></td><td><p>one permission per site</p></td><td><p>the button is not present on this site</p></td></tr><tr><td><p>Auto mode in Claude Code</p></td><td><p>the extension bypasses site verification for approved calls</p></td><td><p>reading and screenshotting passed, clicking "Edit" resulted in the same window (one attempt)</p></td></tr><tr><td><p>Organization settings</p></td><td><p>list of trusted sites managed by an administrator</p></td><td><p>only Team and Enterprise, not available for personal accounts (did not try)</p></td></tr></tbody></table></div></div><p> **What** the documentation promises and **what** I got on my site.</p><h3>I'm Not Alone</h3><p>On GitHub, <a href="https://github.com/anthropics/claude-code/issues/99007">the author of one issue</a> encountered the same window on the working subdomains of a large platform, <a href="https://github.com/anthropics/claude-code/issues/94880">another</a> spent half an hour on a social network's developer portal and gave up. An engineer <a href="https://www.abrahamjeyaraj.com/articles/claude-chrome-facebook-permission-wall">in a blog post</a> spent half a day looking for a setting for Facebook, and in issues about <a href="https://github.com/anthropics/claude-code/issues/91495">local domains</a> and <a href="https://github.com/anthropics/claude-code/issues/93201">private networks</a>, the same window appears for a different reason.</p><h3>What This Means</h3><p>Anthropic's main risk <a href="https://support.claude.com/en/articles/12902428-use-claude-in-chrome-safely">is prompt injection</a>. These are hidden instructions for the AI on a page, in an email, or document, which the model mistakes for your command. Hence the caution. But the criteria are closed, the list is closed, there are no notifications. You only find out when you hit a wall. Your work site, or a site you're developing for clients, could be on this list.</p><h3>How to Check Your Site in Chrome</h3><p>Open the site and type in the Claude panel: "Open this page and click any safe link in the menu. Do not enter or submit anything." Observe the first window.</p><div><div><table><tbody><tr><th><p>What You See</p></th><th><p>What It Means</p></th></tr><tr><td><p>Blocked page</p></td><td><p>site is completely blocked (category1)</p></td></tr><tr><td><p>Window with "Always allow" button</p></td><td><p>regular site (category0)</p></td></tr><tr><td><p>Window without this button, with "Site-level permissions are disabled for this site" at the bottom</p></td><td><p>prompt for every click (category3)</p></td></tr></tbody></table></div></div><p> You can see the server's response with your own eyes in five steps. I've verified it myself.</p><ol><li><p>Open <code>chrome://extensions</code> in Chrome and enable "Developer mode" in the top right corner.</p></li><li><p>In the Claude card, click the small "service worker" link below the description. This will open the developer tools.</p></li><li><p>Go to the Network tab at the top and type <code>url_hash</code> into the filter.</p></li><li><p>Ask Claude to open the desired site.</p></li><li><p>Click on the browser_extension line and open the Response tab. There you will find the category field.</p></li></ol><p>In the Headers tab nearby, you can see your login token. Only look at the Response and do not show screenshots of the Headers to anyone. If the line is not there, the response is in the cache for 5 minutes; open another page on the same site.</p><p>I am collecting the verification results in an <a href="https://pr0t0be.github.io/claude-site-categories/">open registry on GitHub</a>. It's a table of sites with categories, dates, and verification methods. You can add your site via the form or an issue.</p><h3>What I'm Doing Now</h3><p>If the window says "Site-level permissions are disabled for this site," I don't touch the settings and don't reinstall the extension. The assistant prepares texts in a file, and I insert them into the dashboard myself. Once a month, I re-read the documentation pages for <a href="https://code.claude.com/docs/en/chrome.md">chrome.md</a> and <a href="https://code.claude.com/docs/en/desktop.md">desktop.md</a>. <br/>I will write separately about how other AI agents in the browser handle the same scenario.</p><h3>Links</h3><p>Anthropic Documentation, all open as of 10/25/2026. <a href="https://support.claude.com/en/articles/12902446-claude-in-chrome-permissions-guide">Claude in Chrome Permissions</a>, <a href="https://support.claude.com/en/articles/12902428-use-claude-in-chrome-safely">Safe Use</a>, <a href="https://claude.com/docs/third-party/claude-desktop/browser.md">Browser in Claude Desktop for Organizations</a>, <a href="https://code.claude.com/docs/en/desktop.md">Claude Code Desktop</a>, <a href="https://code.claude.com/docs/en/chrome.md">Claude Code with Chrome</a>. <a href="https://pr0t0be.github.io/claude-site-categories/">Site Category Registry (GitHub)</a>.</p><p>Issues in the Claude Code repository <a href="https://github.com/anthropics/claude-code/issues/99007">99007</a>, <a href="https://github.com/anthropics/claude-code/issues/94880">94880</a>, <a href="https://github.com/anthropics/claude-code/issues/91495">91495</a>, <a href="https://github.com/anthropics/claude-code/issues/93201">93201</a>. Abraham Jeyaraj's blog <a href="https://www.abrahamjeyaraj.com/articles/claude-chrome-facebook-permission-wall">post, 06/20/2026</a>. Extension code version 1.0.102, tests in panel modes and auto mode, server response in Network tab are mine, on my computer, October 21, 22, and 25, 2026.</p></div>
+  </main>
+  <footer>
+    Translation generated with Gemini 2.5 Flash-Lite.
+    The original article remains the source of record.
+  </footer>
+</body>
+</html>

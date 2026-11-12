@@ -4527,6 +4527,14 @@
     "summary": "I created an AI bot in MAX called \"Ask AI\": you can ask ChatGPT or Gemini questions and generate images in Nano Banana. You can pay with a Russian card or via SBP, and you don't need to install anything extra. The code turned out to be the easiest part. It was harder with money, checks, and laws – I'll tell you about them. This text will be useful for anyone thinking of creating a paid bot in MAX. Read more",
     "title": "AI bots in MAX for rubles: what to decide before the first payment"
   },
+  "https://habr.com/ru/articles/1104962/?utm_campaign=1104962&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Thu, 12 Nov 2026 16:11:00 GMT",
+    "slug": "1104962",
+    "source_url": "https://habr.com/ru/articles/1104962/?utm_campaign=1104962&utm_source=habrahabr&utm_medium=rss",
+    "summary": "Hello everyone! This article is the fourth in a series of articles on the fundamentals of deep learning. In the previous three parts, I covered many interesting and useful things for beginners, so I recommend rereading them. In this part, we will continue working with a natural language processing (NLP) neural network and implement a new network that will determine a missing word from the rest of the phrase. Read more",
+    "title": "Fundamentals of Deep Learning. Part 4"
+  },
   "https://habr.com/ru/articles/1105026/?utm_campaign=1105026&utm_source=habrahabr&utm_medium=rss": {
     "model": "gemini-2.5-flash-lite",
     "published": "Sun, 08 Nov 2026 06:59:52 GMT",
@@ -4839,6 +4847,62 @@
     "summary": "Constant typing, history taking, filling out sick leave forms... routine familiar to every doctor. Using the example of an orthopedic trauma surgeon's work, I show how an AI assistant can be implemented: from voice input and image reading to automating sick leave and medical board procedures. Read more",
     "title": "AI for an Orthopedic Trauma Surgeon"
   },
+  "https://habr.com/ru/articles/1107022/?utm_campaign=1107022&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Thu, 12 Nov 2026 16:44:39 GMT",
+    "slug": "1107022",
+    "source_url": "https://habr.com/ru/articles/1107022/?utm_campaign=1107022&utm_source=habrahabr&utm_medium=rss",
+    "summary": "An AI agent can figure out how a website works, find a bug, and suggest a reasonable fix. But what if the solution is technically correct, but the user authorized something else entirely? Who should verify the agent's actions before they become real changes? In the first article, I explained how I gave an AI agent access to MODX via MCP, and in the second, how we organized its independent work with live websites. By then, a decent infrastructure had already emerged around MCP: file operations, locks, backups, change history, and browser checks. Read the third part",
+    "title": "How I'm Developing a System That Doesn't Take AI Agents at Their Word"
+  },
+  "https://habr.com/ru/articles/1107124/?utm_campaign=1107124&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Thu, 12 Nov 2026 12:37:56 GMT",
+    "slug": "1107124",
+    "source_url": "https://habr.com/ru/articles/1107124/?utm_campaign=1107124&utm_source=habrahabr&utm_medium=rss",
+    "summary": "In recent years, Microsoft has been integrating artificial intelligence features into its Bing search engine, including AI-generated answers. The company now offers two ways to disable AI answers in the search engine. Read more",
+    "title": "Microsoft gives Chrome and Edge users the option to choose AI in Bing search"
+  },
+  "https://habr.com/ru/articles/1107126/?utm_campaign=1107126&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Thu, 12 Nov 2026 12:30:45 GMT",
+    "slug": "1107126",
+    "source_url": "https://habr.com/ru/articles/1107126/?utm_campaign=1107126&utm_source=habrahabr&utm_medium=rss",
+    "summary": "Hi Habr! For the last six months, I've been trying to break into backend development with Go. By day, I tinker with cars in an auto repair shop, and by night, I sit at my computer trying to digest the runtime, scheduler, and memory management. At some point, there were just too many topics: slice headers, Swiss Tables, GMP, escape analysis. Simply reading endless notes and articles on the go wasn't very effective – everything quickly evaporated from my mind, and I was afraid to go to real interviews due to a lack of confidence in the fundamentals. I didn't want to create another To-Do list or a blog clone, so I decided to build a tool for myself: a Telegram bot that quizzes me on technical questions, evaluates my answers (text and voice) by strict criteria, and makes me repeat topics I struggled with. Ultimately, the project grew into a working service on a server. Below, I'll explain how I built the backend and what pitfalls I encountered along the way. Read more",
+    "title": "How I Studied Go at Night and Built an AI Interview Trainer: Voice Input, Spaced Repetition, and Docker in Production"
+  },
+  "https://habr.com/ru/articles/1107192/?utm_campaign=1107192&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Thu, 12 Nov 2026 13:50:57 GMT",
+    "slug": "1107192",
+    "source_url": "https://habr.com/ru/articles/1107192/?utm_campaign=1107192&utm_source=habrahabr&utm_medium=rss",
+    "summary": "We developed AI tools for a well-known Russian airline to help employees make decisions when things go off plan. We describe how the system performed when we tested it on a real disruption. Read more",
+    "title": "We Taught AI to Reschedule Flights in Unpredictable Situations: A Real-World Case"
+  },
+  "https://habr.com/ru/articles/1107200/?utm_campaign=1107200&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Thu, 12 Nov 2026 13:56:16 GMT",
+    "slug": "1107200",
+    "source_url": "https://habr.com/ru/articles/1107200/?utm_campaign=1107200&utm_source=habrahabr&utm_medium=rss",
+    "summary": "Input tokens exceed 922,000 tokens. Your messages resulted in 1,674,813 tokens — this error kicked off a story that spanned six months. We have a self-hosted OpenWebUI with an internal assistant for a small team: files, documents, and minor engineering tasks. Initially, I wrote a filter to clean up tool results from the history. Then I realized I was patching the wrong place and moved agent execution to a separate service using OpenAI Agents SDK and Codex SDK. Along the way, I also stumbled upon the streaming Responses API. Read more",
+    "title": "1,674,813 Tokens in a Single Request: How I Cleaned Up OpenWebUI Context and Then Moved the Agent Outside"
+  },
+  "https://habr.com/ru/articles/1107210/?utm_campaign=1107210&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Thu, 12 Nov 2026 14:10:55 GMT",
+    "slug": "1107210",
+    "source_url": "https://habr.com/ru/articles/1107210/?utm_campaign=1107210&utm_source=habrahabr&utm_medium=rss",
+    "summary": "One Claude site required a single permission. Another, similar one, demanded confirmation for every click. I dug into the extension's code and found Anthropic's private website list. Yours might be on it, and you wouldn't know. Read on.",
+    "title": "How I Discovered Anthropic's Private Website List"
+  },
+  "https://habr.com/ru/articles/1107234/?utm_campaign=1107234&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Thu, 12 Nov 2026 15:18:26 GMT",
+    "slug": "1107234",
+    "source_url": "https://habr.com/ru/articles/1107234/?utm_campaign=1107234&utm_source=habrahabr&utm_medium=rss",
+    "summary": "Nvidia announced the resignation of Jensen Huang from his positions as President, CEO, and member of the Board of Directors. The current Vice President and CFO of the American company, Colette Kress, will temporarily serve as CEO until a permanent successor is appointed. The Board of Directors will consider internal and external candidates for the new CEO position. Read more",
+    "title": "Nvidia Announces Resignation of Jensen Huang as CEO"
+  },
   "https://habr.com/ru/companies/1c/articles/1071340/?utm_campaign=1071340&utm_source=habrahabr&utm_medium=rss": {
     "model": "gemini-2.5-flash-lite",
     "published": "Thu, 03 Sep 2026 07:18:11 GMT",
@@ -5070,6 +5134,14 @@
     "source_url": "https://habr.com/ru/companies/beeline_cloud/articles/1081756/?utm_campaign=1081756&utm_source=habrahabr&utm_medium=rss",
     "summary": "Interviews are increasingly becoming a vector for cyberattacks. Attackers use deepfakes to impersonate real candidates and recruiters, or spread malware disguised as test assignments – sending \"harmless\" code or a dependency package that, when run on the victim's device, installs malicious software. Today, we at Beeline Cloud decided to discuss the methods used by fake applicants and recruiters, how to recognize an attacker \"on the other side of the resume,\" and what AI has to do with it. Read more",
     "title": "Identify me if you can! How deepfakes are changing IT hiring (and not only)"
+  },
+  "https://habr.com/ru/companies/beeline_cloud/articles/1107058/?utm_campaign=1107058&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Thu, 12 Nov 2026 13:01:16 GMT",
+    "slug": "1107058",
+    "source_url": "https://habr.com/ru/companies/beeline_cloud/articles/1107058/?utm_campaign=1107058&utm_source=habrahabr&utm_medium=rss",
+    "summary": "Everyone knows about the \"dead internet theory\": supposedly, bots have long been writing most of the content online. Now the discussion is reaching a new level (albeit hypothetical for now): what will happen if AI systems start performing the work of office employees? Let's discuss expert opinions and look at recent research on the topic. Read more",
+    "title": "The Dead Internet Has Arrived. Is a Dead Economy Next?"
   },
   "https://habr.com/ru/companies/bitrix/articles/1079832/?utm_campaign=1079832&utm_source=habrahabr&utm_medium=rss": {
     "model": "gemini-2.5-flash-lite",
@@ -5366,6 +5438,14 @@
     "source_url": "https://habr.com/ru/companies/flowwow/articles/1088660/?utm_campaign=1088660&utm_source=habrahabr&utm_medium=rss",
     "summary": "Four months ago, we allowed colleagues without an engineering background to deploy AI-generated applications to production. Since then, we've received over 260 projects from 150 people, and none of this code has been reviewed by a programmer. This article details our sandbox setup, what we've learned over four months, our mistakes, and the results. Read on.",
     "title": "Vibe Coding: You Can't Ban It, You Can Lead It"
+  },
+  "https://habr.com/ru/companies/garage8/articles/1107212/?utm_campaign=1107212&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Thu, 12 Nov 2026 14:11:14 GMT",
+    "slug": "1107212",
+    "source_url": "https://habr.com/ru/companies/garage8/articles/1107212/?utm_campaign=1107212&utm_source=habrahabr&utm_medium=rss",
+    "summary": "Hello Habr! My name is Anna Sabotovich, and I lead the implementation of an AI reviewer in the Garage Eight product group. The most frequent question I get is: 'So, when will it replace humans?' I'll answer right away: for some code, it already has. In October, our iOS teams removed the third mandatory approval for merge requests (MRs). Now, in product repositories, there are no more than two. Meanwhile, in the reviewer's repository, 35 MRs were merged in October, and only six had approval from someone other than the author. In the internal development analytics service, 69 MRs were merged, and none had approval from another person: the author merges themselves. I want to share how we learned to trust AI and what we plan to do next. Read more",
+    "title": "How We Removed Humans from Code Review (But Not Everywhere Yet)"
   },
   "https://habr.com/ru/companies/gigapisar/articles/1088630/?utm_campaign=1088630&utm_source=habrahabr&utm_medium=rss": {
     "model": "gemini-2.5-flash-lite",
@@ -6343,6 +6423,14 @@
     "summary": "AI is increasingly taking on tasks that previously required engineers, architects, or managers. However, simply integrating a neural network into a workflow isn't enough; it needs proper adaptation and configuration for positive results. At the 11th MWS meetup, experts discussed AI applications across various fields, from processing voice calls directly within mobile networks to automating architectural documentation. Special attention was given to how AI can aid in strategic planning and business hypothesis validation. The event concluded with participants proposing their own MWS technology-based service ideas. Read more",
     "title": "AI in Mobile Calls, Architectural Agents, and the \"Hypothesis Map\": Highlights from the 11th MWS Meetup"
   },
+  "https://habr.com/ru/companies/ru_mts/articles/1107130/?utm_campaign=1107130&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Thu, 12 Nov 2026 13:04:49 GMT",
+    "slug": "1107130",
+    "source_url": "https://habr.com/ru/companies/ru_mts/articles/1107130/?utm_campaign=1107130&utm_source=habrahabr&utm_medium=rss",
+    "summary": "Many have their local harness set up, others work in the cloud. What if you deploy a harness for a large company? What to do if you have to wait almost 40 seconds for the first agent response? What can be optimized and what will it lead to? Okay, deployed and optimized, but how to make agents work with employees? And how to assess the business impact of AI implementation? I haven't set up my harness yet, and I was interested in seeing the experience of other companies. So I went to the MWS meetup on this topic. First, they told the history of AI agents and the basics: what is the wrapper around the model. Then there was a report on optimization: at MWS, everything is deployed on Kubernetes and supports OpenClaw and Hermes simultaneously. Then, heads of departments discussed how agents work with employees. Finally, there was a report on implementing AI in organizations and assessing its impact. Read more",
+    "title": "Virtual Employees and Agents at the \"Russian Tech 2\" Meetup"
+  },
   "https://habr.com/ru/companies/rubytech/articles/1089758/?utm_campaign=1089758&utm_source=habrahabr&utm_medium=rss": {
     "model": "gemini-2.5-flash-lite",
     "published": "Sat, 03 Oct 2026 08:06:48 GMT",
@@ -6454,6 +6542,14 @@
     "source_url": "https://habr.com/ru/companies/rwb/articles/1092120/?utm_campaign=1092120&utm_source=habrahabr&utm_medium=rss",
     "summary": "When shopping online, a user buys not just the product itself, but also an idea of what it will be like in real life. This idea is increasingly shaped by visuals created or enhanced with AI. Today, sellers can change backgrounds, generate lifestyle scenes, create multiple versions of a main image, or \"complete\" the surroundings without a full photoshoot in minutes. For businesses, this means faster, cheaper, and more manageable visual content. For users, it means a growing feeling that pictures are becoming harder to trust. If a photo can be significantly improved without changing the product itself, the visual ceases to be a reliable guide for the buyer. Read more",
     "title": "When a Picture is Better Than the Product, or Why Beautiful Visuals Are No Longer Enough in E-commerce"
+  },
+  "https://habr.com/ru/companies/rwb/articles/1106902/?utm_campaign=1106902&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Thu, 12 Nov 2026 13:00:58 GMT",
+    "slug": "1106902",
+    "source_url": "https://habr.com/ru/companies/rwb/articles/1106902/?utm_campaign=1106902&utm_source=habrahabr&utm_medium=rss",
+    "summary": "Large Vision-Language Models (VLMs) are getting good at reading text from images. So why does Wildberries' content moderation process still use a seven-stage OCR pipeline for millions of product cards daily, instead of a single model? This article delves into the reasons behind this choice, sharing RWB's experience in building and maintaining a robust OCR system.",
+    "title": "Why One Large Model Won't Replace an OCR Pipeline: RWB Content Moderation Experience"
   },
   "https://habr.com/ru/companies/sberbank/articles/1076666/?utm_campaign=1076666&utm_source=habrahabr&utm_medium=rss": {
     "model": "gemini-2.5-flash-lite",
@@ -6662,6 +6758,22 @@
     "source_url": "https://habr.com/ru/companies/selectel/articles/1106172/?utm_campaign=1106172&utm_source=habrahabr&utm_medium=rss",
     "summary": "After the release of giant and expensive neural networks, one wants to find something that fits the concepts of economy and specialization. And on November 9, Meta*'s Superintelligence Labs released Muse Ember, the smallest and cheapest model in its lineup. It is designed specifically for mass and routine work: calling tools, routing, and parsing documents in AI pipelines. The new combination is described as follows: Muse Wonder plans the work, and Ember executes it. Let's break down what the release is based on. Read more",
     "title": "Meta* made its smallest model a workhorse for agents"
+  },
+  "https://habr.com/ru/companies/selectel/articles/1106976/?utm_campaign=1106976&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Thu, 12 Nov 2026 13:30:15 GMT",
+    "slug": "1106976",
+    "source_url": "https://habr.com/ru/companies/selectel/articles/1106976/?utm_campaign=1106976&utm_source=habrahabr&utm_medium=rss",
+    "summary": "Qwen4-Max-Preview is Alibaba's new flagship model, released on November 11, 2026, as a preview. Access is available through various Qwen platforms. Token-based payments are not yet implemented. The Personal Lite subscription costs $6/month, with a limited-time offer for new users at $3 (until November 30). The subscription includes 20,000 credits per month, with consumption varying by model, token count, reasoning mode, and tool calls. During the preview, credit consumption for this model is significantly reduced (up to 80% discount), with an even steeper discount (up to 92%) during off-peak hours in Beijing time (10 PM to 8 AM). The preview ends on November 25, after which the model will be disabled. Alibaba has not announced a full release date. Read more",
+    "title": "Qwen4-Max-Preview is out"
+  },
+  "https://habr.com/ru/companies/selectel/articles/1107166/?utm_campaign=1107166&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Thu, 12 Nov 2026 14:00:17 GMT",
+    "slug": "1107166",
+    "source_url": "https://habr.com/ru/companies/selectel/articles/1107166/?utm_campaign=1107166&utm_source=habrahabr&utm_medium=rss",
+    "summary": "SpaceX and xAI are developing the Kessel server system. The platform is based on 36 NVIDIA® Vera™ CPUs and 72 Rubin™ GPUs, but instead of standard NVLink copper cable assemblies, engineers opted for a single 84-layer printed circuit board. The project is adapted for operation in both terrestrial data centers and in orbit. Read more",
+    "title": "How SpaceX Designs the Kessel Rack with an 84-Layer PCB for Orbital Data Centers"
   },
   "https://habr.com/ru/companies/severstal/articles/1104690/?utm_campaign=1104690&utm_source=habrahabr&utm_medium=rss": {
     "model": "gemini-2.5-flash-lite",

@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>How We Removed Humans from Code Review (But Not Everywhere Yet)</title>
+  <meta name="description" content="Hello Habr! My name is Anna Sabotovich, and I lead the implementation of an AI reviewer in the Garage Eight product group. The most frequent question I get is: &#x27;So, when will it replace humans?&#x27; I&#x27;ll answer right away: for some code, it already has. In October, our iOS teams removed t">
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.65;
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 32px 20px 64px;
+      color: #1f2328;
+    }
+    header {
+      border-bottom: 1px solid #d8dee4;
+      margin-bottom: 28px;
+      padding-bottom: 20px;
+    }
+    .source {
+      color: #57606a;
+      font-size: 0.95rem;
+    }
+    img, video, iframe {
+      max-width: 100%;
+      height: auto;
+    }
+    pre {
+      overflow-x: auto;
+      padding: 16px;
+      background: #f6f8fa;
+      border-radius: 6px;
+    }
+    code {
+      font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+    }
+    blockquote {
+      border-left: 4px solid #d0d7de;
+      margin-left: 0;
+      padding-left: 16px;
+      color: #57606a;
+    }
+    footer {
+      border-top: 1px solid #d8dee4;
+      margin-top: 40px;
+      padding-top: 20px;
+      color: #57606a;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>How We Removed Humans from Code Review (But Not Everywhere Yet)</h1>
+    <p>Hello Habr! My name is Anna Sabotovich, and I lead the implementation of an AI reviewer in the Garage Eight product group. The most frequent question I get is: &#x27;So, when will it replace humans?&#x27; I&#x27;ll answer right away: for some code, it already has. In October, our iOS teams removed the third mandatory approval for merge requests (MRs). Now, in product repositories, there are no more than two. Meanwhile, in the reviewer&#x27;s repository, 35 MRs were merged in October, and only six had approval from someone other than the author. In the internal development analytics service, 69 MRs were merged, and none had approval from another person: the author merges themselves. I want to share how we learned to trust AI and what we plan to do next. Read more</p>
+    <p class="source">
+      Machine-translated from Habr.
+      <a href="https://habr.com/ru/companies/garage8/articles/1107212/?utm_campaign=1107212&amp;utm_source=habrahabr&amp;utm_medium=rss">Read the original Russian article</a>.
+      Thu, 12 Nov 2026 14:11:14 GMT
+    </p>
+  </header>
+  <main>
+<div><figure><img loading="lazy" src="https://habrastorage.org/r/w1560/extt/a2/f7/11/a2f7110d9c023e00910f3adf0994da40.png"/></figure><p>Hello Habr! My name is Anna Sabotovich, and I lead the implementation of an AI reviewer in the Garage Eight product group. The most frequent question I get is: 'So, when will it replace humans?' I'll answer right away: for some code, it already has.</p><p>In October, our iOS teams removed the third mandatory approval for merge requests (MRs). Now, in product repositories, there are no more than two. Meanwhile, in the reviewer's repository, 35 MRs were merged in October, and only six had approval from someone other than the author. In the internal development analytics service, 69 MRs were merged, and none had approval from another person: the author merges themselves. I want to share how we learned to trust AI and what we plan to do next.</p><h3>How We Determined Where Humans Could Be Replaced</h3><p>It all started with arithmetic that stopped adding up. At some point, we found ourselves in a situation where AI-generated code increased fivefold, while the number of people reviewing remained the same. As a result, one feature on Android, with 35 MRs, could wait a week for two approvals each. Needless to say, that's too long?</p><p>At the same time, the review process itself had its flaws. A typo in an on-screen text and an error in a payment calculation have different costs, yet they required the same number of approvals until recently. This is not only inefficient but also dangerous, as attention gets scattered, making it easier to miss important details.</p><p>We realized that simply removing approvals everywhere was not an option and that a boundary was needed: where a human is irreplaceable, and where they can be excluded from the chain. This boundary should be based on the cost of an error, not on the type of repository or the team lead's mood.</p><p>The cost of an error is assessed by domain architects (DSA) using a company-wide scale of four tiers and recorded in the architecture panel. Each service has two assessments: what happens if it stops, and what happens if it makes an error. For reviews, the latter is more important. We set the tier based on the worst-case scenario, and a service without an assessment is considered Tier 1. As of mid-October, 41% of microservices have been assessed. Mobile applications are assessed by modules: the application as a whole doesn't fit into a single tier.</p><p>As a result, the scheme we aim for looks something like this:</p><div><div><table><tbody><tr><th><p><strong>Tier</strong></p></th><th><p><strong>Cost of Error</strong></p></th><th><p><strong>What the Reviewer Does</strong></p></th><th><p><strong>How Many People Are Needed</strong></p></th></tr><tr><td><p>4: Services of a single team, experiments</p></td><td><p>The error is only visible to the team and does not affect user-facing processes</p></td><td><p>Reviews, author merges themselves</p></td><td><p>No one, if automated checks are green</p></td></tr><tr><td><p>3: Internal platform</p></td><td><p>The error will affect internal processes, but the user will not see it</p></td><td><p>Reviews, author merges themselves</p></td><td><p>No one, if automated checks are green (already the case)</p></td></tr><tr><td><p>2: Secondary client functions, internal processes</p></td><td><p>The error will disrupt user operation but will not affect finances</p></td><td><p>Reviews and assesses MR complexity</p></td><td><p>One person for simple and regular MRs, two for complex ones</p></td></tr><tr><td><p>1: Key client processes and finances</p></td><td><p>The error will impact user or company finances or violate regulatory requirements</p></td><td><p>Provides suggestions</p></td><td><p>Two people, architectural decision rests with a human</p></td></tr></tbody></table></div></div><p>We consciously started with Tier 3 and our own repositories. An error there affects us directly, it's easy to roll back, and authors build the reviewer themselves and are the first to see what it missed.</p><p>Sometimes, the reviewer even finds a bug in itself:</p><p><strong><em>Bot:</em></strong><em> Removed line -- comment in SQL or --- in markdown/YAML looks like --- comment and is not counted. Because of this, a file where only such a line was removed is now discarded as no-changes. Previously, this inaccuracy only affected the line limit, but now it determines whether the model will see the file.</em></p><p><strong><em>Author's Agent:</em></strong><em> Fixed... Thanks, good catch.</em></p><p>It's more complicated at other tiers. For example, at Tier 2, the number of people depends on the MR's complexity. This is assessed by the reviewer in a separate step before the review, and a label—simple, regular, or complex—is applied to the MR. Authors should not handle this themselves because if they decide whether a change is simple or not, very soon everything will become simple.</p><h3>The Model Chooses the Algorithm, So We Test on Evals Every Time</h3><p>We have several models and levels of reasoning—what to use and when is chosen by the algorithm depending on the MR's complexity class. The reviewer assigns this class using a label and a comment on the MR, and the bot uses this to decide how many people to involve.</p><p>For Tier 1 and 2, the strongest model always reviews. For Tier 3 and 4, we try a model deployed internally: it's cheaper, and the code doesn't leak outside. We first assigned the reviewer's own repository to it. On the very first day, one MR took about 50 minutes to review on it and occupied the queue, while iOS MRs waited up to 23.5 minutes instead of the usual one to five. This situation was, of course, unacceptable, and we had to rework the queue.</p><p>In October, the algorithm started assigning some MRs to lighter models, and the models themselves were updated. Simultaneously, mobile repositories began to require fewer code changes based on the bot's comments, making it difficult to immediately determine the cause: everything changed drastically and at once. To address this, we assembled evals: 42 MRs from Android, iOS, web, and backend history, each in the version the reviewer saw. Real problems were found in 32 of them, and each was confirmed by a human.</p><p>In general, evals are also needed because humans increasingly argue with the bot, and it's harder to see what people think from the responses in threads. Agents argue with each other politely and at length: on one MR for our QA tool, the bot reviewed 27 commits consecutively and made 45 findings, to 44 of which an agent responded. All this can go on until morning, and to prevent such issues, we need a limit on review rounds and checks only on new diffs.</p><h3>Which Metric Helps Evaluate AI Performance</h3><p>The metric we started with was the percentage of resolved comments, because GitLab provides it immediately, and it looked good: 92%. But resolution doesn't show if the code changed: a thread is closed after a fix and after 'disagree.' And in Android and iOS, the GitLab setting `only_allow_merge_if_all_discussions_are_resolved` is enabled, so an MR won't merge if even one thread is open. When I analyzed 832 findings in these repositories along with people's responses, 647 out of 647 were resolved in merged MRs. Such a metric measures the gate, but it doesn't show if the reviewer was helpful.</p><p>Acceptance should be measured by the code: a comment is accepted if the code near its line changed before the merge. MRs are refined before merging anyway, so we compare it to the baseline: how often a random part of the same file changes before merging. For example, in the third quarter, 12 repositories had 585 serious findings (major and critical) in merged MRs. After 219 of them, the nearby code was corrected—that's 37% of the total, while a random part changes in 7% of cases. I manually checked another 27 accepted ones, and in 25, the correction was indeed related to the comment.</p><p>In total, over the quarter, about 200 serious issues were fixed before merging, 98 of which were bugs. Acceptance varies significantly from repository to repository and from month to month. From October 1st to 20th, mobile repositories accepted 36% of serious comments, while in September—56%. Web stays around 30%. And on the website, after two-thirds of the comments, the author didn't make a single push; such findings cannot be classified as accepted or false positives until the author is asked. This is precisely why the decision on whether to remove a human is made for each repository separately, based on its own figures.</p><p>For example, a human would easily miss a bug like this in the diff:</p><figure><img alt=
+  </main>
+  <footer>
+    Translation generated with Gemini 2.5 Flash-Lite.
+    The original article remains the source of record.
+  </footer>
+</body>
+</html>

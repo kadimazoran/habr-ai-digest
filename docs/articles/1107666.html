@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>How much does a typo in keyboard layout really cost, in LLM tokens?</title>
+  <meta name="description" content="I wrote Zyabra - a local layout switcher: I typed &quot;ghbdtn&quot; instead of &quot;privet&quot;, and the program itself deletes and rewrites it correctly. The key thing is that it&#x27;s completely local - it doesn&#x27;t write what&#x27;s typed to disk, doesn&#x27;t keep a keystroke log, doesn&#">
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.65;
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 32px 20px 64px;
+      color: #1f2328;
+    }
+    header {
+      border-bottom: 1px solid #d8dee4;
+      margin-bottom: 28px;
+      padding-bottom: 20px;
+    }
+    .source {
+      color: #57606a;
+      font-size: 0.95rem;
+    }
+    img, video, iframe {
+      max-width: 100%;
+      height: auto;
+    }
+    pre {
+      overflow-x: auto;
+      padding: 16px;
+      background: #f6f8fa;
+      border-radius: 6px;
+    }
+    code {
+      font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+    }
+    blockquote {
+      border-left: 4px solid #d0d7de;
+      margin-left: 0;
+      padding-left: 16px;
+      color: #57606a;
+    }
+    footer {
+      border-top: 1px solid #d8dee4;
+      margin-top: 40px;
+      padding-top: 20px;
+      color: #57606a;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>How much does a typo in keyboard layout really cost, in LLM tokens?</h1>
+    <p>I wrote Zyabra - a local layout switcher: I typed &quot;ghbdtn&quot; instead of &quot;privet&quot;, and the program itself deletes and rewrites it correctly. The key thing is that it&#x27;s completely local - it doesn&#x27;t write what&#x27;s typed to disk, doesn&#x27;t keep a keystroke log, doesn&#x27;t touch the clipboard, and doesn&#x27;t open the network at all. It only keeps the current unfinished word and the last replacement in memory, nothing more. I use it every day. And recently I started thinking: is there any real benefit from it when working with LLMs, or is it just a convenience without a measurable effect? I decided to check not with words, but with numbers - luckily I have my own local Qwen3.8-Flash-Next on Strata at hand. The idea is simple: I take short phrases that I could have accidentally sent in the wrong layout, and for each, I send the model two versions - as intended and as it would have turned out without Zyabra. No system prompt, no history - just one question in one message. The result is uneven and sometimes frightening: &quot;Umichka)&quot; - 70 tokens / 5.4s - 2356 tokens / 148s, it didn&#x27;t decipher. &quot;Spasibo, to chto nuzhno!&quot; - 84 tokens / 7.5s - 440 tokens / 30s, it deciphered correctly. &quot;Pognali&quot; - 66 tokens / 6.2s - 336 tokens / 24s, it deciphered correctly. For &quot;Evybxrf)&quot;, the model actually started trying ROT13 and Caesar cipher, spent almost one and a half hundred seconds - and in the end gave up, asking what I meant. It looked like an excellent argument in favor of Zyabra: tens of times savings. Read more</p>
+    <p class="source">
+      Machine-translated from Habr.
+      <a href="https://habr.com/ru/articles/1107666/?utm_campaign=1107666&amp;utm_source=habrahabr&amp;utm_medium=rss">Read the original Russian article</a>.
+      Fri, 13 Nov 2026 16:28:45 GMT
+    </p>
+  </header>
+  <main>
+<div><p>I wrote <a href="https://github.com/DmNep/zyabra">Zyabra</a> - a local keyboard layout switcher: I typed "ghbdtn" instead of "privet", and the program itself deletes and rewrites it correctly. The key thing is that it's completely local - it doesn't write what's typed to disk, doesn't keep a keystroke log, doesn't touch the clipboard, and doesn't open the network at all. It only keeps the current unfinished word and the last replacement in memory, nothing more. I use it every day. And recently I started thinking: is there any real benefit from it when working with LLMs, or is it just a convenience without a measurable effect? I decided to check not with words, but with numbers - luckily I have my own local Qwen3.8-Flash-Next on Strata.</p><h3>First run - and alarming numbers</h3><p>The idea is simple: I take short phrases that I could have accidentally sent in the wrong layout, and for each, I send the model two versions - as intended and as it would have turned out without Zyabra. No system prompt, no history - just one question in one message.</p><p>The result is uneven and sometimes frightening:</p><div><div><table><tbody><tr><th><p>message</p></th><th><p>clean</p></th><th><p>garbage (without Zyabra)</p></th></tr><tr><td><p>Umichka)</p></td><td><p>70 tokens / 5.4s</p></td><td><p>2356 tokens / 148s, did not decipher</p></td></tr><tr><td><p>Spasibo, to chto nuzhno!</p></td><td><p>84 tokens / 7.5s</p></td><td><p>440 tokens / 30s, deciphered correctly</p></td></tr><tr><td><p>Pognali</p></td><td><p>66 tokens / 6.2s</p></td><td><p>336 tokens / 24s, deciphered correctly</p></td></tr></tbody></table></div></div><p>For "Evybxrf)", the model actually started trying ROT13 and Caesar cipher, spent almost one and a half hundred seconds - and in the end gave up, asking what I meant. It looked like an excellent argument in favor of Zyabra: tens of times savings.</p><h3>Hold on. What if this isn't the first message in the chat?</h3><p>Then I realized: the test didn't include a system prompt or chat history. But in reality, a message is almost never the first and only one - usually, there's already some conversation in Russian going on. This changes things: without a single hint of the language, the model solves a pure puzzle from scratch, while with context, it has something to latch onto.</p><p>I tested this with the same "Evybxrf)" (= "Umichka)"), three variants:</p><div><div><table><tbody><tr><th><p>context</p></th><th><p>tokens</p></th><th><p>time</p></th><th><p>result</p></th></tr><tr><td><p>no context</p></td><td><p>2298</p></td><td><p>145s</p></td><td><p>did not decipher</p></td></tr><tr><td><p>+ system prompt "we are communicating in Russian"</p></td><td><p>495</p></td><td><p>32s</p></td><td><p>deciphered ("umichk)")</p></td></tr><tr><td><p>+ one previous Russian utterance in history</p></td><td><p>344</p></td><td><p>23s</p></td><td><p>deciphered accurately</p></td></tr></tbody></table></div></div><p>With context, it's 6-7 times cheaper and faster than without it, and with almost no failures. The live chat history worked even better than an explicit system prompt.</p><h3>So how much does Zyabra really save?</h3><p>An honest, not inflated conclusion: the realistic cost of one accidentally sent message in the wrong layout is not a catastrophic 2000+ tokens and two and a half minutes, but rather 350-500 tokens and 25-30 seconds, when there is already Russian context in the chat. But even this is 4-7 times more expensive than if the message had come through clean immediately (70-90 tokens, 5-7 seconds).</p><p>With a couple of dozen such typos in an evening, it adds up not fatally, but quite noticeably - several thousand extra tokens and a couple of extra minutes of waiting, plus the risk that the model won't decipher the short phrase and will just ask again. Zyabra doesn't work miracles for your wallet, but it's not a useless toy either: it eliminates a specific, measurable source of spending - and precisely where it's not visible until you measure it.</p><p>Code and binaries are on <a href="https://github.com/DmNep/zyabra">github.com/DmNep/zyabra</a>, for Windows, Linux, and macOS, for free.</p></div>
+  </main>
+  <footer>
+    Translation generated with Gemini 2.5 Flash-Lite.
+    The original article remains the source of record.
+  </footer>
+</body>
+</html>

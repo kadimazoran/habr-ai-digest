@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>A plant estimator spent a whole workday calculating commercial proposals. We reduced it to 30 seconds: why ChatGPT is useless here</title>
+  <meta name="description" content="A construction site procurement officer sends a list of rolled metal products to 4-5 plants simultaneously and orders from the one that first provides an accurate calculation. In production, an estimator spends 4 to 8 hours manually transferring nomenclature and verifying coefficients using paper GO">
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.65;
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 32px 20px 64px;
+      color: #1f2328;
+    }
+    header {
+      border-bottom: 1px solid #d8dee4;
+      margin-bottom: 28px;
+      padding-bottom: 20px;
+    }
+    .source {
+      color: #57606a;
+      font-size: 0.95rem;
+    }
+    img, video, iframe {
+      max-width: 100%;
+      height: auto;
+    }
+    pre {
+      overflow-x: auto;
+      padding: 16px;
+      background: #f6f8fa;
+      border-radius: 6px;
+    }
+    code {
+      font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+    }
+    blockquote {
+      border-left: 4px solid #d0d7de;
+      margin-left: 0;
+      padding-left: 16px;
+      color: #57606a;
+    }
+    footer {
+      border-top: 1px solid #d8dee4;
+      margin-top: 40px;
+      padding-top: 20px;
+      color: #57606a;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>A plant estimator spent a whole workday calculating commercial proposals. We reduced it to 30 seconds: why ChatGPT is useless here</h1>
+    <p>A construction site procurement officer sends a list of rolled metal products to 4-5 plants simultaneously and orders from the one that first provides an accurate calculation. In production, an estimator spends 4 to 8 hours manually transferring nomenclature and verifying coefficients using paper GOST reference books. The popular idea of &#x27;feeding a scan of the list into ChatGPT&#x27; leads to a direct cash shortfall in a real order: when calculating a batch of 16P channel, the model was wrong about the weight by 41% downwards, resulting in a net loss of 126,720 rubles on a single line. The article analyzes a three-layer architecture solution: how to reconcile fuzzy semantic parsing of scans (OpenCV + Vision API) with a deterministic calculation engine in Python. Read more</p>
+    <p class="source">
+      Machine-translated from Habr.
+      <a href="https://habr.com/ru/articles/1107610/?utm_campaign=1107610&amp;utm_source=habrahabr&amp;utm_medium=rss">Read the original Russian article</a>.
+      Fri, 13 Nov 2026 14:13:59 GMT
+    </p>
+  </header>
+  <main>
+<div><p>A request for the supply of rolled metal products and metal structures in the real market lives for a few hours. The procurement officer of a construction site sends a list to 4-5 plants simultaneously and orders from the one that first sends an official commercial proposal with accurate prices, weight, and shipment deadlines.</p><p><strong>At the production site, preparing such a calculation takes 4 to 8 hours of a qualified estimator's working time.</strong> While the plant re-enters the nomenclature into Excel and verifies coefficients, the customer has already signed a contract with a more prompt supplier.</p><p>Below is a technical breakdown of how we automated this process: why the popular idea of 'feeding everything into ChatGPT' leads to a direct cash shortfall for the plant of hundreds of thousands of rubles, and what a working three-layer architecture looks like at the intersection of Vision OCR, GOST dictionaries, and deterministic code.</p><figure><img alt="Cover: Engineering calculation of rolled metal specifications" loading="lazy" src="https://habrastorage.org/r/w1560/extt/fc/b4/ab/fcb4ab010d67e1b6e704ea38ebc9ffe1.png"/></figure><hr/><h3>1. Incoming Chaos: What a Real Customer Request Looks Like</h3><p>In theory, integrators love to discuss electronic document management and structured XML files. In reality, 90% of incoming requests are informational chaos:</p><ol><li><p>A blurry scan of a project specification with skewed lines and a blue stamp over the text.</p></li><li><p>A fragment of a KM/KMD drawing, photographed on a phone directly from the construction site.</p></li><li><p>A motley Excel file from a subcontractor without SKUs or 1C codes.</p></li><li><p>A simple messenger message with professional buyer slang.</p></li></ol><p>A typical message text in the sales department looks like this:</p><blockquote><p>"Good day! Need a calculation for the site: 100mm angle iron - 50 bars of 12m each, 16mm channel beam P-type - 300 meters, hot-rolled steel sheet grade 3sp thickness 4mm - 15 square meters, 100mm pipe wall thickness 4mm - 1.2 km. Cut to size. Expecting calculation today by 14:00."</p></blockquote><p>To turn this text into an official document with the plant's stamp, an estimator performs a long chain of routine actions:</p><ul><li><p>Translates colloquial slang ('16mm channel beam P-type') into strict normative nomenclature ('Channel 16P GOST 8240-97').</p></li><li><p>Opens metal grade and standard reference books to find the theoretical weight per linear meter or square meter.</p></li><li><p>Multiplies meters by GOST standards, sums the tonnage, and includes a technological waste percentage for cutting (usually 3-7%).</p></li><li><p>Logs into 1C:UT or ERP, checks actual warehouse stock and current purchase price per ton.</p></li><li><p>Adds the cost of cutting per cut, plant markup, taxes, and manually drafts the commercial proposal form in Word or Excel.</p></li></ul><p>When the sales department receives 15 such specifications a day, estimators are physically drowning in routine.</p><hr/><h3>2. Experiment: Why ChatGPT Should Not Be Allowed Near Calculations</h3><p>The first thing that comes to a developer's mind when they hear 'neural networks' is to write a prompt: <em>'Here is the customer's specification text, calculate the total weight and final amount according to our price list'</em>.</p><p>We conducted a clean, controlled test on a real rolled metal specification using the GPT-4o model. We fed it a position:</p><blockquote><p>"Channel 16P - 300 meters. Calculate the theoretical weight of the batch in tons."</p></blockquote><p>The model's generation result:</p><figure><img alt="Screenshot of specification calculation in ChatGPT: 40% weight error" loading="lazy" src="https://habrastorage.org/r/w1560/extt/e8/a7/b7/e8a7b707a79507f0b6ff1c2662fd8963.png"/><div><figcaption>Screenshot of specification calculation in ChatGPT: 40% weight error</figcaption></div></figure><p>The model confidently provided a nice explanation with formulas and outputted the result: <strong>2.50 tons</strong>.</p><p>Let's check according to the state standard <strong>GOST 8240-97</strong> (Hot-rolled steel channels):</p><ul><li><p>The theoretical weight of 1 linear meter of channel 16P is <strong>14.20 kg</strong>.</p></li><li><p>The correct weight of the batch is: 300 m × 14.20 kg/m = 4,260 kg = <strong>4.26 tons</strong>.</p></li></ul><p><strong>Model error: 1.76 tons downwards (weight underestimated by 41.3%).</strong></p><p>If the plant uses this calculation with a metal price of, for example, 72,000 rubles per ton:</p><ul><li><p>Correct cost of the metal batch: 4.26 tons × 72,000 ₽ = 306,720 ₽.</p></li><li><p>Cost according to ChatGPT's calculation: 2.50 tons × 72,000 ₽ = 180,000 ₽.</p></li><li><p><strong>Direct cash loss for the enterprise on one item: 126,720 rubles.</strong></p></li></ul><h4>Why does the language model make such mistakes?</h4><p>A language model is a probabilistic token generator, not a deterministic calculator. It remembers that the word 'channel' in its training data often appeared with numbers like 8, 10, 14, 16, 20. During the process of predicting the next token, it takes a plausible steel density or the reference weight of a neighboring size (e.g., channel 10P or 12P with a weight of ~8.59 kg/m) and confidently presents a hallucination as fact.</p><p>It is strictly forbidden to trust language models with arithmetic, physical units of measurement, and money calculations in production.</p><hr/><h3>3. Architecture of the Working Pipeline</h3><p>To eliminate the human factor while guaranteeing a zero percent hallucination rate in numbers, we divided the request processing into three strictly isolated circuits:</p><figure><img alt="CP calculation pipeline architecture" loading="lazy" src="https://habrastorage.org/r/w1560/extt/1a/1d/75/1a1d752c52a61303f76bad74a15c2b06.png"/><div><figcaption>CP calculation pipeline architecture</figcaption></div></figure><h4>Layer 1. Semantic Parsing and Nomenclature Normalization (Vision + LLM)</h4><p>The neural network solves exactly the task it was created for: working with unstructured language and complex document geometry. There is no mathematics at this layer.</p><ol><li><p><strong>Scan Preprocessing (OpenCV):</strong> </p><ul><li><p>Deskewing the sheet angle (deskew via Hough transform).</p></li><li><p>Normalizing contrast and muting the blue channel of stamps in the HSV color space (without hard binarization, to avoid destroying halftones and gradients for the multimodal network).</p></li></ul></li><li><p><strong>Table Extraction:</strong> </p><ul><li><p>A multimodal model (Vision API) analyzes the document layout. Unlike Tesseract OCR, multimodal models understand the context of merged cells, non-standard column headers, and handwritten notes from procurement officers in the margins.</p></li></ul></li><li><p><strong>Normalization via System Prompt with Strict Schema:</strong> The model extracts semantics: the type of rolled product, caliber, and units of measurement. The model does not invent the exact standard number itself; the precise GOST is pulled by hard code in Layer 2 from a correspondence registry based on the combination of product type and profile size (e.g., <code>channel</code> + <code>16П</code> unambiguously maps to <code>GOST 8240-97</code>). This ensures the model does not substitute an outdated or fabricated standard.</p></li></ol><pre><code>{
+  </main>
+  <footer>
+    Translation generated with Gemini 2.5 Flash-Lite.
+    The original article remains the source of record.
+  </footer>
+</body>
+</html>

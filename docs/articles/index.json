@@ -4903,6 +4903,62 @@
     "summary": "Nvidia announced the resignation of Jensen Huang from his positions as President, CEO, and member of the Board of Directors. The current Vice President and CFO of the American company, Colette Kress, will temporarily serve as CEO until a permanent successor is appointed. The Board of Directors will consider internal and external candidates for the new CEO position. Read more",
     "title": "Nvidia Announces Resignation of Jensen Huang as CEO"
   },
+  "https://habr.com/ru/articles/1107574/?utm_campaign=1107574&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Fri, 13 Nov 2026 14:52:21 GMT",
+    "slug": "1107574",
+    "source_url": "https://habr.com/ru/articles/1107574/?utm_campaign=1107574&utm_source=habrahabr&utm_medium=rss",
+    "summary": "In this article, we'll explore whether it's possible to take a 19th-century historical painting and transform it into a full-fledged animated scene, ensuring the composition, style, and character positions remain intact. The main tools discussed will be Adobe Photoshop for dissecting the painting, a local multimodal model Qwen 3.8 27B Q5_K_XL via LM Studio for prompt preparation, MiniMax H3 video generation in ComfyUI, and final compositing in After Effects. The source material is Lawrence Alma-Tadema's \"Anno 1812. Kapitein Benthien aan de Beresina\" (also known as The Crossing of the River Berezina - 1812). A small disclaimer upfront: the goal wasn't to simply throw the painting into a video generator and get some movement. I wanted to break the image down into independent elements, prepare each character separately, restore what was hidden behind them, and then animate the fragments and reassemble everything into one composition. Video of the full process and final result: https://youtu.be/kedgNXEFHJs?si=XcYYtQ0vVzd9CNhY (YOUTUBE VIDEO, duration 10:41). Source and license: Alma-Tadema's painting depicts November 1812 - the crossing of the Berezina during Napoleon's army's retreat. It shows Dutch pontoon builders under Captain Bentheim constructing the crossing: people, wooden structures, water, ice, bridges, and a multitude of small details that form the entire historical scene. The original is held at the Amsterdam Museum (inventory number SA 4857). A digital reproduction is available on Wikimedia Commons under the Public Domain Mark 1.0 license, so it can be worked with freely. Read more",
+    "title": "How I Revived a 19th Century Painting: Photoshop, Local LLM, MiniMax H3, and After Effects"
+  },
+  "https://habr.com/ru/articles/1107604/?utm_campaign=1107604&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Fri, 13 Nov 2026 14:03:22 GMT",
+    "slug": "1107604",
+    "source_url": "https://habr.com/ru/articles/1107604/?utm_campaign=1107604&utm_source=habrahabr&utm_medium=rss",
+    "summary": "I imported a large batch of HEIC photos from my iPhone. It turned out that even on a modern MacBook, there's nothing to scroll them with. The built-in 'Preview' and third-party programs showed the next photo with a delay. The programs themselves also opened slowly: there was a noticeable delay between double-clicking in Finder and the photo appearing on the screen. In previous years, I would have grumbled a bit, lamented developers who forgot how to write fast code, and resigned myself to it, because back then, no one would have bothered to write their own viewer for such delays. But we live in a new era! Three evenings, a new Fable 5.2 model with sub-agents on Opus 5.5, and behold, Bolt, a native viewer in Swift and AppKit without third-party dependencies. In my measurements, Bolt scrolls faster than 'Preview', Quick Look, XnView MP, and ApolloOne. The closest of them, ApolloOne, shows the next photo more than twice as slowly. Read more",
+    "title": "How I Coded, Probably, the Fastest Photo Viewer for macOS"
+  },
+  "https://habr.com/ru/articles/1107608/?utm_campaign=1107608&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Fri, 13 Nov 2026 14:06:37 GMT",
+    "slug": "1107608",
+    "source_url": "https://habr.com/ru/articles/1107608/?utm_campaign=1107608&utm_source=habrahabr&utm_medium=rss",
+    "summary": "On November 12, 2026, Anthropic's updated usage policy came into effect, and Russian media reported that Claude was being blocked for companies in Russia. We've compiled all the dates from the past year and checked what's actually new in this story. Read more",
+    "title": "Claude and Russia in 2026: From Account Blocking to Company Bans"
+  },
+  "https://habr.com/ru/articles/1107610/?utm_campaign=1107610&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Fri, 13 Nov 2026 14:13:59 GMT",
+    "slug": "1107610",
+    "source_url": "https://habr.com/ru/articles/1107610/?utm_campaign=1107610&utm_source=habrahabr&utm_medium=rss",
+    "summary": "A construction site procurement officer sends a list of rolled metal products to 4-5 plants simultaneously and orders from the one that first provides an accurate calculation. In production, an estimator spends 4 to 8 hours manually transferring nomenclature and verifying coefficients using paper GOST reference books. The popular idea of 'feeding a scan of the list into ChatGPT' leads to a direct cash shortfall in a real order: when calculating a batch of 16P channel, the model was wrong about the weight by 41% downwards, resulting in a net loss of 126,720 rubles on a single line. The article analyzes a three-layer architecture solution: how to reconcile fuzzy semantic parsing of scans (OpenCV + Vision API) with a deterministic calculation engine in Python. Read more",
+    "title": "A plant estimator spent a whole workday calculating commercial proposals. We reduced it to 30 seconds: why ChatGPT is useless here"
+  },
+  "https://habr.com/ru/articles/1107616/?utm_campaign=1107616&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Fri, 13 Nov 2026 14:20:35 GMT",
+    "slug": "1107616",
+    "source_url": "https://habr.com/ru/articles/1107616/?utm_campaign=1107616&utm_source=habrahabr&utm_medium=rss",
+    "summary": "A couple of days ago, I posted on LinkedIn about AI development and received a rather unexpected comment from a development lead – he was extremely skeptical about AI development. And the reasons for this skepticism are, in general, understandable. I see many people who tried AI tools a couple of years ago, when these tools were just being invented, and were not impressed with the quality – they ended up with genuine AI slop, and have held that opinion ever since. The code seems to compile and even pass tests, but it's written completely differently from how your team usually does things, it repeats the worst parts of the project, and falls apart at the first edit. Almost a year ago, I left my position as CTO at the carsharing service Citydrive to fully immerse myself in agent-based development, and over this past year, I've come to the conclusion that most often, the model isn't to blame, but rather the repository that wasn't prepared for the agent. In this article, I'll explain why it's so difficult for an agent to write good code in such a repository and what needs to be done to prevent slop from appearing there anymore. Read more",
+    "title": "A Hundred Comments on a Pull Request: Why AI Agents Write Slop and What to Do About It"
+  },
+  "https://habr.com/ru/articles/1107650/?utm_campaign=1107650&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Fri, 13 Nov 2026 15:59:34 GMT",
+    "slug": "1107650",
+    "source_url": "https://habr.com/ru/articles/1107650/?utm_campaign=1107650&utm_source=habrahabr&utm_medium=rss",
+    "summary": "According to Bloomberg, OpenAI has supported the US Congress's initiative to restrict the supply of AI chips and related manufacturing equipment to China. The company informed lawmakers of its position in the same week that Jensen Huang stepped down as CEO of Nvidia. Huang had opposed stricter export controls for years. Bloomberg estimates his resignation weakened the positions of Nvidia and opponents of the restrictions in Congress. OpenAI, after months of deliberation, has now joined the proponents of the bills. Read more",
+    "title": "OpenAI supports restrictions on AI chip supplies to China after Jensen Huang's resignation"
+  },
+  "https://habr.com/ru/articles/1107666/?utm_campaign=1107666&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Fri, 13 Nov 2026 16:28:45 GMT",
+    "slug": "1107666",
+    "source_url": "https://habr.com/ru/articles/1107666/?utm_campaign=1107666&utm_source=habrahabr&utm_medium=rss",
+    "summary": "I wrote Zyabra - a local layout switcher: I typed \"ghbdtn\" instead of \"privet\", and the program itself deletes and rewrites it correctly. The key thing is that it's completely local - it doesn't write what's typed to disk, doesn't keep a keystroke log, doesn't touch the clipboard, and doesn't open the network at all. It only keeps the current unfinished word and the last replacement in memory, nothing more. I use it every day. And recently I started thinking: is there any real benefit from it when working with LLMs, or is it just a convenience without a measurable effect? I decided to check not with words, but with numbers - luckily I have my own local Qwen3.8-Flash-Next on Strata at hand. The idea is simple: I take short phrases that I could have accidentally sent in the wrong layout, and for each, I send the model two versions - as intended and as it would have turned out without Zyabra. No system prompt, no history - just one question in one message. The result is uneven and sometimes frightening: \"Umichka)\" - 70 tokens / 5.4s - 2356 tokens / 148s, it didn't decipher. \"Spasibo, to chto nuzhno!\" - 84 tokens / 7.5s - 440 tokens / 30s, it deciphered correctly. \"Pognali\" - 66 tokens / 6.2s - 336 tokens / 24s, it deciphered correctly. For \"Evybxrf)\", the model actually started trying ROT13 and Caesar cipher, spent almost one and a half hundred seconds - and in the end gave up, asking what I meant. It looked like an excellent argument in favor of Zyabra: tens of times savings. Read more",
+    "title": "How much does a typo in keyboard layout really cost, in LLM tokens?"
+  },
   "https://habr.com/ru/companies/1c/articles/1071340/?utm_campaign=1071340&utm_source=habrahabr&utm_medium=rss": {
     "model": "gemini-2.5-flash-lite",
     "published": "Thu, 03 Sep 2026 07:18:11 GMT",
@@ -6535,6 +6591,14 @@
     "summary": "When a console AI agent's five-hour limit is reached mid-debug, you might want to switch to another agent that still has limits. The popular method of saving a summary to HANDOFF.md often fails: the model's retelling quality is poor, context details are lost, and you have to re-explain the task to the next agent (wasting extra tokens). In this article, we'll explore how to extract a live session from local logs without losing meaning and transfer it to another agent with a single command, or move your work, including unsaved files, to another PC. Read on",
     "title": "Transferring sessions between console AI agents without context loss"
   },
+  "https://habr.com/ru/companies/ruvds/articles/1107500/?utm_campaign=1107500&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Fri, 13 Nov 2026 14:00:05 GMT",
+    "slug": "1107500",
+    "source_url": "https://habr.com/ru/companies/ruvds/articles/1107500/?utm_campaign=1107500&utm_source=habrahabr&utm_medium=rss",
+    "summary": "Anthropic paid OnePWR Solutions $3.4 billion. Previously, such sums were seen in chip supplies, but this time it's about gas generators to produce 1.7 GW of power for data centers. According to the Financial Times, this is the largest single purchase of energy equipment by an AI company. We are already accustomed to the shortage of AI chips, especially high-performance memory and GPUs, with supplies scheduled until 2030. Now it's the turn of the resources to run these chips. The current energy capacities in the US have proven very limited, and the launch of AI centers is causing protests from local residents, for whom the cost of energy is increasing manifold – it's more profitable for suppliers to sell it to data center owners. Connection times to power grids are stretching out to the same 2030. To shorten them, AI companies are switching to autonomous generation and are even purchasing used aircraft turbines. It is noteworthy that Anthropic is choosing not \"green\" energy sources, but gas and nuclear energy. Data centers require constant energy; it is unacceptable to depend on cloudiness and wind strength. And possible carbon emission penalties will simply become another line item in expenses. Other AI companies have the same approach: Elon Musk's SpaceX uses gas turbines for its Colossus series supercomputers in Tennessee and Mississippi, and Meta* is developing its own gas generation in Ohio. Microsoft, Amazon, and Google are restarting US nuclear power to obtain a constant energy source. For example, Google has invested over $4.4 billion in Constellation Energy to modernize existing nuclear power plants and obtain an additional 890 MW of capacity over the next 20 years. Read more",
+    "title": "Now AI Companies Are Investing Billions in Power Generation"
+  },
   "https://habr.com/ru/companies/rwb/articles/1092120/?utm_campaign=1092120&utm_source=habrahabr&utm_medium=rss": {
     "model": "gemini-2.5-flash-lite",
     "published": "Mon, 12 Oct 2026 13:00:05 GMT",
@@ -6775,6 +6839,22 @@
     "summary": "SpaceX and xAI are developing the Kessel server system. The platform is based on 36 NVIDIA® Vera™ CPUs and 72 Rubin™ GPUs, but instead of standard NVLink copper cable assemblies, engineers opted for a single 84-layer printed circuit board. The project is adapted for operation in both terrestrial data centers and in orbit. Read more",
     "title": "How SpaceX Designs the Kessel Rack with an 84-Layer PCB for Orbital Data Centers"
   },
+  "https://habr.com/ru/companies/selectel/articles/1107498/?utm_campaign=1107498&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Fri, 13 Nov 2026 15:18:38 GMT",
+    "slug": "1107498",
+    "source_url": "https://habr.com/ru/companies/selectel/articles/1107498/?utm_campaign=1107498&utm_source=habrahabr&utm_medium=rss",
+    "summary": "On November 12, the source code for Edge0 -145B and -120B was released. According to the developers, Edge0-145B is the world's first open model with this number of parameters that runs on a local device. The model's reasoning, code handling, and agent capabilities are compared to leading cloud models. We'll find out if this is true now. The model can already be tested on HuggingFace. Read more",
+    "title": "AI Model for Your Laptop Released"
+  },
+  "https://habr.com/ru/companies/selectel/articles/1107582/?utm_campaign=1107582&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Fri, 13 Nov 2026 15:40:12 GMT",
+    "slug": "1107582",
+    "source_url": "https://habr.com/ru/companies/selectel/articles/1107582/?utm_campaign=1107582&utm_source=habrahabr&utm_medium=rss",
+    "summary": "Google announced the release of Gemini 4 Hydrogen on November 12th. Google DeepMind has already called the model a daily workhorse for agent scenarios. Hydrogen is available in Gemini API, Google AI Studio, Android Studio, and the Antigravity development environment, as well as in the business version of Gemini and Google Sheets. Regular users can see it in the Gemini app and in the \"AI Mode\" in Google Search, where automatic selection is triggered. In the API, the model is called gemini-4-hydrogen and effectively replaces the Flash line in the fourth generation. Let's dive in. Read more",
+    "title": "Google released Gemini 4 Hydrogen for agents"
+  },
   "https://habr.com/ru/companies/severstal/articles/1104690/?utm_campaign=1104690&utm_source=habrahabr&utm_medium=rss": {
     "model": "gemini-2.5-flash-lite",
     "published": "Fri, 06 Nov 2026 15:15:28 GMT",
@@ -6966,6 +7046,14 @@
     "source_url": "https://habr.com/ru/companies/speshu_ai/articles/1106176/?utm_campaign=1106176&utm_source=habrahabr&utm_medium=rss",
     "summary": "Google's updated video model, Gemini Omni 1.2 Flash, is now cheaper, better at maintaining character and product details between frames, and allows editing clips with text prompts without re-generating them. Read more",
     "title": "Google presented Gemini Omni 1.2 Flash: videos up to 15 seconds and a 30% price reduction"
+  },
+  "https://habr.com/ru/companies/speshu_ai/articles/1107596/?utm_campaign=1107596&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Fri, 13 Nov 2026 13:51:54 GMT",
+    "slug": "1107596",
+    "source_url": "https://habr.com/ru/companies/speshu_ai/articles/1107596/?utm_campaign=1107596&utm_source=habrahabr&utm_medium=rss",
+    "summary": "ChatGPT, Gemini, and Perplexity can direct shoppers to fake online stores and non-functional websites. This was revealed by a study from Podqi, a company specializing in intellectual property protection. Suspicious addresses were found in 15% of Perplexity's responses, 8% of ChatGPT's, and 4% of Gemini's. The researchers considered recommendations for such sites, as well as neutral mentions and warnings about dangers. Read more",
+    "title": "[Translation] Can You Trust AI When Shopping? A Review of ChatGPT, Gemini, and Perplexity"
   },
   "https://habr.com/ru/companies/ssp-soft/articles/1079732/?utm_campaign=1079732&utm_source=habrahabr&utm_medium=rss": {
     "model": "gemini-2.5-flash-lite",
@@ -7414,6 +7502,14 @@
     "source_url": "https://habr.com/ru/companies/yoomoney/articles/1106106/?utm_campaign=1106106&utm_source=habrahabr&utm_medium=rss",
     "summary": "How to formulate requirements, find contradictions before development begins, and implement AI agents into workflows? These and other questions were discussed at the \"Analyst's Code\" meetup by Yandex Money. Speakers from Yandex Money, Sber, and \"Byndyusoft\" shared their practical experience in system analysis, from working with requirements and stakeholders to automating tasks with AI. We've compiled the main topics of the talks and provided links to the full recordings below. Read more",
     "title": "How the work of a system analyst is changing with the development of AI: recordings from \"Analyst's Code\" talks"
+  },
+  "https://habr.com/ru/companies/yoomoney/articles/1107580/?utm_campaign=1107580&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Fri, 13 Nov 2026 13:27:16 GMT",
+    "slug": "1107580",
+    "source_url": "https://habr.com/ru/companies/yoomoney/articles/1107580/?utm_campaign=1107580&utm_source=habrahabr&utm_medium=rss",
+    "summary": "Hello Habr! My name is Roma, and I'm a backend developer at YooMoney. For almost 10 years, our team has been involved in developing the public payment API, among other things. We recently launched an MCP (Model Context Protocol) server, which allows neural networks (LLMs) to directly interact with payments and accounts. During development and debugging, we quickly realized that designing APIs for language models is fundamentally different from the familiar REST architecture. In this article, I want to share our experience and thoughts. There will be no technical details about creating an MCP server here, as there are plenty of those online. The article will be interesting for developers and architects planning to create public or internal MCP servers. Read more",
+    "title": "The Evolution of APIs in the AI Era: REST vs. MCP with a Payment Service Example"
   },
   "https://habr.com/ru/companies/yougile/articles/1103954/?utm_campaign=1103954&utm_source=habrahabr&utm_medium=rss": {
     "model": "gemini-2.5-flash-lite",

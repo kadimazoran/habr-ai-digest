@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Google released Gemini 4 Hydrogen for agents</title>
+  <meta name="description" content="Google announced the release of Gemini 4 Hydrogen on November 12th. Google DeepMind has already called the model a daily workhorse for agent scenarios. Hydrogen is available in Gemini API, Google AI Studio, Android Studio, and the Antigravity development environment, as well as in the business versi">
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.65;
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 32px 20px 64px;
+      color: #1f2328;
+    }
+    header {
+      border-bottom: 1px solid #d8dee4;
+      margin-bottom: 28px;
+      padding-bottom: 20px;
+    }
+    .source {
+      color: #57606a;
+      font-size: 0.95rem;
+    }
+    img, video, iframe {
+      max-width: 100%;
+      height: auto;
+    }
+    pre {
+      overflow-x: auto;
+      padding: 16px;
+      background: #f6f8fa;
+      border-radius: 6px;
+    }
+    code {
+      font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+    }
+    blockquote {
+      border-left: 4px solid #d0d7de;
+      margin-left: 0;
+      padding-left: 16px;
+      color: #57606a;
+    }
+    footer {
+      border-top: 1px solid #d8dee4;
+      margin-top: 40px;
+      padding-top: 20px;
+      color: #57606a;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Google released Gemini 4 Hydrogen for agents</h1>
+    <p>Google announced the release of Gemini 4 Hydrogen on November 12th. Google DeepMind has already called the model a daily workhorse for agent scenarios. Hydrogen is available in Gemini API, Google AI Studio, Android Studio, and the Antigravity development environment, as well as in the business version of Gemini and Google Sheets. Regular users can see it in the Gemini app and in the &quot;AI Mode&quot; in Google Search, where automatic selection is triggered. In the API, the model is called gemini-4-hydrogen and effectively replaces the Flash line in the fourth generation. Let&#x27;s dive in. Read more</p>
+    <p class="source">
+      Machine-translated from Habr.
+      <a href="https://habr.com/ru/companies/selectel/articles/1107582/?utm_campaign=1107582&amp;utm_source=habrahabr&amp;utm_medium=rss">Read the original Russian article</a>.
+      Fri, 13 Nov 2026 15:40:12 GMT
+    </p>
+  </header>
+  <main>
+<div><figure><img loading="lazy" src="https://habrastorage.org/r/w1560/extt/f0/b4/96/f0b4965adc8705925d8ecbb243a8d38b.jpg"/></figure><p>Google announced the release of Gemini 4 Hydrogen on November 12th. Google DeepMind has already called the model a daily workhorse for agent scenarios. Hydrogen is available in Gemini API, Google AI Studio, Android Studio, and the Antigravity development environment, as well as in the business version of Gemini and Google Sheets.</p><p>Regular users can see it in the Gemini app and in the "AI Mode" in Google Search, where automatic selection is triggered. In the API, the model is called gemini-4-hydrogen and effectively replaces the Flash line in the fourth generation. Let's dive in.</p><h2>Price and context</h2><p>The rate is about $1.50 per million input and $7.50 per million output tokens, and it is identical across the entire context window. The context, by market standard, is 1 million input tokens, and the output reaches 1 million.</p><p>There are four reasoning levels: low, medium, high by default, and the new xhigh. The license is not specified on the page, and there are no open weights in the announcement. The model is likely available only through Google's API and products. A comparison with Gemini 4 Carbon looks like this. Carbon costs $2 and $10 until November 30th, then it will cost $4 and $20.</p><p>Hydrogen is 25% cheaper than Carbon now, and after November 30th, the gap will be approximately 2.7 times. Compared to its predecessor Gemini 3.8 Flash, the base rate has doubled, but for background tasks, there are Batch and Flex modes with a 50% discount. When working with the API, there are three hidden limitations: the full million tokens for output is only available in asynchronous background decoding mode (synchronous response is limited to 64,000 tokens), caching only works implicitly ($0.075 per million), and the model itself returns exclusively text — there are no image, audio, or Live API generations here.</p><h2>What Google claims</h2><p>All figures are vendor-provided for now. Google reports a score of 51 in the Artificial Analysis Intelligence Index on high compared to 50 for Gemini 4 Argon and 54 on xhigh — interestingly, a model distilled from the flagship Carbon outperforms the heavier and more expensive Argon on standard settings.</p><figure><img alt="A fresh release of benchmarks from Artificial Analysis: top 28 current models. Source." loading="lazy" src="https://habrastorage.org/r/w1560/extt/1a/40/4a/1a404a4a9cf4fc562ddcb2bc498e11ce.png" title="A fresh release of benchmarks from Artificial Analysis: top 28 current models. Source."/><div><figcaption><em>A fresh release of benchmarks from Artificial Analysis: top 28 current models. </em><a href="https://docs.google.com/document/d/15TpdIBZjkK0IAAyU-MTKSAwM8KXBzQFRsHMCS_SSwMY/edit?tab=t.0"><em>Source</em></a><em>.</em></figcaption></div></figure><p>On Terminal-Bench 4.1, the model scores 57%, while Gemini 3.8 Flash scores 18.2%. HLE-Diamond gives 58.8%, and Agents' Last Exam v1.1 scores 71.6%. In its tables, Google also compares the new model with Claude Sonnet 5.5 and GPT-6.1 Terra.</p><p>In repository work (SWE-sweep), Hydrogen achieves 13.5% compared to 3.1% and 5.8% for competitors, but it still lags behind Anthropic's model in OS interface and terminal management. Tasks on high complete 2.5 times faster than with 3.8 Flash. Regarding safety, the company reports a reduction in over-exertion in agent tasks to 81% and 96.7% honesty on an internal test.</p><p>The logic behind releasing the model is best explained by the update to the Antigravity development environment. For AI Ultra subscribers, an orchestrator has been implemented where the heavy Gemini 4 Carbon acts as the architect (designing and resolving dead-end bugs), while parallel Hydrogen threads handle routine tasks like code edits, tests, and tool calls.</p><figure><img alt="Results of testing AI models in the Terminal-Bench 4.0 benchmark. Source." loading="lazy" src="https://habrastorage.org/r/w1560/extt/de/db/c1/dedbc1d37b7e9b3954bcbc4442d0af89.png" title="Results of testing AI models in the Terminal-Bench 4.0 benchmark. Source."/><div><figcaption><em>Results of testing AI models in the Terminal-Bench 4.0 benchmark. </em><a href="https://www.tbench.ai/news/terminal-bench-4-0"><em>Source</em></a><em>.</em></figcaption></div></figure><p>When configuring your agents, it's worth considering that the xhigh mode significantly improves quality but generates many internal "thinking" tokens at the output rate ($7.50 per million). Therefore, in practice, it is more cost-effective to evaluate the cost of a solved task as a whole, including repetitions and "thoughts," rather than focusing solely on the token price in the rates.</p><blockquote><p><strong>What do you use every day, and does this rating match reality?</strong> Share your thoughts in the comments.</p></blockquote><div><figure><img src="https://habrastorage.org/getpro/habr/upload_files/dbd/50d/bb6/dbd50dbb6316408a3d20c62b3ced3f3c.gif"/></figure><p><strong>AI Router — access to 400+ models from a single panel</strong></p><p>Connect an OpenAI-compatible gateway with a single API key. Configure end-to-end analytics, track limits, and quota resources.</p><p><a href="https://promo.selectel.ru/ai-router/?utm_source=habr.com&amp;utm_medium=referral&amp;utm_campaign=airouter_news_ai-hydrogen_131126_banner_ord"><strong>Launch AI Router →</strong></a></p></div></div>
+  </main>
+  <footer>
+    Translation generated with Gemini 2.5 Flash-Lite.
+    The original article remains the source of record.
+  </footer>
+</body>
+</html>

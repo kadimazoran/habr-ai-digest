@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>AI Model for Your Laptop Released</title>
+  <meta name="description" content="On November 12, the source code for Edge0 -145B and -120B was released. According to the developers, Edge0-145B is the world&#x27;s first open model with this number of parameters that runs on a local device. The model&#x27;s reasoning, code handling, and agent capabilities are compared to leading c">
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.65;
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 32px 20px 64px;
+      color: #1f2328;
+    }
+    header {
+      border-bottom: 1px solid #d8dee4;
+      margin-bottom: 28px;
+      padding-bottom: 20px;
+    }
+    .source {
+      color: #57606a;
+      font-size: 0.95rem;
+    }
+    img, video, iframe {
+      max-width: 100%;
+      height: auto;
+    }
+    pre {
+      overflow-x: auto;
+      padding: 16px;
+      background: #f6f8fa;
+      border-radius: 6px;
+    }
+    code {
+      font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+    }
+    blockquote {
+      border-left: 4px solid #d0d7de;
+      margin-left: 0;
+      padding-left: 16px;
+      color: #57606a;
+    }
+    footer {
+      border-top: 1px solid #d8dee4;
+      margin-top: 40px;
+      padding-top: 20px;
+      color: #57606a;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>AI Model for Your Laptop Released</h1>
+    <p>On November 12, the source code for Edge0 -145B and -120B was released. According to the developers, Edge0-145B is the world&#x27;s first open model with this number of parameters that runs on a local device. The model&#x27;s reasoning, code handling, and agent capabilities are compared to leading cloud models. We&#x27;ll find out if this is true now. The model can already be tested on HuggingFace. Read more</p>
+    <p class="source">
+      Machine-translated from Habr.
+      <a href="https://habr.com/ru/companies/selectel/articles/1107498/?utm_campaign=1107498&amp;utm_source=habrahabr&amp;utm_medium=rss">Read the original Russian article</a>.
+      Fri, 13 Nov 2026 15:18:38 GMT
+    </p>
+  </header>
+  <main>
+<div><figure><img alt="Source." loading="lazy" src="https://habrastorage.org/r/w1560/extt/8d/34/33/8d3433e5fbf6e7c01edc905291a8b757.png" title="Source."/><figcaption><em>Source</em><em>.</em></figcaption></figure><p>On November 12, the source code for Edge0 -145B and -120B was released. According to the developers, Edge0-145B is the world's first open model with this number of parameters that runs on a local device. The model's reasoning, code handling, and agent capabilities are compared to leading cloud models. We'll find out if this is true now. The model can already be tested on HuggingFace.</p><h2>What Tasks Does the New Edge Solve</h2><p>We all know that running large local models on our devices can sometimes be an impossible task. We lack the GPUs, which are becoming increasingly expensive. Edge0 developers assure that the peak memory requirement for the 145B model is 29 GB, and the decoding speed exceeds 80 tokens per second. The company does not specify a laptop model but targets devices with 48 GB of memory.</p><p><br/>If medium-sized LLMs are implemented, they may prove inefficient for demanding tasks. The benchmarks of Edge0 with other models presented below might make users doubt this.</p><p>According to the developers, the model decomposes tasks, writes and executes code, debugs errors, and visually verifies results when working on projects like 3D modeling, game development, and PCB design.</p><p>Local operation with the model does not require token payments, and data can remain on your computer.</p><h2>Benchmarks, Technical Information About the Model</h2><p>Edge0-145B/120B has open weights, based on Qwen3.8-Flash-Next. The 145B model contains 145 billion parameters and 10 billion active parameters per token.</p><p>The expert pool is 84.6B, with 512 experts per layer; 10 experts and 1 general expert are activated per token.</p><p>The Q3_K build weighs 40.8 GB, and on an RTX 5090 gaming card costing 800,000 rubles, the speed is 120 tokens per second.</p><figure><img alt="Cost of a top-tier graphics card at the moment. Source." loading="lazy" src="https://habrastorage.org/r/w1560/extt/f8/0c/0b/f80c0b250e7cf6d4696f8c6d1a252d1e.png" title="Cost of a top-tier graphics card at the moment. Source."/><figcaption><em>Cost of a top-tier graphics card at the moment. </em><em>Source</em><em>.</em></figcaption></figure><p>Inside Edge0-120B, as one might guess, are 120 billion parameters and 8.64 billion active parameters per token. The expert pool is 60.4B, with 512 experts per layer; 10 experts and 1 general expert are activated per token. The Q3_K build weighs 28 GB, and on an RTX5090, the speed is 145 tokens per second.</p><p>In benchmarks, Edge0-145B is compared with Chinese and American models.</p><figure><img alt="Edge0 145B/120B Benchmarks. Source." loading="lazy" src="https://habrastorage.org/r/w1560/extt/cc/19/9f/cc199f4a008fa483cb027bbfeebadc37.png" title="Edge0 145B/120B Benchmarks. Source."/><figcaption><em>Edge0 145B/120B Benchmarks. </em><em>Source</em><em>.</em></figcaption></figure><p>In the DeepSWE 1.1 benchmark, which evaluates programming and engineering problem-solving, the model scored 64.6 points, surpassing Qwen3.8-Flash-Next with its 58.7. Terminal-Bench 2.1, which assesses terminal operation and task autonomy, saw the 145B model achieve 86.52 points compared to Claude-Opus-4.6's 78.2 points and Qwen3.8-Flash-Next's 83.3 points. In HLE, which evaluates the model's knowledge in complex sciences and reasoning, the 145B model scored 35.4 points against Claude-Opus-4.6's 40 points.</p><p>Here, Claude proved slightly more intelligent, but Edge0's statement is understandable – they can compete with Qwen. Comparing themselves to Claude Opus 4.6, released on February 5, 2026, is questionable: Anthropic already has Claude Opus 5.5.</p><h2>Conclusions on Edge Models</h2><p>Edge0-145B and 120B performed well in benchmarks. The developers' claims have been confirmed – the models are effective in handling complex tasks and long contexts. Now we await user feedback on the model. A significant drawback could be the license – the model is free for personal use and for deployment within a company, but commercial use of the model is only possible after signing an agreement with Edge0.</p><blockquote><p>What do you think about such "local models"? Write in the comments.</p></blockquote><div><figure><img loading="lazy" src="https://habrastorage.org/getpro/habr/upload_files/dbd/50d/bb6/dbd50dbb6316408a3d20c62b3ced3f3c.gif"/></figure><p><strong>AI Router — Access 400+ Models from a Single Panel</strong></p><p>Connect an OpenAI-compatible gateway with a single API key. Configure end-to-end analytics, track limits, and quota resources.</p><p><strong>Launch AI Router →</strong></p></div></div>
+  </main>
+  <footer>
+    Translation generated with Gemini 2.5 Flash-Lite.
+    The original article remains the source of record.
+  </footer>
+</body>
+</html>

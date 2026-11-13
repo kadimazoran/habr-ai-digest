@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>The Evolution of APIs in the AI Era: REST vs. MCP with a Payment Service Example</title>
+  <meta name="description" content="Hello Habr! My name is Roma, and I&#x27;m a backend developer at YooMoney. For almost 10 years, our team has been involved in developing the public payment API, among other things. We recently launched an MCP (Model Context Protocol) server, which allows neural networks (LLMs) to directly interact w">
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.65;
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 32px 20px 64px;
+      color: #1f2328;
+    }
+    header {
+      border-bottom: 1px solid #d8dee4;
+      margin-bottom: 28px;
+      padding-bottom: 20px;
+    }
+    .source {
+      color: #57606a;
+      font-size: 0.95rem;
+    }
+    img, video, iframe {
+      max-width: 100%;
+      height: auto;
+    }
+    pre {
+      overflow-x: auto;
+      padding: 16px;
+      background: #f6f8fa;
+      border-radius: 6px;
+    }
+    code {
+      font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+    }
+    blockquote {
+      border-left: 4px solid #d0d7de;
+      margin-left: 0;
+      padding-left: 16px;
+      color: #57606a;
+    }
+    footer {
+      border-top: 1px solid #d8dee4;
+      margin-top: 40px;
+      padding-top: 20px;
+      color: #57606a;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>The Evolution of APIs in the AI Era: REST vs. MCP with a Payment Service Example</h1>
+    <p>Hello Habr! My name is Roma, and I&#x27;m a backend developer at YooMoney. For almost 10 years, our team has been involved in developing the public payment API, among other things. We recently launched an MCP (Model Context Protocol) server, which allows neural networks (LLMs) to directly interact with payments and accounts. During development and debugging, we quickly realized that designing APIs for language models is fundamentally different from the familiar REST architecture. In this article, I want to share our experience and thoughts. There will be no technical details about creating an MCP server here, as there are plenty of those online. The article will be interesting for developers and architects planning to create public or internal MCP servers. Read more</p>
+    <p class="source">
+      Machine-translated from Habr.
+      <a href="https://habr.com/ru/companies/yoomoney/articles/1107580/?utm_campaign=1107580&amp;utm_source=habrahabr&amp;utm_medium=rss">Read the original Russian article</a>.
+      Fri, 13 Nov 2026 13:27:16 GMT
+    </p>
+  </header>
+  <main>
+<div><p>Hello Habr! My name is Roma, and I'm a backend developer at YooMoney. For almost 10 years, our team has been involved in developing the public payment API, among other things. We recently launched an MCP (Model Context Protocol) server, which allows neural networks (LLMs) to directly interact with payments and accounts.</p><p>During development and debugging, we quickly realized that designing APIs for language models is fundamentally different from the familiar REST architecture. In this article, I want to share our experience and thoughts. There will be no technical details about creating an MCP server here, as there are plenty of those online. The article will be interesting for developers and architects planning to create public or internal MCP servers.</p><p>Looking ahead, I'll say this: we will continue to develop the functionality and even plan to hold a public online hackathon. Subscribe to our <a>channel</a> so you don't miss the announcement.</p><h2>Contracts and Schema: When Documentation Becomes Code</h2><p><strong>1. Dynamic Schema Instead of Backward Compatibility</strong><br/><br/>In classic APIs, we are used to fixing contracts within a major version, meaning we maintain backward compatibility. In MCP, the concept of a static version essentially doesn't exist. The list of functions is updated on the fly through a dynamic registration mechanism (<code>tools/list</code>), and the model reads the current schema before each call. This means the LLM integrates with the API anew each time using the schema obtained from <code>tools/list</code>.</p><p>However, I want to note that the convenience of abandoning API backward compatibility is illusory: compatibility with clients' business processes will still need to be maintained. Removing a feature that is in use will inevitably break user integrations, even if the client-side is an LLM.</p><p><strong>2. API Descriptions as Executable Prompts</strong></p><p>In classic APIs, documentation is written for human developers. If a field is poorly described, a developer can still read an article on Habr or Stack Overflow, or, as a last resort, contact support. In MCP, documentation is essentially part of the system prompt that the LLM executes. The quality of naming and the clarity of the <code>description</code> directly determine whether your integration will work.</p><p>Here's a good example. This is how the <a href="https://yookassa.ru/developers/api#create_payment_amount">documentation</a> on our portal looks for the payment amount:</p><blockquote><p>Payment amount. Sometimes YooKassa partners charge the user an additional commission, which is not included in this amount.</p><p>The amount is specified with the currency code. If you separate payment flows, the payment currency must match the subaccount currency (recipient.gateway_id); if you don't separate them, it must match the currency of the shopId account in your personal account).</p></blockquote><p>And here's how we described it for the MCP tool:</p><blockquote><p>Payment amount.<br/>Specified with the currency code.<br/>Do not invent a value for this parameter. If it is not specified, ask the user for it.</p></blockquote><p>Unlike a human developer, it's not at all obvious to the model that the payment amount (a required parameter) needs to be obtained from the user. Without the last sentence in the description, we periodically encountered situations where the LLM would create a payment with a fabricated amount without any further questions.</p><p><strong>3. Sensitivity to Overloaded DTOs</strong></p><p>A classic API schema can contain any number of fields, including similar optional ones (<code>billing_address, shipping_address, user_address</code>). A human developer will likely be able to choose the correct field and test it before launch. However, an LLM can get confused with overloaded schemas and pass data to the wrong place. Therefore, when developing MCP, it's best to avoid fields with similar meanings. For example, you can limit the functionality of the MCP server to only the most necessary scenarios. You can also try to differentiate similar fields by clearly describing the cases in which they should be passed.</p><p><strong>4. Dialog Format for Errors</strong></p><p>An error like <code>HTTP 400 Bad Request</code> with a short enum-like code <code>invalid_payload</code> is convenient for parsing in integration code, but it's a dead end for an LLM.</p><p>In an MCP server, errors should be detailed and explain exactly what needs to be corrected (and if anything can be corrected at all). Upon receiving a clear response, the model will understand what to do next and, if necessary, will try to correct the request itself and resend it without user intervention.</p><p>For example, <a href="https://yookassa.ru/developers/api#payment_object_cancellation_details">this is what the API returns</a> if the payer has insufficient funds for the payment:</p><pre><code>{  "cancellation_details": {    "party": "payment_network",    "reason": "insufficient_funds"  } }</code><div><a href="https://sourcecraft.dev/"><span></span></a></div></pre><p>In the case of MCP, the protocol response would look like this:</p><pre><code>{  "jsonrpc": "2.0",  "id": 42,  "result": {    "content": [      {        "type": "text",        "text": "insufficient_funds"      },      {        "type": "text",        "text": "Insufficient funds to complete the operation. Inform the user. Do not attempt to process the payment again."      }    ],    "isError": true  } }</code><div><a href="https://sourcecraft.dev/"><span></span></a></div></pre><h2>Execution and Security: From Determinism to Probabilities</h2><p><strong>1. Unpredictability of Clients and Unconditional Idempotence</strong><br/><br/>An MCP server never knows in advance how "smart" the model calling it is: it could be a powerful cutting-edge model or a modest local model with 7B parameters. Weaker models might confuse the order of calls or resend requests at the slightest doubt. Therefore, absolutely all MCP server endpoints must withstand repeated calls, and the server itself must be prepared for the most unexpected sequences of actions. It would be bad if, during a payment, the model debited money from the payer multiple times. For now, our solution to this problem is not to allow financially significant operations through MCP without human involvement.</p><p>2. <strong>Enhanced Security and Authorization</strong><br/><br/>In MCP, the reliability of server-side protection becomes critically important. In an attempt to solve the given task, an LLM might generate an invalid or malicious request to your MCP server. In my opinion, it's best to separate authorization for classic APIs and MCP (otherwise, the LLM might decide to use its key for the regular API), and also to strictly check the correctness of all incoming data.</p><h2>Performance, Cost</h2><p><strong>1. Context Limitations and Token Costs</strong><br/><br/>In traditional APIs, the size of the JSON schema concerns us mainly in terms of network traffic. However, in MCP, each function description and each field directly enters the model's context window. The more extensive the schemas and responses, the more tokens are consumed at each step, and the more expensive the request becomes. Therefore, conciseness here directly reduces the cost of using MCP for clients.</p><p><strong>2. Integration</strong></p><p>In our API, we usually provide atomic methods that users employ to implement their business needs during integration. For example:</p><ul><li><p>creating a payment and holding funds in the payer's account (sending a request to YooKassa API and receiving the corresponding status);</p></li><li><p>various actions in other systems (checking stock balances, shipping goods);</p></li><li><p>creating and sending a receipt (sending a request to YooKassa API and receiving the corresponding status);</p></li><li><p>completing an operation and confirming (sending a request to YooKassa API and receiving the corresponding status).</p></li></ul><p>In MCP, there is no strict sequence. The model itself decides which functions to call and in what order, guided by the user's request and the dialogue context. If necessary, the LLM user can automate popular scenarios using Rules and Skills described in the AI agent. Instead of writing integration code, they define the system's behavior with simple text instructions for the LLM.</p><p>Thus, the cost of integration via LLM tends to zero.</p><p><strong>3. Latency</strong></p><p>From the API server implementation perspective, there's no difference here: the LLM sends a regular request to the server, which is processed, and then the server returns a response. For the end-user, the operation time consists of:</p><ol><li><p>LLM thinking time;</p></li><li><p>network delays when calling tools;</p></li><li><p>your server's request processing time.</p></li></ol><p>Moreover, all these steps can be repeated several times if the user clarifies the request in the LLM or the LLM receives an error.</p><p>An MCP server developer can significantly influence only point 3. Additionally, one can try to reduce the number of iterations by providing high-quality descriptions for the LLM.</p><h2>Conclusion</h2><p>The transition from classic APIs to MCP is not just a change in data transfer format but a paradigm shift: from strictly deterministic contracts, we are moving towards flexible and adaptive interaction.</p><p>Personally, I've been using LLMs more and more for everyday tasks lately, such as searching for flights or hotels. It saves a lot of time. Instead of manually sifting through options and visually checking criteria that cannot be strictly filtered, it's much more convenient to describe all your wishes to the LLM and get a ready-made selection immediately.</p><p>I think in the near future, large companies will increasingly consider MCP for working with the B2C segment, at least in areas where LLM errors cannot lead to catastrophic consequences.</p><p>And what MCPs are you missing right now? 😊</p></div>
+  </main>
+  <footer>
+    Translation generated with Gemini 2.5 Flash-Lite.
+    The original article remains the source of record.
+  </footer>
+</body>
+</html>

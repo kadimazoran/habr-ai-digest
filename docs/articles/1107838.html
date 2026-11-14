@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>We thought sample size was important in scoring. It turns out the number of defaults is what matters.</title>
+  <meta name="description" content="What&#x27;s more important for credit scoring: 50,000 applications or 500 actual defaults? I compared TabPFN-2.5 and CatBoost on 3 million anonymized bank applications. The experiment showed that with the same number of defaults, increasing the training set by 25 times hardly changes the ROC AUC. Th">
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.65;
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 32px 20px 64px;
+      color: #1f2328;
+    }
+    header {
+      border-bottom: 1px solid #d8dee4;
+      margin-bottom: 28px;
+      padding-bottom: 20px;
+    }
+    .source {
+      color: #57606a;
+      font-size: 0.95rem;
+    }
+    img, video, iframe {
+      max-width: 100%;
+      height: auto;
+    }
+    pre {
+      overflow-x: auto;
+      padding: 16px;
+      background: #f6f8fa;
+      border-radius: 6px;
+    }
+    code {
+      font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+    }
+    blockquote {
+      border-left: 4px solid #d0d7de;
+      margin-left: 0;
+      padding-left: 16px;
+      color: #57606a;
+    }
+    footer {
+      border-top: 1px solid #d8dee4;
+      margin-top: 40px;
+      padding-top: 20px;
+      color: #57606a;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>We thought sample size was important in scoring. It turns out the number of defaults is what matters.</h1>
+    <p>What&#x27;s more important for credit scoring: 50,000 applications or 500 actual defaults? I compared TabPFN-2.5 and CatBoost on 3 million anonymized bank applications. The experiment showed that with the same number of defaults, increasing the training set by 25 times hardly changes the ROC AUC. The article includes 60 experimental configurations, a comparison of two models, error analysis, and an attempt to find a balance between prediction quality and computational cost. Why the number of rare events can be more important than the volume of data – we explore this using real-world bank scoring.</p>
+    <p class="source">
+      Machine-translated from Habr.
+      <a href="https://habr.com/ru/articles/1107838/?utm_campaign=1107838&amp;utm_source=habrahabr&amp;utm_medium=rss">Read the original Russian article</a>.
+      Sat, 14 Nov 2026 11:19:32 GMT
+    </p>
+  </header>
+  <main>
+<div><h4>Comparing TabPFN-2.5 and CatBoost on Bank Data and Calculating the Cost of Quality Improvement</h4><p>When I started the experiment, the hypothesis was simple: the more applications in training, the better the model. This sounds obvious, but the data showed otherwise.</p><p>Let's take three training sets, each with exactly 500 default applications. The first has only 2,000 applications (25% defaults), the second has 5,000 (10%), and the third has 50,000 (1%). CatBoost shows almost the same quality on these: ROC AUC 0.683, 0.681, and 0.686. The sample size differs by 25 times, but the result is the same. Only the number of defaults coincided.</p><p>Read on to find out how I arrived at this, where the new tabular model TabPFN outperforms CatBoost, and why 'picking the best' turned out not to be the most useful question.</p><h2>The Task: Two Errors with Different Costs</h2><p>A bank decides whether to issue a loan and can make two types of errors. <strong>Type I error:</strong> a loan was issued to a client who later defaulted. This is a direct loss for the bank, and it's the primary concern in operations. <strong>Type II error:</strong> a loan was denied to a client who would have repaid it, meaning the bank lost potential profit. To compare models fairly, I didn't use a 0.5 threshold because the probabilities from models trained on datasets with different default rates are biased. Instead, I fixed the rejection rate: a threshold is found on the validation set that rejects 10% of the riskiest applications, and this threshold is then applied to the test set.</p><p>To compare models fairly, I didn't use a 0.5 threshold: the probabilities from models trained on datasets with different default rates are biased. Instead, I fixed the rejection rate: a threshold is found on the validation set that rejects 10% of the riskiest applications, and this threshold is then applied to the test set.</p><pre><code>import numpy as np</code><code>def threshold_by_reject_rate(p_val, q):</code><code>    # Threshold at which a proportion q of the riskiest applications are rejected.</code><code>    return np.quantile(p_val, 1 - q)</code><code>thr = threshold_by_reject_rate(p_val, q=0.10)</code><code>reject = p_test &gt;= thr</code><code>err1 = ((~reject) &amp; (y_test == 1)).sum() / (y_test == 1).sum()  # missed defaults</code><div><a href=
+  </main>
+  <footer>
+    Translation generated with Gemini 2.5 Flash-Lite.
+    The original article remains the source of record.
+  </footer>
+</body>
+</html>

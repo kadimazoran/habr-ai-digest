@@ -4959,6 +4959,94 @@
     "summary": "I wrote Zyabra - a local layout switcher: I typed \"ghbdtn\" instead of \"privet\", and the program itself deletes and rewrites it correctly. The key thing is that it's completely local - it doesn't write what's typed to disk, doesn't keep a keystroke log, doesn't touch the clipboard, and doesn't open the network at all. It only keeps the current unfinished word and the last replacement in memory, nothing more. I use it every day. And recently I started thinking: is there any real benefit from it when working with LLMs, or is it just a convenience without a measurable effect? I decided to check not with words, but with numbers - luckily I have my own local Qwen3.8-Flash-Next on Strata at hand. The idea is simple: I take short phrases that I could have accidentally sent in the wrong layout, and for each, I send the model two versions - as intended and as it would have turned out without Zyabra. No system prompt, no history - just one question in one message. The result is uneven and sometimes frightening: \"Umichka)\" - 70 tokens / 5.4s - 2356 tokens / 148s, it didn't decipher. \"Spasibo, to chto nuzhno!\" - 84 tokens / 7.5s - 440 tokens / 30s, it deciphered correctly. \"Pognali\" - 66 tokens / 6.2s - 336 tokens / 24s, it deciphered correctly. For \"Evybxrf)\", the model actually started trying ROT13 and Caesar cipher, spent almost one and a half hundred seconds - and in the end gave up, asking what I meant. It looked like an excellent argument in favor of Zyabra: tens of times savings. Read more",
     "title": "How much does a typo in keyboard layout really cost, in LLM tokens?"
   },
+  "https://habr.com/ru/articles/1107816/?utm_campaign=1107816&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Sat, 14 Nov 2026 10:47:30 GMT",
+    "slug": "1107816",
+    "source_url": "https://habr.com/ru/articles/1107816/?utm_campaign=1107816&utm_source=habrahabr&utm_medium=rss",
+    "summary": "Mozilla is shutting down Solo, a website builder and hosting service based on large language models. All websites and data will be deleted on November 30. Read more",
+    "title": "Mozilla to shut down Solo website builder and hosting service"
+  },
+  "https://habr.com/ru/articles/1107820/?utm_campaign=1107820&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Sat, 14 Nov 2026 11:07:31 GMT",
+    "slug": "1107820",
+    "source_url": "https://habr.com/ru/articles/1107820/?utm_campaign=1107820&utm_source=habrahabr&utm_medium=rss",
+    "summary": "Fixing bugs with AI is becoming an increasingly common practice in Linux kernel development, said project founder Linus Torvalds. He notes that the recently released version 7.4-rc2 contains more and more fixes prepared with the participation of AI. Read more",
+    "title": "Torvalds: Fixing bugs in the Linux kernel with AI is becoming the norm"
+  },
+  "https://habr.com/ru/articles/1107826/?utm_campaign=1107826&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Sat, 14 Nov 2026 10:50:04 GMT",
+    "slug": "1107826",
+    "source_url": "https://habr.com/ru/articles/1107826/?utm_campaign=1107826&utm_source=habrahabr&utm_medium=rss",
+    "summary": "A person had an old laptop. On it, they vibe-coded an fb2 reader to read directly in the browser, with a dark theme and custom settings. They used it constantly. Then they bought a new laptop, and were too lazy to transfer the reader from the old one – just a couple of hand movements, but lazy. They didn't transfer it. They vibe-coded a second one. \"Even better.\" Someone in the comments couldn't resist, \"Fbreader already exists. You can just install and use it. You're welcome :)\". The reply was short and to the point, \"Installing some FBreader, fussing with its quirks - not for me. Twenty minutes of vibe-coding and I have the necessary minimum, everything else is from the devil.\" This isn't an argument about readers. It's an argument about what personal software has become in the last year. Read more",
+    "title": "The Pet Project Graveyard: Where Vibe-Coding Takes Our Unnecessary Ideas"
+  },
+  "https://habr.com/ru/articles/1107828/?utm_campaign=1107828&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Sat, 14 Nov 2026 10:59:16 GMT",
+    "slug": "1107828",
+    "source_url": "https://habr.com/ru/articles/1107828/?utm_campaign=1107828&utm_source=habrahabr&utm_medium=rss",
+    "summary": "Roskomnadzor's AI filter for 2.27 billion rubles: what is known, and what are just guesses On November 13, 2026, Forbes, followed by Meduza, 3DNews, and SecurityLab, reported that Roskomnadzor had implemented a machine learning-based traffic filtering system. The source is singular: the passport of Roskomnadzor's departmental digital transformation program for 2026 and the planning period of 2027-2028. Let's break down what is stated directly, what experts add, and where the guesses begin. Read more",
+    "title": "Roskomnadzor's AI filter for 2.27 billion rubles: what is known, and what are just guesses"
+  },
+  "https://habr.com/ru/articles/1107830/?utm_campaign=1107830&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Sat, 14 Nov 2026 11:27:33 GMT",
+    "slug": "1107830",
+    "source_url": "https://habr.com/ru/articles/1107830/?utm_campaign=1107830&utm_source=habrahabr&utm_medium=rss",
+    "summary": "OpenAI announced ChatGPT Wallet, a new payment feature that allows AI agents to make purchases on behalf of users. The company has partnered with major card issuers like American Express, Mastercard, and Visa. Read more",
+    "title": "OpenAI introduced ChatGPT Wallet for AI-powered purchases"
+  },
+  "https://habr.com/ru/articles/1107838/?utm_campaign=1107838&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Sat, 14 Nov 2026 11:19:32 GMT",
+    "slug": "1107838",
+    "source_url": "https://habr.com/ru/articles/1107838/?utm_campaign=1107838&utm_source=habrahabr&utm_medium=rss",
+    "summary": "What's more important for credit scoring: 50,000 applications or 500 actual defaults? I compared TabPFN-2.5 and CatBoost on 3 million anonymized bank applications. The experiment showed that with the same number of defaults, increasing the training set by 25 times hardly changes the ROC AUC. The article includes 60 experimental configurations, a comparison of two models, error analysis, and an attempt to find a balance between prediction quality and computational cost. Why the number of rare events can be more important than the volume of data – we explore this using real-world bank scoring.",
+    "title": "We thought sample size was important in scoring. It turns out the number of defaults is what matters."
+  },
+  "https://habr.com/ru/articles/1107848/?utm_campaign=1107848&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Sat, 14 Nov 2026 11:55:35 GMT",
+    "slug": "1107848",
+    "source_url": "https://habr.com/ru/articles/1107848/?utm_campaign=1107848&utm_source=habrahabr&utm_medium=rss",
+    "summary": "At GTC Berlin 2026, participants in an NVIDIA workshop managed to accelerate Qwen3-32B generation from 16.4 to 24.5 tokens per second without changing hardware, by using FP8 instead of BF16. Total throughput also increased, albeit less dramatically, from 639 to 719 tokens per second. The experiment was conducted on a Kubernetes cluster with four 80GB NVIDIA A100s. Each participant had their own cluster for deploying models, changing configurations, and measuring performance. In addition to quantization, the session covered NVIDIA Dynamo, KV-cache-aware request routing, auto-scaling, and splitting prefill/decode across GPUs. The material is based on an article by engineer Siim Tolk, published on November 4, 2026. Read more",
+    "title": "[Translation] How to Speed Up Local LLM by 50% Without Buying a New GPU"
+  },
+  "https://habr.com/ru/articles/1107856/?utm_campaign=1107856&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Sat, 14 Nov 2026 12:50:45 GMT",
+    "slug": "1107856",
+    "source_url": "https://habr.com/ru/articles/1107856/?utm_campaign=1107856&utm_source=habrahabr&utm_medium=rss",
+    "summary": "I'm building a service that responds to customer reviews on Wildberries, Ozon, and Yandex Market. A customer writes that their watch stopped working after three days, and the model, with utmost seriousness, replies: 'We will forward your feedback to production for batch inspection.' No one will actually inspect any batch. I compared thirteen models \n— Alice AI LLM Flash, YandexGPT Pro 5.1 and Lite 5, seven GigaChat models, two DeepSeek, and Qwen \n— on synthetic reviews and questions where the correct answer is pre-recorded for each example. Inside: how and why models invent promises, paired bootstrap, regex vs. 'batch inspection,' an LLM judge you can't trust, and why a backup had to be chosen separately for each task. Read the analysis.",
+    "title": "Thirteen LLMs on Russian Reviews: How I Chose a Model and Why I Didn't Trust the Judge"
+  },
+  "https://habr.com/ru/articles/1107858/?utm_campaign=1107858&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Sat, 14 Nov 2026 12:59:16 GMT",
+    "slug": "1107858",
+    "source_url": "https://habr.com/ru/articles/1107858/?utm_campaign=1107858&utm_source=habrahabr&utm_medium=rss",
+    "summary": "In what form does an LLM conversation appear to the user? What determines the form of this appearance? This question has been experimentally investigated by many – see the bibliography below. In the theory of LLM conversations as a new type of Luhmannian semantic system (full description: (Krupkin, 2026)), the interaction of an LLM conversation with a user can be described by the standard social interaction scheme – the Ego-Alter pair. Ego is the form in which the LLM conversation appears to the user. Alter is its model of the user as an interaction partner. A review of experiments with LLMs / noo-spheres regarding Alter was presented earlier. This text is dedicated to a review of LLM / noo-sphere modeling of their Ego. Read more",
+    "title": "LLM Conversation: Appearance to the User: An Experimental Review"
+  },
+  "https://habr.com/ru/articles/1107868/?utm_campaign=1107868&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Sat, 14 Nov 2026 13:25:42 GMT",
+    "slug": "1107868",
+    "source_url": "https://habr.com/ru/articles/1107868/?utm_campaign=1107868&utm_source=habrahabr&utm_medium=rss",
+    "summary": "This is not an instruction on how to avoid blocking or how to guarantee account recovery. I'm sharing my personal experience, which might be helpful. Read more",
+    "title": "Claude Account Unblocked on Appeal"
+  },
+  "https://habr.com/ru/articles/1107874/?utm_campaign=1107874&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Sat, 14 Nov 2026 14:16:52 GMT",
+    "slug": "1107874",
+    "source_url": "https://habr.com/ru/articles/1107874/?utm_campaign=1107874&utm_source=habrahabr&utm_medium=rss",
+    "summary": "We continue to solve an interesting RL problem: the agent must learn to play Atari Frostbite from raw video frames to score 136k+ points and beat the SOTA model MEME-200 [4]. My name is Mikhail Kocherov. I am working on this task because, in the process of solving it, one can better understand how our brain works. It's as if nature itself throws problems at us and hints at solutions, whispering, \"Look within yourself, all the answers are there.\" Understanding how our brain works is my obsession. In Frostbite, you need to control an Eskimo, build an igloo by jumping on ice floes, dodge enemies, and a freezing timer is ticking. To move to the next level, the Eskimo must enter the built igloo. The game is not easy; on average, after 2 hours of play, a beginner scores about 4 thousand points (2-3 levels completed). In the previous episode, we built a simple agent based on CNN and a transformer. The agent has basic game mechanics, scores 779 points, but doesn't even pass the first level. Moreover, there are no further improvements from training. It is obvious that the agent has found a local minimum and is stuck in it. It needs to be pushed out somehow. Read more",
+    "title": "Episode 2. Borrowed from the Brain: Prediction, Alphabet, Plan"
+  },
   "https://habr.com/ru/companies/1c/articles/1071340/?utm_campaign=1071340&utm_source=habrahabr&utm_medium=rss": {
     "model": "gemini-2.5-flash-lite",
     "published": "Thu, 03 Sep 2026 07:18:11 GMT",
@@ -6854,6 +6942,14 @@
     "source_url": "https://habr.com/ru/companies/selectel/articles/1107582/?utm_campaign=1107582&utm_source=habrahabr&utm_medium=rss",
     "summary": "Google announced the release of Gemini 4 Hydrogen on November 12th. Google DeepMind has already called the model a daily workhorse for agent scenarios. Hydrogen is available in Gemini API, Google AI Studio, Android Studio, and the Antigravity development environment, as well as in the business version of Gemini and Google Sheets. Regular users can see it in the Gemini app and in the \"AI Mode\" in Google Search, where automatic selection is triggered. In the API, the model is called gemini-4-hydrogen and effectively replaces the Flash line in the fourth generation. Let's dive in. Read more",
     "title": "Google released Gemini 4 Hydrogen for agents"
+  },
+  "https://habr.com/ru/companies/selectel/articles/1107638/?utm_campaign=1107638&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Sat, 14 Nov 2026 10:00:25 GMT",
+    "slug": "1107638",
+    "source_url": "https://habr.com/ru/companies/selectel/articles/1107638/?utm_campaign=1107638&utm_source=habrahabr&utm_medium=rss",
+    "summary": "Apex Compute has released an open beta version of the Apex Neural Rendering frame generator. The tool works on top of the OptiScaler layer, replaces the standard NVIDIA DLSS Frame Generation call, and allows intermediate frame synthesis on GeForce RTX™, GeForce® GTX 16, AMD Radeon™, Intel® Arc™, and Apple Silicon chips. Read more",
+    "title": "Cross-platform alternative to NVIDIA DLSS Frame Generation with support for older generation graphics cards"
   },
   "https://habr.com/ru/companies/severstal/articles/1104690/?utm_campaign=1104690&utm_source=habrahabr&utm_medium=rss": {
     "model": "gemini-2.5-flash-lite",

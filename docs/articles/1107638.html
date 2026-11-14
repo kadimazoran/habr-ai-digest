@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Cross-platform alternative to NVIDIA DLSS Frame Generation with support for older generation graphics cards</title>
+  <meta name="description" content="Apex Compute has released an open beta version of the Apex Neural Rendering frame generator. The tool works on top of the OptiScaler layer, replaces the standard NVIDIA DLSS Frame Generation call, and allows intermediate frame synthesis on GeForce RTX™, GeForce® GTX 16, AMD Radeon™, Intel® Arc™, and">
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.65;
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 32px 20px 64px;
+      color: #1f2328;
+    }
+    header {
+      border-bottom: 1px solid #d8dee4;
+      margin-bottom: 28px;
+      padding-bottom: 20px;
+    }
+    .source {
+      color: #57606a;
+      font-size: 0.95rem;
+    }
+    img, video, iframe {
+      max-width: 100%;
+      height: auto;
+    }
+    pre {
+      overflow-x: auto;
+      padding: 16px;
+      background: #f6f8fa;
+      border-radius: 6px;
+    }
+    code {
+      font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+    }
+    blockquote {
+      border-left: 4px solid #d0d7de;
+      margin-left: 0;
+      padding-left: 16px;
+      color: #57606a;
+    }
+    footer {
+      border-top: 1px solid #d8dee4;
+      margin-top: 40px;
+      padding-top: 20px;
+      color: #57606a;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Cross-platform alternative to NVIDIA DLSS Frame Generation with support for older generation graphics cards</h1>
+    <p>Apex Compute has released an open beta version of the Apex Neural Rendering frame generator. The tool works on top of the OptiScaler layer, replaces the standard NVIDIA DLSS Frame Generation call, and allows intermediate frame synthesis on GeForce RTX™, GeForce® GTX 16, AMD Radeon™, Intel® Arc™, and Apple Silicon chips. Read more</p>
+    <p class="source">
+      Machine-translated from Habr.
+      <a href="https://habr.com/ru/companies/selectel/articles/1107638/?utm_campaign=1107638&amp;utm_source=habrahabr&amp;utm_medium=rss">Read the original Russian article</a>.
+      Sat, 14 Nov 2026 10:00:25 GMT
+    </p>
+  </header>
+  <main>
+<div><figure><img loading="lazy" src="https://habrastorage.org/r/w1560/extt/46/59/56/465956470ff92fbd78971ab14b24119c.png"/></figure><p><a href="https://apexcompute.com/neural-rendering">Apex Compute</a> has released an open beta version of the Apex Neural Rendering frame generator. The tool works on top of the OptiScaler layer, replaces the standard NVIDIA DLSS Frame Generation call, and allows intermediate frame synthesis on GeForce RTX™, GeForce<sup>®</sup> GTX 16, AMD Radeon™, Intel<sup>®</sup> Arc™, and Apple Silicon chips.</p><h2>Architecture and Platforms</h2><p>ANR is a set of neural rendering tools positioned as a cross-platform alternative to NVIDIA DLSS. It includes three modules: super resolution, ray reconstruction, and frame generation. Currently, only the ANR FG frame generation component is available for download and testing, while the upscaling and denoising models for ray tracing are still in the training phase.</p><p>Interestingly, it boasts compatibility with graphics processors from different manufacturers and generations, including architectures without dedicated tensor cores. According to the project's official documentation, the ANR FG beta version supports the following platforms:</p><ul><li><p>GeForce RTX™ 20, 30, 40, and 50 series graphics cards, as well as the GeForce<sup>®</sup> GTX 16 lineup;</p></li><li><p>Radeon™ RX 5000, RX 6000, RX 7000, and RX 9000 accelerators, as well as the Steam Deck portable system;</p></li><li><p>Intel<sup>®</sup> Arc™ A and Intel<sup>®</sup> Arc™ B series discrete graphics cards;</p></li><li><p>Apple M1 and newer System-on-Chips running macOS 26 and above (with Metal graphics API support).</p></li></ul><p>On PCs, it supports Windows 10, Windows 11, Linux distributions, and SteamOS via the Proton compatibility layer.</p><h2>Claimed Performance</h2><p>Apex Compute emphasizes the compact size of its neural network model – 0.17 MB. According to the company's internal measurements on a GeForce RTX™ 5090 graphics card at 3840 × 2160 resolution, the ANR FG module takes 1.01 ms to synthesize one frame in double-generation mode, compared to 1.26 ms for standard NVIDIA DLSS Frame Generation. The video memory consumption was 214 MB versus 562 MB for NVIDIA's implementation (a reduction of approximately 62%).</p><div><figure><="lazy" src="https://habrastorage.org/r/w1560/getpro/habr/upload_files/bb6/10d/1bb/bb610d1bb5fca8a608b862ad27a8fe2f.png"/></figure><p><strong>A game server with creepers and a portal to the Nether.</strong></p><p>Mine resources, build structures, explore the Selectel world in Minecraft and win prizes.</p><p><a href="https://promo.selectel.ru/minecraft/?utm_source=habr.com&amp;utm_medium=referral&amp;utm_campaign=minecraft_news_hw-apex-dlss-alternative_141126_banner_ord"><strong>Explore →</strong></a></p></div><p>In the performance summary tables across different modes and architectures, the company claims a speed advantage of up to 2.4 times for the frame generation stage compared to competing algorithms. In tests on AMD Radeon™ RX 7800 XT, Intel<sup>® </sup>Arc™ B580, and Arc™ A770 graphics cards, the ANR FG solution outperforms AMD FSR™ 3.1 in frame rendering time. On the AMD Radeon™ RX 9060 XT graphics card, the results are mixed: in 2X mode, AMD FSR 3.1 is faster, but in triple and quadruple frame generation, AMD FSR 4 with machine learning takes the lead.</p><figure><img alt="Source." loading="lazy" src="https://habrastorage.org/r/w1560/extt/e4/57/ad/e457ad1dc8c293037fc98ccd73eded4f.png" title="Source."/><div><figcaption><a href="https://videocardz.com/newz/gamers-now-have-an-open-source-dlss-frame-generation-alternative-apex-claims-faster-performance-and-better-quality"><em>Source</em></a><em>.</em></figcaption></div></figure><p>To evaluate the visual quality of the synthesized frames, the developers provided examples from <a href="https://www.youtube.com/watch?v=xhzNx3seocQ&amp;t=1s">The Last of Us Part II Remastered</a> and <a href="https://www.youtube.com/watch?v=PCeYIUxwmtk">Hogwarts Legacy</a>, as well as calculations based on objective video quality assessment metrics (CGVQM-5, ColorVideoVDP, and PSNR) in generation modes from 2X to 6X. In all published manufacturer tables, ANR FG values exceed NVIDIA DLSS performance. For example, in 2X mode, it claims 96.59 points versus 93.66 for CGVQM-5 and 33.84 dB versus 31.22 dB for PSNR.</p><figure><img alt="Source." loading="lazy" src="https://habrastorage.org/r/w1560/extt/ba/ba/6f/baba6f74cb04b0adfbfb23d687f2fe22.png" title="Source."/><div><figcaption><a href="https://apexcompute.com/neural-rendering"><em>Source</em></a><em>.</em></figcaption></div></figure><h2>Technical Nuances</h2><p>Despite mentions of the project's openness, the neural network's source code has not yet been released on GitHub; only documentation and compiled beta version files are available in the repository. Apex Compute promises to release the code later.</p><p>ANR FG is integrated into games not as a native plugin, but through OptiScaler. The developers have released two build variants: a full package with a built-in modifier for a "clean" installation and a lightweight add-on for projects where OptiScaler is already in use.</p><figure><img alt="Source." loading="lazy" src="https://habrastorage.org/r/w1560/extt/76/dc/2d/76dc2d6331bdebd3c3021f1cdc01b6c2.png" title="Source."/><div><figcaption><a href="https://github.com/apex-compute/ANR/releases/tag/FG-V.B14"><em>Source</em></a><em>.</em></figcaption></div></figure><p>For Windows, the standard Microsoft Visual C++ 2015–2022 Redistributable (x64) libraries are required. After copying the files to the game folder, simply enable standard NVIDIA DLSS Frame Generation in the settings – the layer will intercept the call and launch its algorithm. For Apple Silicon computers, a separate testbed is available to compare ANR FG over the Metal API with the built-in MetalFX technology.</p><p>All speed and quality measurements presented are based solely on Apex Compute's internal tests. How this method of library substitution will perform in real games when the CPU is the bottleneck, and whether artifacts will appear in dynamic scenes, remains to be verified by independent testers.</p></div>
+  </main>
+  <footer>
+    Translation generated with Gemini 2.5 Flash-Lite.
+    The original article remains the source of record.
+  </footer>
+</body>
+</html>

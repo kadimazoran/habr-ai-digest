@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Episode 2. Borrowed from the Brain: Prediction, Alphabet, Plan</title>
+  <meta name="description" content="We continue to solve an interesting RL problem: the agent must learn to play Atari Frostbite from raw video frames to score 136k+ points and beat the SOTA model MEME-200 [4]. My name is Mikhail Kocherov. I am working on this task because, in the process of solving it, one can better understand how o">
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.65;
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 32px 20px 64px;
+      color: #1f2328;
+    }
+    header {
+      border-bottom: 1px solid #d8dee4;
+      margin-bottom: 28px;
+      padding-bottom: 20px;
+    }
+    .source {
+      color: #57606a;
+      font-size: 0.95rem;
+    }
+    img, video, iframe {
+      max-width: 100%;
+      height: auto;
+    }
+    pre {
+      overflow-x: auto;
+      padding: 16px;
+      background: #f6f8fa;
+      border-radius: 6px;
+    }
+    code {
+      font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+    }
+    blockquote {
+      border-left: 4px solid #d0d7de;
+      margin-left: 0;
+      padding-left: 16px;
+      color: #57606a;
+    }
+    footer {
+      border-top: 1px solid #d8dee4;
+      margin-top: 40px;
+      padding-top: 20px;
+      color: #57606a;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Episode 2. Borrowed from the Brain: Prediction, Alphabet, Plan</h1>
+    <p>We continue to solve an interesting RL problem: the agent must learn to play Atari Frostbite from raw video frames to score 136k+ points and beat the SOTA model MEME-200 [4]. My name is Mikhail Kocherov. I am working on this task because, in the process of solving it, one can better understand how our brain works. It&#x27;s as if nature itself throws problems at us and hints at solutions, whispering, &quot;Look within yourself, all the answers are there.&quot; Understanding how our brain works is my obsession. In Frostbite, you need to control an Eskimo, build an igloo by jumping on ice floes, dodge enemies, and a freezing timer is ticking. To move to the next level, the Eskimo must enter the built igloo. The game is not easy; on average, after 2 hours of play, a beginner scores about 4 thousand points (2-3 levels completed). In the previous episode, we built a simple agent based on CNN and a transformer. The agent has basic game mechanics, scores 779 points, but doesn&#x27;t even pass the first level. Moreover, there are no further improvements from training. It is obvious that the agent has found a local minimum and is stuck in it. It needs to be pushed out somehow. Read more</p>
+    <p class="source">
+      Machine-translated from Habr.
+      <a href="https://habr.com/ru/articles/1107874/?utm_campaign=1107874&amp;utm_source=habrahabr&amp;utm_medium=rss">Read the original Russian article</a>.
+      Sat, 14 Nov 2026 14:16:52 GMT
+    </p>
+  </header>
+  <main>
+<div><p>We continue to solve an interesting RL problem: the agent must learn to play <em>Atari Frostbite</em> from raw video frames to score 136k+ points and beat the SOTA model <em>MEME-200</em> [4]. My name is Mikhail Kocherov. I am working on this task because, in the process of solving it, one can better understand how our brain works. It's as if nature itself throws problems at us and hints at solutions, whispering, "Look within yourself, all the answers are there." Understanding how our brain works is my obsession.</p><p>In <em>Frostbite</em>, you need to control an Eskimo, build an igloo by jumping on ice floes, dodge enemies, and a freezing timer is ticking. To move to the next level, the Eskimo must enter the built igloo. The game is not easy; on average, after 2 hours of play, a beginner scores about 4 thousand points [5], which is 2-3 levels completed.</p><p><a href="https://habr.com/ru/articles/1100960/">In the previous episode</a>, we built a simple agent based on CNN and a transformer. The agent has basic game mechanics, scores 779 points, but doesn't even pass the first level. Moreover, there are no further improvements from training. It is obvious that the agent has found a local minimum and is stuck in it. It needs to be pushed out somehow.</p><div></div><h3>Predicting the Future</h3><p>Brainstorming with Gemini led to the idea that, to begin with, the agent needs to form concepts critical for completing the task in its mind. It should have, for example, representations of the igloo's state, the presence of a door, etc. To achieve this, we will make the agent predict the future. Our competitor, the <em>DreamerV3</em> model [3], does the same.</p><p>The logic is as follows. To predict the future, one must understand the physics of the processes occurring. If I drop a cup from my hand, it will fall to the floor and break. There is a model here: objects, their relationships with each other, and the physics of how everything develops over time. For the agent to predict the next frame (the future), it will be forced to develop internal concepts for the objects in the scene and how they interact with each other. Something like an internal, hidden language. The further the prediction horizon, the more powerful and abstract this language must be.</p><blockquote><p><strong>Prediction Machines</strong></p><p>In essence, life is an unsupervised learning environment. To survive and thrive in it, humans begin building models from the very first moments of life that allow them to anticipate the future. And then they refine these models until the end of their days. It all starts with learning basic physical laws (the cup example) and then moves on to more abstract topics (philosophy, theology, cosmology, etc.). This is not a metaphor. In 1999, Rao and Ballard, in their work on <em>predictive coding</em> [6], showed how this is implemented in the visual cortex of the brain: higher levels constantly predict the activation of lower levels, and lower levels report only the error of discrepancy.</p><p>An error in prediction is not a problem. It is an important trigger that causes people to correct models and learn something new (something went wrong, I need to figure out why). As a reward, we get a dose of dopamine – a neurotransmitter that encodes the prediction error of reward [7]. If predictions work flawlessly, we get bored. <strong>Therefore, eternal life would be a mortal torment!</strong></p><p>One could say that we, humans, are biological prediction machines that get a kick out of learning new things.</p></blockquote><p>Technically, predicting the next frame can be organized as follows. At time step <code>T+0</code>, the agent receives 4 frames as input. The agent converts them into 4 latent state vectors. We additionally make it generate a new latent <code>next_ob_latent</code> and compare it with the actual latent of the frame from the next step <code>T+1</code>. Initially, <code>next_ob_latent</code> will be simple garbage, and the mismatch penalty will be large. But then the agent will learn to reduce this penalty, and <code>next_ob_latent</code> will become close to the actual latent of the next step!</p><figure><img alt=
+  </main>
+  <footer>
+    Translation generated with Gemini 2.5 Flash-Lite.
+    The original article remains the source of record.
+  </footer>
+</body>
+</html>

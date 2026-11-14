@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Roskomnadzor&#x27;s AI filter for 2.27 billion rubles: what is known, and what are just guesses</title>
+  <meta name="description" content="Roskomnadzor&#x27;s AI filter for 2.27 billion rubles: what is known, and what are just guesses On November 13, 2026, Forbes, followed by Meduza, 3DNews, and SecurityLab, reported that Roskomnadzor had implemented a machine learning-based traffic filtering system. The source is singular: the passpor">
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.65;
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 32px 20px 64px;
+      color: #1f2328;
+    }
+    header {
+      border-bottom: 1px solid #d8dee4;
+      margin-bottom: 28px;
+      padding-bottom: 20px;
+    }
+    .source {
+      color: #57606a;
+      font-size: 0.95rem;
+    }
+    img, video, iframe {
+      max-width: 100%;
+      height: auto;
+    }
+    pre {
+      overflow-x: auto;
+      padding: 16px;
+      background: #f6f8fa;
+      border-radius: 6px;
+    }
+    code {
+      font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+    }
+    blockquote {
+      border-left: 4px solid #d0d7de;
+      margin-left: 0;
+      padding-left: 16px;
+      color: #57606a;
+    }
+    footer {
+      border-top: 1px solid #d8dee4;
+      margin-top: 40px;
+      padding-top: 20px;
+      color: #57606a;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Roskomnadzor&#x27;s AI filter for 2.27 billion rubles: what is known, and what are just guesses</h1>
+    <p>Roskomnadzor&#x27;s AI filter for 2.27 billion rubles: what is known, and what are just guesses On November 13, 2026, Forbes, followed by Meduza, 3DNews, and SecurityLab, reported that Roskomnadzor had implemented a machine learning-based traffic filtering system. The source is singular: the passport of Roskomnadzor&#x27;s departmental digital transformation program for 2026 and the planning period of 2027-2028. Let&#x27;s break down what is stated directly, what experts add, and where the guesses begin. Read more</p>
+    <p class="source">
+      Machine-translated from Habr.
+      <a href="https://habr.com/ru/articles/1107828/?utm_campaign=1107828&amp;utm_source=habrahabr&amp;utm_medium=rss">Read the original Russian article</a>.
+      Sat, 14 Nov 2026 10:59:16 GMT
+    </p>
+  </header>
+  <main>
+<div><p>Roskomnadzor's AI filter for 2.27 billion rubles: what is known, and what are just guesses</p><p>On November 13, 2026, Forbes, followed by Meduza, 3DNews, and SecurityLab, reported that Roskomnadzor had implemented a machine learning-based traffic filtering system. The source is singular: the passport of Roskomnadzor's departmental digital transformation program for 2026 and the planning period of 2027-2028. Let's break down what is stated directly, what experts add, and where the guesses begin.</p><h3>What is stated in the document</h3><p>According to summaries of the passport, the system cost 2.27 billion rubles, runs on a Russian model within Roskomnadzor's own infrastructure, and is integrated into the automated security system of the Russian internet segment (ASBI). ASBI manages TSPU equipment on operator networks, and TSPU, in turn, filters traffic using DPI: restricting sites, slowing down connections, and blocking protocols (Meduza, 13.11.2026; SecurityLab, 13.11.2026).</p><p>The contractor and technical specifications have not been disclosed. In May, it was reported that the Astra AI platform from "Group-Astra" might be used for this, but the new passport does not name the product, so the connection is not yet confirmed (3DNews, SecurityLab, 13.11.2026). According to SecurityLab, the system does not use large language models.</p><p>Separately, the 2026 program allocates another 3.99 billion rubles for the installation and modernization of TSPU and 6.2 billion rubles for equipment (3DNews, SecurityLab, 13.11.2026).</p><h3>What the system is for, according to publications</h3><p>3DNews writes that the system is designed to find tools for bypassing blocks, including VPNs, and sites with prohibited content. SecurityLab describes a possible principle: instead of matching against known addresses, domains, and signatures, it assesses the connection based on a combination of indirect signs. The list includes packet size and timing, session duration, inbound and outbound traffic ratio, and server characteristics, without decrypting the content.</p><p>It is important that this is a description of a possible application, not a published description of the implementation. The actual capabilities of the system have not been publicly confirmed.</p><h3>What we don't know</h3><ul><li><p>Accuracy. Test results, the proportion of correct detections, and the proportion of false positives have not been published anywhere (SecurityLab, 13.11.2026).</p></li><li><p>Impact on speed. Experts warn that at current speeds, the model could become a bottleneck and introduce delays (3DNews, 13.11.2026).</p></li><li><p>Place in the chain. The model might analyze traffic on the fly, or, as SecurityLab suggests, generate signatures that TSPU then applies. The latter option, in its assessment, is cheaper, but which one has actually been chosen is unknown.</p></li><li><p>Impact on VPNs. Neither Roskomnadzor nor Forbes has described it (Meduza, 13.11.2026).</p></li></ul><h3>Where the guesses begin</h3><p>Experts cited by the publications believe that the system is more of a predictive model than a language model: it assesses the probability of VPN usage based on external signs. From this, it follows that masking the address or protocol may not be enough on its own if the traffic statistics remain characteristic. This is an expert conclusion, not derived from the program passport (3DNews, 13.11.2026).</p><p>The same experts point to probable false positives: corporate VPNs and cloud connections could be caught by the filter. Again, this is a risk assessment, not documented cases.</p><h3>What has happened before</h3><p>In October 2026, the Ministry of Digital Development proposed using AI to find and block VPNs, and experts at the time warned of erroneous blocks at an early stage. The intention to create such a system was first announced in January 2026 (Meduza, SecurityLab, 13.11.2026).</p><h3>What's next</h3><p>As of November 14, 2026, there is no official statement from Roskomnadzor about this system; the content of the passport is known from Forbes' summary. Two things are worth watching: whether measurements will appear that show how the system affects specific protocols, and whether the agency itself will say anything about it.</p><p>We maintain a table of all blocks, slowdowns, and failures with dates and sources for each entry, including VPNs: <a href="http://otkroy.me/status/">otkroy.me/status/</a>. A brief news item on this topic with sources: <a href="http://otkroy.me/novosti/2026-11-13-rkn-ii-filtr/">otkroy.me/novosti/2026-11-13-rkn-ii-filtr/</a></p></div>
+  </main>
+  <footer>
+    Translation generated with Gemini 2.5 Flash-Lite.
+    The original article remains the source of record.
+  </footer>
+</body>
+</html>

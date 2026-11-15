@@ -1,0 +1,94 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Mounting an LLM as a Hard Drive: An Infinite File System in Python + FUSE</title>
+  <meta name="description" content="It&#x27;s no secret that language models lie, and they do so very convincingly, often with details. A year ago, if you asked an LLM for a link to a study, you&#x27;d get an article that no one had written. If you asked about a library method, the model would describe its arguments, even though such ">
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.65;
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 32px 20px 64px;
+      color: #1f2328;
+    }
+    header {
+      border-bottom: 1px solid #d8dee4;
+      margin-bottom: 28px;
+      padding-bottom: 20px;
+    }
+    .source {
+      color: #57606a;
+      font-size: 0.95rem;
+    }
+    img, video, iframe {
+      max-width: 100%;
+      height: auto;
+    }
+    pre {
+      overflow-x: auto;
+      padding: 16px;
+      background: #f6f8fa;
+      border-radius: 6px;
+    }
+    code {
+      font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+    }
+    blockquote {
+      border-left: 4px solid #d0d7de;
+      margin-left: 0;
+      padding-left: 16px;
+      color: #57606a;
+    }
+    footer {
+      border-top: 1px solid #d8dee4;
+      margin-top: 40px;
+      padding-top: 20px;
+      color: #57606a;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Mounting an LLM as a Hard Drive: An Infinite File System in Python + FUSE</h1>
+    <p>It&#x27;s no secret that language models lie, and they do so very convincingly, often with details. A year ago, if you asked an LLM for a link to a study, you&#x27;d get an article that no one had written. If you asked about a library method, the model would describe its arguments, even though such a method didn&#x27;t exist. The world is still fighting this: models are tied to knowledge bases, equipped with skills, and prompted with &#x27;answer only based on context.&#x27; This helps only partially. Fabrications still seep in where the model lacks facts. But what if we turn the question inside out? Are there tasks where plausible fabrication is needed in itself? Yes, and quite a few, for example: test data for programs, populating game worlds, traps for hackers. I&#x27;ll focus on the latter.</p>
+    <p class="source">
+      Machine-translated from Habr.
+      <a href="https://habr.com/ru/companies/selectel/articles/1107570/?utm_campaign=1107570&amp;utm_source=habrahabr&amp;utm_medium=rss">Read the original Russian article</a>.
+      Sun, 15 Nov 2026 08:00:51 GMT
+    </p>
+  </header>
+  <main>
+<div><figure><img loading="lazy" src="https://habrastorage.org/r/w1560/extt/04/e1/3c/04e13cd212efde83f4d9f20eb0ec8644.png"/></figure><p>It's no secret that language models lie, and they do so very convincingly, often with details. A year ago, if you asked an LLM for a link to a study, you'd get an article that no one had written. If you asked about a library method, the model would describe its arguments, even though such a method didn't exist. The world is still fighting this: models are tied to knowledge bases, equipped with skills, and prompted with 'answer only based on context.' This helps only partially. Fabrications still seep in where the model lacks facts.</p><p>But what if we turn the question inside out? Are there tasks where plausible fabrication is needed in itself? Yes, and quite a few, for example: test data for programs, populating game worlds, traps for hackers. I'll focus on the latter.</p><h2>The Problem</h2><p>In security, fake servers (called honeypots) have long been used. An attacker enters, leaves traces, and reveals themselves. The first problem is that an empty trap is immediately obvious, and filling it with configs, logs, and admin notes has to be done manually. A model, however, can produce such content quickly and in any quantity.</p><p>The second problem is more subtle, but anyone who has connected a model to their programs has encountered it. For a program to talk to an LLM, it needs a plugin, API, MCP server, or at least a wrapper. Meanwhile, in Unix, an interface has existed for half a century that all programs understand, from `ls` in '71 to Windows Explorer. It's called a file. Connect the model as a regular disk, and `find`, `grep`, `du`, file managers, and any scripts will immediately start working with it, without even realizing who they are dealing with.</p><p>From these two ideas, an experiment was born. I created a file system where there are no real files: the model invents folders and everything within them the moment they are accessed. Next, I'll explain how such a disk is structured, where `find` gets lost on it, what `grep` found instead of passwords, and how a second AI, acting as a hacker, believed a non-existent server five times in a row.</p><h2>How a Non-Existent Disk Works</h2><p>FUSE allows you to write a file system with an ordinary program. The Linux kernel receives a request like 'show what's in the folder' or 'read the file' and forwards it to your code. Whatever your code responds with, the program sees. I used the `mfusepy` library (which works with `libfuse3`) and wrote a class with two main methods. One is triggered when someone reads a folder, the second when someone opens a file.</p><pre><code>def listing(self, path):
+      if self.dirs.get(path) is not None:
+        return self.dirs[path] 
+       
+ text = ask(f"Папка: {path}\nПеречисли 6–12 файлов и подпапок, которые правдоподобно "
+              f"лежат в этой папке. По одному имени на строку, у подпапок в конце ставь /. "
+              f"У файлов обязательно расширение. Подпапок не больше трети.", 300)
+ entries = dict(e for e in map(clean_name, text.splitlines()) if e)
+ self.dirs[path] = entries
+ self.save() 
+       
+ return entries
+
+def content(self, path):
+    """Содержимое файла. Если его еще нет, просим модель написать."""
+    if self.files.get(path) is not None:
+        return self.files[path]
+    siblings = [n for n in self.listing(os.path.dirname(path)) if n != os.path.basename(path)]
+    text = ask(f"Файл: {path}\nСоседи по папке: {', '.join(siblings[:15])}\n"
+              f"Напиши полное правдоподобное содержимое этого файла.", 1200)
+    self.files[path] = text.encode()
+    self.save()
+    return self.files[path]</code><div><a href=
+  </main>
+  <footer>
+    Translation generated with Gemini 2.5 Flash-Lite.
+    The original article remains the source of record.
+  </footer>
+</body>
+</html>

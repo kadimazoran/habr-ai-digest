@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Why we still write bad software with AI</title>
+  <meta name="description" content="AI helps find bugs and refactor code. But by Friday, a new feature is needed again, and the cleanup of old code is postponed. After a stream about code quality, I decided to figure out why we use the &quot;dummy&quot; this way. The main thing in the investigation is not to blame yourself – it seems ">
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.65;
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 32px 20px 64px;
+      color: #1f2328;
+    }
+    header {
+      border-bottom: 1px solid #d8dee4;
+      margin-bottom: 28px;
+      padding-bottom: 20px;
+    }
+    .source {
+      color: #57606a;
+      font-size: 0.95rem;
+    }
+    img, video, iframe {
+      max-width: 100%;
+      height: auto;
+    }
+    pre {
+      overflow-x: auto;
+      padding: 16px;
+      background: #f6f8fa;
+      border-radius: 6px;
+    }
+    code {
+      font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+    }
+    blockquote {
+      border-left: 4px solid #d0d7de;
+      margin-left: 0;
+      padding-left: 16px;
+      color: #57606a;
+    }
+    footer {
+      border-top: 1px solid #d8dee4;
+      margin-top: 40px;
+      padding-top: 20px;
+      color: #57606a;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Why we still write bad software with AI</h1>
+    <p>AI helps find bugs and refactor code. But by Friday, a new feature is needed again, and the cleanup of old code is postponed. After a stream about code quality, I decided to figure out why we use the &quot;dummy&quot; this way. The main thing in the investigation is not to blame yourself – it seems we have problems with that. Read more</p>
+    <p class="source">
+      Machine-translated from Habr.
+      <a href="https://habr.com/ru/articles/1107946/?utm_campaign=1107946&amp;utm_source=habrahabr&amp;utm_medium=rss">Read the original Russian article</a>.
+      Sat, 14 Nov 2026 22:42:26 GMT
+    </p>
+  </header>
+  <main>
+<div><p>Habr, hello! My name is Nikita, I am a Rust developer.</p><p>On <a href="https://youtu.be/KFbxdTWsE6A?t=3494">a stream</a>, I heard a question: "How important is code quality in the era of AI?" Then they asked if all this struggle for quality still makes sense.</p><p>The speaker categorically disagreed. He talked about how an agent sends green pull requests, passes all checks, but the code still contains garbage. For example, inconsistency in class names. And you have to figure out how else to limit the dummy so that it notices such problems itself and understands that it's time to refactor.</p><p>I listened to this and experienced cognitive dissonance. I don't have such problems with agents. I specifically ask AI to find bugs, analyze questionable solutions, improve tests, and refactor. It works quite well.</p><p>I often see similar complaints on Habr and other platforms. People are quite harsh towards "vibe coding." Sometimes, just mentioning that you used an agent is enough to have your professional <s>in</s>competence discussed.</p><figure><img loading="lazy" src="https://habrastorage.org/r/w1560/extt/af/06/ac/af06ac5a5cf4b0229f5d463a605d7548.jpg"/></figure><p>We successfully wrote bad software even without AI. Temporary solutions remained in production for years, and the code in some projects was feared to be touched. We even repeated: "If it works, don't touch it." I fundamentally disagree with this approach. Now there is a dummy that can help sort all this out. So why, with such capabilities, do we continue to get bad software?</p><figure><img loading="lazy" src="https://habrastorage.org/r/w1560/extt/8d/90/78/8d9078647313d054f16388ccf122de68.jpg"/></figure><p>I wanted to understand what's going on and who's to blame. Although, as an old joke goes, the main thing in an investigation is not to blame yourself.</p><h3>The dummy can find errors, after all</h3><p>The dummy can help with a bug that occurs only on rare occasions. You can discuss with it what cases are missing in the tests and supplement old checks.</p><figure><img loading="lazy" src="https://habrastorage.org/r/w1560/extt/cd/25/2a/cd252a28f51441cdbf09399e2e1864eb.jpg"/></figure><p>At Meta, they created <a href="https://arxiv.org/abs/2402.09171">TestGen-LLM</a>, which supplements existing tests. New tests were collected and run, and then it was checked whether the coverage increased. Suggestions that passed automatic selection were reviewed by engineers. According to the authors, they accepted 73% of such recommendations into production.</p><p>When refactoring, you can first discuss why so much different logic has accumulated in one function and how to separate it. And give one-type edits in a bunch of files to a properly configured agent.</p><figure><img loading="lazy" src="https://habrastorage.org/r/w1560/extt/dd/64/3f/dd643fc92875f2be048adfbbb501975a.jpg"/></figure><p>In the <a href="https://survey.stackoverflow.co/2026/ai/data">Stack Overflow survey for 2026</a>, about 58% of respondents who answered the question about using AI used it for tests, and 64% for debugging and refactoring. For code generation in a familiar area, it was about 69%.</p><h3>It works, let's take the next task</h3><p>Here you are adding a feature with the dummy. It wrote the code, you looked at it, tried the usual scenario. It works.</p><figure><img loading="lazy" src="https://habrastorage.org/r/w1560/extt/f9/72/10/f97210f1ab457476260132121ebb772e.jpg"/></figure><p>You could linger and see what happens if the request is sent twice. Or if the neighboring service doesn't respond. The agent can help with that too. At the same time, look at the code itself: is it clear what it does, and how easy will it be to change?</p><p>But there's a temptation to close the task. The new button can already be shown to the user, and you can report that everything is ready. We'll notice the benefits of refactoring when we go back to this code. You'll check a rare scenario, make sure everything is okay, and then show the same button at the demo.</p><p>If, after each such result, you immediately take on the next feature, then from the agent we will mainly get more features. We'll leave the checking and refactoring for that wonderful day when we sort out the rest. <s>And in the wonderful future project_name, there will be no bugs and the code will be perfect.</s></p><figure><img loading="lazy" src="https://habrastorage.org/r/w1560/extt/86/4e/24/864e246e2d9864694881b9280f68e04f.jpg"/></figure><h3>The business needs a feature by Friday</h3><p>A manager can sincerely worry about quality. When users complain, support can't cope, and developers fix the last release instead of the next one, quality immediately becomes very important. It would be desirable for this to be noticeable when planning, otherwise it will be like that phrase about forgotten ravines.</p><p>With a new feature, it's clear what will be shown to the client on Friday. With refactoring an old module, the conversation is more difficult. You explain that later it will be easier to add new features. In response, they might ask why you can't finish the current one first. The old module works for now, right?</p><figure><img loading="lazy" src="https://habrastorage.org/r/w1560/extt/80/f7/bc/80f7bc1d288cd40d2abd1665aed4f01f.jpg"/></figure><p>Refactoring requires time now. And how much it will save on future tasks, you still have to try to estimate when these tasks are not even in the plan yet. The client is already waiting for the new feature.</p><p>The client pays to solve their problem. If they need a new capability, the answer "we have a feature freeze, we'll deal with technical debt first" might not satisfy them. They might go to a competitor who already has this capability while we tidy up the code.</p><p>The authors of a <a href="https://research.chalmers.se/publication/526629/file/526629_Fulltext.pdf">study on dealing with technical debt</a> compared how managers and developers assess it. Managers believed they supported this work more often than developers felt. Minor fixes were encouraged, while major overhauls were often postponed: there was a lack of clear explanation of benefits and a suitable way to redo everything. Developers ultimately didn't have time for this.</p><p>This study was published before the widespread use of agents. Now, working on an old module with AI is easier. But if the plan for Friday includes a new feature, then the dummy will be busy with that too.</p><figure><img loading="lazy" src="https://habrastorage.org/r/w1560/extt/8a/06/29/8a062926db268c19a5feab3508e1d3e0.png"/></figure><p>AI can be compared to a supercar. A professional will reach the finish line faster, while a beginner will crash on the first turn. Moreover, they will reach this turn much faster than they expected.</p><p>By "beginner," I mean those who make decisions too. You can manage development for years and accept the first working version from an agent as a finished product.</p><h3>Do it like we do here</h3><p>In an old project, the same solution is copied in several places. You bring the agent: "Look how we do things here, and add more." It might repeat the error that was in the sample. And then we show the result, saying, "This is what your AI wrote."</p><figure><img loading="lazy" src="https://habrastorage.org/r/w1560/extt/bd/a4/d0/bda4d007e8aa55fb1cc92817a87877ae.jpg"/></figure><p>In an <a href="https://arxiv.org/abs/2209.01549">experiment on broken windows and technical debt</a>, 29 developers extended systems with varying amounts of old problems. In more neglected code, participants more often added new things: duplicated functionality, chose unclear names.</p><p>In a <a href="https://arxiv.org/abs/2611.11455">November 2026 preprint</a>, they checked whether agents repeat vulnerabilities already present in the project. They were shown safe and vulnerable versions of existing code. In the latter case, similar vulnerabilities appeared more often in new changes. The request to follow the existing style amplified the effect.</p><figure><img loading="lazy" src="https://habrastorage.org/r/w1560/extt/10/35/d9/1035d9374e7b6271d151ec5bfe331417.jpg"/></figure><p>With the same agent, we could have analyzed the old solution and fixed the error in all its copies. But such a task wasn't even set: we asked for another feature, and we got it.</p><h3>A million lines are easier to sell</h3><p>Compare two fictional headlines:</p><blockquote><p>I rewrote a million lines from one language to another in 10 days with AI agents.</p></blockquote><p>And the second:</p><blockquote><p>AI helped me refactor a codebase.</p></blockquote><p>I would open the first one out of curiosity, at least. Why did they rewrite it, how did they manage it, what did they break, who did they leave it to? A million lines are already in the headline, but no details yet.</p><figure><img loading="lazy" src="https://habrastorage.org/r/w1560/extt/92/90/3a/92903ad87ef311203f7a675dd2177d26.jpg"/></figure><p>With the second one, you still need to figure it out. Maybe they renamed variables. Or maybe they removed a problem that made every new feature take a week to develop. Until you explain what changed, it's not very clear why you should read it.</p><p>And here, while thinking about it, I remembered an objection myself. You can also write about bugs like this:</p><blockquote><p>AI found a vulnerability that had been hidden in the code for <s>ten</s> ten years.</p></blockquote><p>I would read something like that too. And if you can get root on the server through this vulnerability, add "SHOCKING!" to the beginning of the headline. You can also talk about bugs loudly when there's such a story.</p><p>But such bugs are not found every day, at least not yet. In normal work, you're more likely to figure out why the page crashes with an empty list, or fix a filter that didn't account for one of the conditions. Users need these fixes, but the headline "AI helped fix the filter" is, to put it mildly, not catchy.</p><p>At the same time, someone might be calmly fixing old bugs with the dummy, bringing the project in order, and not publishing anything about it. We just won't know about it. Then we'll see the loud stories and decide that everyone is just generating more services.</p><p>And if you yourself constantly read about "rewrote over the weekend," you also want to try. It's clear that you can show off and boast about something. For ordinary refactoring, you still have to figure out how to tell about it. <s>And make sure they read past the headline.</s></p><figure><img loading="lazy" src="https://habrastorage.org/r/w1560/extt/64/f6/76/64f67650a05b0dace2c7a85cd65e48e8.jpg"/></figure><h3>And where am I in all this investigation</h3><p>In someone else's PR, you can quickly spot a problem and explain why it's not okay to do it that way. But if I myself need to release the same change by Friday? How thoroughly will I delve into it, and what will I consider sufficient verification?</p><figure><img loading="lazy" src="https://habrastorage.org/r/w1560/extt/1b/dc/4b/1bdc4bb686c3a52faac38cee58b6e29f.jpg"/></figure><p>The business primarily pays us for the functionality the client expects. There is often not enough time for testing and refactoring. So we task the dummy with the next feature, and leave the old problems for later.</p><p>It seems to me that we are using AI's capabilities for improving quality less than its capabilities for accelerating development. In this investigation, we have, after all, come to ourselves, which I congratulate us all on.</p><p>P.S. SHOCKING! At the end of the article, a <a href="https://t.me/random_access_memes">link to my channel with IT memes</a> was found. To exploit it, just click "Subscribe." Thanks for reading.</p></div>
+  </main>
+  <footer>
+    Translation generated with Gemini 2.5 Flash-Lite.
+    The original article remains the source of record.
+  </footer>
+</body>
+</html>

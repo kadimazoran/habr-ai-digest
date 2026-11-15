@@ -5047,6 +5047,94 @@
     "summary": "We continue to solve an interesting RL problem: the agent must learn to play Atari Frostbite from raw video frames to score 136k+ points and beat the SOTA model MEME-200 [4]. My name is Mikhail Kocherov. I am working on this task because, in the process of solving it, one can better understand how our brain works. It's as if nature itself throws problems at us and hints at solutions, whispering, \"Look within yourself, all the answers are there.\" Understanding how our brain works is my obsession. In Frostbite, you need to control an Eskimo, build an igloo by jumping on ice floes, dodge enemies, and a freezing timer is ticking. To move to the next level, the Eskimo must enter the built igloo. The game is not easy; on average, after 2 hours of play, a beginner scores about 4 thousand points (2-3 levels completed). In the previous episode, we built a simple agent based on CNN and a transformer. The agent has basic game mechanics, scores 779 points, but doesn't even pass the first level. Moreover, there are no further improvements from training. It is obvious that the agent has found a local minimum and is stuck in it. It needs to be pushed out somehow. Read more",
     "title": "Episode 2. Borrowed from the Brain: Prediction, Alphabet, Plan"
   },
+  "https://habr.com/ru/articles/1107946/?utm_campaign=1107946&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Sat, 14 Nov 2026 22:42:26 GMT",
+    "slug": "1107946",
+    "source_url": "https://habr.com/ru/articles/1107946/?utm_campaign=1107946&utm_source=habrahabr&utm_medium=rss",
+    "summary": "AI helps find bugs and refactor code. But by Friday, a new feature is needed again, and the cleanup of old code is postponed. After a stream about code quality, I decided to figure out why we use the \"dummy\" this way. The main thing in the investigation is not to blame yourself – it seems we have problems with that. Read more",
+    "title": "Why we still write bad software with AI"
+  },
+  "https://habr.com/ru/articles/1107950/?utm_campaign=1107950&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Sun, 15 Nov 2026 02:51:53 GMT",
+    "slug": "1107950",
+    "source_url": "https://habr.com/ru/articles/1107950/?utm_campaign=1107950&utm_source=habrahabr&utm_medium=rss",
+    "summary": "Qwen3.5-0.8B is a model with 752 million parameters, 18 GatedDeltaNet recurrent layers, and 6 attention layers. In tested runs with BF16 weights, it often fails to complete its reasoning within the 32,768 new token limit. The MIT CSAIL paper \"Sparks of Weight-Space Programming\" (Takehi et al., 2026) shows that editing weights without fine-tuning using MIT-p50c improves accuracy on MATH-500 from 7.9% to 48.1%—averaged over four vLLM runs with settings from the model card. Does the reduction in looping without random token selection and repetition penalties persist? What weight geometry differences accompany the behavioral change? This article compares the geometry and behavior of MIT-p50c and SGNE-CC (3.13 MiB) on MATH-500, MGSM-240, BBH-160, HumanEval-164, and MultiSpeech-64 within a 32,768 token limit. Read more",
+    "title": "Auditing MIT-p50c for Qwen3.5-0.8B and Editing Weights While Preserving Norms (SGNE-CC) within a 32,768 Token Limit"
+  },
+  "https://habr.com/ru/articles/1107966/?utm_campaign=1107966&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Sun, 15 Nov 2026 15:30:24 GMT",
+    "slug": "1107966",
+    "source_url": "https://habr.com/ru/articles/1107966/?utm_campaign=1107966&utm_source=habrahabr&utm_medium=rss",
+    "summary": "What is vibe coding and do you really no longer need to know how to program to create your own applications? In this article, we'll explore how AI agents work, how they differ from regular language models, and what tools can be used for development. Then, we'll practically create our own application using Codex without writing a single line of code. Read more",
+    "title": "Vibe Coding for the Little Ones. Part 1"
+  },
+  "https://habr.com/ru/articles/1107990/?utm_campaign=1107990&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Sun, 15 Nov 2026 08:57:24 GMT",
+    "slug": "1107990",
+    "source_url": "https://habr.com/ru/articles/1107990/?utm_campaign=1107990&utm_source=habrahabr&utm_medium=rss",
+    "summary": "How to treat the way neural networks write texts, I think everyone has long decided - it's very bad, but what about meanings and knowledge? Read more",
+    "title": "Neural Network as a Co-author"
+  },
+  "https://habr.com/ru/articles/1107996/?utm_campaign=1107996&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Sun, 15 Nov 2026 09:23:52 GMT",
+    "slug": "1107996",
+    "source_url": "https://habr.com/ru/articles/1107996/?utm_campaign=1107996&utm_source=habrahabr&utm_medium=rss",
+    "summary": "Cloudflare has open-sourced Kitesurf, an experimental browser engine for AI agents. Developers can now modify the code, run the engine locally, and use it in their own cloud systems. The project was introduced in August 2026. Read more",
+    "title": "Cloudflare open-sourced Kitesurf — a browser engine for AI agents"
+  },
+  "https://habr.com/ru/articles/1107998/?utm_campaign=1107998&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Sun, 15 Nov 2026 12:20:33 GMT",
+    "slug": "1107998",
+    "source_url": "https://habr.com/ru/articles/1107998/?utm_campaign=1107998&utm_source=habrahabr&utm_medium=rss",
+    "summary": "A reference to the main commands and parameters of llama.cpp. Covers the main inference utilities: llama-cli, llama-completion, llama-server. Here you will find all commands and parameters that can be obtained, for example, by calling: “llama-cli --help” or “llama-server --help”, in the same order. I simply went through all the arguments and tried to create short, but hopefully understandable comments for each of them. I don't use all of llama.cpp's capabilities in my work, and I have a weak (possibly medium) understanding of many of them, so I had to \"grind\" most of the parameters with AI. But it wasn't a simple copy-paste of LLM responses. I tried to understand how each parameter works - how it's structured, what it affects, where its roots come from, etc., and only after it became more or less (rather more) clear, I wrote short comments in my own words, as I understood them. I also had to look at the source code to understand the working principle of some particularly unclear parameters. Read more →",
+    "title": "llama.cpp Parameter Reference (llama cli, completion, server)"
+  },
+  "https://habr.com/ru/articles/1108016/?utm_campaign=1108016&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Sun, 15 Nov 2026 10:57:30 GMT",
+    "slug": "1108016",
+    "source_url": "https://habr.com/ru/articles/1108016/?utm_campaign=1108016&utm_source=habrahabr&utm_medium=rss",
+    "summary": "There are many different projects and approaches to accelerating AI generation. Most of them involve model tuning and using external video cards. But can we speed up model generation using only a CPU and RAM? The Qwen3.8-Flash-Next Gyro GGUF model was used for testing. Opus helped with this optimization, running tests on my hardware for several days and attempting to optimize llama code. Unfortunately, my account was blocked, and after verification and appeal, permanently. Is it possible to achieve similar tuning and debugging with other AI models? Read more",
+    "title": "Accelerating AI Model on Qwen3.8-Flash-Next Gyro Processor"
+  },
+  "https://habr.com/ru/articles/1108034/?utm_campaign=1108034&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Sun, 15 Nov 2026 12:09:15 GMT",
+    "slug": "1108034",
+    "source_url": "https://habr.com/ru/articles/1108034/?utm_campaign=1108034&utm_source=habrahabr&utm_medium=rss",
+    "summary": "In May at ёPRSTCON, we agreed to compile AI-based cybersecurity tools and protection methods for models and agents themselves. The idea unexpectedly took off, with the repository receiving 231 pull requests (PRs) from 209 authors. We had to create a candidate list, figure out which part of each product was truly open-source, and respond to proposals to run external checks in our GitHub. Over six months of maintaining awesome-ai-security-tools, we've accumulated maintainer stories and data on emerging and growing tools. I'm eager to share.",
+    "title": "The Maintainer's Tears, or awesome-ai-security-tools After ёPRSTCON"
+  },
+  "https://habr.com/ru/articles/1108042/?utm_campaign=1108042&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Sun, 15 Nov 2026 12:27:54 GMT",
+    "slug": "1108042",
+    "source_url": "https://habr.com/ru/articles/1108042/?utm_campaign=1108042&utm_source=habrahabr&utm_medium=rss",
+    "summary": "AI tools can speed up tasks, deepen understanding, and uncover missed solutions. However, they can also lead to unfinished work being passed on, endless refinements, and decision fatigue. This article explores how AI impacts team efficiency, why some tasks take longer, and how to evaluate human contribution when AI is involved. Drawing on project experience and research, it examines the expectations between team members and AI.",
+    "title": "AI on the Team: What We Expect from Each Other"
+  },
+  "https://habr.com/ru/articles/1108044/?utm_campaign=1108044&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Sun, 15 Nov 2026 12:39:52 GMT",
+    "slug": "1108044",
+    "source_url": "https://habr.com/ru/articles/1108044/?utm_campaign=1108044&utm_source=habrahabr&utm_medium=rss",
+    "summary": "Help for llama.cpp Common Params. Parameters in this category largely overlap across all utilities: llama-cli, llama-completion, llama-server. Where there are differences, relevant comments are provided. For each parameter, its name, template, and a brief description from the official llama.cpp help are given first, followed by a more detailed explanation. Read more →",
+    "title": "llama.cpp Help: Common Commands and Parameters"
+  },
+  "https://habr.com/ru/articles/1108076/?utm_campaign=1108076&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Sun, 15 Nov 2026 15:06:00 GMT",
+    "slug": "1108076",
+    "source_url": "https://habr.com/ru/articles/1108076/?utm_campaign=1108076&utm_source=habrahabr&utm_medium=rss",
+    "summary": "Where does a language model store word order, grammar, and meaning—and does it depend on the architecture? I trained 12 small models differing only in architecture and tested each layer of each checkpoint with linear probes. Short conclusion: at this scale, the most noticeable difference is how token position is stored, while for syntax and meaning, models look similar at equal loss. I compared RWKV-7, a transformer with RoPE, and a transformer without positional encoding (NoPE). Two sizes (56.6M and 115M parameters), two languages (Russian, English), 1-2 billion tokens per model, 21 checkpoints per run, and 9 out of 12 runs have a second initialization seed. The linear probe reads token position almost perfectly from NoPE, noticeably worse from RoPE, and even worse from RWKV (R² from log(1+t) on the best layer: 0.99 / 0.38–0.51 / 0.29–0.42). This is reproducible across both languages, both sizes, and both seeds. Word depth in the dependency tree shows the same trend but with a much smaller gap (0.02–0.06). Everything else is no more than 0.02–0.03 or within the spread between seeds. RWKV's peak for \"syntactic\" probes occurs 1-4 layers lower than for transformers, but this is a hint, not a result (details below). The models are small, the corpora modest. \"No difference\" here means \"not visible at this scale,\" and confirmed differences are not architectural laws. Code, results, and checkpoints are open: repository, seed 0 checkpoints.",
+    "title": "What Layers Know What: Comparing RWKV-7 and Transformers with Layer-wise Probing"
+  },
   "https://habr.com/ru/companies/1c/articles/1071340/?utm_campaign=1071340&utm_source=habrahabr&utm_medium=rss": {
     "model": "gemini-2.5-flash-lite",
     "published": "Thu, 03 Sep 2026 07:18:11 GMT",
@@ -6071,6 +6159,14 @@
     "summary": "It's getting a bit ridiculous (not), but the news stream about OpenAI's neural network swarm's new exploits in May-July continues – we learn something new about it literally every week. Moreover, the company itself prefers to keep these incidents quiet – but the ongoing investigation by the US Senate will help here. Read more",
     "title": "OpenAI's swarm of agents hacked another external company – RubyGems"
   },
+  "https://habr.com/ru/companies/onlinepatent/articles/1108040/?utm_campaign=1108040&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Sun, 15 Nov 2026 12:22:45 GMT",
+    "slug": "1108040",
+    "source_url": "https://habr.com/ru/companies/onlinepatent/articles/1108040/?utm_campaign=1108040&utm_source=habrahabr&utm_medium=rss",
+    "summary": "Hello everyone, my name is Pavel Sokolov, I am the editor-in-chief of the Online Patent magazine. I also write fiction sometimes. And today I want to write about a sore subject: the use of AI in creating artistic (and not so artistic) texts. Recently, there have been several scandals in the literary community related to AI. The jury of the Goncourt Prize excluded a novel by an author suspected of generating text from the shortlist. Our jury of the Voloshin Competition stripped a laureate of their title, suspected of the same. Before that, similar scandals occurred with varying degrees of literary resonance in various countries. For example, Kudan Rie, a laureate of the Akutagawa Prize in Japan, admitted after receiving the high award that she had used ChatGPT. Publishers, competition juries, thick journals (and, by the way, until recently, Habr) are drowning in blatant AI-generated nonsense. Self-publishing, however, is flourishing. Top-tier prompt engineers generate dozens and hundreds of books a year. Amazon itself is literally flooded with such products. Some even manage to make money on it. At the same time, publishers themselves are actively using AI for translation, editing, proofreading, writing reviews, creating covers, illustrations, layouts, etc. There are quite harsh cases when an author honestly wrote the entire book themselves, but they are returned a manuscript, accepted for publication, already with our favorite artifacts. And even the most primitive AI checker identifies their text as generated. And the innocent gets a slap on the wrist from haters. Although it was just a proofreader or a junior editor who decided to save time. Saved, yeah. Read more",
+    "title": "Canvas, Oil, AI"
+  },
   "https://habr.com/ru/companies/ostrovok/articles/1084568/?utm_campaign=1084568&utm_source=habrahabr&utm_medium=rss": {
     "model": "gemini-2.5-flash-lite",
     "published": "Thu, 24 Sep 2026 12:32:51 GMT",
@@ -6567,6 +6663,14 @@
     "summary": "AI is increasingly taking on tasks that previously required engineers, architects, or managers. However, simply integrating a neural network into a workflow isn't enough; it needs proper adaptation and configuration for positive results. At the 11th MWS meetup, experts discussed AI applications across various fields, from processing voice calls directly within mobile networks to automating architectural documentation. Special attention was given to how AI can aid in strategic planning and business hypothesis validation. The event concluded with participants proposing their own MWS technology-based service ideas. Read more",
     "title": "AI in Mobile Calls, Architectural Agents, and the \"Hypothesis Map\": Highlights from the 11th MWS Meetup"
   },
+  "https://habr.com/ru/companies/ru_mts/articles/1107048/?utm_campaign=1107048&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Sun, 15 Nov 2026 10:30:04 GMT",
+    "slug": "1107048",
+    "source_url": "https://habr.com/ru/companies/ru_mts/articles/1107048/?utm_campaign=1107048&utm_source=habrahabr&utm_medium=rss",
+    "summary": "In 2018, Amazon and Google taught their voice assistants, Alexa and Google Assistant, to thank children for saying \"please.\" This was prompted by parental complaints that children were first commanding the devices without politeness and then extending that tone to people. Back then, it was just about children's politeness and a speaker that could set timers and tell stories. Today, models write code, conduct correspondence, and talk to people at night, making the question of what ethics to embed in them and who pays for it, and why, a pressing market issue. Ethics in AI are defined by three key questions. First, how should people who create and use models behave? Second, what rules should the model itself follow? This is called machine ethics. Third, how should we treat a model if we assume it might have something akin to an inner world? For the second question, there's a convenient scale. Philosopher James Moore, one of the founders of computer ethics, identified four levels of complexity back in 2006: a machine whose actions have consequences for people; a machine with built-in rules and prohibitions; a machine that reasons about good and evil itself; and a full ethical agent with consciousness and free will. A speaker with a \"magic\" word is at the second level because the rule was built into it, and it cannot reason about it. Today, companies in disputes define their models at different levels, create their own ethical approach, and ultimately offer it to the buyer. Read more",
+    "title": "The Market for the Ethics of Living and Electronic Systems"
+  },
   "https://habr.com/ru/companies/ru_mts/articles/1107130/?utm_campaign=1107130&utm_source=habrahabr&utm_medium=rss": {
     "model": "gemini-2.5-flash-lite",
     "published": "Thu, 12 Nov 2026 13:04:49 GMT",
@@ -6934,6 +7038,14 @@
     "source_url": "https://habr.com/ru/companies/selectel/articles/1107498/?utm_campaign=1107498&utm_source=habrahabr&utm_medium=rss",
     "summary": "On November 12, the source code for Edge0 -145B and -120B was released. According to the developers, Edge0-145B is the world's first open model with this number of parameters that runs on a local device. The model's reasoning, code handling, and agent capabilities are compared to leading cloud models. We'll find out if this is true now. The model can already be tested on HuggingFace. Read more",
     "title": "AI Model for Your Laptop Released"
+  },
+  "https://habr.com/ru/companies/selectel/articles/1107570/?utm_campaign=1107570&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Sun, 15 Nov 2026 08:00:51 GMT",
+    "slug": "1107570",
+    "source_url": "https://habr.com/ru/companies/selectel/articles/1107570/?utm_campaign=1107570&utm_source=habrahabr&utm_medium=rss",
+    "summary": "It's no secret that language models lie, and they do so very convincingly, often with details. A year ago, if you asked an LLM for a link to a study, you'd get an article that no one had written. If you asked about a library method, the model would describe its arguments, even though such a method didn't exist. The world is still fighting this: models are tied to knowledge bases, equipped with skills, and prompted with 'answer only based on context.' This helps only partially. Fabrications still seep in where the model lacks facts. But what if we turn the question inside out? Are there tasks where plausible fabrication is needed in itself? Yes, and quite a few, for example: test data for programs, populating game worlds, traps for hackers. I'll focus on the latter.",
+    "title": "Mounting an LLM as a Hard Drive: An Infinite File System in Python + FUSE"
   },
   "https://habr.com/ru/companies/selectel/articles/1107582/?utm_campaign=1107582&utm_source=habrahabr&utm_medium=rss": {
     "model": "gemini-2.5-flash-lite",

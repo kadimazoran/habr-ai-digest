@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Cloudflare open-sourced Kitesurf — a browser engine for AI agents</title>
+  <meta name="description" content="Cloudflare has open-sourced Kitesurf, an experimental browser engine for AI agents. Developers can now modify the code, run the engine locally, and use it in their own cloud systems. The project was introduced in August 2026. Read more">
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.65;
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 32px 20px 64px;
+      color: #1f2328;
+    }
+    header {
+      border-bottom: 1px solid #d8dee4;
+      margin-bottom: 28px;
+      padding-bottom: 20px;
+    }
+    .source {
+      color: #57606a;
+      font-size: 0.95rem;
+    }
+    img, video, iframe {
+      max-width: 100%;
+      height: auto;
+    }
+    pre {
+      overflow-x: auto;
+      padding: 16px;
+      background: #f6f8fa;
+      border-radius: 6px;
+    }
+    code {
+      font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+    }
+    blockquote {
+      border-left: 4px solid #d0d7de;
+      margin-left: 0;
+      padding-left: 16px;
+      color: #57606a;
+    }
+    footer {
+      border-top: 1px solid #d8dee4;
+      margin-top: 40px;
+      padding-top: 20px;
+      color: #57606a;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Cloudflare open-sourced Kitesurf — a browser engine for AI agents</h1>
+    <p>Cloudflare has open-sourced Kitesurf, an experimental browser engine for AI agents. Developers can now modify the code, run the engine locally, and use it in their own cloud systems. The project was introduced in August 2026. Read more</p>
+    <p class="source">
+      Machine-translated from Habr.
+      <a href="https://habr.com/ru/articles/1107996/?utm_campaign=1107996&amp;utm_source=habrahabr&amp;utm_medium=rss">Read the original Russian article</a>.
+      Sun, 15 Nov 2026 09:23:52 GMT
+    </p>
+  </header>
+  <main>
+<div><p>Cloudflare has <a href="https://developers.cloudflare.com/changelog/post/2026-11-12-kitesurf-open-source/">open-sourced</a> Kitesurf, an experimental browser engine for AI agents. Developers can now modify the code, run the engine locally, and use it in their own cloud systems. The project was <a href="https://habr.com/ru/articles/1068126/">introduced</a> in August 2026.</p><figure><img loading="lazy" src="https://habrastorage.org/r/w1560/extt/3f/47/b7/3f47b7dc870d55355f6c360c84d44d9b.jpg"/></figure><p>Kitesurf loads web pages, parses HTML, applies CSS, executes JavaScript, and creates screenshots. AI agents can use it to interact with websites. For example, they can navigate pages, extract content, and fill out forms. Cloudflare notes that, thanks to its architecture, the engine reduces costs for such tasks, and uses less memory and CPU time compared to Chromium.</p><p>The project is based on modules written in Rust, recompiled into WebAssembly: Blitz handles HTML and structure, Stylo from Firefox handles CSS processing, and Linebender libraries handle text and 2D graphics. A separate engine, Boa, is used for JavaScript. It runs within WebAssembly.</p><p>For control, you can use the Chrome DevTools Protocol (CDP), and connect AI agents via MCP. At the end of summer, the Cloudflare team also added support for WebMCP. On websites that support this technology, agents can directly call described functions instead of sequentially clicking through the page.</p><figure><img loading="lazy" src="https://habrastorage.org/r/w1560/extt/5d/ec/1a/5dec1ad148d700b3519336a814f43637.jpg"/></figure><p>In performance tests, Kitesurf saves memory and CPU time but is slower. For example, for creating screenshots, the CPU time and memory usage were 352 ms and 58 MiB, respectively, with an execution time of 1.51 seconds. For Chromium, the results were 1880 ms, 399 MiB, and 1.21 seconds, respectively.</p><p>Kitesurf's compatibility with the modern web is not yet complete. For instance, the engine is not suitable for video playback, WebGL, or long authenticated sessions. Rendering may also differ from Chromium.</p><p>Kitesurf's code is <a href="https://github.com/cloudflare/kitesurf">available</a> on GitHub, and documentation has been <a href="https://kitesurf.dev/">published</a> on the project website.</p></div>
+  </main>
+  <footer>
+    Translation generated with Gemini 2.5 Flash-Lite.
+    The original article remains the source of record.
+  </footer>
+</body>
+</html>

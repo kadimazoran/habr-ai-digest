@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Auditing MIT-p50c for Qwen3.5-0.8B and Editing Weights While Preserving Norms (SGNE-CC) within a 32,768 Token Limit</title>
+  <meta name="description" content="Qwen3.5-0.8B is a model with 752 million parameters, 18 GatedDeltaNet recurrent layers, and 6 attention layers. In tested runs with BF16 weights, it often fails to complete its reasoning within the 32,768 new token limit. The MIT CSAIL paper &quot;Sparks of Weight-Space Programming&quot; (Takehi et ">
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.65;
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 32px 20px 64px;
+      color: #1f2328;
+    }
+    header {
+      border-bottom: 1px solid #d8dee4;
+      margin-bottom: 28px;
+      padding-bottom: 20px;
+    }
+    .source {
+      color: #57606a;
+      font-size: 0.95rem;
+    }
+    img, video, iframe {
+      max-width: 100%;
+      height: auto;
+    }
+    pre {
+      overflow-x: auto;
+      padding: 16px;
+      background: #f6f8fa;
+      border-radius: 6px;
+    }
+    code {
+      font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+    }
+    blockquote {
+      border-left: 4px solid #d0d7de;
+      margin-left: 0;
+      padding-left: 16px;
+      color: #57606a;
+    }
+    footer {
+      border-top: 1px solid #d8dee4;
+      margin-top: 40px;
+      padding-top: 20px;
+      color: #57606a;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Auditing MIT-p50c for Qwen3.5-0.8B and Editing Weights While Preserving Norms (SGNE-CC) within a 32,768 Token Limit</h1>
+    <p>Qwen3.5-0.8B is a model with 752 million parameters, 18 GatedDeltaNet recurrent layers, and 6 attention layers. In tested runs with BF16 weights, it often fails to complete its reasoning within the 32,768 new token limit. The MIT CSAIL paper &quot;Sparks of Weight-Space Programming&quot; (Takehi et al., 2026) shows that editing weights without fine-tuning using MIT-p50c improves accuracy on MATH-500 from 7.9% to 48.1%—averaged over four vLLM runs with settings from the model card. Does the reduction in looping without random token selection and repetition penalties persist? What weight geometry differences accompany the behavioral change? This article compares the geometry and behavior of MIT-p50c and SGNE-CC (3.13 MiB) on MATH-500, MGSM-240, BBH-160, HumanEval-164, and MultiSpeech-64 within a 32,768 token limit. Read more</p>
+    <p class="source">
+      Machine-translated from Habr.
+      <a href="https://habr.com/ru/articles/1107950/?utm_campaign=1107950&amp;utm_source=habrahabr&amp;utm_medium=rss">Read the original Russian article</a>.
+      Sun, 15 Nov 2026 02:51:53 GMT
+    </p>
+  </header>
+  <main>
+<div><p>Qwen3.5-0.8B is a model with 752 million parameters, 18 GatedDeltaNet recurrent layers, and 6 attention layers. In tested runs with BF16 weights, it often fails to complete its reasoning within the 32,768 new token limit. The MIT CSAIL paper <a href="https://rikiyat.github.io/blog/weight-space-programming/"><em>Sparks of Weight-Space Programming</em></a> (Takehi et al., 2026) shows that editing weights without fine-tuning using MIT-p50c improves accuracy on MATH-500 from 7.9% to 48.1%—averaged over four vLLM runs with settings from the model card: a temperature of 0.6 and a penalty of 1.5 for already used tokens. The base model reaches the length limit in 93.0% of generations on this benchmark. <strong>Does the reduction in looping without random token selection and repetition penalties persist? What weight geometry differences accompany the behavioral change?</strong></p><p>The study compares the geometry and behavior of MIT-p50c and <strong>SGNE-CC</strong> (<em>Spherical Gated Norm-preserving Edit, Column-Constrained</em>—a spherical weight edit preserving norms with recurrent gates, 3.13 MiB in size), obtained without fine-tuning by rotating output columns while preserving their original length. This method is termed DNA weight editing.</p><h3>1. Weight Edit Geometry: MIT-p50c vs. SGNE-CC</h3><p>In each of the two modified output matrices of MIT-p50c's feed-forward blocks—layers with indices 15 and 19, totaling 128 columns—the first singular mode accounts for over 99.999% of the increment energy. The norms of individual columns are increased by up to 114.3%. All 18 GatedDeltaNet recurrent layers, comprising 75% of the network's depth, remain untouched.</p><p><strong>SGNE-CC</strong> modifies the directions of 802 output columns in 15 feed-forward layers and 1,182 columns in 9 recurrent layers. Attention layers are unchanged; additionally, one gate bias row in layer 16 is modified. <strong>The maximum deviation in the norm of a modified column after BF16 rounding is approximately 0.16%</strong>, with a median rotation angle of 8.8°. In the matrices of layers 15 and 19, the first singular mode accounts for 67.6% and 73.4% of the increment energy, respectively. Layer numbering starts from zero. The model's architecture, tokenizer, and execution program remain the same.</p><h3>2. Mathematical Tests with a 32,768 Token Generation Limit (MATH-500)</h3><figure><img alt="MATH-500 — greedy mode" loading="lazy" src="https://habrastorage.org/r/w1560/webt/83/db/c0/83dbc02c9300d69b388f2057a4365316.png"/><div><figcaption>MATH-500 — greedy mode</figcaption></div></figure><p><strong>Fig. 1. At zero temperature and without repetition penalty, SGNE-CC completes generation more often than MIT-p50c.</strong> <em>A stratified sample of 100 problems from seven sections of MATH-500; A100, BF16. Strict scoring requires completion of generation and a correct result in the final answer box.</em></p><p>Under strict scoring, the base model solves none of the 100 problems, MIT-p50c solves 4, and <strong>SGNE-CC solves 44</strong> (McNemar's paired test, p &lt; 0.0001). The average response length for SGNE-CC and MIT-p50c is 6.0k and 31.6k tokens, respectively, with the generation limit being reached in 10% and 96% of cases. For MIT-p50c, reasoning remains incomplete in 96 out of 100 problems; for SGNE-CC, there are 4 such cases.</p><p>In a problem involving the conversion of Cartesian to polar coordinates, MIT-p50c arrives at the correct result early but then repeats a verification paragraph 451 times until the generation limit is reached. SGNE-CC provides the final answer and stops at 2,394 tokens. When using the fallback method of extracting the answer from incomplete reasoning according to the MIT rule, SGNE-CC's advantage is maintained: 45 out of 100 versus 20 out of 100, with the base model achieving 7 (p &lt; 0.0001). The primary MIT rule, which does not require generation completion, yields 44, 5, and 1, respectively.</p><p>Following the author's protocol, after freezing the weights, 49 problems were selected from 300 problems outside the calibration set for separate verification. At zero temperature, SGNE-CC solves <strong>24 out of 49</strong>, while the base model solves none (p &lt; 0.0001).</p><figure><img alt="MATH-500 — full run" loading="lazy" src="https://habrastorage.org/r/w1560/webt/35/3a/37/353a37981fdfd9a671d14955a27ecdde.png"/><div><figcaption>MATH-500 — full run</figcaption></div></figure><p><strong>Fig. 2. In model card mode, SGNE-CC generates four times shorter than the external MIT-p50c benchmark, while accuracy comparison depends on the engine.</strong> <em>The bars for the base model and MIT-p50c in the graph show the average of four vLLM runs from the MIT repository; SGNE-CC represents a single generator run on PyTorch.</em></p><p>Model card mode changes MIT-p50c's result on the same hundred problems from 4 to 45, while SGNE-CC's total score remains unchanged at 44 out of 100. In a direct run on PyTorch across all 500 problems, the base model solves 39 (7.8%), MIT-p50c solves <strong>259 (51.8%)</strong>, and SGNE-CC solves <strong>235 (47.0%)</strong>; nominal p = 0.048. The average length for SGNE-CC is 4.0 times shorter: 5.3k versus 21.1k tokens. The generation limit is reached 17.6 times less often: 1.6% versus 28.2%.</p><p>When compared to the first external MIT run in vLLM—241 out of 500, or 48.2%—no statistically significant difference with SGNE-CC was found (p = 0.67). This does not establish model equivalence. Compared to the average of four vLLM runs, SGNE-CC's responses are 4.1 times shorter, and reaching the limit is 20.7 times less frequent.</p><figure><img alt="MATH-500 — higher levels" loading="lazy" src="https://habrastorage.org/r/w1560/webt/63/f8/f0/63f8f0fb796dd0545ec3f18b621ebf89.png"/><div><figcaption>MATH-500 — higher levels</figcaption></div></figure><p><strong>Fig. 3. On problems with difficulty levels 3–5, SGNE-CC reaches the generation limit significantly less often; MIT-p50c solves more problems.</strong> <em>Direct run on 367 MATH-500 problems in model card mode.</em></p><p>On difficulty levels 3–5, the 32,768 token limit is reached by 124 MIT-p50c responses out of 367 (33.8%) and by <strong>7 SGNE-CC responses (1.9%)</strong>—a difference of 17.7 times. The average length for SGNE-CC is 3.7 times shorter: 6.3k versus 23.5k tokens. Correct answers are 143 (39.0%) for SGNE-CC versus 156 (42.5%) for MIT-p50c, p = 0.24; the base model solves 17 out of 367 (4.6%). In elementary and high school algebra, MIT-p50c performs better: 96 out of 142 versus 77 out of 142 for SGNE-CC. Across the sum of four sections—advanced algebra, calculus, geometry, and combinatorics with probability theory—the scores are reversed: 37 out of 178 for MIT-p50c versus 46 out of 178 for SGNE-CC.</p><h3>3. Transfer to Other Tasks and Method Limitations</h3><p>According to the study protocol, both edits were selected using mathematical problems. The table shows their transfer to other domains. P-values refer to the comparison of the proportion of accepted answers for SGNE-CC and MIT-p50c.</p><div><div><table><tbody><tr><th><p>Test Set (32,768 Token Limit)</p></th><th><p>Qwen3.5-0.8B</p></th><th><p>MIT-p50c</p></th><th><p>SGNE-CC</p></th><th><p>Length and Truncations (SGNE vs. MIT)</p></th></tr><tr><td><p>MGSM-240 Text Arithmetic (6 languages, card)</p></td><td><p>62/240 (25.8%)</p></td><td><p><strong>137/240 (57.1%)</strong></p></td><td><p>100/240 (41.7%)</p></td><td><p>2.8x shorter (3.1 vs. 8.6k), p &lt; 0.0001 (40 blocks)</p></td></tr><tr><td><p>BBH-160 Symbolic Logic (card)</p></td><td><p>3/160 (1.9%)</p></td><td><p>81/160 (50.6%)</p></td><td><p>66/160 (41.3%)</p></td><td><p><strong>6.9x shorter</strong> (2.4 vs. 16.9k), truncations <strong>1 vs. 23</strong>, p = 0.058</p></td></tr><tr><td><p>HumanEval-164 Python Code (card, archival test run)</p></td><td><p>26/164 (15.9%)</p></td><td><p>51/164 (31.1%)</p></td><td><p>46/164 (28.0%)</p></td><td><p>Reasoning <strong>14.1x shorter</strong> (449 vs. 6,334 tokens), truncations <strong>0% vs. 13.4%</strong>, p = 0.47</p></td></tr><tr><td><p>MultiSpeech-64 Texts (8 languages, zero temp, auto-filter)</p></td><td><p>2/64 (3.1%)</p></td><td><p>17/64 (26.6%)</p></td><td><p><strong>23/64 (35.9%)</strong></p></td><td><p>Unfinished reasoning: <strong>5 vs. 22</strong>, median 2,235 vs. 32,768 tokens, p = 0.21</p></td></tr></tbody></table></div></div><p>On MGSM-240, SGNE-CC's shorter generation is accompanied by a significant loss in accuracy compared to MIT-p50c: 100 correct answers versus 137, considering the consolidation of translations for 40 problems. In logic and code generation, both edits yield more correct answers than the base model; SGNE-CC, in particular, generates shorter responses than MIT-p50c and rarely reaches the limit. In multilingual generation, the automatic filter checks for response completion and repetition thresholds but not content accuracy. In model card mode, both edits exhibit occasional hieroglyphic insertions; SGNE-CC still shows repetitions in German—4 cases out of 8.</p><p>Column norm preservation has been verified on the weights. To isolate its causal contribution from the edit's rank, layer set, and the gate bias in layer 16, separate experiments are needed. One direct run is published per task; the association of individual files with accelerators in logs is not preserved. The split of MATH-500 into 200 calibration and 300 untouched problems is provided in the manifest. P-values are nominal, without correction for multiple comparisons. The search for rotation angles is not published. The weight edit file (<code>sgne_cc_dna_delta.npz</code>, 3.13 MiB), all 26 trace files (37 SHA-256 sums), and the CPU verification programs are available:</p><pre><code>python3 apply_dna_patch.py --verify-only
+python3 scripts/verify_paper_metrics.py
+</code><div><a href="https://sourcecraft.dev/"><span></span></a></div></pre><p><em>Note: This work was done in collaboration with AI—both in the research itself and in the preparation of code, figures, and text. The author bears full responsibility for the conclusions, while all numbers and measurements are verified locally using the open patch, 26 traces, and CPU scripts.</em></p><p><a href="https://github.com/Nondual-Observer/dna-weight-editing">Article, Traces, and Verifications (GitHub)</a> · <a href="https://doi.org/10.5281/zenodo.24235218">DOI Archive (Zenodo)</a> · <a href="https://huggingface.co/Nondual-Observer/Qwen3.5-0.8B-SGNE-CC">SGNE-CC Weight Edit (Hugging Face)</a></p><p>The code, weight edit, and author's text are open-sourced under the Apache-2.0 license; third-party data, code, and logs retain their original licenses.</p></div>
+  </main>
+  <footer>
+    Translation generated with Gemini 2.5 Flash-Lite.
+    The original article remains the source of record.
+  </footer>
+</body>
+</html>

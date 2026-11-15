@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>llama.cpp Parameter Reference (llama cli, completion, server)</title>
+  <meta name="description" content="A reference to the main commands and parameters of llama.cpp. Covers the main inference utilities: llama-cli, llama-completion, llama-server. Here you will find all commands and parameters that can be obtained, for example, by calling: “llama-cli --help” or “llama-server --help”, in the same order. ">
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.65;
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 32px 20px 64px;
+      color: #1f2328;
+    }
+    header {
+      border-bottom: 1px solid #d8dee4;
+      margin-bottom: 28px;
+      padding-bottom: 20px;
+    }
+    .source {
+      color: #57606a;
+      font-size: 0.95rem;
+    }
+    img, video, iframe {
+      max-width: 100%;
+      height: auto;
+    }
+    pre {
+      overflow-x: auto;
+      padding: 16px;
+      background: #f6f8fa;
+      border-radius: 6px;
+    }
+    code {
+      font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+    }
+    blockquote {
+      border-left: 4px solid #d0d7de;
+      margin-left: 0;
+      padding-left: 16px;
+      color: #57606a;
+    }
+    footer {
+      border-top: 1px solid #d8dee4;
+      margin-top: 40px;
+      padding-top: 20px;
+      color: #57606a;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>llama.cpp Parameter Reference (llama cli, completion, server)</h1>
+    <p>A reference to the main commands and parameters of llama.cpp. Covers the main inference utilities: llama-cli, llama-completion, llama-server. Here you will find all commands and parameters that can be obtained, for example, by calling: “llama-cli --help” or “llama-server --help”, in the same order. I simply went through all the arguments and tried to create short, but hopefully understandable comments for each of them. I don&#x27;t use all of llama.cpp&#x27;s capabilities in my work, and I have a weak (possibly medium) understanding of many of them, so I had to &quot;grind&quot; most of the parameters with AI. But it wasn&#x27;t a simple copy-paste of LLM responses. I tried to understand how each parameter works - how it&#x27;s structured, what it affects, where its roots come from, etc., and only after it became more or less (rather more) clear, I wrote short comments in my own words, as I understood them. I also had to look at the source code to understand the working principle of some particularly unclear parameters. Read more →</p>
+    <p class="source">
+      Machine-translated from Habr.
+      <a href="https://habr.com/ru/articles/1107998/?utm_campaign=1107998&amp;utm_source=habrahabr&amp;utm_medium=rss">Read the original Russian article</a>.
+      Sun, 15 Nov 2026 12:20:33 GMT
+    </p>
+  </header>
+  <main>
+<div><p>A reference to the main commands and parameters of <strong>llama.cpp</strong>. Covers the main inference utilities: <strong>llama-cli</strong>, <strong>llama-completion</strong>, <strong>llama-server</strong>. Here you will find all commands and parameters that can be obtained, for example, by calling: “<strong>llama-cli --help</strong>” or “<strong>llama-server --help</strong>”, in the same order. I simply went through all the arguments and tried to create short, but hopefully understandable comments for each of them.</p><p>I don't use all of <strong>llama.cpp</strong>'s capabilities in my work, and I have a weak (possibly medium) understanding of many of them, so I had to "grind" most of the parameters with AI. But it wasn't a simple copy-paste of <strong>LLM</strong> responses. I tried to understand how each parameter works - how it's structured, what it affects, where its roots come from, etc., and only after it became more or less (rather more) clear, I wrote short comments in my own words, as I understood them. I also had to look at the source code to understand the working principle of some particularly unclear parameters.</p><p>Parameters whose descriptions I am not sufficiently confident about will be marked with the following text:</p><p><strong>[Note: the description of the parameter's operation may not be accurate]</strong></p><p>For each parameter, its name, template, and a brief description from the standard <strong>llama.cpp</strong> help will be given first. This will be followed by my more detailed commentary.</p><p>This reference does not claim to be the most accurate and complete explanation of the main commands and parameters of <strong>llama.cpp</strong>, but I hope it will be useful, including for beginners.</p><p>In general, the idea initially arose to understand all the possibilities of working with <strong>llama.cpp</strong> for myself, as I use this distribution very often. As a result, all this evolved into the creation of a full-fledged reference, and weeks of digging. I hope the time was not spent in vain.</p><p>There will be several parts, divided by categories, in the order they can be seen through the main CLI utilities (e.g., “<strong>llama-cli --help</strong>”). Categories: <strong>Common Params</strong>, <strong>Sampling Params</strong>, <strong>Speculative Params</strong>, <strong>Example-Specific Params</strong>. A total of 4 categories.</p><p>Categories with explanations are listed at the very bottom of this article, and they will also serve as navigation through the parts. In total, there will be approximately 4 parts (4 articles), but it may turn out to be more.</p><p>I will also duplicate the reference on my <strong>GitHub</strong>, but not separately by categories, but on one page, in the order in which the help for the main <strong>llama.cpp</strong> CLI utilities is organized. More precisely, there will be 2 pages in total: <a href="https://github.com/peterplv/llama.cpp.help/blob/main/docs/parameters_rus.md">reference in Russian</a> and <a href="https://github.com/peterplv/llama.cpp.help/blob/main/docs/parameters_eng.md">reference in English</a>. Probably, this option will be more convenient for someone. By the way, I did the English translation using AI, but proofread every word and corrected the texts manually. Modern <strong>LLMs</strong>, although they handle translation well, sometimes use not the most successful words and phrases, and often generate translations that are too literary for technical text. I tried to make the explanations accurate, concise, but without sacrificing the understanding of the meaning.</p><p>You can bookmark this introduction, which simultaneously serves as a table of contents for all parts (with links to articles) and will be updated as subsequent materials become available. Or you can save the link to GitHub in the desired language; the <a href="https://github.com/peterplv/llama.cpp.help">reference</a> there will also be regularly updated. I will also post all news and updates in <a href="https://t.me/peter_touch_ai">my Telegram channel</a> (you can also leave comments and suggest edits there, more on this below).</p><p>A big request for feedback! If you notice any inaccuracies or have additions, please let me know in the comments to the relevant articles. I will attach detailed explanations to the materials. You can also make changes to the <a href="https://github.com/peterplv/llama.cpp.help">reference on GitHub</a> (for any version - rus/eng). Or you can write to me by email or Telegram; contacts are in my profile here. In general, as it is more convenient for you, but high-quality feedback is maximally welcomed, especially if you work closely with <strong>llama.cpp</strong> and are familiar with the capabilities of this distribution in practice.</p><p>So, let's get started.</p><h3>llama.cpp Parameter Categories</h3><p><strong>Common Params.</strong></p><p>General parameters. Mostly completely overlap between all utilities (<strong>llama-cli</strong>, <strong>llama-completion</strong>, <strong>llama-server</strong>). The largest part of the parameters. In fact, this series of articles begins precisely with Common Params.</p><p>Link: <a href="https://habr.com/ru/articles/1108044/">https://habr.com/ru/articles/1108044/</a></p><p><strong>Sampling Params.</strong></p><p>Sampling parameters. For example, these are temperature, top-p, top-k, min-p, etc., but not only that. Sampling parameters also largely overlap between utilities. I must admit, I was very surprised when I looked more closely at the possibilities of controlling model behavior through sampling in <strong>llama.cpp</strong>.</p><p>Link: [material in progress]</p><p><strong>Speculative Params.</strong></p><p>Speculative decoding parameters. Settings related to the use of Draft models.</p><blockquote><p>Reference: A Draft model is a small, fast model that works in conjunction with the main (large) model. It quickly predicts several next tokens and passes them to the main model for verification. If the prediction is confirmed, the main model accepts these tokens without generating them step-by-step itself, which speeds up the overall text generation.</p></blockquote><p>Link: [material in progress]</p><p><strong>Example-Specific Params.</strong></p><p>Parameters specific to a particular utility. For example, <strong>llama-server</strong> has its own special parameters for working with the server part. These parameters are not present in <strong>llama-cli</strong>, <strong>llama-completion</strong>, etc. Each utility has its own specific parameters, some more, some less. A significant portion of specific parameters are found in <strong>llama-server</strong>. One might interpret the word "specific" as something rarely used, but this is not the case. This section lists, among other things, very important and necessary parameters for regular work.</p><p>Link: [material in progress]</p></div>
+  </main>
+  <footer>
+    Translation generated with Gemini 2.5 Flash-Lite.
+    The original article remains the source of record.
+  </footer>
+</body>
+</html>

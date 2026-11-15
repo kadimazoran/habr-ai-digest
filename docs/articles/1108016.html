@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Accelerating AI Model on Qwen3.8-Flash-Next Gyro Processor</title>
+  <meta name="description" content="There are many different projects and approaches to accelerating AI generation. Most of them involve model tuning and using external video cards. But can we speed up model generation using only a CPU and RAM? The Qwen3.8-Flash-Next Gyro GGUF model was used for testing. Opus helped with this optimiza">
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.65;
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 32px 20px 64px;
+      color: #1f2328;
+    }
+    header {
+      border-bottom: 1px solid #d8dee4;
+      margin-bottom: 28px;
+      padding-bottom: 20px;
+    }
+    .source {
+      color: #57606a;
+      font-size: 0.95rem;
+    }
+    img, video, iframe {
+      max-width: 100%;
+      height: auto;
+    }
+    pre {
+      overflow-x: auto;
+      padding: 16px;
+      background: #f6f8fa;
+      border-radius: 6px;
+    }
+    code {
+      font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+    }
+    blockquote {
+      border-left: 4px solid #d0d7de;
+      margin-left: 0;
+      padding-left: 16px;
+      color: #57606a;
+    }
+    footer {
+      border-top: 1px solid #d8dee4;
+      margin-top: 40px;
+      padding-top: 20px;
+      color: #57606a;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Accelerating AI Model on Qwen3.8-Flash-Next Gyro Processor</h1>
+    <p>There are many different projects and approaches to accelerating AI generation. Most of them involve model tuning and using external video cards. But can we speed up model generation using only a CPU and RAM? The Qwen3.8-Flash-Next Gyro GGUF model was used for testing. Opus helped with this optimization, running tests on my hardware for several days and attempting to optimize llama code. Unfortunately, my account was blocked, and after verification and appeal, permanently. Is it possible to achieve similar tuning and debugging with other AI models? Read more</p>
+    <p class="source">
+      Machine-translated from Habr.
+      <a href="https://habr.com/ru/articles/1108016/?utm_campaign=1108016&amp;utm_source=habrahabr&amp;utm_medium=rss">Read the original Russian article</a>.
+      Sun, 15 Nov 2026 10:57:30 GMT
+    </p>
+  </header>
+  <main>
+<div><p>There are many different projects and approaches to accelerating AI generation. Most of them involve model tuning and using external video cards. But can we speed up model generation using only a CPU and RAM?</p><p>The <a href="https://huggingface.co/agentionai/Qwen3.8-Flash-Next-Gyro-GGUF">Qwen3.8-Flash-Next Gyro GGUF</a> model was used for testing.</p><p>Opus helped with this optimization, running tests on my hardware for several days and attempting to optimize llama code. Unfortunately, my account was blocked, and after verification and appeal, permanently. Is it possible to achieve similar tuning and debugging with other AI models?</p><div><div><table><tbody><tr><th><p>Opus Patch Version</p></th><th><p>Prompt t/s</p></th><th><p>Generation t/s</p></th><th><p>Comparison with Original</p></th></tr><tr><td><p>fix23</p></td><td><p>10.98 / 10.05</p></td><td><p>2.41 / 2.38</p></td><td><p>×1.23</p></td></tr><tr><td><p><strong>fix37</strong></p></td><td><p>11.21 / 14.49</p></td><td><p><strong>2.72 / 2.73</strong></p></td><td><p><strong>×1.40</strong></p></td></tr><tr><td><p>original</p></td><td><p>4.12 / 3.75</p></td><td><p>1.97 / 1.92</p></td><td><p>—</p></td></tr></tbody></table></div></div><p>Graph of generation speed decrease depending on context.<br/></p><figure><img loading="lazy" src="https://habrastorage.org/r/w1560/extt/eb/b2/7c/ebb27c19318f32ad786ca0e7a0941174.png"/></figure><p><br/>Patches and developments are here. Write in the comments your hardware and how much the generation speed increases for you after applying the patches.<br/><a href="https://gitlab.com/agentionai-group/llama.cpp/-/merge_requests/1">https://gitlab.com/agentionai-group/llama.cpp/-/merge_requests/1</a><br/><br/>Also, please specify which model and from which harness can work for a long time like cloud code – performing such complex and low-level work on your personal hardware.</p></div>
+  </main>
+  <footer>
+    Translation generated with Gemini 2.5 Flash-Lite.
+    The original article remains the source of record.
+  </footer>
+</body>
+</html>

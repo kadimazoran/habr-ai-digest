@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Qwen4-Max is Out. What&#x27;s the Difference from the Preview Version?</title>
+  <meta name="description" content="On November 16, just five days after the preview version was shown, Alibaba released the full flagship model Qwen4-Max. This is a multimodal MoE giant with 2.4 trillion parameters (71 billion active) and a context window of 1 million tokens, optimized for complex coding, agent mode operation, and pr">
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.65;
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 32px 20px 64px;
+      color: #1f2328;
+    }
+    header {
+      border-bottom: 1px solid #d8dee4;
+      margin-bottom: 28px;
+      padding-bottom: 20px;
+    }
+    .source {
+      color: #57606a;
+      font-size: 0.95rem;
+    }
+    img, video, iframe {
+      max-width: 100%;
+      height: auto;
+    }
+    pre {
+      overflow-x: auto;
+      padding: 16px;
+      background: #f6f8fa;
+      border-radius: 6px;
+    }
+    code {
+      font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+    }
+    blockquote {
+      border-left: 4px solid #d0d7de;
+      margin-left: 0;
+      padding-left: 16px;
+      color: #57606a;
+    }
+    footer {
+      border-top: 1px solid #d8dee4;
+      margin-top: 40px;
+      padding-top: 20px;
+      color: #57606a;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Qwen4-Max is Out. What&#x27;s the Difference from the Preview Version?</h1>
+    <p>On November 16, just five days after the preview version was shown, Alibaba released the full flagship model Qwen4-Max. This is a multimodal MoE giant with 2.4 trillion parameters (71 billion active) and a context window of 1 million tokens, optimized for complex coding, agent mode operation, and project prototyping – from frontend to 3D games. The model is focused on programming, solving complex multi-level tasks, and creating projects, including games. The model weights are currently closed, and it cannot be deployed on your own computer. Access is only available through the cloud and API (although developers promise to release more compact versions of the Qwen4 lineup in open source later). Below, we analyze the release architecture and look at the benchmarks. Read more</p>
+    <p class="source">
+      Machine-translated from Habr.
+      <a href="https://habr.com/ru/companies/selectel/articles/1107620/?utm_campaign=1107620&amp;utm_source=habrahabr&amp;utm_medium=rss">Read the original Russian article</a>.
+      Mon, 16 Nov 2026 13:01:12 GMT
+    </p>
+  </header>
+  <main>
+<div><figure><img alt="Source." loading="lazy" src="https://habrastorage.org/r/w1560/extt/0b/09/6d/0b096df9319849227e1a7163753a1b83.png" title="Source."/><figcaption><a href="https://qwen.ai/blog?id=qwen4-max"><em>Source</em></a><em>.</em></figcaption></figure><p>On November 16, just five days after the preview version was shown, Alibaba released the full flagship model Qwen4-Max. This is a multimodal MoE giant with 2.4 trillion parameters (71 billion active) and a context window of 1 million tokens, optimized for complex coding, agent mode operation, and project prototyping – from frontend to 3D games. The model is focused on programming, solving complex multi-level tasks, and creating projects, including games.<br/><br/>The model weights are currently closed, and it cannot be deployed on your own computer. Access is only available through the cloud and API (although developers promise to release more compact versions of the Qwen4 lineup in open source later). Below, we analyze the release architecture and look at the benchmarks.</p><p>After the full release, the model adopted pay-as-you-go token usage through Alibaba Cloud. The cost is $1.5 per million input tokens and $4.5 per million output tokens, which is 25% cheaper compared to Qwen3.8-Max.<br/>The Token Plan is still available – the Lite tariff costs $6 and includes 20,000 credits, and for new users, the subscription is available for $3.</p><figure><img alt="Comparison of Qwen4-Max and Qwen3.8-Max usage costs. Source." loading="lazy" src="https://habrastorage.org/r/w1560/extt/b6/a0/20/b6a020109dafb39fffc807a38198dc79.png" title="Comparison of Qwen4-Max and Qwen3.8-Max usage costs. Source."/><figcaption><em>Comparison of Qwen4-Max and Qwen3.8-Max usage costs. </em><a href="https://www.orcarouter.ai/ru/blog/qwen-4-max-ga-pricing-and-limits"><em>Source</em></a><em>.</em></figcaption></figure><h2>Benchmarks</h2><p>With the release of the full Max model, benchmarks have also been released.</p><p>In the DeepSWE v1.1 benchmark, which tests programming skills in an agent environment, the model leads with a score of 75.7 points compared to Claude Opus 5.5's 74.2 points. In Terminal-Bench 4.0, a benchmark evaluating command-line operation, Alibaba's flagship model scored 48.5 points against Kimi K 3.1's 67.2.</p><p>For example, let's look at the HLE (Humanity’s Last Exam) benchmark, which deals with complex scientific and technical tasks. The model showed a respectable 51.7 points, and in Agent’s Last Exam, it scored 46.7 points.</p><figure><img alt="Qwen4-Max Benchmarks. Source." loading="lazy" src="https://habrastorage.org/r/w1560/extt/30/ff/d6/30ffd6ec9bab89baea68684b06a9b4e6.png" title="Qwen4-Max Benchmarks. Source."/><figcaption><em>Qwen4-Max Benchmarks. </em><a href="https://qwen.ai/blog?id=qwen4-max"><em>Source</em></a><em>.</em></figcaption></figure><p>It's worth noting the optimization of token usage – in the internal Work360 benchmark, which tests the model's ability to handle complex multi-level tasks, Qwen4-Max uses approximately 125,000 tokens in Xhigh mode and scores 52.7 points, compared to 165,000 tokens and 47.7 points for Qwen3.8-Max.</p><p>In Terminal-Bench 4.0, Qwen4-Max uses almost half the tokens compared to the 3.8 version, which scored 37.8 points.</p><figure><img alt="Token consumption graph for tasks in Qwen4-Max and Qwen3.8-Max. Source. " loading="lazy" src="https://habrastorage.org/r/w1560/extt/41/56/58/41565892b718312aa45ec60230bfd982.png" title="Token consumption graph for tasks in Qwen4-Max and Qwen3.8-Max. Source. "/><figcaption><em>Token consumption graph for tasks in Qwen4-Max and Qwen3.8-Max. </em><a href="https://qwen.ai/blog?id=qwen4-max"><em>Source</em></a><em>. </em></figcaption></figure><h2>Conclusions</h2><p>Alibaba has released the long-awaited benchmarks, comparing Qwen4-Max with top competitors and the previous Qwen3.8-Max. The main drawback of the report is that we were not provided with a comparison between Qwen4-Max Preview itself and the Max version released today. Therefore, it's impossible to assess the real growth in the model's capabilities and quality since the preview.</p><p>Currently, the model cannot be deployed on your own computer to utilize its full power. Although token usage has been optimized, this is more of a trend among all model developers rather than a desire by labs to earn less from us.</p><p>In general, releasing the full Max version just five days after the Preview is classic AI marketing. It's clear that a 2.4 trillion parameter model cannot be retrained in such a short time; at most, inference bugs were fixed, and system prompts were fine-tuned.</p><blockquote><p><strong>What do you think Alibaba's strategy is with this week-long interval, and have you noticed any difference between the Preview and today's release? </strong>Share your opinions and first tests in the comments.</p></blockquote><div><figure><img loading="lazy" src="https://habrastorage.org/getpro/habr/upload_files/dbd/50d/bb6/dbd50dbb6316408a3d20c62b3ced3f3c.gif"/></figure><p><strong>AI Router — Access 400+ Models from a Single Panel</strong></p><p>Connect an OpenAI-compatible gateway with a single API key. Configure end-to-end analytics, track limits, and quota resources.</p><p><a href="https://promo.selectel.ru/ai-router/?utm_source=habr.com&amp;utm_medium=referral&amp;utm_campaign=airouter_newsl_ai-qwen4max_161126_banner_ord"><strong>Launch AI Router →</strong></a></p></div></div>
+  </main>
+  <footer>
+    Translation generated with Gemini 2.5 Flash-Lite.
+    The original article remains the source of record.
+  </footer>
+</body>
+</html>

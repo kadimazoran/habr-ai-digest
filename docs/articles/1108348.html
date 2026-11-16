@@ -1,0 +1,156 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Independent as Concepts, Dependent as Operations: Sampling Parameters in LLM Inference</title>
+  <meta name="description" content="LLM inference infrastructure is traditionally optimized for throughput and latency: KV cache, CUDA graphs, batching, quantization, parallelism. These components form the &quot;skeleton&quot; of the system and define its performance limits. However, often overlooked is the layer that determines quali">
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.65;
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 32px 20px 64px;
+      color: #1f2328;
+    }
+    header {
+      border-bottom: 1px solid #d8dee4;
+      margin-bottom: 28px;
+      padding-bottom: 20px;
+    }
+    .source {
+      color: #57606a;
+      font-size: 0.95rem;
+    }
+    img, video, iframe {
+      max-width: 100%;
+      height: auto;
+    }
+    pre {
+      overflow-x: auto;
+      padding: 16px;
+      background: #f6f8fa;
+      border-radius: 6px;
+    }
+    code {
+      font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+    }
+    blockquote {
+      border-left: 4px solid #d0d7de;
+      margin-left: 0;
+      padding-left: 16px;
+      color: #57606a;
+    }
+    footer {
+      border-top: 1px solid #d8dee4;
+      margin-top: 40px;
+      padding-top: 20px;
+      color: #57606a;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Independent as Concepts, Dependent as Operations: Sampling Parameters in LLM Inference</h1>
+    <p>LLM inference infrastructure is traditionally optimized for throughput and latency: KV cache, CUDA graphs, batching, quantization, parallelism. These components form the &quot;skeleton&quot; of the system and define its performance limits. However, often overlooked is the layer that determines quality rather than speed: sampling parameters. These are the rules for selecting the next token from the logit distribution at each decoding step. Read more</p>
+    <p class="source">
+      Machine-translated from Habr.
+      <a href="https://habr.com/ru/articles/1108348/?utm_campaign=1108348&amp;utm_source=habrahabr&amp;utm_medium=rss">Read the original Russian article</a>.
+      Mon, 16 Nov 2026 17:04:11 GMT
+    </p>
+  </header>
+  <main>
+<div><figure><img loading="lazy" src="https://habrastorage.org/w1560/extt/78/e5/7b/78e57b322f4bf1136b030d4367661eab.png"/></figure><h2>1. Introduction</h2><p>Large language model inference infrastructure is traditionally optimized for throughput and latency: KV cache, CUDA graphs, batching, quantization, parallelism. These components form the "skeleton" of the system and define its performance limits. However, often overlooked is the layer that determines quality rather than speed: sampling parameters. These are the rules for selecting the next token from the logit distribution at each decoding step.</p><p>The shift in priorities is understandable: these parameters do not affect the inference core, memory, or the number of requests served. But their underestimation comes at a high cost: a system that is perfect in terms of throughput and latency, with uncalibrated decoding, can fall into repetitions, break off reasoning, lose response format, or, in RAG scenarios, generate plausible but unsubstantiated claims. Formally, it "works," but it is not combat-ready.</p><p>This article breaks down sampling parameters in clear and simple terms – their mathematical nature, interaction, and role in different modes (chat, reasoning, RAG) – using the example of OpenWebUI + vLLM, where parameters are managed dynamically depending on whether search or reasoning mode is enabled.</p><h2>2. Basic Concepts: Logits, Distribution, and the Act of Selection</h2><h3>2.1. Logits</h3><p>A language model does not output a ready word. At each step, it receives the text written so far <code>x<em>1:t</em></code> ("I love to drink hot... in the morning") and returns a vector of logits – one number for each token in the vocabulary. The vocabulary (<code>V</code>) of modern models typically ranges from tens of thousands to two hundred thousand tokens, so there are as many logits at each step. A logit <code>z<em>i</em>​</code> is simply a number that indicates how much the model "leans" towards token <code><em>i</em></code> (e.g., "tea" - 10 points, "coffee" - 9 points, etc.). This is not yet a probability: logits can be negative, large, small, and their sum is not tied to anything. Their absolute values depend on the model's internal normalization, so logits cannot be directly compared between different requests.</p><h3>2.2. Probability</h3><p>To obtain a probability distribution over the vocabulary, the softmax operation is applied to the logits:</p><img alt=" p_i = \frac{\overbrace{\exp(z_i)}^{\text{token i weight}}}{\underbrace{\sum_{j 	o V} \exp(z_j)}^{\text{total weight of all tokens}}}" loading="lazy" src="https://habrastorage.org/getpro/habr/formulas/b/bd/bdb/bdb0a365e2857c634c3b5cb28a521145.svg"/><details><summary>About probability distribution</summary><div><p>Why is the weight of token <code><em>i</em></code> equal to exp(z<em>i</em>)? Because logits can be negative, but weights cannot (a proportion cannot be negative). It preserves the order and emphasizes the difference. If z<em>1</em> &gt; z<em>2</em>​, then exp⁡(z<em>1</em>) &gt; exp⁡(z<em>2</em>). Moreover, the difference in logits turns into a difference in magnitude: a logit that is 1 greater gives a weight <code><strong><em>e</em></strong></code> times larger. The model, as it were, "amplifies" its leader.<br/>Correspondingly, the total weight of all tokens is the sum of exp(z<em>i</em>).<br/></p></div></details><p>Now, each <em>pi</em>​ is the probability that the next token will be token <em>i</em>, and all <em>pi</em>​ together sum to one. It's important to remember: this is the model's estimate, not the "truth." If the model is confident (e.g., after "The capital of France is - "), the distribution has a pronounced peak at the word "Paris." If the context allows for many equally valid continuations, the distribution becomes flat, and probabilities are distributed among dozens of candidates.</p><h3>2.3. Decoding</h3><p>Generation is a cycle (simplified):</p><ul><li><p>the model outputs a probability distribution over the vocabulary →</p></li><li><p>one next token is selected from it →</p></li><li><p>the token is added to the context →</p></li><li><p>the model is run again →</p></li><li><p>the next token is selected →</p></li><li><p>and so on until a stop condition (special end token, length limit, stop string).</p></li></ul><p>The key operation at each step is selecting one token (x̂) from the distribution. There are two fundamentally different ways to make this selection:</p><ul><li><p><strong>Deterministic (greedy / argmax):</strong> the token with the highest probability is always chosen. The same context always yields the same answer.</p></li><li><p><strong>Stochastic (sampling):</strong> the token is chosen randomly according to the distribution, x̂ ∼ <em>p</em> (chosen randomly according to distribution <em>p</em>). It is this mode that sampling parameters adjust.</p></li></ul><h3>2.4. Sampling Parameters</h3><p>Sampling parameters are a set of rules that transform the original distribution <em>p</em> before selecting a token. Each rule answers a specific question:</p><ul><li><p><strong>Temperature</strong> – how "sharp" or "flat" to make the distribution overall.</p></li><li><p><strong>Top-k</strong> – how many of the most probable tokens are allowed for selection.</p></li><li><p><strong>Top-p (nucleus)</strong> – what proportion of the total probability mass to retain, discarding the tail.</p></li><li><p><strong>Min-p</strong> – how probable a token must be <em>relative to the leader</em> to remain under consideration.</p></li><li><p><strong>Typical sampling</strong> – how "typical" in terms of information content a token's probability should be.</p></li><li><p><strong>Repetition penalties (repetition / frequency / presence penalty) and DRY</strong> – how to adjust the logits of already encountered tokens or fragments.</p></li><li><p><strong>Mirostat</strong> – how to maintain a target level of generation "surprise" over the long term.</p></li></ul><blockquote><p>A fact that is often overlooked: these rules are <strong>independent as concepts, but not independent as operations</strong>. We will elaborate on this below.</p></blockquote><p>There's a subtlety here that is often missed. Each parameter can be defined on its own: to explain temperature, you don't need to know what top-p is, and vice versa. In this sense, they are independent as concepts – each represents a separate, self-contained recipe for transforming a distribution.</p><p>But in a real pipeline, they are applied sequentially, and the result of each step becomes the input for the next. This is what "not independent as operations" means: <code><em>top-p</em></code> operates not on the model's original distribution, but on the one that resulted after temperature. Therefore, the meaning of top-p changes depending on <code><em>Temperature</em></code>, even though the definition of <code><em>top-p</em></code> itself does not mention temperature.</p><blockquote><p>In vLLM (V1 sampler), the order of application is fixed and described in the official documentation of the <code>vllm.v1.sample.sampler</code> module: first, penalties are applied (<code>penalties</code>), then within the <code>sample</code> method – <code>temperature</code>, then <code>min-p</code>, then <code>top-k</code> and/or <code>top-p</code>, and finally – the sampling itself. Source: <a href="https://docs.vllm.ai/en/v0.14.0/api/vllm/v1/sample/sampler/">https://docs.vllm.ai/en/v0.14.0/api/vllm/v1/sample/sampler/</a></p></blockquote><h3>2.5. Why Default Values in vLLM Are Actually "Disabled"</h3><p>Quite often, you see logic like this: "The documentation says <code>top_k = -1</code>, <code>top_p = 1.0</code>, <code>min_p = 0.0</code> – so these are neutral values, let them be." At first glance, this seems reasonable: default values are usually perceived as "average settings" that the VLLM developers chose as a safe compromise. But in the case of sampling parameters, this is not true – and this is where one of the most common mistakes in production lies.</p><h3>2.6. What These Values Actually Mean</h3><p>The default values in vLLM are not "average settings" but <strong>flags to disable</strong> the corresponding filter:</p><ul><li><p><code><strong>top_k = -1</strong></code> means "consider all tokens," i.e., <strong>do not filter by count</strong>.</p></li><li><p><code><strong>top_p = 1.0</strong></code> means "consider all tokens," i.e., <strong>do not filter by probability mass</strong>.</p></li><li><p><code><strong>min_p = 0.0</strong></code> means "disable relative threshold," i.e., <strong>do not filter by comparison to the leader</strong>.</p></li></ul><blockquote><p>Let's consider a specific case with all sampling parameters disabled (I suggest you guess what will ultimately happen yourself).</p></blockquote><p><br/>In vLLM, a temperature of one is a neutral value: it neither compresses nor stretches the distribution; you simply sample from the distribution the model provided, without modifications. Let's analyze:</p><ul><li><p><strong>Temperature is neutral</strong> – the distribution does not change.</p></li><li><p><strong>Top-k is disabled</strong> – no tokens are discarded by count.</p></li><li><p><strong>Top-p is disabled</strong> – no tail is cut off by mass.</p></li><li><p><strong>Min-p is disabled</strong> – no relative threshold is applied.</p></li></ul><p>Result: you are sampling from the <strong>full, unchanged distribution over the entire vocabulary</strong>. Every token – including those with a probability of <em>0.0001 </em>– has a non-zero chance of being selected. This is "pure sampling": no filters, except possibly penalties (which are applied earlier and to logits, not for cutoff).</p><p>Next, we will discuss four sampling parameters and analyze an example with parameter conflicts.</p><h2>3. Sampling Parameters: The Four Main Ones</h2><p>Let's break down the four parameters that are most common in configurations: temperature, top-k, top-p, and min-p.</p><h3>3.1. Temperature</h3><p>Temperature divides all logits by T before softmax:</p><img alt="p_i(T) = \frac{\exp(z_i / T)}{\sum_{j 	o V} \exp(z_j / T)} " loading="lazy" src="https://habrastorage.org/getpro/habr/formulas/c/c0/c02/c026bebbd37c6e110bd61b3a3377db1d.svg"/><p>Logits are "scores" that the model assigns to each token. The difference in scores determines how much more probable one token is than another. Temperature is a regulator that stretches or compresses this difference. Dividing by T &lt; 1 stretches the difference, making the leader even more dominant. Dividing by T &gt; 1 compresses the difference, making all tokens more "equal." </p><p>Consequently, the higher the temperature, the more stochastic the token selection becomes, and the more diverse – but less predictable – the response. The lower the temperature, the closer the generation is to deterministic, and the higher the reproducibility. For tasks where accuracy and reliance on sources are important (e.g., RAG), low temperature is preferred; for creative tasks, high temperature is preferred.</p><h3>3.2. Top-k</h3><p>Top-k keeps only the <em>k</em> tokens with the highest logits, assigning zero probability to the rest:</p><img alt="\mathcal{N}_k = \left\{ i 	o V : \operatorname{rank}(z_i) 	o k ight\} " loading="lazy" src="https://habrastorage.org/getpro/habr/formulas/6/66/668/668b16b25386dd26b8d2b43d490ab9cf.svg"/><p>Top-k is a strict counter: "take exactly k best candidates and cut off all others, regardless of how confident the model is." If <em>k</em>=50, then exactly 50 tokens will always participate in the selection – whether the distribution is sharp (where 2-3 leaders are actually competing) or flat (where dozens have a chance). The threshold here is not probability, but position in the sorted list.</p><h3>3.3. Top-p</h3><p>Top-p sorts tokens by decreasing probability, accumulates probabilities from top to bottom, and stops at the first token where the cumulative sum reaches p:</p><img alt="S_k = \sum_{i=1}^{k} p_i, \qquad \mathcal{N}_p = \min\{ S_k : S_k 	o p \} " loading="lazy" src="https://habrastorage.org/getpro/habr/formulas/2/28/28b/28b9491840d088526eebc0358f2ec14d.svg"/><p>Top-p is no longer a counter, but a "probability mass budget": "keep as many tokens as needed so that they collectively account for p<em>p</em> percent of the model's confidence." With a sharp distribution (the model is confident), 95% of the mass is accumulated by 2-3 tokens – and top-p keeps 2-3. With a flat distribution (the model is confused), the same 95% is accumulated by dozens of tokens – and top-p keeps dozens.</p><h4>Example top_p = 0.95</h4><p>Logits for eight tokens: z=[3, 2, 1, 0, −0.5, −1, −1.5, −2].</p><p>After softmax:</p><div><div><table><tbody><tr><td><p>Rank</p></td><td><p>Logit</p></td><td><p><em>pi</em>​</p></td><td><p><em>Sk</em>​</p></td></tr><tr><td><p>1</p></td><td><p>3.0</p></td><td><p>0.6175</p></td><td><p>0.6175</p></td></tr><tr><td><p>2</p></td><td><p>2.0</p></td><td><p>0.2272</p></td><td><p>0.8447</p></td></tr><tr><td><p>3</p></td><td><p>1.0</p></td><td><p>0.0836</p></td><td><p>0.9283</p></td></tr><tr><td><p>4</p></td><td><p>0.0</p></td><td><p>0.0307</p></td><td><p><strong>0.9590</strong>←threshold 0.95</p></td></tr><tr><td><p>5</p></td><td><p>-0.5</p></td><td><p>0.0187</p></td><td><p>0.9777</p></td></tr><tr><td><p>6</p></td><td><p>-1.0</p></td><td><p>0.0113</p></td><td><p>0.9890</p></td></tr><tr><td><p>7</p></td><td><p>-1.5</p></td><td><p>0.0069</p></td><td><p>0.9959</p></td></tr><tr><td><p>8</p></td><td><p>-2.0</p></td><td><p>0.0042</p></td><td><p>1.0000</p></td></tr></tbody></table></div></div><p><code>top_p = 0.95</code>: we go from top to bottom, accumulating. At rank 3, the sum is 0.9283 – less than 0.95. At rank 4 – 0.9590, the threshold is reached for the first time. Stop. Tokens with ranks 1-4 survive; the other four are cut off.</p><h4>Renormalization</h4><p>The surviving probabilities no longer sum to one (0.9590), so each is divided by this sum:</p><div><div><table><tbody><tr><td><p>Rank</p></td><td><p><em>pi</em></p></td><td><p><em>pi/0.9590</em></p></td></tr><tr><td><p>1</p></td><td><p>0.6175</p></td><td><p>0.644</p></td></tr><tr><td><p>2</p></td><td><p>0.2272</p></td><td><p>0.237</p></td></tr><tr><td><p>3</p></td><td><p>0.0836</p></td><td><p>0.087</p></td></tr><tr><td><p>4</p></td><td><p>0.0307</p></td><td><p>0.032</p></td></tr></tbody></table></div></div><p>The sum is 1.0 again. The next token is sampled from this distribution.</p><h3>3.4. Min-p</h3><p>Min-p keeps tokens whose probability is not less than a relative threshold tied to the leader's probability:</p><img alt="\mathcal{N}_{p_{\min}} = \left\{ i 	o V : p_i 	o p_{\min} 	o p_{\max} ight\}, \qquad p_{\max} = \max_{j 	o V} p_j " loading="lazy" src="https://habrastorage.org/getpro/habr/formulas/a/af/af4/af417dd7007af43c8f7f12040194831d.svg"/><p>Min-p is a "threshold relative to the leader": "keep tokens that are not too far behind the most probable one." If the model is confident (<em>p max</em>​ is high), the threshold <code><em>p min⁡ </em>* <em>p max</em>⁡<em> </em></code>becomes high – and min-p cuts aggressively, leaving only close competitors to the leader. If the model is confused (<em>p max</em>​​ is low), the threshold drops with it – and the nucleus expands, allowing more alternatives. Here, unlike top-p, the threshold is not absolute but <strong>relative</strong>: it scales with the model's confidence.</p><blockquote><p>min-p is an attempt to solve the main weakness of top-p: sensitivity to temperature.</p></blockquote><h2>4. Example: Parameter Conflict (top-p with Two Temperatures)</h2><p>I want to demonstrate a small example where you enable two filters, both formally work, but together they produce a result you didn't expect. Not because you made a mistake in the settings, and not because vLLM is buggy. But because the parameters are applied sequentially, and each subsequent one "sees" what the previous one left.</p><h3>Case 1: T=1.0, top_p = 0.95</h3><div><div><table><tbody><tr><td><p>Rank</p></td><td><p>Logit</p></td><td><p><em>pi</em>​</p></td><td><p><em>Sk</em>​</p></td></tr><tr><td><p>1</p></td><td><p>3.0</p></td><td><p>0.6175</p></td><td><p>0.6175</p></td></tr><tr><td><p>2</p></td><td><p>2.0</p></td><td><p>0.2272</p></td><td><p>0.8447</p></td></tr><tr><td><p>3</p></td><td><p>1.0</p></td><td><p>0.0836</p></td><td><p>0.9283</p></td></tr><tr><td><p>4</p></td><td><p>0.0</p></td><td><p>0.0307</p></td><td><p><strong>0.9590 </strong>← stop</p></td></tr><tr><td><p>5</p></td><td><p>-0.5</p></td><td><p>0.0187</p></td><td><p>-</p></td></tr><tr><td><p>6</p></td><td><p>-1.0</p></td><td><p>0.0113</p></td><td><p>-</p></td></tr><tr><td><p>7</p></td><td><p>-1.5</p></td><td><p>0.0069</p></td><td><p>-</p></td></tr><tr><td><p>8</p></td><td><p>-2.0</p></td><td><p>0.0042</p></td><td><p>-</p></td></tr></tbody></table></div></div><p>The threshold of 0.95 is reached for the first time at rank 4. <strong>4 tokens survive.</strong> The tail of four is cut off.</p><h2>Case 2: T=1.5, top_p = 0.95</h2><p>Logits are divided by 1.5 – the distribution becomes flatter. After softmax:</p><div><div><table><tbody><tr><td><p>Rank</p></td><td><p>Logit / 1.5</p></td><td><p><em>pi</em>​</p></td><td><p><em>Sk</em>​</p></td></tr><tr><td><p>1</p></td><td><p>2.0</p></td><td><p>0.4621</p></td><td><p>0.4621</p></td></tr><tr><td><p>2</p></td><td><p>1.33</p></td><td><p>0.2372</p></td><td><p>0.6993</p></td></tr><tr><td><p>3</p></td><td><p>0.67</p></td><td><p>0.1218</p></td><td><p>0.8211</p></td></tr><tr><td><p>4</p></td><td><p>0.0</p></td><td><p>0.0625</p></td><td><p>0.8836</p></td></tr><tr><td><p>5</p></td><td><p>-0.33</p></td><td><p>0.0448</p></td><td><p>0.9284</p></td></tr><tr><td><p>6</p></td><td><p>-0.67</p></td><td><p>0.0321</p></td><td><p><strong>0.9605</strong> ← stop</p></td></tr><tr><td><p>7</p></td><td><p>-1.0</p></td><td><p>0.0230</p></td><td><p>-</p></td></tr><tr><td><p>8</p></td><td><p>-1.33</p></td><td><p>0.0165</p></td><td><p>-</p></td></tr></tbody></table></div></div><p>The temperature made the distribution flatter, the leader's probability dropped (0.62 → 0.46), and the tail grew. To reach the same 95%, top-p is forced to include more tokens.</p><pre><code>T = 1.0,  top_p = 0.95            T = 1.5,  top_p = 0.95
+──────────────────────────        ──────────────────────────
+[1] ████████████████ 0.62         [1] ████████████ 0.46
+[2] ██████ 0.23                   [2] ██████ 0.24
+[3] ██ 0.08                       [3] ███ 0.12
+[4] █ 0.03   ← boundary            [4] ██ 0.06
+──────────────────────────        [5] █ 0.04
+[5] ░ 0.02   (cut off)           [6] █ 0.03   ← boundary
+[6] ░ 0.01   (cut off)           ──────────────────────────
+[7] ░ 0.01   (cut off)           [7] ░ 0.02   (cut off)
+[8] ░ 0.00   (cut off)           [8] ░ 0.02   (cut off)</code><div><a href="https://sourcecraft.dev/"><span></span></a></div></pre><h2>5. Dynamic Adjustment of Sampling Parameters</h2><p>The inference engine sets a safe baseline and boundaries, while the application layer (in our case, OpenWebUI filters) gets the right to dynamically override parameters depending on the query context, which is unavailable to the engine.</p><h3>5.1. Why Static Configuration Is Insufficient</h3><p>The hierarchy of priorities in vLLM (request → server launch parameters → model's <code>generation_config.json</code> → defaults) and in OpenWebUI (model → account → chat) allows for flexible parameter management but doesn't account for the query mode. The same engine serves RAG, where the model must follow extracted documents, reasoning, where it must explore the solution space, and creative tasks. Fixing parameters at the engine level means depriving the application of the ability to switch modes; leaving it all to the user means getting irreproducible configurations. Dynamic overriding at the application level bridges this gap: the <code>inlet()</code> filter sees <code>tool_ids</code> and mode flags before sending the request and can consistently set parameters that will go to the engine as parameters for a specific request.</p><h3>5.2. Policy for Modes</h3><p>The key idea is a <strong>policy table</strong> that associates each mode with a consistent set of parameters, rather than individual "knobs." For three modes, the policy might look like this:</p><ul><li><p><strong>RAG enabled:</strong> low temperature (≈0.15), moderate <code>top_p</code> (≈0.9), <code>top_k = 20</code> – the model should rely on documents, not "fantasize." Reasoning, if also active, does not change these values: reasoning should not lead away from the sources.</p></li><li><p><strong>Reasoning without RAG:</strong> slightly higher temperature (≈0.3), <code>top_p ≈ 0.8</code>, <code>top_k = 20</code> – some variability is allowed, but coherence should be maintained.</p></li><li><p><strong>Neither RAG nor reasoning:</strong> parameters are not overridden; default values at the model or engine level are used.</p></li><li><p>And so on (everything is limited only by your imagination)</p></li></ul><blockquote><p>It's important to note that these are approximate figures, and the actual numbers will vary depending on the chosen model. The code below is also demonstrative.</p></blockquote><h3>5.3. Implementation</h3><p>Go to Open WebUI → Admin Panel → Functions → Create:</p><pre><code>""" 
+title: Dynamic Sampling Policy
+author: tnv
+description: &gt;
+    Dynamically selects sampling parameters based on query mode:
+    detects RAG presence (via tool_ids) and reasoning (via flag in
+    chat_template_kwargs) and overrides temperature, top_p, top_k
+    and penalties with a consistent set. Logs decisions, is idempotent,
+    and passes the request through unchanged on error.
+version: 1.0.0
+icon: *
+"""
+
+import logging
+from typing import Optional
+
+from pydantic import BaseModel, Field
+
+logger = logging.getLogger(__name__)
+
+# Mode -> consistent set of parameters.
+POLICY = {
+    (True, False): {"temperature": 0.15, "top_p": 0.9, "top_k": 20,
+                    "presence_penalty": 0.0, "frequency_penalty": 0.0},
+    (True, True):  {"temperature": 0.15, "top_p": 0.9, "top_k": 20,
+                    "presence_penalty": 0.0, "frequency_penalty": 0.0},
+    (False, True): {"temperature": 0.3,  "top_p": 0.8, "top_k": 20,
+                    "presence_penalty": 0.0, "frequency_penalty": 0.0},
+    (False, False): None,  # do not override anything
+}
+
+
+class Filter:
+    class Valves(BaseModel):
+        priority: int = Field(default=0, description="Execution order")
+        log_decisions: bool = Field(default=True, description="Log decisions")
+
+    def __init__(self):
+        self.valves = self.Valves()
+
+    def _rag_is_active(self, body: dict) -> bool:
+        tool_ids = body.get("tool_ids") or []
+        return any("rag-search" in str(t) for t in tool_ids)
+
+    def _reasoning_is_active(self, body: dict) -> bool:
+        kwargs = body.get("chat_template_kwargs") or {}
+        if kwargs.get("enable_thinking") is False:
+            return False
+        if kwargs.get("enable_thinking") is True:
+            return True
+        if kwargs.get("reasoning_effort"):
+            return True
+        return bool(body.get("reasoning"))
+
+    async def inlet(self, body: dict, __user__: Optional[dict] = None) -> dict:
+        try:
+            rag = self._rag_is_active(body)
+            reasoning = self._reasoning_is_active(body)
+            policy = POLICY.get((rag, reasoning))
+
+            if policy is None:
+                if self.valves.log_decisions:
+                    logger.info("sampling policy: rag=%s reasoning=%s -> default",
+                                rag, reasoning)
+                return body
+
+            body.update(policy)
+
+            if self.valves.log_decisions:
+                logger.info("sampling policy: rag=%s reasoning=%s -> %s",
+                            rag, reasoning, policy)
+            return body
+        except Exception:
+            logger.critical("sampling policy filter failed; passing through", exc_info=True)
+            return body</code><div><a href="https://sourcecraft.dev/"><span></span></a></div></pre><p>The provided filter is not "another setting on top," but a minimal framework for a dynamic sampling policy. Its value lies not in specific numbers, but in architectural decisions that are easily transferable and scalable to any stack.</p><h2>6. Conclusion</h2><p>This article is an attempt to consolidate practical experience into a coherent material and does not claim to be the ultimate truth. If you find an error, inaccuracy, or disagree with the reasoning – please write about it in the comments so that we can collectively perfect the work.</p></div>
+  </main>
+  <footer>
+    Translation generated with Gemini 2.5 Flash-Lite.
+    The original article remains the source of record.
+  </footer>
+</body>
+</html>

@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>How we fought with stress in Russian TTS: a pre-synthesis gate, text substitutions, and open questions</title>
+  <meta name="description" content="I&#x27;m making &quot;Channel 15&quot; - a companion radio for Euro Truck Simulator 2: eighteen fictional truckers chat on the player&#x27;s airwaves, respond to voice, and remember it between trips. We have three engines for voice acting: ElevenLabs (eleven_v3), OpenAI-compatible gpt-audio via Open">
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.65;
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 32px 20px 64px;
+      color: #1f2328;
+    }
+    header {
+      border-bottom: 1px solid #d8dee4;
+      margin-bottom: 28px;
+      padding-bottom: 20px;
+    }
+    .source {
+      color: #57606a;
+      font-size: 0.95rem;
+    }
+    img, video, iframe {
+      max-width: 100%;
+      height: auto;
+    }
+    pre {
+      overflow-x: auto;
+      padding: 16px;
+      background: #f6f8fa;
+      border-radius: 6px;
+    }
+    code {
+      font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+    }
+    blockquote {
+      border-left: 4px solid #d0d7de;
+      margin-left: 0;
+      padding-left: 16px;
+      color: #57606a;
+    }
+    footer {
+      border-top: 1px solid #d8dee4;
+      margin-top: 40px;
+      padding-top: 20px;
+      color: #57606a;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>How we fought with stress in Russian TTS: a pre-synthesis gate, text substitutions, and open questions</h1>
+    <p>I&#x27;m making &quot;Channel 15&quot; - a companion radio for Euro Truck Simulator 2: eighteen fictional truckers chat on the player&#x27;s airwaves, respond to voice, and remember it between trips. We have three engines for voice acting: ElevenLabs (eleven_v3), OpenAI-compatible gpt-audio via OpenRouter, and a local clone on XTTS. The text pool is about four thousand lines, and it quickly became clear that all three engines, in different ways, confidently place Russian stress incorrectly. The night greeting &quot;gudni&quot; was read as &quot;gUdni&quot; - like a command, &quot;yogurts&quot;, &quot;kOzel&quot; instead of, well, you know, nicknames and call signs like &quot;mikhalych&quot; and &quot;bibi, kni&quot; broke in their own ways. Here&#x27;s what I built, where I hit a wall, and what remains an open question. Read more</p>
+    <p class="source">
+      Machine-translated from Habr.
+      <a href="https://habr.com/ru/articles/1108538/?utm_campaign=1108538&amp;utm_source=habrahabr&amp;utm_medium=rss">Read the original Russian article</a>.
+      Mon, 16 Nov 2026 15:38:57 GMT
+    </p>
+  </header>
+  <main>
+<div><p>I'm making "Channel 15" - a companion radio for Euro Truck Simulator 2: eighteen fictional truckers chat on the player's airwaves, respond to voice, and remember it between trips. We have three engines for voice acting: ElevenLabs (eleven_v3), OpenAI-compatible gpt-audio via OpenRouter, and a local clone on XTTS. The text pool is about four thousand lines, and it quickly became clear that all three engines, in different ways, confidently place Russian stress incorrectly. The night greeting "gudni" was read as "gUdni" - like a command, "yogurts", "kOzel" instead of, well, you know, nicknames and call signs like "mikhalych" and "bibi, kni" broke in their own ways. Here's what I built, where I hit a wall, and what remains an open question.</p><h3>Step 1. Checking stress before synthesis, not after</h3><p>Re-voicing costs money (paid engines count characters, local ones use GPU time), so "generate and listen" isn't a viable strategy. First, we need a detector for problematic words in the line's text. I settled on <a href="https://github.com/Den4ikAI/ruaccent">ruaccent</a> (1.5.8.3) with the omograph model <code>turbo2</code>: the library places stress based on context and returns the text with a <code>+</code> marker before the stressed vowel.</p><p>On top of that is the project dictionary <code>stress_dict.json</code>: a word with its reference stress, IPA transcription, source, and an optional <code>xtts_override</code> - an empirical form for our clone. It currently contains 41 words, and half of them are nicknames, call signs, and jargon not found in any dictionary.</p><p>The key decision is a gate, not a linter. An unconfirmed match (a word without stress from the model and not in the dictionary, or jargon outside the dictionary) stops generation before character costs are incurred. A workaround exists, but only with an explicit flag <code>--stress-ok</code>, and the fact of the workaround is printed to the log:</p><pre><code>bad = [(w, p, r) for w, p, r, ok in sc.check_line(text) if not ok] if bad: for w, p, r in bad: print(f"   STRESS? {w} 	-> {p or '???'} ({r}) | {text[:70]}") raise SystemExit("stress_check: unconfirmed flags - fix stress_dict.json or run with --stress-ok (logged)")</code><div><a href="https://sourcecraft.dev/"><span></span></a></div></pre><p>A separate subtlety is false positives. The <code>turbo2</code> model doesn't place <code>+</code> on parts of short words in context ("or", "when", "something"), and this isn't a risk for synthesis, but a model peculiarity. For such words, a "skip whitelist" was created, which is populated through runs: if a word gets stress in a single run but not in context, the flag is ignored.</p><p>Running the entire broadcast: 4280 lines, 41 confirmed flags (all based on the dictionary), 0 unconfirmed. Pristine, but that's thanks to the dictionary, not the model.</p><h3>Step 2. ElevenLabs pronunciation dictionaries turned out to be closed</h3><p>The logical path for eleven_v3 is pronunciation dictionaries: you upload a dictionary with phoneme/alias tags, and the model pronounces as you say. It didn't work: on our plan (creator), the dictionaries endpoint returns HTTP 401. Manual test on 11/16, the result was recorded as a comment directly in the generator code. On more expensive plans, according to the documentation, dictionaries are available, but the project is free, and I'm not willing to pay that much for voicing fictional guys.</p><p>We separately checked SSML: according to <a href="https://elevenlabs.io/blog/ssml-tags-explained">ElevenLabs official documentation</a>, Eleven v3 and v4 models do not support SSML at all; instead of markup, they have their own audio tags like <code>[whispers]</code>, <code>[sighs]</code>, etc. There's a mention that v3 supposedly accepts IPA transcription, but it also honestly states "not 100% consistent" - meaning quality control is still needed, which we described in step 1.</p><h3>Step 3. A working workaround: text substitution before synthesis</h3><p>What actually works for all three engines is phonetic substitution only in the text that goes into synthesis. I don't touch the displayed texts, subtitles, and hash signatures (which we use to decide what to re-voice) - otherwise, any dictionary edit would require reassembling the entire broadcast. </p><p>The technique is simple: double the stressed vowel. "gudni" -> "gudnii", "kilometer" -> "kilomeeter". The model's ear interprets the doubled vowel as a "stress here" signal, and in the displayed text, the player sees the normal word. The substitution dictionary is built from the same <code>stress_dict.json</code>, with separate empirical forms that our clone hears better:</p><pre><code>for e in json.loads((ROOT / "phrases" / "stress_dict.json").read_text(encoding="utf-8")): if e.get("xtts_override"): m[e["word"]] = e["xtts_override"] # form our clone hears better continue s = e["stressed"] for i, ch in enumerate(s): if ch in "АЕЁИОУЫЭЮЯ": m[e["word"]] = (s[:i] + ch.lower() * 2 + s[i + 1:]).lower() break</code><div><a href="https://sourcecraft.dev/"><span></span></a></div></pre><p> The substitution is done via regex using the compiled table, it's idempotent and case-insensitive: </p><pre><code>XTTS_STRESS_RX = _re_mod.compile("|".join(XTTS_STRESS), _re_mod.IGNORECASE) return XTTS_STRESS_RX.sub(lambda m: XTTS_STRESS[m.group(0).lower()], text)</code><div><a href="https://sourcecraft.dev/"><span></span></a></div></pre><p> I understand this is a patch at the "it works, don't touch it" level. Plus one: the same dictionary serves three different engines. Minus: substitution changes the word's acoustics, and sometimes you can hear a slight "howl" on the doubled vowel, especially with XTTS on long words.</p><h3>Step 4. Targeted re-voicing instead of full re-voicing</h3><p>Since texts and signatures are separated, re-voicing has become cheap: we extract the signature of the required lines from the broadcast manifests, re-synthesize only them, and calculate character consumption before starting. Quality control is done with faster-whisper (small, CPU, int8): we recognize the result and compare it with the reference using <code>difflib.SequenceMatcher</code>, with an acceptance threshold of 0.95, and anything below 0.85 requires manual listening. However, Whisper control has a blind spot: it's Russian-language, so lines in other languages are processed in one go without checks, and where whisper isn't connected in the branch, you're left to listen yourself.</p><h3>Open questions</h3><p>This is precisely why I'm writing this post. Stress in Russian speech for closed TTS is an eternal pain, but the community surely has a better arsenal than ours:</p><ol><li><p>Has anyone managed to make eleven_v3 consistently pronounce non-trivial stresses without dictionaries and substitutions? Do IPA tags really work in production, or does "not 100% consistent" mean "doesn't work"?</p></li><li><p>Morphological tagging before synthesis - are people doing it seriously: pymorphy3 -> base form -> stress from dictionary -> restoring inflection with preserved stress? Is there a ready-made solution, or does everyone still hardcode substitutions?</p></li><li><p>Our gate is a proprietary dictionary of 41 words. Is there an open dictionary of Russian "stress exceptions" (words like "yogurt", "dogovor", "krasivee"), which wouldn't be shameful to include as a dependency?</p></li><li><p>A direct alternative: run all input through ruaccent beforehand and hardcode substitutions for all words where the model places <code>+</code> differently than we hear. Does this scale better than a manual dictionary, or is it livable?</p></li></ol><p>I would be grateful for experience, links, and especially examples of "it works like this for us."</p></div>
+  </main>
+  <footer>
+    Translation generated with Gemini 2.5 Flash-Lite.
+    The original article remains the source of record.
+  </footer>
+</body>
+</html>

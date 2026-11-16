@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Why 94% of AI Answers Ignore Company Websites</title>
+  <meta name="description" content="Businesses today face a peculiar problem: their websites rank well in search results, but when clients ask AI assistants like ChatGPT, Perplexity, or Google&#x27;s AI Overviews for contractors, the companies themselves are absent from the answers. Instead, AI aggregates information from external dir">
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.65;
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 32px 20px 64px;
+      color: #1f2328;
+    }
+    header {
+      border-bottom: 1px solid #d8dee4;
+      margin-bottom: 28px;
+      padding-bottom: 20px;
+    }
+    .source {
+      color: #57606a;
+      font-size: 0.95rem;
+    }
+    img, video, iframe {
+      max-width: 100%;
+      height: auto;
+    }
+    pre {
+      overflow-x: auto;
+      padding: 16px;
+      background: #f6f8fa;
+      border-radius: 6px;
+    }
+    code {
+      font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+    }
+    blockquote {
+      border-left: 4px solid #d0d7de;
+      margin-left: 0;
+      padding-left: 16px;
+      color: #57606a;
+    }
+    footer {
+      border-top: 1px solid #d8dee4;
+      margin-top: 40px;
+      padding-top: 20px;
+      color: #57606a;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Why 94% of AI Answers Ignore Company Websites</h1>
+    <p>Businesses today face a peculiar problem: their websites rank well in search results, but when clients ask AI assistants like ChatGPT, Perplexity, or Google&#x27;s AI Overviews for contractors, the companies themselves are absent from the answers. Instead, AI aggregates information from external directories and reference sites. To understand how AI models select candidates, I ran two hundred real B2B queries and traced the search process. In 94 out of 100 industry-specific selections, AI Overviews were generated, but corporate websites were rarely included. I then compared these results with monthly crawler statistics from an open organization directory, where each listing is available in HTML, Markdown, and JSON. This revealed why even a `llms.txt` file in the website&#x27;s root is ineffective and what needs to be done to ensure businesses are included in recommendations. Read on.</p>
+    <p class="source">
+      Machine-translated from Habr.
+      <a href="https://habr.com/ru/articles/1108582/?utm_campaign=1108582&amp;utm_source=habrahabr&amp;utm_medium=rss">Read the original Russian article</a>.
+      Mon, 16 Nov 2026 17:54:23 GMT
+    </p>
+  </header>
+  <main>
+<div><figure><img loading="lazy" src="https://habrastorage.org/r/w1560/extt/ef/10/f4/ef10f4bb9fe3ca9e152272051ac66b94.png"/></figure><p>Businesses today face a peculiar problem: their websites rank well in search results, but when clients ask AI assistants like ChatGPT, Perplexity, or Google's AI Overviews for contractors, the companies themselves are absent from the answers. Instead, AI aggregates information from external directories and reference sites.</p><p>To understand how AI models select candidates, I ran two hundred real B2B queries and traced the search process. In 94 out of 100 industry-specific selections, AI Overviews were generated, but corporate websites were rarely included.</p><p>I then compared these results with monthly crawler statistics from an open organization directory, where each listing is available in HTML, Markdown, and JSON. This revealed why even a <code>llms.txt</code> file in the website's root is ineffective and what needs to be done to ensure businesses are included in recommendations.</p><h3>How Language Models Actually Verify Contractors</h3><p>In manual API tests with web search capabilities using <code>Gemini 3 Flash</code> and <code>gpt-5-mini</code> (on <code>31.10.2026</code> and <code>01.11.2026</code>), the agents followed a consistent pattern:</p><ol><li><p>First, the model searches for the company name along with its city and Latin transliteration.</p></li><li><p>It extracts the 9-digit tax identification number (UNP) from the page and then sends a separate query strictly using these digits.</p></li><li><p>It verifies if the legal entity actually exists and if its services match what is stated on the website.</p></li></ol><p>A company can claim twenty years of experience and any pricing on its own domain, but for a search model, such text remains self-promotion. When there is no independent confirmation via UNP in the search results, AI either dismisses the website or pulls data from old directories, which may still list outdated phone numbers and general activity codes like "wholesale trade of a wide range of goods.".</p><h3>Why llms.txt Doesn't Help, and Bots Prefer Markdown and JSON</h3><p>On <code>15.06.2026</code>, Google Search's official guidelines confirmed that the <code>llms.txt</code> file is not used for ranking or in AI Overviews. Monthly crawler logs from a directory with <code>30,900</code> listings (<code>773,704</code> requests, of which <code>705,323</code> were confirmed by official IPs and reverse DNS) corroborate this:</p><div><div><table><tbody><tr><th><p>Entry Point</p></th><th><p>Requests in 30 Days</p></th><th><p>Confirmed by IP and DNS</p></th></tr><tr><td><p>Catalog Industry Selections</p></td><td><p><code>616,242</code></p></td><td><p><code>576,341</code></p></td></tr><tr><td><p>Listings in <code>.json</code></p></td><td><p><code>38,139</code></td><td><p><code>28,074</code></p></td></tr><tr><td><p>Listings in <code>.md</code></p></td><td><p><code>20,110</code></p></td><td><p><code>10,299</code></p></td></tr><tr><td><p><code>/llms.txt</code> and <code>/llms-full.txt</code></p></td><td><p><code>14</code></p></td><td><p><code>13</code></p></td></tr></tbody></table></div></div><p>Separately, the daily Apache log for <code>16.11.2026</code> reveals another detail: in just under a full day, external clients made <code>7,087</code> requests to the open REST API <code>/api/v1</code>, filtering companies by city, service type, and website availability. In contrast, older business directories often return <code>403</code> or <code>429</code> errors to parsers when checked via <code>curl</code>, lack clean Markdown output, and display dozens of advertisements on each page.</p><p>Meanwhile, all three classes of crawlers are active on the server:</p><ul><li><p><strong>Model training and indexing:</strong> <code>GPTBot</code> (<code>383,898</code>), <code>ClaudeBot</code> (<code>40,614</code>), <code>GoogleOther</code> (<code>2,117</code>);</p></li><li><p><strong>Live answers and AI search indexes:</strong> <code>PerplexityBot</code> (<code>308,764</code>), <code>ChatGPT-User</code> (<code>82</code>), <code>OAI-SearchBot</code> (<code>48</code>);</p></li><li><p><strong>Classic search engines:</strong> <code>YandexBot</code> (<code>5,534</code>), <code>Applebot</code> (<code>2,587</code>), <code>Googlebot</code> (<code>1,956</code>), <code>bingbot</code> (<code>975</code>).</p></li></ul><h3>What Works Instead of Redoing Your Website: A Digital Company Passport</h3><p>For businesses to avoid being excluded from recommendations in ChatGPT, Perplexity, Alice, and Google, optimizing their own landing page is not enough. The first step for a company is to have an external <strong>digital company passport</strong> — an open, machine-readable listing in a neutral registry that meets four technical requirements:</p><ol><li><p><strong>Unified link to state registries (UNP or INN).</strong> The status of an active legal entity, registration date, and region are pulled from official databases without manual alteration.</p></li><li><p><strong>Applied services and geography instead of general OKED codes.</strong> Instead of vague descriptions, the listings specify concrete services, price ranges, and answers to common customer questions.</p></li><li><p><strong>Machine-readable output without wrappers.</strong> The same listing is provided in server-side HTML, clean <code>.md</code> and <code>.json</code> formats, as well as in <code>Schema.org</code> markup with the <code>taxID</code> field.</p></li><li><p><strong>Two-way verification of the website link.</strong> A simple request from a director to a directory is insufficient; it doesn't prove to the knowledge graph that the domain belongs to that specific legal entity. Only a reciprocal confirmation from the website (a link to the passport or a <code>sameAs</code> property in the <code>Organization</code> markup) reliably closes the loop.</p></li></ol><p>Following the consolidation of Google AI Overviews and AI Mode (<code>19.05.2026</code>) and with the development of the <strong>WebMCP</strong> specification at the W3C, browser agents are increasingly working directly with structured data rather than parsing visual layouts. In such conditions, a verified digital company passport in an external industry catalog becomes a fundamental requirement for a business to even appear in the shortlists of AI-generated results.</p></div>
+  </main>
+  <footer>
+    Translation generated with Gemini 2.5 Flash-Lite.
+    The original article remains the source of record.
+  </footer>
+</body>
+</html>

@@ -5135,6 +5135,54 @@
     "summary": "Where does a language model store word order, grammar, and meaning—and does it depend on the architecture? I trained 12 small models differing only in architecture and tested each layer of each checkpoint with linear probes. Short conclusion: at this scale, the most noticeable difference is how token position is stored, while for syntax and meaning, models look similar at equal loss. I compared RWKV-7, a transformer with RoPE, and a transformer without positional encoding (NoPE). Two sizes (56.6M and 115M parameters), two languages (Russian, English), 1-2 billion tokens per model, 21 checkpoints per run, and 9 out of 12 runs have a second initialization seed. The linear probe reads token position almost perfectly from NoPE, noticeably worse from RoPE, and even worse from RWKV (R² from log(1+t) on the best layer: 0.99 / 0.38–0.51 / 0.29–0.42). This is reproducible across both languages, both sizes, and both seeds. Word depth in the dependency tree shows the same trend but with a much smaller gap (0.02–0.06). Everything else is no more than 0.02–0.03 or within the spread between seeds. RWKV's peak for \"syntactic\" probes occurs 1-4 layers lower than for transformers, but this is a hint, not a result (details below). The models are small, the corpora modest. \"No difference\" here means \"not visible at this scale,\" and confirmed differences are not architectural laws. Code, results, and checkpoints are open: repository, seed 0 checkpoints.",
     "title": "What Layers Know What: Comparing RWKV-7 and Transformers with Layer-wise Probing"
   },
+  "https://habr.com/ru/articles/1108348/?utm_campaign=1108348&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Mon, 16 Nov 2026 17:04:11 GMT",
+    "slug": "1108348",
+    "source_url": "https://habr.com/ru/articles/1108348/?utm_campaign=1108348&utm_source=habrahabr&utm_medium=rss",
+    "summary": "LLM inference infrastructure is traditionally optimized for throughput and latency: KV cache, CUDA graphs, batching, quantization, parallelism. These components form the \"skeleton\" of the system and define its performance limits. However, often overlooked is the layer that determines quality rather than speed: sampling parameters. These are the rules for selecting the next token from the logit distribution at each decoding step. Read more",
+    "title": "Independent as Concepts, Dependent as Operations: Sampling Parameters in LLM Inference"
+  },
+  "https://habr.com/ru/articles/1108440/?utm_campaign=1108440&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Mon, 16 Nov 2026 13:07:41 GMT",
+    "slug": "1108440",
+    "source_url": "https://habr.com/ru/articles/1108440/?utm_campaign=1108440&utm_source=habrahabr&utm_medium=rss",
+    "summary": "While some argue about whether a romance happened and count Jensen Huang's mistresses, and others are already buying NVDA stock at a discount, the essence of why major investors are now dumping shares of the once world's most valuable company is flying past many. Perhaps the whole story of infidelity is just a distraction from the pyramid of computing power built by Uncle Huang and his team. But you have me. And I won't let you be fooled. So today we're dissecting the biggest pyramid in history, into which very serious people with very serious money have stumbled. And the consequences of which have already affected the stock market and will continue to do so for a long time. In this material, we'll quickly go through the chronology of events, and I want to focus all your attention on the chip procurement financing scheme, which looks like a pure pyramid. And it always looked like that, it's just that in the financial world, analysts are so brilliant that they only notice such things when everything is already collapsing. Mortgages, FTX with circular self-financing, and so on. And today, it's chips. The most hyped and promising topic of recent years. Where else, if not here, to create such dirt. In short, let's go!",
+    "title": "Nvidia's AI Pyramid. Is the Entire Sector Collapsing Due to Huang's Betrayal or..."
+  },
+  "https://habr.com/ru/articles/1108458/?utm_campaign=1108458&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Mon, 16 Nov 2026 13:25:23 GMT",
+    "slug": "1108458",
+    "source_url": "https://habr.com/ru/articles/1108458/?utm_campaign=1108458&utm_source=habrahabr&utm_medium=rss",
+    "summary": "Hello, Habr! Imagine a typical university assignment. The instructor asks a neural network to create a task, the student gives it to their neural network and submits the finished answer, and a neural network checks the work again. From task preparation to checking, it turns into a correspondence between the student's AI and the instructor's AI — the irony is that it could be the same model. And people in such correspondence only pass texts to each other and act as living proxies. Of course, this doesn't always happen, and not all instructors create assignments using neural networks, and not all students solve homework with their help. But this scenario can no longer be called a rarity. At the same time, banning chatbots is pointless — they are already part of our daily lives, like the internet and smartphones. Read more",
+    "title": "AI Trainer for Court Proceedings ChatCourt"
+  },
+  "https://habr.com/ru/articles/1108502/?utm_campaign=1108502&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Mon, 16 Nov 2026 15:40:56 GMT",
+    "slug": "1108502",
+    "source_url": "https://habr.com/ru/articles/1108502/?utm_campaign=1108502&utm_source=habrahabr&utm_medium=rss",
+    "summary": "Before AI, I used to quit many habits that required regular logging after 10-20 days. Whether it was calorie counting, personal finance tracking, or regular task tracking. For example, I've been trying to track my finances since I was 16. I've tried numerous apps, habit trackers, and various spreadsheets. And while I could stick with it for the first couple of weeks, I'd eventually give up. Read more",
+    "title": "Tracking finances without a single miss for 580 days. Or another non-obvious AI benefit"
+  },
+  "https://habr.com/ru/articles/1108538/?utm_campaign=1108538&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Mon, 16 Nov 2026 15:38:57 GMT",
+    "slug": "1108538",
+    "source_url": "https://habr.com/ru/articles/1108538/?utm_campaign=1108538&utm_source=habrahabr&utm_medium=rss",
+    "summary": "I'm making \"Channel 15\" - a companion radio for Euro Truck Simulator 2: eighteen fictional truckers chat on the player's airwaves, respond to voice, and remember it between trips. We have three engines for voice acting: ElevenLabs (eleven_v3), OpenAI-compatible gpt-audio via OpenRouter, and a local clone on XTTS. The text pool is about four thousand lines, and it quickly became clear that all three engines, in different ways, confidently place Russian stress incorrectly. The night greeting \"gudni\" was read as \"gUdni\" - like a command, \"yogurts\", \"kOzel\" instead of, well, you know, nicknames and call signs like \"mikhalych\" and \"bibi, kni\" broke in their own ways. Here's what I built, where I hit a wall, and what remains an open question. Read more",
+    "title": "How we fought with stress in Russian TTS: a pre-synthesis gate, text substitutions, and open questions"
+  },
+  "https://habr.com/ru/articles/1108582/?utm_campaign=1108582&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Mon, 16 Nov 2026 17:54:23 GMT",
+    "slug": "1108582",
+    "source_url": "https://habr.com/ru/articles/1108582/?utm_campaign=1108582&utm_source=habrahabr&utm_medium=rss",
+    "summary": "Businesses today face a peculiar problem: their websites rank well in search results, but when clients ask AI assistants like ChatGPT, Perplexity, or Google's AI Overviews for contractors, the companies themselves are absent from the answers. Instead, AI aggregates information from external directories and reference sites. To understand how AI models select candidates, I ran two hundred real B2B queries and traced the search process. In 94 out of 100 industry-specific selections, AI Overviews were generated, but corporate websites were rarely included. I then compared these results with monthly crawler statistics from an open organization directory, where each listing is available in HTML, Markdown, and JSON. This revealed why even a `llms.txt` file in the website's root is ineffective and what needs to be done to ensure businesses are included in recommendations. Read on.",
+    "title": "Why 94% of AI Answers Ignore Company Websites"
+  },
   "https://habr.com/ru/companies/1c/articles/1071340/?utm_campaign=1071340&utm_source=habrahabr&utm_medium=rss": {
     "model": "gemini-2.5-flash-lite",
     "published": "Thu, 03 Sep 2026 07:18:11 GMT",
@@ -5494,6 +5542,30 @@
     "source_url": "https://habr.com/ru/companies/bothub/articles/1105570/?utm_campaign=1105570&utm_source=habrahabr&utm_medium=rss",
     "summary": "The world of AI agents is rapidly evolving. Recently, an AI agent was just a chat with an LLM, doing whatever it pleased. But lately, you might have heard terms like skills, MCP, orchestration loop, tools, context management – all components of an agent system. This framework is called Harness. The term originates from testing: a Test Harness provides the framework to run code under controlled conditions. Agent Harness is an infrastructure layer that automates and manages the working environment, bringing the agent closer to true agency. An agent is essentially an LLM + Harness. With skillful use, even a less advanced model with a quality Harness environment can outperform a top-tier LLM without one. This article explains what Agent Harness is and its components as of 2026.",
     "title": "AI Agents and Harness: Modern AI Agent Systems"
+  },
+  "https://habr.com/ru/companies/bothub/articles/1108436/?utm_campaign=1108436&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Mon, 16 Nov 2026 12:56:28 GMT",
+    "slug": "1108436",
+    "source_url": "https://habr.com/ru/companies/bothub/articles/1108436/?utm_campaign=1108436&utm_source=habrahabr&utm_medium=rss",
+    "summary": "DeepSeek users report new restrictions in the web version and app. After exhausting the daily quota, the service suggests waiting, and long dialogues and messages are now additionally limited. The most likely reason is a shortage of computing power. Against this backdrop, rumors have emerged about a possible paid subscription. Mentions of a quota system and the Coding Plan tariff were found in the web version's code. There is no official announcement of the subscription, its cost, or launch dates yet. Currently, DeepSeek earns primarily from its API, while the user chat remains free. Read more",
+    "title": "DeepSeek limits free chat: users complain about quotas"
+  },
+  "https://habr.com/ru/companies/bothub/articles/1108464/?utm_campaign=1108464&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Mon, 16 Nov 2026 13:32:12 GMT",
+    "slug": "1108464",
+    "source_url": "https://habr.com/ru/companies/bothub/articles/1108464/?utm_campaign=1108464&utm_source=habrahabr&utm_medium=rss",
+    "summary": "The more detailed the prompt, the better the answer, and now context, role, constraints, and a couple of extra explanations are added to the task just in case. Half a page in, and it's already scary to delete anything, what if the whole thing rests on this very phrase. We looked at what research says about this. Spoiler: the prompt can be reduced many times over without a noticeable loss in answer quality. I'm trying to figure out which details the model can handle, and without which it will start to fantasize. Read more",
+    "title": "And So It Will Be Understood: How to Shorten Prompts and Calculate Losses"
+  },
+  "https://habr.com/ru/companies/bothub/articles/1108490/?utm_campaign=1108490&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Mon, 16 Nov 2026 14:20:08 GMT",
+    "slug": "1108490",
+    "source_url": "https://habr.com/ru/companies/bothub/articles/1108490/?utm_campaign=1108490&utm_source=habrahabr&utm_medium=rss",
+    "summary": "AI agents are rapidly evolving. Not long ago, an AI agent was just a chat with an LLM, doing whatever it pleased. But recently, you might have heard terms like skills, MCP, orchestration loop, tools, context management – all components of an agent system called Harness. The agent itself is LLM + Harness. With skillful use, even a less capable model with a quality Harness environment can outperform a top LLM without such an integration. There's a lot of talk about Harness itself lately. Skills, MCP, tools, orchestration, and sub-agents are all recent innovations. However, the current state has shortcomings: in one configuration, an agent reads directory structures, finds key files, and requests specific snippets. In another, it greedily reads everything, filling up the context. Or an agent might forget something, or misuse tools and MCP/sub-agent calls. Engineers then tweak Harness settings. But manual tuning is difficult and resource-intensive. Now, Google has released the open-source framework Harness² for self-improving AI agents. It allows agents in OpenCode and Codex to independently adjust instructions, skills, and other components during operation. This article explores Harness² – a plug-and-play framework from Google Research for recursive harnessing in an open world. Read on",
+    "title": "Harness² — A New Generation of AI Agents from Google Research"
   },
   "https://habr.com/ru/companies/cinimex/articles/1088534/?utm_campaign=1088534&utm_source=habrahabr&utm_medium=rss": {
     "model": "gemini-2.5-flash-lite",
@@ -7054,6 +7126,14 @@
     "source_url": "https://habr.com/ru/companies/selectel/articles/1107582/?utm_campaign=1107582&utm_source=habrahabr&utm_medium=rss",
     "summary": "Google announced the release of Gemini 4 Hydrogen on November 12th. Google DeepMind has already called the model a daily workhorse for agent scenarios. Hydrogen is available in Gemini API, Google AI Studio, Android Studio, and the Antigravity development environment, as well as in the business version of Gemini and Google Sheets. Regular users can see it in the Gemini app and in the \"AI Mode\" in Google Search, where automatic selection is triggered. In the API, the model is called gemini-4-hydrogen and effectively replaces the Flash line in the fourth generation. Let's dive in. Read more",
     "title": "Google released Gemini 4 Hydrogen for agents"
+  },
+  "https://habr.com/ru/companies/selectel/articles/1107620/?utm_campaign=1107620&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Mon, 16 Nov 2026 13:01:12 GMT",
+    "slug": "1107620",
+    "source_url": "https://habr.com/ru/companies/selectel/articles/1107620/?utm_campaign=1107620&utm_source=habrahabr&utm_medium=rss",
+    "summary": "On November 16, just five days after the preview version was shown, Alibaba released the full flagship model Qwen4-Max. This is a multimodal MoE giant with 2.4 trillion parameters (71 billion active) and a context window of 1 million tokens, optimized for complex coding, agent mode operation, and project prototyping – from frontend to 3D games. The model is focused on programming, solving complex multi-level tasks, and creating projects, including games. The model weights are currently closed, and it cannot be deployed on your own computer. Access is only available through the cloud and API (although developers promise to release more compact versions of the Qwen4 lineup in open source later). Below, we analyze the release architecture and look at the benchmarks. Read more",
+    "title": "Qwen4-Max is Out. What's the Difference from the Preview Version?"
   },
   "https://habr.com/ru/companies/selectel/articles/1107638/?utm_campaign=1107638&utm_source=habrahabr&utm_medium=rss": {
     "model": "gemini-2.5-flash-lite",

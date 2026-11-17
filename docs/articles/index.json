@@ -4959,6 +4959,14 @@
     "summary": "I wrote Zyabra - a local layout switcher: I typed \"ghbdtn\" instead of \"privet\", and the program itself deletes and rewrites it correctly. The key thing is that it's completely local - it doesn't write what's typed to disk, doesn't keep a keystroke log, doesn't touch the clipboard, and doesn't open the network at all. It only keeps the current unfinished word and the last replacement in memory, nothing more. I use it every day. And recently I started thinking: is there any real benefit from it when working with LLMs, or is it just a convenience without a measurable effect? I decided to check not with words, but with numbers - luckily I have my own local Qwen3.8-Flash-Next on Strata at hand. The idea is simple: I take short phrases that I could have accidentally sent in the wrong layout, and for each, I send the model two versions - as intended and as it would have turned out without Zyabra. No system prompt, no history - just one question in one message. The result is uneven and sometimes frightening: \"Umichka)\" - 70 tokens / 5.4s - 2356 tokens / 148s, it didn't decipher. \"Spasibo, to chto nuzhno!\" - 84 tokens / 7.5s - 440 tokens / 30s, it deciphered correctly. \"Pognali\" - 66 tokens / 6.2s - 336 tokens / 24s, it deciphered correctly. For \"Evybxrf)\", the model actually started trying ROT13 and Caesar cipher, spent almost one and a half hundred seconds - and in the end gave up, asking what I meant. It looked like an excellent argument in favor of Zyabra: tens of times savings. Read more",
     "title": "How much does a typo in keyboard layout really cost, in LLM tokens?"
   },
+  "https://habr.com/ru/articles/1107690/?utm_campaign=1107690&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Tue, 17 Nov 2026 15:35:04 GMT",
+    "slug": "1107690",
+    "source_url": "https://habr.com/ru/articles/1107690/?utm_campaign=1107690&utm_source=habrahabr&utm_medium=rss",
+    "summary": "While companies are still deciding what constitutes AI transformation and where to place AI agents, the finance department continues with its usual schedule – needing to finalize the new budget and explain why the old one went over budget. My team automates data collection and the preparation of regulatory and management reporting, including plan-vs-actual. Our users and clients are most often finance specialists. I know their pain points and tasks best. I've identified four areas where AI can already help with routine tasks and free up time for what matters most – analyzing business results. At the end, I'll provide a cheat sheet with almost a hundred application ideas. This article is based on my presentation at the VBA forum and a webinar on management accounting. Read more",
+    "title": "What to Assign to AI in the Finance Department: Four Areas of Application"
+  },
   "https://habr.com/ru/articles/1107816/?utm_campaign=1107816&utm_source=habrahabr&utm_medium=rss": {
     "model": "gemini-2.5-flash-lite",
     "published": "Sat, 14 Nov 2026 10:47:30 GMT",
@@ -5175,6 +5183,14 @@
     "summary": "I'm making \"Channel 15\" - a companion radio for Euro Truck Simulator 2: eighteen fictional truckers chat on the player's airwaves, respond to voice, and remember it between trips. We have three engines for voice acting: ElevenLabs (eleven_v3), OpenAI-compatible gpt-audio via OpenRouter, and a local clone on XTTS. The text pool is about four thousand lines, and it quickly became clear that all three engines, in different ways, confidently place Russian stress incorrectly. The night greeting \"gudni\" was read as \"gUdni\" - like a command, \"yogurts\", \"kOzel\" instead of, well, you know, nicknames and call signs like \"mikhalych\" and \"bibi, kni\" broke in their own ways. Here's what I built, where I hit a wall, and what remains an open question. Read more",
     "title": "How we fought with stress in Russian TTS: a pre-synthesis gate, text substitutions, and open questions"
   },
+  "https://habr.com/ru/articles/1108574/?utm_campaign=1108574&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Tue, 17 Nov 2026 16:00:06 GMT",
+    "slug": "1108574",
+    "source_url": "https://habr.com/ru/articles/1108574/?utm_campaign=1108574&utm_source=habrahabr&utm_medium=rss",
+    "summary": "Clients of one of the projects have started mentioning more often that GPT recommended us. I checked the suggested queries on another account and got our website listed first. I'll explain how to check recommendations for your niche, where to get search query statistics, and what prevents the neural network from reading a website. I'll also cover JavaScript, search bots, and the limitations of such checks.",
+    "title": "ChatGPT Recommends Us. I'm Checking Which Queries Lead to This"
+  },
   "https://habr.com/ru/articles/1108582/?utm_campaign=1108582&utm_source=habrahabr&utm_medium=rss": {
     "model": "gemini-2.5-flash-lite",
     "published": "Mon, 16 Nov 2026 17:54:23 GMT",
@@ -5182,6 +5198,46 @@
     "source_url": "https://habr.com/ru/articles/1108582/?utm_campaign=1108582&utm_source=habrahabr&utm_medium=rss",
     "summary": "Businesses today face a peculiar problem: their websites rank well in search results, but when clients ask AI assistants like ChatGPT, Perplexity, or Google's AI Overviews for contractors, the companies themselves are absent from the answers. Instead, AI aggregates information from external directories and reference sites. To understand how AI models select candidates, I ran two hundred real B2B queries and traced the search process. In 94 out of 100 industry-specific selections, AI Overviews were generated, but corporate websites were rarely included. I then compared these results with monthly crawler statistics from an open organization directory, where each listing is available in HTML, Markdown, and JSON. This revealed why even a `llms.txt` file in the website's root is ineffective and what needs to be done to ensure businesses are included in recommendations. Read on.",
     "title": "Why 94% of AI Answers Ignore Company Websites"
+  },
+  "https://habr.com/ru/articles/1108948/?utm_campaign=1108948&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Tue, 17 Nov 2026 14:24:06 GMT",
+    "slug": "1108948",
+    "source_url": "https://habr.com/ru/articles/1108948/?utm_campaign=1108948&utm_source=habrahabr&utm_medium=rss",
+    "summary": "If a site gets traffic from Google, its link in AI Overviews might move to the very bottom of the answer: Google is currently testing this format. AI Overviews, or Google AI summaries, are a block with a neural network's answer above the regular search results. Previously, source site icons were at the top of this block. There is no click data for the new format yet, but even with the old format, clicks on sources within the overview were very rare. It is now more important for a site to be mentioned in the answer text itself, where a brand or fact is stated, than to simply appear in the list below it. Read more",
+    "title": "Google is trying to move site links to the very bottom of AI Overviews: why being named in the answer is more important for a site"
+  },
+  "https://habr.com/ru/articles/1108960/?utm_campaign=1108960&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Tue, 17 Nov 2026 14:34:47 GMT",
+    "slug": "1108960",
+    "source_url": "https://habr.com/ru/articles/1108960/?utm_campaign=1108960&utm_source=habrahabr&utm_medium=rss",
+    "summary": "In July, OpenAI launched the 'ChatGPT for Academic Researchers' program, offering free ChatGPT access to 100,000 scientists, mathematicians, and engineers from selected higher education institutions worldwide. The company is now doubling the initiative's participants to 200,000, but they will receive access to ChatGPT Plus instead of ChatGPT Pro. Read more",
+    "title": "OpenAI doubles free ChatGPT subscriptions for scientists to 200,000, but now offers ChatGPT Plus"
+  },
+  "https://habr.com/ru/articles/1108964/?utm_campaign=1108964&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Tue, 17 Nov 2026 14:49:04 GMT",
+    "slug": "1108964",
+    "source_url": "https://habr.com/ru/articles/1108964/?utm_campaign=1108964&utm_source=habrahabr&utm_medium=rss",
+    "summary": "How an attempt to delete a few files reminded me of classic science fiction and philosophy. Read more",
+    "title": "When AI Decides You Can't. From Codex to Stanislaw Lem's Ethicosphere"
+  },
+  "https://habr.com/ru/articles/1108980/?utm_campaign=1108980&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Tue, 17 Nov 2026 15:19:18 GMT",
+    "slug": "1108980",
+    "source_url": "https://habr.com/ru/articles/1108980/?utm_campaign=1108980&utm_source=habrahabr&utm_medium=rss",
+    "summary": "Generative AI has made content creation easier, but modern hardware can produce cheap tokens at high speeds, even from large language models. This presents a significant problem. A year ago, Graham Neubi, a researcher at Carnegie Mellon University, offered a symbolic $50 reward to anyone who could use an AI detector to check scientific papers and reviews submitted to the International Conference on Learning Representations (ICLR). The call came in November 2025, during the review process for ICLR 2026 papers, due to numerous complaints from researchers about vague, uninformative feedback, requests for unusual research, and citations to non-existent works. This led to suspicions that reviewers were outsourcing their work to machines. It's hard to blame them, as ICLR reviewers are machine learning researchers who typically aren't paid for their work. Read more",
+    "title": "How to Read Texts in the Age of Slop"
+  },
+  "https://habr.com/ru/articles/1109006/?utm_campaign=1109006&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Tue, 17 Nov 2026 16:22:42 GMT",
+    "slug": "1109006",
+    "source_url": "https://habr.com/ru/articles/1109006/?utm_campaign=1109006&utm_source=habrahabr&utm_medium=rss",
+    "summary": "I've been writing API autotests for a long time, and in recent months, I've been reviewing tests written not by humans, but by an IDE agent. They write quickly and accurately. The problem is different: such a test often verifies not a requirement, but how the API responds right now. It's stable, green, and cements a bug instead of catching it. In the article, I'll analyze a typical draft test for order refunds: what's wrong with it, how to spot it during a review, and what a trustworthy test looks like. The code is in pytest, but the ideas are language-agnostic. Read on",
+    "title": "AI tests are green, but the refund doesn't work: analyzing and fixing a draft API autotest"
   },
   "https://habr.com/ru/companies/1c/articles/1071340/?utm_campaign=1071340&utm_source=habrahabr&utm_medium=rss": {
     "model": "gemini-2.5-flash-lite",
@@ -6023,6 +6079,14 @@
     "summary": "A large language model doesn't know how a specific information base is structured. It cannot see configuration modules, active extensions, user rights, or document data until it gains controlled access. Therefore, the practical task isn't just choosing a model. It's about gathering relevant context for it, limiting its actions, and incorporating result verification. Let's explore how this process works in an AI assistant for 1C and where a specialist is still needed. Read more",
     "title": "How an AI assistant gets 1C context and checks extensions"
   },
+  "https://habr.com/ru/companies/infotecs_tech/articles/1108514/?utm_campaign=1108514&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Tue, 17 Nov 2026 15:31:03 GMT",
+    "slug": "1108514",
+    "source_url": "https://habr.com/ru/companies/infotecs_tech/articles/1108514/?utm_campaign=1108514&utm_source=habrahabr&utm_medium=rss",
+    "summary": "Hello, Habr! AI systems are being implemented everywhere, leading to specific threats targeting AI infrastructure and the information security of systems that use it. Ensuring data confidentiality, integrity, and availability is paramount for both developers and users. This article touches upon some methods for secure data handling in AI training, but it's not a comprehensive guide to AI implementation. Its main goal is to introduce basic data privacy techniques using simple language and a humorous D&D analogy for enthusiasts. Read more",
+    "title": "How to Secure Data in AI Systems if You're a D&D Dwarf"
+  },
   "https://habr.com/ru/companies/infowatch/articles/1083954/?utm_campaign=1083954&utm_source=habrahabr&utm_medium=rss": {
     "model": "gemini-2.5-flash-lite",
     "published": "Fri, 18 Sep 2026 14:32:05 GMT",
@@ -6759,6 +6823,14 @@
     "summary": "Hello, Habr! My name is Vladislav Shershulsky, I am an advisor to the General Director of the Rubytech Group for innovative projects and AI. Answering the question stated in the title, a short answer suggests itself - \"everything\". But let's try to detail it a bit... Read more",
     "title": "What and how does IT infrastructure change with the introduction of AI?"
   },
+  "https://habr.com/ru/companies/rubytech/articles/1108924/?utm_campaign=1108924&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Tue, 17 Nov 2026 14:02:04 GMT",
+    "slug": "1108924",
+    "source_url": "https://habr.com/ru/companies/rubytech/articles/1108924/?utm_campaign=1108924&utm_source=habrahabr&utm_medium=rss",
+    "summary": "Hello, Habr! In a couple of weeks, on November 30th, we will hold a free webinar \"AI for Corporations: How to Scale Solutions and Not Go Broke on IT Infrastructure.\" The main thing is to register in advance. We will talk about industry tasks that have already moved from pilot to real scaling, and look at where the business potential lies in the near future. We will also analyze AI application scenarios in practice and show how to scale them without a sudden and uncontrolled increase in hardware costs. What else will be there... Register",
+    "title": "AI for Corporations: How to Scale Solutions Without Breaking the Bank on IT Infrastructure"
+  },
   "https://habr.com/ru/companies/runity/articles/1086162/?utm_campaign=1086162&utm_source=habrahabr&utm_medium=rss": {
     "model": "gemini-2.5-flash-lite",
     "published": "Thu, 24 Sep 2026 11:35:54 GMT",
@@ -7143,6 +7215,14 @@
     "summary": "Apex Compute has released an open beta version of the Apex Neural Rendering frame generator. The tool works on top of the OptiScaler layer, replaces the standard NVIDIA DLSS Frame Generation call, and allows intermediate frame synthesis on GeForce RTX™, GeForce® GTX 16, AMD Radeon™, Intel® Arc™, and Apple Silicon chips. Read more",
     "title": "Cross-platform alternative to NVIDIA DLSS Frame Generation with support for older generation graphics cards"
   },
+  "https://habr.com/ru/companies/selectel/articles/1108958/?utm_campaign=1108958&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Tue, 17 Nov 2026 14:40:59 GMT",
+    "slug": "1108958",
+    "source_url": "https://habr.com/ru/companies/selectel/articles/1108958/?utm_campaign=1108958&utm_source=habrahabr&utm_medium=rss",
+    "summary": "Chinese delivery platform Meituan has released the weights for its multimodal MoE model LongCat-2.5, boasting approximately 1.6 trillion parameters with about 48 billion active per token, under a permissive MIT license. Notably, the model was trained without Western accelerators, and its official deployment guide contains no instructions for NVIDIA GPUs. The weights are now available on the Hugging Face repository. Read more",
+    "title": "Weights for the LongCat-2.5 model with 1.6 trillion parameters, deployed without NVIDIA, have been released"
+  },
   "https://habr.com/ru/companies/severstal/articles/1104690/?utm_campaign=1104690&utm_source=habrahabr&utm_medium=rss": {
     "model": "gemini-2.5-flash-lite",
     "published": "Fri, 06 Nov 2026 15:15:28 GMT",
@@ -7150,6 +7230,14 @@
     "source_url": "https://habr.com/ru/companies/severstal/articles/1104690/?utm_campaign=1104690&utm_source=habrahabr&utm_medium=rss",
     "summary": "At COMETAL, we are building a platform for industrial cooperation. Through it, we help customers find manufacturers for metal products, and manufacturers find orders. In this article, I'll tell you how we built the platform, why we abandoned ready-made solutions, and how we reached the point where neural networks test our platform at night, generate charts on demand in natural language, and even deploy code to production themselves (yes, that happened too). Read more",
     "title": "How We Built a Platform from Scratch and Then Taught Neural Networks to Work on It"
+  },
+  "https://habr.com/ru/companies/severstal/articles/1108930/?utm_campaign=1108930&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Tue, 17 Nov 2026 14:05:54 GMT",
+    "slug": "1108930",
+    "source_url": "https://habr.com/ru/companies/severstal/articles/1108930/?utm_campaign=1108930&utm_source=habrahabr&utm_medium=rss",
+    "summary": "Automation engineering is becoming a bottleneck: innovation cycles are shrinking, system complexity is growing, and experienced engineers are scarce. Major vendors are responding with AI assistants, but typically within their own ecosystems. In this article, I, Tatyana Pchelnikova, a product owner in Severstal's IT team for developing open automation system components, will explain how we decided to create an intelligent assistant and integrate it into our SeverCode (Flogic) development environment – and why openness is fundamental here. Read more",
+    "title": "AI Assistant for an Automation Engineer"
   },
   "https://habr.com/ru/companies/sibur_official/articles/1101182/?utm_campaign=1101182&utm_source=habrahabr&utm_medium=rss": {
     "model": "gemini-2.5-flash-lite",

@@ -1,0 +1,145 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>AI tests are green, but the refund doesn&#x27;t work: analyzing and fixing a draft API autotest</title>
+  <meta name="description" content="I&#x27;ve been writing API autotests for a long time, and in recent months, I&#x27;ve been reviewing tests written not by humans, but by an IDE agent. They write quickly and accurately. The problem is different: such a test often verifies not a requirement, but how the API responds right now. It&#x2">
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.65;
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 32px 20px 64px;
+      color: #1f2328;
+    }
+    header {
+      border-bottom: 1px solid #d8dee4;
+      margin-bottom: 28px;
+      padding-bottom: 20px;
+    }
+    .source {
+      color: #57606a;
+      font-size: 0.95rem;
+    }
+    img, video, iframe {
+      max-width: 100%;
+      height: auto;
+    }
+    pre {
+      overflow-x: auto;
+      padding: 16px;
+      background: #f6f8fa;
+      border-radius: 6px;
+    }
+    code {
+      font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+    }
+    blockquote {
+      border-left: 4px solid #d0d7de;
+      margin-left: 0;
+      padding-left: 16px;
+      color: #57606a;
+    }
+    footer {
+      border-top: 1px solid #d8dee4;
+      margin-top: 40px;
+      padding-top: 20px;
+      color: #57606a;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>AI tests are green, but the refund doesn&#x27;t work: analyzing and fixing a draft API autotest</h1>
+    <p>I&#x27;ve been writing API autotests for a long time, and in recent months, I&#x27;ve been reviewing tests written not by humans, but by an IDE agent. They write quickly and accurately. The problem is different: such a test often verifies not a requirement, but how the API responds right now. It&#x27;s stable, green, and cements a bug instead of catching it. In the article, I&#x27;ll analyze a typical draft test for order refunds: what&#x27;s wrong with it, how to spot it during a review, and what a trustworthy test looks like. The code is in pytest, but the ideas are language-agnostic. Read on</p>
+    <p class="source">
+      Machine-translated from Habr.
+      <a href="https://habr.com/ru/articles/1109006/?utm_campaign=1109006&amp;utm_source=habrahabr&amp;utm_medium=rss">Read the original Russian article</a>.
+      Tue, 17 Nov 2026 16:22:42 GMT
+    </p>
+  </header>
+  <main>
+<div><p>I've been writing API autotests for a long time, and in recent months, I've been reviewing tests written not by humans, but by an IDE agent. They write quickly and accurately. The problem is different: such a test often verifies not a requirement, but how the API responds right now. It's stable, green, and cements a bug instead of catching it.</p><p>In the article, I'll analyze a typical draft test for order refunds: what's wrong with it, how to spot it during a review, and what a trustworthy test looks like. The code is in pytest, but the ideas are language-agnostic.</p><h3>Where such tests come from</h3><p>An agent is usually given the task "cover the endpoint with tests" and access to the code or a test stand. They see requirements less clearly than the actual response: a response can be obtained by a request, but requirements are in a task, a wiki, or in an analyst's head. Therefore, they often take expectations in the test from the response. If the API calculates the sum with an error, the test will fix this error.</p><p>Such stories have already been described on Habr. In the discussion of the <a href="https://habr.com/ru/articles/1107056/">article about tailored autotests</a>, it was told how an agent, after receiving a failing test for a date in a non-standard format, did not create a defect but rewrote the test: changing both the input data and the expectation. The test with the same name turned green, the original scenario remained uncovered, and it was only noticed by the diff. And under the <a href="https://habr.com/ru/articles/1106818/">article by the Moscow Exchange about silent losses in production</a>, a reader described a night run with an agent that completed with code 0, even though some steps were not executed.</p><p>Both cases are structured the same way: the error doesn't look like an error. There's no red test and no exception, just a green result that proves nothing.</p><h3>Requirement and draft</h3><p>Let's take the refund requirement:</p><blockquote><p><code>POST /orders/{id}/refund</code> for a paid order returns 200, <code>status</code> = <code>REFUNDED</code>, <code>refund.amount</code> equals the sum of order items (price × quantity, rounded to cents), <code>refund.id</code> is not empty. The refunds service creates a refund task without errors, and exactly one record appears in the <code>refunds</code> table.</p></blockquote><p>The agent produced this test:</p><pre><code>def test_refund_order(api, paid_order):
+    r = api.post(f"/orders/{paid_order['id']}/refund")
+    assert r.status_code == 200
+    body = r.json()
+    assert "status" in body
+    assert body["refund"]["amount"] == 1490.00
+    assert body["refund"]["id"]</code></pre><p>It passes. It looks reasonable. But out of the six assertions in the requirement, it honestly checks two: the response code and a non-empty <code>refund.id</code>.</p><h3>What's wrong with it</h3><p><strong>The expectation matches the response to the cent.</strong> The number <code>1490.00</code> does not follow from the requirement; the requirement has a formula. Most likely, the agent made a request, saw the response, and put it into the test. If the service forgets to multiply the price by the quantity, and the <code>paid_order</code> fixture happens to contain items with a quantity of 1, the test will not notice anything. And if you change the fixture, the test will fail, even though the API is working correctly. During review, I always ask one question about each constant in the expectation: where did this number come from? If the answer is "from the API response," it's not a check, but a snapshot.</p><p>There's also a second problem in the same line: comparing money using <code>float</code>. Today it passes, but with sums like 0.1 + 0.2, false failures will start, and the agent will happily "fix" them by weakening the check.</p><p><strong>The check is weaker than the requirement.</strong> <code>"status" in body</code> passes with any status, including <code>FAILED</code>. Models like such checks for an obvious reason: they fail less often. The signs are the same in other forms: "array is not empty" instead of "array has three items," "field exists" instead of "field equals.".</p><p><strong>No side effects.</strong> The requirement talks about the refunds service and the <code>refunds</code> table, while the test only looks at the response. This is the most expensive loophole: the API might return <code>200</code> and <code>REFUNDED</code>, but the refund service log at that moment will show <code>relation "refund_queue" does not exist</code>. No response check will see this. An agent almost never thinks about logs and databases on their own: they are not in the response example.</p><p><strong>Not a single negative check.</strong> Requirements almost always talk about what should *not* happen. Here it's "exactly one record": a repeated refund request should not create a second one.</p><h3>Corrected test</h3><p>The <code>api</code>, <code>logs</code>, and <code>db</code> fixtures here are thin wrappers around an HTTP client, Elasticsearch, and PostgreSQL. We calculate the expected amount using the formula from the requirement in <code>Decimal</code>:</p><pre><code>from decimal import Decimal, ROUND_HALF_UP
+
+
+def expected_refund(order):
+    total = sum(Decimal(str(i["price"])) * i["qty"] for i in order["items"])
+    return total.quantize(Decimal("0.01"), rounding=ROUND_HALF_UP)
+
+
+def test_refund_paid_order(api, paid_order, logs, db):
+    r = api.post(f"/orders/{paid_order['id']}/refund")
+    assert r.status_code == 200
+
+    body = r.json()
+    assert body["status"] == "REFUNDED"
+    assert Decimal(str(body["refund"]["amount"])) == expected_refund(paid_order)
+    assert body["refund"]["id"]
+
+    trace_id = r.headers["X-Trace-Id"]
+    records = logs.wait_for(service="refunds", trace_id=trace_id)
+    errors = [x for x in records if x["log"]["level"] == "ERROR"]
+    assert errors == [], errors[:3]
+
+    rows = db.fetch_all(
+        "select amount from refunds where order_id = %s", (paid_order["id"],)
+    )
+    assert len(rows) == 1
+    assert rows[0]["amount"] == expected_refund(paid_order)</code><p>The <code>paid_order</code> fixture should be made with items where the quantity is greater than one and the price has cents, for example, 999.99 × 3. With "round" numbers, half of the calculation errors are not visible.</p><p>Separately, a negative scenario: a second refund for the same order. What code it should return is decided by the requirement (let it be 409 for us). The main thing is that we check the database, not just the response:</p><pre><code>def test_second_refund_is_rejected(api, refunded_order, db):
+    r = api.post(f"/orders/{refunded_order['id']}/refund")
+    assert r.status_code == 409
+
+    rows = db.fetch_all(
+        "select id from refunds where order_id = %s", (refunded_order['id'],)
+    )
+    assert len(rows) == 1</code></pre><h3>The trap in the "no errors in logs" check</h3><p>My first version of the log check looked like "find ERROR records by traceId, there should be zero." It always turned green, including when logs didn't reach Elasticsearch at all: no records means no errors. Checking for the absence of something without checking for the presence of at least something proves nothing.</p><p>Therefore, <code>wait_for</code> first waits until records for the required service appear by traceId, and fails if they still don't. Logs arrive with a delay, so we wait with a timeout:</p><pre><code>import time
+import requests
+
+
+class Logs:
+    def __init__(self, url, index):
+        self.url, self.index = url, index
+
+    def search(self, service, trace_id):
+        query = {
+            "size": 100,
+            "query": {"bool": {"filter": [
+                {"term": {"service.name": service}},
+                {"term": {"trace.id": trace_id}},
+            ]}},
+        }
+        r = requests.post(f"{self.url}/{self.index}/_search", json=query, timeout=10)
+        r.raise_for_status()
+        return [h["_source"] for h in r.json()["hits"]["hits"]]
+
+    def wait_for(self, service, trace_id, timeout=30):
+        deadline = time.monotonic() + timeout
+        while time.monotonic() &lt; deadline:
+            records = self.search(service, trace_id)
+            if records:
+                time.sleep(2)  # give time for other records of this request to be written
+                return self.search(service, trace_id)
+            time.sleep(1)
+        raise AssertionError(f"no logs {service} for trace.id={trace_id} in {timeout}s")</code><p>Field names (<code>service.name</code>, <code>trace.id</code>, <code>log.level</code>) depend on how your log shipping is configured; here they follow the ECS schema. The pause after the first found record is a compromise: without it, the test might only check the beginning of processing and miss an error that was logged a second later.</p><h3>Tests for known bugs</h3><p>Another thing agents do willingly: a test fails due to a real defect, and they "fix" it. A good practice from the same discussion is to keep tests for found defects separate and not let them block the build. In pytest, there's <code>xfail</code> for this, and the <code>strict</code> parameter is important:</p><pre><code>@pytest.mark.xfail(strict=True, reason="BUG-1432: cents are lost when qty &gt; 1")
+def test_refund_amount_with_quantity(api, order_with_quantities):
+    ...</code><p>As long as the bug is not fixed, the test fails, and this is expected. When the bug is fixed, the test will pass, and due to <code>strict=True</code>, the build will turn red: this is a signal to remove the marker. Without <code>strict</code>, the fixed bug will remain in the report as "expected to fail," and substituting the expectation in such a test will not raise any suspicion.</p><h3>How to catch expectation substitution during review</h3><p>The case with the rewritten test from the beginning of the article can be easily missed if expectations are scattered throughout the test code. A simple separation helps me: expected values that come from requirements are stored separately (constants, YAML, a table in the repository), and for this directory, the CODEOWNERS file specifies the person responsible for the requirements. An agent can rewrite the test itself, but changing expectations without separate approval will not get into main. At the same time, during review, it's immediately clear that both the input and the expectation have changed in one commit—this is a reason to read the diff entirely, not just skim it.</p><p>If an agent works with the repository, it's useful to record the same in the project rules. I keep something like this:</p><pre><code>## API Tests
+- Take expected values from task requirements. If a requirement lacks a number or rule, ask, don't substitute a value from the response.
+- Do not change the expected value and input data of an existing test to make it pass. If a test fails, describe the discrepancy and stop.
+- For each "and at the same time..." in the requirement (database, logs, another service), a separate check is needed.
+- At the end, list which tests have changed and which requirement points they cover.</code><p>The second point is the most important. Without it, the story from the beginning of the article will happen sooner or later.</p><h3>What's the result</h3><p>An agent saves me time on routine tasks: fixtures, wrappers, uniform field checks. But accepting their test is not the same as accepting a colleague's test: a colleague read the requirement, while an agent more often read the response. During review, I go through four questions: where did each expected value come from, is the check softer than the requirement, have the database and logs been checked, and is there at least one check for what should not happen. Usually, five minutes are enough, and there are noticeably fewer green tests that prove nothing.</p><p>How are AI-written tests accepted in your organization: does someone read each one, selectively, or no one? And have you ever caught an agent testing the current response instead of the requirement?</p></div>
+  </main>
+  <footer>
+    Translation generated with Gemini 2.5 Flash-Lite.
+    The original article remains the source of record.
+  </footer>
+</body>
+</html>

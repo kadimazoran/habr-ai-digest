@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Weights for the LongCat-2.5 model with 1.6 trillion parameters, deployed without NVIDIA, have been released</title>
+  <meta name="description" content="Chinese delivery platform Meituan has released the weights for its multimodal MoE model LongCat-2.5, boasting approximately 1.6 trillion parameters with about 48 billion active per token, under a permissive MIT license. Notably, the model was trained without Western accelerators, and its official de">
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.65;
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 32px 20px 64px;
+      color: #1f2328;
+    }
+    header {
+      border-bottom: 1px solid #d8dee4;
+      margin-bottom: 28px;
+      padding-bottom: 20px;
+    }
+    .source {
+      color: #57606a;
+      font-size: 0.95rem;
+    }
+    img, video, iframe {
+      max-width: 100%;
+      height: auto;
+    }
+    pre {
+      overflow-x: auto;
+      padding: 16px;
+      background: #f6f8fa;
+      border-radius: 6px;
+    }
+    code {
+      font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+    }
+    blockquote {
+      border-left: 4px solid #d0d7de;
+      margin-left: 0;
+      padding-left: 16px;
+      color: #57606a;
+    }
+    footer {
+      border-top: 1px solid #d8dee4;
+      margin-top: 40px;
+      padding-top: 20px;
+      color: #57606a;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Weights for the LongCat-2.5 model with 1.6 trillion parameters, deployed without NVIDIA, have been released</h1>
+    <p>Chinese delivery platform Meituan has released the weights for its multimodal MoE model LongCat-2.5, boasting approximately 1.6 trillion parameters with about 48 billion active per token, under a permissive MIT license. Notably, the model was trained without Western accelerators, and its official deployment guide contains no instructions for NVIDIA GPUs. The weights are now available on the Hugging Face repository. Read more</p>
+    <p class="source">
+      Machine-translated from Habr.
+      <a href="https://habr.com/ru/companies/selectel/articles/1108958/?utm_campaign=1108958&amp;utm_source=habrahabr&amp;utm_medium=rss">Read the original Russian article</a>.
+      Tue, 17 Nov 2026 14:40:59 GMT
+    </p>
+  </header>
+  <main>
+<div><figure><img loading="lazy" src="https://habrastorage.org/w1560/extt/90/0a/ef/900aefdf112ca1c883a0197ca4f09ac8.png"/></figure><p>Chinese delivery platform Meituan has released the weights for its multimodal MoE model LongCat-2.5, boasting approximately 1.6 trillion parameters with about 48 billion active per token, under a permissive MIT license. Notably, the model was trained without Western accelerators, and its official deployment guide contains no instructions for NVIDIA GPUs. The weights are now available on the <a href="https://huggingface.co/meituan-longcat/LongCat-2.5">Hugging Face repository</a>.</p><h2>Comparison</h2><p>The table below is compiled from Meituan's technical <a href="https://longcat.ai/blog/longcat-2.5/">report</a> and represents the developers' own measurements.</p><div><div><table><tbody><tr><td><p><strong>Test</strong></p></td><td><p><strong>LongCat-2.5</strong></p></td><td><p><strong>DeepSeek-V4.1-Flash</strong></p></td><td><p><strong>OpenAI's Sol Model</strong></p></td><td><p><strong>Opus 5</strong></p></td></tr><tr><td><p>Terminal Bench v2.1</p></td><td><p>88.4</p></td><td><p>90.6</p></td><td><p>88.8</p></td><td><p>89.1</p></td></tr><tr><td><p>DeepSWE</p></td><td><p>64.6</p></td><td><p>74.2</p></td><td><p>72.7</p></td><td><p>no data</p></td></tr><tr><td><p>Terminal Bench v4.0</p></td><td><p>38.5</p></td><td><p>no data</p></td><td><p>37.3</p></td><td><p>53.9</p></td></tr></tbody></table></div></div><p>LongCat-2.5 leads only in the BrowseComp test (91.9 points) — this is a benchmark for deep internet information retrieval where the model searches Google, opens pages, and gathers complex facts. However, this result was obtained in Meituan's own closed environment, and in such tests, the final score heavily depends on the search engine integrated with the neural network.</p><p>The jump in DeepSWE (from 9.7 in the previous LongCat-2.0 to 64.6) is interesting — this is a test for full-fledged development where the model must independently analyze a third-party repository, find the cause of a bug, and write a working patch. In the latest technical report, the developers explained how they achieved this growth: the model was fine-tuned on real pull requests from GitHub within completely isolated containers. To prevent the neural network from "cheating" and looking up готовые answers, its internet access was disabled, commit history and cache were cleared, and a separate LLM acted as a verifier to ensure the correctness of the solution.</p><figure><img alt="Model benchmarks compared to LongCat. Source." loading="lazy" src="https://habrastorage.org/w1560/extt/a7/c2/34/a7c2340f4211f8530983943be88ac694.png" title="Model benchmarks compared to LongCat. Source."/><div><figcaption><em>Model benchmarks compared to LongCat.</em> <a href="https://longcat.ai/blog/longcat-2.5/"><em>Source</em></a><em>.</em></figcaption></div></figure><p>Nevertheless, in this task, the model still lags behind DeepSeek and OpenAI by 8–10 points. And in Terminal Bench v4.0 — a test of the ability to independently operate in a Linux command-line environment (setting up environments, deploying, fixing configurations) — it falls short of Opus by 15 points.</p><h2>Can you run it yourself?</h2><p>To run it locally, Meituan describes a cluster of 194 Huawei Ascend Atlas A2 series accelerators: two are used for image processing, 64 for prefill, and 128 for decode.</p><p>The guide is located in the longcat-2.5-npu branch of the SGLang-FluentLLM repository; there are no NVIDIA GPU or VRAM requirements in the official model card. For those operating outside of China, this means the model is accessible via API, or one will have to wait for the architecture to be ported to standard vLLM and SGLang branches for CUDA.</p><p>The quantized W4A4 version with four-bit expert weights and activations, according to Meituan, speeds up prompt processing by 43.3% and generation by 42.77% compared to the eight-bit version while maintaining accuracy. The context window via API is заявлен up to one million tokens, and response generation up to 128,000.</p><p>However, an unpleasant nuance has already been noticed in the multimodal part. Via API, the model accepts video files exclusively via a public URL link, so directly feeding it a private screencast of a bug without workarounds will not be possible.</p><h2>How much does it cost?</h2><p>The API supports standard OpenAI and Anthropic formats, and the model connects seamlessly with Claude Code and Codex. The price during the promotional period is a bargain — about €0.27 per million input tokens and €1.07 per million output tokens, but the promotion is limited in time. For comparison, Alibaba's Qwen4-Max, released on Monday, costs $1.50 and $4.50 per million input and output tokens, respectively, according to TheNextWeb, with closed weights.</p><h2>What remains unclear</h2><p>The model size in the model card and in the Hugging Face metadata is still listed differently (1.6 and 1.8 trillion parameters) — the authors have not explained this discrepancy, likely due to different counting methods for auxiliary visual modules. Also, there are no real community measurements yet on quality degradation with the maximum context of 1 million tokens.</p><p>The open weights have a strong code variant under MIT with a cheap API at launch. It should be tested exclusively on your own repositories — BrowseComp measurements are a poor indicator here.</p><blockquote><p>What do you think, will the combination of large Chinese MoE models and Huawei Ascend clusters become a real alternative to Nvidia outside of China, or will such releases, without CUDA support, remain a story exclusively for the domestic market? Let's discuss in the comments.</p></blockquote><div><figure><img loading="lazy" src="https://habrastorage.org/getpro/habr/upload_files/dbd/50d/bb6/dbd50dbb6316408a3d20c62b3ced3f3c.gif"/></figure><p><strong>AI Router — Access 400+ Models from a Single Panel</strong></p><p>Connect an OpenAI-compatible gateway with a single API key. Configure end-to-end analytics, track limits, and manage resources.</p><p><a href="https://promo.selectel.ru/ai-router/?utm_source=habr.com&amp;utm_medium=referral&amp;utm_campaign=airouter_news_ai-longchat25_171126_banner_ord"><strong>Launch AI Router →</strong></a></p></div></div>
+  </main>
+  <footer>
+    Translation generated with Gemini 2.5 Flash-Lite.
+    The original article remains the source of record.
+  </footer>
+</body>
+</html>

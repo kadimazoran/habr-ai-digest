@@ -1,0 +1,188 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Configuring Qwen Code for Your Project: QWEN.md, Rules, MCP, Sub-agents, and Sandbox</title>
+  <meta name="description" content="After installation, Qwen Code works &quot;out of the box&quot;: it re-learns the repository every time, asks the same questions, and wastes tokens on things that could have been stated once. In the previous article, we discussed how to connect Qwen Code to your key and an OpenAI-compatible provider.">
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.65;
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 32px 20px 64px;
+      color: #1f2328;
+    }
+    header {
+      border-bottom: 1px solid #d8dee4;
+      margin-bottom: 28px;
+      padding-bottom: 20px;
+    }
+    .source {
+      color: #57606a;
+      font-size: 0.95rem;
+    }
+    img, video, iframe {
+      max-width: 100%;
+      height: auto;
+    }
+    pre {
+      overflow-x: auto;
+      padding: 16px;
+      background: #f6f8fa;
+      border-radius: 6px;
+    }
+    code {
+      font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+    }
+    blockquote {
+      border-left: 4px solid #d0d7de;
+      margin-left: 0;
+      padding-left: 16px;
+      color: #57606a;
+    }
+    footer {
+      border-top: 1px solid #d8dee4;
+      margin-top: 40px;
+      padding-top: 20px;
+      color: #57606a;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Configuring Qwen Code for Your Project: QWEN.md, Rules, MCP, Sub-agents, and Sandbox</h1>
+    <p>After installation, Qwen Code works &quot;out of the box&quot;: it re-learns the repository every time, asks the same questions, and wastes tokens on things that could have been stated once. In the previous article, we discussed how to connect Qwen Code to your key and an OpenAI-compatible provider. Now, the next step: configure it for a specific project so that it asks less, wastes less, and cannot accidentally cause harm. We&#x27;ll cover QWEN.md, rules with paths, confirmation modes, MCP servers, sub-agents, and the sandbox – with ready-made config examples and a 15-minute checklist. Read more</p>
+    <p class="source">
+      Machine-translated from Habr.
+      <a href="https://habr.com/ru/articles/1109386/?utm_campaign=1109386&amp;utm_source=habrahabr&amp;utm_medium=rss">Read the original Russian article</a>.
+      Wed, 18 Nov 2026 12:00:42 GMT
+    </p>
+  </header>
+  <main>
+<div><p>After installation, Qwen Code works "out of the box": it re-learns the repository every time, asks the same questions, and wastes tokens on things that could have been stated once. In the <a href="https://habr.com/ru/articles/1108950/">previous article</a>, we discussed how to connect Qwen Code to your key and an OpenAI-compatible provider. Now, the next step: configure it for a specific project so that it asks less, wastes less, and cannot accidentally cause harm.</p><p>What we will configure:</p><ol><li><p><strong>QWEN.md</strong> — persistent instructions for the project.</p></li><li><p><strong>Rules</strong> — instructions that are loaded only when needed.</p></li><li><p><strong>Confirmation and Permission Modes</strong> — what the agent does by itself, and what only with your consent.</p></li><li><p><strong>MCP Servers</strong> — external tools.</p></li><li><p><strong>Sub-agents</strong> — specialized assistants with their own instructions and limited permissions.</p></li><li><p><strong>Sandbox</strong> — to ensure agent commands do not go beyond the project boundaries.</p></li></ol><p>Everything has been verified against the Qwen Code documentation version 0.28.0 (November 2026). The project is developing rapidly, so if you have a different version, consult <code>qwen --help</code> and the <a href="https://github.com/QwenLM/qwen-code/tree/main/docs/users">documentation in the repository</a>.</p><h3>Where Settings Are Located</h3><p>Almost everything is configured in two places:</p><div><div><table><tbody><tr><th><p>File</p></th><th><p>Applies To</p></th></tr><tr><td><p><code>~/.qwen/settings.json</code></p></td><td><p>For you across all projects</p></td></tr><tr><td><p><code>.qwen/settings.json</code> in the project root</p></td><td><p>Only for this project</p></td></tr></tbody></table></div></div><p>Project settings can be committed, making them available to the entire team. API keys should not be placed there: use environment variables or user settings for them.</p><h3>1. QWEN.md: Explain the Project Once</h3><p>QWEN.md is a regular Markdown file that Qwen Code reads at the beginning of each session. It's best to put things here that you would otherwise have to repeat every time: how to build and test the project, team agreements, and what not to do.</p><p>There can be three files, and they are all loaded at once:</p><div><div><table><tbody><tr><th><p>File</p></th><th><p>For Whom</p></th></tr><tr><td><p><code>~/.qwen/QWEN.md</code></p></td><td><p>For you, across all projects</p></td></tr><tr><td><p><code>QWEN.md</code> in the project root</p></td><td><p>For the entire team, committed to git</p></td></tr><tr><td><p><code>.qwen/QWEN.local.md</code></p></td><td><p>Only for you and only in this project</p></td></tr></tbody></table></div></div><p>The local file is loaded after the general one, so you can use it to supplement or override team instructions. You'll need to add it to <code>.gitignore</code> manually; Qwen Code won't do it for you.</p><p>If the repository already has an <code>AGENTS.md</code> file for other AI tools, Qwen Code will read it too. No need to duplicate.</p><p><strong>Quick Start.</strong> The <code>/init</code> command will analyze the code and create a draft QWEN.md with build commands and discovered conventions. If the file already exists, it will suggest additions rather than overwriting it.</p><p>Example of a good QWEN.md:</p><pre><code># Project: Order API
+
+Project Overview: @README.md
+
+## Commands
+- Install dependencies: `pnpm install` (not npm)
+- Tests: `pnpm test`, single file: `pnpm test path/to/file.test.ts`
+- Linter before commit: `pnpm lint --fix`
+
+## Agreements
+- Controllers do not access the database directly, only through repositories in `src/repositories/`
+- New endpoints are described in `openapi.yaml` before implementation
+- Migrations are not edited after merging, only new ones are added
+
+## Forbidden
+- Do not touch `src/legacy/` without explicit request
+- Do not commit and push without my confirmation
+</code><div><a href="https://sourcecraft.dev/"><span></span></a></div></pre><p>You can include other files using <code>@path/to/file</code>, with paths relative to QWEN.md itself.</p><p><strong>The main rule is to be concise and specific.</strong> The documentation explicitly warns: the longer the file, the worse the model follows it. "Use 2-space indentation in TypeScript" works, but "write code neatly" does not. Do not write in QWEN.md what the model can already understand from the code.</p><p>And another reason to keep it short: QWEN.md is included in every request of every session. Every extra line is tokens you pay for multiple times.</p><p><strong>Auto-Memory.</strong> In addition to QWEN.md, Qwen Code itself saves notes about your preferences and the project in <code>~/.qwen/projects/&lt;project&gt;/memory/</code>. You can manage it manually:</p><ul><li><p><code>/remember always use snake_case in Python</code> — remember immediately;</p></li><li><p><code>/forget old workaround for login bug</code> — forget;</p></li><li><p><code>/memory</code> — view loaded files and enable or disable auto-memory.</p></li></ul><p>Auto-memory works "as much as possible." For things that must always be followed, write them in QWEN.md.</p><h3>2. Rules: On-Demand Instructions</h3><p>If QWEN.md becomes too long, some instructions should be moved to rules. A rule is a Markdown file in <code>.qwen/rules/</code>. Its main distinguishing feature is the <code>paths:</code> field. A rule with this field is added to the context only when the agent reads or edits a file that matches the pattern.</p><pre><code>---
+description: How we write React components
+paths:
+  - 'src/**/*.tsx'
+  - 'src/**/*.jsx'
+---
+
+Only functional components. Tests reside next to the component. Do not move state that is only needed for one screen to the global store.
+</code><div><a href="https://sourcecraft.dev/"><span></span></a></div></pre><p>While the agent is editing the Makefile, the React instructions do not occupy its context. As soon as it opens a <code>.tsx</code> file, the rule is loaded and remains active until the end of the session.</p><p>A rule without <code>paths:</code> works the same way as QWEN.md: it's always loaded.</p><p>Where rules are located:</p><ul><li><p><code>~/.qwen/rules/</code> — your personal rules, loaded always;</p></li><li><p><code>.qwen/rules/</code> in the project — loaded only if you trust this folder (trusted folder).</p></li></ul><p>A simple guideline: QWEN.md contains what's always true, while rules with <code>paths:</code> concern specific parts of the code.</p><h3>3. Confirmation and Permission Modes</h3><h4>Five Modes</h4><div><div><table><tbody><tr><th><p>Mode</p></th><th><p>File Edits</p></th><th><p>Terminal Commands</p></th><th><p>When Suitable</p></th></tr><tr><td><p>Plan</p></td><td><p>No, read-only</p></td><td><p>No</p></td><td><p>Understanding code, planning changes</p></td></tr><tr><td><p>Ask Permissions (<code>default</code>)</p></td><td><p>With confirmation</p></td><td><p>With confirmation</p></td><td><p>Unfamiliar code, critical systems</p></td></tr><tr><td><p>Auto-Edit</p></td><td><p>Automatic</p></td><td><p>With confirmation</p></td><td><p>Everyday development</p></td></tr><tr><td><p>Auto</p></td><td><p>Decided by classifier</p></td><td><p>Decided by classifier</p></td><td><p>Long autonomous tasks</p></td></tr><tr><td><p>YOLO</p></td><td><p>Automatic</p></td><td><p>Automatic</p></td><td><p>Only in isolated environments</p></td></tr></tbody></table></div></div><p>These can be switched using <strong>Shift+Tab</strong> (or <strong>Tab</strong> on Windows) or the <code>/approval-mode</code> command. There's a separate shortcut for Plan: <code>/plan</code> enables it, <code>/plan exit</code> returns to the previous mode. To make a mode persistent, add the flag: <code>/approval-mode plan --project</code> for the project or <code>--user</code> for all projects.</p><p><strong>Important detail: in recent versions, the default mode is Auto.</strong> This means that every terminal command, network request, or MCP tool call is evaluated by a separate classifier model. This is convenient, but:</p><ul><li><p>the classifier involves additional API requests, meaning extra costs;</p></li><li><p>it uses a "fast" model, and if one isn't specified, it uses the main one, making each check as costly as a full request.</p></li></ul><p>Therefore, if you're working in Auto mode, specify a cheap fast model with the <code>/model --fast</code> command or in the settings (<code>"fastModel"</code>). If you prefer predictability, switch to Auto-Edit: files are edited without questions, but commands require your "yes."</p><h4>Granular Permissions</h4><p>Modes can be supplemented with specific rules in <code>settings.json</code>:</p><pre><code>{
+  "permissions": {
+    "allow": ["Bash(git status)", "Bash(git diff *)", "Bash(pnpm test *)"],
+    "ask": ["Bash(git push *)"],
+    "deny": ["Bash(rm -rf *)", "Read(.env)"]
+  }
+}
+</code><div><a href="https://sourcecraft.dev/"><span></span></a></div></pre><ul><li><p><code>allow</code> — executed without questions;</p></li><li><p><code>ask</code> — always ask, even in permissive modes;</p></li><li><p><code>deny</code> — completely forbidden.</p></li></ul><p>The same can be configured interactively with the <code>/permissions</code> command.</p><h4>.qwenignore</h4><p>The <code>.qwenignore</code> file in the project root works like <code>.gitignore</code>: files and folders listed in it are excluded from tools that respect it. <code>.agentignore</code> and <code>.aiignore</code> are also supported.</p><pre><code># Generated and large files
+/dist/
+/coverage/
+*.min.js
+
+# Secrets
+.env
+.env.*
+</code><div><a href="https://sourcecraft.dev/"><span></span></a></div></pre><p>This saves context: the agent doesn't need to read build artifacts or minified files. However, <strong>this is not a secret protection measure</strong>: not all tools respect it. For <code>.env</code> files, add a <code>deny</code> rule as well, or better yet, use a sandbox (more on that below).</p><h3>4. MCP: Connecting External Tools</h3><p>MCP (Model Context Protocol) is an open standard that gives the agent access to external tools: databases, task trackers, internal APIs, documentation.</p><p>Adding a server is easiest with a command:</p><pre><code># Remote server via HTTP
+qwen mcp add --transport http my-docs https://mcp.example.com/mcp \
+  --header "Authorization: Bearer your-token"
+
+# Local process
+qwen mcp add my-tools --timeout 15000 python -m my_mcp_server
+</code><div><a href="https://sourcecraft.dev/"><span></span></a></div></pre><p>By default, the server is saved to user settings. The <code>--scope project</code> flag will save it to the project's <code>.qwen/settings.json</code>. You can remove a server with the command <code>qwen mcp remove name</code>.</p><p>The same in <code>settings.json</code>:</p><pre><code>{
+  "mcpServers": {
+    "my-docs": {
+      "httpUrl": "https://mcp.example.com/mcp",
+      "headers": { "Authorization": "Bearer your-token" },
+      "timeout": 5000
+    },
+    "my-tools": {
+      "command": "python",
+      "args": ["-m", "my_mcp_server"],
+      "includeTools": ["search", "get_page"]
+    }
+  }
+}
+</code><div><a href="https://sourcecraft.dev/"><span></span></a></div></pre><p>After adding, restart Qwen Code and check the connection with the command <code>/mcp</code>.</p><p>Which transport to choose:</p><ul><li><p><code>http</code> — for remote services, this is the recommended option;</p></li><li><p><code>stdio</code> — for local programs and Docker containers;</p></li><li><p><code>sse</code> — deprecated, only if the server does not support <code>http</code>.</p></li></ul><p><strong>Savings Tip.</strong> Each server's tool descriptions also consume context. Connect only what you actually use, and limit the set of tools via <code>includeTools</code> or <code>excludeTools</code>. Five "just in case" servers mean a constant token cost for every request.</p><h3>5. Sub-agents: Specialized Assistants</h3><p>A sub-agent is a separate AI assistant with its own instructions, its own set of tools, and its own context. The main agent passes a task to it, the sub-agent works independently and returns the result. Two main benefits:</p><ul><li><p><strong>The main session's context is not cluttered.</strong> A sub-agent might read a hundred files, while the main agent only receives the summary.</p></li><li><p><strong>Permissions can be restricted.</strong> A reviewer who cannot edit anything physically cannot break the code.</p></li></ul><p>You can create a sub-agent using the <code>/agents create</code> wizard, and view existing ones with the <code>/agents manage</code> command. However, it's more convenient to place the file manually:</p><ul><li><p><code>.qwen/agents/</code> — project agents (have priority);</p></li><li><p><code>~/.qwen/agents/</code> — your personal agents for all projects.</p></li></ul><p>Example of a reviewer that only reads and works with a cheap model:</p><pre><code>---
+name: reviewer
+description: Reviews changes before committing. Use after any code edit.
+model: fast
+tools:
+  - read_file
+  - grep_search
+  - glob
+  - run_shell_command
+---
+
+You are a code reviewer. Examine the changes using `git diff` and find:
+logic errors, unhandled exceptions, security issues, violations of agreements from QWEN.md.
+
+Do not fix anything. Return a list of remarks in descending order of importance, with the file, line number, and reason for each.
+</code><div><a href="https://sourcecraft.dev/"><span></span></a></div></pre><p>The reviewer lacks <code>write_file</code> and <code>edit</code>, so it cannot modify files. It needs the terminal for <code>git diff</code>, and this command is already in <code>permissions.allow</code> from section 3, so there will be no extra questions. The <code>plan</code> mode is not suitable here: in this mode, the agent does not execute commands at all.</p><p>And a tester that can write files:</p><pre><code>---
+name: test-writer
+description: Writes and runs unit tests for the specified module.
+approvalMode: auto-edit
+tools:
+  - read_file
+  - write_file
+  - edit
+  - grep_search
+  - glob
+  - run_shell_command
+---
+
+You write tests. First, study the module and existing tests nearby, mimicking their style. Cover the main scenario, edge cases, and errors. After writing, run the tests and fix anything that fails. Do not change the module's code itself: if you find a bug, describe it in your response.
+</code><div><a href="https://sourcecraft.dev/"><span></span></a></div></pre><p>What's important to know about the fields:</p><ul><li><p><code>model</code>: <code>inherit</code> (default) — the same model as in the main session; <code>fast</code> — the fast model from settings; you can specify a specific model ID. This way, you can keep the expensive model as the main one and delegate routine tasks to a cheaper one.</p></li><li><p><code>tools</code> — a whitelist. If it's absent, the sub-agent gets all tools, including MCP.</p></li><li><p><code>disallowedTools</code> — a blacklist, e.g., <code>mcp__slack</code>, to disable an entire MCP server.</p></li><li><p><code>approvalMode</code> — <strong>the main session's permissive mode takes precedence</strong>. If you are working in YOLO mode, a sub-agent with <code>approvalMode: plan</code> will still operate in YOLO. Therefore, the reliable restriction is the <code>tools</code> list, not the mode.</p></li></ul><p>You can invoke sub-agents explicitly ("let the reviewer look at the changes"), or you can rely on the main agent: it decides which one to assign the task to based on the <code>description</code> field. To encourage it to do so, specify in the description when the agent should be used.</p><p>By the way, if you have Claude Code or Codex installed, Qwen Code can also pass tasks to them as built-in sub-agents. They operate with their own models and subscriptions.</p><h3>6. Sandbox: Preventing the Agent from Exceeding Project Boundaries</h3><p>Confirmation modes determine *whether* the agent will ask. The sandbox determines *what* it can do, even if it doesn't ask. If you work in Auto or YOLO mode at least occasionally, you need a sandbox.</p><h4>Linux: Sandbox for Tools</h4><p>Recent versions include a separate mode for Linux: Qwen Code itself runs as usual, while the agent's commands and file operations are executed in isolation via <code>bwrap</code> (Bubblewrap).</p><p>Install <code>bwrap</code> (in Debian and Ubuntu, the package is <code>bubblewrap</code>) and add it to your <strong>user</strong> settings in <code>~/.qwen/settings.json</code>:</p><pre><code>{
+  "tools": {
+    "executionSandbox": {
+      "backend": "auto",
+      "filesystem": "workspace-write",
+      "network": "closed"
+    }
+  }
+}
+</code><div><a href="https://sourcecraft.dev/"><span></span></a></div></pre><ul><li><p><code>filesystem</code>: <code>workspace-write</code> — writing is allowed only within the project folder; <code>read-only</code> — no writing at all.</p></li><li><p><code>network</code>: <code>closed</code> — agent commands cannot access the network; <code>open</code> — the network is shared with the system.</p></li></ul><p>This setting cannot be enabled or weakened from the project's <code>.qwen/settings.json</code>. This is intentional: a foreign repository should not be able to disable your sandbox.</p><p>Verify that everything is working:</p><pre><code>qwen sandbox --verify
+</code><div><a href="https://sourcecraft.dev/"><span></span></a></div></pre><p>Limitations to be aware of in advance:</p><ul><li><p><strong>Reading is not restricted.</strong> The sandbox prevents writing outside the project, but commands can still read system files. It does not hide secrets in your home directory.</p></li><li><p><strong>Many features are disabled.</strong> MCP servers, hooks, extensions, and the ACP mode do not work in this mode, meaning it cannot be used when Qwen Code is run as an agent within another application.</p></li></ul><h4>Docker and Podman: Isolate the Entire Environment</h4><p>The second option works on any OS: Qwen Code runs entirely within a container, into which the project folder and <code>~/.qwen</code> are mounted.</p><pre><code># One-time execution
+qwen -s -p "run tests and figure out why they are failing"
+
+# For the entire terminal session
+export QWEN_SANDBOX=docker
+qwen
+</code><div><a href="https://sourcecraft.dev/"><span></span></a></div></pre><p>Or permanently — in <code>settings.json</code>: <code>{"tools": {"sandbox": true}}</code>. The default image will be downloaded automatically; you can specify your own via <code>tools.sandboxImage</code>.</p><h4>macOS: Seatbelt</h4><p>On macOS, there's a built-in lightweight option without Docker: <code>QWEN_SANDBOX=sandbox-exec</code>. The profile is set by the <code>SEATBELT_PROFILE</code> variable. By default, it's <code>permissive-open</code> (writing only to the project, network allowed). The documentation recommends starting with this and then trying <code>restrictive-closed</code> if everything works.</p><h3>Putting It All Together</h3><p>This is what a configured project looks like:</p><pre><code>my-project/
+├── QWEN.md                  # Commands, agreements, prohibitions
+├── .qwenignore              # Builds, minified files, secrets
+└── .qwen/
+    ├── settings.json        # Project mode, permissions, MCP
+    ├── QWEN.local.md        # Personal notes (in .gitignore)
+    ├── rules/
+    │   └── react.md         # Rule with paths: for src/**/*.tsx
+    └── agents/
+        ├── reviewer.md      # Read-only, fast model
+        └── test-writer.md   # Writes tests
+</code><div><a href="https://sourcecraft.dev/"><span></span></a></div></pre><p>And in <code>~/.qwen/settings.json</code> — keys, fast model, and sandbox.</p><p>A 15-minute checklist:</p><ol><li><p>Run <code>/init</code> and condense the resulting QWEN.md to the most important points.</p></li><li><p>Move instructions for specific code parts to <code>.qwen/rules/</code> with <code>paths:</code>.</p></li><li><p>Create <code>.qwenignore</code> for build artifacts and large files.</p></li><li><p>Set a fast model via <code>/model --fast</code> if working in Auto mode.</p></li><li><p>Add safe commands to <code>allow</code> and dangerous ones to <code>deny</code> in <code>permissions</code>.</p></li><li><p>Connect one or two MCP servers you actually use.</p></li><li><p>Create a reviewer sub-agent with read-only permissions.</p></li><li><p>Enable the sandbox.</p></li></ol><p>Most of these settings are configured once and save time and money on every session.</p><p>How is it configured on your end? What is your default confirmation mode, do you keep separate sub-agents, and do you enable the sandbox? And if you've tried Qwen Code alongside Claude Code or Codex, where does it noticeably fall short, and where does it perform just as well? Share in the comments, it's interesting to compare.</p></div>
+  </main>
+  <footer>
+    Translation generated with Gemini 2.5 Flash-Lite.
+    The original article remains the source of record.
+  </footer>
+</body>
+</html>

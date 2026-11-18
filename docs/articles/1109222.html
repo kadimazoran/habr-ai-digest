@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Interactive environment for programming with neural networks SolveIt is now open source</title>
+  <meta name="description" content="The team at the research organization Answer.AI has released the SolveIt platform as open source. The tool was primarily created for internal research tasks and code work. It has now moved to public access after two years of closed beta testing, which involved three thousand users united in a Discor">
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.65;
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 32px 20px 64px;
+      color: #1f2328;
+    }
+    header {
+      border-bottom: 1px solid #d8dee4;
+      margin-bottom: 28px;
+      padding-bottom: 20px;
+    }
+    .source {
+      color: #57606a;
+      font-size: 0.95rem;
+    }
+    img, video, iframe {
+      max-width: 100%;
+      height: auto;
+    }
+    pre {
+      overflow-x: auto;
+      padding: 16px;
+      background: #f6f8fa;
+      border-radius: 6px;
+    }
+    code {
+      font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+    }
+    blockquote {
+      border-left: 4px solid #d0d7de;
+      margin-left: 0;
+      padding-left: 16px;
+      color: #57606a;
+    }
+    footer {
+      border-top: 1px solid #d8dee4;
+      margin-top: 40px;
+      padding-top: 20px;
+      color: #57606a;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Interactive environment for programming with neural networks SolveIt is now open source</h1>
+    <p>The team at the research organization Answer.AI has released the SolveIt platform as open source. The tool was primarily created for internal research tasks and code work. It has now moved to public access after two years of closed beta testing, which involved three thousand users united in a Discord community. Registration on the platform is free, and billing is based on the model of paying for actually consumed computing resources. The developers have opened access to the platform on the website solve.it.com. Read more</p>
+    <p class="source">
+      Machine-translated from Habr.
+      <a href="https://habr.com/ru/companies/selectel/articles/1109222/?utm_campaign=1109222&amp;utm_source=habrahabr&amp;utm_medium=rss">Read the original Russian article</a>.
+      Wed, 18 Nov 2026 12:30:54 GMT
+    </p>
+  </header>
+  <main>
+<div><figure><img loading="lazy" src="https://habrastorage.org/w1560/extt/e3/c3/d0/e3c3d0813e64eb0cd98b2c3012c63aae.png"/></figure><p>The team at the research organization Answer.AI has released the SolveIt platform as open source. The tool was primarily created for internal research tasks and code work. It has now moved to public access after two years of closed beta testing, which involved three thousand users united in a Discord community. Registration on the platform is free, and billing is based on the model of paying for actually consumed computing resources. The developers have opened access to the platform on the website <a href="http://solve.it.com">solve.it.com</a>.</p><h2>Dialogue Architecture</h2><p>Unlike standard chatbot interfaces where messages are sequentially added to the end of the conversation feed, SolveIt combines code with Markdown notes and other documents in a single interactive space for working with a language model. The workflow is organized in the form of dialogues, where text blocks and mathematical formulas in LaTeX markup coexist with executable code and artificial intelligence responses.</p><p>The user retains full control over the document structure: blocks can be freely edited and moved, and deleted if necessary. A prompt for the neural network can be embedded anywhere in the dialogue, with the model considering only the information located directly above the request itself. AI responses are also available for direct editing, which prevents context pollution with unwanted remarks. The language model itself performs calculations in the same software interpreter that the human uses.</p><figure><img alt="Source." loading="lazy" src="https://habrastorage.org/extt/2d/c4/67/2dc467754c11a038bb754535365fdc9c.gif" title="Source."/><figcaption><a href="https://www.fast.ai/posts/2026-11-16-solveit-launch/"><em>Source</em></a><em>.</em></figcaption></figure><h2>Infrastructure</h2><p>Each work session in SolveIt is deployed on a persistent server with its own file system and terminal, where the git version control system is pre-installed. Users can create an unlimited number of such instances for independent tasks or collaborative research. Within the work environment, it is convenient to clone repositories and commit changes.</p><p>The platform also functions as a web application hosting service without the need for a separate deployment stage. Any program launched within an instance immediately becomes accessible via a public network address or a user's own domain. When moving a dialogue to a special directory, AUTORUN scripts automatically start with the server and maintain continuous operation. The project authors state that they themselves use this mechanism for their own services, including SolveIt's server infrastructure and a chatbot for students.</p><div><figure><img loading="lazy" src="https://habrastorage.org/getpro/habr/upload_files/dbd/50d/bb6/dbd50dbb6316408a3d20c62b3ced3f3c.gif"/></figure><p><strong>AI Router — Access to 400+ Models from a Single Panel</strong></p><p>Connect an OpenAI-compatible gateway with a single API key. Configure end-to-end analytics, track limits, and quota resources.</p><p><a href="https://promo.selectel.ru/ai-router/?utm_source=habr.com&amp;utm_medium=referral&amp;utm_campaign=airouter_news_solvelt_181126_banner"><strong>Launch AI Router →</strong></a></p></div><h2>Extension Tools and Collaboration</h2><p>The system's capabilities are extended directly from the work environment. Any function written in Python is converted into a user tool that the AI can access. The language model can read and correct the current working document, as well as initiate generation in adjacent dialogues. Furthermore, through a special Chrome browser extension, it can be granted access to control actions in web interfaces.</p><p>For in-depth project configuration, there is a CRAFT configuration file. Placing such a file in a folder allows all nested documents to receive common instructions for the artificial intelligence and starting executable code. Additionally, through CRAFT, individual CSS styles and JavaScript scripts can be defined. Multiple participants can simultaneously edit the same dialogue in real-time, and upon completion, convert it into a Markdown document with support for templates and cross-references.</p><figure><img alt="Source." loading="lazy" src="https://habrastorage.org/extt/dc/90/55/dc9055844979b1227bbe21454fc951e0.gif" title="Source."/><figcaption><a href="https://www.fast.ai/posts/2026-11-16-solveit-launch/"><em>Source</em></a><em>.</em></figcaption></figure><h2>Practical Application of the Platform</h2><p>The Answer.AI team uses the tool for data analysis, reading scientific literature, dissecting mathematical models, legal contract review, and programming. The developers create some of SolveIt's functionality within the service itself. In particular, the law firm Virgil uses the built-in editor for preparing contracts.</p><p>The effectiveness of step-by-step logic fixation is illustrated by the example of researcher Jack Hogan, who was designing a color palette generator for a graphical interface.</p><p>An initial attempt was made to solve the problem using Claude Code. After a series of experiments involving millions of tokens, the assistant produced a working but overly complicated tool, and Hogan himself could not justify the choice of approach. In a new session, the researcher tried to organize the documentation and build the logic of the solutions but quickly realized he was just inventing explanations for randomly generated code.</p><figure><img alt="Source." loading="lazy" src="https://habrastorage.org/w1560/extt/b6/ec/8e/b6ec8eb5eb16aa2f4894f72c629b52fa.png" title="Source."/><figcaption><a href="https://www.fast.ai/posts/2026-11-16-solveit-launch/"><em>Source</em></a><em>.</em></figcaption></figure><p>While working in SolveIt, Hogan justified the logic of the solution, prepared auxiliary functions, calculated color gamut boundaries, built and optimized color scales, and then generated CSS. Initially, he had only a rough plan, and the final project structure took shape during the experiments. While testing hypotheses, the researcher tried several approaches, including applying Fourier transforms.</p><p>He worked iteratively, in small, sequential steps. He documented the requirements for the palette and the generator itself in Markdown notes, and performed all necessary calculations directly in the code. Formulas (e.g., for relative brightness) were written in LaTeX markup. The researcher separately noted the ability to justify each methodological decision made, which significantly increased his confidence in the final result.</p><p>Another practical example was provided by Jeremy Howard, who, while analyzing a paper on recursive language models, wrote his own implementation of the algorithm directly from the publication's text.</p><h2>Development Context and Training Materials</h2><p>The creators of SolveIt were inspired by the ideas of scientists Bret Victor, Donald Knuth, Ivan Sutherland, and Kenneth Iverson regarding the need to combine program code with data and documentation in a single interactive environment. The development continues the principles of the educational project fast.ai, created in 2016 to expand access to deep learning technologies. When creating SolveIt, the authors abandoned the idea of full automation of human work, focusing instead on deepening the understanding of the problems being solved.</p><p>To familiarize themselves with the system's capabilities, developers are invited to start with an open introductory lesson from the practical course “<a href="https://www.answer.ai/posts/2025-10-01-solveit-full.html">How to Solve It with Code</a>.”</p></div>
+  </main>
+  <footer>
+    Translation generated with Gemini 2.5 Flash-Lite.
+    The original article remains the source of record.
+  </footer>
+</body>
+</html>

@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>How I integrated GigaChat and GigaAM for Russian TTS voiceover</title>
+  <meta name="description" content="A brief overview of the process: three TTS engines struggled with Russian stress (e.g., &#x27;gudni&#x27; read as &#x27;gUdni&#x27;), ElevenLabs&#x27; pronunciation dictionaries were unavailable on my plan. I relied on the ruaccent gateway and a custom substitution dictionary (51 words). It worked, ">
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.65;
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 32px 20px 64px;
+      color: #1f2328;
+    }
+    header {
+      border-bottom: 1px solid #d8dee4;
+      margin-bottom: 28px;
+      padding-bottom: 20px;
+    }
+    .source {
+      color: #57606a;
+      font-size: 0.95rem;
+    }
+    img, video, iframe {
+      max-width: 100%;
+      height: auto;
+    }
+    pre {
+      overflow-x: auto;
+      padding: 16px;
+      background: #f6f8fa;
+      border-radius: 6px;
+    }
+    code {
+      font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+    }
+    blockquote {
+      border-left: 4px solid #d0d7de;
+      margin-left: 0;
+      padding-left: 16px;
+      color: #57606a;
+    }
+    footer {
+      border-top: 1px solid #d8dee4;
+      margin-top: 40px;
+      padding-top: 20px;
+      color: #57606a;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>How I integrated GigaChat and GigaAM for Russian TTS voiceover</h1>
+    <p>A brief overview of the process: three TTS engines struggled with Russian stress (e.g., &#x27;gudni&#x27; read as &#x27;gUdni&#x27;), ElevenLabs&#x27; pronunciation dictionaries were unavailable on my plan. I relied on the ruaccent gateway and a custom substitution dictionary (51 words). It worked, but manually. This article explains how I used two Sber models to automate the routine, and the main lesson learned.</p>
+    <p class="source">
+      Machine-translated from Habr.
+      <a href="https://habr.com/ru/articles/1109482/?utm_campaign=1109482&amp;utm_source=habrahabr&amp;utm_medium=rss">Read the original Russian article</a>.
+      Wed, 18 Nov 2026 14:04:47 GMT
+    </p>
+  </header>
+  <main>
+<div><p>A brief overview of the process: three TTS engines struggled with Russian stress (e.g., 'gudni' read as 'gUdni'), ElevenLabs' pronunciation dictionaries were unavailable on my plan. I relied on the ruaccent gateway and a custom substitution dictionary (51 words). It worked, but manually.</p><p>This article explains how I used two Sber models to automate the routine, and the main lesson learned.</p><h3>GigaChat sets stress</h3><p>The idea: feed the LLM the entire text bank and collect a lexicon of stresses. GigaChat offers a free tier for a year (250 million Lite tokens, 40 million Pro, 25 million Max, and 50 million Ultra), registration via Client ID, scope <code>GIGACHAT_API_PERS</code>. Integration is a single line:</p><pre><code>giga = GigaChat(credentials=..., verify_ssl_certs=False, 
+                scope="GIGACHAT_API_PERS", model="GigaChat-2-Pro")</code><div><a href="https://sourcecraft.dev/"><span></span></a></div></pre><p>Lite is useless for this task – it's noisy. Only Pro. Processing the entire bank of phrases: 7789 words, resulting in a lexicon of 7462 words (95.8% coverage).</p><p>A peculiar behavior of the model: it places the stress mark AFTER the stressed vowel (not before, like ruaccent) and sometimes truncates the end of the word. There was nothing to investigate here: we fixed it in the prompt and parser – and moved on.</p><h3>The main lesson: large batches hallucinate</h3><p>This is why this article was worth writing. The lexicon collected in one large run cannot be directly imported into the dictionary. 32 tricky words – like 'proskochila' and 'kuplena' – were only caught by re-checking with small batches: in one run, the model placed the stress one way, in another run, differently, and in a large batch, the errors get buried and look confident. The rule that remained with us forever: a lexicon in bulk is only a source of candidates; a candidate undergoes verification in a small batch; the final word belongs to human eyes when discrepancies arise between runs. Result: +50 words, the dictionary grew from 51 to 101, and I didn't have to guess a single one myself.</p><h3>GigaAM listens to what we've said</h3><p>The second task is quality control of the generated voiceover: we transcribe the generated wav and compare the words with the reference. GigaAM v3 (sherpa-onnx, 222 MB weights, MIT license) was used here. For 'clean' dry tracks, it's fast and accurate, but with a radio effect – all voiceovers from 'Channel 15' go through interference and compression – it gets confused, whisper remains. It doesn't process long files entirely: the practical limit is about 50 seconds, so long tracks are cut into 30-second windows. Both tools are integrated into the protocol: <code>stress_suggest.py --giga</code> suggests stresses, <code>qa_recent.py</code> and <code>qa_recast.py --engine gigaam</code> check the fresh resynthesis.</p><p>An unexpected bonus: GigaAM also transcribed my six-minute dictaphone recording – in seconds, with almost no errors. On a clean voice without interference, it's simply good.</p><h3>What didn't work</h3><p>The Lite model for stresses – garbage. Large batches – see above, this is the main pitfall. GigaAM on 'radio' with effects – gets confused, 'whistles and farts' are not informative signals for it, we stick with whisper. Long tracks – cut into windows, this is not fixable, it's accepted.</p><h3>Instead of a conclusion</h3><p>For me, a neural network is a tool, like a screwdriver, only more expensive. The dictionary doubled in size without a single guess from me, and the only word the model couldn't confidently place even once was 'gudni'.</p></div>
+  </main>
+  <footer>
+    Translation generated with Gemini 2.5 Flash-Lite.
+    The original article remains the source of record.
+  </footer>
+</body>
+</html>

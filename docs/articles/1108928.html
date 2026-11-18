@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Not playing? Let&#x27;s play. Mocks and AI in interface testing</title>
+  <meta name="description" content="The feature is ready, but on the staging environment, we only see the happy path. A developer needs to see how the changes behave with different data, a designer needs to compare it with the mockups, an analyst needs to check the scenario, and QA needs to perform testing. And it all starts the same ">
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.65;
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 32px 20px 64px;
+      color: #1f2328;
+    }
+    header {
+      border-bottom: 1px solid #d8dee4;
+      margin-bottom: 28px;
+      padding-bottom: 20px;
+    }
+    .source {
+      color: #57606a;
+      font-size: 0.95rem;
+    }
+    img, video, iframe {
+      max-width: 100%;
+      height: auto;
+    }
+    pre {
+      overflow-x: auto;
+      padding: 16px;
+      background: #f6f8fa;
+      border-radius: 6px;
+    }
+    code {
+      font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+    }
+    blockquote {
+      border-left: 4px solid #d0d7de;
+      margin-left: 0;
+      padding-left: 16px;
+      color: #57606a;
+    }
+    footer {
+      border-top: 1px solid #d8dee4;
+      margin-top: 40px;
+      padding-top: 20px;
+      color: #57606a;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Not playing? Let&#x27;s play. Mocks and AI in interface testing</h1>
+    <p>The feature is ready, but on the staging environment, we only see the happy path. A developer needs to see how the changes behave with different data, a designer needs to compare it with the mockups, an analyst needs to check the scenario, and QA needs to perform testing. And it all starts the same way: you need to get live data somewhere. I substitute the necessary API responses directly in the browser – using mocks. This way, you can see how the feature works with long text, without data, or during a loading error, and then pass the ready scenario to colleagues. Using the task filter as an example, I&#x27;ll show how it works and explain why I created oMockman for this task. Read more</p>
+    <p class="source">
+      Machine-translated from Habr.
+      <a href="https://habr.com/ru/companies/ozontech/articles/1108928/?utm_campaign=1108928&amp;utm_source=habrahabr&amp;utm_medium=rss">Read the original Russian article</a>.
+      Wed, 18 Nov 2026 12:30:18 GMT
+    </p>
+  </header>
+  <main>
+<div><figure><img loading="lazy" src="https://habrastorage.org/r/w1560/webt/4f/5b/97/4f5b9793b56f60732db4ed64a881ec2b.png"/></figure><p>The feature is ready, but on the staging environment, we only see the happy path. A developer needs to see how the changes behave with different data, a designer needs to compare it with the mockups, an analyst needs to check the scenario, and QA needs to perform testing. And it all starts the same way: you need to get live data somewhere.</p><p>I substitute the necessary API responses directly in the browser – using mocks. This way, you can see how the feature works with long text, without data, or during a loading error, and then pass the ready scenario to colleagues. Using the task filter as an example, I'll show how it works and explain why I created oMockman for this task.</p><p><strong>In the article</strong></p><ul><li><p><a href="https://habr.com/ru/companies/ozontech/articles/1108928/?utm_campaign=1108928&amp;utm_source=habrahabr&amp;utm_medium=rss#section-2">What data to prepare</a></p></li><li><p><a href="https://habr.com/ru/companies/ozontech/articles/1108928/?utm_campaign=1108928&amp;utm_source=habrahabr&amp;utm_medium=rss#section-4">How to substitute an API response in the browser</a></p></li><li><p><a href="https://habr.com/ru/companies/ozontech/articles/1108928/?utm_campaign=1108928&amp;utm_source=habrahabr&amp;utm_medium=rss#section-5">How it works under the hood</a></p></li><li><p><a href="https://habr.com/ru/companies/ozontech/articles/1108928/?utm_campaign=1108928&amp;utm_source=habrahabr&amp;utm_medium=rss#section-6">How to generate data for checks</a></p></li><li><p><a href="https://habr.com/ru/companies/ozontech/articles/1108928/?utm_campaign=1108928&amp;utm_source=habrahabr&amp;utm_medium=rss#section-7">How to automate mock preparation with AI</a></p></li></ul><h3>What we will check</h3><p>Hello! I'm Evgeny Stepanenko, a lead QA engineer at Ozon. I'll show you how to juggle API responses.</p><p>Let's say we're adding a task filter by status to a task tracker: "New," "In Progress," "Blocked," and "Completed."</p><figure><img alt="Task filter by status: the interface we will check." ="lazy" src="https://habrastorage.org/r/w1560/webt/ce/0a/41/ce0a41b5f3e3d2dca73384dc04b44890.png"/><div><figcaption>Task filter by status: the interface we will check.</figcaption></div></figure><p>In this example, we'll focus on UI testing: we'll check how the interface displays filtering results, loading, and errors.</p><p>We need to check:</p><ul><li><p><strong>Tasks loaded.</strong> Their titles and statuses are displayed. A blocked task shows the reason for blocking, while others do not.</p></li><li><p><strong>Nothing found for the selected statuses.</strong> A message appears as per the mockup.</p></li><li><p><strong>The response has not yet arrived.</strong> A loader is displayed.</p></li><li><p><strong>The request failed.</strong> The user sees an error message and a retry button.</p></li></ul><p>The frontend filter is already ready, but the staging environment only has a few tasks with the status "New."</p><p>To check other states, you can create tasks with the required statuses and fill them with data. However, you can't get a loading error this way. Instead, we'll prepare several API responses and substitute them in the browser. This allows us to check task display and error handling without changing the data on the staging environment.</p><a></a><h3>What data to prepare</h3><p>Mocks in testing allow you to check a feature even if the necessary data is not available on the staging environment. We substitute the backend response and see how the interface handles it. This approach is called mocking.</p><p>When the user applies a filter, the application sends <code>POST /api/tasks/search</code> with the selected statuses in the request body. Let's prepare a response with two tasks – a new one and a blocked one:</p><pre><code>{<br/>  "items": [<br/>    {<br/>      "id": 1,<br/>      "title": "Prepare report",<br/>      "status": "new"<br/>    },<br/>    {<br/>      "id": 2,<br/>      "title": "Approve mockup",<br/>      "status": "blocked",<br/>      "block_reason": "Waiting for designer's response"<br/>    }<br/>  ]<br/>}</code><div><a href="https://sourcecraft.dev/"><span></span></a></div></pre><p><code>items</code> contains the tasks that match the filter. The <code>block_reason</code> field is only present for the blocked task.</p><p>We'll use this mock as a basis. For each scenario, we'll change what affects the check: data, HTTP status, or response delay.</p><p><strong>Main scenarios</strong></p><ul><li><p><strong>Normal response.</strong> We keep the JSON with two tasks from the example.</p></li><li><p><strong>Nothing found.</strong> We substitute <code>{
+  </main>
+  <footer>
+    Translation generated with Gemini 2.5 Flash-Lite.
+    The original article remains the source of record.
+  </footer>
+</body>
+</html>

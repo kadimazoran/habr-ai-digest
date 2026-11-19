@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Jatoba DBMS now uses AI to automatically detect personal data</title>
+  <meta name="description" content="We have introduced a new feature for our cyber-secure domestic general-purpose DBMS &quot;Yatoba&quot;. The system has replaced manual labor in searching for personal data with artificial intelligence scanning. Thanks to the automatic detection of personal data (PDn), it will be easier to comply wit">
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.65;
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 32px 20px 64px;
+      color: #1f2328;
+    }
+    header {
+      border-bottom: 1px solid #d8dee4;
+      margin-bottom: 28px;
+      padding-bottom: 20px;
+    }
+    .source {
+      color: #57606a;
+      font-size: 0.95rem;
+    }
+    img, video, iframe {
+      max-width: 100%;
+      height: auto;
+    }
+    pre {
+      overflow-x: auto;
+      padding: 16px;
+      background: #f6f8fa;
+      border-radius: 6px;
+    }
+    code {
+      font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+    }
+    blockquote {
+      border-left: 4px solid #d0d7de;
+      margin-left: 0;
+      padding-left: 16px;
+      color: #57606a;
+    }
+    footer {
+      border-top: 1px solid #d8dee4;
+      margin-top: 40px;
+      padding-top: 20px;
+      color: #57606a;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Jatoba DBMS now uses AI to automatically detect personal data</h1>
+    <p>We have introduced a new feature for our cyber-secure domestic general-purpose DBMS &quot;Yatoba&quot;. The system has replaced manual labor in searching for personal data with artificial intelligence scanning. Thanks to the automatic detection of personal data (PDn), it will be easier to comply with the requirements of 152-FZ and reduce the risks of leaks when transferring data to test environments or to technical support. The function solves a relevant problem for the DBMS market - searching and classifying PDn, as well as any other confidential data that the database administrator needs to find for subsequent masking. The manual approach scales poorly: studying a large and constantly changing database takes a lot of time, and the human factor inevitably leads to errors. The new function uses a combined approach, analyzing not only the structure but also the data itself. The process begins with scanning, during which the component lists all tables and columns in the database. Then, a data sample is taken from each column (sampling). During the analysis, regular expressions, dictionary checks, and a machine learning model are applied to the samples. In the final stage, classification, the system makes a verdict for each column: whether the data is personal, and if so, to which domain it belongs (e.g., full name or email address). The key advantage is the automation of the full cycle. The detection component works in conjunction with the anonymization component: the first creates a report on the found PDn and security labels, and the second automatically performs masking based on them. Each domain corresponds to its own masking algorithm, but the administrator can also set their own functions. Read more</p>
+    <p class="source">
+      Machine-translated from Habr.
+      <a href="https://habr.com/ru/companies/gaz-is/articles/1109898/?utm_campaign=1109898&amp;utm_source=habrahabr&amp;utm_medium=rss">Read the original Russian article</a>.
+      Thu, 19 Nov 2026 12:38:25 GMT
+    </p>
+  </header>
+  <main>
+<div><p>We have introduced a new feature for our cyber-secure domestic general-purpose DBMS "Yatoba". The system has replaced manual labor in searching for personal data with artificial intelligence scanning.</p><p>Thanks to the automatic detection of personal data (PDn), it will be easier to comply with the requirements of 152-FZ and reduce the risks of leaks when transferring data to test environments or to technical support.</p><p>The function solves a relevant problem for the DBMS market - searching and classifying PDn, as well as any other confidential data that the database administrator needs to find for subsequent masking. The manual approach scales poorly: studying a large and constantly changing database takes a lot of time, and the human factor inevitably leads to errors. The new function uses a combined approach, analyzing not only the structure but also the data itself.</p><p>The process begins with scanning, during which the component lists all tables and columns in the database. Then, a data sample is taken from each column (sampling). During the analysis, regular expressions, dictionary checks, and a machine learning model are applied to the samples. In the final stage, classification, the system makes a verdict for each column: whether the data is personal, and if so, to which domain it belongs (e.g., full name or email address).</p><p>The key advantage is the automation of the full cycle. The detection component works in conjunction with the anonymization component: the first creates a report on the found PDn and security labels, and the second automatically performs masking based on them. Each domain corresponds to its own masking algorithm, but the administrator can also set their own functions.</p></div>
+  </main>
+  <footer>
+    Translation generated with Gemini 2.5 Flash-Lite.
+    The original article remains the source of record.
+  </footer>
+</body>
+</html>

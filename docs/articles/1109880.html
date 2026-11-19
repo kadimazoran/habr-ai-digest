@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Gemini 4 Neon Released: The Golden Mean, According to Google</title>
+  <meta name="description" content="On November 18, 2026, Google introduced Gemini 4 Neon, essentially the missing link in its new lineup. Until now, users had to choose between the fast Hydrogen model for simple scripts and routine tasks, and the powerful but expensive Carbon. Neon is geared towards technical tasks: development, anal">
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.65;
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 32px 20px 64px;
+      color: #1f2328;
+    }
+    header {
+      border-bottom: 1px solid #d8dee4;
+      margin-bottom: 28px;
+      padding-bottom: 20px;
+    }
+    .source {
+      color: #57606a;
+      font-size: 0.95rem;
+    }
+    img, video, iframe {
+      max-width: 100%;
+      height: auto;
+    }
+    pre {
+      overflow-x: auto;
+      padding: 16px;
+      background: #f6f8fa;
+      border-radius: 6px;
+    }
+    code {
+      font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+    }
+    blockquote {
+      border-left: 4px solid #d0d7de;
+      margin-left: 0;
+      padding-left: 16px;
+      color: #57606a;
+    }
+    footer {
+      border-top: 1px solid #d8dee4;
+      margin-top: 40px;
+      padding-top: 20px;
+      color: #57606a;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Gemini 4 Neon Released: The Golden Mean, According to Google</h1>
+    <p>On November 18, 2026, Google introduced Gemini 4 Neon, essentially the missing link in its new lineup. Until now, users had to choose between the fast Hydrogen model for simple scripts and routine tasks, and the powerful but expensive Carbon. Neon is geared towards technical tasks: development, analytics, scientific research, and corporate processes. This model offers a balance between the powerful yet costly Carbon and the everyday, affordable Hydrogen. Let&#x27;s explore its architecture, performance in tests, and whether it&#x27;s worth migrating your pipelines to it. Read more</p>
+    <p class="source">
+      Machine-translated from Habr.
+      <a href="https://habr.com/ru/companies/selectel/articles/1109880/?utm_campaign=1109880&amp;utm_source=habrahabr&amp;utm_medium=rss">Read the original Russian article</a>.
+      Thu, 19 Nov 2026 14:00:31 GMT
+    </p>
+  </header>
+  <main>
+<div><figure><img alt="Source." loading="lazy" src="https://habrastorage.org/r/w1560/extt/1d/92/1c/1d921c4be83919f031cadd793bacaf99.png" title="Source."/><figcaption><a href="https://blog.google/innovation-and-ai/models-and-research/gemini-models/introducing-gemini-4-neon/"><em>Source</em></a><em>.</em></figcaption></figure><p>On November 18, 2026, Google introduced Gemini 4 Neon, essentially the missing link in its new lineup. Until now, users had to choose between the fast Hydrogen model for simple scripts and routine tasks, and the powerful but expensive Carbon.</p><p><br/>Neon is geared towards technical tasks: development, analytics, scientific research, and corporate processes. This model offers a balance between the powerful yet costly Carbon and the everyday, affordable Hydrogen. Let's explore its architecture, performance in tests, and whether it's worth migrating your pipelines to it.</p><figure><img alt="Comparison of Carbon, Neon, and Hydrogen. Source." loading="lazy" src="https://habrastorage.org/r/w1560/extt/0d/f7/20/0df7205ca2eb91846d5d9c6b67efe4a0.png" title="Comparison of Carbon, Neon, and Hydrogen. Source."/><figcaption><em>Comparison of Carbon, Neon, and Hydrogen. </em><a href="https://blog.google/innovation-and-ai/models-and-research/gemini-models/introducing-gemini-4-neon/"><em>Source.</em></a></figcaption></figure><p>In the AA Index (a rating of language model capabilities, consisting of nine tests across four domains), the model in xHigh mode scored 61 points, proving more effective and cheaper than Carbon and Claude Opus 5.5.</p><figure><img alt="AA Index v5.0.1. Source." loading="lazy" src="https://habrastorage.org/r/w1560/extt/70/2a/ce/702ace0c80fa359edac3f1f0087e3247.png" title="AA Index v5.0.1. Source."/><figcaption><em>AA Index v5.0.1. </em><a href="https://blog.google/innovation-and-ai/models-and-research/gemini-models/introducing-gemini-4-neon/"><em>Source</em></a><em>.</em></figcaption></figure><h2>Benchmarks</h2><p>The benchmarks look solid. In Terminal-bench 4.1 and FrontierCode 2.0, the model slightly lags behind Claude Opus 5.5, but in the GraphWalks test, which assesses the model's ability to find connections in large graph structures, it achieved 95.2%, significantly higher than Claude Opus 5.5 (66.8%) and GPT-6.2 Sol (80.1%). This benchmark indicates the model's strength in handling large amounts of diverse information.</p><p>In code search and correction tasks (SWE-sweep), the model scored 39% using harness and 12.8% using the SWE-bench harness. Opus scored 10.1% and 3.6% respectively, while Sol achieved 8.3% and 11.6% respectively.</p><figure><img alt="Benchmarks of Neon, Opus, and Sol. Source." loading="lazy" src="https://habrastorage.org/r/w1560/extt/2d/f2/b0/2df2b09391eef3e6a23ea4b8601ed69c.png" title="Benchmarks of Neon, Opus, and Sol. Source."/><figcaption><em>Benchmarks of Neon, Opus, and Sol. </em><a href="https://blog.google/innovation-and-ai/models-and-research/gemini-models/introducing-gemini-4-neon/"><em>Source</em></a><em>.</em></figcaption></figure><h2>Model Safety</h2><p>Since Neon is designed to work with external data—code, documents, and emails—protection against indirect prompt injections becomes paramount. This is a scenario where an attacker hides a malicious command within text or a repository, and the neural network accidentally executes it while analyzing the file.</p><p>In its fourth generation, Google appears to have seriously addressed this vulnerability. As I noted in the Carbon release analysis:</p><blockquote><p>Google has also improved Carbon's resilience to malicious instruction injection via external data. An attack is possible if the model analyzes a document or code containing explicit or hidden commands that attempt to make it ignore its restrictions. In the Gray Swan Indirect Prompt Injection benchmark, the success rate of attacks was 0%, compared to 0.7% for Argon.</p></blockquote><p>The good news is that the safety measures were not compromised when simplifying the model for the mid-tier segment. In the same Gray Swan Indirect Prompt Injection test, Neon also maintains a 0% success rate for attacks—exactly on par with the higher-tier Carbon and the lower-tier Hydrogen. This is a significant advantage for the corporate sector and pipelines that parse unstructured data from the web.</p><figure><img alt="Success rate of attacks on the model via indirect instructions. Source." loading="lazy" src="https://habrastorage.org/r/w1560/extt/ad/38/4e/ad384e3da9cd9a578cbff4df397401d7.png" title="Success rate of attacks on the model via indirect instructions. Source."/><figcaption><em>Success rate of attacks on the model via indirect instructions. </em><a href="https://blog.google/innovation-and-ai/models-and-research/gemini-models/introducing-gemini-4-neon/"><em>Source</em></a><em>.</em></figcaption></figure><p>Ultimately, Google has significantly secured its trio of models, making the injection of malicious instructions nearly impossible. However, complete protection against all types of attacks is unattainable, so I wouldn't be overly optimistic and present 0% successful attacks in any safety-related graphs.</p><h2>Conclusion</h2><p>Neon is like a character from Russian fairy tales—good in every way. It's not as expensive as Carbon, and its reasoning capabilities are superior to Hydrogen's. The analyzed benchmarks clearly indicate that the model is designed for working with large datasets, writing code, and verifying it.</p><p>You can experiment with the new model and compare it with other LLMs through Selectel's AI router using a single API key. Go to the <a href="https://my.selectel.ru/?utm_source=habr.com&amp;utm_medium=referral&amp;utm_campaign=myselectel_news_ai-gemini4_191126_content">control panel</a>, get your key, and substitute the model alias in your client.</p><div><figure><img loading="lazy" src="https://habrastorage.org/getpro/habr/upload_files/dbd/50d/bb6/dbd50dbb6316408a3d20c62b3ced3f3c.gif"/></figure><p><strong>AI Router — Access 400+ Models from a Single Panel</strong></p><p>Connect an OpenAI-compatible gateway with a single API key. Configure end-to-end analytics, track limits, and quota resources.</p><p><a href="https://selectel.ru/services/cloud/foundation-models-catalog/?utm_source=habr.com&amp;utm_medium=referral&amp;utm_campaign=fmc_news_ai-gemini4_191126_banner_ord"><strong>Learn More →</strong></a></p></div><blockquote><p>Which of these three models do you use, and why?</p></blockquote></div>
+  </main>
+  <footer>
+    Translation generated with Gemini 2.5 Flash-Lite.
+    The original article remains the source of record.
+  </footer>
+</body>
+</html>

@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Direct, Metric, and Wordstat in ChatGPT via Sites. How it works and what&#x27;s the catch</title>
+  <meta name="description" content="In my estimation, I spend about 70% of my workday in AI tools. With each new connection of mcp tools, there are fewer reasons to open other interfaces. We connected Direct, Metric, and Wordstat to ChatGPT for the marketing team: an employee installs a plugin from the GPT catalog and works with data ">
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.65;
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 32px 20px 64px;
+      color: #1f2328;
+    }
+    header {
+      border-bottom: 1px solid #d8dee4;
+      margin-bottom: 28px;
+      padding-bottom: 20px;
+    }
+    .source {
+      color: #57606a;
+      font-size: 0.95rem;
+    }
+    img, video, iframe {
+      max-width: 100%;
+      height: auto;
+    }
+    pre {
+      overflow-x: auto;
+      padding: 16px;
+      background: #f6f8fa;
+      border-radius: 6px;
+    }
+    code {
+      font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+    }
+    blockquote {
+      border-left: 4px solid #d0d7de;
+      margin-left: 0;
+      padding-left: 16px;
+      color: #57606a;
+    }
+    footer {
+      border-top: 1px solid #d8dee4;
+      margin-top: 40px;
+      padding-top: 20px;
+      color: #57606a;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Direct, Metric, and Wordstat in ChatGPT via Sites. How it works and what&#x27;s the catch</h1>
+    <p>In my estimation, I spend about 70% of my workday in AI tools. With each new connection of mcp tools, there are fewer reasons to open other interfaces. We connected Direct, Metric, and Wordstat to ChatGPT for the marketing team: an employee installs a plugin from the GPT catalog and works with data directly in the chat. In the previous article, we showed how to set up MCP Wordstat on your PC and connect to Codex. Read more</p>
+    <p class="source">
+      Machine-translated from Habr.
+      <a href="https://habr.com/ru/companies/infostart/articles/1109958/?utm_campaign=1109958&amp;utm_source=habrahabr&amp;utm_medium=rss">Read the original Russian article</a>.
+      Thu, 19 Nov 2026 14:14:43 GMT
+    </p>
+  </header>
+  <main>
+<div><figure><img alt="Has AI already become your main work tool? A multi-tool alongside individual tools" loading="lazy" src="https://habrastorage.org/r/w1560/extt/79/9e/f8/799ef85788e5614e3f8eb520d3f8b9a0.png"/></figure><p>In my estimation, I spend about 70% of my workday in AI tools. With each new connection of mcp tools, there are fewer reasons to open other applications/interfaces. We connected Direct, Metric, and Wordstat to ChatGPT for the marketing team: an employee installs a plugin from the GPT catalog and works with data directly in the chat.</p><p>In the <a href="https://habr.com/ru/companies/infostart/articles/1099528/">previous article</a>, we showed how to set up MCP Wordstat on your PC and connect to Codex.</p><h3>How working with the plugin looks</h3><p>I asked it to analyze active advertising campaigns and load conversions from Metric. In response, ChatGPT showed expenses, clicks, and goal achievements for the campaigns.</p><figure><img alt="Query to the MCP plugin and a fragment of the AI's response with masked metrics" loading="lazy" src="https://habrastorage.org/r/w1560/extt/b1/2c/9b/b12c9b8da8844f9a721a90509dd2e725.png" title="Start of the response to the query about active campaigns."/><figcaption>Start of the response to the query about active campaigns.</figcaption></figure><figure><img alt="Continuation of the AI's response: a table of campaigns with masked names and metrics" loading="lazy" src="https://habrastorage.org/r/w1560/extt/da/fc/0b/dafc0be15304e98cb7e208d3028c8e5d.png" title="Continuation of the same response — a table of campaigns."/><figcaption><strong><em>Continuation of the same response — a table of campaigns.</em></strong></figcaption></figure><p>The MCP server gets data from Yandex API, and ChatGPT explains the result. The model's conclusions and selected goals need to be verified: achieving a goal in Metric by itself does not yet confirm a sale.</p><p>The main tools of our <a href="https://infostart-yandex-readonly.infostart-1607.chatgpt.site">Site «Infostart · Direct, Metric, and Wordstat»</a>:</p><div><div><table><tbody><tr><th><p><strong>Service</strong></p></th><th><p><strong>Tool</strong></p></th><th><p><strong>What it returns</strong></p></th></tr><tr><td><p>Direct</p></td><td><p><code>direct_list_campaigns</code></p></td><td><p>Campaigns, their statuses, types, and dates</p></td></tr><tr><td><p>Direct</p></td><td><p><code>direct_report</code></p></td><td><p>Impressions, clicks, expenses, and conversions for the selected period</p></td></tr><tr><td><p>Metric</p></td><td><p><code>metrika_goals</code></p></td><td><p>List of goals for the selected counter</p></td></tr><tr><td><p>Metric</p></td><td><p><code>metrika_report</code></p></td><td><p>Aggregated traffic metrics and goal achievements</p></td></tr><tr><td><p>Wordstat</p></td><td><p><code>wordstat_top</code></p></td><td><p>Popular and similar queries with frequency</p></td></tr><tr><td><p>Wordstat</p></td><td><p><code>wordstat_dynamics</code></p></td><td><p>Historical frequency dynamics</p></td></tr></tbody></table></div></div><figure><img alt="18 reading tools in the active plugin" loading="lazy" src="https://habrastorage.org/r/w1560/extt/f4/a1/4d/f4a14d2b30c876e4cc13b07b05616179.jpg" title="List of tools in the plugin card."/><figcaption>List of tools in the plugin card.</figcaption></figure><h3>Why ChatGPT Sites was chosen</h3><p><a href="https://learn.chatgpt.com/docs/extend/mcp#build-an-mcp-plugin">ChatGPT Sites provides MCP hosting and login from ChatGPT</a>.</p><div><div><table><tbody><tr><th><p><strong>Placement</strong></p></th><th><p><strong>What remains for the team</strong></p></th></tr><tr><td><p>Own server</p></td><td><p>Code, hosting, updates, and authorization. You can choose the infrastructure and host MCP alongside internal systems</p></td></tr><tr><td><p>ChatGPT Sites</p></td><td><p>Code, API keys, employee access, and compatibility with the Sites environment</p></td></tr></tbody></table></div></div><p>When migrating a ready-made MCP, you need to consider the <a href="https://learn.chatgpt.com/docs/sites#understand-limits-and-unsupported-uses">limitations of the Sites environment</a>. Paid external APIs are paid separately.</p><h3>How we published the MCP in Sites</h3><ol><li><p><strong>Assembled the server in the company's repository.</strong> In the code, we defined available commands and checks for parameters, accounts, and counters. Arbitrary methods or API addresses cannot be passed.</p></li><li><p><strong>Configured Yandex keys.</strong> Direct and Metric tokens, Wordstat key were saved in the <a href="https://learn.chatgpt.com/docs/sites/managing-a-site#configure-runtime-environment-values">Site's server variables</a>. Secrets are not passed to the chat, source code, or tool arguments.</p></li><li><p><strong>Published the Site with MCP.</strong> The server accepts requests at <code>/mcp</code>; the owner receives a linked plugin upon publication. We did not need a separate OAuth server for login from ChatGPT.</p></li></ol><p>On November 17, 2026, we checked the connection via <code>check_connection</code>: reading Direct and Metric was successful. For Wordstat, we only checked the free region directory — this check does not confirm the freshness of frequencies.</p><h3>Who has access to the plugin and data</h3><p>The settings below are as of November 17, 2026.</p><h4>Site Access</h4><p>The owner chooses the audience: invited users, workspace, or access by link. We chose Infostart participants.</p><figure><img alt="Site audience settings" loading="lazy" src="https://habrastorage.org/r/w1560/extt/d0/97/ca/d097ca6093ac812d993f59a9e1282d16.jpg"/><div><figcaption>Site audience settings</figcaption></div></figure><p>For a marketer to work, view access is sufficient. An editor can refine the Site; we did not add additional editors.</p><h4>Plugin Access</h4><p>In our workspace, the plugin can be distributed by invitation, by link, or through the catalog. We chose the Infostart catalog.</p><figure><img alt="Selected plugin distribution setting" loading="lazy" src="https://habrastorage.org/r/w1560/extt/18/21/ad/1821adff1c834bbf2a4d332241ea7489.jpg"/><div><figcaption>Selected plugin distribution setting</figcaption></div></figure><p>An employee needs access to the Site. After that, they find the plugin in the catalog, click "Install" and "Connect," then select it in the chat. They do not need local programs or their own Yandex keys.</p><p>For our plugin, it is set to <code>Use my default</code>: it inherits the general setting <code>Allow low-risk actions</code>. This determines when ChatGPT requests confirmation and does not add commands to the server.</p><h4>Access to Yandex Data</h4><p><strong>Access to the Site opens up a common set of integration data to the employee.</strong> The server accesses Yandex using general tokens; the employee's personal Yandex rights are not checked here. For different departments with different accounts, separate Sites or code-based differentiation are needed.</p><p>Our MCP lacks commands to change advertising. If they are needed, a separate MCP can be created and opened only to employees authorized to make changes. Yandex token rights are configured separately from ChatGPT permissions.</p><h3>When is an interface to other services needed?</h3><p>An account will be needed if the numbers don't add up, the integration fails, or it lacks a required function. In our example, the model, the working interface, and MCP hosting depend on a single provider.</p><p>If company data and tools are accessible from ChatGPT, it begins to act as a working operating system.</p><figure><img alt="Machine uprising — loading 70%" loading="lazy" src="https://habrastorage.org/r/w1560/extt/a9/ee/f5/a9eef5ce98849165db9c39604ea25d44.png"/></figure><p><strong>P.S. Has AI already become your main work tool?</strong></p></div>
+  </main>
+  <footer>
+    Translation generated with Gemini 2.5 Flash-Lite.
+    The original article remains the source of record.
+  </footer>
+</body>
+</html>

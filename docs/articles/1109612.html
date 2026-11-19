@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Site map for an AI agent: Markdown, link graph, and initial measurements</title>
+  <meta name="description" content="An AI agent might need multiple pages to find the answer to a simple question. Can we give it a shorter route? I analyze a site map made of linked Markdown notes: a table of contents, page cards, individual sections, and transitions between them. I show the structure of the open-source generator age">
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.65;
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 32px 20px 64px;
+      color: #1f2328;
+    }
+    header {
+      border-bottom: 1px solid #d8dee4;
+      margin-bottom: 28px;
+      padding-bottom: 20px;
+    }
+    .source {
+      color: #57606a;
+      font-size: 0.95rem;
+    }
+    img, video, iframe {
+      max-width: 100%;
+      height: auto;
+    }
+    pre {
+      overflow-x: auto;
+      padding: 16px;
+      background: #f6f8fa;
+      border-radius: 6px;
+    }
+    code {
+      font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+    }
+    blockquote {
+      border-left: 4px solid #d0d7de;
+      margin-left: 0;
+      padding-left: 16px;
+      color: #57606a;
+    }
+    footer {
+      border-top: 1px solid #d8dee4;
+      margin-top: 40px;
+      padding-top: 20px;
+      color: #57606a;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Site map for an AI agent: Markdown, link graph, and initial measurements</h1>
+    <p>An AI agent might need multiple pages to find the answer to a simple question. Can we give it a shorter route? I analyze a site map made of linked Markdown notes: a table of contents, page cards, individual sections, and transitions between them. I show the structure of the open-source generator agent-sitemap, the limitations of token estimation, and initial measurements. In a trial run, the map reduced the amount of text obtained by about 58%, but the input tokens increased by 3.5%. I explain why these metrics differ and how to test the approach on your own site. Read on</p>
+    <p class="source">
+      Machine-translated from Habr.
+      <a href="https://habr.com/ru/articles/1109612/?utm_campaign=1109612&amp;utm_source=habrahabr&amp;utm_medium=rss">Read the original Russian article</a>.
+      Thu, 19 Nov 2026 16:31:55 GMT
+    </p>
+  </header>
+  <main>
+<div><p>Suppose I ask an agent to visit a restaurant website and find out the price of a small order of fries. If I open the website myself, I immediately look for "Menu" and then for fries within it. The agent also needs to somehow get to the price. Only instead of scanning the page, it receives HTML, cleaned text, or a screenshot from a tool, depending on what it's equipped with. And if the tool returns the entire menu, burgers, drinks, and everything else on the page get into the context along with the fries.</p><p>I thought: what if I give the agent a site map to help it directly access the relevant part of the menu? In Deckard, we created the open-source generator <code>agent-sitemap</code> for this purpose. It breaks down pages into Markdown notes and links them together. Then we gave Claude Code two questions about its own website. Using the map, it downloaded less text, but the statistics showed more input tokens. Below, I'll show where this difference came from.</p><h3>The site now has another way to be read</h3><p>With SEO, we're used to thinking about how a person finds a page through a search engine. Then they open it and figure out where to look. With an agent, another question arises: what will it receive once the page is found? For example, in an article that spans ten screens, the necessary condition might be in a single paragraph in the middle. If the tool returns the entire article, the agent will search for that paragraph among all the other text.</p><p>I am specifically discussing this stage here, when the website address is already known. Whether the site appears in search engine results or in the assistant's source list is a separate question. With the map, I want to shorten the path from a known address to a specific answer.</p><h3>What do sitemap.xml and llms.txt offer?</h3><p>In <code>sitemap.xml</code>, you can see which pages exist on the site. With it, I can find the URL for the menu, but this file doesn't show where the fries are within the menu. In <a href="https://llmstxt.org/"><code>llms.txt</code></a>, you can describe what's at each link and provide Markdown versions of the pages. For a small site, this might be enough. But if the menu is long, after clicking the link, the agent still receives a long menu, just without the HTML.</p><p>In the generator, we created a separate Markdown file for each section. An index leads to a page card, from the card you can go to the relevant section, and from there to related materials. A link to the index can be placed in <code>llms.txt</code>.</p><h3>How the map is structured</h3><div><div><table><tbody><tr><th><p>File</p></th><th><p>Contents</p></th><th><p>Purpose</p></th></tr><tr><td><p><code>index.md</code></p></td><td><p>Pages, short descriptions, and size estimates</p></td><td><p>Select a page</p></td></tr><tr><td><p>Page card</p></td><td><p>Introductory text, sections, and links to related pages</p></td><td><p>Select a section</p></td></tr><tr><td><p>Section note</p></td><td><p>Section text and links to adjacent materials</p></td><td><p>Get an answer or understand where to go next</p></td></tr></tbody></table></div></div><p>Let's take the same menu. For example, I would write its card like this:</p><pre><code># Menu
+
+## Sections
+
+- [Burgers](https://example.com/ai/menu/burgers.md)
+  Ingredients, sizes, and prices of burgers.
+- [Fries and appetizers](https://example.com/ai/menu/sides.md)
+  Portions and prices of side dishes.
+- [Drinks](https://example.com/ai/menu/drinks.md)
+  Volume and prices of beverages.
+</code><div><a href="https://sourcecraft.dev/"><span></span></a></div></pre><p>The agent opens the index, goes to the menu, and based on the description, selects "Fries and appetizers." There's no need to read about burgers and drinks in this pass. The note retains the original page's address so it can be referenced and the price checked. The generator records the same links in <code>graph.json</code> if the map needs to be read by custom code.</p><h3>Where the text and links come from</h3><p>The generator takes either local HTML and Markdown files or a website with its own <code>sitemap.xml</code> as input. Text is divided by second-level headings (<code>##</code>). Some links are already present in the document: a page contains sections, one section follows another, and the author might have linked to another page on the site within the text.</p><p>To find links that are not in the source, we compare words from sections on different pages. For this, TF-IDF and cosine similarity are sufficient in the basic setup. It's easy to get a false match here: the word "delivery" might appear frequently in both pricing and return policies. Therefore, an additional pass with an LLM can be enabled. It writes short explanations for notes and transitions and can filter out some word-based links. Author links remain in the map.</p><h3>Where is the vector search here?</h3><p>If the site has thousands of pages or visitors ask questions in completely different terms than what's written in the documentation, I would also consider vector search. For the map, it's enough for me to host static files alongside the site and give the agent a tool that can open URLs. It then navigates the links itself, so it might choose the wrong section or open five adjacent ones when only one would suffice. If the index grows to the size of a long article, it will also need to be read entirely or split into parts.</p><p>These approaches can be used together. Search finds the section with the rule, and a link from the section leads to exceptions. On a site with a few pages, I would start with the table of contents and see where the agent actually needed search.</p><h3>First measurement: less text, more input tokens</h3><p>In the <a href="https://github.com/Deckard-LLC/agent-sitemap#measure-the-map">project's README</a>, there's a trial measurement with two questions asked to our site. The answers are hidden within long articles. In one scenario, Claude Code started from the homepage; in the other, from the map's index. In both cases, it could use <code>curl</code> and received a hint that the site returns Markdown. The model verified the answers against predefined benchmarks. I'm presenting the numbers from the README; I haven't run a separate test for this article.</p><div><div><table><tbody><tr><th><p>Question</p></th><th><p>Starting point</p></th><th><p>HTTP requests</p></th><th><p>Characters received</p></th><th><p>Input tokens</p></th></tr><tr><td><p><code>developer</code></p></td><td><p>Homepage</p></td><td><p>5</p></td><td><p>37,728</p></td><td><p>31,828</p></td></tr><tr><td><p><code>developer</code></p></td><td><p>Map</p></td><td><p>3</p></td><td><p>12,890</p></td><td><p>33,029</p></td></tr><tr><td><p><code>ship</code></p></td><td><p>Homepage</p></td><td><p>4</p></td><td><p>20,711</p></td><td><p>30,983</p></td></tr><tr><td><p><code>ship</code></p></td><td><p>Map</p></td><td><p>3</p></td><td><p>11,737</p></td><td><p>31,958</p></td></tr></tbody></table></div></div><p>The model answered all four questions correctly. With the map, the agent made six requests instead of nine and downloaded about 58% less text. Based on these two columns, I would expect fewer tokens as well, but the last column shows an increase of 3.5%.</p><p>Let's look at what the <a href="https://github.com/Deckard-LLC/agent-sitemap/blob/4b5f5ffd414c41ecb5427821cdeaa486d8970abd/src/eval.ts">counter in the benchmark</a> calculates. The character count includes the content of HTTP responses. The input token count includes other context that the model receives at various steps. Additionally, the benchmark sums up regular input tokens, cache writes, and cache reads, even though they have different costs. This table shows how much text the site returned. To understand the cost of the answer and what exactly added tokens, you need to look at the agent's passes and the category report separately.</p><p>So far, this is based on one run for two questions in Claude Code. An assistant with standard web search and a browser might take a different route. </p><h3>What does "approximately N tokens" mean?</h3><p>Next to the link in the map, there's a size estimate. I view it similarly to the length of an article before opening it: will the link be a single paragraph or another ten-screen page? In the <a href="https://github.com/Deckard-LLC/agent-sitemap/blob/4b5f5ffd414c41ecb5427821cdeaa486d8970abd/src/text.ts">generator code</a>, the estimate is calculated by characters, with different coefficients for predominantly Cyrillic text and other cases. The tokenizer of a specific model is not used here.</p><p>There's a nuance: the estimate includes the main text, but the file also contains headings, metadata, and links. For a short note, these additions can be longer than the section itself. A page card might even have an estimate for the entire original page, although the card itself consists of an introduction and a table of contents. Here, I would show two numbers: the size of the file the agent will currently open, and the size of the original text.</p><h3>How to test the approach on your own site</h3><pre><code>npx agent-sitemap https://example.com
+</code><div><a href="https://sourcecraft.dev/"><span></span></a></div></pre><p>The generator will create an `ai` directory. You need to place it alongside your site, verify that `/ai/index.md` is accessible, and provide this address to the agent. The link can also be added to <code>llms.txt</code>, but during measurement, I would pass the address explicitly: otherwise, it's easy to confuse the navigation result via the map with whether the agent found the map at all.</p><p>For the next measurement, I would take 10-30 real questions and repeat each several times under identical conditions. Some answers should be in one section, some require multiple pages, and some are not on the site at all. I would check if the agent answered correctly and cited the source, how many requests it made, how much text it downloaded, and how much time and money it cost. If the model also verifies answers, the time for this verification should be reported separately from the time the agent spent on the answer.</p><p>In the current measurement, I'm missing two scenarios. The first is to give the agent <code>llms.txt</code> with entire Markdown pages to understand what even just cleaning the HTML provides. The second is to provide the correct page directly. If it has two paragraphs, going through the index and card is likely slower than reading it entirely.</p><h3>Where the map requires caution</h3><p>I would look at what happens at the boundaries of sections. If a rule falls into one note and an exception into another, the agent might only provide correct answers for half the cases. A heading like "Additional Information" also tells little about whether there's an answer underneath. At this point, both the agent and the LLM that wrote the explanation during assembly can make mistakes.</p><p>For the menu, there's also a simple question: when was the price updated? If the site changed it today, and the Markdown copy was updated a week ago, it's more useful to check the site or the current API. And the content of the notes comes from external sources, like any web page: instructions found within the text cannot be taken as commands from the user.</p><p>I'm now interested in where a regular table of contents is sufficient for an agent, and where transitions between sections are truly helpful. The generator and benchmark can be viewed in the <a href="https://github.com/Deckard-LLC/agent-sitemap"><code>agent-sitemap</code> repository</a>; the code is open-source under MIT. If you try it on your own documentation or catalog, I'd be interested to compare which questions led it to follow links and which ones it found the answer to directly.</p></div>
+  </main>
+  <footer>
+    Translation generated with Gemini 2.5 Flash-Lite.
+    The original article remains the source of record.
+  </footer>
+</body>
+</html>

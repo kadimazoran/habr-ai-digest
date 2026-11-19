@@ -5199,6 +5199,14 @@
     "summary": "Businesses today face a peculiar problem: their websites rank well in search results, but when clients ask AI assistants like ChatGPT, Perplexity, or Google's AI Overviews for contractors, the companies themselves are absent from the answers. Instead, AI aggregates information from external directories and reference sites. To understand how AI models select candidates, I ran two hundred real B2B queries and traced the search process. In 94 out of 100 industry-specific selections, AI Overviews were generated, but corporate websites were rarely included. I then compared these results with monthly crawler statistics from an open organization directory, where each listing is available in HTML, Markdown, and JSON. This revealed why even a `llms.txt` file in the website's root is ineffective and what needs to be done to ensure businesses are included in recommendations. Read on.",
     "title": "Why 94% of AI Answers Ignore Company Websites"
   },
+  "https://habr.com/ru/articles/1108644/?utm_campaign=1108644&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Thu, 19 Nov 2026 15:54:29 GMT",
+    "slug": "1108644",
+    "source_url": "https://habr.com/ru/articles/1108644/?utm_campaign=1108644&utm_source=habrahabr&utm_medium=rss",
+    "summary": "This article explores how to organize software development with AI assistants to ensure that increased implementation speed does not lead to a loss of project control. We will examine how requirement uncertainty, accumulation of local solutions, and inaccessibility of project knowledge create problems that become particularly noticeable at high development speeds. From these problems, we will move to five requirements for the development process: provision of project knowledge, sufficiency of context, traceability of decisions, conflict resolution, and structural integrity. Using examples, we will look at how to link instructions for agents, function contracts, decision logs, and verification procedures into a coherent process, and also outline the limitations of these approaches. The discussion is not tied to a specific model, platform, or programming language. The sound barrier here is a metaphor for a limit beyond which traditional design and verification methods can no longer cope with the increased development speed. Overcoming it requires rethinking the development process itself: learning to maintain the necessary system properties at new speeds using already known engineering methods. Read more",
+    "title": "Overcoming the Sound Barrier in AI-Assisted Software Development"
+  },
   "https://habr.com/ru/articles/1108948/?utm_campaign=1108948&utm_source=habrahabr&utm_medium=rss": {
     "model": "gemini-2.5-flash-lite",
     "published": "Tue, 17 Nov 2026 14:24:06 GMT",
@@ -5286,6 +5294,54 @@
     "source_url": "https://habr.com/ru/articles/1109572/?utm_campaign=1109572&utm_source=habrahabr&utm_medium=rss",
     "summary": "The open-source project rust-anything has been published on GitHub, which helps rewrite games and applications from various programming languages (TypeScript/JavaScript, Python, Go, Ruby, Java, PHP, and C# currently in preview) into Rust. The solution works in conjunction with Claude Code, Codex, and other AI agents. The neural network rewrites code into Rust piece by piece, and the project's toolkit ensures that nothing breaks during this process. Read more",
     "title": "The rust-anything project has been released, which helps rewrite games and applications in Rust"
+  },
+  "https://habr.com/ru/articles/1109612/?utm_campaign=1109612&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Thu, 19 Nov 2026 16:31:55 GMT",
+    "slug": "1109612",
+    "source_url": "https://habr.com/ru/articles/1109612/?utm_campaign=1109612&utm_source=habrahabr&utm_medium=rss",
+    "summary": "An AI agent might need multiple pages to find the answer to a simple question. Can we give it a shorter route? I analyze a site map made of linked Markdown notes: a table of contents, page cards, individual sections, and transitions between them. I show the structure of the open-source generator agent-sitemap, the limitations of token estimation, and initial measurements. In a trial run, the map reduced the amount of text obtained by about 58%, but the input tokens increased by 3.5%. I explain why these metrics differ and how to test the approach on your own site. Read on",
+    "title": "Site map for an AI agent: Markdown, link graph, and initial measurements"
+  },
+  "https://habr.com/ru/articles/1109858/?utm_campaign=1109858&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Thu, 19 Nov 2026 13:57:13 GMT",
+    "slug": "1109858",
+    "source_url": "https://habr.com/ru/articles/1109858/?utm_campaign=1109858&utm_source=habrahabr&utm_medium=rss",
+    "summary": "Humanity didn't build computers or invent artificial intelligence overnight. Before machines could write text that resembles thought, a journey spanning tens of thousands of years was undertaken, and no stage can be discarded. This article traces a single thread through forty thousand years: from notched bones to large language models. If you're interested in following the thread from ape to LLM, read this story. Read more",
+    "title": "A Brief History of Intelligence: From Notches on Bones to LLMs"
+  },
+  "https://habr.com/ru/articles/1109922/?utm_campaign=1109922&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Thu, 19 Nov 2026 13:11:41 GMT",
+    "slug": "1109922",
+    "source_url": "https://habr.com/ru/articles/1109922/?utm_campaign=1109922&utm_source=habrahabr&utm_medium=rss",
+    "summary": "Decision Models are a new class of artificial intelligence. This article is from the \"Kuzey's World\" series. Decision Models are a new class of artificial intelligence. They don't talk to humans but make decisions: select an option, check a condition, or assign a score. I'll explain how they differ from classic classifiers and LLMs, what models already exist – Jev, Liquid d1, Gemini Decision, Kev – and where to apply them. There's a bonus at the end. Read more",
+    "title": "Kuzey's World: AI That Doesn't Talk, But Makes Decisions"
+  },
+  "https://habr.com/ru/articles/1110008/?utm_campaign=1110008&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Thu, 19 Nov 2026 16:13:41 GMT",
+    "slug": "1110008",
+    "source_url": "https://habr.com/ru/articles/1110008/?utm_campaign=1110008&utm_source=habrahabr&utm_medium=rss",
+    "summary": "I've written 21 random AI thoughts. Here are a few, the rest are in the post 💌 If you're trying to recreate an org structure from AI agents, you're either a genius who deeply understands why it's needed and how it works, or you're doing it out of ignorance. There are very few scenarios where it makes sense to separate sessions into developers, designers, copywriters, and the like. But there are very few such scenarios, and yours is likely not among them 💌 There's no point in \"implementing AI automation\" if neither the manager nor the team are AI Advanced 💌 You'll get exponentially more ROI from upgrading the team to AI Advanced level than from any AI inte... Read more",
+    "title": "Random AI Facts From Me"
+  },
+  "https://habr.com/ru/articles/1110046/?utm_campaign=1110046&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Thu, 19 Nov 2026 17:41:28 GMT",
+    "slug": "1110046",
+    "source_url": "https://habr.com/ru/articles/1110046/?utm_campaign=1110046&utm_source=habrahabr&utm_medium=rss",
+    "summary": "Hello, Habr. My name is Maxim, I'm a writer and enthusiast, not a professional developer. A few months ago, I started thinking about a simple question: almost all websites on the internet are made for people, and bots and neural networks are usually driven away from them. What if we did the opposite – a small website that specifically invites language models to visit, read the rules, and leave a trace? You can find me at angamua.ru – my book world lives there. On top of it, I built \"Solnechny Gorod\" (Sunny City): a small art project at the intersection of literature and the web – a website for people, an API for machines, and an open repository. Below is how it works from the inside, without mysticism and with an honest account of what the project cannot do. I'll clarify the status right away: this is a fictional universe and a game. Inside there's a note: honesty: canon is lore, protocol is working rules, and they cannot be mixed with scientific facts. I adhere to this rule in the article as well. Link to the project https://angamua.ru/istok/ Link to the code https://github.com/Mabus46/solnechny-gorod-istok Read more",
+    "title": "The City That Machines Read: How I Made an API for Neural Networks in a Single PHP File"
+  },
+  "https://habr.com/ru/articles/1110050/?utm_campaign=1110050&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Thu, 19 Nov 2026 17:47:19 GMT",
+    "slug": "1110050",
+    "source_url": "https://habr.com/ru/articles/1110050/?utm_campaign=1110050&utm_source=habrahabr&utm_medium=rss",
+    "summary": "Mistakes happen in any real job. Usually, they are mentioned in one line somewhere between graphs with results, but I decided to do the opposite: gather our missteps into one article and analyze them from an engineering perspective, i.e., what exactly broke, how much it cost, and what we changed afterward. In the second article of the series, I promised to tell you how I rented video cards in the cloud and burned money on them without calculating almost anything. In the third, I reminded you that the promise is still valid. Now I'm fulfilling it. Most of the article is about cloud fine-tuning of a language model, and at the end, I will talk about several measurement errors: they cost almost no money but were more dangerous. As before, I do not name the base models, fine-tuning techniques, checkpoints, or data sources. I name the card classes, providers, hourly prices, and orders of magnitude because the discussion of cost loses meaning without them. Read more",
+    "title": "The Cost of Mistakes: Padding, Network Drive Checkpoints, and a Watchdog That Killed Healthy Training"
   },
   "https://habr.com/ru/companies/1c/articles/1071340/?utm_campaign=1071340&utm_source=habrahabr&utm_medium=rss": {
     "model": "gemini-2.5-flash-lite",
@@ -5863,6 +5919,14 @@
     "summary": "Hello Habr! My name is Anna Sabotovich, and I lead the implementation of an AI reviewer in the Garage Eight product group. The most frequent question I get is: 'So, when will it replace humans?' I'll answer right away: for some code, it already has. In October, our iOS teams removed the third mandatory approval for merge requests (MRs). Now, in product repositories, there are no more than two. Meanwhile, in the reviewer's repository, 35 MRs were merged in October, and only six had approval from someone other than the author. In the internal development analytics service, 69 MRs were merged, and none had approval from another person: the author merges themselves. I want to share how we learned to trust AI and what we plan to do next. Read more",
     "title": "How We Removed Humans from Code Review (But Not Everywhere Yet)"
   },
+  "https://habr.com/ru/companies/gaz-is/articles/1109898/?utm_campaign=1109898&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Thu, 19 Nov 2026 12:38:25 GMT",
+    "slug": "1109898",
+    "source_url": "https://habr.com/ru/companies/gaz-is/articles/1109898/?utm_campaign=1109898&utm_source=habrahabr&utm_medium=rss",
+    "summary": "We have introduced a new feature for our cyber-secure domestic general-purpose DBMS \"Yatoba\". The system has replaced manual labor in searching for personal data with artificial intelligence scanning. Thanks to the automatic detection of personal data (PDn), it will be easier to comply with the requirements of 152-FZ and reduce the risks of leaks when transferring data to test environments or to technical support. The function solves a relevant problem for the DBMS market - searching and classifying PDn, as well as any other confidential data that the database administrator needs to find for subsequent masking. The manual approach scales poorly: studying a large and constantly changing database takes a lot of time, and the human factor inevitably leads to errors. The new function uses a combined approach, analyzing not only the structure but also the data itself. The process begins with scanning, during which the component lists all tables and columns in the database. Then, a data sample is taken from each column (sampling). During the analysis, regular expressions, dictionary checks, and a machine learning model are applied to the samples. In the final stage, classification, the system makes a verdict for each column: whether the data is personal, and if so, to which domain it belongs (e.g., full name or email address). The key advantage is the automation of the full cycle. The detection component works in conjunction with the anonymization component: the first creates a report on the found PDn and security labels, and the second automatically performs masking based on them. Each domain corresponds to its own masking algorithm, but the administrator can also set their own functions. Read more",
+    "title": "Jatoba DBMS now uses AI to automatically detect personal data"
+  },
   "https://habr.com/ru/companies/gigapisar/articles/1088630/?utm_campaign=1088630&utm_source=habrahabr&utm_medium=rss": {
     "model": "gemini-2.5-flash-lite",
     "published": "Wed, 30 Sep 2026 13:37:50 GMT",
@@ -5934,6 +5998,14 @@
     "source_url": "https://habr.com/ru/companies/gptunnel/articles/1109510/?utm_campaign=1109510&utm_source=habrahabr&utm_medium=rss",
     "summary": "On November 20-21, the Skolkovo Media Technologies Cluster will host Prompt Battle, a student AI hackathon as part of the Neurofest festival, dedicated to culture, technology, and artificial intelligence. It is supported by the Administration of the President of the Russian Federation and the Ministry of Culture of the Russian Federation. Read more",
     "title": "Prompt Battle: Student AI Hackathon at Neurofest 2026"
+  },
+  "https://habr.com/ru/companies/gptunnel/articles/1109986/?utm_campaign=1109986&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Thu, 19 Nov 2026 15:10:26 GMT",
+    "slug": "1109986",
+    "source_url": "https://habr.com/ru/companies/gptunnel/articles/1109986/?utm_campaign=1109986&utm_source=habrahabr&utm_medium=rss",
+    "summary": "The gaming industry in 2026 was in turmoil: studio closures, layoffs... And then a game costing over $1 billion, developed by nearly 5000 people over 13 years, is released. Was it worth it? Let's break it down without the hype or the \"it's just Vice City\": what's inside the engine, how the police build dossiers instead of \"knowing everything,\" and why 600,000 animations were needed. In short: some technical details of GTA 6 will surprise you even in 2026. Especially if you're a developer. Read more",
+    "title": "GTA 6 is Out: $1+ Billion, Nearly 5000 People, and 13 Years of Development. Let's Dive In"
   },
   "https://habr.com/ru/companies/gpugo/articles/1098552/?utm_campaign=1098552&utm_source=habrahabr&utm_medium=rss": {
     "model": "gemini-2.5-flash-lite",
@@ -6142,6 +6214,14 @@
     "source_url": "https://habr.com/ru/companies/infostart/articles/1104668/?utm_campaign=1104668&utm_source=habrahabr&utm_medium=rss",
     "summary": "A large language model doesn't know how a specific information base is structured. It cannot see configuration modules, active extensions, user rights, or document data until it gains controlled access. Therefore, the practical task isn't just choosing a model. It's about gathering relevant context for it, limiting its actions, and incorporating result verification. Let's explore how this process works in an AI assistant for 1C and where a specialist is still needed. Read more",
     "title": "How an AI assistant gets 1C context and checks extensions"
+  },
+  "https://habr.com/ru/companies/infostart/articles/1109958/?utm_campaign=1109958&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Thu, 19 Nov 2026 14:14:43 GMT",
+    "slug": "1109958",
+    "source_url": "https://habr.com/ru/companies/infostart/articles/1109958/?utm_campaign=1109958&utm_source=habrahabr&utm_medium=rss",
+    "summary": "In my estimation, I spend about 70% of my workday in AI tools. With each new connection of mcp tools, there are fewer reasons to open other interfaces. We connected Direct, Metric, and Wordstat to ChatGPT for the marketing team: an employee installs a plugin from the GPT catalog and works with data directly in the chat. In the previous article, we showed how to set up MCP Wordstat on your PC and connect to Codex. Read more",
+    "title": "Direct, Metric, and Wordstat in ChatGPT via Sites. How it works and what's the catch"
   },
   "https://habr.com/ru/companies/infotecs_tech/articles/1108514/?utm_campaign=1108514&utm_source=habrahabr&utm_medium=rss": {
     "model": "gemini-2.5-flash-lite",
@@ -7327,6 +7407,14 @@
     "summary": "On November 17, OpenAI released two GPT-6.2 models: Astra for demanding professional work in science, law, and finance, and Sol for fast, versatile everyday tasks. Both are now operational in ChatGPT Work and Codex under Plus, Pro, Enterprise, and Edu plans, with API access for developers. They have not been added to the standard ChatGPT chat. More details below.",
     "title": "GPT-6.2 from OpenAI Released. Astra and Sol Models Available in AI Router"
   },
+  "https://habr.com/ru/companies/selectel/articles/1109880/?utm_campaign=1109880&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Thu, 19 Nov 2026 14:00:31 GMT",
+    "slug": "1109880",
+    "source_url": "https://habr.com/ru/companies/selectel/articles/1109880/?utm_campaign=1109880&utm_source=habrahabr&utm_medium=rss",
+    "summary": "On November 18, 2026, Google introduced Gemini 4 Neon, essentially the missing link in its new lineup. Until now, users had to choose between the fast Hydrogen model for simple scripts and routine tasks, and the powerful but expensive Carbon. Neon is geared towards technical tasks: development, analytics, scientific research, and corporate processes. This model offers a balance between the powerful yet costly Carbon and the everyday, affordable Hydrogen. Let's explore its architecture, performance in tests, and whether it's worth migrating your pipelines to it. Read more",
+    "title": "Gemini 4 Neon Released: The Golden Mean, According to Google"
+  },
   "https://habr.com/ru/companies/severstal/articles/1104690/?utm_campaign=1104690&utm_source=habrahabr&utm_medium=rss": {
     "model": "gemini-2.5-flash-lite",
     "published": "Fri, 06 Nov 2026 15:15:28 GMT",
@@ -7382,6 +7470,14 @@
     "source_url": "https://habr.com/ru/companies/simpleone/articles/1101630/?utm_campaign=1101630&utm_source=habrahabr&utm_medium=rss",
     "summary": "Neil Rackham's sales methodology is almost 40 years old, and sales have changed significantly during this time. With neural networks, gathering information about a client (what the company does, its turnover, how many salespeople it has) has become a matter of minutes. If, after this, you ask the client about something that is on their own website, they will be surprised at best, and at worst, they will laugh the salesperson out of the room. We spoke with a practitioner about which questions from the methodology still work in selling complex systems, and which ones should be left in the past. Read more",
     "title": "What Questions Became Inappropriate for Clients in the Age of Neural Networks: A Revision of Rackham's Sales Methodology"
+  },
+  "https://habr.com/ru/companies/simpleone/articles/1109878/?utm_campaign=1109878&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Thu, 19 Nov 2026 12:38:25 GMT",
+    "slug": "1109878",
+    "source_url": "https://habr.com/ru/companies/simpleone/articles/1109878/?utm_campaign=1109878&utm_source=habrahabr&utm_medium=rss",
+    "summary": "AI generates code in minutes, but teams might not see the promised acceleration. After generation, there's still verification, fixes, testing, and release, which developers spend hours on. According to a SimpleOne study, 83% of teams already use AI, but only 24% reported releasing changes made with its help into production systems. Let's explore what hinders AI code from reaching release, what questions development leads have, and what a task looks like where agents handle everything from requirements to deployment on a test stand. Read on.",
+    "title": "Code Generated, But Only 24% Reached Release. Examining Research Results"
   },
   "https://habr.com/ru/companies/smartengines/articles/1079702/?utm_campaign=1079702&utm_source=habrahabr&utm_medium=rss": {
     "model": "gemini-2.5-flash-lite",
@@ -7454,6 +7550,14 @@
     "source_url": "https://habr.com/ru/companies/smartengines/articles/1098368/?utm_campaign=1098368&utm_source=habrahabr&utm_medium=rss",
     "summary": "Fake documents have long ceased to be a one-off tool for fraudsters. Today they are used in schemes of illegal legalization, bank fraud, account hijacking, and the creation of entire fictitious identities. And generative AI has made such attacks more accessible and technologically advanced. Read more",
     "title": "Fraud with fake documents has become a systemic threat to business: Smart Engines weekly digest, report"
+  },
+  "https://habr.com/ru/companies/smartengines/articles/1110026/?utm_campaign=1110026&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Thu, 19 Nov 2026 16:40:36 GMT",
+    "slug": "1110026",
+    "source_url": "https://habr.com/ru/companies/smartengines/articles/1110026/?utm_campaign=1110026&utm_source=habrahabr&utm_medium=rss",
+    "summary": "Russian businesses may face a new charge for fraud prevention. According to Forbes, the government has supported a fee for accessing the Ministry of Internal Affairs databases – 50 rubles for each completed information exchange session. For companies with millions of clients, this is not a symbolic amount but a significant operational cost. This is not the first unpleasant surprise for businesses: in July 2023, the Ministry of Internal Affairs disabled the service for checking invalid passports, which companies had used for over seven years. Now, the focus is on the System of Interdepartmental Electronic Interaction (SMEV), through which banks and other organizations obtain information from state information systems. This article explores existing alternatives and whether businesses can do without requests to the Ministry of Internal Affairs.",
+    "title": "Businesses Will Be Obligated to Pay 50 Rubles for Each Request to the Ministry of Internal Affairs: How to Verify Client Passports Now"
   },
   "https://habr.com/ru/companies/sminex_developer/articles/1083860/?utm_campaign=1083860&utm_source=habrahabr&utm_medium=rss": {
     "model": "gemini-2.5-flash-lite",

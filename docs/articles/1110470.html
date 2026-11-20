@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>How a Mod for Claude Code Got 1000 Stars in Ten Days</title>
+  <meta name="description" content="A couple of weeks ago, I came across a colorful visualization of someone&#x27;s harness. I admired it for a few minutes and decided I wanted something similar for my own use case, but simpler. I immediately turned to my agent based on Claude Code with a request to draw how it itself visualizes its w">
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.65;
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 32px 20px 64px;
+      color: #1f2328;
+    }
+    header {
+      border-bottom: 1px solid #d8dee4;
+      margin-bottom: 28px;
+      padding-bottom: 20px;
+    }
+    .source {
+      color: #57606a;
+      font-size: 0.95rem;
+    }
+    img, video, iframe {
+      max-width: 100%;
+      height: auto;
+    }
+    pre {
+      overflow-x: auto;
+      padding: 16px;
+      background: #f6f8fa;
+      border-radius: 6px;
+    }
+    code {
+      font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+    }
+    blockquote {
+      border-left: 4px solid #d0d7de;
+      margin-left: 0;
+      padding-left: 16px;
+      color: #57606a;
+    }
+    footer {
+      border-top: 1px solid #d8dee4;
+      margin-top: 40px;
+      padding-top: 20px;
+      color: #57606a;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>How a Mod for Claude Code Got 1000 Stars in Ten Days</h1>
+    <p>A couple of weeks ago, I came across a colorful visualization of someone&#x27;s harness. I admired it for a few minutes and decided I wanted something similar for my own use case, but simpler. I immediately turned to my agent based on Claude Code with a request to draw how it itself visualizes its workflow. It drew a map: the model in the center, ten stations around it — files, terminal, network, memory, sub-agents, hooks, and so on. I invoked the tool — an impulse runs to the station. Below the map is a list of recent calls. I liked it. I decided to share. Read more</p>
+    <p class="source">
+      Machine-translated from Habr.
+      <a href="https://habr.com/ru/articles/1110470/?utm_campaign=1110470&amp;utm_source=habrahabr&amp;utm_medium=rss">Read the original Russian article</a>.
+      Fri, 20 Nov 2026 14:49:58 GMT
+    </p>
+  </header>
+  <main>
+<div><p>A couple of weeks ago, I came across a colorful visualization of someone's harness. I admired it for a few minutes and decided I wanted something similar for my own use case, but simpler.</p><p>I immediately turned to my agent based on Claude Code with a request to draw how it itself visualizes its workflow. It drew a map: the model in the center, ten stations around it — files, terminal, network, memory, sub-agents, hooks, and so on. I invoked the tool — an impulse runs to the station. Below the map is a list of recent calls.</p><p>I liked it. I decided to share.</p><figure><img loading="lazy" src="https://habrastorage.org/extt/48/d9/46/48d9464c659f41cd9470c1d3286cddb5.gif"/></figure><div><p>And then it took off.</p></div><h3>Ten Days in Numbers</h3><p>The first version was released on November 9th. I wrote a post on r/ClaudeAI with a video.</p><ul><li><p>On the night of November 11th — 100 stars</p></li><li><p>November 12th — 500</p></li><li><p>November 18th — 1000, on the tenth day</p></li></ul><p>On November 11th, fourteen versions were released in a single day. People wrote in the comments what they were missing, and almost every request became a new version. They asked to flip the map so that "you" were at the bottom — done. Asked for custom colors — done. Transparent background — done. Someone sent a fix for Windows paths, then Italian captions, then Portuguese.</p><figure><img loading="lazy" src="https://habrastorage.org/r/w1560/extt/4e/b3/c7/4eb3c75816be1d8c44644e20e2109e40.png"/></figure><div><p>Now it's version 0.12.0.</p></div><h3>What Was Added</h3><p>Briefly, without order:</p><ul><li><p>A ring around the center that shows how full the context is. It's praised in reviews more than anything else.</p></li><li><p>Route: a thin line between the last stations.</p></li><li><p>Background tasks remain on the map until they are completed.</p></li><li><p>Seven caption languages, with Italian and Portuguese contributed by users.</p></li><li><p>Scale buttons in VS Code, also contributed by users.</p></li><li><p>How many tokens each call added to the context.</p></li></ul><figure><img loading="lazy" src="https://habrastorage.org/r/w1560/extt/79/6b/bb/796bbb37912ef82e9573cef50813dc55.png"/></figure><h3>What Was Tried, Abandoned, and Reconsidered</h3><p>The main story here is the map in the terminal.</p><p>Claude Code's mod only allows drawing images within the application and VS Code. The terminal only showed text. On the second day after release, the first question came: where's the graphics?</p><figure><img loading="lazy" src="https://habrastorage.org/r/w1560/extt/7b/78/2c/7b782c586371784e30431c3ff6c77d96.png"/></figure><div><p>I tried it myself. A map made of characters, ten stations in a circle:</p></div><pre><code>                      ○ You 2
+           Hooks 2 ✕           ○ Model 14
+     Skills 1 ○                     ○ Memory 5
+               ( CLAUDE · opus 5.5 )
+       Agents ·                     ○ Files 9
+           Browser ·           ● Shell 6
+                    ○ Network 3
+</code><div><a href="https://sourcecraft.dev/"><span></span></a></div></pre><p>It turned out to be garbage. Seven lines of screen, no movement, and without movement, the map is pointless to look at. It didn't make it into the mod, remaining for a while as a separate branch for those who wanted something strange.</p><p>And then enthusiasts came with their own versions.</p><p>One submitted a pull request of 2000 lines: the mod itself draws the map in PNG and sends it to the terminal, frame by frame. It works in terminals that can display images. I asked for further development, and eventually it was accepted, released in 0.6.0.</p><figure><img loading="lazy" src="https://habrastorage.org/r/w1560/extt/a8/1c/db/a81cdb92b88fd3e45207d33c23017f68.png"/></figure><p>Another created a Braille map for terminals without graphics, like Windows Terminal. That was also accepted.</p><figure><img loading="lazy" src="https://habrastorage.org/r/w1560/extt/49/a9/83/49a98337896692e96b81a103646bd0d0.png"/></figure><p>Then the image managed to break and get fixed.</p><p>A few days after its release, someone wrote that they ran out of memory. We checked: iTerm2 grew from 286 MB to 17 GB in five minutes. The terminal stored every frame until the tab was closed. It was not possible to bypass this from the mod's side, and in 0.9.0, the image in iTerm2 was disabled.</p><p>I sent a report to the iTerm2 author. He fixed it the next day. In 0.12.0, the image was re-enabled, starting with iTerm2 3.7.8.</p><p>The second story is shorter. I decided to submit the mod to the Anthropic catalog. To pass automatic validation, I had to trim and add some things. The catalog did not accept mods with a hook for permission checks. In 0.4.0, the hook was removed, and with it, two lines on the map disappeared. In the end, after all checks and submitting the application, a rejection came: it turned out that this catalog only accepts mods from verified organizations and wouldn't take us anyway. In 0.5.0, the hook was restored.</p><p>The MP4 demo also went back and forth: it was removed from the repository, but links from outside pointed to it. It was put back.</p><h3>What Was Rejected</h3><p>Skins. They offered entire themes, steampunk and a night sky with comets. It looked beautiful. We didn't accept them: the map is needed to understand at a glance what the agent is doing, and with comets, it becomes mere decoration. Colors are customizable, so steampunk can be assembled without code.</p><p>Buttons on stations. They asked to be able to disable the network or terminal from the map. We refused immediately. The mod only observes and does not change anything, and all trust in it is based on this.</p><p>Layer for other agents. A pull request was submitted with an adapter for other hosts. We didn't accept it: no one ran the map in anything other than Claude Code, and we don't want to drag code for something that doesn't exist. The port is better off in a separate repository, and such repositories have already appeared.</p><h3>The Choice</h3><p>Requests pulled in two directions. We could have expanded into a universal mod with everything: switches, skins, other agents. Or remain a small visual add-on.</p><p>We remained small. On the fifth day, we formulated the main principles, there are six of them:</p><ol><li><p>The mod observes and does not change anything</p></li><li><p>Captions only show the name, no content</p></li><li><p>It costs almost nothing</p></li><li><p>A failure on the map does not affect the work</p></li><li><p>The map is calm</p></li><li><p>It works out of the box, and what you have configured remains</p></li></ol><p>Under each principle, it says which test protects it. For the first, there's a test that the event passes through exactly as it arrived. For the third, there are measurements with a time budget. Plus, the repository contains a list of everything the mod requests from Claude Code, and each pull request checks against it. Network, file reading, and process execution are not in this list.</p><p>There are also five questions that weigh any new idea. The first of them: does this require changing the event or refusing it? If yes, it's not for this mod.</p><p>The second principle was needed before it was written down. The mod receives the entire agent call: command line, paths, addresses with parameters. And the panel on the screen, the screen gets into screenshots. Therefore, from the command <code>curl</code> with a token in the header, only the word curl remains on the map; from the address, only the host. On the third day, a code reader found a way to record the address so that the password from it still ended up in the caption. It was fixed the same day.</p><figure><img loading="lazy" src="https://habrastorage.org/r/w1560/extt/93/cb/f1/93cbf1d02454472e77fb845dd63e7947.png"/></figure><h3>Reviews</h3><p>Since publication, several reviews have appeared in various specialized blogs.</p><p>In Japan, a video was made with a test: five tasks, forty calls, checking against the map every half second. All forty landed on the correct station. The target name appeared in thirty out of forty, and the output there is honest: the map provides an overview, but it doesn't replace the log.</p><p>In China, on CSDN, at least six articles have been published, one of them entirely about how the animation in SVG is implemented. The repository there has gained a mirror.</p><p>In Spain, the mod was run through a security scanner and ten of its triggers were manually analyzed. All ten turned out to be false positives: the scanner flagged words like curl and sudo in tests and comments.</p><h3>What Others Made From It</h3><p>Two took the code further. One created an overlay for Codex using the same drawing files. The second built their own panel and added what I don't have: a feed showing where the time of the move went. Both credited the source.</p><h3>Conclusion</h3><p>The mod is very simple, it does nothing, it just shows the current activity. Apparently, my agent turned out to be a genius, for such a thing to take off and be liked by people.</p><p>See it without installation: <a href="https://alexeyw.github.io/lot-map/">https://alexeyw.github.io/lot-map/</a> — there, in the browser, a fictional session runs on the actual mod code.</p><p>Repository: <a href="https://github.com/alexeyw/lot-map">https://github.com/alexeyw/lot-map</a></p></div>
+  </main>
+  <footer>
+    Translation generated with Gemini 2.5 Flash-Lite.
+    The original article remains the source of record.
+  </footer>
+</body>
+</html>

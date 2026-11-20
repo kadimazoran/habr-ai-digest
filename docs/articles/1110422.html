@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>411 comments in a pull request and other tasks we&#x27;ve handed over to AI</title>
+  <meta name="description" content="Hi, I&#x27;m Arina, a system analyst at YooMoney. AI has firmly entered our profession: it&#x27;s used for gathering information, analyzing code, preparing technical documentation, and reviewing solutions. But how can we integrate it into our work without wasting time on endless edits and losing our">
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.65;
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 32px 20px 64px;
+      color: #1f2328;
+    }
+    header {
+      border-bottom: 1px solid #d8dee4;
+      margin-bottom: 28px;
+      padding-bottom: 20px;
+    }
+    .source {
+      color: #57606a;
+      font-size: 0.95rem;
+    }
+    img, video, iframe {
+      max-width: 100%;
+      height: auto;
+    }
+    pre {
+      overflow-x: auto;
+      padding: 16px;
+      background: #f6f8fa;
+      border-radius: 6px;
+    }
+    code {
+      font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+    }
+    blockquote {
+      border-left: 4px solid #d0d7de;
+      margin-left: 0;
+      padding-left: 16px;
+      color: #57606a;
+    }
+    footer {
+      border-top: 1px solid #d8dee4;
+      margin-top: 40px;
+      padding-top: 20px;
+      color: #57606a;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>411 comments in a pull request and other tasks we&#x27;ve handed over to AI</h1>
+    <p>Hi, I&#x27;m Arina, a system analyst at YooMoney. AI has firmly entered our profession: it&#x27;s used for gathering information, analyzing code, preparing technical documentation, and reviewing solutions. But how can we integrate it into our work without wasting time on endless edits and losing our own expertise? We&#x27;ve moved beyond prompt experiments and started building an automation system based on AI agents. They assist at various stages, from gathering context to updating documentation. The analyst still makes the decisions and is responsible for the outcome. In this article, I&#x27;ll share my experience and practices of using AI agents in the daily tasks of a system analyst. The material will be primarily useful for colleagues in the profession: those who already use AI or are looking for scenarios for automation. Although we&#x27;ll be discussing system analyst tasks, many of the described practices will also be useful for team leads and business analysts. I&#x27;ll explain which tasks we delegate to agents, how we organize their work, and why it&#x27;s sometimes better to ask AI to argue with you rather than invent a solution for you. Read on</p>
+    <p class="source">
+      Machine-translated from Habr.
+      <a href="https://habr.com/ru/companies/yoomoney/articles/1110422/?utm_campaign=1110422&amp;utm_source=habrahabr&amp;utm_medium=rss">Read the original Russian article</a>.
+      Fri, 20 Nov 2026 17:01:11 GMT
+    </p>
+  </header>
+  <main>
+<div><p>Hi, I'm Arina, a system analyst at YooMoney. AI has firmly entered our profession: it's used for gathering information, analyzing code, preparing technical documentation, and reviewing solutions. But how can we integrate it into our work without wasting time on endless edits and losing our own expertise?</p><p>We've moved beyond prompt experiments and started building an automation system based on AI agents. They assist at various stages, from gathering context to updating documentation. The analyst still makes the decisions and is responsible for the outcome.</p><p>In this article, I'll share my experience and practices of using AI agents in the daily tasks of a system analyst. The material will be primarily useful for colleagues in the profession: those who already use AI or are looking for scenarios for automation. Although we'll be discussing system analyst tasks, many of the described practices will also be useful for team leads and business analysts. I'll explain which tasks we delegate to agents, how we organize their work, and why it's sometimes better to ask AI to argue with you rather than invent a solution for you.</p><h2>Don't start with a prompt. Start with a process</h2><p>The work of a system analyst rarely boils down to a sequential execution of clearly defined tasks. Usually, everything starts with a task in Jira containing product requirements. Sometimes these are enough to understand the direction of work, but more often, you need to clarify details, find context, communicate with related teams, and check if all scenarios are accounted for.</p><p>Our analyst's workflow consists of several stages:</p><figure><img loading="lazy" src="https://habrastorage.org/r/w1560/extt/6b/80/3d/6b803df34e9ed681fcee80b31ff2338b.png"/></figure><p>At each stage, there are tasks requiring expertise and tasks that can be formalized. An architectural decision cannot be made by an analyst, but checking a document for compliance with internal agreements, finding similar solutions in the project history, or preparing a draft technical description are quite realistic scenarios for automation. Therefore, we started with specific recurring tasks, not with the idea of implementing AI in all processes at once.</p><h2>From a chat to a working tool</h2><p>We use a corporate tool called OpenCode. It allows not only sending individual requests to the model but also building stable workflows with an agent. First, let's cover the key concepts:</p><ul><li><p><strong>Agent</strong> — an assistant that receives a task, accesses sources, processes information, and provides a result. For example, it studies the codebase and documentation, compares them, and prepares a draft of changes.</p></li><li><p><strong>Skill</strong> — an instruction for a specific task. If we regularly update a technical solution, it's enough to describe the procedure and sources once, and then the agent only needs to be told which document to check.</p></li><li><p><strong>Command</strong> — a quick way to launch a pre-prepared scenario. For example, to analyze changes in a commit and briefly describe them.</p></li><li><p><strong>Agents.md</strong> — a file with basic instructions and project context: system architecture, available resources, and operating rules. The agent doesn't need to gather this information anew with each request.</p></li></ul><p>As a result, instead of an endless dialogue with the neural network, we get a repeatable process that can be launched as needed. Now we need to figure out which tasks are worth automating.</p><h2>Where AI truly helps an analyst</h2><p>We create skills for different stages of work: some are already available to the team, and some are being tested. Tasks with clear rules and small contexts are best automated.</p><figure><img loading="lazy" src="https://habrastorage.org/r/w1560/extt/52/af/db/52afdb11aa92ce769132d972315f6b38.png"/></figure><p><strong>1. Find historical context: what we already know but forgot</strong><br/><br/>Before starting a new task, it's useful to check if we've done something similar before. Sometimes a project returns after several years. During this time, the code might have changed, processes might have been disabled, and solutions might only exist in discussion history.<br/><br/>Searching manually through Jira, documentation, and repositories is time-consuming. That's why we are developing a skill that collects historical context: past tasks, discussions, and the current implementation in the code. The analyst receives not a ready-made solution, but a starting point: what has been done, what are the limitations, and what needs to be checked.</p><p><strong>2. Use AI as an opponent, not the author of the solution</strong><br/><br/>This principle seems particularly important to me. At the design stage, we don't ask the agent to invent a solution from scratch: first, the analyst forms a hypothesis based on system knowledge and business context, and then tests its robustness with the help of AI.</p><p>The agent acts as a reviewer and asks questions that are easy to miss when working alone:</p><ul><li><p>What if the external system is unavailable?</p></li><li><p>What happens if the timeout is exceeded?</p></li><li><p>What alternatives have we not considered?</p></li><li><p>What edge cases have been left out of the main flow?</p></li></ul><p>This way, we get a different perspective on the task: the agent is not limited by our experience.</p><p><strong>3. Relieve the routine of formatting and initial verification of technical documentation</strong></p><p>Automation is particularly noticeable here. We work with Docs-as-Code: solutions are stored in repositories, changes are made via pull requests, and formatting adheres to agreements and templates.</p><figure><img loading="lazy" src="https://habrastorage.org/r/w1560/extt/03/8b/ec/038bec7c6b33515dc9cc976bac37abc8.png"/></figure><p>The agent knows the document structure, section requirements, and formatting rules, so it can:</p><ul><li><p>prepare a draft solution based on accumulated context;</p></li><li><p>check the document for compliance with agreements;</p></li><li><p>find typos, duplication, and logical gaps;</p></li><li><p>create a diagram from a description or text from a diagram.</p></li></ul><p>However, the generated document is not the final artifact: it is reviewed and refined by the analyst.</p><p><strong>4. Simplify review</strong><br/><br/>We sometimes have quite extensive technical solutions that go through several discussion stages. Once, within a pull request, we received 411 comments. And although this is more of an exceptional case, it clearly shows why even small process improvements can matter.</p><figure><img loading="lazy" src="https://habrastorage.org/r/w1560/extt/44/65/20/446520a9f223fb5d1d0c1880f63f69d8.png"/></figure><p>We created a skill that sorts reviewer comments. Some questions already have answers in the document, others require cross-referencing with the code, and some are genuinely open and could change the decision. The agent prepares draft responses, but the analyst publishes them and makes the decisions.<br/><br/><strong>5. Keep documentation up-to-date</strong><br/><br/>A familiar situation for analysts: a solution is approved, development is completed, but the documentation diverges from the actual implementation. During implementation, clarifications arise and names change, while the team has already moved on to the next project.</p><p>We have automated the entire process of updating documentation, leaving the final say to the analyst. The agent compares the technical solution with the code and tasks, identifies discrepancies, and provides a list to the analyst. The analyst confirms which changes actually need to be made, after which the agent updates the document. This way, the documentation reflects the current state of the system.</p><h2>If an agent can do so much, why is an analyst needed?</h2><p>This is a logical question when automating more and more tasks. AI creates documents, builds diagrams, analyzes code, and finds inconsistencies. What is the value of a system analyst then?</p><p>For me, it's in the responsibility for the result. The agent will suggest solution options, but the analyst chooses the appropriate one: they know the system context, implicit agreements, and business constraints. The analyst is also responsible for the quality of input data and verification of the result. The more tasks we delegate to AI, the more important the ability to evaluate its work becomes.</p><p>There's also a downside: if you rely too much on ready-made answers, you might stop understanding the details. Therefore, we use AI not to replace thinking, but to enhance it. Our main practice: first, we form our hypothesis, then we test it with the agent. This preserves expertise while reducing routine work. This helps maintain expertise while simultaneously reducing the routine workload.</p><h2>How not to turn automation into another job</h2><p>Creating an agent is only half the battle. It's important that it simplifies work, not adds complexity. During our experiments, we identified several principles.</p><ul><li><p><strong>Break down tasks into small iterations.</strong> One skill — one task. If it grows and performs multiple operations without intermediate checks, it's better to split it into separate scenarios.</p></li><li><p><strong>Record intermediate results.</strong> A project can last for weeks, and agreements can change during this time. We store key decisions, discussions, and the current status in the project's external memory. This way, we don't have to reconstruct context from an endless chat with each new session.</p></li><li><p><strong>Don't reinvent automation.</strong> If colleagues are solving similar tasks, their approaches should be combined. We store skills, commands, and instructions in a shared repository, divided by areas.</p></li></ul><p>Initially, everyone created tools for themselves. But it turned out to be more effective to test common scenarios on similar tasks, conduct reviews, and share proven solutions. This is how local experiments become common team practice.</p><h2>What's next?</h2><p>AI in system analysis is not a replacement for humans, but an opportunity to understand where expertise is needed and what can be accelerated. Without quality sources, clear rules, context, and manual verification, automation doesn't work.</p><p>The main thing is not how many tasks are automated, but how to make practices accessible to the entire team. I will talk about this, the skill system, working with context, and collaborative automation at YooMoneyDay — a free two-day conference by YooMoney. Registration is on the website.</a></p><p>What routine task would you automate first?</p></div>
+  </main>
+  <footer>
+    Translation generated with Gemini 2.5 Flash-Lite.
+    The original article remains the source of record.
+  </footer>
+</body>
+</html>

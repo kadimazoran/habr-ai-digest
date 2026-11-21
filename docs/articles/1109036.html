@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Gartner&#x27;s Hype Cycle is a Hegelian Triad. What Should an Engineer Do in the Trough of Disillusionment?</title>
+  <meta name="description" content="Continuing the series on the philosophy of technology. The initial article, the most interesting in my opinion: &quot;Blinding Algorithms, or a Monkey with a Grenade: Why We Need a Pressure Gauge, Not a Ban on AI.&quot; The second is about the decoupling of body, place, and action. The third is abou">
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.65;
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 32px 20px 64px;
+      color: #1f2328;
+    }
+    header {
+      border-bottom: 1px solid #d8dee4;
+      margin-bottom: 28px;
+      padding-bottom: 20px;
+    }
+    .source {
+      color: #57606a;
+      font-size: 0.95rem;
+    }
+    img, video, iframe {
+      max-width: 100%;
+      height: auto;
+    }
+    pre {
+      overflow-x: auto;
+      padding: 16px;
+      background: #f6f8fa;
+      border-radius: 6px;
+    }
+    code {
+      font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+    }
+    blockquote {
+      border-left: 4px solid #d0d7de;
+      margin-left: 0;
+      padding-left: 16px;
+      color: #57606a;
+    }
+    footer {
+      border-top: 1px solid #d8dee4;
+      margin-top: 40px;
+      padding-top: 20px;
+      color: #57606a;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Gartner&#x27;s Hype Cycle is a Hegelian Triad. What Should an Engineer Do in the Trough of Disillusionment?</h1>
+    <p>Continuing the series on the philosophy of technology. The initial article, the most interesting in my opinion: &quot;Blinding Algorithms, or a Monkey with a Grenade: Why We Need a Pressure Gauge, Not a Ban on AI.&quot; The second is about the decoupling of body, place, and action. The third is about another rupture: between what you want to see and what you are shown. This one—the fourth—is about the framework that encompasses all three. In any dispute about AI chat, two positions currently converge. The first: &#x27;Agents will replace juniors in a year, it&#x27;s just a matter of integration.&#x27; The second: &#x27;It&#x27;s a bubble, LLMs are a dead end, give me back deterministic code and common sense.&#x27; The arguments are usually fierce because each side is convinced they are arguing about facts. It&#x27;s not about facts. It&#x27;s about how any encounter between humans and new technology is structured, and it&#x27;s about two hundred years old. Both positions were formulated long before electricity, both have real foundations, and both are one-sided. And the curve that consulting uses to describe hype is not a marketing metaphor. It&#x27;s a Hegelian triad, redrawn on the axes of &#x27;expectations / time.&#x27; Next, I will show where this curve comes from, why the trough of disillusionment is structurally inevitable (and not due to investor stupidity), and what &#x27;synthesis&#x27; specifically means in engineering practice. Spoiler: it&#x27;s not a &#x27;balanced position.&#x27; 1. Two truths that don&#x27;t want to know about each other Thesis: technology liberates. The lineage is venerable. Thorstein Veblen, in the early 20th century, contrasted &#x27;industry&#x27; and &#x27;business&#x27;: engineers produce, owners extract. His project was straightforward to the point of naivety—an &#x27;engineers&#x27; strike,&#x27; paralyzing the old order and establishing a &#x27;council of technical specialists&#x27; to bring efficiency and abolish the idle class. The utopia didn&#x27;t materialize, but a moderate version did: Daniel Bell and Alvin Toffler&#x27;s post-industrial theory described a society where management separates from ownership, and human capital displaces others. And this position has a truth that technophobes systematically ignore. Lewis Mumford showed that during the transition from primitive times to ancient Eastern kingdoms, there were almost no breakthroughs in tools. The breakthrough was in the organization of activity—and it gave us cities, irrigation, and pyramids. Technology emancipates before technique does: the megamachine was assembled from people, not iron. A second, less obvious example. Marx, describing the horrors of machine production, notes that the machine made muscular strength redundant, paving the way for cheaper female and child labor. He sees only exploitation here. But the same fact has another side that he missed: women gained the ability to earn their own living. This isn&#x27;t &#x27;reducing unemployment&#x27;; it&#x27;s an economic prerequisite for equality that was impossible in a patriarchal agrarian family. The same process that is experienced as a catastrophe by one segment of society opens an escape from centuries of dependence for another. Read more</p>
+    <p class="source">
+      Machine-translated from Habr.
+      <a href="https://habr.com/ru/articles/1109036/?utm_campaign=1109036&amp;utm_source=habrahabr&amp;utm_medium=rss">Read the original Russian article</a>.
+      Sat, 21 Nov 2026 12:00:05 GMT
+    </p>
+  </header>
+  <main>
+<div><p>Continuing the series on the philosophy of technology. The initial article, the most interesting in my opinion: "Blinding Algorithms, or a Monkey with a Grenade: <a href="https://habr.com/ru/articles/1108650/">why we need a pressure gauge, not a ban on AI</a>," The second is about the decoupling of body, place, and action <a href="https://habr.com/ru/articles/1108646/">about the decoupling of body, place, and action</a>— the third—about another rupture: between what you want to see and what you are shown.* This one—the fourth, This one—is about the framework that encompasses all three.</p><p>In any dispute about AI chat, two positions currently converge. The first: "Agents will replace juniors in a year, it's just a matter of integration." The second: "It's a bubble, LLMs are a dead end, give me back deterministic code and common sense." The arguments are usually fierce because each side is convinced they are arguing about facts.</p><p>It's not about facts. It's about how any encounter between humans and new technology is structured, and it's about two hundred years old. Both positions were formulated long before electricity, both have real foundations, and both are one-sided. And the curve that consulting uses to describe hype is not a marketing metaphor. It's a Hegelian triad, redrawn on the axes of 'expectations / time.'</p><p>Next, I will show where this curve comes from, why the trough of disillusionment is structurally inevitable (and not due to investor stupidity), and what 'synthesis' specifically means in engineering practice. Spoiler: it's not a 'balanced position.'</p><h3>1. Two truths that don't want to know about each other</h3><h4>Thesis: technology liberates</h4><p>The lineage is venerable. Thorstein Veblen, in the early 20th century, contrasted 'industry' and 'business': engineers produce, owners extract. His project was straightforward to the point of naivety—an 'engineers' strike,' paralyzing the old order and establishing a 'council of technical specialists' to bring efficiency and abolish the idle class. The utopia didn't materialize, but a moderate version did: Daniel Bell and Alvin Toffler's post-industrial theory described a society where management separates from ownership, and human capital displaces others.</p><p>And this position has a truth that technophobes systematically ignore.</p><p>Lewis Mumford showed that during the transition from primitive times to ancient Eastern kingdoms, there were almost no breakthroughs in tools. The breakthrough was in the <strong>organization of activity</strong>—and it gave us cities, irrigation, and pyramids. Technology emancipates before technique does: the megamachine was assembled from people, not iron.</p><p>A second, less obvious example. Marx, describing the horrors of machine production, notes that the machine made muscular strength redundant, paving the way for cheaper female and child labor. He sees only exploitation here. But the same fact has another side that he missed: <strong>women gained the ability to earn their own living</strong>. This isn't 'reducing unemployment'; it's an economic prerequisite for equality that was impossible in a patriarchal agrarian family. The same process that is experienced as a catastrophe by one segment of society opens an escape from centuries of dependence for another.</p><p>Technocracy is right about the main point: technology truly removes coercion—from nature, necessity, or another's will. To deny this is to forget how people lived before.</p><h4>Antithesis: technology enslaves</h4><p>The lineage is no less venerable: Rousseau with his 'back to nature,' Ellul, Jaspers, Heidegger, and among the radicals—anarcho-primitivist John Zerzan.</p><p>Jaspers succinctly formulates it: "Technology has turned all existence into the action of a technical mechanism, the entire planet into a single factory."
+  </main>
+  <footer>
+    Translation generated with Gemini 2.5 Flash-Lite.
+    The original article remains the source of record.
+  </footer>
+</body>
+</html>

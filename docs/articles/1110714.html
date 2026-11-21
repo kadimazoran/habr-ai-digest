@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>The Whale Swam into the World of Agents: What Actually Changed in Docker After &quot;Run on Trust&quot;</title>
+  <meta name="description" content="Even Docker, which seemed like the eternal foundation under any project, is changing in the wake of AI. On November 19th, the company changed its whale and slogan, and the first screen of docker.com is now entirely about agents. Meanwhile, half of the products marked &quot;New&quot; were released ba">
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.65;
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 32px 20px 64px;
+      color: #1f2328;
+    }
+    header {
+      border-bottom: 1px solid #d8dee4;
+      margin-bottom: 28px;
+      padding-bottom: 20px;
+    }
+    .source {
+      color: #57606a;
+      font-size: 0.95rem;
+    }
+    img, video, iframe {
+      max-width: 100%;
+      height: auto;
+    }
+    pre {
+      overflow-x: auto;
+      padding: 16px;
+      background: #f6f8fa;
+      border-radius: 6px;
+    }
+    code {
+      font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+    }
+    blockquote {
+      border-left: 4px solid #d0d7de;
+      margin-left: 0;
+      padding-left: 16px;
+      color: #57606a;
+    }
+    footer {
+      border-top: 1px solid #d8dee4;
+      margin-top: 40px;
+      padding-top: 20px;
+      color: #57606a;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>The Whale Swam into the World of Agents: What Actually Changed in Docker After &quot;Run on Trust&quot;</h1>
+    <p>Even Docker, which seemed like the eternal foundation under any project, is changing in the wake of AI. On November 19th, the company changed its whale and slogan, and the first screen of docker.com is now entirely about agents. Meanwhile, half of the products marked &quot;New&quot; were released back in the summer. Let&#x27;s see what has actually changed, what you can install for free, and where the whale is swimming. Read more</p>
+    <p class="source">
+      Machine-translated from Habr.
+      <a href="https://habr.com/ru/articles/1110714/?utm_campaign=1110714&amp;utm_source=habrahabr&amp;utm_medium=rss">Read the original Russian article</a>.
+      Sat, 21 Nov 2026 16:11:26 GMT
+    </p>
+  </header>
+  <main>
+<div><p>On November 19th, Docker rebranded. The whale was redrawn, the corporate blue became a different blue, and the homepage now sports the slogan "Trust Docker for the agents you don’t." Loosely translated: you don't trust agents, so trust them to us.</p><p>I read the <a href="https://www.docker.com/blog/meet-the-new-docker-built-to-run-on-trust/">marketing director's post</a>, browsed the product menu and documentation, and initially intended to write that Docker had rolled out a bunch of new features for AI agents. Then I looked at the release dates.</p><figure><img alt="Find 10 differences: Moby before and after rebranding" loading="lazy" src="https://habrastorage.org/r/w1560/extt/c6/f6/4d/c6f64d0c10dc19b7e15ceaeda9009ff5.png"/><div><figcaption>Find 10 differences: Moby before and after rebranding</figcaption></div></figure><h3>What the Post Says</h3><p>Docker's Marketing Director, Tery Avnaim, explains the rebranding using AI agents as an example. If you give an agent a terminal, it will decide for itself which command to execute, which file to rewrite, and which service to access. Docker wants to sell an environment where you can pre-emptively restrict the agent's access to files and networks. Hence the new slogan, Run on Trust.</p><p>The word "trust" appears more than twenty times in the text. A separate paragraph is dedicated to containers: Docker promises to continue developing them. On the homepage, two words have been added to the familiar build, ship, run: "build, ship, and run on trust."</p><h3>What's on the Menu</h3><div><div><table><tbody><tr><th><p>Product</p></th><th><p>Marking on the site</p></th><th><p>When it actually appeared</p></th></tr><tr><td><p>Sandboxes</p></td><td><p>New</p></td><td><p>Discussed on <a href="https://news.ycombinator.com/item?id=49239751">Hacker News</a> back in the summer, cloud sandboxes <a href="https://www.docker.com/blog/introducing-cloud-sandboxes-start-on-your-laptop-finish-in-the-cloud/">were released on September 24th</a></p></td></tr><tr><td><p>AI Governance</p></td><td><p>New</p></td><td><p><a href="https://www.docker.com/blog/a-new-security-baseline-for-enterprise-agentic-adoption/">Already mentioned in July</a></p></td></tr><tr><td><p>MCP Enterprise Gateway</p></td><td><p>New</p></td><td><p>The open-source <a href="https://github.com/docker/mcp-gateway">MCP Gateway</a> was already in Docker Desktop</p></td></tr><tr><td><p>Hardened Images</p></td><td><p></p></td><td><p><a href="https://www.docker.com/press-release/docker-makes-hardened-images-free-open-and-transparent-for-everyone/">Free since December 17, 2025</a></p></td></tr><tr><td><p>Hub, Desktop, Offload</p></td><td><p></p></td><td><p>Old acquaintances</p></td></tr><tr><td><p>The "New" label is attached to three items. Docker has been releasing products for agents all year, and in November, they brought them to the forefront. The storefront clearly shows who they are selling to: developers are offered sandboxes, and companies are invited to discuss who will manage access and how.</p></td><td><p></p></td><td><p></p></td></tr></tbody></table></div></div><p>Next, we'll delve into Sandboxes: how to run an agent in a sandbox and what it will have access to. Then we'll return to the other products in the table.</p><h3>How Sandboxes Work</h3><p>A sandbox is an isolated environment where an agent can execute commands with limited access to your computer. Suppose you've tasked Claude Code with updating dependencies, and it decides to delete a folder and rebuild everything. If the agent runs directly on your laptop, its commands can affect anything it has access to. In a sandbox, you can give it a separate copy of the project. It can delete the folder there, and your working copy will remain untouched.</p><p>You can install the sandbox for free. According to the <a href="https://docs.docker.com/ai/sandboxes/faq/">FAQ</a>, the CLI and local sandboxes are free, including for commercial use.</p><p>Each sandbox runs in a separate microVM with its own kernel and Docker Engine. A regular container shares the kernel with the host, but here, a hypervisor sits between the agent and your machine: KVM on Linux or Windows Hypervisor Platform on Windows. To run it, you only need the separate CLI command <code>sbx</code>.</p><p>The launch looks like this:</p><pre><code>sbx login          # or codex, copilot, cursor, opencode...          sbx run claude          sbx run claude ~/project-a ~/shared-libs:ro          sbx run --clone claude .</code><div><a href="https://sourcecraft.dev/"><span></span></a></div></pre><p>By default, the current folder is mounted into the sandbox for writing. With the <code>--clone</code> flag, the agent operates in a separate clone of the repository. If the experiment goes wrong, you won't have to clean up the working copy on your laptop.</p><p>Claude Code starts with <code>--dangerously-skip-permissions</code> by default. It doesn't ask, "Can I delete this folder?" or "Allow me to run the test?" Therefore, it's important which folders you give the sandbox write access to: the agent can modify them directly on the host.</p><p>Keys work similarly to frontend requests: the browser sends a request to the backend, and the backend inserts the key. In the sandbox, the agent sees a placeholder <code>proxy-managed</code>. The token is stored on the host, and the proxy inserts it into the request header.</p><p>External access depends on the network policy. If the required domain is not in the allowed list, you can add it:</p><pre><code>sbx policy allow network registry.npmjs.org</code><div><a href="https://sourcecraft.dev/"><span></span></a></div></pre><p>On macOS, you need Apple silicon and Sonoma 14+; on Linux, Docker specifies Ubuntu 24.04+. You need to log in via <code>sbx login</code> to run. In the <a href="https://news.ycombinator.com/item?id=49239751">Hacker News thread</a>, there was a debate about account linking and the placeholder instead of a key. The agent cannot read the token. It can send requests where the proxy will insert this token. Where the request goes is determined by network rules.</p><figure><img alt="The agent asks before every rm. Delete, you are in a sandbox." loading="lazy" src="https://habrastorage.org/r/w1560/extt/47/68/ae/4768aec869f54d056649b4ad7dc7fec3.png"/><div><figcaption>The agent asks before every rm. Delete, you are in a sandbox.</figcaption></div></figure><h3>What Else is in the Table</h3><p>We've already covered Sandboxes. There are three more products in the table worth mentioning: AI Governance, MCP Enterprise Gateway, and Hardened Images.</p><ul><li><p>AI Governance is a console where the platform team distributes policies to agents across the entire company: which domains are open, which folders can be mounted, and which MCP tools are allowed to be called. Audit events are sent to Splunk, Datadog, or Grafana. The price field shows "Custom," and if the organization enables centralized management, the developer's local permissions cease to apply.</p></li><li><p>MCP Enterprise Gateway is a gateway that authenticates users via corporate SSO, determines which MCP servers they are entitled to, and automatically inserts credentials when calling a tool. Again, there's no price tag, only a "Talk to sales" button. For personal use, the open-source MCP Gateway under an MIT license, already integrated into Docker Desktop, is sufficient.</p></li><li><p>Hardened Images have long been free in their basic version: over a thousand stripped-down images based on Debian and Alpine under Apache 2.0. Paid versions add FIPS-compliant images, guarantees on vulnerability fix timelines, and extended support.</p></li></ul><p>Paid tools become useful when hundreds of employees are running agents, and someone needs to report on it to the security department.</p><h3>Why Docker is Doing This</h3><p>Since 2025, the company has been led by Don Johnson, who previously built Oracle's cloud. After his arrival, <a href="https://www.techtarget.com/searchsoftwarequality/news/366619297/Docker-Inc-CEO-swap-has-analysts-anticipating-a-sale">analysts began discussing a potential sale of the business</a>; Docker has not commented on this.</p><p>Anyone can run containers today: Podman, containerd, OrbStack, any cloud provider. It's hard to imagine the company growing significantly on just <code>docker run</code> alone. However, security departments now have a new question: "How do we give an agent a terminal without losing production?" Docker has been selling code isolation tools for over a decade, so this move is understandable.</p><p>In the Hacker News thread about the rebranding, I saw eight upvotes and one comment: "vacuous." On Lemmy, people asked where containers had gone from the homepage. Meanwhile, a summer thread about Sandboxes themselves garnered nearly 700 upvotes and 400 comments. People are interested in sandboxes, but apparently not the new logo.</p><h3>What's Next</h3><p>The engine, images, and <code>docker compose up</code> are not going anywhere. But there's almost nothing about containers on the docker.com homepage anymore; the first screen is entirely about agents.</p><p>Docker used to feel like a foundation. It wasn't chosen; it was just there in every README and every CI. We thought the company would remain a container company, but it has followed where the money and attention have gone – into AI. If even Docker is rewriting its primary message about itself, it's strange to expect familiar tools to remain unchanged.</p><p>This week, I'll install <code>sbx</code> and work with Claude Code on my projects. I'll see if it's convenient for daily use or if the sandbox is more of a hindrance than a help. I'll report on the results.</p><p>I'm still unsure if Docker has found a new purpose or is simply riding the hype wave and will repaint its storefront again in a couple of years. I'm also curious which tool from the familiar stack will reinvent itself next.</p></div>
+  </main>
+  <footer>
+    Translation generated with Gemini 2.5 Flash-Lite.
+    The original article remains the source of record.
+  </footer>
+</body>
+</html>

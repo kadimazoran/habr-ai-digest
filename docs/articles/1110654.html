@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Hate for vibe coders, or how I made my first video downloader and cutter app without knowing code</title>
+  <meta name="description" content="I haven&#x27;t written a single line of code in my life and don&#x27;t understand programming at all, but I&#x27;ve been working with video and motion design for many years and have a good understanding of UI/UX. In the era of &quot;vibe coding,&quot; I decided to build a working tool for my own dai">
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.65;
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 32px 20px 64px;
+      color: #1f2328;
+    }
+    header {
+      border-bottom: 1px solid #d8dee4;
+      margin-bottom: 28px;
+      padding-bottom: 20px;
+    }
+    .source {
+      color: #57606a;
+      font-size: 0.95rem;
+    }
+    img, video, iframe {
+      max-width: 100%;
+      height: auto;
+    }
+    pre {
+      overflow-x: auto;
+      padding: 16px;
+      background: #f6f8fa;
+      border-radius: 6px;
+    }
+    code {
+      font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+    }
+    blockquote {
+      border-left: 4px solid #d0d7de;
+      margin-left: 0;
+      padding-left: 16px;
+      color: #57606a;
+    }
+    footer {
+      border-top: 1px solid #d8dee4;
+      margin-top: 40px;
+      padding-top: 20px;
+      color: #57606a;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Hate for vibe coders, or how I made my first video downloader and cutter app without knowing code</h1>
+    <p>I haven&#x27;t written a single line of code in my life and don&#x27;t understand programming at all, but I&#x27;ve been working with video and motion design for many years and have a good understanding of UI/UX. In the era of &quot;vibe coding,&quot; I decided to build a working tool for my own daily pain point – downloading source files and references from YouTube, social media, and various websites. Read more</p>
+    <p class="source">
+      Machine-translated from Habr.
+      <a href="https://habr.com/ru/articles/1110654/?utm_campaign=1110654&amp;utm_source=habrahabr&amp;utm_medium=rss">Read the original Russian article</a>.
+      Sat, 21 Nov 2026 12:00:06 GMT
+    </p>
+  </header>
+  <main>
+<div><p>I haven't written a single line of code in my life and don't understand programming at all, but I've been working with video and motion design for many years and have a good understanding of UI/UX. In the era of "vibe coding," I decided to build a working tool for my own daily pain point – downloading source files and references from YouTube, social media, and various websites.</p><p>Anyone who constantly edits videos knows the catch. Free websites from the first page of search results and numerous Telegram bots in the spirit of "download from YouTube for free" either don't let you download above 720p, or force you to watch ads and subscribe to a dozen spam channels. Desktop programs require paid subscriptions, periodically crash, but most importantly – they are incredibly inconvenient when you don't need the whole video, but just a small fragment.</p><p>In short, I decided to make my own video downloader – and not just a downloader, but an ideal one for myself. And before you write in the comments "hundreds of such wrappers for yt-dlp are created every day," I'll say right away: my project has a special feature, which is why it was all conceived. I used Antigravity (mainly the Argon model) for development.</p><h3>The Ideal Application and How It Should Work</h3><p>I immediately had a clear picture in my head of how it should look:</p><ul><li><p>No copying links to separate windows and no re-entering your accounts in the built-in browsers of third-party programs. Just watch a video in your Chrome, click a button – and download.</p></li><li><p><strong>Killer feature – cutting the desired fragment directly on the native timeline of the player.</strong> Switch modes, and two sliders appear directly over the YouTube progress bar (or any other site). Move them with your mouse over the live video, see the actual frames, and get the finished piece in the desired resolution up to 4K 60 fps. I haven't encountered anything like this in any application before.</p></li></ul><p>When I described this idea to the neural network and asked if it was even possible to do something like this, the first technical limitation became apparent. A regular browser extension can see the page and the player perfectly, but it cannot, by itself, combine video and audio in high quality (on YouTube, everything above 720p is in separate tracks) and cannot quickly cut heavy videos frame by frame. However, free console utilities like yt-dlp and FFmpeg can do this perfectly – but they cannot see the open browser tab and the sliders on the player.</p><p>Therefore, the neural network suggested dividing the application into two parts that communicate with each other. The first part is the browser extension itself: it finds the video on the page, displays a compact window with quality buttons, and places the start and end sliders directly on the player's progress bar. The second part is a small local helper script on the computer: it receives the link, selected quality, and timecodes from the extension, launches yt-dlp and FFmpeg, combines or cuts the video, and sends the finished file back to the browser's standard save window. And so that the user doesn't have to configure all this manually, we added a simple installer, install.bat, which, upon first launch, downloads the necessary components from official websites and links them with all Chromium-based browsers (Chrome, Yandex Browser, Edge, Brave, Opera, Vivaldi).</p><p>It took me about ten prompts to even understand how this connection works, and then the neural network provided a working prototype for YouTube. I launched it, moved the sliders directly on the player – and a couple of seconds later, I had the exact cut piece in 1080p with sound on my disk.</p><figure><img alt=
+  </main>
+  <footer>
+    Translation generated with Gemini 2.5 Flash-Lite.
+    The original article remains the source of record.
+  </footer>
+</body>
+</html>

@@ -7,6 +7,14 @@
     "summary": "The modern concept of work, rooted in the Industrial Revolution, shifted the role of creator from human to machine, redefining the worker from a master of their craft to an operator of machine labor. Machines now perform most tasks, yet humans remain bound as appendages, forced to work at machine pace and within machine constraints. This is the antithesis of free, motivated, and meaningful work that truly defines humanity. The industrial concept of the 'worker' is dehumanizing; one is either human or a worker. The solution isn't regression, but completing the industrial revolution through automation, with AI serving as the thinking appendage to mechanisms. This is precisely why AI was invented.",
     "title": "The AI Labor Revolution: From Machine-Centric to Human-Centric Division of Labor"
   },
+  "https://habr.com/ru/articles/1017134/?utm_campaign=1017134&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Sat, 21 Nov 2026 12:20:15 GMT",
+    "slug": "1017134",
+    "source_url": "https://habr.com/ru/articles/1017134/?utm_campaign=1017134&utm_source=habrahabr&utm_medium=rss",
+    "summary": "As AI develops and is predicted to gain consciousness, self-control systems, including ethical ones, become crucial, especially in its early stages. This article explores the concept of conscience as a fundamental self-control mechanism, drawing parallels with biological immunity and operating system processes to understand its potential implementation in AI.",
+    "title": "The Natural Conscience of Artificial Intelligence"
+  },
   "https://habr.com/ru/articles/1067612/?utm_campaign=1067612&utm_source=habrahabr&utm_medium=rss": {
     "model": "gemini-2.5-flash-lite",
     "published": "Fri, 11 Sep 2026 12:46:48 GMT",
@@ -1262,6 +1270,14 @@
     "source_url": "https://habr.com/ru/articles/1084270/?utm_campaign=1084270&utm_source=habrahabr&utm_medium=rss",
     "summary": "This week on Habr, there was a debate about whether programmers need the smartest models or if cheaper ones are sufficient for routine tasks. Three hundred comments and not a single benchmark on identical tasks. I did it: five routine tasks, four models from the same family, two runs each, hidden tests. Forty runs in total. The most expensive model turned out to be the fastest: 341 seconds compared to 395 for the cheapest, because it needed fewer turns and half the text. Four out of five tasks were solved by all models, 32 out of 32 runs. On the fifth task, the junior model wrote a bug and reported it with two consecutive checkmarks, the second of which contradicts the first. Read more",
     "title": "Do We Need a Smart Model for Routine Tasks? I Gave Five Identical Tasks to Four Models and Compared Them"
+  },
+  "https://habr.com/ru/articles/1084308/?utm_campaign=1084308&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Sat, 21 Nov 2026 10:43:59 GMT",
+    "slug": "1084308",
+    "source_url": "https://habr.com/ru/articles/1084308/?utm_campaign=1084308&utm_source=habrahabr&utm_medium=rss",
+    "summary": "The project repository contains 203 kilobytes of prompts, which is about a third of the total PHP code. However, there are no prompts directly in the code; they are all YAML files that undergo review, versioning, and release. This article breaks down the structure of such a file and explains why the unit of storage is not just text, but the entire capability: provider, model, generation parameters, and templates for each language. It also covers non-obvious aspects: why user data is substituted after template rendering rather than within it, why models need aliases, how to degrade through three levels of JSON schema support, and what can actually be tested in a non-deterministic environment. Read on.",
+    "title": "Prompt is not a string, but a template"
   },
   "https://habr.com/ru/articles/1084578/?utm_campaign=1084578&utm_source=habrahabr&utm_medium=rss": {
     "model": "gemini-2.5-flash-lite",
@@ -5247,6 +5263,14 @@
     "summary": "I've been writing API autotests for a long time, and in recent months, I've been reviewing tests written not by humans, but by an IDE agent. They write quickly and accurately. The problem is different: such a test often verifies not a requirement, but how the API responds right now. It's stable, green, and cements a bug instead of catching it. In the article, I'll analyze a typical draft test for order refunds: what's wrong with it, how to spot it during a review, and what a trustworthy test looks like. The code is in pytest, but the ideas are language-agnostic. Read on",
     "title": "AI tests are green, but the refund doesn't work: analyzing and fixing a draft API autotest"
   },
+  "https://habr.com/ru/articles/1109036/?utm_campaign=1109036&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Sat, 21 Nov 2026 12:00:05 GMT",
+    "slug": "1109036",
+    "source_url": "https://habr.com/ru/articles/1109036/?utm_campaign=1109036&utm_source=habrahabr&utm_medium=rss",
+    "summary": "Continuing the series on the philosophy of technology. The initial article, the most interesting in my opinion: \"Blinding Algorithms, or a Monkey with a Grenade: Why We Need a Pressure Gauge, Not a Ban on AI.\" The second is about the decoupling of body, place, and action. The third is about another rupture: between what you want to see and what you are shown. This one—the fourth—is about the framework that encompasses all three. In any dispute about AI chat, two positions currently converge. The first: 'Agents will replace juniors in a year, it's just a matter of integration.' The second: 'It's a bubble, LLMs are a dead end, give me back deterministic code and common sense.' The arguments are usually fierce because each side is convinced they are arguing about facts. It's not about facts. It's about how any encounter between humans and new technology is structured, and it's about two hundred years old. Both positions were formulated long before electricity, both have real foundations, and both are one-sided. And the curve that consulting uses to describe hype is not a marketing metaphor. It's a Hegelian triad, redrawn on the axes of 'expectations / time.' Next, I will show where this curve comes from, why the trough of disillusionment is structurally inevitable (and not due to investor stupidity), and what 'synthesis' specifically means in engineering practice. Spoiler: it's not a 'balanced position.' 1. Two truths that don't want to know about each other Thesis: technology liberates. The lineage is venerable. Thorstein Veblen, in the early 20th century, contrasted 'industry' and 'business': engineers produce, owners extract. His project was straightforward to the point of naivety—an 'engineers' strike,' paralyzing the old order and establishing a 'council of technical specialists' to bring efficiency and abolish the idle class. The utopia didn't materialize, but a moderate version did: Daniel Bell and Alvin Toffler's post-industrial theory described a society where management separates from ownership, and human capital displaces others. And this position has a truth that technophobes systematically ignore. Lewis Mumford showed that during the transition from primitive times to ancient Eastern kingdoms, there were almost no breakthroughs in tools. The breakthrough was in the organization of activity—and it gave us cities, irrigation, and pyramids. Technology emancipates before technique does: the megamachine was assembled from people, not iron. A second, less obvious example. Marx, describing the horrors of machine production, notes that the machine made muscular strength redundant, paving the way for cheaper female and child labor. He sees only exploitation here. But the same fact has another side that he missed: women gained the ability to earn their own living. This isn't 'reducing unemployment'; it's an economic prerequisite for equality that was impossible in a patriarchal agrarian family. The same process that is experienced as a catastrophe by one segment of society opens an escape from centuries of dependence for another. Read more",
+    "title": "Gartner's Hype Cycle is a Hegelian Triad. What Should an Engineer Do in the Trough of Disillusionment?"
+  },
   "https://habr.com/ru/articles/1109386/?utm_campaign=1109386&utm_source=habrahabr&utm_medium=rss": {
     "model": "gemini-2.5-flash-lite",
     "published": "Wed, 18 Nov 2026 12:00:42 GMT",
@@ -5414,6 +5438,94 @@
     "source_url": "https://habr.com/ru/articles/1110482/?utm_campaign=1110482&utm_source=habrahabr&utm_medium=rss",
     "summary": "Anthropic's AI model Claude has reportedly solved two long-standing problems in theoretical physics related to black holes. The solutions, published in two preprints, could aid in the search for a quantum theory of gravity. The research began with an unusual experiment where Claude was tasked with identifying unsolved problems, proposing 22. Multiple instances of Claude then worked in parallel for six weeks, exchanging results and verifying calculations. For the first problem, calculations were performed in two independent ways. For the second, results were further verified using the Lean formal verification system. Both studies leverage the holographic duality principle, which suggests that some gravitational theories can be described by non-gravitational quantum theories on their boundaries. The first problem concerns the Hawking-Page transition, a 1983 phenomenon where a gas of particles in anti-de Sitter space transitions to a black hole state, akin to a phase transition. The AI confirmed this transition remains sharp even in the quantum regime where spacetime geometry is not well-defined. The second problem involved modular bootstrap, a method for testing the consistency of quantum gravity theories. Claude identified a pattern in numerical results, leading to an analytical derivation of a precise bound for a key characteristic, improving upon previous estimates.",
     "title": "AI Claude Solves Two Long-Standing Black Hole Physics Problems"
+  },
+  "https://habr.com/ru/articles/1110632/?utm_campaign=1110632&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Sat, 21 Nov 2026 10:36:07 GMT",
+    "slug": "1110632",
+    "source_url": "https://habr.com/ru/articles/1110632/?utm_campaign=1110632&utm_source=habrahabr&utm_medium=rss",
+    "summary": "Whitelists and autostart checkboxes in Android VPN clients create a false sense of security. Force-stop the client, and the next request silently goes through your home IP. This is a minor issue for YouTube but can lead to a permanent ban without a refund for a $200 Claude Max subscription. The problem isn't flawed client implementations but an Android limitation: split tunneling is incompatible with the system kill-switch. This article demonstrates where traffic leaks, why the DNS + SNI proxy combination fails on smartphones, and how to achieve complete isolation for neural networks. Read on.",
+    "title": "Why Split Tunneling in Android Clients Leaks"
+  },
+  "https://habr.com/ru/articles/1110646/?utm_campaign=1110646&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Sat, 21 Nov 2026 11:57:04 GMT",
+    "slug": "1110646",
+    "source_url": "https://habr.com/ru/articles/1110646/?utm_campaign=1110646&utm_source=habrahabr&utm_medium=rss",
+    "summary": "Startup Osmo is building the world's first \"foundation model\" for scent recognition. Researchers then plan to train neural networks to create new scents based on text prompts. Read more",
+    "title": "Startup Teaches Neural Networks to Understand and Create Scents on Demand"
+  },
+  "https://habr.com/ru/articles/1110650/?utm_campaign=1110650&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Sat, 21 Nov 2026 11:52:11 GMT",
+    "slug": "1110650",
+    "source_url": "https://habr.com/ru/articles/1110650/?utm_campaign=1110650&utm_source=habrahabr&utm_medium=rss",
+    "summary": "Model Context Protocol (MCP) allows an agent like Claude Code or Cursor to call external tools. I'm dissecting a small MCP server in pure Node.js without an SDK over an existing REST API: stdio transport, errors via isError, annotations for dangerous tools, protection against model \"corrections\", partial success in batch operations, and images in responses. Read more",
+    "title": "MCP server over its own REST API without SDK: what the model sees and where it breaks data"
+  },
+  "https://habr.com/ru/articles/1110654/?utm_campaign=1110654&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Sat, 21 Nov 2026 12:00:06 GMT",
+    "slug": "1110654",
+    "source_url": "https://habr.com/ru/articles/1110654/?utm_campaign=1110654&utm_source=habrahabr&utm_medium=rss",
+    "summary": "I haven't written a single line of code in my life and don't understand programming at all, but I've been working with video and motion design for many years and have a good understanding of UI/UX. In the era of \"vibe coding,\" I decided to build a working tool for my own daily pain point – downloading source files and references from YouTube, social media, and various websites. Read more",
+    "title": "Hate for vibe coders, or how I made my first video downloader and cutter app without knowing code"
+  },
+  "https://habr.com/ru/articles/1110656/?utm_campaign=1110656&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Sat, 21 Nov 2026 12:11:16 GMT",
+    "slug": "1110656",
+    "source_url": "https://habr.com/ru/articles/1110656/?utm_campaign=1110656&utm_source=habrahabr&utm_medium=rss",
+    "summary": "A simple idea: have Claude sequentially install over 900 popular applications on a \"clean\" macOS virtual machine (several versions). Then, during use, analyze what junk these programs leave behind. Read more",
+    "title": "Forget about paid cleaners for MacOS"
+  },
+  "https://habr.com/ru/articles/1110658/?utm_campaign=1110658&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Sat, 21 Nov 2026 12:19:48 GMT",
+    "slug": "1110658",
+    "source_url": "https://habr.com/ru/articles/1110658/?utm_campaign=1110658&utm_source=habrahabr&utm_medium=rss",
+    "summary": "I'm a 22-year-old AI/ML engineer and researcher. My projects grew, and context started to crumble. The standard advice is to use LangChain with OpenAI API and Pinecone, but I don't have money for API calls, and I didn't want to drag heavy frameworks for simple file search. So, I decided to build a fully local solution: no paid keys, no cloud vector DBs, just CPU and SQLite. Here's a breakdown of how it works, the pitfalls I encountered, and why classic RAG is useful for something different than tutorials suggest.",
+    "title": "How I Stopped Paying for Tokens and Built a Local RAG on 72,000 Chunks in SQLite"
+  },
+  "https://habr.com/ru/articles/1110668/?utm_campaign=1110668&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Sat, 21 Nov 2026 13:04:14 GMT",
+    "slug": "1110668",
+    "source_url": "https://habr.com/ru/articles/1110668/?utm_campaign=1110668&utm_source=habrahabr&utm_medium=rss",
+    "summary": "I used to constantly check on my AI agents, like a nervous tic. With one agent, it was simple: give a task, discuss, review code. But with multiple parallel sessions, I found myself acting as a dispatcher, moving context between planning and implementation, explaining things to reviewers. Agents took over the coding but turned me into a manager: responding to this one, watching that one, waiting for another. If left unsupervised, they could get stuck in loops or endless review cycles. I realized I was recreating the same inefficient handoffs I'd tried to eliminate in human development. The key is to separate roles only where it's beneficial and ensure context flows smoothly without my constant intervention. For example, separating verification from implementation is useful when errors are costly, like in the evaluator-optimizer pattern where one AI checks another's work. A large context window doesn't solve the problem of AI losing details or getting stuck; separate reviewers with clear criteria and diffs work better. I explored various agent orchestration tools, finding many to be rushed and unreliable. I settled on Multica for development, OpenBot for personal tasks, and Paseo as a backup. The main benefit has been reclaiming my time and attention, no longer needing to constantly monitor the agents. The focus should be on how much time and attention we gain back, not just how many agents are running.",
+    "title": "How I Stopped Being a Dispatcher for My AI Agents"
+  },
+  "https://habr.com/ru/articles/1110674/?utm_campaign=1110674&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Sat, 21 Nov 2026 13:00:26 GMT",
+    "slug": "1110674",
+    "source_url": "https://habr.com/ru/articles/1110674/?utm_campaign=1110674&utm_source=habrahabr&utm_medium=rss",
+    "summary": "LLMs are advancing, and top executives are talking about widespread AI adoption, increased productivity, accelerated processes, and staff reductions. Futurologists confidently predict mass unemployment, civilizational crisis, and the global extinction of humanity (spiritual, cognitive, and physical). I'm not ready to look that far ahead or that deep, so I've wondered who should fear LLMs and why. This article is about AI, corporations, and their employees. Read more",
+    "title": "Who will LLMs replace?"
+  },
+  "https://habr.com/ru/articles/1110692/?utm_campaign=1110692&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Sat, 21 Nov 2026 13:49:12 GMT",
+    "slug": "1110692",
+    "source_url": "https://habr.com/ru/articles/1110692/?utm_campaign=1110692&utm_source=habrahabr&utm_medium=rss",
+    "summary": "A week ago, I would have laughed in the face of anyone who said I'd be praising Google's neural network. The market had long since shrunk to Opus 5.5 at the top and endless arguments with ChatGPT at the bottom. And then Gemini 4 Neon came out: a \"mid-tier\" model that understands tasks with half a word, fixes bugs in others' MCP adapters itself, and finds server performance bottlenecks that have been sought for three weeks. I'll tell you why there's silence around the release, what Google just fixed in the Antigravity cache, and where Neon's weak spots lie. See tests and numbers",
+    "title": "Gemini 4 Neon has caught up to Opus 5.5, but almost no one noticed the release"
+  },
+  "https://habr.com/ru/articles/1110714/?utm_campaign=1110714&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Sat, 21 Nov 2026 16:11:26 GMT",
+    "slug": "1110714",
+    "source_url": "https://habr.com/ru/articles/1110714/?utm_campaign=1110714&utm_source=habrahabr&utm_medium=rss",
+    "summary": "Even Docker, which seemed like the eternal foundation under any project, is changing in the wake of AI. On November 19th, the company changed its whale and slogan, and the first screen of docker.com is now entirely about agents. Meanwhile, half of the products marked \"New\" were released back in the summer. Let's see what has actually changed, what you can install for free, and where the whale is swimming. Read more",
+    "title": "The Whale Swam into the World of Agents: What Actually Changed in Docker After \"Run on Trust\""
+  },
+  "https://habr.com/ru/articles/1110726/?utm_campaign=1110726&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Sat, 21 Nov 2026 15:41:21 GMT",
+    "slug": "1110726",
+    "source_url": "https://habr.com/ru/articles/1110726/?utm_campaign=1110726&utm_source=habrahabr&utm_medium=rss",
+    "summary": "Developer Rich Acosta, in collaboration with Claude, has introduced the open-source project ClawDOS (solution website). This is an AI agent for writing code in the DOS environment. Read more",
+    "title": "ClawDOS Introduced — An AI Agent for Writing Code in DOS"
   },
   "https://habr.com/ru/companies/1c/articles/1071340/?utm_campaign=1071340&utm_source=habrahabr&utm_medium=rss": {
     "model": "gemini-2.5-flash-lite",
@@ -6702,6 +6814,14 @@
     "source_url": "https://habr.com/ru/companies/otus/articles/1101862/?utm_campaign=1101862&utm_source=habrahabr&utm_medium=rss",
     "summary": "Artificial intelligence has made writing code cheap and, in the process, subtly deprived my team of three things that held everything together. Now, managing a team is harder than before AI. In this article, I'll explain exactly what went wrong. Understand the topic",
     "title": "[Translation] What AI Has Subtly Broken in My Development Team"
+  },
+  "https://habr.com/ru/companies/otus/articles/1106704/?utm_campaign=1106704&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Sat, 21 Nov 2026 13:12:10 GMT",
+    "slug": "1106704",
+    "source_url": "https://habr.com/ru/companies/otus/articles/1106704/?utm_campaign=1106704&utm_source=habrahabr&utm_medium=rss",
+    "summary": "The task seemed quite simple: fine-tune Qwen3-0.6B to answer questions based on text snippets found through semantic search. But initial experiments had the opposite effect: the model started to make up details more often, even though the validation loss continued to decrease. Four versions of the training data helped to understand why this was happening and how to reduce hallucinations by threefold, albeit at the cost of more frequent refusals to answer. See the results",
+    "title": "[Translation] Fine-tuning a Small Language Model on a Mac for RAG in the Browser"
   },
   "https://habr.com/ru/companies/ozontech/articles/1094882/?utm_campaign=1094882&utm_source=habrahabr&utm_medium=rss": {
     "model": "gemini-2.5-flash-lite",

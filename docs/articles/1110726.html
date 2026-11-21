@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>ClawDOS Introduced — An AI Agent for Writing Code in DOS</title>
+  <meta name="description" content="Developer Rich Acosta, in collaboration with Claude, has introduced the open-source project ClawDOS (solution website). This is an AI agent for writing code in the DOS environment. Read more">
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.65;
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 32px 20px 64px;
+      color: #1f2328;
+    }
+    header {
+      border-bottom: 1px solid #d8dee4;
+      margin-bottom: 28px;
+      padding-bottom: 20px;
+    }
+    .source {
+      color: #57606a;
+      font-size: 0.95rem;
+    }
+    img, video, iframe {
+      max-width: 100%;
+      height: auto;
+    }
+    pre {
+      overflow-x: auto;
+      padding: 16px;
+      background: #f6f8fa;
+      border-radius: 6px;
+    }
+    code {
+      font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+    }
+    blockquote {
+      border-left: 4px solid #d0d7de;
+      margin-left: 0;
+      padding-left: 16px;
+      color: #57606a;
+    }
+    footer {
+      border-top: 1px solid #d8dee4;
+      margin-top: 40px;
+      padding-top: 20px;
+      color: #57606a;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>ClawDOS Introduced — An AI Agent for Writing Code in DOS</h1>
+    <p>Developer Rich Acosta, in collaboration with Claude, has introduced the open-source project ClawDOS (solution website). This is an AI agent for writing code in the DOS environment. Read more</p>
+    <p class="source">
+      Machine-translated from Habr.
+      <a href="https://habr.com/ru/articles/1110726/?utm_campaign=1110726&amp;utm_source=habrahabr&amp;utm_medium=rss">Read the original Russian article</a>.
+      Sat, 21 Nov 2026 15:41:21 GMT
+    </p>
+  </header>
+  <main>
+<div><figure><img alt="Screenshot taken on an IBM PC 5160 (4.77 MHz clock speed), emulated in 86Box. Interaction occurs with a real API." loading="lazy" src="https://habrastorage.org/r/w1560/extt/f5/35/ad/f535ad257158aa049c58c921e13b30e9.png" title="Screenshot taken on an IBM PC 5160 (4.77 MHz clock speed), emulated in 86Box. Interaction occurs with a real API."/><div><figcaption>Screenshot taken on an IBM PC 5160 (4.77 MHz clock speed), emulated in 86Box. Interaction occurs with a real API.</figcaption></div></figure><p>Developer Rich Acosta, in collaboration with Claude, has introduced the open-source project <a href="https://github.com/Ricapar/ClawDOS">ClawDOS</a> (solution <a href="https://ricapar.net/ClawDOS/">website</a>). This is an AI agent for writing code in the DOS environment.</p><blockquote><p>From the author (human):</p><p>Background:</p><p>The IBM PC was my first computer. More precisely, it was my parents' first personal computer, which I got to use at a very young age.</p><p>By the time I grew old enough to start using it, it was already obsolete. But at five years old, it was a magical device for me: all you had to do was enter the right command, and the computer would start performing various tasks.</p><p>I learned to type and work in DOS to run educational games — for example, those that helped teach the alphabet (my mom bought them for me). I even learned a bit of BASIC, although it didn't go beyond simple games like "guess the number" and other small projects.</p><p>Many years have passed since then, but I still have some parts of that very computer. Now I have a whole collection of vintage equipment that is dear to me, and the centerpiece is a fully equipped IBM PC 5160. Its 20 MB hard drive is still functional, but it's currently disconnected: instead, I use a PicoMEM module, which allows emulating a hard drive using an SD card — it's much more convenient for experiments and gaming.</p><p>Old meets new, and new meets old: I really enjoy it when technologies from different eras intersect. And what could be better than creating an AI code-writing agent that runs in DOS on original hardware?</p><p>And, of course, who better to create such an agent than the AI itself?</p><p>I (or rather, Claude) created this for my own enjoyment. I was curious to see what an AI agent could do if placed in conditions far from modern standards. And another question: could the product it creates, in turn, create something else? All the code in this repository was written by the Claude neural network — except for the text you are reading right now.</p><p>The project's test environment runs on the native operating system and hardware, and it uses an intermediate computer (a "bridge") to handle the TLS protocol — a task that the 8088 processor simply couldn't handle.</p><p>Type CLAWDOS at the C:\&gt; command prompt, and you can chat with Claude. It can read and edit files on your disk, write programs, compile them using Turbo C, run them, and analyze their screen output. The system maintains context between chat sessions, allowing you to resume work where you left off.</p><p>This entire complex runs directly on the PC. The HARNESS.EXE program (176 KB in size) interacts with Claude's message API: it forms requests, parses incoming responses, launches necessary tools, and saves the history of each dialogue to disk. The 8088 processor performs all tasks except for handling the TLS protocol.</p><p>One command: "Write PRIMES.C: output prime numbers less than 100. Compile with Turbo C and run." ClawDOS accesses its reference guide for the compilers installed on the machine, creates the source code, and then — in a single tool call — performs compilation, linking, and execution. 64 seconds after pressing Enter, the result appears on the screen; 26 seconds of this time were spent compiling, linking, and running the program.</p><p>During the build process, the compiler is given full control of all machine resources. ClawDOS saves its current state and unloads from memory, providing Turbo C with about 450 KB of free space, and upon program completion, ClawDOS returns to its original context, now with the obtained result.</p></blockquote><figure><img alt="Screenshot taken on an IBM PC 5160 (4.77 MHz clock speed), emulated in 86Box. Interaction occurs with a real API." loading="lazy" src="https://habrastorage.org/r/w1560/extt/81/0c/38/810c38a62dd3a1be7e01c7cbf02313bd.png" title="Screenshot taken on an IBM PC 5160 (4.77 MHz clock speed), emulated in 86Box. Interaction occurs with a real API."/><div><figcaption>Screenshot taken on an IBM PC 5160 (4.77 MHz clock speed), emulated in 86Box. Interaction occurs with a real API.</figcaption></div></figure><blockquote><p>WarGames, written on an XT</p><p>ClawDOS wrote this tribute to the 1983 film on the PC itself: a vector world map, missiles flying over the pole, a tic-tac-toe endgame, and a score for the PC speaker or AdLib card. Five Turbo C files, 15 KB of source code, WG.EXE under 10 KB.</p></blockquote><figure><img loading="lazy" src="https://habrastorage.org/r/w1560/extt/91/d4/e8/91d4e8dd2a4e1203036ea62a885670aa.png"/></figure><figure><img loading="lazy" src="https://habrastorage.org/r/w1560/extt/39/05/90/39059094c6818d2ebb9462a5bc8cdb1d.png"/></figure><figure><img loading="lazy" src="https://habrastorage.org/r/w1560/extt/19/69/cf/1969cf8a290c3f3ebb1c49b725efea24.png"/></figure><p>To run the project, you will need a computer (Mac or Windows) with Python 3 installed, as well as an Anthropic API key. No key? Run python3 tunnel/mockapi.py to emulate the API offline: enter CLAWDOS 10.0.2.2:18023 and send the !help command.</p><figure><img loading="lazy" src="https://habrastorage.org/r/w1560/extt/14/62/1f/14621f23578ac19df6d4935dd1c9f4ca.png"/></figure><p>ClawDOS is free software distributed under the terms of the GNU General Public License version 3. The HARNESS.EXE package includes the mTCP package, which is also distributed under the GPLv3 license. The FreeDOS boot sector (located in the src/boot/freedos directory) is included in the project unchanged and is governed by its own license (GPLv2 or later). User-created disk images contain third-party software (FreeDOS, mTCP, and Turbo C — if using your own floppy disks with this software); do not distribute images containing Turbo C.</p><div></div><p>In mid-November, developer WollyMonjac used neural networks (Fable 5.2 and Opus 5.5) to <a href="https://habr.com/ru/articles/1108358/">create</a> the open-source project <a href="https://github.com/WollyMonjac/Tiny-2.1">TINY 2.1 — a transformer for DOS</a>. This is a small language model in Turbo C 2.0 that runs under DOS on an old Pentium or 486DX and fits on a single floppy disk. </p><div></div><p>Earlier, developer Benj Edwards <a href="https://habr.com/ru/articles/1110406/">introduced</a> the local model project <a href="https://www.bxfoundry.com/chatgpt_snes/">ChatGPT for SNES</a> for the 16-bit Super Nintendo Entertainment System console, released in 1990. The project is based on a small language model with approximately 2.2 million parameters, which runs on the Super FX 2 coprocessor of a flash cartridge. ChatGPT for SNES has no relation to OpenAI.</p><figure><img loading="lazy" src="https://habrastorage.org/r/w1560/extt/9c/f5/76/9cf57674e4777890a8e3ae26c70159f7.jpg"/></figure></div>
+  </main>
+  <footer>
+    Translation generated with Gemini 2.5 Flash-Lite.
+    The original article remains the source of record.
+  </footer>
+</body>
+</html>

@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>MCP server over its own REST API without SDK: what the model sees and where it breaks data</title>
+  <meta name="description" content="Model Context Protocol (MCP) allows an agent like Claude Code or Cursor to call external tools. I&#x27;m dissecting a small MCP server in pure Node.js without an SDK over an existing REST API: stdio transport, errors via isError, annotations for dangerous tools, protection against model &quot;correc">
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.65;
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 32px 20px 64px;
+      color: #1f2328;
+    }
+    header {
+      border-bottom: 1px solid #d8dee4;
+      margin-bottom: 28px;
+      padding-bottom: 20px;
+    }
+    .source {
+      color: #57606a;
+      font-size: 0.95rem;
+    }
+    img, video, iframe {
+      max-width: 100%;
+      height: auto;
+    }
+    pre {
+      overflow-x: auto;
+      padding: 16px;
+      background: #f6f8fa;
+      border-radius: 6px;
+    }
+    code {
+      font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+    }
+    blockquote {
+      border-left: 4px solid #d0d7de;
+      margin-left: 0;
+      padding-left: 16px;
+      color: #57606a;
+    }
+    footer {
+      border-top: 1px solid #d8dee4;
+      margin-top: 40px;
+      padding-top: 20px;
+      color: #57606a;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>MCP server over its own REST API without SDK: what the model sees and where it breaks data</h1>
+    <p>Model Context Protocol (MCP) allows an agent like Claude Code or Cursor to call external tools. I&#x27;m dissecting a small MCP server in pure Node.js without an SDK over an existing REST API: stdio transport, errors via isError, annotations for dangerous tools, protection against model &quot;corrections&quot;, partial success in batch operations, and images in responses. Read more</p>
+    <p class="source">
+      Machine-translated from Habr.
+      <a href="https://habr.com/ru/articles/1110650/?utm_campaign=1110650&amp;utm_source=habrahabr&amp;utm_medium=rss">Read the original Russian article</a>.
+      Sat, 21 Nov 2026 11:52:11 GMT
+    </p>
+  </header>
+  <main>
+<div><p>Model Context Protocol (MCP) allows an agent like Claude Code or Cursor to call external tools. I connected my short link service this way: the agent writes a newsletter or release notes and creates a link with UTM tags itself, and then checks its clicks. The server turned out to be small, about 360 lines in pure Node.js, without SDK or dependencies. But almost every line in it appeared after the model behaved in a way I didn't expect.</p><p>In the article, I will break down how such a server is structured and five solutions that turned out to be more important than initially thought.</p><h3>Architecture: a thin wrapper</h3><p>The service already had a REST API with a key. The MCP server contains no logic of its own: it accepts a tool call, makes a request to the same API, and returns the response. All validation, limits, and security checks remain on the API server.</p><p>Pros of this approach:</p><ul><li><p>one place where the rules live. If you change a limit or a URL check, MCP clients will get the change immediately, no need to update the package;</p></li><li><p>the MCP server can be run locally via <code>npx</code>, it only needs the API key and address;</p></li><li><p>it's easy to test: it's just a mapping of "tool → HTTP request".</p></li></ul><pre><code>async function callTool(name, args = {}) { if (!API_KEY) { throw new Error( "API_KEY is not set. Create a key at https://linkbit.live/api-keys and set API_KEY to the slk_ value.", ); } switch (name) { case "shorten_url": return api("/api/v1/links", { method: "POST", body: JSON.stringify(args) }); case "delete_link": return api(`/api/v1/links/${args.id}`, { method: "DELETE" }); // ... 7 more tools default: throw new Error(`Unknown tool: ${name}`); } }</code><div><a href="https://sourcecraft.dev/"><span></span></a></div></pre><h3>Transport: stdio and two message formats</h3><p>The local MCP server communicates with the client via stdin and stdout using JSON-RPC 2.0 messages. According to the specification, each message is a single JSON line. But in case the client or a debugging utility sends a message in LSP format, with a <code>Content-Length</code> header, the parser understands both variants:</p><pre><code>function takeJsonMessages(chunk) { const messages = []; let rest = chunk; while (rest.length) { const headerMatch = rest.match(/^Content-Length:\s*(\d+)\r?\n\r?\n/i); if (headerMatch) { const size = Number(headerMatch[1]); const start = headerMatch[0].length; const body = rest.slice(start, start + size); if (body.length &lt; size) break; // message not fully received, waiting for the rest messages.push(body); rest = rest.slice(start + size); continue; } const nl = rest.indexOf("\n"); if (nl === -1) break; const line = rest.slice(0, nl).trim(); rest = rest.slice(nl + 1); if (line) messages.push(line); } return { messages, rest }; }</code><div><a href="https://sourcecraft.dev/"><span></span></a></div></pre><p>Two important details:</p><ul><li><p><strong>stdin arrives in chunks of arbitrary length.</strong> One message can be cut in half, and one chunk can contain three messages. Therefore, a buffer is needed, and the unprocessed remainder must be returned.</p></li><li><p><strong>Nothing but the protocol can be written to stdout.</strong> One accidental <code>console.log</code> breaks the client's parsing, and it silently disconnects the server. All debugging goes to stderr.</p></li></ul><p>There are few methods that are actually needed: <code>initialize</code>, <code>tools/list</code>, <code>tools/call</code>, and <code>ping</code>. Notifications (messages without <code>id</code>) do not need to be replied to.</p><h3>Solution 1. Errors are tool results, not protocol errors</h3><p>The most obvious way is to return API errors as JSON-RPC errors. But then the client often just shows the model "tool failed", and it starts guessing: retrying the call, changing arguments, apologizing to the user.</p><p>MCP offers another way: return a regular result with the flag <code>isError: true</code>. Then the error text gets into the model's context as data, and it can work with it.</p><pre><code>try { const result = await callTool(name, params.arguments || {}); reply(id, { content: [{ type: "text", text: JSON.stringify(result, null, 2) }] }); } catch (error) { reply(id, { isError: true, content: [{ type: "text", text: error instanceof Error ? error.message : "Tool failed" }], }); }</code><div><a href="https://sourcecraft.dev/"><span></span></a></div></pre><p>I kept protocol errors only for what is truly broken at the protocol level: unknown method, unknown tool, invalid JSON.</p><p>Second consequence: <strong>the error message should be written for the model, not for logs.</strong> Not <code>401</code>, but:</p><pre><code>401 Unauthorized: API_KEY is invalid. Create a key at https://linkbit.live/api-keys</code><div><a href="https://sourcecraft.dev/"><span></span></a></div></pre><p>Upon receiving such a response, the agent usually doesn't repeat the request but tells the user where to get the key. The same applies to limits and forbidden URLs: a short reason and what to do next.</p><h3>Solution 2. Annotations for dangerous tools</h3><p>Tools in MCP have hints for the client: <code>readOnlyHint</code>, <code>destructiveHint</code>, <code>idempotentHint</code>, <code>openWorldHint</code>. Clients use them to decide when to ask for human confirmation.</p><pre><code>{ name: "delete_link", description: "Permanently delete a short link. This cannot be undone.", inputSchema: { type: "object", properties: { id: { type: "string" } }, required: ["id"], }, annotations: { title: "Delete link", readOnlyHint: false, destructiveHint: true, idempotentHint: true, openWorldHint: true, }, }</code><div><a href="https://sourcecraft.dev/"><span></span></a></div></pre><p><code>destructiveHint: true</code> is set for deleting and disabling links. Reading lists and statistics is marked <code>readOnlyHint: true</code>, which the client calls without questions. The phrase "This cannot be undone" directly in the description is also helpful: the model reads the description and asks the user again itself.</p><p>It's important to remember that these are <strong>hints, not protection.</strong> The client can ignore them. Real restrictions are the key's permissions and checks on the API server.</p><h3>Solution 3. The model "corrects" URLs, the server must be predictable</h3><p>Models like to rewrite URLs "as they see fit." Imagine: the user asks to "shorten the link and add utm_source=newsletter," but the URL already contains <code>utm_source=partner</code>. What should take precedence?</p><p>I decided that <strong>existing parameters in the URL are not overwritten</strong>, and the anchor <code>#fragment</code> is preserved. The link often comes from a finished campaign, and someone consciously set the tags in it. This is enforced by a test on the API side:</p><pre><code>it("does not overwrite existing utm_* params", () =&gt; { const out = applyUtm("https://example.com/?utm_source=original", { utm_source: "other", utm_medium: "cpc", }); const url = new URL(out); assert.equal(url.searchParams.get("utm_source"), "original"); // old tag remained assert.equal(url.searchParams.get("utm_medium"), "cpc"); // new one was added });</code><div><a href="https://sourcecraft.dev/"><span></span></a></div></pre><p>And the same rule is written in the tool description: "Optional UTM fields are merged without overwriting existing utm_* params." The model reads the description and stops being surprised by the result.</p><p>General conclusion: <strong>if the model can pass extra or conflicting information, the server's behavior should be deterministic and documented.</strong> Don't expect the model to pass "correctly."</p><h3>Solution 4. Partial success in batch operations</h3><p>The <code>shorten_urls</code> tool creates multiple links at once. If one out of ten fails validation, throwing an exception is bad: nine links are already created, and the model will decide that nothing worked and restart everything.</p><p>Therefore, the API for a batch responds with an object containing two arrays, <code>created</code> and <code>errors</code>, and the MCP server passes it to the model as a regular result, even with an HTTP error:</p><pre><code>const data = await response.json().catch(() =&gt; ({})); if (!response.ok) { if (data &amp;&amp; Array.isArray(data.created) &amp;&amp; Array.isArray(data.errors)) return data; // ... }</code><div><a href="https://sourcecraft.dev/"><span></span></a></div></pre><p>The model sees which links were created and which were not and why, and retries only the necessary ones.</p><h3>Solution 5. Images are served as images</h3><p>The <code>get_qr</code> tool returns a QR code. If you return base64 as text, the model gets several kilobytes of meaningless characters in its context. MCP has a content type <code>image</code>, and the client will show the image to the user:</p><pre><code>if (mime.startsWith("image/")) { content.push({ type: "image", data: result.base64, mimeType: mime }); } content.push({ type: "text", text: JSON.stringify({ contentType: result.contentType, bytes: result.bytes }, null, 2), });</code><div><a href="https://sourcecraft.dev/"><span></span></a></div></pre><p>A short text block with the type and size follows: this is enough for the model to say "QR ready, PNG, 4 KB."</p><h3>Connection</h3><p>For Claude Code, the server is added with one command:</p><pre><code>claude mcp add linkbit -e API_KEY=slk_... -e APP_URL=https://linkbit.live -- npx -y linkbit-mcp</code><div><a href="https://sourcecraft.dev/"><span></span></a></div></pre><p>For Cursor and Claude Desktop, the same is described in <code>mcp.json</code>. After that, you can write to the agent in plain text: "shorten the link with the slug spring and utm_source newsletter," "show clicks for the last link since January 1st."</p><h3>What I would do differently</h3><ul><li><p><strong>I would design API responses for the model from the start.</strong> Short error reasons and explicit partial success are useful not only for the agent but also for regular integrations.</p></li><li><p><strong>I wouldn't write my own code unnecessarily.</strong> Without an SDK, the server turned out to be transparent, and I understood the protocol well. But for something more, with resources, prompts, and HTTP transport, the official SDK would save time.</p></li><li><p><strong>I would test on multiple clients from day one.</strong> Claude Code, Cursor, and MCP Inspector can display errors differently and decide differently when to ask for confirmation.</p></li></ul><p>The complete server code can be viewed in the <a href="https://www.npmjs.com/package/linkbit-mcp">linkbit-mcp package on npm</a>. If you have also built MCP servers on top of your APIs, I'm interested to hear in the comments about what other pitfalls you've encountered.</p></div>
+  </main>
+  <footer>
+    Translation generated with Gemini 2.5 Flash-Lite.
+    The original article remains the source of record.
+  </footer>
+</body>
+</html>

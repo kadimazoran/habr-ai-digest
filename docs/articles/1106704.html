@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>[Translation] Fine-tuning a Small Language Model on a Mac for RAG in the Browser</title>
+  <meta name="description" content="The task seemed quite simple: fine-tune Qwen3-0.6B to answer questions based on text snippets found through semantic search. But initial experiments had the opposite effect: the model started to make up details more often, even though the validation loss continued to decrease. Four versions of the t">
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.65;
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 32px 20px 64px;
+      color: #1f2328;
+    }
+    header {
+      border-bottom: 1px solid #d8dee4;
+      margin-bottom: 28px;
+      padding-bottom: 20px;
+    }
+    .source {
+      color: #57606a;
+      font-size: 0.95rem;
+    }
+    img, video, iframe {
+      max-width: 100%;
+      height: auto;
+    }
+    pre {
+      overflow-x: auto;
+      padding: 16px;
+      background: #f6f8fa;
+      border-radius: 6px;
+    }
+    code {
+      font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+    }
+    blockquote {
+      border-left: 4px solid #d0d7de;
+      margin-left: 0;
+      padding-left: 16px;
+      color: #57606a;
+    }
+    footer {
+      border-top: 1px solid #d8dee4;
+      margin-top: 40px;
+      padding-top: 20px;
+      color: #57606a;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>[Translation] Fine-tuning a Small Language Model on a Mac for RAG in the Browser</h1>
+    <p>The task seemed quite simple: fine-tune Qwen3-0.6B to answer questions based on text snippets found through semantic search. But initial experiments had the opposite effect: the model started to make up details more often, even though the validation loss continued to decrease. Four versions of the training data helped to understand why this was happening and how to reduce hallucinations by threefold, albeit at the cost of more frequent refusals to answer. See the results</p>
+    <p class="source">
+      Machine-translated from Habr.
+      <a href="https://habr.com/ru/companies/otus/articles/1106704/?utm_campaign=1106704&amp;utm_source=habrahabr&amp;utm_medium=rss">Read the original Russian article</a>.
+      Sat, 21 Nov 2026 13:12:10 GMT
+    </p>
+  </header>
+  <main>
+<div><p>Recently, we tried to summarize the results of semantic search using small language models running directly in the browser. It didn't work very well: the models often hallucinated. But models with 0.6 billion parameters don't necessarily need to know everything. It's enough for them to read four text snippets and either summarize their content or admit that there's no answer to the question within them. "It seems fine-tuning will help here. It'll also be a good reason to write a follow-up article."</p><p>And here it is. To achieve the result, I had to rework the training data four times, and the unsuccessful attempts turned out to be no less interesting. In short: my blog's search page now uses a fine-tuned Qwen3-0.6B by default. It answers correctly about as often as the original model, but makes mistakes three times less often. And it never tried to answer a question that wasn't covered in the blog. Plus, it now requires downloading less data to load. The model, dataset, and code are open-source, so you can <a href="https://bart.degoe.de/fine-tuning-a-small-language-model-for-rag/?utm_source=chatgpt.com#do-it-yourself">deploy</a> all of this on your own website and check it out for yourself.</p><h2>The Task and Action Plan</h2><p>The model receives a system prompt <em>("Answer in no more than two sentences, using only these snippets. If the answer is not in them, say that the blog does not seem to cover this topic")</em>, four numbered snippets found by semantic search, and a question. Nothing more. A good answer should either convey information from the found snippets or, if the answer is not in them, state: "It seems this topic is not covered in the blog."</p><p>To fine-tune the model to handle such a task, several thousand examples of correct behavior will be needed. I don't have several thousand blog posts, so the plan is as follows:</p><p>1. Use training data from open-licensed technical texts. The questions from the previous article – all 45 used for quality evaluation (eval) – will become the test set. Therefore, training the model on my own publications would be practically cheating (especially since I only have 16 of them). Instead, I took the <a href="https://go.dev/blog">Go blog</a>, the <a href="https://blog.rust-lang.org/">Rust blog</a>, <a href="https://rust-lang.github.io/rfcs/">Rust RFCs</a>, and <a href="https://peps.python.org/">Python PEPs</a>. In total, this resulted in 2193 technical documents with licenses that permit such use.</p><p>2. Use the same search and retrieval mechanism. Each document is split into chunks, for which embeddings are created – exactly as in the semantic search of my blog. For each training question, the search returns the four most relevant snippets. This way, the model learns to work with the same noisy results it will encounter in real conditions: sometimes the answer is in the first snippet, sometimes in the fourth, and sometimes a nearly identical snippet from another publication appears nearby.</p><p>3. Have Claude prepare the examples. Claude Sonnet 5.5 generated questions for individual text snippets. For some questions, the answer is contained within the four retrieved chunks. In other cases, I excluded the document on which the question was based, so the model learns to refuse to answer. There were also near-miss examples: questions on a related topic that the retrieved snippets did not actually answer. Then, Claude Opus 5.5 answered each question, relying on the relevant chunks and using the same system prompt as on my website. Formally, this is a form of knowledge distillation: a large model shows how to perform a task, and a small model learns to replicate its behavior.</p><p>4. Train the model on my Mac. For this, I used Low-Rank Adaptation (LoRA) with the <a href="https://github.com/ml-explore/mlx-lm">mlx-lm</a> library on a Mac mini with an M4 chip and 24 GB of memory. This same computer serves as my home lab and media server. I trained each version of the model for one epoch – one full pass over 4500 training examples. This is 2265 iterations of two examples each, with weight updates every second iteration and saving a training checkpoint after every quarter epoch. The entire process takes about 1 hour and 20 minutes.</p><p>5. Export the model for the browser in the same 4-bit format that the page already loads, and perform the same quality evaluation as last time. For this, 30 questions were used for which answers exist in the blog, and another 15 for which the blog does not provide answers. Opus evaluated the model's answers by comparing them to the provided text snippets.</p><p>One more nuance of the last step: each fine-tuned version is compared to the base model exported in exactly the same way. So, the only difference between them is the fine-tuning itself. This version of the base model gave 17 answers corresponding to the source out of 30, not 18 as in the previous article.</p><h2>v1: It Only Got Worse</h2><p>The first dataset contained about 4500 questions with answers written by Opus. Usually, these were two sentences, rich in detail. After fine-tuning, Qwen3-0.6B correctly relied on the source in only 8 out of 30 cases, whereas before the intervention, there were 17 such answers. However, the model learned to refuse to answer: it never made up an answer to any of the 15 questions not covered in the blog. The base model made mistakes in two such cases. But things got significantly worse with questions that did have answers in the blog.</p><p>The model developed two habits. The first it adopted directly from the training data. If Opus could only answer part of a question, it would answer that part and add something like "the blog does not provide a more detailed explanation of the reasons." For a large model capable of understanding what information is missing, this is a perfectly normal response. About 10% of the training answers contained such caveats. The fine-tuned model adopted this mannerism and started adding them even where they weren't needed – in fact, in every third answer. Moreover, it usually stated that information was missing which was actually present in the provided snippets.</p><p>The second habit was even worse: the model tried to include more details in the answer, and if there weren't enough, it simply made them up. Here's how the base model and v1 answered the question "What does the blog say about embeddings and cosine similarity?":</p><blockquote><p>"In the blog, embeddings are considered a way to represent semantic relationships between words, and cosine similarity is used to measure the proximity between vectors." (Qwen3-0.6B)</p></blockquote><blockquote><p>"The blog states that embeddings reflect semantic, not just lexical, relationships. Specifically, 'King' and 'bicycle' are close to each other, 'King' and 'bicycle' are far apart, and 'Beer' and 'alcoholic beverage' are neighbors." (v1)</p></blockquote><p>The base model's answer is vague but correct. The v1 answer sounds as if the model actually read the article, but in reality, it's incorrect. In the <a href="https://bart.degoe.de/building-a-semantic-search-engine-in-250-lines-of-python/">semantic search article</a>, 'king' and 'queen' are close to each other, and 'bicycle' is far from them. The model adopted the format of Opus's answers: a few specific facts, terms in quotes, a second sentence. But at the same time, it didn't learn to read the source text as carefully.</p><h2>v2: Loss Decreased, But Answers Got Worse</h2><p>Getting rid of the caveats was the easiest part. I wrote a small script that removed phrases like "the blog doesn't explain X" from the training answers (and excluded examples starting with such phrases entirely), and ran the training again. The caveats disappeared. But the quality of the answers hardly improved: 9 out of 30.</p><p>This time, I also decided to check the training checkpoints saved after a quarter, half, and a full epoch. And that's when the most interesting part began:</p><figure><img alt=
+  </main>
+  <footer>
+    Translation generated with Gemini 2.5 Flash-Lite.
+    The original article remains the source of record.
+  </footer>
+</body>
+</html>

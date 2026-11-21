@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>How I Stopped Paying for Tokens and Built a Local RAG on 72,000 Chunks in SQLite</title>
+  <meta name="description" content="I&#x27;m a 22-year-old AI/ML engineer and researcher. My projects grew, and context started to crumble. The standard advice is to use LangChain with OpenAI API and Pinecone, but I don&#x27;t have money for API calls, and I didn&#x27;t want to drag heavy frameworks for simple file search. So, I decid">
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.65;
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 32px 20px 64px;
+      color: #1f2328;
+    }
+    header {
+      border-bottom: 1px solid #d8dee4;
+      margin-bottom: 28px;
+      padding-bottom: 20px;
+    }
+    .source {
+      color: #57606a;
+      font-size: 0.95rem;
+    }
+    img, video, iframe {
+      max-width: 100%;
+      height: auto;
+    }
+    pre {
+      overflow-x: auto;
+      padding: 16px;
+      background: #f6f8fa;
+      border-radius: 6px;
+    }
+    code {
+      font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+    }
+    blockquote {
+      border-left: 4px solid #d0d7de;
+      margin-left: 0;
+      padding-left: 16px;
+      color: #57606a;
+    }
+    footer {
+      border-top: 1px solid #d8dee4;
+      margin-top: 40px;
+      padding-top: 20px;
+      color: #57606a;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>How I Stopped Paying for Tokens and Built a Local RAG on 72,000 Chunks in SQLite</h1>
+    <p>I&#x27;m a 22-year-old AI/ML engineer and researcher. My projects grew, and context started to crumble. The standard advice is to use LangChain with OpenAI API and Pinecone, but I don&#x27;t have money for API calls, and I didn&#x27;t want to drag heavy frameworks for simple file search. So, I decided to build a fully local solution: no paid keys, no cloud vector DBs, just CPU and SQLite. Here&#x27;s a breakdown of how it works, the pitfalls I encountered, and why classic RAG is useful for something different than tutorials suggest.</p>
+    <p class="source">
+      Machine-translated from Habr.
+      <a href="https://habr.com/ru/articles/1110658/?utm_campaign=1110658&amp;utm_source=habrahabr&amp;utm_medium=rss">Read the original Russian article</a>.
+      Sat, 21 Nov 2026 12:19:48 GMT
+    </p>
+  </header>
+  <main>
+<div><p>I am a 22-year-old AI/ML engineer and researcher: I completed my bachelor's degree in Applied Informatics and Information Security at SSEU (2022–2026), and am now pursuing a master's degree at Samara University named after Korolev (Aerocos) in the "Artificial Intelligence Systems" program. Before that, I worked with my hands (as a decorator – assembling timber frames on-site) and as an 1C system administrator. In parallel, I write software for parametric design of frames (Deckor), conduct research on hybrid neural networks in medicine (NIR), and build local infrastructure for multi-agent systems.</p><p>At some point, I hit a classic wall: I had too many projects, and the context in my head and in the chat window started to fall apart. The standard advice from the internet is: "just take LangChain, hook up the OpenAI API, and dump your vector database into Pinecone."</p><p>But I don't have spare money to pay for every little thing via API. And I really didn't want to drag bloated, monstrous frameworks into a project just for a basic search through my own files.</p><p>I decided to build a completely local solution. No external paid keys, no cloud vector DBs, right on my CPU and ordinary SQLite. Below is an analysis of how it's set up, the pitfalls I encountered, and why classic RAG turned out to be necessary for something entirely different than what tutorials suggest.</p><h3>Architecture Explained Simply</h3><p>The main idea: offload the brains and generation to a subscription-based IDE (Antigravity / Claude Code) via the MCP (Model Context Protocol), and keep all memory, search, and storage local on the machine via stdio transport.</p><p>The stack turned out to be minimalist:</p><ul><li><p><strong>Language</strong>: pure Python 3.12 (without LangChain, LlamaIndex, or other wrappers over wrappers).</p></li><li><p><strong>Database</strong>: ordinary SQLite with WAL (Write-Ahead Logging) mode enabled.</p></li><li><p><strong>Transport</strong>: MCP server via standard input/output streams (stdio). No running web servers or open ports.</p></li><li><p><strong>Search</strong>: hybrid (dense vectors on <code>numpy</code> + sparse lexical <code>Okapi BM25</code>), stitched together via Reciprocal Rank Fusion (RRF).</p></li></ul><p>Vectors are stored directly in SQLite as binary <code>BLOB</code>s (<code>float32</code> type). Each chunk uses about 128 floating-point numbers, which is only about 512 bytes. The entire database of 72,450 chunks across my 18 projects totals 110 megabytes on disk and consumes exactly 0 megabytes of RAM at idle.</p><h3>Three Bugs They Don't Mention in Articles</h3><p>When you read articles about RAG, everything usually runs in three lines. In reality, I stumbled upon three problems that took a lot of nerves to debug.</p><h4>1. On-the-fly Dimension Mismatch (128 vs 384)</h4><p>During initial chunking and indexing, I ran the documents through a local provider with a dimension of 128. But the default fallback configuration for FastEmbed was set to 384.</p><p>On the very first query, SQLite threw a <code>ValueError: Embedding dimension mismatch: stored=128, query=384</code>.</p><p>Instead of creating rigid checks and forcing re-indexing of terabytes of data when changing models, I added an on-the-fly dimension adapter to the vector store class:</p><pre><code># Validate stored embedding dimension against query dimension, adapt gracefully. If dimensions mismatch, the query is automatically truncated or padded with zeros. The vector search always works and doesn't crash with a fatal error. sample_blob = rows[0][
+  </main>
+  <footer>
+    Translation generated with Gemini 2.5 Flash-Lite.
+    The original article remains the source of record.
+  </footer>
+</body>
+</html>

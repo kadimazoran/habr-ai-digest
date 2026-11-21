@@ -1,0 +1,168 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Prompt is not a string, but a template</title>
+  <meta name="description" content="The project repository contains 203 kilobytes of prompts, which is about a third of the total PHP code. However, there are no prompts directly in the code; they are all YAML files that undergo review, versioning, and release. This article breaks down the structure of such a file and explains why the">
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.65;
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 32px 20px 64px;
+      color: #1f2328;
+    }
+    header {
+      border-bottom: 1px solid #d8dee4;
+      margin-bottom: 28px;
+      padding-bottom: 20px;
+    }
+    .source {
+      color: #57606a;
+      font-size: 0.95rem;
+    }
+    img, video, iframe {
+      max-width: 100%;
+      height: auto;
+    }
+    pre {
+      overflow-x: auto;
+      padding: 16px;
+      background: #f6f8fa;
+      border-radius: 6px;
+    }
+    code {
+      font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+    }
+    blockquote {
+      border-left: 4px solid #d0d7de;
+      margin-left: 0;
+      padding-left: 16px;
+      color: #57606a;
+    }
+    footer {
+      border-top: 1px solid #d8dee4;
+      margin-top: 40px;
+      padding-top: 20px;
+      color: #57606a;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Prompt is not a string, but a template</h1>
+    <p>The project repository contains 203 kilobytes of prompts, which is about a third of the total PHP code. However, there are no prompts directly in the code; they are all YAML files that undergo review, versioning, and release. This article breaks down the structure of such a file and explains why the unit of storage is not just text, but the entire capability: provider, model, generation parameters, and templates for each language. It also covers non-obvious aspects: why user data is substituted after template rendering rather than within it, why models need aliases, how to degrade through three levels of JSON schema support, and what can actually be tested in a non-deterministic environment. Read on.</p>
+    <p class="source">
+      Machine-translated from Habr.
+      <a href="https://habr.com/ru/articles/1084308/?utm_campaign=1084308&amp;utm_source=habrahabr&amp;utm_medium=rss">Read the original Russian article</a>.
+      Sat, 21 Nov 2026 10:43:59 GMT
+    </p>
+  </header>
+  <main>
+<div><p>The project repository contains 203 kilobytes of prompts. This is about a third of the total PHP code, and yet, there are no prompts directly in the code: they are all YAML files that undergo review, are versioned, and are rolled out with the release.</p><p>We didn't arrive at this immediately, and along the way, it turned out that "moving prompts to config" is not one decision, but a dozen small ones, each of which can be made incorrectly.</p><p>The project is under NDA, so all prompt examples in the article are fictional: I took a neutral scenario with a support bot. The file structure, processing code, and pitfalls are real.</p><h3>Why not in code and not in the admin panel</h3><p>A prompt in code means a <code>deploy</code> for a comma, and we've already been through this with interface texts. But prompts have their own specifics, which is why they are moved out of the code before anything else.</p><p>A prompt is not edited by a developer. It's edited by the person responsible for the quality of the model's responses, and they edit it constantly: tweak the wording, look at the output, revert, try differently. The cycle is measured in hours, not sprints.</p><p>The obvious answer to this is an editable field in the admin panel. We did this in the first version and got exactly what everyone gets: the prompt on production differs from the prompt on staging, no one remembers who changed the paragraph about the response format and why, and you can only roll back from memory. No review, no history, nowhere to see the diff.</p><p>Git solves all four problems at once, at the cost of one: to fix a prompt, you need to be able to make a commit. For our team, this turned out to be an acceptable trade-off.</p><figure><img alt="The path of a prompt: from a file in the repository to the model's response" loading="lazy" src="https://habrastorage.org/r/w1560/getpro/habr/upload_files/a67/b05/51c/a67b0551cfffe7c63d96ed21c654d749.png"/><div><figcaption>The path of a prompt: from a file in the repository to the model's response</figcaption></div></figure><h3>The unit is not a prompt, but a capability</h3><p>The first significant thought: the file describes not text, but the system's entire "ability" to do something using the model.</p><pre><code>code: summarize-ticket
+description: "Сжать обращение пользователя до сути"
+
+provider: fast-cloud
+model: small-instruct
+
+config_params:
+  max_tokens: 512
+  temperature: 0.2
+
+response_type: string
+
+system_templates:
+  ru: |-
+    Ты помощник оператора поддержки. Сожми обращение до трёх пунктов:
+    что сломалось, когда началось, что пользователь уже пробовал.
+    Не придумывай деталей, которых нет в тексте.
+  en: |-
+    You are a support agent assistant. Compress the ticket into three points:
+    what broke, when it started, what the user already tried.
+    Do not invent details that are not in the text.
+
+user_templates:
+  ru: |-
+    @foreach($messages as $message)
+    {{ $message['role'] }}: {!! $message['content'] !!}
+    @endforeach
+  en: |-
+    @foreach($messages as $message)
+    {{ $message['role'] }}: {!! $message['content'] !!}
+    @endforeach
+</code><div><a href="https://sourcecraft.dev/"><span></span></a></div></pre><p>One file contains everything that defines behavior: provider, model, generation parameters, system and user templates for each language, and the expected response format.</p><p>This is important because a prompt without parameters is meaningless. The same text with <code>temperature: 0.2</code> and <code>temperature: 0.9</code> represents two different behaviors, and if the temperature is in the code and the text is in the file, you cannot reproduce yesterday's result. If one thing changes, the entire capability changes, and it is versioned as a whole.</p><p>The code calls this by name and knows nothing about the provider or the model:</p><pre><code>$summary = $ai-&gt;execute($bot, $chat, 'summarize-ticket', ['messages' =&gt; $history]);
+</code><div><a href="https://sourcecraft.dev/"><span></span></a></div></pre><h3>Blade inside YAML</h3><p>A prompt is almost never a constant. It needs to incorporate message history, profile, context—meaning a templating engine is required. We didn't write our own:</p><pre><code>private function renderPrompt(?string $template, array $data): ?string
+{
+    return $template ? Blade::render($template, $data) : null;
+}
+</code><div><a href="https://sourcecraft.dev/"><span></span></a></div></pre><p>One line, and all of Blade is available in prompts: loops, conditions, accessing object properties. The loop over the message history from the example above is exactly that.</p><p>Now for the honest part. <code>Blade::render()</code> compiles the template into PHP and executes it. This means the content of the YAML file is executable code, and the person editing the prompt can technically execute anything on the server.</p><p>This is acceptable for us precisely because the prompts are in the repository and undergo review: a file cannot be changed bypassing the process. However, if you plan to allow prompt editing in the admin panel—which is exactly what product managers tend to push for—you must not allow a full templating engine there. You need a restricted engine without code execution and without file system access. The choice between "powerful" and "secure" is made once and is not revisited.</p><h3>Order of substitution matters</h3><p>There is another layer of substitution in prompts, and it's made deliberately primitive:</p><pre><code>$systemPrompt = Blade::render($systemTemplate, $inputData);
+
+$systemPrompt = str_replace(
+    ['{char}', '{user}'],
+    [$characterName, $userName],
+    $systemPrompt
+);
+</code><div><a href="https://sourcecraft.dev/"><span></span></a></div></pre><p>First, the trusted template from the repository is rendered. Only then, using a simple <code>str_replace</code>, are the strings coming from the user—like their name—substituted into the already prepared text.</p><p>The order here is not stylistic but protective. If you pass the user's name into <code>Blade::render()</code> as part of the template, a user who names themselves <code>{{ config('app.key') }}</code> will receive the application key in the response. User data should not enter the templating engine; it is substituted after it.</p><p>This looks like a minor detail of two lines. It's worth about as much as any other injection.</p><h3>Five languages is not translation</h3><p>Prompts in our system exist in five locales, and the first misconception was that this was a translation task.</p><p>In practice, a language version of a prompt is a separate setting with its own life. A model that is written to in Russian behaves differently than the same model in English: it maintains format differently, more often switches to another language, and understands instructions about response length differently. As a result, non-English templates include additions that are not present in English at all—an explicit requirement to respond in the correct language, clarification of format, prohibition of meta-comments.</p><p>From this, a practical consequence: a test for "is there a template in all locales" is needed, but a test for "does the meaning match" is useless. Prompts in different languages are bound to differ, and they will differ more the further the language is from English.</p><p>Another thing worth setting up immediately: a check that the set of substitutions is the same across all locales. A translator can easily translate <code>{user}</code> along with the rest of the text, and you'll get a prompt where the word "user" appears instead of the name. This won't manifest as an error in the output, but as a strangeness, and you'll spend a long time searching for it.</p><h3>The provider is also data</h3><p>The capability file specifies not the full model identifier, but a short name:</p><pre><code>provider: fast-cloud
+model: small-instruct
+</code><div><a href="https://sourcecraft.dev/"><span></span></a></div></pre><p>This is deciphered in the provider file:</p><pre><code>code: fast-cloud
+base_url: "https://api.example.com/v1"
+api_key: "${FAST_CLOUD_KEY}"
+schema_support: "schema"
+supported_models_names:
+  small-instruct: vendor/small-instruct-v3
+  big-reasoner: vendor/big-reasoner-2507
+</code><div><a href="https://sourcecraft.dev/"><span></span></a></div></pre><p>And in the code, it's a single line with a fallback:</p><pre><code>'model' =&gt; $provider-&gt;supported_models_names[$version-&gt;model] ?? $version-&gt;model,
+</code><div><a href="https://sourcecraft.dev/"><span></span></a></div></pre><p>The point is that the capability says "I need a fast, small model," not "I need vendor/small-instruct-v3." When the provider renames a model or you decide to switch to another, you edit one provider file, not nine capability files. The fallback is in case the alias doesn't exist: then the value is used as is.</p><p>About keys. YAML contains <code>${FAST_CLOUD_KEY}</code>—a placeholder that the importer expands to a config value upon loading:</p><pre><code>if (preg_match('/^andomIndex{([^}]+)}$/', $apiKey, $matches)) {
+    return config("ai.providers.{$matches[1]}");
+}
+</code><div><a href="https://sourcecraft.dev/"><span></span></a></div></pre><p>In the repository—the variable name, in the environment—the value. You could write the key string directly in the file, and this is precisely the possibility that should be caught during review: someone will insert a real key "just to test for a minute," and it will remain in the Git history forever.</p><h3>YAML types differently than you think</h3><p>A minor detail that cost us an hour.</p><pre><code>config_params:
+  max_tokens: "1024"
+  temperature: "0.2"
+</code><div><a href="https://sourcecraft.dev/"><span></span></a></div></pre><p>Quotes around numbers appeared accidentally—someone copied them from a neighboring file. YAML dutifully turned them into strings, the strings went into the request body, and the provider returned a validation error because it expected numbers.</p><p>This is fixed either by discipline or by code. We chose code:</p><pre><code>return array_map(function ($value) {
+    if (is_numeric($value)) {
+        return str_contains((string) $value, '.') ? (float) $value : (int) $value;
+    }
+
+    return $value;
+}, $configParams);
+</code><div><a href="https://sourcecraft.dev/"><span></span></a></div></pre><p>Casting parameters to numbers before sending. It's not elegant, but it's exactly the protection needed when a human edits the config: the file doesn't have to be perfect, but the behavior must be predictable.</p><h3>Three levels of schema support</h3><p>If a structured response is needed from the model, the most interesting part begins: providers handle this differently. We have three options, and they are described directly in the provider config:</p><pre><code>enum SchemaSupport: string
+{
+    case SCHEMA = 'schema';   // supports json_schema
+    case OBJECT = 'object';   // supports only json_object
+    case NONE   = 'none';     // supports nothing
+}
+</code><div><a href="https://sourcecraft.dev/"><span></span></a></div></pre><p>Then comes degradation by levels. If the provider understands JSON schema—we pass it to <code>response_format</code> and get a structure guarantee from the provider itself. If it only understands "respond with valid JSON"—we enable this mode, and the schema is appended as text to the system prompt, in the user's language:</p><pre><code>$payload['response_format'] = ['type' =&gt; 'json_object'];
+
+$instruction = self::SCHEMA_INSTRUCTIONS[$locale] ?? self::SCHEMA_INSTRUCTIONS['en'];
+$systemPrompt .= "\n\n{$instruction} " . json_encode($schema, JSON_UNESCAPED_UNICODE);
+</code><div><a href="https://sourcecraft.dev/"><span></span></a></div></pre><p>A schema in the prompt as text is not a guarantee, but a request. Therefore, there is a third layer, the ugliest in the entire project:</p><pre><code>private function extractJsonPayload(string $body): string
+{
+    $start = strpos($body, '{');
+    $end = strrpos($body, '}');
+
+    return $start !== false &amp;&amp; $end &gt; $start
+        ? substr($body, $start, $end - $start + 1)
+        : $body;
+}
+</code><div><a href="https://sourcecraft.dev/"><span></span></a></div></pre><p>We simply extract everything between the first <code>{</code> and the last <code>}</code> from the response, because the model likes to wrap JSON in "Certainly! Here is your response:" and triple quotes. The extracted content is then parsed and validated against the schema, and only after that is it considered the answer.</p><p>I resisted this function for a long time. Then I looked at the proportion of responses it saves, and stopped resisting.</p><h3>Two types of retries</h3><p>A request to the model can fail in two fundamentally different ways, and they are treated differently.</p><p><strong>Network failure.</strong> Timeout, 502, connection dropped. This is treated with a standard retry with exponential backoff—nothing new here:</p><pre><code>Http::baseUrl($provider-&gt;base_url)
+    -&gt;withToken($provider-&gt;api_key)
+    -&gt;timeout(60)
+    -&gt;retry(
+        times: 3,
+        sleepMilliseconds: fn (int $attempt) =&gt; min(1000 * (2 ** $attempt), 10000),
+    )
+</code><div><a href="https://sourcecraft.dev/"><span></span></a></div></pre><p><strong>Semantic failure.</strong> The response arrived, status code 200, but inside it's an empty string, or invalid JSON, or the structure doesn't pass the schema. The network is not at fault here; it's not the transport that needs retrying, but the entire request. We have a separate external loop for this, exactly two attempts.</p><p>Why two. Each attempt costs money and user waiting time. If the model fails to produce a valid response to the same prompt twice in a row, a third attempt will likely also fail: the problem is not with luck, but with the prompt or the model. It's more honest to show an error and log the case than to silently burn the budget.</p><h3>What to log and what not to log</h3><p>Each model call can be logged entirely: request body, response body, time, provider, model, status. We don't do this in production:</p><pre><code>// In production, we only log errors
+if (!app()-&gt;isLocal() &amp;&amp; $status === 'success') {
+    return;
+}
+</code><div><a href="https://sourcecraft.dev/"><span></span></a></div></pre><p>There are two reasons, both significant.</p><p>The first is boring: it's the fastest-growing table in the database. The request body to the model is the system prompt plus the message history, tens of kilobytes per row. Logging successes in a stream means writing megabytes per minute to the database.</p><p>The second is more important. The request body contains the user's correspondence. The log of model calls is personal data, with all that entails: retention period, access, deletion upon request. If you write everything there "just in case," you've created a repository of other people's conversations and likely haven't noticed it.</p><p>Errors, however, must be logged—otherwise, you'll be handling a complaint like "the bot gave a nonsense answer" based on the user's description. We store the status, provider, model, execution time, and error details; the body is only for unsuccessful calls.</p><h3>How to test this at all</h3><p>A model's response is non-deterministic, so you can't check it with assertions. But that doesn't mean there's nothing to test—it's just that you're testing the wrong things.</p><p>What is actually checked automatically:</p><ul><li><p>the template renders and doesn't crash on empty data;</p></li><li><p>each capability has templates in all locales;</p></li><li><p>the set of substitutions matches between locales;</p></li><li><p>the capability's JSON schema is valid on its own;</p></li><li><p>generation parameters, after normalization, are numbers, not strings.</p></li></ul><p>All of this catches exactly the errors we've encountered: a broken template, a forgotten locale, a translated placeholder, quotes around a number. None of these tests look at the quality of the response—quality is checked by hand and eye, and you have to accept that.</p><p>A snapshot of the rendered prompt is separately useful. If you change a template, you see the final text that will go to the model in the diff, with all substitutions. This is the only way to notice that your one-line edit has suddenly removed half the context.</p><h3>What the tool doesn't fix</h3><p>In the prompts folder, we have a file named something like <code>text-reply-with-journal orig.yaml</code>.</p><p>This is a copy of the main file made before an experiment. The person wanted to be able to return to a working version and did what everyone does: copied the file nearby. This is despite the fact that we have versioning in the database, history in Git, and rollback by deployment.</p><p>Another similar artifact is a commented-out JSON schema in another file. The experiment didn't take off, the schema was commented out, and the comment remained.</p><p>The conclusion I dislike, but am forced to admit: putting prompts in Git is half the solution. The other half is the habit of working with them like code, and that doesn't appear just because the files have moved. A copy of a file nearby and a commented-out block are exactly the same symptoms as <code>index_old.php</code> in projects from twenty years ago, just in a new context.</p><h3>Checklist</h3><p>If you're moving prompts out of code:</p><ol><li><p>The unit of storage is not the prompt, but the capability: text, provider, model, parameters, and response format in one file.</p></li><li><p>Generation parameters are versioned along with the text. Otherwise, yesterday's result is irreproducible.</p></li><li><p>A templating engine is needed, but remember that it executes code. Such an engine must not be allowed into the admin panel.</p></li><li><p>User data is substituted after template rendering, not within it.</p></li><li><p>Language versions of prompts are not translations. They are bound to differ.</p></li><li><p>Test for locale completeness and for matching substitutions between them.</p></li><li><p>The model in the capability is specified by an alias; the deciphering is with the provider.</p></li><li><p>In the repository, use the environment variable name, not the key. Review separately.</p></li><li><p>Cast numbers in YAML to numbers in code. Quotes appear on their own.</p></li><li><p>Degrade by schema support levels: native schema → JSON mode with schema in prompt → extracting JSON from text.</p></li><li><p>Network and semantic retries are different mechanisms. Two semantic retries are sufficient.</p></li><li><p>Logs of model calls are personal data. In production, log errors, not everything.</p></li></ol><p>It's interesting, by the way, how you handle item 11. We stopped at two semantic attempts with the same prompt, but I've encountered an approach where the second attempt uses a simplified prompt or a different model. It seems logical, although it adds another branch that needs testing.</p></div>
+  </main>
+  <footer>
+    Translation generated with Gemini 2.5 Flash-Lite.
+    The original article remains the source of record.
+  </footer>
+</body>
+</html>

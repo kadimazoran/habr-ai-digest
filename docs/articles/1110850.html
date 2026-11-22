@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Trust, but Verify — or How to Limit AI Agent Permissions at Different Levels</title>
+  <meta name="description" content="Hello, Habr! My AGENTS.md clearly states: &#x27;do not work in main&#x27; and &#x27;force push only with permission.&#x27; I analyzed 193 git push calls from my sessions: in about a third of cases, the agent didn&#x27;t ask for permission, thrice it pushed directly to main, and out of 31 force pushe">
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.65;
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 32px 20px 64px;
+      color: #1f2328;
+    }
+    header {
+      border-bottom: 1px solid #d8dee4;
+      margin-bottom: 28px;
+      padding-bottom: 20px;
+    }
+    .source {
+      color: #57606a;
+      font-size: 0.95rem;
+    }
+    img, video, iframe {
+      max-width: 100%;
+      height: auto;
+    }
+    pre {
+      overflow-x: auto;
+      padding: 16px;
+      background: #f6f8fa;
+      border-radius: 6px;
+    }
+    code {
+      font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+    }
+    blockquote {
+      border-left: 4px solid #d0d7de;
+      margin-left: 0;
+      padding-left: 16px;
+      color: #57606a;
+    }
+    footer {
+      border-top: 1px solid #d8dee4;
+      margin-top: 40px;
+      padding-top: 20px;
+      color: #57606a;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Trust, but Verify — or How to Limit AI Agent Permissions at Different Levels</h1>
+    <p>Hello, Habr! My AGENTS.md clearly states: &#x27;do not work in main&#x27; and &#x27;force push only with permission.&#x27; I analyzed 193 git push calls from my sessions: in about a third of cases, the agent didn&#x27;t ask for permission, thrice it pushed directly to main, and out of 31 force pushes, I only allowed two. And git is relatively harmless – the same agent accesses databases, S3, and Kubernetes with my credentials, and one day it might execute DROP DATABASE. Hooks, sandboxes, and roles have been discussed on Habr before; I will break down security mechanisms in agent development into four levels: what each actually protects, how to configure it, and where its boundaries lie. The agent actively accesses all your services and systems under your accounts and with developer privileges – how can you protect your infrastructure from non-deterministic agents and reduce potential negative impacts? Defend against Skynet.</p>
+    <p class="source">
+      Machine-translated from Habr.
+      <a href="https://habr.com/ru/companies/magnit/articles/1110850/?utm_campaign=1110850&amp;utm_source=habrahabr&amp;utm_medium=rss">Read the original Russian article</a>.
+      Sun, 22 Nov 2026 13:31:57 GMT
+    </p>
+  </header>
+  <main>
+<div><p>Hello, Habr! My AGENTS.md clearly states: 'do not work in main' and 'force push only with permission.'<br/><br/>I analyzed <strong>193 git push calls</strong> from my sessions: <strong>in about a third of cases, the agent didn't ask for permission</strong>, thrice it pushed directly to main, and <strong>out of 31 force pushes, I only allowed two</strong>. And git is relatively harmless – the same agent accesses databases, S3, and Kubernetes with my credentials, and one day it might execute <strong>DROP DATABASE</strong>.<br/><br/>Hooks, sandboxes, and roles have been discussed on Habr before; <strong>I will break them down into four levels</strong>: what each actually protects, how to configure it, and what its boundaries are.</p><p>The agent doesn't always listen, and this is just the tip of the iceberg – today <strong>it actively accesses all your services and systems</strong> under your accounts <strong>and with developer privileges</strong> – how can you protect your infrastructure from agents exceeding their authority and reduce potential negative impacts?</p><figure><img alt=
+  </main>
+  <footer>
+    Translation generated with Gemini 2.5 Flash-Lite.
+    The original article remains the source of record.
+  </footer>
+</body>
+</html>

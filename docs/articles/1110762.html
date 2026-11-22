@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>What&#x27;s Happening to the Developer Profession: My Experience and Industry Data</title>
+  <meta name="description" content="How it started with us. I work in a development team of about twenty people: 1C developers and related stacks, several testers, and analysts. This text is not theory, but what my colleagues and I have gone through ourselves in recent months while preparing an AI implementation plan for the next few ">
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.65;
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 32px 20px 64px;
+      color: #1f2328;
+    }
+    header {
+      border-bottom: 1px solid #d8dee4;
+      margin-bottom: 28px;
+      padding-bottom: 20px;
+    }
+    .source {
+      color: #57606a;
+      font-size: 0.95rem;
+    }
+    img, video, iframe {
+      max-width: 100%;
+      height: auto;
+    }
+    pre {
+      overflow-x: auto;
+      padding: 16px;
+      background: #f6f8fa;
+      border-radius: 6px;
+    }
+    code {
+      font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+    }
+    blockquote {
+      border-left: 4px solid #d0d7de;
+      margin-left: 0;
+      padding-left: 16px;
+      color: #57606a;
+    }
+    footer {
+      border-top: 1px solid #d8dee4;
+      margin-top: 40px;
+      padding-top: 20px;
+      color: #57606a;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>What&#x27;s Happening to the Developer Profession: My Experience and Industry Data</h1>
+    <p>How it started with us. I work in a development team of about twenty people: 1C developers and related stacks, several testers, and analysts. This text is not theory, but what my colleagues and I have gone through ourselves in recent months while preparing an AI implementation plan for the next few years. It all started without any plan. In the spring of 2026, part of the team was already playing with AI agents in personal projects – just out of interest. In the summer, it turned into a work practice: manual code writing by developers decreased significantly, but the load on code reviews and architectural decisions increased sharply – exactly the shift in focus that all analysts are now talking about. By the end of the summer, we began experimenting with local generation on our own hardware and created a common knowledge base – first for all the stacks we worked with, and then a separate base for 1C and related technologies was выделена from it. We launched regular internal meetings to share experiences with AI tools – once a week, it would have been difficult to keep pace without them. In the fall, we connected a cloud AI agent (in compliance with data processing requirements) as the main work tool for the entire team, and before that, we cleaned the code of credentials and other sensitive information to work safely with cloud agents. Separately, we started a pilot of spec-driven development (SDD) – first with analysts and developers, and stumbled upon the industry benchmarking project PRISM, which we began to use to verify the models&#x27; advertising claims on our own tasks, rather than taking their word for it. There is also a less pleasant finding: part of the team noted a deterioration in sleep and general well-being due to the sharp immersion in new technology. I think it&#x27;s honest to talk about this – acceleration rarely comes for free, and this should be factored into the implementation pace, not hushed up. Read more</p>
+    <p class="source">
+      Machine-translated from Habr.
+      <a href="https://habr.com/ru/articles/1110762/?utm_campaign=1110762&amp;utm_source=habrahabr&amp;utm_medium=rss">Read the original Russian article</a>.
+      Sat, 21 Nov 2026 19:19:53 GMT
+    </p>
+  </header>
+  <main>
+<div><h3>How it started with us</h3><p>I work in a development team of about twenty people: 1C developers and related stacks, several testers, and analysts. This text is not theory, but what my colleagues and I have gone through ourselves in recent months while preparing an AI implementation plan for the next few years.</p><p>It all started without any plan. In the spring of 2026, part of the team was already playing with AI agents in personal projects – just out of interest. In the summer, it turned into a work practice: manual code writing by developers decreased significantly, but the load on code reviews and architectural decisions increased sharply – exactly the shift in focus that all analysts are now talking about.</p><p>By the end of the summer, we began experimenting with local generation on our own hardware and created a common knowledge base – first for all the stacks we worked with, and then a separate base for 1C and related technologies was выделена from it. We launched regular internal meetings to share experiences with AI tools – once a week, it would have been difficult to keep pace without them.</p><p>In the fall, we connected a cloud AI agent (in compliance with data processing requirements) as the main work tool for the entire team, and before that, we cleaned the code of credentials and other sensitive information to work safely with cloud agents. Separately, we started a pilot of spec-driven development (SDD) – first with analysts and developers, and stumbled upon the industry benchmarking project PRISM, which we began to use to verify the models' advertising claims on our own tasks, rather than taking their word for it.</p><p>There is also a less pleasant finding: part of the team noted a deterioration in sleep and general well-being due to the sharp immersion in new technology. I think it's honest to talk about this – acceleration rarely comes for free, and this should be factored into the implementation pace, not hushed up.</p><h3>What the industry shows</h3><p>When my colleagues and I started putting together the plan on paper, I compared our experience with what the industry is writing. Here's what I found.</p><p><strong>The developer's role is shifting from writing code to supervising agents.</strong> Gartner predicts that most code will be written by AI agents and reviewed by experienced developers; 80% of engineers will need to retrain their skills by 2027. IDC describes this as a shift in supervision: tasking, verifying results, refining agent output instead of coding independently. But McKinsey coldly adds: the average productivity gain from AI is only about 3%, and 30% of teams have even seen productivity drop: the main effect comes not from the tool itself, but from restructuring roles and processes around it.</p><p><strong>Spec-driven development is becoming the standard, not a niche practice.</strong> The idea is simple: the specification is the primary artifact, code is derived from it. As formulated on DEV Community, agents write code well but guess poorly what was meant – the specification closes this gap. A Medium review counts over 30 SDD frameworks already. There is a caveat: Augment Code refers to a study showing a 41% increase in bugs in pull requests with AI coding without a specification – this is an argument for review points, not against SDD as such.</p><p><strong>Local and open-weight models are growing faster than it seems.</strong> According to a survey of 200 companies, their share in enterprise AI token traffic increased from 23% to 34% in a year; Vercel sees growth from 11% to 36% in just three months on its gateway. At the same time, self-managed hosting in the cloud and on-premises share the market almost equally (46% vs. 42%) – your own server is far from the only option, but it's not a niche bet either.</p><p><strong>General benchmarks do not guarantee results on real tasks.</strong> BlueOptima showed that on real enterprise tasks, AI tools are successful in less than 23% of cases, and Sourcegraph CodeScaleBench explains why: standard benchmarks like SWE-bench test small, self-contained repositories, not large production codebases. This is especially important for niche platforms like 1C: a model's general rating says nothing about how well it knows your specific codebase.</p><p><strong>Costs are growing faster than benefits.</strong> Gartner predicts that without management, token costs will surpass the average developer salary by 2028. Figures on the topic vary widely between sources – from 59% to over 90% by various adoption estimates, so most specific percentages should be treated with caution.</p><h3>What matched and what didn't</h3><p>There were more matches than I expected:</p><ul><li><p>The shift in focus from coding to review/architecture, which I noticed in our team even before we started reading analytics, exactly matches three major analytical firms at once.</p></li><li><p>Our SDD pilot coincided precisely with the moment the practice became mainstream, not niche.</p></li><li><p>Betting on local/open-weight models aligns with a real, rapidly growing segment, not a niche bet.</p></li><li><p>Our own benchmarking addresses exactly the problem described by BlueOptima and Sourcegraph – general ratings do not reflect the team's actual work.</p></li></ul><p>But here's what made us revise part of the plan:</p><ul><li><p>McKinsey insists: the main effect comes not from the tool itself, but from restructuring the process around it. The first version of our plan was more about tools and infrastructure than about the review process itself – we had to separately specify how code work actually changes, not just who uses what.</p></li><li><p>Gartner's forecast on token costs by 2028 made us think: our metrics don't yet have a clear per-person spending cap.</p></li><li><p>The hosting distribution reminds us: an entirely self-hosted server is not the only valid path; if our own server isn't ready on schedule, managed open-weight hosting is a viable backup option, not a failure.</p></li><li><p>64% of companies implement AI agents, but only 33% of them measure ROI. We have a quarterly self-assessment – it turns out this already puts us in the minority of those who are measuring at all.</p></li></ul><h3>What's next</h3><p>In mid-next year, team leads will receive one NVIDIA DGX Spark each for personal use – not as a work task, but as a sandbox for experiments: to keep a finger on the pulse of the local generation industry. By the end of the year, based on this experience, we plan to deploy a common team server capable of handling multithreading and simultaneous work of the entire team with a 400B+ class model. The sandboxes are clearly intended as a precursor to the server, not an alternative: we are consciously not fixing the exact server specification in advance, but postponing it until a checkpoint after several months of working with the sandboxes.</p><p>Separately, we decided to explicitly outline how the review process itself changes – after all, it is this, according to McKinsey, that provides the real effect, not the tools themselves. Three things:</p><ol><li><p>Review shifts to before the code, not just after: with SDD, architectural review happens at the specification/plan level, before code generation.</p></li><li><p>A separate checklist for AI code, not a general one: compliance with internal conventions, edge cases of business logic, absence of "hallucinations" in the generated code.</p></li><li><p>An explicit gate before merging for AI code: a specific person signs off on the merge, not a "default OK" – especially while working with a cloud tool, before our own server is available.</p></li></ol><h3>Conclusions for other teams</h3><p>If you are just starting your journey, here's what I would take away from this experience:</p><ul><li><p><strong>AI accelerates, it doesn't replace</strong> – but this should be stated explicitly, not taken for granted: avoiding the temptation to cut staff in a wave of euphoria is easier when the principle is spoken aloud than when management has already decided to cut.</p></li><li><p><strong>Build your own benchmarking, especially on niche platforms</strong> – a model's general rating says nothing about how it will behave on your codebase.</p></li><li><p><strong>Process is more important than the tool</strong> – outline how the review changes, not just what tool to buy: this is what, according to McKinsey, provides the real effect.</p></li><li><p><strong>Acceleration is not free</strong> – the team's well-being during a period of sharp immersion is part of the plan, not a minor detail to be ignored.</p></li><li><p><strong>Measure the result</strong> – most companies implement AI agents but don't calculate ROI – at least a simple quarterly self-assessment already puts you in the minority of those who are trying to understand what's happening.</p></li></ul></div>
+  </main>
+  <footer>
+    Translation generated with Gemini 2.5 Flash-Lite.
+    The original article remains the source of record.
+  </footer>
+</body>
+</html>

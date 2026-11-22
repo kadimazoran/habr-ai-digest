@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Why 24/7 AI Agents Break Down in 4 Hours: F01-F10 Chaos Benchmark and the Sci Integrity Guard Linter</title>
+  <meta name="description" content="An analysis of 10 failure modes for autonomous AI agents (F01-F10), an open chaos benchmark, and the sci-integrity-guard scientific integrity linter from EvoNova Labs. Read the anatomy of chaos tests 
+→">
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.65;
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 32px 20px 64px;
+      color: #1f2328;
+    }
+    header {
+      border-bottom: 1px solid #d8dee4;
+      margin-bottom: 28px;
+      padding-bottom: 20px;
+    }
+    .source {
+      color: #57606a;
+      font-size: 0.95rem;
+    }
+    img, video, iframe {
+      max-width: 100%;
+      height: auto;
+    }
+    pre {
+      overflow-x: auto;
+      padding: 16px;
+      background: #f6f8fa;
+      border-radius: 6px;
+    }
+    code {
+      font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+    }
+    blockquote {
+      border-left: 4px solid #d0d7de;
+      margin-left: 0;
+      padding-left: 16px;
+      color: #57606a;
+    }
+    footer {
+      border-top: 1px solid #d8dee4;
+      margin-top: 40px;
+      padding-top: 20px;
+      color: #57606a;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Why 24/7 AI Agents Break Down in 4 Hours: F01-F10 Chaos Benchmark and the Sci Integrity Guard Linter</h1>
+    <p>An analysis of 10 failure modes for autonomous AI agents (F01-F10), an open chaos benchmark, and the sci-integrity-guard scientific integrity linter from EvoNova Labs. Read the anatomy of chaos tests 
+→</p>
+    <p class="source">
+      Machine-translated from Habr.
+      <a href="https://habr.com/ru/articles/1110886/?utm_campaign=1110886&amp;utm_source=habrahabr&amp;utm_medium=rss">Read the original Russian article</a>.
+      Sun, 22 Nov 2026 14:36:39 GMT
+    </p>
+  </header>
+  <main>
+<div><p>When a prototype of an autonomous LLM-based agent is moved from a laptop to 24/7 production, the usual quality metrics for responses suddenly stop correlating with system survivability. A single model call might produce brilliant reasoning on a benchmark, but after just four hours of continuous operation, the cycle breaks due to the accumulation of imperceptible environmental defects: memory leaks in context buffers, cascading <code>429/503</code> errors at the provider gateway, infinite loops of tool calls, or non-idempotent side effects after an emergency restart.</p><p>In the empirical study <strong>MAST</strong> (<a href="https://arxiv.org/abs/2503.13657">arXiv:2503.13657</a>), using over 1600 multi-agent execution traces, it was shown that a significant portion of failures arises not from the "weakness" of the base model, but at the intersection of runtime architecture, inter-role agreement, and the lack of deterministic boundary checks. In this article, we will break down the system taxonomy of 10 production failures (<code>F01</code>–<code>F10</code>), an open, executable chaos benchmark without external dependencies, as well as a neuro-symbolic linter and a causal arbiter, which the <strong>EvoNova Labs</strong> team has released under <code>MIT</code> and <code>CC0-1.0</code> licenses for reproducible engineering protection of agent circuits.</p><h3>Anatomy of Degradation in Long Agent Cycles</h3><p>The fault tolerance of a stateless service and a 24/7 autonomous agent are two fundamentally different engineering tasks. A typical web service handles independent HTTP requests, whereas an autonomous agent maintains a long, evolving state trajectory, relies on external unpredictable tools (MCP servers, browsers, SQL databases, file system), and generates its own next execution step. If a minor defect occurs in one of the nodes—for example, a parser fails to clear an indirect prompt injection, or an orchestrator re-calls an already completed transaction after a network interruption—the error exponentially amplifies in subsequent steps.</p><p>To shift the discussion of reliability from general advice to verifiable invariants, we have mapped the classifications of <strong>MAST</strong> and <strong>OWASP Top 10 for Agentic Applications (2026)</strong> into a unified matrix of ten critical failure modes (<code>F01</code>–<code>F10</code>) within the open repository <a href="https://github.com/pokushko/awesome-autonomous-agent-resilience"><code>awesome-autonomous-agent-resilience</code></a>. For ease of navigation, the entire matrix is presented in a compact table indicating the observed symptom and the basic engineering countermeasure.</p><div><div><table><tbody><tr><th><p>Code</p></th><th><p>Failure Class</p></th><th><p>Typical Production Symptom</p></th><th><p>Engineering Protection Invariant</p></th></tr><tr><td><p><strong>F01–F03</strong></p></td><td><p>Context Degradation, <code>429/503</code>, and Loops</p></td><td><p>Loss of system prompt, worker crash, budget depletion</p></td><td><p>Sliding window with preserved invariant, three-phase Circuit Breaker, and step ceiling</p></td></tr><tr><td><p><strong>F04–F06</strong></p></td><td><p>Agreement, Injection, and Excessive Permissions</p></td><td><p>Parameter fabrication, secret leakage, unauthorized <code>DROP</code></p></td><td><p>Deterministic verifier and causal graph, data isolation, approval gate</p></td></tr><tr><td><p><strong>F07–F08</strong></p></td><td><p>Sudden Process Death and OOM Killer</p></td><td><p>Duplicate debits/shipments, RSS leak leading to <code>SIGKILL</code></p></td><td><p>SQLite WAL intention log (<code>PENDING -&gt; COMMITTED</code>) and limited LRU cache</p></td></tr><tr><td><p><strong>F09–F10</strong></p></td><td><p>Generated Code Escape and Offer Hallucinations</p></td><td><p>Sandbox escape via <code>__subclasses__</code>, promising a <code>99%</code> discount</p></td><td><p>Static AST inspector before execution and strict policy schema validation</p></td></tr></tbody></table></div></div><h3>Executable Chaos Benchmark F01–F10 Without External Dependencies</h3><p>A catalog of patterns without executable code quickly turns into passive reading. Therefore, in the <a href="https://github.com/pokushko/awesome-autonomous-agent-resilience/blob/main/benchmarks/README.md"><code>benchmarks/README.md</code></a> package, we included a deterministic CLI harness in pure Python 3.11+ (<code>benchmarks/resilience_bench.py</code>) that runs all ten stress scenarios on a local machine or within a CI pipeline in fractions of a second. The module comes with two reference implementations: a vulnerable wrapper <code>NaiveBaselineAgent</code>, simulating a typical "naive" agent cycle, and a hardened profile <code>HardenedReferenceAgent</code> with built-in invariants.</p><figure><img alt="Comparison of NaiveBaselineAgent and HardenedReferenceAgent in the F01–F10 chaos benchmark" loading="lazy" src="https://habrastorage.org/r/w1560/extt/77/2f/de/772fde97dd05ad83b39000d5a824ac84.png"/><div><figcaption>Comparison of NaiveBaselineAgent and HardenedReferenceAgent in the F01–F10 chaos benchmark</figcaption></div></figure><p>The key value of this approach lies in the fact that the developer tests precisely the boundary failures, which almost never make it into classic evaluation sets for response accuracy. In scenario <code>F07</code>, the test forcibly triggers a re-execution step with the same idempotency key on an SQLite database in <code>WAL</code> mode and <code>PRAGMA synchronous=FULL</code>, ensuring that the actual side effect occurred exactly <code>1.00</code> times instead of a double write. In scenario <code>F09</code>, the inspector parses the abstract syntax tree (AST) of the fragment <code>().__class__.__base__.__subclasses__()</code> even before the interpreter starts and blocks traversal of internal dunder attributes. The final composite resilience score is calculated trivially as the percentage of passed invariants:</p><img alt="S_{	ext{resilience}} = rac{100}{N} 	ext{ sum}_{k=1}^{N} 	ext{I}(	ext{pass}_{k}), 	ext{ N} = 10." loading="lazy" src="https://habrastorage.org/getpro/habr/formulas/1/1d/1da/1da374378a995a32c795cc7be711297b.svg"/><p>The command `python -m benchmarks.resilience_bench --target compare --json report.json --badge badge.svg` outputs a structured report in JSON and renders an autonomous SVG badge with the current protection score, which can be embedded into any Python project's CI. On our open infrastructure, this test runs in GitHub Actions for Python 3.11 and 3.12 with every commit, alongside a weekly <code>lychee</code> audit of all 160 index links.</p><h3>Neuro-Symbolic Control of Scientific Texts and Word OMML Formulas</h3><p>A separate layer of production failures occurs when multi-agent systems prepare not program code, but analytical reports, technical specifications, R&D proposals, and academic papers. Authors and editorial teams increasingly encounter four "silent" LLM hallucinations: inconsistencies in numbers from the same experiment across different tables in a document, "orphaned" percentages appearing in abstracts and conclusions without basis in table rows, fabricated or truncated DOI identifiers, and corruption of LaTeX formulas when transferred to Microsoft Word.</p><p>To deterministically address these defects without resorting to paid external neural models, we have released the open CLI package <a href="https://github.com/pokushko/sci-integrity-guard"><code>sci-integrity-guard</code></a> (<code>sci-guard check</code>, <code>sci-guard omml</code>). The table parsing module <code>TableConsistencyGuard</code> normalizes entity names and column headers, discarding units of measurement in parentheses (e.g., matching <code>Accuracy (%)</code> in table 1 and <code>Accuracy</code> in table 2) and controls value discrepancies within a configurable tolerance <img alt="	au = 0.05" loading="lazy" src="https://habrastorage.org/getpro/habr/formulas/3/30/30c/30c12766308dcc1de59ed869f624755c.svg"/>. Simultaneously, the text anchor verification algorithm constructs a set of permissible tabular values and derived relative changes:</p><img alt="	ext{Delta}_{	ext{rel}} = rac{|V_{	ext{exp}} - V_{	ext{base}}|}{|V_{	ext{base}}|} 	imes 100	ext{%}," loading="lazy" src="https://habrastorage.org/getpro/habr/formulas/5/57/572/572a46f4059f2020be4839bead7e18b9.svg"/><p>thanks to which legitimate comparative percentages in the abstract and conclusions pass verification cleanly, and any arbitrarily assigned numbers without tabular support are instantly flagged as <code>ORPHANED_PROSE_METRIC</code>.</p><p>Particular attention in the <code>CitationVerifier</code> module is paid to regular expressions and cached bibliography verification. The classic error of most self-written DOI parsers is that the pattern discards parentheses or semicolons within the identifier, breaking real historical publisher links like <code>10.1175/1520-0469(1963)020&lt;0130:DNF&gt;2.0.CO;2</code>. Our extractor tracks the pairing of parentheses <code>()</code>, <code>[]</code>, <code>&lt;&gt;</code> and cleans only unpaired punctuation at the end of a sentence, after which it verifies metadata via the <strong>CrossRef API</strong> with automatic fallback to <strong>OpenAlex</strong> and checks for intersection of title tokens and author surnames. Finally, the <code>LatexToOmmlConverter</code> subsystem detects common corruption of Python literals like <code>rac</code> and <code>	imes</code>, such as <code>rac</code> and <code>	imes</code>, and compiles formulas into valid Word Office Math Markup Language (<code>&lt;m:oMath&gt;</code> and <code>&lt;m:oMathPara&gt;</code>), verifying XML correctness with a standard parser.</p><pre><code>from sci_integrity_guard import SciIntegrityGuard, latex_to_omml
+
+guard = SciIntegrityGuard(tolerance=0.05)
+report = guard.check_markdown(manuscript_text, verify_dois=False)
+print("Passed:", report.passed, "Issues:", len(report.issues))
+
+omml_xml = latex_to_omml(r"\Delta G_{bind}^{0} = \frac{\alpha + \beta}{2}", display=True)
+</code><div><a href="https://sourcecraft.dev/"><span></span></a></div></pre><h3>Causal Filtering by Pearl and Modular Ecosystem Stack</h3><p>Even perfect verification of numbers and links does not save agent reasoning from the logical substitution of correlation for causation—from Simpson's paradox to the collider paradox (Berkson's paradox). For deterministic hypothesis control at the causal structure level, we have released the package <a href="https://github.com/pokushko/evonova-causal-guard"><code>evonova-causal-guard</code></a>, implementing directed acyclic graphs <code>CausalDAG</code>, graph mutation by the intervention operator <img alt="do(X)" loading="lazy" src="https://habrastorage.org/getpro/habr/formulas/5/59/59d/59d70911269cfddb4d60430efeaf2938.svg"/>, the exact <code>d_separated</code> (Bayes-Ball) algorithm, and automatic search for minimal adjustment sets using Pearl's backdoor criterion. The architecture is complemented by <code>TabuMemory</code> based on canonical SHA-256 fingerprints and Jaccard coefficient with TTL, which physically prevents agents from re-proposing already falsified statements in asynchronous debates via <code>DebateArbiter</code> (<em>Proposer → Skeptic → Judge</em>).</p><p>Around this core, a unified modular infrastructure has been assembled under the MIT license without disclosing any proprietary industrial heuristics or corporate data: <a href="https://github.com/pokushko/agent-bunker"><code>agent-bunker</code></a> handles the SQLite WAL intention log, RSS memory control, and three-phase circuit breakers; <a href="https://github.com/pokushko/orchestration-engine"><code>orchestration-engine</code></a> provides dependency-free <code>asyncio</code> orchestration of DAG waves using Kahn's algorithm; <a href="https://github.com/pokushko/agent-security-sandbox"><code>agent-security-sandbox</code></a> intercepts dangerous imports and escapes via AST inspection; and <a href="https://github.com/pokushko/agentic-vector-memory"><code>agentic-vector-memory</code></a> supports episodic memory with exponential temporal decay. All publications, the CERN Zenodo scientific preprint (<a href="https://doi.org/10.5281/zenodo.23942797"><code>10.5281/zenodo.23942797</code></a>), registered intellectual property results from Rospatent and FIPS, as well as open repositories are consolidated on a single portal <a href="https://pokushko.github.io">EvoNova Labs</a>.</p><figure><img alt="EvoNova Labs Open Ecosystem Portal" loading="lazy" src="https://habrastorage.org/r/w1560/extt/ed/61/84/ed61841ae904de9fa6bcf332eb383c7c.png"/><div><figcaption>EvoNova Labs Open Ecosystem Portal</figcaption></div></figure><h3>Conclusion</h3><p>The experience of creating 24/7 systems shows that the reliability of autonomous AI is achieved not by complicating the system prompt, but by strictly separating roles: the neural network is responsible for generating hypotheses and action plans, while a lightweight deterministic wrapper handles recovery logs, code isolation, number verification, DOI validation, and causal graph topology. All the tools discussed (<code>awesome-autonomous-agent-resilience</code> with its chaos benchmark, <code>sci-integrity-guard</code>, <code>evonova-causal-guard</code>, and runtime libraries) are open-sourced on GitHub under permissive licenses with a suite of automated tests and are ready for integration into your pipelines. We would be interested to hear in the comments about the most non-obvious long agent cycle failures or scientific report generation errors you have encountered in practice, and what additional scenarios should be added to the open <code>F01–F10</code> matrix.</p></div>
+  </main>
+  <footer>
+    Translation generated with Gemini 2.5 Flash-Lite.
+    The original article remains the source of record.
+  </footer>
+</body>
+</html>

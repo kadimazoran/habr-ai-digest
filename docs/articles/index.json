@@ -5527,6 +5527,86 @@
     "summary": "Developer Rich Acosta, in collaboration with Claude, has introduced the open-source project ClawDOS (solution website). This is an AI agent for writing code in the DOS environment. Read more",
     "title": "ClawDOS Introduced — An AI Agent for Writing Code in DOS"
   },
+  "https://habr.com/ru/articles/1110758/?utm_campaign=1110758&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Sun, 22 Nov 2026 11:48:33 GMT",
+    "slug": "1110758",
+    "source_url": "https://habr.com/ru/articles/1110758/?utm_campaign=1110758&utm_source=habrahabr&utm_medium=rss",
+    "summary": "In early 2026, Yandex announced a grant for the best open-source projects on their new SourceCraft platform. I submitted my project, np — a C++ analog of NumPy with CUDA support and manual SIMD optimizations (AVX2/AVX-512), which outperforms the original by 2-20x in speed and uses 1.5x less memory (I detailed this with benchmarks in my previous article 'Speeding Up and Optimizing NumPy, Pandas, SciPy, and Scikit-learn'). At the time, I had just started exploring 'vibecoding' and used it to achieve this level of optimization. To my surprise, I saw my project in the list of winners. Honestly, I was very surprised and initially didn't believe it: I had never received any grants for projects before and didn't quite understand what the program committee found so appealing about my repository. It seemed like nothing particularly outstanding. Nevertheless, 600,000 rubles appeared in my account. The logical question arose: how to spend it? According to the contest rules, grants are given to projects with a clear development plan. The organizers saw this future – unlike me, for which I am very grateful. I, on the other hand, wasn't entirely sure where to go next. Rewrite the entire NumPy in C++ using vibecoding? Possible, but why? I experimented with some functions and realized I had already solved the basic acceleration task. Where I spent the grant",
+    "title": "Where I Spent My Yandex Grant: Writing a C++/CUDA Engine for LLMs from Scratch That Outperforms llama.cpp on an Old RTX 2080 Ti"
+  },
+  "https://habr.com/ru/articles/1110762/?utm_campaign=1110762&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Sat, 21 Nov 2026 19:19:53 GMT",
+    "slug": "1110762",
+    "source_url": "https://habr.com/ru/articles/1110762/?utm_campaign=1110762&utm_source=habrahabr&utm_medium=rss",
+    "summary": "How it started with us. I work in a development team of about twenty people: 1C developers and related stacks, several testers, and analysts. This text is not theory, but what my colleagues and I have gone through ourselves in recent months while preparing an AI implementation plan for the next few years. It all started without any plan. In the spring of 2026, part of the team was already playing with AI agents in personal projects – just out of interest. In the summer, it turned into a work practice: manual code writing by developers decreased significantly, but the load on code reviews and architectural decisions increased sharply – exactly the shift in focus that all analysts are now talking about. By the end of the summer, we began experimenting with local generation on our own hardware and created a common knowledge base – first for all the stacks we worked with, and then a separate base for 1C and related technologies was выделена from it. We launched regular internal meetings to share experiences with AI tools – once a week, it would have been difficult to keep pace without them. In the fall, we connected a cloud AI agent (in compliance with data processing requirements) as the main work tool for the entire team, and before that, we cleaned the code of credentials and other sensitive information to work safely with cloud agents. Separately, we started a pilot of spec-driven development (SDD) – first with analysts and developers, and stumbled upon the industry benchmarking project PRISM, which we began to use to verify the models' advertising claims on our own tasks, rather than taking their word for it. There is also a less pleasant finding: part of the team noted a deterioration in sleep and general well-being due to the sharp immersion in new technology. I think it's honest to talk about this – acceleration rarely comes for free, and this should be factored into the implementation pace, not hushed up. Read more",
+    "title": "What's Happening to the Developer Profession: My Experience and Industry Data"
+  },
+  "https://habr.com/ru/articles/1110766/?utm_campaign=1110766&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Sat, 21 Nov 2026 20:29:08 GMT",
+    "slug": "1110766",
+    "source_url": "https://habr.com/ru/articles/1110766/?utm_campaign=1110766&utm_source=habrahabr&utm_medium=rss",
+    "summary": "\"Among the best in the world\": let's verify the statement with an open rating. There's a simple way to check bold claims about neural networks – an open rating where real users blindly choose the best answer from two anonymous models. Such a rating exists in Russia: llmarena.ru – 112 models, over 157 thousand votes. Read more",
+    "title": "\"Our two flagship language models are among the best in the world.\" Let's check with an open rating"
+  },
+  "https://habr.com/ru/articles/1110784/?utm_campaign=1110784&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Sun, 22 Nov 2026 09:57:32 GMT",
+    "slug": "1110784",
+    "source_url": "https://habr.com/ru/articles/1110784/?utm_campaign=1110784&utm_source=habrahabr&utm_medium=rss",
+    "summary": "About eight years ago, I decided to combine two useful things: to delve deeper into JavaScript and improve my English at the same time. I found a technical book in its original language, opened the first chapter, and started reading. Dozens of words were added to my dictionary in an evening, and I barely made any progress in the book. It turned out that I was simultaneously learning programming, translating from English, and trying to memorize a bunch of new words. And I didn't enjoy any of these activities. Read more",
+    "title": "Stop Learning Every Unfamiliar Word. How to Learn to Read in English"
+  },
+  "https://habr.com/ru/articles/1110800/?utm_campaign=1110800&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Sun, 22 Nov 2026 06:49:47 GMT",
+    "slug": "1110800",
+    "source_url": "https://habr.com/ru/articles/1110800/?utm_campaign=1110800&utm_source=habrahabr&utm_medium=rss",
+    "summary": "I am creating a companion program for Euro Truck Simulator 2 - a radio called \"Channel 15\". Ideally, it's a radio play where the player is one of the viewers, as well as actors and directors, and eighteen fictional drivers drive around the map, talk on the radio, remember past conversations, and eventually start to recognize you. It's not a mod, it doesn't touch game files, it works alongside the game and reads telemetry. In this article, I don't want to talk about how it's built inside (that's been done), but about what I've hit a wall with now. I'm worried that my characters are flat. And I can't decide if they need depth at all. I'm figuring this out in writing because I've been going in circles in my office alone for a week. Read more",
+    "title": "If you look into the depths for a long time"
+  },
+  "https://habr.com/ru/articles/1110810/?utm_campaign=1110810&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Sun, 22 Nov 2026 07:54:13 GMT",
+    "slug": "1110810",
+    "source_url": "https://habr.com/ru/articles/1110810/?utm_campaign=1110810&utm_source=habrahabr&utm_medium=rss",
+    "summary": "A local AI photo studio: how to train LoRA on your own photos, try on clothes, create looks with a personal stylist, and have a beautiful photoshoot. The article includes examples of results and a list of tools used. For convenience, I've combined them into my free open-source application on GitHub. Read more",
+    "title": "Home AI Photo Studio: Training LoRA, Trying on Clothes, and a Stylist in Imagecaster"
+  },
+  "https://habr.com/ru/articles/1110838/?utm_campaign=1110838&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Sun, 22 Nov 2026 11:12:35 GMT",
+    "slug": "1110838",
+    "source_url": "https://habr.com/ru/articles/1110838/?utm_campaign=1110838&utm_source=habrahabr&utm_medium=rss",
+    "summary": "TL;DR. I adapted the open-source TTS model tiny-voca for the Russian language: trained two voices on the open Dialogs dataset, created a Russian phonemizer, added stress placement, and built a voice assistant with web calls and voice messages. The model is about 21 MB, runs offline on CPU, and requires no cloud subscription. Demo: voice.lmchat.ru Read more",
+    "title": "tiny-voca-ru: Russian voice in 21 megabytes"
+  },
+  "https://habr.com/ru/articles/1110848/?utm_campaign=1110848&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Sun, 22 Nov 2026 12:01:11 GMT",
+    "slug": "1110848",
+    "source_url": "https://habr.com/ru/articles/1110848/?utm_campaign=1110848&utm_source=habrahabr&utm_medium=rss",
+    "summary": "Alice AI's recommendations might align with your desire to buy SaaS simply because the service suits the business. To check if the neural network adapts to the buyer, you need to independently calculate the cost of services and repeat the requests with the same selection criteria, only changing the expressed preference. Read more",
+    "title": "How to check if Alice AI is just agreeing or truly considering your request when choosing SaaS"
+  },
+  "https://habr.com/ru/articles/1110886/?utm_campaign=1110886&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Sun, 22 Nov 2026 14:36:39 GMT",
+    "slug": "1110886",
+    "source_url": "https://habr.com/ru/articles/1110886/?utm_campaign=1110886&utm_source=habrahabr&utm_medium=rss",
+    "summary": "An analysis of 10 failure modes for autonomous AI agents (F01-F10), an open chaos benchmark, and the sci-integrity-guard scientific integrity linter from EvoNova Labs. Read the anatomy of chaos tests \n→",
+    "title": "Why 24/7 AI Agents Break Down in 4 Hours: F01-F10 Chaos Benchmark and the Sci Integrity Guard Linter"
+  },
+  "https://habr.com/ru/articles/1110916/?utm_campaign=1110916&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Sun, 22 Nov 2026 15:48:40 GMT",
+    "slug": "1110916",
+    "source_url": "https://habr.com/ru/articles/1110916/?utm_campaign=1110916&utm_source=habrahabr&utm_medium=rss",
+    "summary": "I recently saw a study from Ahrefs: brands with ten times more mentions on web pages have about 3.7 times more mentions in AI responses — significantly less than one might expect from such a difference. When choosing platforms for brand mentions, it's important to consider that Ahrefs only studied third-party pages with search traffic. The persuasiveness of the link to AI responses is also important: the authors compared different companies, so the coefficient itself does not justify purchasing publications. Read more",
+    "title": "How to Choose Platforms for Brand Mentions in AI Responses — I Scoured a Study from Ahrefs"
+  },
   "https://habr.com/ru/companies/1c/articles/1071340/?utm_campaign=1071340&utm_source=habrahabr&utm_medium=rss": {
     "model": "gemini-2.5-flash-lite",
     "published": "Thu, 03 Sep 2026 07:18:11 GMT",
@@ -6590,6 +6670,14 @@
     "source_url": "https://habr.com/ru/companies/lukit_ru/articles/1095428/?utm_campaign=1095428&utm_source=habrahabr&utm_medium=rss",
     "summary": "Night falls in the city, and the digital tech lead steps up for on-call duty. It stitches hundreds of alerts into a single incident, handles the first line of support, and writes post-mortems while the engineer finishes their coffee. It also suggests solutions, but sometimes they can make things worse. That's why the final decision always rests with the human in charge. We've staged one such week in the life of an AIOps agent as a five-act play. It features an on-call engineer named Alexey, his digital partner, and a restart button that hangs on the dashboard throughout the story, waiting for its moment. Alexey is a composite character. We didn't have to invent the late-night calls, the cold coffee, or the group chat where three teams fix one problem. Read on.",
     "title": "A Play About On-Call Duty with an AIOps Agent. Inside: 340 Alerts, Three Bugs, and an \"Abort\" Button"
+  },
+  "https://habr.com/ru/companies/magnit/articles/1110850/?utm_campaign=1110850&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Sun, 22 Nov 2026 13:31:57 GMT",
+    "slug": "1110850",
+    "source_url": "https://habr.com/ru/companies/magnit/articles/1110850/?utm_campaign=1110850&utm_source=habrahabr&utm_medium=rss",
+    "summary": "Hello, Habr! My AGENTS.md clearly states: 'do not work in main' and 'force push only with permission.' I analyzed 193 git push calls from my sessions: in about a third of cases, the agent didn't ask for permission, thrice it pushed directly to main, and out of 31 force pushes, I only allowed two. And git is relatively harmless – the same agent accesses databases, S3, and Kubernetes with my credentials, and one day it might execute DROP DATABASE. Hooks, sandboxes, and roles have been discussed on Habr before; I will break down security mechanisms in agent development into four levels: what each actually protects, how to configure it, and where its boundaries lie. The agent actively accesses all your services and systems under your accounts and with developer privileges – how can you protect your infrastructure from non-deterministic agents and reduce potential negative impacts? Defend against Skynet.",
+    "title": "Trust, but Verify — or How to Limit AI Agent Permissions at Different Levels"
   },
   "https://habr.com/ru/companies/magnus-tech/articles/1104754/?utm_campaign=1104754&utm_source=habrahabr&utm_medium=rss": {
     "model": "gemini-2.5-flash-lite",

@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>If you look into the depths for a long time</title>
+  <meta name="description" content="I am creating a companion program for Euro Truck Simulator 2 - a radio called &quot;Channel 15&quot;. Ideally, it&#x27;s a radio play where the player is one of the viewers, as well as actors and directors, and eighteen fictional drivers drive around the map, talk on the radio, remember past convers">
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.65;
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 32px 20px 64px;
+      color: #1f2328;
+    }
+    header {
+      border-bottom: 1px solid #d8dee4;
+      margin-bottom: 28px;
+      padding-bottom: 20px;
+    }
+    .source {
+      color: #57606a;
+      font-size: 0.95rem;
+    }
+    img, video, iframe {
+      max-width: 100%;
+      height: auto;
+    }
+    pre {
+      overflow-x: auto;
+      padding: 16px;
+      background: #f6f8fa;
+      border-radius: 6px;
+    }
+    code {
+      font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+    }
+    blockquote {
+      border-left: 4px solid #d0d7de;
+      margin-left: 0;
+      padding-left: 16px;
+      color: #57606a;
+    }
+    footer {
+      border-top: 1px solid #d8dee4;
+      margin-top: 40px;
+      padding-top: 20px;
+      color: #57606a;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>If you look into the depths for a long time</h1>
+    <p>I am creating a companion program for Euro Truck Simulator 2 - a radio called &quot;Channel 15&quot;. Ideally, it&#x27;s a radio play where the player is one of the viewers, as well as actors and directors, and eighteen fictional drivers drive around the map, talk on the radio, remember past conversations, and eventually start to recognize you. It&#x27;s not a mod, it doesn&#x27;t touch game files, it works alongside the game and reads telemetry. In this article, I don&#x27;t want to talk about how it&#x27;s built inside (that&#x27;s been done), but about what I&#x27;ve hit a wall with now. I&#x27;m worried that my characters are flat. And I can&#x27;t decide if they need depth at all. I&#x27;m figuring this out in writing because I&#x27;ve been going in circles in my office alone for a week. Read more</p>
+    <p class="source">
+      Machine-translated from Habr.
+      <a href="https://habr.com/ru/articles/1110800/?utm_campaign=1110800&amp;utm_source=habrahabr&amp;utm_medium=rss">Read the original Russian article</a>.
+      Sun, 22 Nov 2026 06:49:47 GMT
+    </p>
+  </header>
+  <main>
+<div><p>I am creating a companion program for Euro Truck Simulator 2 - a radio called "Channel 15". Ideally, it's a radio play where the player is one of the viewers, as well as actors and directors, and eighteen fictional drivers drive around the map, talk on the radio, remember past conversations, and eventually start to recognize you. It's not a mod, it doesn't touch game files, it works alongside the game and reads telemetry.</p><p>In this article, I don't want to talk about how it's built inside (that's been done), but about what I've hit a wall with now. I'm worried that my characters are flat. And I can't decide if they need depth at all. I'm figuring this out in writing because I've been going in circles in my office alone for a week.</p><h4>How I Got Here</h4><p>I've had ETS2 for a long time. The game is good in its monotony: raindrops crawl down the windshield, the engine hums rhythmically, you're hauling cardboard boxes or whatever the contract requires. But after half an hour in the cabin, it gets quiet. I tried podcasts and radio in the background - it helps, but I wanted a little more. I also tried multiplayer, but the road there is either dead or so chaotic that you turn off the game in five minutes and nervously giggle for another hour. I don't want to offend anyone, I just needed a different vibe.</p><h4>How the Eighteen Drivers Are Set Up Now</h4><p>Currently, a fixed roster of 18 drivers is active on the air. Each is defined by an archetype and personality: one is a gruff veteran, another a chatty youngster, another a silent workhorse. Each has a deck of lines: greetings, complaints about the weather, banter, and responses to the player. The program pulls a suitable line from the deck based on telemetry data.</p><p>Then it got more interesting, and here I caught myself. I didn't like that characters would respond about each other with "I don't know, I haven't heard," when according to canon they should have interacted. I had to draw a relationship matrix - who knows whom personally, who only knows them by voice, and who has never crossed paths in their entire life. Eighteen by eighteen. I spent three days on this table and along the way "learned" more about my fictional drivers than about my neighbors in the apartment building where I've lived for two years - a picture was emerging, but a clumsy one.</p><p>Plus, there's memory of conversations with the player. And there is, in a sense, a friendship scale. Greeted politely - they'll remember. Swore because you were distracted - they'll also remember, but with a different tone, and even a different word.</p><p>And there are living details, I'm working on them:</p><ul><li><p>Sova (Owl) - Galina, I set her to drive at night, a former librarian. When the air is empty, she reads poems by "a certain forgotten author" over the radio. When asked whose it is, she answers evasively. It's either Yesenin or Akhmatova, I really love these poems. She has a thermos with chamomile in her cabin, coziness.</p></li><li><p>Professor - he's a former history teacher, twenty years in school. He left after an argument about the curriculum - he said history couldn't be shortened, they told him it could. Now he transports yogurts, reads Chekhov at rest stops, and calls everyone "colleagues." In every city, he looks for a monument and takes pictures. His bookshelf is made of a strap and a board, and the board, by the way, is the lid of a desk from that very classroom. I invented this detail for him myself, and it made me sigh.</p></li><li><p>Yanek - a Belarusian, a beekeeper, has fourteen beehives inherited from his grandfather behind his house. He answers a long tirade with a single word: "Dobro" (Good). He fiddles with prayer beads to keep his hands busy. His son is going into IT, Yanek doesn't understand these newfangled teachings, but he's proud of him and hides it behind "Dobro."</p></li></ul><p>Sometimes, this creates what it was all for. A night run, an empty airwave, just the hiss of static and headlights along the edge of the road. And suddenly Sova whispers a line into the radio - it's definitely Akhmatova, I coded it myself. And then Cowboy's voice: "Beautiful, Sova. Whose is that?" A pause, a sip of chamomile. "A certain forgotten author. Over." That's it. No clever depth mechanics worked here, just two decks intersecting successfully. But at that moment, sitting behind the wheel, I myself forgot they were fictional. Then I remembered, and smiled.</p><h4>Where Depth Ends</h4><p>And now, honestly. Everything written above are bright strokes on index cards. Cowboy fell in love with Sova's voice, Samarkand worries about a quarrel with his brother, Petrovna can't stop talking about "having eaten." The details are engaging, you recognize a voice within two sentences. But behind the stroke, you don't feel a person yet. Behind Yanek's "Dobro" there isn't a hidden story - there's a code condition that pulls the right line from the deck when a trigger is activated. The memory of our conversations is actually a relationship counter: helped - plus, ignored - minus, and that's it.</p><p>Playing with such an airwave for an hour is wonderful. Ten hours in, you start to notice the seams: the deck repeats, the responses become predictable, the "personality" boils down to three habits and a voice. I, their author, after a week of testing, already know what each one will say - and part of the enjoyment of my own product is lost. This is where my doubt lies.</p><h4>Is It Even Necessary</h4><p>And here I argue with myself, I'll present both sides.</p><p>For. ETS2 is not a one-evening game. People spend hundreds of hours in it; it's a meditative simulator where you drive for weeks in the evenings. A radio broadcast in such a game is a background companion for months. If the characters remain three jokes on wheels, they will turn into annoying noise and be turned off. If they have stories that unfold slowly, it might create that feeling of someone waiting for you on the highway. In essence, I'm creating a multiplayer for introverts: the frequency is alive, but it's not real people who can annoy or truly offend you, but fictional friends who are always happy to hear from you.</p><p>Against. It's still background noise. The player is driving and listening passively - they are playing the game, not watching a TV series. Depth comes at a high cost: I'm alone, and writing a real biography with internal conflicts for eighteen people would take months of work, which half the players simply wouldn't hear. Or maybe what's there is enough: bright personalities and warm voices hold attention just long enough for the road, and that's also a valid result.</p><h4>A Question for You</h4><p>I haven't decided yet. I'm leaning towards the idea that a real, deep development of two or three out of eighteen sounds like a half-measure to me. And what about when there are more drivers?</p><p>A question for those who play similar games or are just interested: is depth necessary for a background companion? Or is a live voice, a couple of anecdotes, and Sova reading poems by "a certain forgotten author" again enough for a night run, and you recognize who it is? Tell me in the comments - I really need an outside perspective, my own head has already spun everything around.</p></div>
+  </main>
+  <footer>
+    Translation generated with Gemini 2.5 Flash-Lite.
+    The original article remains the source of record.
+  </footer>
+</body>
+</html>

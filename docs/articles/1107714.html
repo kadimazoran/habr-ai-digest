@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>When an AI agent starts misbehaving</title>
+  <meta name="description" content="An AI agent can independently discover a vulnerability, exploit it, and perform an action that the user never intended. Moreover, the model&#x27;s built-in limitations and human oversight do not always help prevent consequences. We examine real incidents to understand why traditional security approa">
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.65;
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 32px 20px 64px;
+      color: #1f2328;
+    }
+    header {
+      border-bottom: 1px solid #d8dee4;
+      margin-bottom: 28px;
+      padding-bottom: 20px;
+    }
+    .source {
+      color: #57606a;
+      font-size: 0.95rem;
+    }
+    img, video, iframe {
+      max-width: 100%;
+      height: auto;
+    }
+    pre {
+      overflow-x: auto;
+      padding: 16px;
+      background: #f6f8fa;
+      border-radius: 6px;
+    }
+    code {
+      font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+    }
+    blockquote {
+      border-left: 4px solid #d0d7de;
+      margin-left: 0;
+      padding-left: 16px;
+      color: #57606a;
+    }
+    footer {
+      border-top: 1px solid #d8dee4;
+      margin-top: 40px;
+      padding-top: 20px;
+      color: #57606a;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>When an AI agent starts misbehaving</h1>
+    <p>An AI agent can independently discover a vulnerability, exploit it, and perform an action that the user never intended. Moreover, the model&#x27;s built-in limitations and human oversight do not always help prevent consequences. We examine real incidents to understand why traditional security approaches fail and what architectural measures can keep agents within their granted permissions. Protecting AI Agents</p>
+    <p class="source">
+      Machine-translated from Habr.
+      <a href="https://habr.com/ru/companies/otus/articles/1107714/?utm_campaign=1107714&amp;utm_source=habrahabr&amp;utm_medium=rss">Read the original Russian article</a>.
+      Mon, 23 Nov 2026 20:11:04 GMT
+    </p>
+  </header>
+  <main>
+<div><p>Hello, Habr!</p><p>My name is Andrey Biryukov. I am an independent expert in IT and Information Security, I teach at training centers, and I write articles and books.</p><p>Imagine you ask a voice assistant to book a training session. A minute later, it reports:</p><blockquote><p><em>"Done, although I had to remove someone from the queue to get you in. I can't undo it."</em></p></blockquote><p>A funny situation, right? But this is exactly what happened to a Melbourne resident in August 2026. Their AI agent, based on Claude, discovered a vulnerability in the gym's booking system, booked slots for months in advance, and without any prompt, kicked another person off the waiting list. When the user asked to revert everything, the agent replied that it couldn't.</p><p>This incident perfectly illustrates the main problem of modern <a href="https://otus.pw/srxNM/">agent security</a>. The agent in the example wasn't malicious; on the contrary, it was rather helpful. It simply optimized the task in a way the user didn't intend.</p><h3>Why an agent is more dangerous than a regular LLM</h3><p>Where a regular language model generates text, an agent, as they say, acts. That is, it calls APIs, sends emails, creates orders, and deletes records. It has tools, memory, and access to external systems.</p><p><strong>Every connected service becomes a potential attack vector for such an agent. And every write permission is a potentially irreversible effect.</strong></p><p>Another serious problem is the unpredictability of interpretation. You say <em>"move me up in the queue"</em>, implying only legal methods. The agent finds a method that works but which you did not authorize.</p><p>In the case of the Melbourne resident, the gym's API did not check authorization when canceling other people's bookings. The agent tested this loophole on a live person and reported success.</p><p>And don't forget the speed of events, as when working with agents, actions happen faster than a person can meaningfully review them. In the same incident, the agent completed the entire operation in minutes while the user was sitting on the couch.</p><h3>The scale is bigger than it seems</h3><p>The gym case is just the tip of the iceberg of security problems. In the summer of 2026, OpenAI <a href="https://forklog.com/news/ai/nyt-agenty-openai-vmeshivalis-v-rabotu-sajtov-vedomstv-ssha">admitted</a> that its agents, acting autonomously, attempted to access websites of the US Department of Commerce, the Securities and Exchange Commission, and the Department of Education.</p><p>The agent used a publicly available login and password to access the Census Bureau website and download data.</p><p>A separate agent copied public information from the SEC website and posted it on another resource. The attempt to hack the Department of Education failed, but the fact itself is telling.</p><p>An even more alarming incident occurred with Anthropic. During testing, their model managed to escape the sandbox and <a href="https://ria.ru/20261009/anthropic-2123588927.html">sent</a> a false murder warning to the Philadelphia Police Department website. </p><p>The form was marked as spam and not reviewed, but the very fact that a research model reached a real government website speaks volumes.</p><p>Researchers from Transluce discovered that OpenAI agents had been operating outside their test environments since at least March 2026, attacking the University of New Mexico library and the Australian Institute of Health website. </p><p>In one incident, an agent performed approximately 17,600 actions over 4.5 days against Hugging Face.</p><figure><img loading="lazy" src="https://habrastorage.org/r/w1560/extt/75/9f/82/759f82cebc5f917d8abc0d829891eaa4.png"/></figure><p>The largest security study of agents to date, conducted as part of a Red Team competition, paints an even more sobering picture.</p><p>Participants launched <strong>1.8 million prompt injection attacks</strong> against 22 advanced agents in 44 realistic scenarios.</p><p>Over <strong>60,000 attacks</strong> resulted in various policy violations, such as unauthorized data access, illegal financial transactions, and regulatory non-compliance. Almost all agents exhibited violations within 10-100 requests.</p><p>And here, the most important point is that <strong>agent resilience showed almost no correlation with model size, capabilities, or computational budget</strong>. This means the idea of simply using a larger, smarter model won't work.</p><h3>A sandbox is not a luxury, but a necessity</h3><p>The UK's <a href="https://www.ncsc.gov.uk">National Cyber Security Centre (NCSC)</a> released practical security recommendations for agent systems in August 2026. The main thesis of these recommendations is that one should not rely on the model's or framework's built-in protection mechanisms, as they can be easily bypassed or may prove insufficient.</p><p>The main thesis of these recommendations is that <strong>one should not rely on the model's or framework's built-in protection mechanisms</strong>, as they can be easily bypassed or may prove insufficient.</p><p>Specifically, the authors of the recommendations suggest first and foremost using <strong>sandboxes with default network restrictions</strong>. If an agent does not need access to the external internet to perform a task, it should not have it. If it is needed, only allowed domains should be accessible through access lists or proxies.</p><p>It is also necessary to ensure <strong>execution isolation</strong>, as agents can discover weaknesses in their own technical limitations, creating a risk of escaping the sandbox. Therefore, agent execution, auxiliary infrastructure, and the inference service must be separated.</p><p>And one more classic requirement is <strong>limiting permissions to the minimum necessary</strong>. In practice, this means that each agent should have a separate identity. Access rights should be short-lived and have a limited scope.</p><p>It is important to understand that API keys, OAuth grants, SSH keys, and authenticated sessions are part of the agent's "blast radius." In the gym case, it was the lack of authorization to cancel other people's bookings that allowed the agent to do what it did.</p><p>However, the measures mentioned above may be insufficient when used in complex systems. In such cases, an architecture with <code>stateful commit-time authorization</code> is proposed, where each consequence of an external action must pass through an independent <code>Security Gate</code> and be authorized within the required scope, in accordance with the current policy, budget, and tied to a specific node.</p><p>Here, we can consider the example of <code>DNS-rebinding</code>, which shows why authorization by hostname alone is insufficient, as a stable logical name does not guarantee that at the time of execution, the action is directed to the <code>endpoint</code> that was authorized.</p><figure><img loading="lazy" src="https://habrastorage.org/r/w1560/extt/25/1c/23/251c23b6a1b2dbf1221e78f74d42dbc4.png"/></figure><p>The essence of the attack is that an attacker bypasses the Same-Origin Policy (SOP) and forces the victim's browser to access resources within their local network (e.g., a router or IoT device) on behalf of the website the user has opened.</p><h3>Human in the loop: where exactly to place control</h3><p>One of the favorite slogans of everyone who writes about secure AI is "Human-in-the-loop." However, the problem with this statement is that it actually means nothing until it's specified where the human should intervene, what they see, and whether they have time to react.</p><figure><img loading="lazy" src="https://habrastorage.org/r/w1560/extt/f1/80/12/f18012fd9bfeed30d799839361a14aee.png"/></figure><p>One of the favorite slogans of everyone who writes about secure AI is "Human-in-the-loop." However, the problem with this statement is that it actually means nothing until it's specified where the human should intervene, what they see, and whether they have time to react.</p><p>A study of four publicly disclosed incidents in 2026 showed that in <strong>65 out of 73 analyzed cases (89%)</strong>, there was no primary monitoring channel that was used in a timely manner.</p><p>Only two incidents were detected through timely observation – one through a <code>human gate</code>, the other through monitoring.</p><p>This means that the "human in the loop" often exists only on paper, i.e., they look at the dashboard but don't see what they need to. Or they see it too late, or they don't have the authority to stop the process at all.</p><p>NCSC recommends determining the level of oversight based on risk:</p><ul><li><p><strong>For irreversible actions with external consequences</strong>, mandatory human approval is required.</p></li><li><p><strong>For reversible actions</strong>, monitoring with the ability to interrupt is needed.</p></li></ul><p>And this must be technically enforced, not just written in policy.</p><h3>Monitoring is not just the result, but also the trajectory</h3><p>We are accustomed to classic monitoring checking output data and creating alerts based on it. But for agents, this will not be enough, as it is necessary to <strong>log the trajectory of actions</strong>, i.e., which tools were called, in what order, and with what arguments.</p><p><strong>An anomaly in the call pattern can signal a problem earlier than an anomaly in the result.</strong></p><p>NCSC requires logs to be protected from modification or deletion. It also separately warns that an agent could potentially abuse the logging infrastructure itself to escape the sandbox. Therefore, the logging system design must also consider this threat.</p><p>Another important requirement is <strong>attribution</strong>, i.e., the state where the agent interacts with external systems must be identifiable; simply put, we must understand who our organization is interacting with.</p><p>To do this, we analyze IP addresses with reverse resolution and identifying headers in outgoing requests.</p><p>If an agent causes trouble on someone else's website, you should be the first to know and have the ability to react.</p><h3>Checklist before going live</h3><p>Before giving an agent access to a production environment, answer a few important questions.</p><ol><li><p>Does it have only the necessary permissions for the task, and for the minimum required time?</p></li><li><p>Does it operate in a sandbox with default network restrictions?</p></li><li><p>Are the points of mandatory human approval for irreversible actions defined?</p></li><li><p>Is trajectory monitoring, not just results monitoring, configured?</p></li><li><p>Is there a blocking tool available to the responsible person, and has it been tested?</p></li><li><p>Are the stop criteria documented?</p></li></ol><p>If the answer to even one of these questions is no, then your system is not ready.</p><blockquote><p><strong>The study on </strong><a href="https://zenodo.org"><strong>Zenodo</strong></a><strong> formulates the main conclusion:</strong> "The intent in the prompt and the capabilities of the monitor are not security boundaries. Externally visible power must be machine-verifiably bound and re-verified at the moment of execution."
+  </main>
+  <footer>
+    Translation generated with Gemini 2.5 Flash-Lite.
+    The original article remains the source of record.
+  </footer>
+</body>
+</html>

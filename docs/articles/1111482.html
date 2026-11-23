@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>13 Sub-agents vs. Bare Codex: I Spent 44 Million Tokens to See if It&#x27;s Worth It</title>
+  <meta name="description" content="Having mastered connecting MCP and SKILLs to Harness AI, I decided to move to the next level of abstraction and explore the overhyped new concept of an &#x27;agent swarm.&#x27; I remember being scared to learn SKILLs and MCP, thinking I&#x27;d go broke and my limits would be blown on a $20 monthly p">
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.65;
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 32px 20px 64px;
+      color: #1f2328;
+    }
+    header {
+      border-bottom: 1px solid #d8dee4;
+      margin-bottom: 28px;
+      padding-bottom: 20px;
+    }
+    .source {
+      color: #57606a;
+      font-size: 0.95rem;
+    }
+    img, video, iframe {
+      max-width: 100%;
+      height: auto;
+    }
+    pre {
+      overflow-x: auto;
+      padding: 16px;
+      background: #f6f8fa;
+      border-radius: 6px;
+    }
+    code {
+      font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+    }
+    blockquote {
+      border-left: 4px solid #d0d7de;
+      margin-left: 0;
+      padding-left: 16px;
+      color: #57606a;
+    }
+    footer {
+      border-top: 1px solid #d8dee4;
+      margin-top: 40px;
+      padding-top: 20px;
+      color: #57606a;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>13 Sub-agents vs. Bare Codex: I Spent 44 Million Tokens to See if It&#x27;s Worth It</h1>
+    <p>Having mastered connecting MCP and SKILLs to Harness AI, I decided to move to the next level of abstraction and explore the overhyped new concept of an &#x27;agent swarm.&#x27; I remember being scared to learn SKILLs and MCP, thinking I&#x27;d go broke and my limits would be blown on a $20 monthly plan. But the devil isn&#x27;t as black as he&#x27;s painted. If I didn&#x27;t go broke last time, why not try my luck with agents? It&#x27;s cool to have a whole swarm of agents working for you, like the big players who spend tens or hundreds of thousands of dollars on tokens. Read more</p>
+    <p class="source">
+      Machine-translated from Habr.
+      <a href="https://habr.com/ru/articles/1111482/?utm_campaign=1111482&amp;utm_source=habrahabr&amp;utm_medium=rss">Read the original Russian article</a>.
+      Mon, 23 Nov 2026 19:33:56 GMT
+    </p>
+  </header>
+  <main>
+<div><p>Having mastered connecting MCP and SKILLs to Harness AI, I decided to move to the next level of abstraction and explore the overhyped new concept of an 'agent swarm.' I remember being scared to learn SKILLs and MCP, thinking I'd go broke and my limits would be blown on a $20 monthly plan. But the devil isn't as black as he's painted. If I didn't go broke last time, why not try my luck with agents? It's cool to have a whole swarm of agents working for you, like the big players who spend tens or hundreds of thousands of dollars on tokens.</p><figure><img loading="lazy" src="https://habrastorage.org/r/w1560/extt/c4/24/b7/c424b79a65a591eeb6d949d99b1f2100.png"/></figure><p>There are currently two very popular projects.</p><p>The first, <a href="https://github.com/garrytan/gstack">garrytan/gstack</a>, has 140k stars. It was created by Garry Tan, head of Y Combinator. The project turns Claude Code into a virtual development team using skills and slash commands:</p><blockquote><p>/plan-ceo-review, product analysis from a CEO's perspective.<br/>/plan-eng-review, architectural review. <br/>/plan-design-review, design review. <br/>/review, code review. <br/>/qa, browser testing. <br/>/ship, preparing changes for release. /cso, security audit.</p></blockquote><p>The second, <a href="https://github.com/wshobson/agents">wshobson/agents</a>, has 42k stars. It's a large collection of agents for all occasions. It contains hundreds of components for development:</p><ul><li><p>Specialized agents: frontend, backend, database, security, DevOps, and others.</p></li><li><p>Skills for languages, frameworks, architecture, and testing.</p></li><li><p>Commands for typical tasks.</p></li><li><p>Plugins that combine agents, skills, and commands.</p></li><li><p>Ready-made multi-agent workflows.</p></li></ul><p>But I, as always, have my own approach. If you want to understand something and try a technology in practice, don't take ready-made solutions, but build your own 'bicycle' from scratch. First, I studied what agents are and how to work with them. It turns out that Codex has a built-in sub-agent system. The idea is that you can assign a task to Codex and launch several agents to complete it, either in parallel or sequentially. Each of them will have its own context. The main Codex instance will handle the orchestration (or, in Russian, management) of the launched sub-agents and consolidate their work into a final result.</p><p>This approach has two advantages and one disadvantage. First, agents can work in parallel, although not all tasks can be broken down into parallel subtasks. Second, each agent has its own context and task, so the quality of work can improve: it's easier for an LLM to maintain focus on a task when the context doesn't grow too large. The third point, the disadvantage: ultimately, more tokens will be spent to solve the entire task. Here's an example of such a request to Codex:</p><blockquote><p>Launch three sub-agents in parallel. Let the first find the five largest files in the project, the second count the lines of code, and the third determine which programming languages are used. Wait for the results of all three and output a general report.</p></blockquote><p>In the example above, everything is very simple: all three sub-agents perform different tasks while remaining agents of the same type. Codex allows you to describe how agents should work and what they should do. General instructions can be set at the top level so they apply to all repositories you work with. You can also create individual agents for each repository, considering its specifics. As a result, I added the following agents:</p><ul><li><p>analyst, analyzes requirements, business logic, domain, and tasks.</p></li><li><p>architector, designs system architecture, defines technical solutions and development standards.</p></li><li><p>planner, studies the repository and creates a plan for a new project and feature tasks.</p></li><li><p>frontend-developer, develops the client-side of the application, interfaces, and API integration.</p></li><li><p>backend-developer, develops server-side logic, APIs, and integrations.</p></li><li><p>database-developer, designs database structure, writes migrations, and optimizes SQL queries.</p></li><li><p>devops, configures servers and infrastructure, responsible for CI/CD and application deployment.</p></li><li><p>security-engineer, checks code, architecture, and infrastructure security, identifies vulnerabilities.</p></li><li><p>ux-ui-expert, designs user interfaces, prototypes, and interaction scenarios.</p></li><li><p>unit-tester, creates, maintains, and runs unit tests.</p></li><li><p>ui-tester, creates and runs UI/E2E tests, checks user scenarios.</p></li><li><p>technical-writer, writes and maintains documentation, help files, guides, and instructions.</p></li><li><p>code-reviewer, checks code quality, adherence to standards, and correctness of changes.</p></li></ul><p>Next, I created the AGENTS.md file, where I clearly described when, how, and which agent to use. This way, Codex doesn't have to decide which agent to use and for what. The result is a project template with pre-installed agents, documents, and rules for their use. The template can be copied into a project repository and used. Here is <a href="https://github.com/evgenyigumnov/project-template">my repository with the template</a>. And now for the most interesting part: how many additional tokens are consumed, and how much better is the result when using such an agent swarm? For comparison, I ran the same prompt in regular Codex and in Codex with agents:</p><blockquote><p>I need to create a task manager. Web application: Angular, Material. Server: Rust. DB: SQLite. Need a login form and a task list, with the ability to add, delete, and edit tasks, as well as mark them as completed.</p></blockquote><p><strong>What are the experiment results: how many tokens did the agent swarm consume?</strong></p><div><div><table><tbody><tr><th><p>Metric</p></th><th><p>Bare Codex</p></th><th><p>Agent Swarm</p></th><th><p>Difference</p></th></tr><tr><td><p>Execution Time</p></td><td><p>13 min</p></td><td><p>74 min</p></td><td><p><strong>×5.7</strong></p></td></tr><tr><td><p>Input Tokens</p></td><td><p>62,187</p></td><td><p>411,275</p></td><td><p>×6.6</p></td></tr><tr><td><p>Output Tokens</p></td><td><p>36,405</p></td><td><p>102,211</p></td><td><p>×2.8</p></td></tr><tr><td><p>Of which reasoning</p></td><td><p>12,760</p></td><td><p>74,434</p></td><td><p>×5.8</p></td></tr><tr><td><p>Cached Tokens</p></td><td><p>1.24M</p></td><td><p>44.31M</p></td><td><p><strong>×35.8</strong></p></td></tr><tr><td><p>Total without cache</p></td><td><p>98,592</p></td><td><p>513,486</p></td><td><p><strong>×5.2</strong></p></td></tr><tr><td><p>Total with cache</p></td><td><p>1.34M</p></td><td><p>44.83M</p></td><td><p><strong>×33.5</strong></p></td></tr></tbody></table></div></div><p><strong>And the code quality?</strong></p><p>Now for the most interesting part: how much better was the result? I compared both projects in terms of architecture, security, tests, and documentation.</p><p><strong>Bare Codex received 5/10, and Codex with an agent swarm, 8.5/10.</strong></p><p>I've compiled the comparison details into a table:</p><div><div><table><tbody><tr><th><p>Metric</p></th><th><p>Bare Codex</p></th><th><p>Agent Swarm</p></th></tr><tr><td><p><strong>Code Quality</strong></p></td><td><p>5/10</p></td><td><p><strong>8.5/10</strong></p></td></tr><tr><td><p>Backend</p></td><td><p>Single file, ~400 lines</p></td><td><p>Module separation</p></td></tr><tr><td><p>Frontend</p></td><td><p>Working Angular UI</p></td><td><p>Modular structure</p></td></tr><tr><td><p>DB Migrations</p></td><td><p>None</p></td><td><p><strong>Present</strong></p></td></tr><tr><td><p>Backend Tests</p></td><td><p>Not found</p></td><td><p><strong>Passed: 21</strong></p></td></tr><tr><td><p>Frontend Tests</p></td><td><p>Not found</p></td><td><p><strong>Passed: 29</strong></p></td></tr><tr><td><p>E2E Tests</p></td><td><p>Not found</p></td><td><p><strong>Passed: 7</strong></p></td></tr><tr><td><p>UI Prototypes</p></td><td><p>Not found</p></td><td><p><strong>Present</strong></p></td></tr><tr><td><p><strong>Total Tests</strong></p></td><td><p><strong>Not found</strong></p></td><td><p><strong>Passed: 57</strong></p></td></tr><tr><td><p>Password Storage</p></td><td><p>Demo credentials <code>demo/demo123</code></p></td><td><p><strong>Argon2id</strong></p></td></tr><tr><td><p>Authorization</p></td><td><p>Token in <code>localStorage</code></p></td><td><p><strong>HttpOnly cookie</strong></p></td></tr><tr><td><p>Password Brute-Force Protection</p></td><td><p>None</p></td><td><p><strong>Present</strong></p></td></tr><tr><td><p>Origin Check</p></td><td><p>None</p></td><td><p><strong>Present</strong></p></td></tr><tr><td><p>Security Audit</p></td><td><p>None</p></td><td><p><strong>Separate report</strong></p></td></tr><tr><td><p>API Documentation</p></td><td><p>None</p></td><td><p><strong>Present</strong></p></td></tr><tr><td><p>Architecture Documentation</p></td><td><p>None</p></td><td><p><strong>Present</strong></p></td></tr><tr><td><p>README</p></td><td><p>Brief</p></td><td><p>Extended</p></td></tr></tbody></table></div></div><p>Overall, my verdict is this: If you need a high-quality, polished result, it's worth using an agent swarm, but the time to complete the task will increase significantly. By the way, it doesn't consume my five-hour limits to the fullest; it uses about half. But if you need to quickly whip something up, on the principle of a 'student project: wrote it, it works, and that's that,' then the regular, bare Codex out of the box is the best option for you.</p><p>P.S.</p><p>Oh, and by the way, you can specify for each agent which LLM to use and what reasoning level to choose. This is set directly in the agent description file. But since I'm trying to save money, I have Luna 6 set by default with the maximum reasoning level to stay within the $20 monthly plan.</p></div>
+  </main>
+  <footer>
+    Translation generated with Gemini 2.5 Flash-Lite.
+    The original article remains the source of record.
+  </footer>
+</body>
+</html>

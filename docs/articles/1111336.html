@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>What is Loop Transformer and how GLM-5.4 is catching up to 2-3 trillion parameter models</title>
+  <meta name="description" content="How to make neural networks smarter without inflating them to gigantic sizes? The answer was presented on November 23 by the Chinese laboratory Z.ai, previously known as Zhipu AI. 28 layers, two passes, and not a single new parameter. This is how the new GLM is structured, according to TNW. GLM-5.4 ">
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.65;
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 32px 20px 64px;
+      color: #1f2328;
+    }
+    header {
+      border-bottom: 1px solid #d8dee4;
+      margin-bottom: 28px;
+      padding-bottom: 20px;
+    }
+    .source {
+      color: #57606a;
+      font-size: 0.95rem;
+    }
+    img, video, iframe {
+      max-width: 100%;
+      height: auto;
+    }
+    pre {
+      overflow-x: auto;
+      padding: 16px;
+      background: #f6f8fa;
+      border-radius: 6px;
+    }
+    code {
+      font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+    }
+    blockquote {
+      border-left: 4px solid #d0d7de;
+      margin-left: 0;
+      padding-left: 16px;
+      color: #57606a;
+    }
+    footer {
+      border-top: 1px solid #d8dee4;
+      margin-top: 40px;
+      padding-top: 20px;
+      color: #57606a;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>What is Loop Transformer and how GLM-5.4 is catching up to 2-3 trillion parameter models</h1>
+    <p>How to make neural networks smarter without inflating them to gigantic sizes? The answer was presented on November 23 by the Chinese laboratory Z.ai, previously known as Zhipu AI. 28 layers, two passes, and not a single new parameter. This is how the new GLM is structured, according to TNW. GLM-5.4 has become the company&#x27;s first flagship model based on the Loop Transformer architecture, where the same layers are applied to a token repeatedly. What this is and how it affects model inference is discussed below. Read more</p>
+    <p class="source">
+      Machine-translated from Habr.
+      <a href="https://habr.com/ru/companies/selectel/articles/1111336/?utm_campaign=1111336&amp;utm_source=habrahabr&amp;utm_medium=rss">Read the original Russian article</a>.
+      Mon, 23 Nov 2026 14:30:41 GMT
+    </p>
+  </header>
+  <main>
+<div><figure><img loading="lazy" src="https://habrastorage.org/r/w1560/extt/c5/19/79/c51979ffefcb6920a9894d4a1bf7386a.jpeg"/></figure><p>How to make neural networks smarter without inflating them to gigantic sizes? The answer was presented on November 23 by the Chinese laboratory Z.ai, previously known as Zhipu AI. 28 layers, two passes, and not a single new parameter. This is how the new GLM is structured, according to <a href="https://thenextweb.com/news/zai-glm-5-4-loop-transformer-coding-model">TNW</a>.</p><p>GLM-5.4 has become the company's first flagship model based on the Loop Transformer architecture, where the same layers are applied to a token repeatedly. What this is and how it affects model inference is discussed below.</p><h2>How Loop Transformer is structured</h2><p>In conventional neural networks, a query passes through layers strictly in sequence—from the first to the last, like on a conveyor belt. In Loop Transformer, some layers are looped. Instead of building a huge model from hundreds of unique blocks, the neural network takes one section and processes the data through it multiple times in a row. This is analogous to re-reading. The model, as it were, re-checks its thoughts before responding, without increasing its own size.</p><p>In the new model, 28 layers of the base GLM-5 are processed twice. This increases processing depth while the size of the neural network itself remains the same. It was not trained from scratch—Z.ai simply fine-tuned an existing base. The developers themselves admit that with equal computational costs, such looped models currently underperform conventional architectures if trained from scratch.</p><p>To prevent the repeated pass from increasing costs, Z.ai employed three techniques at the 750 billion parameter scale:</p><ul><li><p>smart gates that decide for each token what to write into the main data stream;</p></li><li><p>a hybrid KV cache with a single sliding window for the additional loop;</p></li><li><p>reusing sparse attention indices from the first pass.</p></li></ul><p>Experiments were conducted on models of various scales—1, 4, 30, and 750 billion parameters. For the 30 billion parameter version, adding the loop required about 10% additional resources during training. The biggest improvements in quality were seen in mathematics, scientific reasoning, and handling long contexts. At the same time, responses in complex tests like GPQA-Diamond and MMLU-Pro became 10–14% shorter on average.</p><p>A week earlier, Thinking Machines demonstrated a similar technique. In Inkling 2 Mini, intermediate blocks are also processed three times. Two labs released Loop models within seven days, and this seems to be the start of a trend.</p><h2>What it costs in production</h2><p>There is no data yet, as the announcement was literally made yesterday. Based on the architecture, the repeated blocks incur twice the computation per token with the same weights. Memory for weights does not increase, and the hybrid cache should curb the growth of memory for context. Z.ai claims speeds of up to 200 tokens per second during off-peak hours and 70–80 during peak hours.</p><p>There is already an independent analysis <a href="https://alphasignal.ai/news/z-ai-s-glm-5-4-loops-the-same-weights-twice-to-beat-deeper-models">by AlphaSignal</a>. It notes that there is no technical report or service data, the number of passes in production is not disclosed, and a fair comparison requires an equal computational budget. Z.ai itself mentions the model's tendency to go into overly long "marathon" reasoning as a limitation.</p><figure><img alt="GLM-5.4 Structure" loading="lazy" src="https://habrastorage.org/r/w1560/extt/36/18/2c/36182c6da3d3d35d76d24b590df407ce.png" title="GLM-5.4 Structure"/><div><figcaption><em>GLM-5.4 Structure</em></figcaption></div></figure><h2>What can be used today</h2><p>Subscribers to the Coding Plan have already gained access to the new model—their weekly quota has been increased by 50% compared to GLM-5.3. The model works in ZCode and <a href="http://Z.ai">Z.ai</a> Chat. To connect it in Claude Code, you need to specify the identifier glm-5.4[1m], and for other tools, the regular glm-5.4 will suffice.</p><p>The context window is 1 million tokens. The main new feature for developers is built-in image processing, but it only works for input; the model cannot generate images.</p><p>Others will have to wait. The paid API will only be launched after a security check, and the weights will be released publicly after additional safety hardening. Z.ai has not yet provided specific timelines, prices, or license types.</p><h2>Can we believe "like 2–3 trillion"</h2><p>So far, this is a claim without numbers. Z.ai's blog includes an internal graph comparing the base and Loop versions on AIME25, GPQA-Diamond, AA-LCR, MMLU-Pro, and IFBench benchmarks, but there are no specific scores in the text. The only external assessment is a review by an early tester for TestingCatalog, who stated that the new model is no weaker than Qwen4-max. But this is just one informal run.</p><figure><img alt="Measurements on a 30 billion parameter test model—Loop increases accuracy by 3–11 points and makes answers 2–15% shorter." loading="lazy" src="https://habrastorage.org/r/w1560/extt/25/80/4f/25804f27b691200624d670f7fcf0f1ce.png" title="Measurements on a 30 billion parameter test model—Loop increases accuracy by 3–11 points and makes answers 2–15% shorter."/><div><figcaption><em>Measurements on a 30 billion parameter test model—Loop increases accuracy by 3–11 points and makes answers 2–15% shorter.</em> <a href="https://z.ai/blog/glm-5.4"><em>Source</em></a><em>.</em></figcaption></div></figure><p>There is also confusion about the model size. TNW reports 750 billion parameters, and AlphaSignal's newsletter mentions approximately 700 billion, clarifying that Z.ai itself has not disclosed the figures. However, since no new parameters were added, the size should match the base model. On Z.ai's <a href="https://huggingface.co/zai-org">Hugging Face</a> page, GLM-5.3 is listed as 753B, so 750 billion seems more plausible.</p><p>If the weights are released publicly, with FP8 quantization (one byte per parameter), they will occupy about 750 GB. To simply run such a model, a server with at least eight H200 accelerators would be needed.</p><p>Moving forward, it's worth watching two things: whether a technical report with comparisons on an equal computational budget will be released, and what the "significantly larger" next model will show.</p><blockquote><p><strong>What do you think, is the future with such Loop models, or will classic giants still win through "brute force" and parameter scaling? </strong>Write in the comments.</p></blockquote><div><figure><img src="https://habrastorage.org/getpro/habr/upload_files/dbd/50d/bb6/dbd50dbb6316408a3d20c62b3ced3f3c.gif"/></figure><p><strong>AI Router — Access to 400+ Models from a Single Panel</strong></p><p>Connect an OpenAI-compatible gateway with a single API key. Configure end-to-end analytics, track limits, and manage resources.</p><p><a href="https://promo.selectel.ru/ai-router/?utm_source=habr.com&amp;utm_medium=referral&amp;utm_campaign=airouter_news_ai-glm54_231126_banner_ord"><strong>Launch AI Router →</strong></a></p></div></div>
+  </main>
+  <footer>
+    Translation generated with Gemini 2.5 Flash-Lite.
+    The original article remains the source of record.
+  </footer>
+</body>
+</html>

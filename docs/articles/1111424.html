@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Build in Public: AI-driven Job Search, Sprint #2</title>
+  <meta name="description" content="Build in Public: AI-driven Job Search, Sprint #2 1) Statistics and Funnel: Week 46 vs. Week 45. Week 46 (current): 155 applications sent (10%), 4 direct HR contacts (3%), 2 interviews (50%). Week 45 (previous): 254 applications sent (12%), 2 direct HR contacts (1%), 1 interview (50%). Detailed stati">
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.65;
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 32px 20px 64px;
+      color: #1f2328;
+    }
+    header {
+      border-bottom: 1px solid #d8dee4;
+      margin-bottom: 28px;
+      padding-bottom: 20px;
+    }
+    .source {
+      color: #57606a;
+      font-size: 0.95rem;
+    }
+    img, video, iframe {
+      max-width: 100%;
+      height: auto;
+    }
+    pre {
+      overflow-x: auto;
+      padding: 16px;
+      background: #f6f8fa;
+      border-radius: 6px;
+    }
+    code {
+      font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+    }
+    blockquote {
+      border-left: 4px solid #d0d7de;
+      margin-left: 0;
+      padding-left: 16px;
+      color: #57606a;
+    }
+    footer {
+      border-top: 1px solid #d8dee4;
+      margin-top: 40px;
+      padding-top: 20px;
+      color: #57606a;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Build in Public: AI-driven Job Search, Sprint #2</h1>
+    <p>Build in Public: AI-driven Job Search, Sprint #2 1) Statistics and Funnel: Week 46 vs. Week 45. Week 46 (current): 155 applications sent (10%), 4 direct HR contacts (3%), 2 interviews (50%). Week 45 (previous): 254 applications sent (12%), 2 direct HR contacts (1%), 1 interview (50%). Detailed statistics and goals.</p>
+    <p class="source">
+      Machine-translated from Habr.
+      <a href="https://habr.com/ru/articles/1111424/?utm_campaign=1111424&amp;utm_source=habrahabr&amp;utm_medium=rss">Read the original Russian article</a>.
+      Mon, 23 Nov 2026 15:44:30 GMT
+    </p>
+  </header>
+  <main>
+<div><figure><img loading="lazy" src="https://habrastorage.org/r/w1560/extt/52/de/be/52debe86683897b6c3a89a66d20e91e9.png"/></figure><p>1) <strong>Statistics and Funnel: Week 46 vs. Week 45</strong></p><p><strong>Week 46 (current)</strong><br/>Applications sent 155 (10%)<br/>Direct HR contact 4 (3%)<br/>Interviews 2 (50%)</p><p><strong>Week 45 (previous)</strong><br/>Applications sent 254 (12%)<br/>Direct HR contact 2 (1%)<br/>Interviews 1 (50%)</p><figure><img loading="lazy" src="https://habrastorage.org/r/w1560/extt/d3/c0/6f/d3c06f3c7ca67305d4028ecdbebf17ec.png"/></figure><p>2) <strong>Personalization of the vacancy scoring system:</strong><br/>I added a small customization for vacancy scoring. Since my expertise lies around digital products, I added a new parameter that will better select vacancies for me. (+3 points): SaaS development, mobile/web applications, AI services, fintech. (-3 points): working with physically existing products, machinery, weighing equipment, construction</p><p>3) <strong>Golden Leads: Raising the threshold to 95% and new alert logic</strong><br/>Every day, I receive "Golden Vacancies" to which, in theory, I should pay special attention (find founders, HRDs, CPOs... and other key decision-makers), which will help me get into a company, bypassing typical AI HR scoring. The vacancies are really good, but if I process each of them like this, then job searching will turn into a job for me. This doesn't suit me, so I will break this issue down into two stages of implementation:<br/>1. now I will raise the scoring for "Gold" to 95%,<br/>2. and when I establish the mechanism for finding key contacts and dialoguing with them - I will automate this process as well.</p><figure><img loading="lazy" src="https://habrastorage.org/r/w1560/extt/f6/a3/38/f6a3382a4f3801e4d9881fab4f170be7.png"/></figure><p>4) <strong>Integrated my availability calendar into HHH.</strong><br/>Last Monday, a call came from an unknown number. On the line, a cheerful voice: "Anatoly, good afternoon! This is regarding the vacancy at ***. Let's continue...". At that moment, my AI assistant in the HR chat showed excessive independence: it cheerfully confirmed the call for me without asking my consent. Consequently, HR calls me to continue the initiated dialogue, and I don't know what company it is about, what we discussed, etc. Fortunately, HR carefully studied my website and the HHHunter project before the call. I openly explained to him that my AI agent was negotiating with him, testing hypotheses of product hiring. HR appreciated the boldness of the experiment, and we had an excellent and equal conversation about the real situation in the HR market, the overload of recruiters, and the bottlenecks in hiring. P.S. The vacancy itself turned out to be good. In my city, to move software products from 0 to 1, while first finding "Segment A". The HR person turned out to be an IT director with very good brains. We had a concise and open conversation. He wasn't scared that I'm not a corporate product person. We agreed to meet with him and the company owner this week.</p><p>Engineering fix: To avoid such surprises, I created a unified booking page based on Google Calendar and linked it to the bot:</p><ul><li><p>If HR immediately suggests a specific time: the bot checks my actual slots via API. If the slot is free, the bot tentatively books the time, adds the meeting to the calendar with all the vacancy details, and sends me an alert.</p></li><li><p>If coordination begins: the bot sends a link to the booking page, where the interlocutor can choose a convenient slot in one click.</p></li></ul><p>The main rule: the final confirmation of the meeting remains strictly with me. Now, you can schedule an introductory meeting both through the bot and through the calendar interface, but under my personal control.</p><p>5) <strong>Is HH my friend?</strong><br/>While analyzing the chat logs within HeadHunter, I noticed the built-in AI assistant chat from the service itself. Previously, my parser bypassed it: due to the non-standard message structure, the bot considered the content unexpected and simply moved on. When I looked there with my own eyes, I found an excellent selection of vacancies that the service itself selects for the profile. Since my script is configured for a careful, conservative response rate (to avoid triggering platform spam filters), some cool offers were missed. I didn't break the working conveyor, but I'm definitely taking the processing of personal recommendations from HeadHunter's algorithms into my pipeline. Their recommendation model sees the market more broadly and highlights non-obvious matches.</p><figure><img loading="lazy" src="https://habrastorage.org/r/w1560/extt/b2/14/20/b21420b26a7cae04c73ccf03326813d3.png"/></figure><p>The conceptual logic of HHH now looks like this:</p><figure><img loading="lazy" src="https://habrastorage.org/r/w1560/extt/ed/2e/47/ed2e47df275ec8e45d8493589595373a.png"/></figure><p><strong>Focus of the week</strong><br/>Weekly sprints for product development work perfectly when hypotheses are based on strict SMART goals. But over the short distance of two weeks, the sample size is still too small to draw fundamental statistical conclusions. Therefore, the focus now is to maintain a stable rhythm and confirm the funnel conversions over a month. Nevertheless, the main hypothesis of the sprint has already been formulated: Direct access to decision-makers (DMs), bypassing the initial HR screening, yields a significantly higher conversion to a target interview. I already have experience in B2B sales in large corporate segments, so the basic mechanics are clear. In "quiet mode," I am starting to test the scheme of direct outreach to contacts for vacancies in the Golden Leads category:</p><ol><li><p><strong>Top 5 roles:</strong> identify the 5 key positions in companies whose dialogue most quickly leads to a substantive discussion of tasks.</p></li><li><p><strong>Personalized pitches:</strong> create a separate, targeted value proposition (icebreaker) for each role.</p></li><li><p><strong>Manual testing and automation:</strong> manually process outreach for "golden" vacancies, measure response rates, and then automate the most time-consuming parts of contact searching.</p></li></ol><p><strong>And finally</strong><br/>I released an add-on for HHH: to avoid losing conversions that are drawn into my funnel from HH, I created a filler for endless HR questionnaires via Telegram bots. I didn't debug it, I deployed it straight to production... and today I saw a funny dialogue between two bots for a vacancy on AI implementation.</p><figure><img alt="Quintessence of the new era of hiring) " loading="lazy" src="https://habrastorage.org/r/w1560/extt/01/b9/2e/01b92e420e92351f937df4f470b498f4.png" title="Quintessence of the new era of hiring) "/><div><figcaption>Quintessence of the new era of hiring) </figcaption></div></figure></div>
+  </main>
+  <footer>
+    Translation generated with Gemini 2.5 Flash-Lite.
+    The original article remains the source of record.
+  </footer>
+</body>
+</html>

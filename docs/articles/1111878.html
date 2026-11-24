@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Z.ai released GLM-5.4, which runs the same layers twice. What&#x27;s known and why there are no benchmarks yet</title>
+  <meta name="description" content="On November 23, Z.ai released GLM-5.4. This is its first flagship model based on the Loop Transformer architecture. Some layers with shared weights are executed twice in one pass. This is how developers are trying to make the model &quot;deeper&quot; without increasing the number of parameters. The ">
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.65;
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 32px 20px 64px;
+      color: #1f2328;
+    }
+    header {
+      border-bottom: 1px solid #d8dee4;
+      margin-bottom: 28px;
+      padding-bottom: 20px;
+    }
+    .source {
+      color: #57606a;
+      font-size: 0.95rem;
+    }
+    img, video, iframe {
+      max-width: 100%;
+      height: auto;
+    }
+    pre {
+      overflow-x: auto;
+      padding: 16px;
+      background: #f6f8fa;
+      border-radius: 6px;
+    }
+    code {
+      font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+    }
+    blockquote {
+      border-left: 4px solid #d0d7de;
+      margin-left: 0;
+      padding-left: 16px;
+      color: #57606a;
+    }
+    footer {
+      border-top: 1px solid #d8dee4;
+      margin-top: 40px;
+      padding-top: 20px;
+      color: #57606a;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Z.ai released GLM-5.4, which runs the same layers twice. What&#x27;s known and why there are no benchmarks yet</h1>
+    <p>On November 23, Z.ai released GLM-5.4. This is its first flagship model based on the Loop Transformer architecture. Some layers with shared weights are executed twice in one pass. This is how developers are trying to make the model &quot;deeper&quot; without increasing the number of parameters. The coolest thing is that there are no benchmarks! Read more</p>
+    <p class="source">
+      Machine-translated from Habr.
+      <a href="https://habr.com/ru/articles/1111878/?utm_campaign=1111878&amp;utm_source=habrahabr&amp;utm_medium=rss">Read the original Russian article</a>.
+      Tue, 24 Nov 2026 15:14:46 GMT
+    </p>
+  </header>
+  <main>
+<div><p>On November 23, <a href="http://Z.ai">Z.ai</a> released GLM-5.4. This is its first flagship model based on the Loop Transformer architecture: some layers with shared weights are executed twice in one pass. This is how developers are trying to make the model "deeper" without increasing the number of parameters. It's hard to verify if it worked yet, as the flagship lacks a benchmark table, public API, and weights.</p><figure><img loading="lazy" src="https://habrastorage.org/r/w1560/extt/40/ab/df/40abdf1ddecce25fef0bdba081372068.png"/></figure><h3>What is known</h3><p>The official <a href="https://z.ai/blog/glm-5.4">blog</a> of <a href="http://Z.ai">Z.ai</a> did not open for me. Therefore, I am relying on those who cite it.</p><ul><li><p>The model was not trained from scratch: it was fine-tuned from the GLM-5 base. According to <a href="https://www.marktechpost.com/2026/11/23/zai-glm-5-4-loop-transformer/">MarkTechPost</a>, 28 layers are run twice, and the entire model weighs about 750B. <a href="https://www.datacamp.com/blog/glm-5-4">DataCamp</a> clarifies that <a href="http://Z.ai">Z.ai</a> has not confirmed these figures.</p></li><li><p>The second pass reuses the sparse KV cache (saved attention keys and values) from the first pass, and its own cache stores only within a sliding window. Therefore, the additional round occupies one cache window, not a full cache for 1M tokens.</p></li><li><p><a href="http://Z.ai">Z.ai</a> claims a model scale of 2–3 trillion parameters. Only ablation results on a 30B model have been published: approximately +10% compute for training, AIME25 increased from 19.17 to 30.42, GPQA-Diamond from 47.58 to 56.26, and answers became 2–15% shorter.</p></li></ul><h3>Pricing and Access</h3><p>The model is only available in the GLM Coding Plan (Lite tariff from $18 per month), in the ZCode desktop agent, and in <a href="http://Z.ai">Z.ai</a> Chat. Pay-as-you-go API is marked as "Coming Soon", weights are promised "after safety hardening", no dates. Credit quotas remain the same, but GLM-5.4 tokens deduct about 1.5 times fewer credits than GLM-5.3 (<a href="https://felloai.com/glm-5-4/">Fello AI</a>). <a href="https://simonwillison.net/2026/Nov/23/glm-54/">Simon Willison</a> connected to the model via a Coding Plan key on an OpenAI-compatible endpoint <a href="http://api.z.ai/api/v1"><code>api.z.ai/api/v1</code></a>.</p><h3>What the measurements say</h3><p>The first independent measurement was conducted by AICodeKing on their KingBench 4 (<a href="https://felloai.com/glm-5-4/">Fello AI</a>, <a href="https://www.datacamp.com/blog/glm-5-4">DataCamp</a>):</p><div><div><table><tbody><tr><th><p>Model</p></th><th><p>Score out of 60</p></th><th><p>Run Time</p></th></tr><tr><td><p>Claude Fable 5.2</p></td><td><p>42.0</p></td><td><p>—</p></td></tr><tr><td><p>Gemini 4 Neon</p></td><td><p>37.9</p></td><td><p>109 min</p></td></tr><tr><td><p>GLM-5.4</p></td><td><p>33.2</p></td><td><p>431 min</p></td></tr><tr><td><p>GLM-5.3*</p></td><td><p>27.5</p></td><td><p>—</p></td></tr></tbody></table></div></div><p><em>*GLM-5.3 run was partial: it hit the timeout.</em></p><p>GLM-5.4 took 7th place out of 19 and first place among open models. It spent about 1.04 million tokens on reasoning, while Neon used about 70 thousand. There are caveats: scores were set by Gemini 4 Neon, GLM-5.4 evaluated a couple of tasks itself, and the reasoning mode used for the run is still debated.</p><p><a href="http://Z.ai">Z.ai</a> itself admits that the model is prone to "marathon thinking". In High and Max modes, it hit the 180-second timeout without finishing its reasoning.</p><h3>My opinion</h3><p>From an architectural standpoint, the release is interesting because it uses a loop instead of new parameters, and there's a cool trick with the cache. But releasing a flagship without benchmarks, API, and weights is strange, especially when the model thinks many times longer than its competitors. The 1.5x credit saving will disappear if the answers become twice as long. For now, it's a reason for those already paying for Coding Plan to try the model. We await the flagship's benchmark table and API.</p><p>More important AI news in the Telegram channel <a href="https://t.me/+YuqHY_s-JiViMmU6"><strong>AI Native</strong></a>. We analyze everything related to AI.</p><figure><img loading="lazy" src="https://habrastorage.org/r/w1560/getpro/habr/upload_files/7d1/407/12e/7d140712ea33ff919753c28822531584.png"/></figure></div>
+  </main>
+  <footer>
+    Translation generated with Gemini 2.5 Flash-Lite.
+    The original article remains the source of record.
+  </footer>
+</body>
+</html>

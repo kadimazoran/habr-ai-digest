@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Claude Ship is out — now AI can write and review its own code</title>
+  <meta name="description" content="On November 23, Anthropic released Claude Ship, a tool for automating code work in GitHub. It combines code review, team change coordination, and code fixing. The new solution is available in preview for organizations with Claude Team (from $25 to $125 per person per month) and Enterprise ($20 per p">
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.65;
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 32px 20px 64px;
+      color: #1f2328;
+    }
+    header {
+      border-bottom: 1px solid #d8dee4;
+      margin-bottom: 28px;
+      padding-bottom: 20px;
+    }
+    .source {
+      color: #57606a;
+      font-size: 0.95rem;
+    }
+    img, video, iframe {
+      max-width: 100%;
+      height: auto;
+    }
+    pre {
+      overflow-x: auto;
+      padding: 16px;
+      background: #f6f8fa;
+      border-radius: 6px;
+    }
+    code {
+      font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+    }
+    blockquote {
+      border-left: 4px solid #d0d7de;
+      margin-left: 0;
+      padding-left: 16px;
+      color: #57606a;
+    }
+    footer {
+      border-top: 1px solid #d8dee4;
+      margin-top: 40px;
+      padding-top: 20px;
+      color: #57606a;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Claude Ship is out — now AI can write and review its own code</h1>
+    <p>On November 23, Anthropic released Claude Ship, a tool for automating code work in GitHub. It combines code review, team change coordination, and code fixing. The new solution is available in preview for organizations with Claude Team (from $25 to $125 per person per month) and Enterprise ($20 per person per month) plans. The cost depends on usage volume and computational resource consumption. Read more</p>
+    <p class="source">
+      Machine-translated from Habr.
+      <a href="https://habr.com/ru/companies/selectel/articles/1111792/?utm_campaign=1111792&amp;utm_source=habrahabr&amp;utm_medium=rss">Read the original Russian article</a>.
+      Tue, 24 Nov 2026 14:00:02 GMT
+    </p>
+  </header>
+  <main>
+<div><figure><img loading="lazy" src="https://habrastorage.org/r/w1560/extt/fe/12/f1/fe12f19f671d8d305589ec1703c35cfa.jpg"/></figure><p>On November 23, Anthropic <a href="https://claude.com/resources/articles/introducing-claude-ship">released</a> Claude Ship, a tool for automating code work in GitHub. It combines code review, team change coordination, and code fixing.</p><p>The new solution is available in preview for organizations with Claude Team (from $25 to $125 per person per month) and Enterprise ($20 per person per month) plans.<br/>The cost depends on usage volume and computational resource consumption.</p><h2>How the innovation works</h2><p>Anthropic developers <a href="https://claude.com/resources/articles/introducing-claude-ship">stated</a>, "In the Claude Code team, Claude AI writes most of our code, and we want things to move just as quickly after a PR (pull request)."</p><figure><img alt="Will you get paid for me too? Source." loading="lazy" src="https://habrastorage.org/r/w1560/extt/75/75/1a/75751afaef0b8517b613c91dc83dfb33.png" title="Will you get paid for me too? Source."/><div><figcaption><em>Will you get paid for me too? </em><a href="https://www.domkino.tv/news/23501"><em>Source</em></a><em>.</em></figcaption></div></figure><blockquote><p>Claude Ship works in stages — Review, Fix, Approve.</p></blockquote><p>The first stage — Review (Code Review mechanism) checks code for errors and areas for improvement and suggests changes, considering the project's specifics.<br/><br/>The second stage — Fix (PR Steward mechanism) is activated when problems are detected. It analyzes errors from automated checks, developer feedback, and conflicts between changes, and then <s>destroys the project</s> makes corrections.</p><p>The third stage — Approve (Claude Approvals mechanism) assesses the readiness of changes and approves them if they do not contradict the rules that the team writes itself.</p><p>If the conditions are met, Ship can independently coordinate routine changes, while more complex changes will require developer approval.<br/></p><figure><img alt="How Claude Ship works. Source." loading="lazy" src="https://habrastorage.org/r/w1560/extt/32/59/00/325900ee014e9d39d0972f344259dcd2.png" title="How Claude Ship works. Source."/><div><figcaption><em>How Claude Ship works. </em><a href="https://claude.com/resources/articles/introducing-claude-ship"><em>Source</em></a><em>.</em></figcaption></div></figure><h2>How to try Claude Ship</h2><p>To do this, you will need a Claude Team or Enterprise subscription and a connected GitHub repository. You can activate Claude Ship through the <a href="https://code.claude.com/docs/ru/claude-ship">web interface</a>: in your organization's settings, go to the Organization Settings → Claude Ship section. Connect the desired GitHub repositories and activate the necessary agents.</p><h3>Configuring Claude Ship</h3><p>Claude Ship settings are located in the Organization settings → Claude Ship section. You need the Owner role for this.</p><p>Enable agents one by one in a single repository in the following order:</p><ol><li><p>Configure Code Review;</p></li><li><p>Configure PR Steward. For the setting that determines when PR Steward is launched, start with Manual (@claude steward). PR Steward does not have its own spending limit until you set one;</p></li><li><p>Configure Claude Approvals. It is launched by a policy file in the repository, so familiarize yourself with who can enable it. Start with observation mode, where Claude Approvals checks report what decision your policy would have made. Observation mode is paid. See Approvals cost.</p></li></ol><p><br/>You can activate Claude Ship via CLI locally using the /ship command in the Claude Code application. You will receive a review and fixes for your pull request.</p><h2>Conclusions</h2><p>On the one hand, Ship automates not only code writing but also its review and bug fixing. This offloads some work from developers, allowing them to focus on more important tasks. On the other hand, AI is increasingly integrated into our lives and takes on more work — this could lead to the disappearance of many jobs.<br/>In any case, this is not the first time progress has forced people to change their way of life and start learning new fields. In the meantime, let's follow the developments.</p><blockquote><p><strong>By the way, have you tried the new Claude Ship yet? What did you dislike about it? </strong>I'd be happy to discuss in the comments.</p></blockquote><div><figure><img loading="lazy" src="https://habrastorage.org/getpro/habr/upload_files/dbd/50d/bb6/dbd50dbb6316408a3d20c62b3ced3f3c.gif"/></figure><p><strong>AI Router — access to 400+ models from a single panel</strong></p><p>Connect an OpenAI-compatible gateway with a single API key. Configure end-to-end analytics, track limits, and quota resources.</p><p><a href="https://promo.selectel.ru/ai-router/?utm_source=habr.com&amp;utm_medium=referral&amp;utm_campaign=airouter_news_ai-claudeship_241126_banner_ord"><strong>Launch AI Router →</strong></a></p></div></div>
+  </main>
+  <footer>
+    Translation generated with Gemini 2.5 Flash-Lite.
+    The original article remains the source of record.
+  </footer>
+</body>
+</html>

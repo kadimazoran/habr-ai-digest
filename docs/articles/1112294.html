@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Anthropic Allows Claude Artifacts to be Installed as Applications on Mac and Windows</title>
+  <meta name="description" content="Developers of desktop software have struggled with packaging, signing, and notarization for years, while Anthropic has hidden all of this behind a single button. On November 24th, Claude for Mac and Windows released the beta &#x27;Install as app&#x27;. Now, artifacts can be installed as standalone a">
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.65;
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 32px 20px 64px;
+      color: #1f2328;
+    }
+    header {
+      border-bottom: 1px solid #d8dee4;
+      margin-bottom: 28px;
+      padding-bottom: 20px;
+    }
+    .source {
+      color: #57606a;
+      font-size: 0.95rem;
+    }
+    img, video, iframe {
+      max-width: 100%;
+      height: auto;
+    }
+    pre {
+      overflow-x: auto;
+      padding: 16px;
+      background: #f6f8fa;
+      border-radius: 6px;
+    }
+    code {
+      font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+    }
+    blockquote {
+      border-left: 4px solid #d0d7de;
+      margin-left: 0;
+      padding-left: 16px;
+      color: #57606a;
+    }
+    footer {
+      border-top: 1px solid #d8dee4;
+      margin-top: 40px;
+      padding-top: 20px;
+      color: #57606a;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Anthropic Allows Claude Artifacts to be Installed as Applications on Mac and Windows</h1>
+    <p>Developers of desktop software have struggled with packaging, signing, and notarization for years, while Anthropic has hidden all of this behind a single button. On November 24th, Claude for Mac and Windows released the beta &#x27;Install as app&#x27;. Now, artifacts can be installed as standalone applications with their own icons and windows. It sounds like a dream, but it&#x27;s best to read the documentation on permissions first. Read more</p>
+    <p class="source">
+      Machine-translated from Habr.
+      <a href="https://habr.com/ru/articles/1112294/?utm_campaign=1112294&amp;utm_source=habrahabr&amp;utm_medium=rss">Read the original Russian article</a>.
+      Wed, 25 Nov 2026 13:21:46 GMT
+    </p>
+  </header>
+  <main>
+<div><p>Developers of desktop software have struggled with packaging, signing, and notarization for years, while Anthropic has hidden all of this behind a single button. On November 24th, the beta version of <strong>Install as app</strong> was released for Claude on Mac and Windows. Now, artifacts can be installed as standalone applications with their own icons and windows.</p><h3>What's Known</h3><p>The 'Install as app' option is available in the Share menu, and according to <a href="https://www.testingcatalog.com/anthropic-now-allows-installing-artifacts-as-desktop-apps/">TestingCatalog</a>, it's also in the artifact header menu and the context menu. You need Claude Desktop version 6.28899.0 or newer. Installed applications do not <a href="https://support.claude.com/en/articles/18516354-install-an-artifact-as-an-app">work</a> on Linux, the web, or mobile.</p><p>The beta is <a href="https://claude.com/resources/articles/install-as-app">available</a> for Free, Pro, Max, Ultra, Team, and Enterprise plans. On Team plans, the feature is enabled by default, but full computer access remains disabled until an administrator enables it. On Enterprise plans, the feature itself is first enabled by the owner. It is not available for HIPAA-ready organizations and hybrid deployments.</p><p>An API key is not required; the application runs under your account. Edits to an artifact are automatically reflected in the installed version, and builds and all requests to Claude are deducted from your plan's limits.</p><figure><img alt="Demo applications from artifacts on a retro-style desktop" loading="lazy" src="https://habrastorage.org/r/w1560/extt/70/26/f3/7026f34b32c0368eaf77d901bd70564d.png"/><div><figcaption>Demo applications from artifacts on a retro-style desktop</figcaption></div></figure><p>Among the demos from Anthropic employees are the Tern terminal with integrated Claude, the retro file manager Phosphor, and the Vitals performance monitor for the system tray.</p><h3>Permissions and Limitations</h3><ul><li><p>By default, the application has the same capabilities as the artifact in the browser.</p></li><li><p>Additional permissions grant notifications, global hotkeys, a window on top of others, and an icon in the menu bar or system tray.</p></li><li><p>Full access allows running programs and reading, modifying, or deleting files without a separate prompt.</p></li><li><p>Consent is granted for a specific version; Claude will ask again after any edits.</p></li><li><p>The application will not open without an internet connection and being logged into Claude Desktop. If access to your account is lost, the programs will stop working in approximately 20 minutes.</p></li></ul><p>Zero data retention (a mode where data is not stored) does not apply to these applications.</p><h3>Expert Opinion</h3><p>Anthropic explicitly states that applications are <a href="https://support.claude.com/en/articles/18516354-install-an-artifact-as-an-app">not verified</a> before installation. Full access is only granted to your own applications, and on Team and Enterprise plans, also to colleagues' applications. The most interesting details are, as always, hidden in the fine print. Consent is tied to the version, but code that the application loads from other websites can change without a new prompt. Re-confirmation protects against edits to Claude, but not against an external script that might be updated on some random night. Therefore, if I were to grant full access, I would only do so for applications without external dependencies.</p><p>And another thing. Essentially, this is a thin client for your subscription, not offline software. The picture is that Anthropic is building an app store without a store, where each program lives only as long as your account. There are no independent security checks yet.</p><h3>Conclusion</h3><p>I'll set up the system tray monitor today; it takes five minutes. But full disk access will have to wait for independent reviews. The industry has long moved away from desktop to SaaS, and now it's returning to the desktop, only now even a self-written terminal won't launch without logging in 🙃</p><p>More important AI news in the <a href="https://t.me/+mPQbs54gm4plYTYy"><strong>AI Native</strong></a> Telegram channel. We cover everything related to AI.</p><figure><img loading="lazy" src="https://habrastorage.org/r/w1560/getpro/habr/upload_files/7d1/407/12e/7d140712ea33ff919753c28822531584.png"/></figure></div>
+  </main>
+  <footer>
+    Translation generated with Gemini 2.5 Flash-Lite.
+    The original article remains the source of record.
+  </footer>
+</body>
+</html>

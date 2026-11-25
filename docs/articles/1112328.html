@@ -1,0 +1,97 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Animating Images: Testing Avatars from Kandinsky, Wan, InfiniteTalk, and FantasyTalking</title>
+  <meta name="description" content="One image, one Russian phrase, and five seconds of video. The task is to animate an image so that the character speaks a phrase I pre-recorded. To do this, the model needs to reproduce articulation, synchronize it with audio, and at the same time preserve the character&#x27;s recognizability. I deci">
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.65;
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 32px 20px 64px;
+      color: #1f2328;
+    }
+    header {
+      border-bottom: 1px solid #d8dee4;
+      margin-bottom: 28px;
+      padding-bottom: 20px;
+    }
+    .source {
+      color: #57606a;
+      font-size: 0.95rem;
+    }
+    img, video, iframe {
+      max-width: 100%;
+      height: auto;
+    }
+    pre {
+      overflow-x: auto;
+      padding: 16px;
+      background: #f6f8fa;
+      border-radius: 6px;
+    }
+    code {
+      font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+    }
+    blockquote {
+      border-left: 4px solid #d0d7de;
+      margin-left: 0;
+      padding-left: 16px;
+      color: #57606a;
+    }
+    footer {
+      border-top: 1px solid #d8dee4;
+      margin-top: 40px;
+      padding-top: 20px;
+      color: #57606a;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Animating Images: Testing Avatars from Kandinsky, Wan, InfiniteTalk, and FantasyTalking</h1>
+    <p>One image, one Russian phrase, and five seconds of video. The task is to animate an image so that the character speaks a phrase I pre-recorded. To do this, the model needs to reproduce articulation, synchronize it with audio, and at the same time preserve the character&#x27;s recognizability. I decided to test open-source talking avatar generators, but on characters from Russian cultural code. And to make it even more fun – on epic or fairy-tale characters. Because a sculpture&#x27;s face is carved in stone, bogatyrs have lush beards, and the Grey Wolf is just a wolf. There were no dull moments! One H200, 4 models, and 10 characters – let&#x27;s go! Read more</p>
+    <p class="source">
+      Machine-translated from Habr.
+      <a href="https://habr.com/ru/articles/1112328/?utm_campaign=1112328&amp;utm_source=habrahabr&amp;utm_medium=rss">Read the original Russian article</a>.
+      Wed, 25 Nov 2026 14:52:29 GMT
+    </p>
+  </header>
+  <main>
+<div><p>One image, one Russian phrase, and five seconds of video. The task is to animate an image so that the character speaks a phrase I pre-recorded. To do this, the model needs to reproduce articulation, synchronize it with audio, and at the same time preserve the character's recognizability.</p><p>I decided to test open-source talking avatar generators, but on characters from Russian cultural code. And to make it even more fun – on epic or fairy-tale characters. Because a sculpture's face is carved in stone, bogatyrs have lush beards, and the Grey Wolf is just a wolf. There were no dull moments!</p><figure><img loading="lazy" src="https://habrastorage.org/r/w1560/extt/dd/4a/54/dd4a5426f3be28c1313a41bcf9b93808.jpeg"/></figure><p>One H200, 4 models, and 10 characters – let's go test!</p><h2>Setting up the Environment</h2><p>Ten characters were included in the experiment: Cheburashka, Shurik, Ilya Muromets, Dobrynya Nikitich, Alyosha Popovich, Grey Wolf, Swan Princess, Alyonushka, Baba Yaga, and Ivan Susanin. Yes, three bogatyrs might have been overkill, but there are three of them – what could I do! Cheburashka and Shurik were initially rendered as statues – I was upset about this at first, but decided to give them a chance: let the models try to animate them too – it's just interesting.</p><figure><img loading="lazy" src="https://habrastorage.org/r/w1560/extt/dc/7b/25/dc7b250cb0855ee395f28214752a582b.jpg"/></figure><p>All generations were performed on a single NVIDIA H200 NVL: about 140 GiB of available memory, where models and intermediate data are stored. This is the available volume, not the consumption for one clip; GiB is a binary unit, slightly larger than a regular GB. The processor is an AMD EPYC 9355, with 128 logical CPUs available to the environment.</p><p>Each model was fed a 512 × 768 PNG and a five-second WAV file, identical for each character. All phrases were voiced by a single synthetic Russian voice with natural pauses; the phrase is an intentionally distorted surrealism of something culturally recognizable in Russia. The seed was fixed to control generation randomness and improve experiment reproducibility within a single configuration. The text prompt requested clear lip and jaw movement, slight head movement, blinking, and a static camera, while the negative prompt included a frozen mouth, distortions, flickering, and subtitles.</p><p>Generation time is counted from the preparation of the image and sound to the finished color frames in RAM. RGB means regular pixels with red, green, and blue channels; CPU here means the frames have already been transferred from the graphics card to the central processor. Compression and saving to MP4, model loading, and warming up are not included in this measurement. In the full profile, a whole clip was warmed up on the model before the measurements.</p><figure><img alt="Creepy! Beautiful!" loading="lazy" src="https://habrastorage.org/extt/8a/8f/9e/8a8f9eedec0acfd2bf73c6f0f9736e3d.gif" title="Creepy! Beautiful!"/><div><figcaption>Creepy! Beautiful!</figcaption></div></figure><p>Why was this done? Well, firstly, it's just cool! Secondly, it's part of debugging and a building block for my automatic benchmarking factory for anything, which in turn serves the construction of a content factory. Such runs are almost automated by themselves, but interpreting them and formatting the results into an article takes time <em>(still)</em>.</p><h2>First Run</h2><p>By estimation, the entire run should have taken about 3 hours, but after just over 2 hours, I found that only Kandinsky had generated, and not even all of it.</p><figure><img loading="lazy" src="https://habrastorage.org/r/w1560/extt/9c/cf/de/9ccfde131aa6f9ac7ee13de3742cce79.png"/></figure><p>H200 is not cheap, but since the experiment is entirely self-funded, 950 seconds of generation per 5-second clip is not what I would like. Therefore, I stopped the experiment, looked at what I had, and reconfigured the setup.</p><details><summary>Metrics File</summary><div><p>For each generation, a file like this is created, for example:</p><pre><code>{ 
+  "start": 2337073.057870457, 
+  "end": 2338028.675259684, 
+  "seconds": 955.6173892272636, 
+  "torch_alloc_mib": 46974.837890625, 
+  "torch_reserved_mib": 51648.0, 
+  "frames": 125, 
+  "fps": 25, 
+  "width": 512, 
+  "height": 768, 
+  "middle_index": 62, 
+  "middle_pts": 2.48, 
+  "end_index": 124, 
+  "end_pts": 4.96, 
+  "motion_mad": 0.4515800886256721, 
+  "static_pairs_pct": 95.16129032258065, 
+  "post_s": 1.1779663315974176, 
+  "hashes": { 
+    "video.mp4": "a8607a1cde71fcaf293d56f458d15bed8325255294f1c3e1362cd28819993dae", 
+    "middle.png": "e8997915eb2041d169b135c8df2a912f965b6e42edacd11dd6f3cf544e858a65", 
+    "end.png": "726e6ccbf8df9d8dd5227b6051b5935704d9cc51efe25707908030ac598f9f76" 
+  }, 
+  "session": "20261124T080708130891Z_kandinsky", 
+  "rtf": 191.12347784545273, 
+  "generation_fps": 0.13080548911011147 
+}</code><div><a href="https://sourcecraft.dev/"><span></span></a></div></pre></div></details><p>What was generated? Beauty was generated!</p><figure><img alt="If it doesn't loop, it's Habr" loading="lazy" src="https://habrastorage.org/extt/6a/f3/c8/6af3c8ab3c10d3b1349303f0ac730efe.gif" title="If it doesn't loop, it's Habr"/><div><figcaption>If it doesn't loop, it's Habr</figcaption></div></figure><p>Not bad! And Shurik's statue was too creepy not to try running it through another model:</p><figure><img alt="Who's cooler?" loading="lazy" src="https://habrastorage.org/extt/96/44/1c/96441c0f5917ca5c1837e9090e7e5f11.gif" title="Who's cooler?"/><div><figcaption>Who's cooler?</figcaption></div></figure><p>But still, before the full run, we need to replace them with real ones.</p><figure><img loading="lazy" src="https://habrastorage.org/r/w1560/extt/19/f8/7d/19f87d2e82614f5673ab449d3c76e091.jpg"/></figure><h2>Experiment Changes</h2><p>"50 steps" <em>(we'll get back to them)</em> turned out to be too much, so I set it to 1 to see what was happening, but it just produced a diffusion video.</p><figure><img alt="How does this magic even work?" loading="lazy" src="https://habrastorage.org/extt/2f/1a/b8/2f1ab87406f1c326e40557a1065c5808.gif" title="How does this magic even work?"/><div><figcaption>How does this magic even work?</figcaption></div></figure><p>The purpose of a sampling step is to give the sampler enough intermediate states to go from noise to video. Essentially, it's a chosen computational budget, not a physical constant: a denser grid usually reduces numerical approximation error but doesn't fix the model's own flaws.</p><p>If we reduce the grid from 50 to 20 steps, the transitions will become larger, and with other conditions being equal, there will be about 2.5 times fewer calculations in the loop. The actual acceleration differs: part of the time is spent on encoders, VAE, and memory transfers, and the sampler can calculate grid points and updates differently.</p><p>One sampling step was an example of extreme acceleration – leaving one update, but we need two time points: where to step from and to. A single large jump in the direction predicted at the initial state, for a model designed for multi-step sampling, does not replace a chain of refinements. Without special training or distillation, such generation can only produce approximate shapes and blurred details.</p><p>The video above is about just that. The number of steps determines the number of opportunities to refine the continuation while preserving the face, movement, and connection to the audio. The same number of steps does not mean the same computational budget or optimal mode for each architecture; these are my experiment budget limitations.</p><p>Approximately, the time can be represented as <code>T = T_encoders + windows × steps × step_cost + T_VAE + T_transfers</code>. The cost of a step depends on the number of tokens, model size, and guidance branches. Increasing resolution or window length makes attention operations more expensive: reducing the number of steps reduces time but hardly reduces memory for the weights themselves: they are needed at each step. Therefore, acceleration and VRAM savings are different tasks here.</p><p>In the end, I settled on an empirical number of 16 for all.</p><h2>Models</h2><p><strong>Kandinsky S2V Pro – Sber / Kandinsky Lab, 21 billion parameters.</strong> Creates a talking character from an image and audio. Open release under the name Avatar 1.0 – November 3, 2026.</p><p><strong>Wan2.2-S2V – Alibaba, 14 billion parameters.</strong> A model for video from an image, speech, and text instruction; controls the character's face and movements. S2V code and weights released August 26, 2025.</p><p><strong>InfiniteTalk – Meituan / MeiGen-AI, based on Wan 14 billion parameters plus an audio module.</strong> Animates an image or re-voices video; can continue movement for long sequences. Release – August 19, 2025.</p><p><strong>FantasyTalking – AMAP, Alibaba Group, based on Wan 14 billion parameters plus an audio module.</strong> Animates a portrait, linking speech to lips, facial expressions, and body movements. Audio module code and weights released April 28, 2025.</p><p>I also skipped a couple of open models, but only because I literally *skipped* them.</p><h2>Final Runs</h2><p>Four models, ten characters, 16 steps per window, without separate warm-up. The median below is calculated for four characters; peak memory is for the entire model session. The final series took 231 minutes and 51 seconds before packaging.</p><p>Each row represents one model: from top to bottom, Kandinsky, Wan2.2-S2V, InfiniteTalk, and FantasyTalking. In each row, from left to right: Cheburashka, Shurik, Ilya Muromets, and Grey Wolf. All clips start simultaneously and last five seconds.</p><p><em>Here I want to make a correction: since I already generated with Kandinsky, I used a distilled version that does not support the negative prompt about "no subtitles." Therefore, we do not evaluate the presence of subtitles.</em></p><figure><img alt="All good" loading="lazy" src="https://habrastorage.org/extt/8b/ad/87/8bad876cd2988112dc8eb89e4cac24f9.gif" title="All good"/><div><figcaption>All good</figcaption></div></figure><figure><img alt="All good" loading="lazy" src="https://habrastorage.org/extt/e1/33/be/e133be653287f60cc7e03d48dbdd89b9.gif" title="All good"/><div><figcaption>All good</figcaption></div></figure><figure><img alt="All good, expressive" loading="lazy" src="https://habrastorage.org/extt/68/7a/62/687a6290e190e75e4082139e9254d803.gif" title="All good, expressive"/><div><figcaption>All good, expressive</figcaption></div></figure><figure><img alt="The wolf cub wasn't animated" loading="lazy" src="https://habrastorage.org/extt/93/53/0d/93530d6d8bbc24df5387dc575884ed8f.gif" title="The wolf cub wasn't animated"/><div><figcaption>The wolf cub wasn't animated</figcaption></div></figure><p>The measurement table doesn't make much sense – all models roughly equally occupied around 50 GiB of VRAM at peak and roughly fit within the median of 250 seconds of generation per clip.</p><p>Let's look at the characters and details more closely.</p><h2>Cheburashka</h2><figure><img loading="lazy" src="https://habrastorage.org/extt/1a/bf/70/1abf703a1b49bb3a1fde2a44a11c3794.gif"/></figure><p>Up close.</p><figure><img loading="lazy" src="https://habrastorage.org/extt/18/6b/c9/186bc94360ff9dd24b2f2ac5f5494010.gif"/></figure><p>In the first two, there are no teeth, in the second two there are, and Infinite and Fantasy didn't add blinking.</p><p>Static (original + middle frame in video).</p><figure><img loading="lazy" src="https://habrastorage.org/r/w1560/extt/43/3b/ad/433badd832d1bc7eb6fb8f75a382e408.jpg"/></figure><h3>Shurik</h3><p>Shurik wasn't chosen just for fun – he has a much more human face, familiar to models, but he has many details – hair, glasses, a funny initial facial expression.</p><figure><img loading="lazy" src="https://habrastorage.org/extt/17/48/e3/1748e3faf0cf7fe6335a59ca04615e49.gif"/></figure><figure><img loading="lazy" src="https://habrastorage.org/extt/18/b4/c3/18b4c33f2b4a179edf2a25eea3201b3e.gif"/></figure><h2>Ilya Muromets</h2><p>Here there is increased facial hair, a complex pose, and the overall fairy-tale nature of the character.</p><figure><img loading="lazy" src="https://habrastorage.org/extt/d2/fd/81/d2fd815100080b333ef9e606942d5cd4.gif"/></figure><figure><img loading="lazy" src="https://habrastorage.org/extt/ed/20/76/ed2076c413b134cc6b6048c31b06ba81.gif"/></figure><figure><img loading="lazy" src="https://habrastorage.org/r/w1560/extt/ea/47/20/ea4720fe486172abb31f7e3044f1185a.jpg"/></figure><h2>Grey Wolf</h2><p>All* models preserved the animal appearance, but they represent its animation very differently.</p><figure><img loading="lazy" src="https://habrastorage.org/extt/23/9b/bb/239bbb9dd0dbfec79856ab33bd2918ac.gif"/></figure><figure><img loading="lazy" src="https://habrastorage.org/extt/a8/14/eb/a814ebc9e3048d1fbd318888bd4f4228.gif"/></figure><figure><img loading="lazy" src="https://habrastorage.org/r/w1560/extt/94/eb/1c/94eb1c843a842593a378467f3286c1bb.jpg"/></figure><p>*Fantasy couldn't handle it and just darkened the image. But the funniest thing is that in the first run with 50 steps, Kandinsky Pro produced artifacts very coolly, and this was no longer present in the distilled version.</p><figure><img alt="What's happening here?" loading="lazy" src="https://habrastorage.org/extt/ae/57/1d/ae571d3e696e9e36797c839f305bf656.gif" title="What's happening here?"/><div><figcaption>What's happening here?</figcaption></div></figure><p>And none of them could animate Baba Yaga from this image; all of them produced a static picture.</p><figure><img loading="lazy" src="https://habrastorage.org/r/w1560/extt/cd/66/67/cd66673d43cc517196994e3d45363ae8.png"/></figure><h2>Conclusions</h2><p>I liked all the models; they are good in their own way, although the newer model from 2026 looks slightly preferable in *some* cases (but it's also 1.5 times larger, by the way). All four handled human faces well, but non-standard geometry, fur, and complex fairy-tale characters proved to be a much more interesting challenge. In terms of hardware and time – almost complete parity.</p><p>The most interesting thing is that models primarily created for animating people are quite capable of animating Cheburashka, bogatyrs, and *sometimes* even the Grey Wolf.</p><p>The lip-sync is good, they hold the frame, there are almost no artifacts, and the resulting video (I can't upload them here with sound) is decent. What else is needed?</p><p>Perhaps subscribe to my channel with good stuff <a href="https://t.me/anti_notes">Agentic World</a>? 😅</p><p>The code for the entire experiment is open and available on <a href="https://github.com/antipovdmitry/govor-bench">GitHub</a>.</p><p>Thanks!</p><p>Other articles:</p><ul><li><p><a href="https://habr.com/ru/articles/993078/"><em>When Will the AI Bubble Burst?</em></a></p></li></ul><ul><li><p><a href="https://habr.com/ru/articles/1085450/"><em>Jev: A Deep Engineering Analysis of the Acclaimed System One Model</em></a></p></li><li><p><a href="https://habr.com/ru/articles/1076018/"><em>How Text Watermarking Works in Claude</em></a></p></li></ul></div>
+  </main>
+  <footer>
+    Translation generated with Gemini 2.5 Flash-Lite.
+    The original article remains the source of record.
+  </footer>
+</body>
+</html>

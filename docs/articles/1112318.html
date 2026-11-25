@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>AI-Assisted Development: Part 1</title>
+  <meta name="description" content="It&#x27;s hard to imagine development without AI anymore. It helps to test ideas faster, understand unfamiliar code, and handle routine tasks: from writing tests to preparing documentation. We talked with Naumen developers Ilya and Dima about which tasks they already delegate to AI and how they veri">
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.65;
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 32px 20px 64px;
+      color: #1f2328;
+    }
+    header {
+      border-bottom: 1px solid #d8dee4;
+      margin-bottom: 28px;
+      padding-bottom: 20px;
+    }
+    .source {
+      color: #57606a;
+      font-size: 0.95rem;
+    }
+    img, video, iframe {
+      max-width: 100%;
+      height: auto;
+    }
+    pre {
+      overflow-x: auto;
+      padding: 16px;
+      background: #f6f8fa;
+      border-radius: 6px;
+    }
+    code {
+      font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+    }
+    blockquote {
+      border-left: 4px solid #d0d7de;
+      margin-left: 0;
+      padding-left: 16px;
+      color: #57606a;
+    }
+    footer {
+      border-top: 1px solid #d8dee4;
+      margin-top: 40px;
+      padding-top: 20px;
+      color: #57606a;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>AI-Assisted Development: Part 1</h1>
+    <p>It&#x27;s hard to imagine development without AI anymore. It helps to test ideas faster, understand unfamiliar code, and handle routine tasks: from writing tests to preparing documentation. We talked with Naumen developers Ilya and Dima about which tasks they already delegate to AI and how they verify its work. Read more</p>
+    <p class="source">
+      Machine-translated from Habr.
+      <a href="https://habr.com/ru/companies/naumen/articles/1112318/?utm_campaign=1112318&amp;utm_source=habrahabr&amp;utm_medium=rss">Read the original Russian article</a>.
+      Wed, 25 Nov 2026 14:30:40 GMT
+    </p>
+  </header>
+  <main>
+<div><p>It's hard to imagine development without AI anymore. It helps to test ideas faster, understand unfamiliar code, and handle routine tasks: from writing tests to preparing documentation.</p><p>We talked with Naumen developers Ilya and Dima about which tasks they already delegate to AI and how they verify its work.</p><h3>What has changed in development with the advent of AI</h3><h4>It has become easier to test ideas and approaches</h4><p>For me, AI is already a full-fledged development tool. AI helps <strong>to cope with routine tasks faster and test ideas and approaches</strong>. Previously, implementing them and experimenting with them took much more time.</p><div><figure><img loading="lazy" src="https://habrastorage.org/r/w1560/extt/9a/2c/75/9a2c75cc245c3c0774082a9541bb30e0.jpg"/></figure></div><h4>Less time is spent on initial code drafts</h4><p>I use AI almost daily: I discuss ideas, get code drafts. In a couple of minutes, you can sketch out the basis of a function or write a regular expression. <strong>It's possible to save tens of minutes on such tasks.</strong></p><div><figure><img loading="lazy" src="https://habrastorage.org/r/w1560/extt/1c/3a/91/1c3a91718ca29fabba3efc114b17f2bb.jpg"/></figure></div><hr/><h3>What tasks can be delegated to AI</h3><h4>Task implementation and refactoring</h4><p>I use AI for task implementation and refactoring, analyzing existing code, finding errors, and writing tests. You can ask an agent to understand an unfamiliar part of the project, find the cause of a problem, and suggest a fix. Or <strong>delegate a routine task to it entirely</strong>.</p><div><figure><img loading="lazy" src="https://habrastorage.org/r/w1560/extt/de/97/19/de971987fbe76bbb405ebc32cd14f5ef.jpg"/></figure></div><h4>Code analysis, tests, and documentation</h4><p>With AI, I understand unfamiliar project code or libraries: I ask it to explain it and find errors. It's like <strong>a patient colleague who doesn't get tired of answering "stupid" questions</strong>.</p><p>I also ask it to write unit tests for ready code, add function descriptions, and fix README files. During debugging, I show logs, the error, and the code: sometimes your vision gets blurred, and AI helps you notice what you missed.</p><div><figure><img loading="lazy" src="https://habrastorage.org/r/w1560/extt/b8/f0/67/b8f0676433f38a9bc6225d9e8cbb9cd1.jpg"/></figure></div><hr/><h3>What needs to be checked</h3><h4>Project changes and agent actions</h4><p>AI errors are not always obvious: the code looks normal, tests pass, but the solution <strong>doesn't account for project specifics, edge cases, or violates existing logic</strong>.</p><p>I am especially cautious about architectural changes and complex tasks with implicit dependencies. The agent doesn't always understand why something is done a certain way and might try to "improve" what shouldn't be touched.</p><blockquote><p>Once, the agent needed to reproduce the behavior of a mobile application in a simulator for a test, but it couldn't perform the necessary gestures. It got stuck trying, spent a lot of tokens, reread large logs, and even started changing the code.</p><p>But <strong>the problem was in the limitations of the agent's interaction with the simulator, not in the application itself</strong>. It couldn't fix it by changing the code.</p></blockquote><div><figure><img loading="lazy" src="https://habrastorage.org/r/w1560/extt/84/c1/f4/84c1f481717d60dada7b4e6b217febb1.jpg"/></figure></div><h4>Library functions, security, and performance</h4><p>I am cautious about unfamiliar libraries: AI can confidently suggest non-existent functions or outdated methods. <strong>A confident tone does not guarantee the correctness of the answer.</strong></p><p>Security requires special attention. Generated code may contain vulnerabilities. It is important to check for protection against SQL injections, deserialization security, and the risk of secret leaks.</p><p>You also need to check if there are unnecessary database queries or redundant data copying. <strong>Ensuring the code works is not enough</strong>—especially when performance is critical or resources are limited.</p><div><figure><img loading="lazy" src="https://habrastorage.org/r/w1560/extt/74/45/20/7445203afa2eae39324402823ac80392.jpg"/></figure></div></div>
+  </main>
+  <footer>
+    Translation generated with Gemini 2.5 Flash-Lite.
+    The original article remains the source of record.
+  </footer>
+</body>
+</html>

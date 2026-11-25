@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Ternary Bonsai 2.5 Model Released: 27 Billion Parameters Compressed to 5.9 GB VRAM</title>
+  <meta name="description" content="Large language models for code have always been bottlenecked by video memory. They require tens of gigabytes of VRAM to run, preferably without compression. The startup PrismML has attempted to solve this problem with ternary quantization in their new Ternary Bonsai 2.5 27B model. In its most compac">
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.65;
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 32px 20px 64px;
+      color: #1f2328;
+    }
+    header {
+      border-bottom: 1px solid #d8dee4;
+      margin-bottom: 28px;
+      padding-bottom: 20px;
+    }
+    .source {
+      color: #57606a;
+      font-size: 0.95rem;
+    }
+    img, video, iframe {
+      max-width: 100%;
+      height: auto;
+    }
+    pre {
+      overflow-x: auto;
+      padding: 16px;
+      background: #f6f8fa;
+      border-radius: 6px;
+    }
+    code {
+      font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+    }
+    blockquote {
+      border-left: 4px solid #d0d7de;
+      margin-left: 0;
+      padding-left: 16px;
+      color: #57606a;
+    }
+    footer {
+      border-top: 1px solid #d8dee4;
+      margin-top: 40px;
+      padding-top: 20px;
+      color: #57606a;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Ternary Bonsai 2.5 Model Released: 27 Billion Parameters Compressed to 5.9 GB VRAM</h1>
+    <p>Large language models for code have always been bottlenecked by video memory. They require tens of gigabytes of VRAM to run, preferably without compression. The startup PrismML has attempted to solve this problem with ternary quantization in their new Ternary Bonsai 2.5 27B model. In its most compact form, Bonsai occupies 5.93 GB of VRAM. According to the company, it solves 75.6% of SWE-bench Verified tasks, compared to 80.6% for Qwen3.8 27B, upon which it was based. Read on for details.</p>
+    <p class="source">
+      Machine-translated from Habr.
+      <a href="https://habr.com/ru/companies/selectel/articles/1112284/?utm_campaign=1112284&amp;utm_source=habrahabr&amp;utm_medium=rss">Read the original Russian article</a>.
+      Wed, 25 Nov 2026 14:16:24 GMT
+    </p>
+  </header>
+  <main>
+<div><figure><img loading="lazy" src="https://habrastorage.org/r/w1560/extt/2c/07/98/2c0798ce9385d01c498b1f3c6ad1be10.jpeg"/></figure><p>Large models for code have always been constrained by video memory. To run, they require tens of gigabytes of VRAM, preferably without compression. The startup PrismML has attempted to solve this problem using ternary quantization in the new Ternary Bonsai 2.5 27B model. In its most compact form, Bonsai occupies 5.93 GB. According to the company, it solves 75.6% of SWE‑bench Verified tasks, compared to 80.6% for Qwen3.8 27B, upon which it was based.</p><p>In reality, slightly more memory will be needed for launch, and the figure itself requires several important caveats that were not highlighted in the news announcement. In addition to the 5.93 GB for the model weights, the graphics card needs another 1–3 GB for the context window and the runtime environment, so it won't fit entirely into a 6 GB card.</p><h2>What is a Ternary Model and Where Does 5.9 GB Come From?</h2><p>According to the Hugging Face card, each model weight takes one of three values: -1, 0, or +1. For every group of 128 weights, there is a single common multiplier (or scale) in FP16 format, which helps restore their correct "size" during calculations.</p><p>To prevent the model from losing precision due to rounding, especially on rare but critical value spikes, the weights are mathematically "shuffled" (rotated in the Hadamard basis) before compression, evenly distributing outliers across the group. The engine quickly restores the data to its original form during runtime. A pure ternary weight carries approximately 1.585 bits of information.</p><p>Including overhead data, the card indicates an effective figure of 1.76 bits per parameter, resulting in 5.93 GB in PTQ1_0 format. Direct arithmetic without overhead would yield about 5.3 GB; the difference is accounted for by the aforementioned scale multipliers and metadata.</p><p>Out of the 27 billion parameters, 24.35 billion are for the language part, 0.47 billion for "vision," and 2.54 billion for input embeddings and the output layer (the accuracy of the latter is not disclosed by the card). For comparison, the original model in standard BF16 format would occupy about 54 GB (two bytes per parameter), meaning the developers achieved a ninefold compression.</p><p>Now for the caveat. The most compact PTQ1_0 format (the 5.93 GB) only works in a modified version of llama.cpp from PrismML itself; support for the main code branch is still undergoing verification. The standard llama.cpp will only run a heavier two-bit variant, Q2_0. Its exact size is not specified, but it weighs significantly more.</p><p>Furthermore, running even this version requires a recent llama.cpp (build no older than b11556). If an older version is used, the program will load the model without any errors, but the output will become incoherent. The situation is similar for Apple: a separate two-bit MLX package weighing 8.86 GB (including the vision module in standard FP16 precision) is used, which also requires its own loader and a modified kernel.</p><h2>What Remains After Compression</h2><figure><img alt="Benchmarks from PrismML. Source." loading="lazy" src="https://habrastorage.org/r/w1560/extt/20/7d/2d/207d2db94151b4fa52ed766f4f7635cf.png" title="Benchmarks from PrismML. Source. "/><div><figcaption><em>Benchmarks from PrismML. </em><a href="https://prismml.com/news/bonsai-2-5-27b"><em>Source</em></a><em>.</em></figcaption></div></figure><p>The models were run in reasoning mode with a high effort level (xhigh) and sampled using parameters from the Qwen 3.8 card (temperature 1.0, top‑p 0.95, top‑k 20). Compared to Bonsai 2 at the same size, there is a 14.8 point increase on SWE‑bench and 39.3 on AppWorld. In comparison to the initial Qwen 3.8, the biggest drop is on Terminal‑Bench 2.1, a decrease of 10.7 points, meaning the ternary version loses the most on long terminal sessions. On τ³‑Bench, it is 1.1 points higher than the base, but this is likely measurement noise.</p><h2>Speed and Memory</h2><p>PrismML promises a speed of 291 tokens per second on H100 and 204 on RTX 4090 with MTP. On H200 and B200, it's around 300. On NVIDIA cards, this technology provides a 1.5–1.8x speedup, but with a couple of conditions. The necessary draft head is only available in special files with the suffix mtp (it's not in the base weights), and the MTP kernels themselves are still considered experimental ("in testing") and have not been tested on Metal, SYCL, or NPU at all.</p><p>The model's context is declared up to 262,000 tokens, for which memory will have to be paid. Judging by the documentation from the previous version of Bonsai 2 (the architecture hasn't changed in 2.5, so the calculations remain relevant), the KV cache in standard FP16 consumes 64 KiB per token—that's about 6.3 GiB for every 100,000 tokens.</p><p>If cache compression is enabled with the variable BONSAI_KV4=1, the consumption drops to 18 KiB per token (1.8 GiB per 100,000). In reality, on a graphics card with 10 GB of memory, the model will occupy about 9.5 GB with automatic parallelism, and if strictly limited to one thread (‑np 1), it will occupy about 7.8 GB. So, owners of 8 GB cards will find it a bit tight. For smooth operation, it's better to have 10–12 GB of VRAM.</p><p>For a normal launch, it's important to note that the ‑min‑p parameter must be reduced to 0 instead of the default 0.05, and the response length limit should be set no lower than 16,384 tokens—otherwise, the model will simply cut off generation mid-reasoning. It also does not support the low-effort mode (low).</p><blockquote><p>If you have the same laptop but the task requires a more powerful model, you can use the model via API. All computations are then performed in the data center and do not load your device; you only see the response. One such service, by the way, is the <a href="https://promo.selectel.ru/ai-router?utm_source=habr.com&amp;utm_medium=referral&amp;utm_campaign=airouter_news_ai-bonsai_251126_content">Selectel AI Router</a>.</p></blockquote><div><figure><img loading="lazy" src="https://habrastorage.org/getpro/habr/upload_files/dbd/50d/bb6/dbd50dbb6316408a3d20c62b3ced3f3c.gif"/></figure><p><strong>AI Router — Access 400+ Models from a Single Panel</strong></p><p>Connect an OpenAI-compatible gateway with a single API key. Configure end-to-end analytics, track limits, and quota resources.</p><p><a href="https://promo.selectel.ru/ai-router/?utm_source=habr.com&amp;utm_medium=referral&amp;utm_campaign=airouter_news_ai-bonsai_251126_banner_ord"><strong>Launch AI Router →</strong></a></p></div><h2>Conclusion</h2><p>As of now, without a disclosed measurement protocol (neither a specific agent nor a step limit has been named), the 75.6% SWE‑bench score remains solely a marketing figure from the vendor. The claimed 5.93 GB and high speeds are also tied to a custom llama.cpp fork and specific presets.</p><p>However, from a legal standpoint, everything is clean: the model weights are released under the permissive Apache 2.0 license, although the commercial use conditions of the base Qwen3.8 27B should still be verified separately. And the release itself reflects a general industry trend. Developers are increasingly trying to fit agent models with billions of parameters onto ordinary consumer graphics cards, squeezing the maximum out of compression.</p><blockquote><p><strong>Will you download and test it on your hardware, or wait until support is added to the main llama.cpp?</strong> Share your thoughts in the comments.</p></blockquote></div>
+  </main>
+  <footer>
+    Translation generated with Gemini 2.5 Flash-Lite.
+    The original article remains the source of record.
+  </footer>
+</body>
+</html>

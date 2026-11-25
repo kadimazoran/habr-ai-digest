@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>How IT Education Should Be Restructured in the Era of AI Agents</title>
+  <meta name="description" content="I&#x27;m teaching a course on AI usage to final-year IT students. I&#x27;ve observed an interesting phenomenon: with an AI agent on a small local Qwen 4B model, I achieve better results than students using agents on top-tier models. The reason isn&#x27;t so much about AI usage skills as it is about ">
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.65;
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 32px 20px 64px;
+      color: #1f2328;
+    }
+    header {
+      border-bottom: 1px solid #d8dee4;
+      margin-bottom: 28px;
+      padding-bottom: 20px;
+    }
+    .source {
+      color: #57606a;
+      font-size: 0.95rem;
+    }
+    img, video, iframe {
+      max-width: 100%;
+      height: auto;
+    }
+    pre {
+      overflow-x: auto;
+      padding: 16px;
+      background: #f6f8fa;
+      border-radius: 6px;
+    }
+    code {
+      font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+    }
+    blockquote {
+      border-left: 4px solid #d0d7de;
+      margin-left: 0;
+      padding-left: 16px;
+      color: #57606a;
+    }
+    footer {
+      border-top: 1px solid #d8dee4;
+      margin-top: 40px;
+      padding-top: 20px;
+      color: #57606a;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>How IT Education Should Be Restructured in the Era of AI Agents</h1>
+    <p>I&#x27;m teaching a course on AI usage to final-year IT students. I&#x27;ve observed an interesting phenomenon: with an AI agent on a small local Qwen 4B model, I achieve better results than students using agents on top-tier models. The reason isn&#x27;t so much about AI usage skills as it is about engineering competence. An expert understands the task, narrows down the solution space, manages complexity, detects errors, and provides quality feedback. A novice delegates all this to the model, including decision-making, the correctness of which they cannot assess themselves. Personal expertise is one of the most powerful leverage points for amplifying AI. This raises the question: how should we train developers if a significant portion of coding can now be delegated to agents? Read more</p>
+    <p class="source">
+      Machine-translated from Habr.
+      <a href="https://habr.com/ru/articles/1112288/?utm_campaign=1112288&amp;utm_source=habrahabr&amp;utm_medium=rss">Read the original Russian article</a>.
+      Wed, 25 Nov 2026 13:16:35 GMT
+    </p>
+  </header>
+  <main>
+<div><p>I'm teaching a course on AI usage to final-year IT students.</p><p>I've observed an interesting phenomenon: with an AI agent on a small local Qwen 4B model, I achieve better results than students using agents on top-tier models.</p><p>The reason isn't so much about AI usage skills as it is about engineering competence.</p><p>An expert understands the task, narrows down the solution space, manages complexity, detects errors, and provides quality feedback.</p><p>A novice delegates all this to the model, including decision-making, the correctness of which they cannot assess themselves.</p><p>Personal expertise is one of the most powerful leverage points for amplifying AI.</p><p>This raises the question: how should we train developers if a significant portion of coding can now be delegated to agents?</p><h3>1. AI Agents — From the First Year</h3><p>Traditionally, developer training is built from the ground up. First, language syntax, then algorithms, data structures, databases, application development, and only then system design.</p><p>This is a logical sequence when a person writes code independently.</p><p>Today, a student can start creating applications almost immediately. This capability should be leveraged in the educational process.</p><p>As early as the first semester, students need to be introduced to the fundamental tools of agent development:</p><ul><li><p>AI agents and the principles of their operation;</p></li><li><p>prompting and context management;</p></li><li><p>tools and tool calling;</p></li><li><p>skills and MCP servers;</p></li><li><p>working with the file system and terminal;</p></li><li><p>Git;</p></li><li><p>security and agent permission limitations.</p></li></ul><p>The goal is to quickly master the tool to a level sufficient for further learning.</p><p>After this, fundamental disciplines are studied in the context of available machine intelligence.</p><p>Instead of studying programming for four years and then learning AI, or offering an elective course on neural network architecture, we should use AI from the very beginning and consistently build engineering competence.</p><h3>2. Change the Goal of Education</h3><p>Why do we teach students programming? So they can write a program, or so they can solve a problem using a computational system?</p><p>Until recently, the former was a necessary condition for the latter. Now, a significant part of the implementation can be delegated.</p><p>Other competencies come to the forefront:</p><ul><li><p>understanding and formalizing the task;</p></li><li><p>designing the solution;</p></li><li><p>decomposition;</p></li><li><p>managing complexity;</p></li><li><p>monitoring execution;</p></li><li><p>verifying the result.</p></li></ul><p>Fundamental disciplines do not lose their relevance. The way acquired knowledge is applied changes.</p><p>Algorithms need to be known to select and evaluate algorithmic solutions. Databases — to design data models and control their implementation. Architecture — to define system structure and limit complexity.</p><p>Writing code remains a necessary element of learning, but the ability to write a large volume of code independently ceases to be its primary goal.</p><h3>3. Teach Code Reading</h3><p>In traditional education, the main focus is on writing code. Reading and analyzing existing code often remains secondary.</p><p>In agent development, priorities shift.</p><p>Students should be able to:</p><ul><li><p>trace program execution flow;</p></li><li><p>understand system state changes;</p></li><li><p>analyze dependencies;</p></li><li><p>find logical errors;</p></li><li><p>localize defect causes;</p></li><li><p>evaluate algorithm complexity;</p></li><li><p>perform code reviews.</p></li></ul><p>This requires independent programming, debugging, and understanding program principles.</p><p>However, assignments should not be limited to writing programs from scratch. Students should be given existing codebases, including those generated by agents, and be required to understand them, identify problems, and organize modifications.</p><h3>4. Teach Decomposition and Design</h3><p>Decomposition is one of the most effective ways to improve the performance of AI agents.</p><p>When presented with a large, poorly formalized task, the model is forced to make many interconnected decisions independently. An early error can devalue all subsequent work.</p><p>An engineer must be able to break down a task into components, define their boundaries, interfaces, dependencies, and completion criteria.</p><p>After this, the agent receives local, well-defined tasks whose complexity matches its capabilities.</p><p>Simultaneously, students must be taught software design:</p><ul><li><p>domain modeling;</p></li><li><p>separation of component responsibilities;</p></li><li><p>interface design;</p></li><li><p>dependency management;</p></li><li><p>architecture selection;</p></li><li><p>KISS and YAGNI principles.</p></li></ul><p>It is especially important to teach complexity management.</p><p>Previously, the growth in system complexity was limited, partly by the cost of writing code. AI has significantly weakened this constraint. Now, creating ten thousand lines of unnecessary code is almost effortless.</p><p>Therefore, an engineer's ability to determine not only what needs to be implemented but also what should *not* be implemented becomes particularly valuable.</p><h3>5. Restructure Teaching of Fundamental Disciplines</h3><p>Let's consider databases as an example.</p><p>Traditional lab work: create tables, write SQL queries, implement several data operations.</p><p>In the agent-based approach, students should design the data model, define entities and relationships, integrity constraints, transactional boundaries, indexes, and access rules.</p><p>The agent can implement the schema, migrations, queries, and tests.</p><p>The student verifies the implementation, analyzes query execution plans, detects integrity violations, and corrects design decisions.</p><p>At the same time, they must be able to write an SQL query independently and understand its semantics.</p><p>Similarly, the teaching of algorithms, networks, operating systems, information security, and other disciplines can be restructured.</p><p>An agent allows for a faster transition from mastering individual technical operations to solving meaningful engineering problems. However, fundamental knowledge and skills must be verified independently of the agent.</p><h3>6. Teach Specification Writing</h3><p>When writing code independently, some requirements and design decisions can remain in the developer's head.</p><p>When delegating work to an agent, these decisions must be explicitly formulated.</p><p>Students should be able to describe:</p><ul><li><p>functional and non-functional requirements;</p></li><li><p>business rules;</p></li><li><p>constraints;</p></li><li><p>component contracts;</p></li><li><p>edge cases;</p></li><li><p>acceptance criteria.</p></li></ul><p>It is important to distinguish prompting from specification.</p><p>Prompting is a method of interacting with the model. Specification is a description of what should be implemented and what requirements the result must meet.</p><p>Specification-Driven Development should be taught as a full-fledged engineering approach, not just another prompt writing technique.</p><h3>7. Teach Testing and Verification</h3><p>If a significant portion of the code is written by AI, the ability to verify the result becomes one of the developer's key competencies.</p><p>It is insufficient to ask an agent to write code and then ask it to write tests. The model can misunderstand the requirements equally in both implementation and testing.</p><p>Students must independently define the verifiable properties of the system and understand methods for their verification:</p><ul><li><p>unit, integration, and contract testing;</p></li><li><p>functional testing;</p></li><li><p>edge case testing;</p></li><li><p>property-based testing;</p></li><li><p>static analysis;</p></li><li><p>load testing.</p></li></ul><p>A good educational practice is to first formulate acceptance criteria and test scenarios, and then delegate the implementation to the agent.</p><p>The agent should not determine if the task is solved correctly. Correctness criteria must be defined independently of the implementation.</p><h3>8. Teach Engineering Agent Management</h3><p>Working with an agent should not be reduced to a sequence of requests like
+  </main>
+  <footer>
+    Translation generated with Gemini 2.5 Flash-Lite.
+    The original article remains the source of record.
+  </footer>
+</body>
+</html>

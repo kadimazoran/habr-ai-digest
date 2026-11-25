@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>How to compare pages from Search Console and AI response monitoring, and why discrepancies don&#x27;t always mean an error</title>
+  <meta name="description" content="The list of pages from Search Console doesn&#x27;t have to match AI monitoring: the conditions for a URL to appear in these sources differ. A discrepancy itself doesn&#x27;t prove a monitoring error. Without actual exports, you can prepare a comparison: save the accounting conditions, match the addr">
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.65;
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 32px 20px 64px;
+      color: #1f2328;
+    }
+    header {
+      border-bottom: 1px solid #d8dee4;
+      margin-bottom: 28px;
+      padding-bottom: 20px;
+    }
+    .source {
+      color: #57606a;
+      font-size: 0.95rem;
+    }
+    img, video, iframe {
+      max-width: 100%;
+      height: auto;
+    }
+    pre {
+      overflow-x: auto;
+      padding: 16px;
+      background: #f6f8fa;
+      border-radius: 6px;
+    }
+    code {
+      font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+    }
+    blockquote {
+      border-left: 4px solid #d0d7de;
+      margin-left: 0;
+      padding-left: 16px;
+      color: #57606a;
+    }
+    footer {
+      border-top: 1px solid #d8dee4;
+      margin-top: 40px;
+      padding-top: 20px;
+      color: #57606a;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>How to compare pages from Search Console and AI response monitoring, and why discrepancies don&#x27;t always mean an error</h1>
+    <p>The list of pages from Search Console doesn&#x27;t have to match AI monitoring: the conditions for a URL to appear in these sources differ. A discrepancy itself doesn&#x27;t prove a monitoring error. Without actual exports, you can prepare a comparison: save the accounting conditions, match the addresses, and check the disputed pages. Read more</p>
+    <p class="source">
+      Machine-translated from Habr.
+      <a href="https://habr.com/ru/articles/1112404/?utm_campaign=1112404&amp;utm_source=habrahabr&amp;utm_medium=rss">Read the original Russian article</a>.
+      Wed, 25 Nov 2026 18:37:40 GMT
+    </p>
+  </header>
+  <main>
+<div><p>The list of pages from Search Console doesn't have to match AI monitoring: the conditions for a URL to appear in these sources differ. A discrepancy itself doesn't prove a monitoring error. Without actual exports, you can prepare a comparison: save the accounting conditions, match the addresses, and check the disputed pages.</p><h3>What fields to save in URL exports</h3><p>In both exports, you need to save the page addresses and the conditions under which these addresses were included in the list. A column with links is not enough for comparison: you need information nearby that allows you to reconstruct the check.</p><p>You will need:</p><ul><li><p>An export of pages from the <a href="https://support.google.com/webmasters/answer/16984139?hl=en-GW">Search Console AI report</a> with impressions, period, country, and applied filters. You also need to specify which report and search type were used.</p></li><li><p>An export of URLs from monitoring for the same period and region. For each check, you need the service, AI function, question, check time, and found link.</p></li><li><p>Information about URL parameters, redirects, and canonical addresses of pages where discrepancies are found.</p></li></ul><p>The domain can be replaced with the same conditional designation in both exports, preserving paths and parameters. Based on this data, you will identify common pages, pages only in Search Console, and pages only in monitoring, calculate group sizes, and specify the denominator for each share. Then, check the reasons for discrepancies on specific URLs.</p><p>For each list, it's worth separately recording what counts as a page inclusion: a link impression, a link in a saved response, or another event. Mentioning a brand without a link should be kept as a separate indicator. Otherwise, different items will end up in the same comparison row: the company's presence in the text and a link to its page.</p><p>It's convenient to collect comparison conditions in a table before calculations. It should include the period with timezone, country, service, AI function, questions, and filters. An unspecified condition is better marked as unknown than reconstructed from memory. For a row with an unknown region, you cannot silently substitute the region of a neighboring check.</p><h3>How to match parameters, redirects, and canonical URLs</h3><p>For each original URL, you need to match the address by which the match will be checked, keeping the original link in a separate column. This will allow you to return to a specific transformation and check why two addresses were merged or left separate.</p><figure><img alt="The chain allows you to find a specific transformation after which different original links become one address." loading="lazy" src="https://habrastorage.org/r/w1560/extt/84/ac/2e/84ac2e0884699be14baa39c677949229.png"/><div><figcaption>The chain allows you to find a specific transformation after which different original links become one address.</figcaption></div></figure><p>The order of comparison should be fixed in advance:</p><ul><li><p>Save the URL in the form it came from each source.</p></li><li><p>Check for redirects and record the final address along with the redirect chain.</p></li><li><p>Check the canonical address information for the page and note where it was obtained.</p></li><li><p>Parse URL parameters and determine which variants are acceptable to merge in this comparison.</p></li><li><p>Assign a common address for comparison to the page and record the basis for the transformation.</p></li></ul><p>Parameters cannot be removed by a single rule without checking their purpose. For example, in a conditional comparison, two URLs differ only by a parameter. Before merging them, you need to open both addresses and check the content. The mere external similarity of links is not a reason to consider them the same page.</p><p>If the final and canonical addresses differ, it's useful to save both. For a disputed pair, you need to indicate which address was chosen for comparison and why. Unverified canonicalization cannot be used as a ready explanation for a discrepancy.</p><p>After processing, you should have two results: a comparison of original URLs and a comparison of addresses after confirmed transformations. This will show which differences disappeared after checking the links. Each disappeared discrepancy can then be linked to a specific rule, rather than a general data cleaning note.</p><h3>How to count the intersection of two page lists</h3><p>After matching addresses, you need to identify common pages and pages found by only one source. Within each list, remove duplicate matching addresses: multiple observations of the same page should not result in multiple pages.</p><p>For each page in the combined table, two indicators are sufficient: whether it is in Search Console and whether it is in monitoring. Based on these indicators, you will get three groups:</p><ul><li><p>Pages found by both sources.</p></li><li><p>Pages found only in Search Console.</p></li><li><p>Pages found only in monitoring.</p></li></ul><p>The sizes of the groups should be shown in absolute numbers. Next to each share, you need to write the number of pages it is calculated from. A statement about matching lists without a denominator leaves too many interpretation options.</p><figure><img alt="The same intersection size corresponds to different shares depending on the chosen denominator." loading="lazy" src="https://habrastorage.org/r/w1560/extt/44/4f/18/444f184a737805d534d5f0ce7dae0103.png"/><div><figcaption>The same intersection size corresponds to different shares depending on the chosen denominator.</figcaption></div></figure><p>In all calculations, the numerator is the number of common pages; the denominator depends on the question.</p><div><table><tbody><tr><th><p>Share</p></th><th><p>Denominator</p></th></tr><tr><td><p>Search Console pages found by monitoring</p></td><td><p>Number of unique Search Console pages</p></td></tr><tr><td><p>Monitoring pages found in Search Console</p></td><td><p>Number of unique monitoring pages</p></td></tr><tr><td><p>Common pages among all found</p></td><td><p>Number of unique pages in the combined list</p></td></tr></tbody></table></div><p>Before obtaining the exports, these rows have no values. Do not substitute educational numbers for website results: they can be mistaken for actual measurements alongside real check conditions.</p><h3>How to find out why a URL is only in Search Console or only in AI response monitoring</h3><p>For each one-sided match, you need to reconstruct the conditions under which the URL was included in the respective list. It's more convenient to check one page at a time, keeping the original records from both sources side-by-side.</p><p>If a page is only in Search Console, first check if the corresponding service and AI function were included in the monitoring scope. Then, compare the period, region, and set of questions. If there is no suitable check in monitoring, the absence of the URL cannot be recorded as a missed link in the response.</p><p>If a suitable check exists, the next step is to open the saved response. You need to find out if it contained a link to the disputed page and under what address. If a link is present, check if it made it to the export and if it was merged with another URL during processing.</p><p>For a page found only in monitoring, the process starts with the saved response: which service provided it, for what question, and when. Then, compare the Search Console report settings and look for the original, final, and selected-for-comparison addresses. Record each checked option in a table so that repeated checks don't start from scratch.</p><p>It's useful to describe the absence of a row literally: the address was not found in such-and-such export with such-and-such filters. The wording about an error should be reserved for cases where a specific violation of expected behavior is found. For example, in a conditional check, a link is present in the saved response, but the processor missed it. This is already a verifiable defect in link extraction.</p><h3>How to confirm an error in monitoring AI responses links</h3><p>The conclusion about a monitoring error should be tied to a specific stage: receiving the response, extracting the link, processing the address, or exporting the result. For each disputed URL, it's worth saving the original record, the expected result, and the actual result.</p><p>A confirmed explanation must have a verifiable basis: a saved response with a link, a redirect chain, information about the canonical address, or check settings. If the explanation relies solely on assumptions, it should be left without an established cause. This way, a confident diagnosis based on a single missing address won't appear in the results.</p><p>I conducted measurements of brand presence in AI responses: automatically on five platforms and manually in GigaChat. From the measurement logs, I found that reducing the number of questions worsened accuracy more than reducing the number of checked services.</p><p>Search Console and AI response monitoring cannot be considered interchangeable sources. The reason for a discrepancy must be determined by specific URLs and check conditions.</p></div>
+  </main>
+  <footer>
+    Translation generated with Gemini 2.5 Flash-Lite.
+    The original article remains the source of record.
+  </footer>
+</body>
+</html>

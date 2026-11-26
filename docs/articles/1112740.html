@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>User Discovers RAM-Consuming Setting in Google Chrome</title>
+  <meta name="description" content="A user found that Chrome&#x27;s built-in AI assistant, Gemini, can silently consume RAM even when the browser is closed. Read more">
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.65;
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 32px 20px 64px;
+      color: #1f2328;
+    }
+    header {
+      border-bottom: 1px solid #d8dee4;
+      margin-bottom: 28px;
+      padding-bottom: 20px;
+    }
+    .source {
+      color: #57606a;
+      font-size: 0.95rem;
+    }
+    img, video, iframe {
+      max-width: 100%;
+      height: auto;
+    }
+    pre {
+      overflow-x: auto;
+      padding: 16px;
+      background: #f6f8fa;
+      border-radius: 6px;
+    }
+    code {
+      font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+    }
+    blockquote {
+      border-left: 4px solid #d0d7de;
+      margin-left: 0;
+      padding-left: 16px;
+      color: #57606a;
+    }
+    footer {
+      border-top: 1px solid #d8dee4;
+      margin-top: 40px;
+      padding-top: 20px;
+      color: #57606a;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>User Discovers RAM-Consuming Setting in Google Chrome</h1>
+    <p>A user found that Chrome&#x27;s built-in AI assistant, Gemini, can silently consume RAM even when the browser is closed. Read more</p>
+    <p class="source">
+      Machine-translated from Habr.
+      <a href="https://habr.com/ru/articles/1112740/?utm_campaign=1112740&amp;utm_source=habrahabr&amp;utm_medium=rss">Read the original Russian article</a>.
+      Thu, 26 Nov 2026 13:17:09 GMT
+    </p>
+  </header>
+  <main>
+<div><p>A user <a href="https://www.reddit.com/r/chrome/comments/1y1afeg/chrome_keeps_running_in_task_manager_after_i/">discovered</a> that Chrome's built-in AI assistant, Gemini, can silently consume RAM even when the browser itself is closed.</p><figure><img loading="lazy" src="https://habrastorage.org/r/w1560/extt/43/47/75/434775f3666286e7d3c100b22b18b68c.JPG"/></figure><p>They noticed that after closing Chrome, several browser processes continued to appear in Windows Task Manager. These processes occupied between 300 and 700 MB of RAM, despite the option "Continue running background apps when Google Chrome is closed" being disabled. The user tried numerous solutions: disabling extensions, removing web apps, clearing cache and cookies, resetting Chrome settings, and disabling hardware acceleration, preloading pages, and on-device AI features. However, none of these helped.</p><p>Interestingly, when a new Chrome profile was created without logging into an account, the browser completely unloaded from memory after closing. This helped pinpoint the true cause: a subtle Gemini setting that most users are likely unaware of.</p><p>This setting allows Gemini to remain accessible even when the Chrome window is minimized or closed. To enable this, the browser keeps an active background process running in the system. Therefore, to completely shut down Chrome, this feature needs to be disabled, which in turn will reduce RAM consumption.</p><p>To check if such a setting is active on your system, navigate to <code>chrome://settings/ai/gemini</code> in Chrome or go to Settings &gt; AI innovations &gt; Gemini. In the "Preferences" section, find and disable the option "Show Gemini in Chrome in system tray and turn on keyboard shortcut." Google's own documentation also mentions this feature, explaining that when Gemini is activated in the Windows system tray, a corresponding icon appears, and keyboard shortcuts can be used to access the service.</p><p>However, as reported by <a href="https://www.neowin.net/news/user-finds-google-chrome-setting-that-keeps-eating-ram-even-after-closing-the-browser/">Neowin</a>, finding this description in current versions of the help article has become more difficult. Google now appears to be using AI to generate content, redirecting users to the Gemini chatbot for answers.</p><p>Previously, the help article provided the following information:</p><blockquote><p>Manage Gemini in Chrome settings. Hide or show the Gemini icon in the browser and on the desktop.</p><p>Open Chrome on your computer.</p><p>At the top of the window, click More &gt; Settings.</p><p>In the settings menu, select "AI innovations" &gt; "Gemini in Chrome."</p><p>If the menu is hidden, click "Menu" first.</p><p>In the "Preferences" section, enable or disable the following options:</p><p>— Show Gemini at the top of the browser.</p><p>— Show Gemini in the menu bar (on Mac) and enable keyboard shortcut.</p><p>— Show Gemini in the system tray (on Windows) and enable keyboard shortcut.</p><p>Tip: You can also right-click at the top of the browser window and select "Unpin Gemini" or "Pin Gemini."</p></blockquote><figure><img loading="lazy" src="https://habrastorage.org/r/w1560/extt/f8/d6/9f/f8d69f8046f774431f8ddbc0f6c3c269.JPG"/></figure><p>The screenshot above shows that this tip has been replaced by an AI-generated help article, primarily containing general information and requirements for interacting with Gemini – information that is otherwise easily found.</p><p>Previously, a Windows 11 user <a href="https://habr.com/ru/articles/1112176/">discovered</a> that an idle Google Chrome extension wrote hundreds of gigabytes of data to an SSD in just three days, even though the computer was barely used. The culprit was identified using Windows' built-in tools for tracking such processes.</p></div>
+  </main>
+  <footer>
+    Translation generated with Gemini 2.5 Flash-Lite.
+    The original article remains the source of record.
+  </footer>
+</body>
+</html>

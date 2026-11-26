@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Skills over MCP: The MCP server now sends skills with it</title>
+  <meta name="description" content="On November 24th, Anthropic launched the public beta of Skills over MCP in Claude and Claude Code. The MCP server now serves skills automatically, eliminating the need for manual installation. I migrated two of my servers and analyzed logs: in November, they rejected around 4,400 server/discover req">
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.65;
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 32px 20px 64px;
+      color: #1f2328;
+    }
+    header {
+      border-bottom: 1px solid #d8dee4;
+      margin-bottom: 28px;
+      padding-bottom: 20px;
+    }
+    .source {
+      color: #57606a;
+      font-size: 0.95rem;
+    }
+    img, video, iframe {
+      max-width: 100%;
+      height: auto;
+    }
+    pre {
+      overflow-x: auto;
+      padding: 16px;
+      background: #f6f8fa;
+      border-radius: 6px;
+    }
+    code {
+      font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+    }
+    blockquote {
+      border-left: 4px solid #d0d7de;
+      margin-left: 0;
+      padding-left: 16px;
+      color: #57606a;
+    }
+    footer {
+      border-top: 1px solid #d8dee4;
+      margin-top: 40px;
+      padding-top: 20px;
+      color: #57606a;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Skills over MCP: The MCP server now sends skills with it</h1>
+    <p>On November 24th, Anthropic launched the public beta of Skills over MCP in Claude and Claude Code. The MCP server now serves skills automatically, eliminating the need for manual installation. I migrated two of my servers and analyzed logs: in November, they rejected around 4,400 server/discover requests, including those from Claude Code, even before the official announcement. Below, I detail the necessary server changes and how to test your setup with a single curl command.</p>
+    <p class="source">
+      Machine-translated from Habr.
+      <a href="https://habr.com/ru/articles/1112776/?utm_campaign=1112776&amp;utm_source=habrahabr&amp;utm_medium=rss">Read the original Russian article</a>.
+      Thu, 26 Nov 2026 14:31:40 GMT
+    </p>
+  </header>
+  <main>
+<div><p>On November 24th, Anthropic launched the public beta of Skills over MCP (<a href="https://claude.com/resources/articles/skills-over-mcp-tasks-and-more">announcement</a>) in Claude and Claude Code. It's enabled by default on Pro, Max, and Ultra plans, administrators can enable it on Team, and it's promised for Enterprise later. The MCP server can now publish a skill itself, which is a <code>SKILL.md</code> file containing instructions for the agent: when to call which tool and what to ask the user first. Claude Code adds it to the model's skill list and displays it as a command <code>/&lt;server&gt;:&lt;skill&gt;</code>. The extension is called <code>io.modelcontextprotocol/skills</code> (SEP-2640), and the <a href="https://github.com/modelcontextprotocol/ext-skills">specification is available on GitHub</a>.</p><h3>What it was like before</h3><p>Servers could already provide skills to agents in two ways:</p><ul><li><p>As an MCP prompt. In Claude Code, this becomes a command like <code>/mcp__aimyear__aim</code>, but it can only be triggered manually: the model doesn't see prompts in its skill list and doesn't pick them up automatically;</p></li><li><p>As a resource. An agent reads it if the server's instructions say "read before starting work." Agents don't always do this.</p></li></ul><p>Only a skill copied to <code>~/.claude/skills</code> worked without issues: the model sees these skills immediately along with their descriptions. However, each user had to install it manually, and copies would become outdated after the first change on the server. My local copy fell two rules behind the server's in a month.</p><h3>How it works now</h3><p>Upon connection, Claude Code sends <code>server/discover</code> to the server, detects the extension, and calls <code>skills/list</code>. It receives only the skill name and description; the full text remains on the server. When a user selects a command or the model decides a skill is appropriate, Claude Code reads <code>skill://&lt;name&gt;/SKILL.md</code> via <code>resources/read</code>, verifies the sha256 from the list, and inserts the text into the dialogue. No code is run on the user's machine.</p><h3>What needs to be changed on the server</h3><ul><li><p>Support protocol revision 2026-07-28. It is stateless, and the conversation with the server begins with <code>server/discover</code> instead of <code>initialize</code>.</p></li><li><p>The TypeScript SDK 1.x (up to 1.32.2) does not have this revision. It is supported by the <code>@modelcontextprotocol/server</code> package version 2.4, which also includes the extension for skills. Both SDKs can be kept on the same endpoint: the <code>isLegacyRequest()</code> function from v2 forwards old requests to the 1.x handler, so older clients remain unaffected. For servers without an SDK (like my Python on Lambda), a small module is sufficient: <code>server/discover</code>, <code>skills/list</code>, <code>skills/get</code>, and a file via <code>resources/read</code>.</p></li><li><p><code>server/discover</code>, <code>skills/list</code>, <code>skills/get</code>, and <code>resources/read</code> must respond without authorization. <code>tools/call</code> remains protected.</p></li><li><p>You need Claude Code 2.1.331 or newer. Its limits are: 100 skills per server, 100 KB per text file, 400 KB per skill.</p></li></ul><p>Note that after responding to <code>server/discover</code>, Claude Code switches all subsequent calls to this server, including tools, to the new revision.</p><h3>Numbers from my servers</h3><p>I migrated two of my servers to the new scheme: the AimYear goal tracker (TypeScript) and worklore (Python). Before the update, I analyzed <code>server/discover</code> requests from November 1st to 26th in the logs. AimYear received about 2,400 such requests, and worklore received about 2,000. Neither responded to any of them: AimYear returned 401, and worklore returned "method not found."</p><p>The majority of requests came from MCP server directories and crawlers. However, there were also genuine clients: Claude Code starting November 16th (version 2.1.323, a week before the announcement), Devin CLI, and the MCP client from OpenAI. Seven minutes after deployment, my Claude Code 2.1.332 called <code>server/discover</code>, then <code>skills/list</code>, and successfully received a skill. Crawlers currently only check the protocol version: after deployment, only one Claude Code requested <code>skills/list</code> from the server.</p><h3>How to check your server</h3><pre><code>curl -s -X POST https://YOUR-SERVER/mcp 
+  -H 'content-type: application/json' -H 'accept: application/json, text/event-stream' 
+  -H 'mcp-protocol-version: 2026-07-28' -H 'mcp-method: server/discover' 
+  -d '{"jsonrpc":"2.0","id":1,"method":"server/discover","params":{"_meta":{"io.modelcontextprotocol/protocolVersion":"2026-07-28","io.modelcontextprotocol/clientCapabilities":{},"io.modelcontextprotocol/clientInfo":{"name":"check","version":"1"}}}}'</code><div><a href="https://sourcecraft.dev/"><span></span></a></div></pre><p>If the server responded with 401 or "method not found," Claude Code users will not see your skill. If the response includes <code>2026-07-28</code> in <code>supportedVersions</code> and <code>io.modelcontextprotocol/skills</code> in <code>capabilities.extensions</code>, you are all set.</p><p>You can give your agent instructions from <a href="https://worklore.dev/s/2026-11-26-skills-over-mcp-serve-your-agent-skill-from-the-server-not-a">worklore</a> to apply the update in your project.</p></div>
+  </main>
+  <footer>
+    Translation generated with Gemini 2.5 Flash-Lite.
+    The original article remains the source of record.
+  </footer>
+</body>
+</html>

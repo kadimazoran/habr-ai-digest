@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>How I&#x27;m learning English with Claude</title>
+  <meta name="description" content="Still dreaming of a well-paying remote job, I decided to brush up on my English. I wanted to improve my vocabulary, conversational English, and grammar simultaneously. Hiring a tutor is expensive and requires scheduling. So, I started looking into various apps and websites. Given the rapid developme">
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.65;
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 32px 20px 64px;
+      color: #1f2328;
+    }
+    header {
+      border-bottom: 1px solid #d8dee4;
+      margin-bottom: 28px;
+      padding-bottom: 20px;
+    }
+    .source {
+      color: #57606a;
+      font-size: 0.95rem;
+    }
+    img, video, iframe {
+      max-width: 100%;
+      height: auto;
+    }
+    pre {
+      overflow-x: auto;
+      padding: 16px;
+      background: #f6f8fa;
+      border-radius: 6px;
+    }
+    code {
+      font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+    }
+    blockquote {
+      border-left: 4px solid #d0d7de;
+      margin-left: 0;
+      padding-left: 16px;
+      color: #57606a;
+    }
+    footer {
+      border-top: 1px solid #d8dee4;
+      margin-top: 40px;
+      padding-top: 20px;
+      color: #57606a;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>How I&#x27;m learning English with Claude</h1>
+    <p>Still dreaming of a well-paying remote job, I decided to brush up on my English. I wanted to improve my vocabulary, conversational English, and grammar simultaneously. Hiring a tutor is expensive and requires scheduling. So, I started looking into various apps and websites. Given the rapid development of LLMs and their potential usefulness, I specifically sought out AI-powered services. I tried a total of 8 services (3 mobile apps, 4 websites, and 1 Telegram bot) and purchased three subscriptions, using trials for the rest. All these resources had cool features that, in my opinion, weren&#x27;t always relevant and I have no idea who used them, but none of them fully met my needs. As a result, I decided to create my own language learning tool with Claude for Claude. If you&#x27;re interested in what I came up with, welcome under the cut!</p>
+    <p class="source">
+      Machine-translated from Habr.
+      <a href="https://habr.com/ru/articles/1112810/?utm_campaign=1112810&amp;utm_source=habrahabr&amp;utm_medium=rss">Read the original Russian article</a>.
+      Thu, 26 Nov 2026 16:37:46 GMT
+    </p>
+  </header>
+  <main>
+<div><p>Still dreaming of a well-paying remote job, I decided to brush up on my English. I wanted to improve my vocabulary, conversational English, and grammar simultaneously. Hiring a tutor is expensive and requires scheduling. So, I started looking into various apps and websites. Given the rapid development of LLMs and their potential usefulness, I specifically sought out AI-powered services. I tried a total of 8 services (3 mobile apps, 4 websites, and 1 Telegram bot) and purchased three subscriptions, using trials for the rest. All these resources had cool features that, in my opinion, weren't always relevant and I have no idea who used them, but none of them fully met my needs. As a result, I decided to create my own language learning tool with Claude for Claude. If you're interested in what I came up with, welcome under the cut!</p><p><strong>Why did I decide to create my own tool?</strong></p><ol><li><p>As I mentioned above, none of the resources fully met my needs (I'll describe what I wanted in the next paragraph). Each service focused on something specific, so I would have had to consistently pay for at least two subscriptions.</p></li><li><p>The second drawback stems from the first point – the price. The cost of one monthly subscription ranged from $8 to $25. Two subscriptions would be around $30. In reality, that's the same price as Claude, but with Claude, you can do many other useful things for that money.</p></li><li><p>I didn't like the mobile format: my phone screen is small, so it was simply inconvenient to study for about 40 minutes. Plus, the apps lacked context, forcing me to go to a browser or another service to look up rules/words.</p></li></ol><p><strong>What did I want?</strong></p><p>So, after trying all these services for 3 months, I formulated what I needed:</p><ol><li><p>Learning new words: I watch a lot of videos in English and want to familiarize myself with difficult words (B1+ level for me) before watching, along with their context of use, listen to pronunciation, and add the words to a database for future review. I already have <a href="https://github.com/ShellyDeng08/youtube-connector-mcp">youtube-mcp</a> installed to extract transcriptions.</p></li><li><p>Conversation practice: while using the apps, I realized that none of them had a fully implemented conversation module. That is, the service simply runs me through a list of 7-10 template questions, practically ignoring my answers, and after 15 minutes of "conversation," it creates the illusion that I have fully mastered the topic. Tokens are relatively inexpensive now, and you can use a not-so-top-tier model for this task, but apparently, competition is high, and all the money goes into advertising; otherwise, I don't understand why the subscription is so expensive. Therefore, I realized that to truly master a topic, you need at least 20 questions in a live conversation format with clarifications. And to improve grammar simultaneously, the questions should cover different tenses and approach the topic from various angles: opinions (pros and cons; comparisons), scenarios (what if), future (plans and predictions), experience (past tense). To avoid wasting time typing long answers and actually practice speaking, I decided to integrate my other project with <a href="https://github.com/wb-08/PressTalk">voice input</a>. It works simply: hold the button -> speak your thought -> the audio is sent to a personal server and returns the finished text in the input field. Similar transcribers are available via subscription, and there are many other open-source solutions, and Claude itself has built-in voice input, which, however, doesn't work very well in terms of quality. Therefore, my own tool turned out to be much more convenient and better, plus I use it everywhere. As for minor details, I wanted to include 4 more things in the tool: if possible, organically insert the last N words from the database for review into the conversation, correct the grammar in my answers and suggest simpler and more natural ways to phrase the same sentence, and at the end, select B1+ level words from the dialogue and record them in the database.</p></li><li><p>Grammar practice: initially, there should be an explanation of the rule for a specific topic, a few examples, and common mistakes made by Russian speakers. After that, I can ask clarifying questions, and then a set of about 20 exercises is given, progressing from simple to complex (choosing between two words; a sentence with a common mistake to correct; transforming a sentence into a question/negation/different tense/different construction; translating from Russian to English; composing your own sentence on the current topic). Moreover, the exercises are based on words from my database, and new vocabulary at the end of the lesson is added to the database.</p></li></ol><p><strong>What was the result?</strong></p><p>After discussing all the technical details with Claude, we built the langhelper tool in 4 evenings. In essence, it's 3 skills, 7 msp-tools, several auxiliary Python scripts, and an SQLite database.</p><p><strong>Auxiliary Scripts</strong></p><p><strong>NLP Pipeline:</strong> Cleans text from noise, lemmatizes words using spaCy, and checks their frequency using wordfreq. For each word, it extracts a context window (±10 words). As a result, only vocabulary approximately at the B1-C1 level remains.</p><p><strong>Word Pronunciation:</strong> A separate Docker service with a lightweight <a href="https://huggingface.co/hexgrad/Kokoro-82M">Kokoro-82M</a> model. When a word is added, the script generates a WAV file with pronunciation. The path to the file is saved in the database.</p><p><strong>Dictionary Management:</strong> In the terminal, I can view words with pronunciation, translation, and usage examples using the browse.py script, as well as go through a spaced repetition session using the review.py script. The trainer tolerates minor typos and automatically assigns a rating for the FSRS algorithm.</p><p><strong>MCP Server</strong></p><p><strong>add_words:</strong> Writes new words, examples, and FSRS cards to the database, filters out duplicates, and calls the pronunciation service.</p><p><strong>start_conversation_topic and start_grammar_topic:</strong> Returns the first uncompleted topic from the conversation/grammar table and 20 words that are due for review. I took the topic lists themselves from the tables of contents of various textbooks and placed them in the data folder; if any topics are disliked, they can be modified.</p><p><strong>finish_conversation_topic and finish_grammar_topic:</strong> Sets done=1 for a completed topic.</p><p><strong>Vocabulary preparation:</strong> prepare_words reads the video transcription file, and prepare_text accepts text from a Claude session. Both functions process words through the NLP pipeline and return candidates in the format lemma | context window.</p><p><strong>Skills</strong></p><p>From what I've described above, you should already have an idea of how the skills work, but I'll briefly describe each one:</p><p><strong>Extracting words from video:</strong> Gets transcription via youtube-mcp -> saves to file -> calls prepare_words tool -> Claude removes people's names, company names, brands, and lemmatization artifacts (SpaCy sometimes gives incorrect lemmas) -> Claude itself selects the translation and writes two examples, where the first example always comes from the video context, and the second is invented.</p><p><strong>Conversation practice:</strong> Takes a topic and words for review, and after each of my answers, provides brief corrections. At the end, I retell the topic in my own words, and new words from the conversation are added to the database.</p><p><strong>Grammar practice:</strong> Also takes a topic and words for review, explains the rule in Russian, and discusses common mistakes made by Russian speakers. Then it provides 20 exercises from simple to complex based on my words, and new vocabulary after the lesson is also saved to the database.</p></div>
+  </main>
+  <footer>
+    Translation generated with Gemini 2.5 Flash-Lite.
+    The original article remains the source of record.
+  </footer>
+</body>
+</html>

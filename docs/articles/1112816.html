@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>OpenAI found a bug in GPT-6.2 limits. It worked for users for a week</title>
+  <meta name="description" content="For a whole week, the error gave subscribers extra requests, and OpenAI found it themselves. On November 26, Thibault Sotiaux, who is responsible for Codex at the company, admitted that since the launch of GPT-6.2, the consumption of Astra and Sol in subscriptions was counted with a discount that sh">
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.65;
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 32px 20px 64px;
+      color: #1f2328;
+    }
+    header {
+      border-bottom: 1px solid #d8dee4;
+      margin-bottom: 28px;
+      padding-bottom: 20px;
+    }
+    .source {
+      color: #57606a;
+      font-size: 0.95rem;
+    }
+    img, video, iframe {
+      max-width: 100%;
+      height: auto;
+    }
+    pre {
+      overflow-x: auto;
+      padding: 16px;
+      background: #f6f8fa;
+      border-radius: 6px;
+    }
+    code {
+      font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+    }
+    blockquote {
+      border-left: 4px solid #d0d7de;
+      margin-left: 0;
+      padding-left: 16px;
+      color: #57606a;
+    }
+    footer {
+      border-top: 1px solid #d8dee4;
+      margin-top: 40px;
+      padding-top: 20px;
+      color: #57606a;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>OpenAI found a bug in GPT-6.2 limits. It worked for users for a week</h1>
+    <p>For a whole week, the error gave subscribers extra requests, and OpenAI found it themselves. On November 26, Thibault Sotiaux, who is responsible for Codex at the company, admitted that since the launch of GPT-6.2, the consumption of Astra and Sol in subscriptions was counted with a discount that should not have been there. The counter has already been fixed, so limits will now run out noticeably faster. Read more</p>
+    <p class="source">
+      Machine-translated from Habr.
+      <a href="https://habr.com/ru/articles/1112816/?utm_campaign=1112816&amp;utm_source=habrahabr&amp;utm_medium=rss">Read the original Russian article</a>.
+      Thu, 26 Nov 2026 17:05:03 GMT
+    </p>
+  </header>
+  <main>
+<div><p>Usually, users are the first to find a billing error when they see a strange amount on their bill. Here, everything was the opposite. For a whole week, the error gave subscribers extra requests, and OpenAI found it themselves. On November 26, Thibault Sotiaux, who is responsible for Codex at the company, <a href="https://x.com/thsottiaux/status/2125784147889393806">admitted</a> that since the launch of GPT-6.2, the consumption of Astra and Sol in subscriptions was counted with a discount that should not have been there. The counter has already been fixed, so limits will now run out noticeably faster.</p><h3>What OpenAI said</h3><p>GPT-6.2 Astra and Sol <a href="https://gcn.com/?p=23366">were released on November 17</a> in ChatGPT Work, Codex, and API. According to Sotiaux, the error appeared at launch and underestimated the consumption of both models for most users. Here's what changed after the fix.</p><ul><li><p>Compared to last week, the limit for GPT-6.2 Astra now runs out 40% faster.</p></li><li><p>For Sol, it runs out 25% faster.</p></li><li><p>The error did not affect other models.</p></li><li><p>There will be no additional charges for the difference in past usage.</p></li><li><p>OpenAI claims that 6.2 still consumes limits more economically than GPT-6 Astra and GPT-6.1 Sol.</p></li></ul><h3>Compensation and API</h3><p>As an apology, everyone on Go, Plus, Pro, and Business plans will receive one banked reset. Such a reset is stored in the account until you decide to apply it, and it resets the 5-hour and weekly windows at once. You can apply it in Settings → Usage on the website or in the Codex app profile (<a href="https://help.openai.com/en/articles/11369540-using-codex-with-your-chatgpt-plan">OpenAI help</a>). They did not officially say how long it will be valid; it is visible in the account.</p><p>The API, according to an <a href="https://ai-tldr.dev/releases/openai-gpt-6-2-usage-billing-fix/">analysis by ai-tldr</a>, is not affected by the error. Tokens are paid for separately there, and prices have not changed. For Astra, it's $8 per million input tokens and $40 per million output tokens; for Sol, it's $2 and $10, respectively.</p><h3>What this means in practice</h3><p>My opinion next. From November 17 to 25, the subscription worked on an underestimated counter. Therefore, impressions like "the subscription lasts a long time on 6.2" and comparisons of limits with competitors collected during these days are unreliable. It wasn't the model's economy that was being measured, but an accidental discount.</p><p>There is a second subtlety. The promise that 6.2 is still more economical than previous versions is based on the same internal accounting that was actually mistaken for a week. OpenAI itself published the figure, so I would check it with my own tasks.</p><h3>Conclusion</h3><p>A rare bug in billing that worked in favor of the user, and, of course, it was fixed first 😅 We must admit that OpenAI acted honestly. They admitted the error themselves, provided the figures, and did not ask for backdated payments. And yet, if you felt this week that your Codex subscription was becoming more generous, it was the counter that was generous. I advise not to spend the banked reset on the first evening; a second such gift may not come.</p><p>More important AI news in the Telegram channel <a href="https://t.me/+0Ng6AT22UfJiMWZi"><strong>AI Native</strong></a>. We analyze everything related to AI.</p><figure><img loading="lazy" src="https://habrastorage.org/r/w1560/getpro/habr/upload_files/7d1/407/12e/7d140712ea33ff919753c28822531584.png"/></figure></div>
+  </main>
+  <footer>
+    Translation generated with Gemini 2.5 Flash-Lite.
+    The original article remains the source of record.
+  </footer>
+</body>
+</html>

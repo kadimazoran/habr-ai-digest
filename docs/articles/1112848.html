@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>I have 11 dashboards to control my 7K+ sessions in Claude</title>
+  <meta name="description" content="When I stopped understanding what was going on in my sessions, how many there were, what they were about, what I wanted, and how to find what I needed, I started creating dashboards. It was these that helped me systematize information about my sessions. Read more">
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.65;
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 32px 20px 64px;
+      color: #1f2328;
+    }
+    header {
+      border-bottom: 1px solid #d8dee4;
+      margin-bottom: 28px;
+      padding-bottom: 20px;
+    }
+    .source {
+      color: #57606a;
+      font-size: 0.95rem;
+    }
+    img, video, iframe {
+      max-width: 100%;
+      height: auto;
+    }
+    pre {
+      overflow-x: auto;
+      padding: 16px;
+      background: #f6f8fa;
+      border-radius: 6px;
+    }
+    code {
+      font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+    }
+    blockquote {
+      border-left: 4px solid #d0d7de;
+      margin-left: 0;
+      padding-left: 16px;
+      color: #57606a;
+    }
+    footer {
+      border-top: 1px solid #d8dee4;
+      margin-top: 40px;
+      padding-top: 20px;
+      color: #57606a;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>I have 11 dashboards to control my 7K+ sessions in Claude</h1>
+    <p>When I stopped understanding what was going on in my sessions, how many there were, what they were about, what I wanted, and how to find what I needed, I started creating dashboards. It was these that helped me systematize information about my sessions. Read more</p>
+    <p class="source">
+      Machine-translated from Habr.
+      <a href="https://habr.com/ru/articles/1112848/?utm_campaign=1112848&amp;utm_source=habrahabr&amp;utm_medium=rss">Read the original Russian article</a>.
+      Thu, 26 Nov 2026 18:33:37 GMT
+    </p>
+  </header>
+  <main>
+<div><p>More than 7000 Claude Code sessions.</p><p>Some of them I create myself, some are launched by robots on a schedule, some are launched from my voice recordings (a separate session is created for each of my voice recordings).</p><p>At some point, the thread of control over all this began to be lost. I no longer understood what was happening on which computer and in which session.</p><p>This article is about how I selected and configured dashboards to control sessions, which ones I kept, and which ones didn't suit me. All figures are real (as they say, based on real events).</p><h3>How it all started</h3><p>In general, a Claude Code session lives its own life. Don't you have that? You open it, give it a task, and go to sleep. In the morning, there are 100-500 new lines in the sidebar, and it's unclear which ones are working, which ones are waiting for some decision from me, which ones seem to be done, and how much it all cost me.</p><p>When there are ten sessions, it's easy to keep in mind. When there are thousands - no chance.</p><h3>1. The first dashboard shows what I have in general.</h3><p>It collects transcripts from all machines and all accounts into one table with text search.</p><p>At the last snapshot, for example, there were <strong>7451 sessions</strong> in the pool:</p><ul><li><p>3497 human (3009 mine, 263 and 224 by my colleagues);</p></li><li><p>3954 service, i.e., launched by robots;</p></li><li><p>6 machines, 5 accounts.</p></li></ul><p>Each row has a "Continue" button that opens the corresponding old session. This is very useful for me: I can easily see what was done and easily find sessions by searching.</p><p>And it's very telling, it turns out that <strong>robots create more sessions than humans</strong>. I somehow thought it wasn't the case.</p><h3>2. "Who creates sessions": the robot panel</h3><p>I needed to figure out which robot created how many sessions. I created a separate dashboard for this task:</p><p>Result:</p><ul><li><p>20 robots on schedule;</p></li><li><p>286 sessions created by them;</p></li><li><p><strong>262 of them (91%) were created by one robot</strong>: a test "dry run" of the inter-machine bus, which only wrote to the log every 25 minutes.</p></li></ul><p>In general, I corrected the situation here.</p><h3>3. "What's working now"</h3><p>Not everything has to be an HTML page. Most often, I want to understand what's working right now, and this is easily solved with a command in the terminal that prints the finished text:</p><pre><code>📟 СЕССИИ · NATALY-WIN-NB · 22:03
+🟢 РАБОТАЮТ: 1
+✅ ЗАКРЫЛОСЬ за 12ч: 0
+🔴 ЖДУТ ТЕБЯ: 4
+  1. 🔐 БРАУЗЕРНАЯ РЕЛЬСА КРАСНАЯ на узле ... - 10 дн
+  ...
+Ответ: + &lt;id&gt; = да · NO &lt;id&gt; = нет
+</code><div><a href="https://sourcecraft.dev/"><span></span></a></div></pre><h3>4. Sessions where I need to respond or make a decision</h3><p>A session that has stopped and is waiting for my "yes". Or "no". I used to overlook such sessions in the general mass.</p><p>But now I've set up a watchdog for myself that checks the sessions on its machine every 15 minutes and reports who is waiting and how many are waiting.</p><h3>5. Background sessions</h3><p>This is my favorite dashboard.</p><p>Each background session ends with a return code. Code 0 means "everything is fine".</p><p>However, code 0 is not actually indicative.</p><p>Example from a real panel:</p><blockquote><p>Session "restore re-indexing timer" · 20 minutes · return code 0 · status done. Inside the log: <code>You've hit your monthly spend limit</code>.</p></blockquote><p>That is, the session worked for twenty minutes, hit the limit, did nothing, but reported that everything was okay and done.</p><p>An example of how I check the status. At one snapshot of 34 background sessions:</p><ul><li><p>18 finished with results;</p></li><li><p>8 still in progress;</p></li><li><p><strong>8 require attention</strong></p></li></ul><h3>6. Daily ledger: what happened that day</h3><p>Sometimes you need to answer the question "what did we do on October 1st". The robot collects data for each day from seven free sources: session transcripts, commits, retrospectives, decisions, commissioned research, posts.</p><p>The keyword is "free": the assembly is done <strong>without a single LLM token</strong>, with pure code. For example, for October 1st: 43 different sessions, 197 calls, of which 95 were robotic, 27 commits to the knowledge base, 28 retrospectives, 4 decisions.</p><h3>7. Autonomy: how many questions were asked in vain</h3><p>My sessions ask me questions via Telegram. I thought I needed to track not only how many of these questions there were, but also <strong>how many of them are no longer relevant</strong>, meaning no one has answered and the question has lost its meaning.</p><p>Example for 30 days:</p><ul><li><p>57 questions;</p></li><li><p><strong>40 are irrelevant, which is 70%</strong>;</p></li><li><p>within one week, <strong>23 out of 23</strong> became irrelevant.</p></li></ul><p>42% of questions are cases where the session asked me about something it could have solved itself.</p><p>Questions about login and two-factor authentication become irrelevant in 100% of cases: I simply don't have time to respond in the session on time.</p><p>I have made changes to the rule: now the session decides everything itself, except for money, irreversible deletion, legal signatures, and secrets to third parties. I trust it more and more.</p><h3>8. Subscriptions</h3><p>I spend about $2000 a month on subscriptions to various LLMs. The logical question is: how much of this do I actually use. I now have a dashboard that collects information for each subscription, how much I paid and how much I used from that subscription.</p><h3>9. System health</h3><p>A separate task counts all assets: scripts, scheduler tasks, skills, databases, hooks, dashboards. At the last snapshot: <strong>10,665 assets, 23 are not working correctly, 35 are disabled, 322 robots on schedule</strong>, overall score 98 out of 100.</p><h3>10. Routine registry</h3><p>This is less of a dashboard and more of an inventory: what routines are on each machine, which ones worked during the week, which ones are idle, which ones can be moved to one server.</p><h3>11. Grouping by tasks</h3><p>The robot sorts my sessions into task groups (job search, content, infrastructure, research) and puts an icon in the header.</p><h3>Dashboards I've redone or deleted</h3><p>First, I made <strong>"Session Health"</strong> on each machine. But then I combined them into one dashboard.</p><p>I made a dashboard about the <strong>"Agent Fleet"</strong> with a process counter. But I don't need it at all. Maybe for now.</p><p><strong>General board of waiting sessions</strong> - very inconvenient. It's more convenient for each employee to look at their own, rather than picking out their sessions from one general dashboard.</p><p>If you also have dozens of parallel Claude Code or Codex sessions, I'm interested in how you monitor them. What dashboards do you use? Where do you look for dashboard examples?</p></div>
+  </main>
+  <footer>
+    Translation generated with Gemini 2.5 Flash-Lite.
+    The original article remains the source of record.
+  </footer>
+</body>
+</html>

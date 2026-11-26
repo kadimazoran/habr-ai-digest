@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>How to check if AI bots can see your site&#x27;s text and find technical blocks</title>
+  <meta name="description" content="A page opens in a browser, but does a search AI bot receive it? To check site access for neural network bots, you need crawl rules, logs, and the HTML itself. Otherwise, you might be editing robots.txt while the bot is being checked as a visitor. Read more">
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.65;
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 32px 20px 64px;
+      color: #1f2328;
+    }
+    header {
+      border-bottom: 1px solid #d8dee4;
+      margin-bottom: 28px;
+      padding-bottom: 20px;
+    }
+    .source {
+      color: #57606a;
+      font-size: 0.95rem;
+    }
+    img, video, iframe {
+      max-width: 100%;
+      height: auto;
+    }
+    pre {
+      overflow-x: auto;
+      padding: 16px;
+      background: #f6f8fa;
+      border-radius: 6px;
+    }
+    code {
+      font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+    }
+    blockquote {
+      border-left: 4px solid #d0d7de;
+      margin-left: 0;
+      padding-left: 16px;
+      color: #57606a;
+    }
+    footer {
+      border-top: 1px solid #d8dee4;
+      margin-top: 40px;
+      padding-top: 20px;
+      color: #57606a;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>How to check if AI bots can see your site&#x27;s text and find technical blocks</h1>
+    <p>A page opens in a browser, but does a search AI bot receive it? To check site access for neural network bots, you need crawl rules, logs, and the HTML itself. Otherwise, you might be editing robots.txt while the bot is being checked as a visitor. Read more</p>
+    <p class="source">
+      Machine-translated from Habr.
+      <a href="https://habr.com/ru/articles/1112806/?utm_campaign=1112806&amp;utm_source=habrahabr&amp;utm_medium=rss">Read the original Russian article</a>.
+      Thu, 26 Nov 2026 16:29:42 GMT
+    </p>
+  </header>
+  <main>
+<div><p>A page opens in a browser, but does a search AI bot receive it? To check site access for neural network bots, you need crawl rules, logs, and the HTML itself. Otherwise, you might be editing robots.txt while the bot is being checked as a visitor.</p><h3>How Yandex discovers new pages for search</h3><p>The Yandex robot can discover a site via an external link. You can report a new page through <a href="https://yandex.ru/support/webmaster/ru/robot-workings/robot.html">Page Re-crawling in Webmaster</a>: this signals the URL to be visited. An external link does not guarantee that all pages will be crawled, and submitting an address does not confirm its download.</p><p>For Alice AI, page availability in Search is directly relevant: according to <a href="https://yandex.ru/support/webmaster/ru/alice?lang=ru">Yandex documentation</a>, it queries Search with refined requests and uses its results.</p><figure><img alt="Site discovery, URL submission, and using Search results have different outcomes and limitations." loading="lazy" src="https://habrastorage.org/r/w1560/extt/3a/27/87/3a27877b4b087c32c9738211846b94be.png"/><div><figcaption>Site discovery, URL submission, and using Search results have different outcomes and limitations.</figcaption></div></figure><h3>How to distinguish ChatGPT and Perplexity bots by purpose</h3><p>OAI-SearchBot is intended for ChatGPT search, GPTBot collects content for potential training of OpenAI AI models. User-initiated fetches are considered separately. The purposes of the agents are described in the <a href="https://developers.openai.com/api/docs/bots">OpenAI documentation</a> and <a href="https://docs.perplexity.ai/guides/bots">Perplexity</a>.</p><div><table><tbody><tr><th><p>Agent</p></th><th><p>Purpose</p></th><th><p>What to consider</p></th></tr><tr><td><p>OAI-SearchBot</p></td><td><p>ChatGPT search</p></td><td><p>Check search crawl permission</p></td></tr><tr><td><p>GPTBot</p></td><td><p>Content collection for potential training of OpenAI AI models</p></td><td><p>Prohibition applies to training</p></td></tr><tr><td><p>ChatGPT-User</p></td><td><p>User-initiated actions</p></td><td><p>Does not crawl the web automatically; robots.txt may not apply</p></td></tr><tr><td><p>PerplexityBot</p></td><td><p>Perplexity search</p></td><td><p>Does not collect content for training base AI models</p></td></tr><tr><td><p>Perplexity-User</p></td><td><p>User-initiated fetch</p></td><td><p>Usually ignores robots.txt</p></td></tr></tbody></table></div><h3>How to identify a search AI bot request from site logs and IP</h3><p>Match the bot name in the User-Agent string—the request string by which the sender identifies itself to the site—with the sender's IP according to the specific service's rules. The name alone in the log is insufficient.</p><ol><li><p>Find the request to the desired URL. Record the time, IP, User-Agent, response code, and size. In the Nginx text log, you can start the search like this:</p></li></ol><pre><code>sh rg -i -e OAI-SearchBot -e PerplexityBot /var/log/nginx/access.log</code><div><a href="https://sourcecraft.dev/"><span></span></a></div></pre><p>If your site uses a CDN—an intermediate service for content delivery and protection—request its logs from the developer: the request might have been stopped by the protection without reaching the server.</p><ol><li><p>Verify the sender. Match the OAI-SearchBot IP with the ranges from the <a href="https://developers.openai.com/api/docs/bots">OpenAI documentation</a>. Perplexity assigns a unique IP list to each agent. For Yandex, after performing a reverse DNS lookup, perform a forward one: according to the <a href="https://yandex.ru/support/webmaster/ru/robot-workings/check-yandex-robots">robot verification rules</a>, it should return the original IP.</p></li><li><p>Check <a href="https://habr.com/ru/articles/1063216/">robots.txt for neural networks</a>: the rules for the desired agent and the page path. Also, check the accessibility of the robots.txt file itself. According to <a href="https://www.rfc-editor.org/rfc/rfc9309.html">RFC 9309</a>, if robots.txt is inaccessible due to a server or network error, the robot must consider crawling completely forbidden. This rule applies to robots.txt.</p></li><li><p>Record the HTTP response. If the server returned a 403 (forbidden), 429 (too many requests), or 5xx (server error) code, find the corresponding event in your CDN, Web Application Firewall (WAF), or anti-bot protection logs. If there's a redirect, save the chain of addresses and the final URL. For a 200 response, check the content.</p></li><li><p>Align crawl permissions and protection. OpenAI <a href="https://developers.openai.com/api/docs/bots">recommends</a> allowing OAI-SearchBot in both robots.txt and via published IP ranges. Changes to robots.txt for search may take about 24 hours to take effect.</p></li></ol><h3>How to check server response content using curl</h3><p>curl is a program for making requests to websites; it can be used to save headers and HTML of a test response. The commands below are executed in the terminal of the computer where the necessary programs are installed. The request originates from your IP: substituting the User-Agent does not confirm access by a real bot.</p><p>Replace the domain and page path. Instead of ControlWord, substitute a rare word from its main text:</p><pre><code>sh curl -sS -L -A OAI-SearchBot 
+ -D robots.headers -o robots.txt https://example.org/robots.txt
+
+curl -sS -L -A OAI-SearchBot 
+ -D page.headers -o page.html https://example.org/new-page/
+
+rg -ni -e HTTP/ -e location: -e content-type: 
+ robots.headers page.headers
+
+rg -ni -F -e КонтрольноеСлово -e captcha -e challenge page.html</code><div><a href="https://sourcecraft.dev/"><span></span></a></div></pre><p>The files will contain robots.txt, the final page HTML, and response headers with redirects. Matches for captcha or challenge are a reason to examine the HTML: these words alone do not prove a block.</p><p>A 200 response here can be easily misinterpreted: it might contain a visitor check instead of the page text. Perplexity documents a <a href="https://docs.perplexity.ai/guides/bots">troublesome Cloudflare trap</a>: Bot Fight Mode can continue to challenge bots even with a permissive WAF rule. The Skip rule should be placed above blocking rules: it only allows subsequent rules to be processed.</p><figure><img alt="After the same HTTP 200, the check can lead to protection settings or to loading text via JavaScript." loading="lazy" src="https://habrastorage.org/r/w1560/extt/fe/8b/2e/fe8b2edd835cf6bd521be61d7e7d69c4.png"/><div><figcaption>After the same HTTP 200, the check can lead to protection settings or to loading text via JavaScript.</figcaption></div></figure><p>If the text is present in the browser but not in the saved HTML, check if it's loaded via JavaScript. curl does not execute JavaScript. The developer's task is to ensure the main page text is present in the HTML that the server returns without executing JavaScript.</p><p>Yandex leaves JavaScript execution to the <a href="https://yandex.ru/support/webmaster/ru/yandex-indexing/rendering?lang=ru">robot's discretion</a> by default. Deferred loading can lead to <a href="https://yandex.ru/support/webmaster/ru/robot-workings/vision">incomplete indexing</a>. You can select a mobile or desktop version to check the page in Webmaster.</p><h3>What data to provide to a developer if a search AI bot doesn't receive page text</h3><p>Provide the developer with the URL, time, sender verification details, HTTP responses, and HTML. Include the blocking event from the protection logs or specify which text is missing from the HTML.</p><p>A hypothetical task example: the server responds with 200, but instead of text, it returns a visitor check. The task is to eliminate this for a confirmed search bot and repeat the fetch. Acceptance criteria: the bot receives the main page text.</p><p>Indexing a site by neural networks requires separate verification. Submitting a URL to Yandex's Page Re-crawling only confirms the signal to the robot. The log records the bot's request, and curl saves the response to a test request. In Yandex, check the indexed version of the page in Webmaster.</p><p>In Yandex, also check the <a href="https://yandex.ru/support/webmaster/ru/robot-workings/vision">robots meta tag with noindex or none</a>: it allows excluding a page from search while keeping it accessible to visitors.</p><p>Technical page accessibility must be checked against crawl rules, server logs, and the actual content received. Successful HTML loading confirms page access but does not, by itself, prove its indexing.</p></div>
+  </main>
+  <footer>
+    Translation generated with Gemini 2.5 Flash-Lite.
+    The original article remains the source of record.
+  </footer>
+</body>
+</html>

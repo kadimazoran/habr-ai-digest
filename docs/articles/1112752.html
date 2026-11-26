@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Thinkmine introduced the Kobo programming language for .NET</title>
+  <meta name="description" content="Thinkmine has released the general-purpose programming language Kobo for the .NET ecosystem in preview. Developers link the language&#x27;s emergence to the spread of agent development and code generation based on specifications. The project is focused on collaborative development by humans and AI a">
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.65;
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 32px 20px 64px;
+      color: #1f2328;
+    }
+    header {
+      border-bottom: 1px solid #d8dee4;
+      margin-bottom: 28px;
+      padding-bottom: 20px;
+    }
+    .source {
+      color: #57606a;
+      font-size: 0.95rem;
+    }
+    img, video, iframe {
+      max-width: 100%;
+      height: auto;
+    }
+    pre {
+      overflow-x: auto;
+      padding: 16px;
+      background: #f6f8fa;
+      border-radius: 6px;
+    }
+    code {
+      font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+    }
+    blockquote {
+      border-left: 4px solid #d0d7de;
+      margin-left: 0;
+      padding-left: 16px;
+      color: #57606a;
+    }
+    footer {
+      border-top: 1px solid #d8dee4;
+      margin-top: 40px;
+      padding-top: 20px;
+      color: #57606a;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Thinkmine introduced the Kobo programming language for .NET</h1>
+    <p>Thinkmine has released the general-purpose programming language Kobo for the .NET ecosystem in preview. Developers link the language&#x27;s emergence to the spread of agent development and code generation based on specifications. The project is focused on collaborative development by humans and AI agents and is currently in its early stages, so the syntax may still change. The authors formulated four design principles: native AI support, declaration consistency, reliance on a ready-made runtime, and self-documentation. Instead of third-party libraries for working with models, developers have added language constructs for prompts and tools. Read more</p>
+    <p class="source">
+      Machine-translated from Habr.
+      <a href="https://habr.com/ru/companies/selectel/articles/1112752/?utm_campaign=1112752&amp;utm_source=habrahabr&amp;utm_medium=rss">Read the original Russian article</a>.
+      Thu, 26 Nov 2026 13:20:35 GMT
+    </p>
+  </header>
+  <main>
+<div><figure><img loading="lazy" src="https://habrastorage.org/w1560/extt/42/75/e6/4275e6d918f707025505adae87a464c5.png"/></figure><p>Thinkmine has released the general-purpose programming language Kobo for the .NET ecosystem in preview. Developers link the language's emergence to the spread of agent development and code generation based on specifications. The project is focused on collaborative development by humans and AI agents and is currently in its early stages, so the syntax may still change.</p><p>The authors formulated four design principles: native AI support, declaration consistency, reliance on a ready-made runtime, and self-documentation. Instead of third-party libraries for working with models, developers have added language constructs for prompts and tools.</p><h2>Syntax</h2><p>In declarations, the entity type is indicated by a colon on both sides, for example <code>class:Name</code>, <code>function:Type Name(...)</code>, <code>property:Type Name</code>, <code>var:Type name</code>, or <code>const:Type name</code>. Attributes and modifiers are written in square brackets, and semicolons can often be omitted in regular single-line expressions. Code blocks are enclosed in curly braces.</p><pre><code>[public, static] function:int Add(int left, int right)&#10;{&#10;    return left + right&#10;}&#10;&#10;[public] class:Box&lt;T&gt;&#10;{&#10;    [public] property:T Value { get; set; }&#10;}</code><div><a href="https://sourcecraft.dev/"><span></span></a></div></pre><p>Variables require an initial value. Constants are defined using <code>const:Type</code> <code>Name = value</code> with constant expressions. Local variables, as well as class, struct, and record fields, can infer a fixed type using <code>var name = value</code> (such fields are private by default). For an explicit type, use <code>var:Type</code>, for dynamic binding — <code>var:dynamic</code>, and for type unions — <code>var:union(...)</code>, for which the compiler generates a type at the namespace level.</p><p>Kobo also has nullable types with <code>?</code>, the <code>?.</code> operator, the <code>??</code> check, collections in square brackets, and queries starting with <code>select</code> (multi-line queries end with a semicolon). Functions support generics, asynchronous operations, extensions, delegates <code>(parameter-types)-&gt;return-type</code>, lambdas with a closure block for the last delegate, as well as preconditions <code>requires</code> and postconditions <code>ensures</code> with access to the returned value via <code>result</code>.</p><h2>Language Features</h2><p>The <code>json</code> type is built into the language: it supports properties, indexers, and implicit conversions to and from strings, and throws a <code>JsonException</code> on parsing errors.</p><pre><code>var:string name = Input("Name: ")&#10;Print("Hello, ${name}!")&#10;var:string source = raw """{"name":"Kobo"}"""&#10;var:json details = source&#10;var:string text = details.StringValue&#10;Print(text)</code><div><a href="https://sourcecraft.dev/"><span></span></a></div></pre><p>Prompts are declared using <code>prompt:Type name { ... }</code> in <code>#:script</code> scripts or asynchronous functions. Inside the prompt body, regular text works, Kobo expressions are substituted via <code>${expression}</code>, and <code>
+{...}</code> remains a literal fragment.</p><pre><code>#:script&#10;[tool, description("Adds two integers")]&#10;function:int Add(int first, int second) =&gt; first + second&#10;&#10;prompt:int result {&#10;    Use Add to calculate ${20} plus ${22}.&#10;}&#10;if result is int number&#10;{&#10;    Print(number)&#10;}</code><div><a href="https://sourcecraft.dev/"><span></span></a></div></pre><p>Functions with the <code>[tool]</code> attribute are passed to prompts as tools. An AI function requires a configuration file <code>kobo.ai.json</code> to operate. Kobo programs can also be packaged as skills for external agents, for example, in Visual Studio Code.</p><div><figure><img loading="lazy" src="https://habrastorage.org/getpro/habr/upload_files/dbd/50d/bb6/dbd50dbb6316408a3d20c62b3ced3f3c.gif"/></figure><p><strong>AI Router — access to 400+ models from a single panel</strong></p><p>Connect an OpenAI-compatible gateway with a single API key. Configure end-to-end analytics, track limits, and quota resources.</p><p><a href="https://promo.selectel.ru/ai-router/?utm_source=habr.com&amp;utm_medium=referral&amp;utm_campaign=airouter_news_kobo_261126_banner"><strong>Launch AI Router →</strong></a></p></div><h2>Installation</h2><p>The Kobo compiler is installed on top of the .NET 11 SDK, after which a separate file or an entire directory is compiled. The presence of a static <code>Main</code> will allow creating an executable file (if it is absent, the result will be a library).</p><pre><code>dotnet tool install --global thinkmine.kobo.lang --prerelease&#10;kobo build --source hello.kobo --output-directory ./build --name Hello&#10;dotnet ./build/Hello.dll</code><div><a href="https://sourcecraft.dev/"><span></span></a></div></pre><p>The <code>build</code>, <code>run</code>, and <code>generate</code> commands accept the <code>--source</code> parameter with the path to a file or folder (the <code>--recursive</code> flag adds subfolders), and for .NET projects, use the <code>thinkmine.kobo.lang.buildtools</code> package. The <code>--markdown</code> flag in <code>build</code> and <code>run</code> compiles Markdown documentation from <code>###</code> comments (by default, next to the source file, e.g., <code>test.kobo.md</code>), <code>--publish-code</code> saves the source listing, and the <code>kobo generate</code> command only creates a Markdown file.</p><pre><code>kobo run --source app.kobo --markdown --publish-code -- Ada&#10;kobo build --source app.kobo --markdown docs/app.md&#10;kobo generate --source app.kobo --markdown output.md</code><div><a href="https://sourcecraft.dev/"><span></span></a></div></pre><p>You can learn more about the project in the <a href="https://github.com/thinkmine/Kobo">GitHub repository</a>. Extensions for Visual Studio Code and Visual Studio 2026 are also available for installation.</p></div>
+  </main>
+  <footer>
+    Translation generated with Gemini 2.5 Flash-Lite.
+    The original article remains the source of record.
+  </footer>
+</body>
+</html>

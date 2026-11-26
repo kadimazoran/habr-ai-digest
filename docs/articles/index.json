@@ -5839,6 +5839,78 @@
     "summary": "The list of pages from Search Console doesn't have to match AI monitoring: the conditions for a URL to appear in these sources differ. A discrepancy itself doesn't prove a monitoring error. Without actual exports, you can prepare a comparison: save the accounting conditions, match the addresses, and check the disputed pages. Read more",
     "title": "How to compare pages from Search Console and AI response monitoring, and why discrepancies don't always mean an error"
   },
+  "https://habr.com/ru/articles/1112740/?utm_campaign=1112740&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Thu, 26 Nov 2026 13:17:09 GMT",
+    "slug": "1112740",
+    "source_url": "https://habr.com/ru/articles/1112740/?utm_campaign=1112740&utm_source=habrahabr&utm_medium=rss",
+    "summary": "A user found that Chrome's built-in AI assistant, Gemini, can silently consume RAM even when the browser is closed. Read more",
+    "title": "User Discovers RAM-Consuming Setting in Google Chrome"
+  },
+  "https://habr.com/ru/articles/1112776/?utm_campaign=1112776&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Thu, 26 Nov 2026 14:31:40 GMT",
+    "slug": "1112776",
+    "source_url": "https://habr.com/ru/articles/1112776/?utm_campaign=1112776&utm_source=habrahabr&utm_medium=rss",
+    "summary": "On November 24th, Anthropic launched the public beta of Skills over MCP in Claude and Claude Code. The MCP server now serves skills automatically, eliminating the need for manual installation. I migrated two of my servers and analyzed logs: in November, they rejected around 4,400 server/discover requests, including those from Claude Code, even before the official announcement. Below, I detail the necessary server changes and how to test your setup with a single curl command.",
+    "title": "Skills over MCP: The MCP server now sends skills with it"
+  },
+  "https://habr.com/ru/articles/1112786/?utm_campaign=1112786&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Thu, 26 Nov 2026 14:52:51 GMT",
+    "slug": "1112786",
+    "source_url": "https://habr.com/ru/articles/1112786/?utm_campaign=1112786&utm_source=habrahabr&utm_medium=rss",
+    "summary": "Business proposed allowing independent laboratories to test AI systems in testbeds, i.e., in special environments. This will help customers and information system owners assess the possible risks of using neural networks and make a decision on implementation. If the AI system passes the test, is capable of performing certain tasks, and complies with security requirements, it acquires the status of trusted. This is stated in the draft concept of trust in AI systems. Vedomosti familiarized themselves with the project, its authenticity was confirmed by two sources: one in an IT company, the second in the Ministry of Digital Development. Read more",
+    "title": "In Russia, they proposed creating a system for independent verification of trusted AI"
+  },
+  "https://habr.com/ru/articles/1112804/?utm_campaign=1112804&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Thu, 26 Nov 2026 16:20:48 GMT",
+    "slug": "1112804",
+    "source_url": "https://habr.com/ru/articles/1112804/?utm_campaign=1112804&utm_source=habrahabr&utm_medium=rss",
+    "summary": "Citibank, the third-largest commercial bank in the US, has updated its terms of service. According to the changes, clients using AI agents will be responsible for resolving any problems caused by them, even if it involves hacking. \"As third-party AI tools become more accessible, it is important for customers to understand the associated risks. Customers who grant third-party AI agents access to their accounts are fully responsible for any actions taken through these agents,\" a bank representative told TechCrunch. Read more",
+    "title": "Citibank allows clients to use AI agents at their own risk"
+  },
+  "https://habr.com/ru/articles/1112806/?utm_campaign=1112806&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Thu, 26 Nov 2026 16:29:42 GMT",
+    "slug": "1112806",
+    "source_url": "https://habr.com/ru/articles/1112806/?utm_campaign=1112806&utm_source=habrahabr&utm_medium=rss",
+    "summary": "A page opens in a browser, but does a search AI bot receive it? To check site access for neural network bots, you need crawl rules, logs, and the HTML itself. Otherwise, you might be editing robots.txt while the bot is being checked as a visitor. Read more",
+    "title": "How to check if AI bots can see your site's text and find technical blocks"
+  },
+  "https://habr.com/ru/articles/1112810/?utm_campaign=1112810&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Thu, 26 Nov 2026 16:37:46 GMT",
+    "slug": "1112810",
+    "source_url": "https://habr.com/ru/articles/1112810/?utm_campaign=1112810&utm_source=habrahabr&utm_medium=rss",
+    "summary": "Still dreaming of a well-paying remote job, I decided to brush up on my English. I wanted to improve my vocabulary, conversational English, and grammar simultaneously. Hiring a tutor is expensive and requires scheduling. So, I started looking into various apps and websites. Given the rapid development of LLMs and their potential usefulness, I specifically sought out AI-powered services. I tried a total of 8 services (3 mobile apps, 4 websites, and 1 Telegram bot) and purchased three subscriptions, using trials for the rest. All these resources had cool features that, in my opinion, weren't always relevant and I have no idea who used them, but none of them fully met my needs. As a result, I decided to create my own language learning tool with Claude for Claude. If you're interested in what I came up with, welcome under the cut!",
+    "title": "How I'm learning English with Claude"
+  },
+  "https://habr.com/ru/articles/1112816/?utm_campaign=1112816&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Thu, 26 Nov 2026 17:05:03 GMT",
+    "slug": "1112816",
+    "source_url": "https://habr.com/ru/articles/1112816/?utm_campaign=1112816&utm_source=habrahabr&utm_medium=rss",
+    "summary": "For a whole week, the error gave subscribers extra requests, and OpenAI found it themselves. On November 26, Thibault Sotiaux, who is responsible for Codex at the company, admitted that since the launch of GPT-6.2, the consumption of Astra and Sol in subscriptions was counted with a discount that should not have been there. The counter has already been fixed, so limits will now run out noticeably faster. Read more",
+    "title": "OpenAI found a bug in GPT-6.2 limits. It worked for users for a week"
+  },
+  "https://habr.com/ru/articles/1112820/?utm_campaign=1112820&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Thu, 26 Nov 2026 17:59:22 GMT",
+    "slug": "1112820",
+    "source_url": "https://habr.com/ru/articles/1112820/?utm_campaign=1112820&utm_source=habrahabr&utm_medium=rss",
+    "summary": "Screenshots of interfaces generated by neural networks from major brands raise a logical question: have companies with billion-dollar budgets run out of designers and testers? Unfortunately, in many cases, this is not far from the truth. The problem isn't that AI 'can't' draw buttons. The problem is that the interface production process has been rebuilt around AI capabilities, not user needs. Read more",
+    "title": "\"Zombie UI\": Why Major Brands Are Releasing Interfaces That Are Embarrassing to Show"
+  },
+  "https://habr.com/ru/articles/1112848/?utm_campaign=1112848&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Thu, 26 Nov 2026 18:33:37 GMT",
+    "slug": "1112848",
+    "source_url": "https://habr.com/ru/articles/1112848/?utm_campaign=1112848&utm_source=habrahabr&utm_medium=rss",
+    "summary": "When I stopped understanding what was going on in my sessions, how many there were, what they were about, what I wanted, and how to find what I needed, I started creating dashboards. It was these that helped me systematize information about my sessions. Read more",
+    "title": "I have 11 dashboards to control my 7K+ sessions in Claude"
+  },
   "https://habr.com/ru/companies/1c/articles/1071340/?utm_campaign=1071340&utm_source=habrahabr&utm_medium=rss": {
     "model": "gemini-2.5-flash-lite",
     "published": "Thu, 03 Sep 2026 07:18:11 GMT",
@@ -6318,6 +6390,14 @@
     "source_url": "https://habr.com/ru/companies/cloud_ru/articles/1106538/?utm_campaign=1106538&utm_source=habrahabr&utm_medium=rss",
     "summary": "Imagine a common task: expanding REST API coverage with autotests. AI agents can now handle such tasks: they study existing code, add necessary client methods, write test scenarios, and return a ready implementation. At first glance, everything is fine. Tests are written, the code is neat, and pytest successfully collects new checks. But does this mean the task is truly completed? Not necessarily. For example, an agent might check that the API returns HTTP 400 for an incorrect request but fail to check the error body structure. Or it might confirm that a request to delete a Git tag was successful but not verify if the tag actually disappeared from the repository. Formally, the tests exist. They might even pass. But how much can they be trusted? I encountered this problem when I started actively delegating autotest development to AI agents. In this article, I will show how I managed to organize work using the Specification-Driven Development (SDD) methodology, through the OpenSpec framework with specialized AI agents. I will analyze real REST API testing tasks and explain why a successful test run doesn't mean the test isn't garbage. The material is primarily for those who are proficient with APIs, Python, pytest, test design, and have basic experience with LLMs, but haven't yet figured out how to organize work through specifications (SDD, OpenSpec), multi-agent orchestration, and role separation. Read more",
     "title": "From Prompts to Specifications: How I Organized Test Automation Development with AI Agents"
+  },
+  "https://habr.com/ru/companies/cloud_ru/articles/1112680/?utm_campaign=1112680&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Thu, 26 Nov 2026 16:54:52 GMT",
+    "slug": "1112680",
+    "source_url": "https://habr.com/ru/companies/cloud_ru/articles/1112680/?utm_campaign=1112680&utm_source=habrahabr&utm_medium=rss",
+    "summary": "A company launches a corporate AI tool to help employees work faster. A couple of months later, it turns out it's barely used: employees still go to external chatbots and pay for personal subscriptions to solve work tasks. It seems intentional – work gets done with AI – but it's not certain that sensitive information isn't leaking to external systems. Find out what works instead of prohibitions.",
+    "title": "Why Employees Bypass Corporate AI, How to Change It, and Whether It's Worth It"
   },
   "https://habr.com/ru/companies/contentai/articles/1078040/?utm_campaign=1078040&utm_source=habrahabr&utm_medium=rss": {
     "model": "gemini-2.5-flash-lite",
@@ -7575,6 +7655,14 @@
     "summary": "Many have their local harness set up, others work in the cloud. What if you deploy a harness for a large company? What to do if you have to wait almost 40 seconds for the first agent response? What can be optimized and what will it lead to? Okay, deployed and optimized, but how to make agents work with employees? And how to assess the business impact of AI implementation? I haven't set up my harness yet, and I was interested in seeing the experience of other companies. So I went to the MWS meetup on this topic. First, they told the history of AI agents and the basics: what is the wrapper around the model. Then there was a report on optimization: at MWS, everything is deployed on Kubernetes and supports OpenClaw and Hermes simultaneously. Then, heads of departments discussed how agents work with employees. Finally, there was a report on implementing AI in organizations and assessing its impact. Read more",
     "title": "Virtual Employees and Agents at the \"Russian Tech 2\" Meetup"
   },
+  "https://habr.com/ru/companies/ru_mts/articles/1112532/?utm_campaign=1112532&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Thu, 26 Nov 2026 13:40:07 GMT",
+    "slug": "1112532",
+    "source_url": "https://habr.com/ru/companies/ru_mts/articles/1112532/?utm_campaign=1112532&utm_source=habrahabr&utm_medium=rss",
+    "summary": "Hello, Habr! My name is Anton Kabaev, Technical Lead at the Center for Natural Language Processing, MWS AI. In this article, we will describe how we trained two ModernBERT models for the Russian language. A Russian-language encoder can be trained from scratch, or you can take a pre-trained multilingual model and replace its vocabulary. We tried both approaches. BERT is an encoder language model. It converts text into vectors, which can be used to classify texts, find similar phrases, or rank documents. During BERT training, some tokens are masked. In the sentence 'The train departs from the [MASK] platform,' the model must restore the gap using words to the left and right. Through many such examples, the encoder learns language patterns and facts about the world. This is pre-training. But what happens if you change the exercise for an already trained encoder and continue training it? We created two Russian-language ModernBERT models of different sizes. We trained the Small model with approximately 35 million parameters from scratch, and obtained the Base model from the multilingual mmBERT. For comparison, we took open-source models from a Russian developer of the same size, RuModernBERT-small and RuModernBERT-base. We tried post-training on both of our models and on the ready-made base model from the Russian developer. It was this one that benefited the most: the average accuracy on seven RussianSuperGLUE tasks increased from 70.88% to 74.12%. We will explain how the encoders were trained, what changed after post-training, and why the choice of model depends on how you intend to use it. Read more",
+    "title": "Russian ModernBERT: Pre-training and Post-training"
+  },
   "https://habr.com/ru/companies/rubytech/articles/1089758/?utm_campaign=1089758&utm_source=habrahabr&utm_medium=rss": {
     "model": "gemini-2.5-flash-lite",
     "published": "Sat, 03 Oct 2026 08:06:48 GMT",
@@ -8038,6 +8126,14 @@
     "source_url": "https://habr.com/ru/companies/selectel/articles/1112284/?utm_campaign=1112284&utm_source=habrahabr&utm_medium=rss",
     "summary": "Large language models for code have always been bottlenecked by video memory. They require tens of gigabytes of VRAM to run, preferably without compression. The startup PrismML has attempted to solve this problem with ternary quantization in their new Ternary Bonsai 2.5 27B model. In its most compact form, Bonsai occupies 5.93 GB of VRAM. According to the company, it solves 75.6% of SWE-bench Verified tasks, compared to 80.6% for Qwen3.8 27B, upon which it was based. Read on for details.",
     "title": "Ternary Bonsai 2.5 Model Released: 27 Billion Parameters Compressed to 5.9 GB VRAM"
+  },
+  "https://habr.com/ru/companies/selectel/articles/1112752/?utm_campaign=1112752&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Thu, 26 Nov 2026 13:20:35 GMT",
+    "slug": "1112752",
+    "source_url": "https://habr.com/ru/companies/selectel/articles/1112752/?utm_campaign=1112752&utm_source=habrahabr&utm_medium=rss",
+    "summary": "Thinkmine has released the general-purpose programming language Kobo for the .NET ecosystem in preview. Developers link the language's emergence to the spread of agent development and code generation based on specifications. The project is focused on collaborative development by humans and AI agents and is currently in its early stages, so the syntax may still change. The authors formulated four design principles: native AI support, declaration consistency, reliance on a ready-made runtime, and self-documentation. Instead of third-party libraries for working with models, developers have added language constructs for prompts and tools. Read more",
+    "title": "Thinkmine introduced the Kobo programming language for .NET"
   },
   "https://habr.com/ru/companies/severstal/articles/1104690/?utm_campaign=1104690&utm_source=habrahabr&utm_medium=rss": {
     "model": "gemini-2.5-flash-lite",

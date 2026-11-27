@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Telegram is preparing an AI agent Dictator with access to correspondence and support for local models</title>
+  <meta name="description" content="The agent runs on a separate VPS with Linux, supports plugins, and allows setting permissions for specific actions. We want to know how local this scenario will be in practice. Running an LLM directly on a Mac doesn&#x27;t mean the entire data processing chain remains local. It&#x27;s interesting wh">
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.65;
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 32px 20px 64px;
+      color: #1f2328;
+    }
+    header {
+      border-bottom: 1px solid #d8dee4;
+      margin-bottom: 28px;
+      padding-bottom: 20px;
+    }
+    .source {
+      color: #57606a;
+      font-size: 0.95rem;
+    }
+    img, video, iframe {
+      max-width: 100%;
+      height: auto;
+    }
+    pre {
+      overflow-x: auto;
+      padding: 16px;
+      background: #f6f8fa;
+      border-radius: 6px;
+    }
+    code {
+      font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+    }
+    blockquote {
+      border-left: 4px solid #d0d7de;
+      margin-left: 0;
+      padding-left: 16px;
+      color: #57606a;
+    }
+    footer {
+      border-top: 1px solid #d8dee4;
+      margin-top: 40px;
+      padding-top: 20px;
+      color: #57606a;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Telegram is preparing an AI agent Dictator with access to correspondence and support for local models</h1>
+    <p>The agent runs on a separate VPS with Linux, supports plugins, and allows setting permissions for specific actions. We want to know how local this scenario will be in practice. Running an LLM directly on a Mac doesn&#x27;t mean the entire data processing chain remains local. It&#x27;s interesting where the agent&#x27;s memory and task history are stored, what data plugins receive, and what exactly is transmitted to external providers. How Dictator is designed.</p>
+    <p class="source">
+      Machine-translated from Habr.
+      <a href="https://habr.com/ru/articles/1113318/?utm_campaign=1113318&amp;utm_source=habrahabr&amp;utm_medium=rss">Read the original Russian article</a>.
+      Fri, 27 Nov 2026 14:13:14 GMT
+    </p>
+  </header>
+  <main>
+<div><p>In the beta version of Telegram for macOS, <a href="https://macos-beta.telegram.org/dictator/">Dictator</a> has appeared — an AI agent that can work with correspondence, create documents, write code, and perform tasks on the user's computer. Early users are already testing the application and publishing reviews of its capabilities.</p><p>Within Telegram itself, the agent can search for information in correspondence, find unanswered messages, and prepare drafts. The agent can be controlled from a smartphone via its own Telegram bot.</p><p>Three permission levels are provided for different actions: Allow, Ask, and Never. For example, a user can allow the agent to read messages, require it to ask for confirmation before sending, and prohibit message deletion. Secret chats and authorization codes are not accessible to the agent.</p><p>Telegram does not tie Dictator to a specific language model. You can connect a ChatGPT subscription, use the API from OpenAI, Anthropic, xAI, or OpenRouter, or run a local LLM. When using a cloud model, requests are sent to the chosen provider.</p><p>The agent runs in a separate virtual machine with Linux. The user can access the terminal and execute commands independently. According to <a href="https://www.testingcatalog.com/telegram-prepares-dictator-ai-agent-with-its-own-vm-on-mac/">TestingCatalog</a>, Dictator is presumably based on <a href="https://github.com/NousResearch/hermes-agent">Hermes Agent</a> from Nous Research. The agent's capabilities can be extended with plugins, including those for Claude Code, Xcode, Notion, and Linear.</p><figure><img alt="The interface of the AI agent Dictator in the beta for Mac OS" loading="lazy" src="https://habrastorage.org/r/w1560/webt/99/5d/74/995d740ba2e9e515c3a493ac7ef9957e.jpg"/><div><figcaption>The interface of the AI agent Dictator in the beta for Mac OS</figcaption></div></figure><p>In addition to agent functions, Dictator includes system-level voice input. Simply hold down the Option key in any application and dictate text — the AI will correct grammatical errors and insert the result at the cursor's position.</p><p>On November 26, a practical review of Dictator appeared on YouTube. To work, the agent currently requires a Mac with an Apple Silicon processor and macOS 14 or newer. Telegram has not yet announced a stable release date or plans to support other operating systems.</p></div>
+  </main>
+  <footer>
+    Translation generated with Gemini 2.5 Flash-Lite.
+    The original article remains the source of record.
+  </footer>
+</body>
+</html>

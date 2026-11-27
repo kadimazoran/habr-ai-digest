@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>How I Made an LLM Bot That Asks Questions Instead of Giving Answers</title>
+  <meta name="description" content="I&#x27;m a database specialist who wanted to try ML for years. I ended up fine-tuning Qwen on coaching club chats, creating a Telegram and VK bot, almost abandoning the project several times, and discovering that teaching a model to ask questions is much easier than teaching it to hold a conversatio">
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.65;
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 32px 20px 64px;
+      color: #1f2328;
+    }
+    header {
+      border-bottom: 1px solid #d8dee4;
+      margin-bottom: 28px;
+      padding-bottom: 20px;
+    }
+    .source {
+      color: #57606a;
+      font-size: 0.95rem;
+    }
+    img, video, iframe {
+      max-width: 100%;
+      height: auto;
+    }
+    pre {
+      overflow-x: auto;
+      padding: 16px;
+      background: #f6f8fa;
+      border-radius: 6px;
+    }
+    code {
+      font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+    }
+    blockquote {
+      border-left: 4px solid #d0d7de;
+      margin-left: 0;
+      padding-left: 16px;
+      color: #57606a;
+    }
+    footer {
+      border-top: 1px solid #d8dee4;
+      margin-top: 40px;
+      padding-top: 20px;
+      color: #57606a;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>How I Made an LLM Bot That Asks Questions Instead of Giving Answers</h1>
+    <p>I&#x27;m a database specialist who wanted to try ML for years. I ended up fine-tuning Qwen on coaching club chats, creating a Telegram and VK bot, almost abandoning the project several times, and discovering that teaching a model to ask questions is much easier than teaching it to hold a conversation. This is the story of my first LLM fine-tuning experience, releasing an imperfect product, and trying to figure out if it actually works. Background on Psychology and Coaching I&#x27;ve been familiar with psychology and psychotherapy for a long time – I first saw a psychologist in 2009 when I realized my relationships with people weren&#x27;t going well. Over the years, I tried different approaches, learned a lot about myself, and then life threw so many challenges my way that I simply didn&#x27;t have the energy to sort out my internal issues anymore. That&#x27;s when I found the blog of Lena Sukhareva, a coach with her own signature method – asking &#x27;nasty&#x27; questions. They&#x27;re &#x27;nasty&#x27; because they&#x27;re unpleasant, hit a nerve, and force you to notice your own self-deception, cognitive biases, and other wonderful ways of defending yourself from reality. But it was precisely these questions that unexpectedly helped me look at familiar situations from a different angle. I suddenly remembered that I have my own desires, and for some of them, I don&#x27;t even need to spend a lot of money; I can just allow myself to fulfill them. Plus, Lena has a club where &#x27;nasty&#x27; questions are regularly voiced, and she asks them based on the situations of the women in the club. Read more</p>
+    <p class="source">
+      Machine-translated from Habr.
+      <a href="https://habr.com/ru/articles/1110670/?utm_campaign=1110670&amp;utm_source=habrahabr&amp;utm_medium=rss">Read the original Russian article</a>.
+      Fri, 27 Nov 2026 14:38:27 GMT
+    </p>
+  </header>
+  <main>
+<div><p>I'm a database specialist who wanted to try ML for years. I ended up fine-tuning Qwen on coaching club chats, creating a Telegram and VK bot, almost abandoning the project several times, and discovering that teaching a model to ask questions is much easier than teaching it to hold a conversation.</p><p>This is the story of my first LLM fine-tuning experience, releasing an imperfect product, and trying to figure out if it actually works.</p><p><strong>Background on Psychology and Coaching</strong></p><p>I've been familiar with psychology and psychotherapy for a long time – I first saw a psychologist in 2009 when I realized my relationships with people weren't going well. Over the years, I tried different approaches, learned a lot about myself, and then life threw so many challenges my way that I simply didn't have the energy to sort out my internal issues anymore. That's when I found the blog of Lena Sukhareva, a coach with her own signature method – asking 'nasty' questions. They're 'nasty' because they're unpleasant, hit a nerve, and force you to notice your own self-deception, cognitive biases, and other wonderful ways of defending yourself from reality. But it was precisely these questions that unexpectedly helped me look at familiar situations from a different angle. I suddenly remembered that I have my own desires, and for some of them, I don't even need to spend a lot of money; I can just allow myself to fulfill them. Plus, Lena has a club where 'nasty' questions are regularly voiced, and she asks them based on the situations of the women in the club.</p><p>At some point, I had the idea that it would be cool to take an AI, train it on the club's materials, and teach it to ask 'nasty' questions. Strangely enough, the question method turned out to be the best for me, allowing me to see problems much better than all the previous methods I had tried.</p><h3>Allowing Yourself</h3><p>I'm originally a database specialist. Since 2016, I wanted to transition into data analysis and Data Science, but I wasn't ready to start from a junior position, as I already had a certain income level and plans for it.</p><p>And so, the project with Dragon became my opportunity to finally get closer to ML and AI. Not just using a ready-made LLM via API, but trying to fine-tune models myself, understanding what weights are and how it all works.</p><p>And before starting this project, I had a severe case of imposter syndrome: I don't understand any of this, how and what am I going to do? How much right do I even have to do this?</p><p>And here's what I want to share: the main thing is to allow yourself to do what you want and figure it out as you go. I think that's what pet projects are great for.</p><p>Since November 2024, I've been using Cursor to develop my own pet projects. I had many ideas, and I even started several projects, but I never brought any of them to production. I shared this with Lena, and she offered me coaching support to finally complete at least one of them. We decided to try a joint project – a bot that would use LLM to ask 'nasty' questions based on a person's situation.<br/>Thus, Dragon was born.</p><p>Firstly, it's a bot on Telegram and VK. In the summer, I published a very simple app on Google Play and was shocked by the amount of bureaucracy. I didn't want to repeat that experience at all. Therefore, I decided that the bot's functionality was quite sufficient for the task – asking a 'nasty' question.</p><p>How it works:</p><ul><li><p>The user describes the situation.</p></li><li><p>The model receives the context and conversation history.</p></li><li><p>It generates the next response – usually a question.</p></li><li><p>The user responds.</p></li><li><p>The model considers not only the last message but the entire history (initially, it only considered the last message and often got stuck in loops and repeated itself).</p></li><li><p>The system can switch the dialogue to support or safety mode.</p></li><li><p>The user can stop the dialogue.</p></li></ul><p>At the same time, the model must:</p><ul><li><p>Not provide ready-made solutions.</p></li><li><p>Not interpret the person for them.</p></li><li><p>Not make diagnoses.</p></li><li><p>Not try to force the dialogue to some conclusion.</p></li><li><p>Not turn every user response into an opportunity for another psychological analysis.</p></li></ul><p>The first task was to download Lena's club and channel materials and choose a model.</p><p>The club has a chat where Lena posts her weekly questions, and a general chat. From September 2025 to August 2026, 51,552 messages accumulated there, 11,207 of which were from Lena. There were 23 of us, so the conversations were sometimes very active. But there was plenty of material for training.</p><p>Before sending the data to the server, I processed the conversations locally: removed names and replaced participant IDs, while preserving the attribution of each utterance to a specific speaker and the ability to distinguish the coach from other participants.</p><p>Some messages were voice recordings. I transcribed them using a locally run Whisper, processed them, and added them to the JSON for model training.</p><p>But then another problem arose. A Telegram chat is not a ready-made dataset for training at all. Several people might be discussing different topics simultaneously, replying to each other's messages, getting distracted, and returning to a previous conversation. If you just feed all this to the model, nothing good will come of it.</p><p>Therefore, after anonymization, I further processed the conversations using an LLM. The task was to extract coherent chains from this chaos: the situation described by a participant and Lena's response as a coach.</p><p>The result was JSON files with prepared examples for fine-tuning. Only after that was the data sent to the server.</p><p>Example dataset</p><pre><code>{&#x20;
+  </main>
+  <footer>
+    Translation generated with Gemini 2.5 Flash-Lite.
+    The original article remains the source of record.
+  </footer>
+</body>
+</html>

@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Classics of 3D accelerators in the browser: a developer has assembled an interactive gallery of 36 graphics demos for GPUs</title>
+  <meta name="description" content="Developer Archit Khode (nick arkits) has launched the GPU Demo Gallery web gallery, which collects 36 classic demo programs for video cards from the late 1990s and 2000s. All scenes have been ported to web format and run directly in the browser without OS emulators and installation of outdated drive">
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.65;
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 32px 20px 64px;
+      color: #1f2328;
+    }
+    header {
+      border-bottom: 1px solid #d8dee4;
+      margin-bottom: 28px;
+      padding-bottom: 20px;
+    }
+    .source {
+      color: #57606a;
+      font-size: 0.95rem;
+    }
+    img, video, iframe {
+      max-width: 100%;
+      height: auto;
+    }
+    pre {
+      overflow-x: auto;
+      padding: 16px;
+      background: #f6f8fa;
+      border-radius: 6px;
+    }
+    code {
+      font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+    }
+    blockquote {
+      border-left: 4px solid #d0d7de;
+      margin-left: 0;
+      padding-left: 16px;
+      color: #57606a;
+    }
+    footer {
+      border-top: 1px solid #d8dee4;
+      margin-top: 40px;
+      padding-top: 20px;
+      color: #57606a;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Classics of 3D accelerators in the browser: a developer has assembled an interactive gallery of 36 graphics demos for GPUs</h1>
+    <p>Developer Archit Khode (nick arkits) has launched the GPU Demo Gallery web gallery, which collects 36 classic demo programs for video cards from the late 1990s and 2000s. All scenes have been ported to web format and run directly in the browser without OS emulators and installation of outdated drivers. By the way, the project is actively being refined with the help of Claude. Read more</p>
+    <p class="source">
+      Machine-translated from Habr.
+      <a href="https://habr.com/ru/companies/selectel/articles/1113062/?utm_campaign=1113062&amp;utm_source=habrahabr&amp;utm_medium=rss">Read the original Russian article</a>.
+      Fri, 27 Nov 2026 14:00:54 GMT
+    </p>
+  </header>
+  <main>
+<div><figure><img loading="lazy" src="https://habrastorage.org/r/w1560/extt/5a/2b/20/5a2b20a53d8c0cf0d3da273f52fa9a27.png"/></figure><p>Developer Archit Khode (nick arkits) has launched the <a href="https://gpu-demo-gallery.pages.dev/">GPU Demo Gallery</a> web gallery, which collects 36 classic demo programs for video cards from the late 1990s and 2000s. All scenes have been ported to web format and run directly in the browser without OS emulators and installation of outdated drivers. By the way, the project is actively being refined with the help of Claude.</p><h2>Why video card manufacturers released "techno-demos"</h2><p>In the early 1990s, real-time 3D graphics required professional workstations costing tens of thousands of dollars. A few years later, the situation changed: 3dfx, Rendition, and VideoLogic brought more affordable 3D accelerators with texture filtering to home computers.</p><figure><img alt="Source." loading="lazy" src="https://habrastorage.org/r/w1560/extt/01/69/c7/0169c75a5c63befe1528151cba93b5cc.png" title="Source."/><div><figcaption><a href="https://gpu-demo-gallery.pages.dev/"><em>Source</em></a><em>.</em></figcaption></div></figure><p>To showcase the capabilities of new hardware, manufacturers needed a tool simpler and cheaper than developing a full-fledged game. A "techno-demo" allowed focusing on a specific rendering algorithm or hardware feature without spending resources on gameplay, world physics, and artificial intelligence. These projects had no direct continuity with the non-commercial demoscene, which originated in the mid-1980s on home computers, but specialists did overlap. For example, demoscene veteran Hubert Nguyen from the Impact Studios group worked at NVIDIA.</p><h2>What's in the collection and porting challenges</h2><figure><img alt="Source." loading="lazy" src="https://habrastorage.org/r/w1560/extt/81/ae/33/81ae330e02c944e5fc554b0d8b4143e9.png" title="Source."/><div><figcaption><a href="https://gpu-demo-gallery.pages.dev/"><em>Source</em></a><em>.</em></figcaption></div></figure><p>The gallery's timeline begins with early demos for 3dfx Voodoo accelerators in 1997 – the scenes "Demoroom," "Flip," and "Valley of Ra." This is followed by NVIDIA works of various generations: "Bubble," "Lightning," "Wolfman" for the NVIDIA<sup>®</sup> GeForce<sup>®</sup> 4 Ti line, the famous "Dawn" for NVIDIA<sup>®</sup> GeForce<sup>®</sup> FX video cards, as well as "Toy Soldiers" and "Box of Smoke," which demonstrated computational fluid dynamics calculations using the GPU. From the ATI Research catalog, the gallery features the well-known 2002 scene "Pipe Dream," created in collaboration with Animusic for the R300 architecture – Radeon™ 9700 and Radeon™ 9800 video cards.</p><p>However, the automated porting of code using AI tools has affected the technical quality of the ports. In several scenes, significant discrepancies with the originals are noticeable. "Wolfman" lacks fur rendering, although this effect was the main goal of the demo for GeForce<sup>®</sup> 4 Ti. In "Valley of Ra" for 3dfx Voodoo, geometry rendering is broken, and controls are unresponsive. In "Toy Soldiers," specular highlights are lost, and reflections are distorted; moreover, in Panic mode, the toy soldier animation is broken.</p><figure><img alt="Source." loading="lazy" src="https://habrastorage.org/r/w1560/extt/10/67/21/106721b8857ac7b3c3a9e915074b5934.png" title="Source."/><div><figcaption><a href="https://www.tomshardware.com/video-games/retro-gaming/solo-developer-vibe-codes-a-gallery-hosting-36-classic-gpu-demos-preservation-effort-includes-3dfx-voodoo-showcases-from-1997-nvidia-bubble-and-more"><em>Source</em></a><em>.</em></figcaption></div></figure><p>Users also <a href="https://www.tomshardware.com/video-games/retro-gaming/solo-developer-vibe-codes-a-gallery-hosting-36-classic-gpu-demos-preservation-effort-includes-3dfx-voodoo-showcases-from-1997-nvidia-bubble-and-more">note</a> that based on the set of graphical features used, most of the presented scenes could run on WebGL 1.0. Nevertheless, the current implementation strictly requires the browser to support WebGL 2.0 or WebGPU.</p><div><figure><img loading="lazy" src="https://habrastorage.org/r/w1560/getpro/habr/upload_files/bb6/10d/1bb/bb610d1bb5fca8a608b862ad27a8fe2f.png"/></figure><p><strong>A game server with creepers and a portal to the Nether.</strong></p><p>Mine resources, build structures, explore the Selectel world in Minecraft and win prizes.</p><p><a href="https://promo.selectel.ru/minecraft/?utm_source=habr.com&amp;utm_medium=referral&amp;utm_campaign=minecraft_news_hw-gpu-demo-gallery_271126_banner"><strong>Explore →</strong></a></p></div><h2>Prospects of the archive</h2><p>The project is interesting from the perspective of preserving the history of computer graphics. Running original executable files from thirty years ago on modern hardware without specialized wrappers and virtual machines is extremely difficult.</p><p>The community is already suggesting expanding the list with iconic works from other manufacturers: demonstrations of environment map-based normal mapping from DICE for Matrox cards, "Energy" and "Still Life" scenes for PowerVR Kyro chips, the "Dolphins" video for the original Xbox console, as well as later tests of adaptive synchronization technologies – NVIDIA G-SYNC Pendulum and AMD FreeSync Windmill.</p></div>
+  </main>
+  <footer>
+    Translation generated with Gemini 2.5 Flash-Lite.
+    The original article remains the source of record.
+  </footer>
+</body>
+</html>

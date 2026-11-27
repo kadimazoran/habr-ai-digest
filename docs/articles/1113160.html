@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>AI in Information Security: What Tasks to Automate and Where Human Input is Needed</title>
+  <meta name="description" content="A SOC analyst&#x27;s morning starts with a queue of alerts: suspicious logins, attempts to access unfamiliar addresses, and triggers from security tools. Some of these are false positives or harmless actions. Each event requires context gathering, root cause analysis, and a decision on intervention.">
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.65;
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 32px 20px 64px;
+      color: #1f2328;
+    }
+    header {
+      border-bottom: 1px solid #d8dee4;
+      margin-bottom: 28px;
+      padding-bottom: 20px;
+    }
+    .source {
+      color: #57606a;
+      font-size: 0.95rem;
+    }
+    img, video, iframe {
+      max-width: 100%;
+      height: auto;
+    }
+    pre {
+      overflow-x: auto;
+      padding: 16px;
+      background: #f6f8fa;
+      border-radius: 6px;
+    }
+    code {
+      font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+    }
+    blockquote {
+      border-left: 4px solid #d0d7de;
+      margin-left: 0;
+      padding-left: 16px;
+      color: #57606a;
+    }
+    footer {
+      border-top: 1px solid #d8dee4;
+      margin-top: 40px;
+      padding-top: 20px;
+      color: #57606a;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>AI in Information Security: What Tasks to Automate and Where Human Input is Needed</h1>
+    <p>A SOC analyst&#x27;s morning starts with a queue of alerts: suspicious logins, attempts to access unfamiliar addresses, and triggers from security tools. Some of these are false positives or harmless actions. Each event requires context gathering, root cause analysis, and a decision on intervention. As digital infrastructure evolves, so does the volume and complexity of data. This increases demands on security monitoring, analytics, and incident response tools. In September 2026, Check Point Research recorded an average of 48% more cyberattacks per organization per week compared to September 2025. The ISACA State of Cybersecurity 2026 study found that 52% of surveyed cybersecurity professionals cited excessive workload or unrealistic expectations as a source of stress. The development of automation tools is becoming a key way to improve specialists&#x27; efficiency, particularly through artificial intelligence, which aids in analyzing large data volumes, structuring information, and reducing repetitive tasks. At Beeline, the AI Security team is integrating AI into cybersecurity processes to help specialists quickly gather necessary context and focus more on expert tasks. Today, we&#x27;ll explore where these technologies are already used in the market and how to effectively distribute work between traditional code, AI models, and human analysts.</p>
+    <p class="source">
+      Machine-translated from Habr.
+      <a href="https://habr.com/ru/companies/beeline_tech/articles/1113160/?utm_campaign=1113160&amp;utm_source=habrahabr&amp;utm_medium=rss">Read the original Russian article</a>.
+      Fri, 27 Nov 2026 12:20:29 GMT
+    </p>
+  </header>
+  <main>
+<div><p>A SOC analyst's morning begins with a queue of alerts: suspicious logins, attempts to access unfamiliar addresses, and triggers from security tools. Some of these are false positives or harmless actions. For each event, it's necessary to gather context, understand the cause, and decide if intervention is required.</p><p>As digital infrastructure evolves, the volume and complexity of analyzed data grow. This increases the demands on tools for monitoring, analytics, and responding to information security events.</p><p>In September 2026, Check Point Research recorded an average of 48% more cyberattacks per organization per week than in September 2025. In the ISACA State of Cybersecurity 2026 study, 52% of surveyed cybersecurity specialists cited excessive workload or unrealistic expectations as a source of stress.</p><p>The development of automation tools is becoming one of the ways to increase the efficiency of specialists' work. This includes leveraging artificial intelligence, which helps analyze large volumes of information, structure data, and reduce the number of repetitive operations.</p><p>At Beeline, the AI Security team is working on integrating AI into information security processes so that specialists can more quickly obtain the necessary context and dedicate more attention to expert tasks.</p><p>Today, we will explore where such technologies are already being applied in the market and how to intelligently distribute work between regular code, AI models, and humans.</p><h2>What tasks is AI already helping cybersecurity specialists with?</h2><p>Let's look at a few examples from industry practice. They illustrate the capabilities of modern technologies and approaches to automating cybersecurity processes.</p><h3>SOC Alert Triage</h3><p>A monitoring system detects suspicious activity, such as a login from an unfamiliar device, and the analyst receives an alert. To evaluate it, they need to check login history, device information, and related events.</p><p>One example of implementing such an approach in the international market is Microsoft Defender's Security Alert Triage Agent. It analyzes available evidence, classifies alerts of supported types, and explains its decision. The types of alerts are listed in the product documentation, including those about suspicious emails. Some capabilities for cloud alerts and account-related events are currently in preview.</p><p>The analyst receives a classification with a verifiable justification. When implementing such tools, it's important to evaluate not only the speed of alert processing but also the quality of classification, the completeness of analysis, and the accuracy of threat detection.</p><p>Reducing the number of alerts requiring manual processing should not come at the expense of reduced threat detection quality.</p><h3>Context Gathering and Event Analysis</h3><p>Incident data is often distributed across multiple sources: SIEM, authorization logs, asset inventory systems, and analyst comments.</p><p>A language model can help structure information from various sources, identify significant events, reconstruct the timeline, and note discrepancies. For example, it can correlate text comments with technical details and determine what data is missing for further analysis.</p><p>The effectiveness of such solutions is already being evaluated by market participants. For instance, according to Yandex Cloud, the workload on SOC analysts decreased by 42% in 2025.</p><p>An important condition for using language models is the ability to verify the generated conclusions against the source data. Links to primary records, transparency of the analysis logic, and verification of results by a specialist allow for quality control of the tool's work.</p><h3>Assistance in Vulnerability Remediation</h3><p>Another area of AI application is supporting developers in analyzing and fixing software vulnerabilities.</p><p>Imagine that the static analyzer CodeQL detects a potential SQL injection. The developer needs to examine the data flow, fix the vulnerable section, and ensure the application works correctly. An example of such a tool in the international market is GitHub Copilot Autofix. It uses data from supported CodeQL alerts and related code snippets to suggest a fix. The developer receives a patch that they can review, modify, or reject. Autofix supports a limited set of CodeQL queries.</p><p>The fix proposed by the model does not replace standard secure development procedures: code review, testing, and re-checking for vulnerabilities. AI helps accelerate individual work stages, while existing control mechanisms ensure the verification of results.</p><h2>What tasks should not be delegated to AI?</h2><p>Not every automation task should be entrusted to a language model. If processing rules can be defined in advance, regular code often proves to be a simpler and more predictable solution. For example, to collect authorization events for a single account over a day, sort events by time, and check mandatory fields, queries to sources and a few rules are sufficient.</p><p>A large volume of data in itself is not a reason to use AI. A model is more useful where it's necessary to work with information in different formats: correlating events with comments and documentation, generating explanations, or proposing hypotheses for further investigation.</p><p>In a single process, regular code and AI can complement each other, with a specialist verifying conclusions and making decisions.</p><h2>Security of AI Itself</h2><p>When integrating AI into information security processes, it's important to consider not only the technology's effectiveness but also the security of its application. Confidentiality of processed information, access control, monitoring of model actions, and compliance with legal requirements are of particular importance.</p><p>The solution's architecture should consider the nature of the data, permissible processing methods, and the AI agent's permissions. Access to information sources and tools should be limited to the tasks for which the agent is intended. Verifiability of results, auditability of actions, and the presence of control mechanisms by specialists are equally important. These principles must be considered from the design stage of the solution, not after its implementation.</p><h2>Checklist for Choosing the First Task</h2><p>AI effectiveness should be evaluated within the entire process, including verification and correction of results. A quick model response in itself is not an indicator of effectiveness if its subsequent verification requires significant resources.</p><p>The assistant should be tested on normal, complex, and ambiguous scenarios, including those with incomplete logs, tool errors, and incorrect input data.</p><p>We recommend choosing the first task for automation based on five criteria:</p><ul><li><p><strong>Clear Input.</strong> It is known where the data comes from, what the processing requirements are, and how much it can be trusted.</p></li><li><p><strong>Verifiable Result.</strong> The agent's output can be correlated with specific sources.</p></li><li><p><strong>Limited Permissions.</strong> The agent receives only the tools and access rights necessary to perform the task.</p></li><li><p><strong>Controllable Error Consequences.</strong> Mechanisms are in place to verify results and prevent undesirable actions.</p></li><li><p><strong>Measurable Benefit.</strong> There is a baseline process against which the speed and quality of work can be compared.</p></li></ul><p>You can start with a small prototype and test it on pre-prepared scenarios. If the solution demonstrates a reduction in task execution time while maintaining the required quality level and adhering to security requirements, further scaling can be considered.</p><h2>Instead of a Conclusion</h2><p>AI in information security is primarily a tool for enhancing specialists' expert capabilities. It helps to quickly gather context, structure information, analyze events, and reduce the volume of repetitive operations.</p><p>However, expert assessment, result control, and decision-making remain the most crucial components of information security processes. Therefore, the effectiveness of AI implementation should be evaluated not by the number of automated operations, but by concrete results: how much time has been freed up for expert tasks, how much the quality of analysis has improved, and which processes have become more efficient.</p></div>
+  </main>
+  <footer>
+    Translation generated with Gemini 2.5 Flash-Lite.
+    The original article remains the source of record.
+  </footer>
+</body>
+</html>

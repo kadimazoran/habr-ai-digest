@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>How I Invented MCP</title>
+  <meta name="description" content="November. Evening. I&#x27;m finishing an article that was supposed to be published in February 2025. It&#x27;s, to put it mildly, no longer February 2025. The reason is trivial: I don&#x27;t always have time for my social media. First one project, then another, then a &quot;quick&quot; pet project f">
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.65;
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 32px 20px 64px;
+      color: #1f2328;
+    }
+    header {
+      border-bottom: 1px solid #d8dee4;
+      margin-bottom: 28px;
+      padding-bottom: 20px;
+    }
+    .source {
+      color: #57606a;
+      font-size: 0.95rem;
+    }
+    img, video, iframe {
+      max-width: 100%;
+      height: auto;
+    }
+    pre {
+      overflow-x: auto;
+      padding: 16px;
+      background: #f6f8fa;
+      border-radius: 6px;
+    }
+    code {
+      font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+    }
+    blockquote {
+      border-left: 4px solid #d0d7de;
+      margin-left: 0;
+      padding-left: 16px;
+      color: #57606a;
+    }
+    footer {
+      border-top: 1px solid #d8dee4;
+      margin-top: 40px;
+      padding-top: 20px;
+      color: #57606a;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>How I Invented MCP</h1>
+    <p>November. Evening. I&#x27;m finishing an article that was supposed to be published in February 2025. It&#x27;s, to put it mildly, no longer February 2025. The reason is trivial: I don&#x27;t always have time for my social media. First one project, then another, then a &quot;quick&quot; pet project for the weekend. And now the MCP specification has been updated several times, an official server registry has appeared, and the protocol itself has started to be mentioned in presentations to the board of directors. Spoiler: I didn&#x27;t invent anything new. I spent two weeks building my version of something that already existed, and found out about it later than I should have. It&#x27;s called MCP, invented by Anthropic, and I arrived at the same envelope from the other side. This article is not about invention. It&#x27;s about why it&#x27;s sometimes useful to be late. Ready-made knowledge answers the question &quot;how.&quot; Your own, even if bad, answers the question &quot;why specifically this way.&quot; Someone else&#x27;s protocol, read after your own creation, reads differently: not as an instruction, but as an explanation. I recognized my own solutions and my own dead ends in it. What remains in my head is not a list of points, but a map: what grows from where and where I myself went wrong. This is not an argument for ignorance. Specifications should be read, and the sooner, the cheaper. It&#x27;s about something else: sometimes it&#x27;s useful to build your own bicycle first, and then look at the factory one. Not instead of instructions, but before them. The main thing is that the exercise has a timebox, and the creation is not a pity to throw away as soon as the standard appears. Next will be the story of how I hit a wall, built three versions of integration, and in the end found a name for what I had already done. Read more</p>
+    <p class="source">
+      Machine-translated from Habr.
+      <a href="https://habr.com/ru/articles/1113168/?utm_campaign=1113168&amp;utm_source=habrahabr&amp;utm_medium=rss">Read the original Russian article</a>.
+      Fri, 27 Nov 2026 12:27:18 GMT
+    </p>
+  </header>
+  <main>
+<div><p>November. Evening. I'm finishing an article that was supposed to be published in February 2025. It's, to put it mildly, no longer February 2025. The reason is trivial: I don't always have time for my social media. First one project, then another, then a "quick" pet project for the weekend. And now the MCP specification has been updated several times, an official server registry has appeared, and the protocol itself has started to be mentioned in presentations to the board of directors.</p><p>Spoiler: I didn't invent anything new. I spent two weeks building my version of something that already existed, and found out about it later than I should have. It's called MCP, invented by Anthropic, and I arrived at the same envelope from the other side.</p><p>This article is not about invention. It's about why it's sometimes useful to be late.</p><p>Ready-made knowledge answers the question "how." Your own, even if bad, answers the question "why specifically this way." Someone else's protocol, read after your own creation, reads differently: not as an instruction, but as an explanation. I recognized my own solutions and my own dead ends in it. What remains in my head is not a list of points, but a map: what grows from where and where I myself went wrong.</p><p>This is not an argument for ignorance. Specifications should be read, and the sooner, the cheaper. It's about something else: sometimes it's useful to build your own bicycle first, and then look at the factory one. Not instead of instructions, but before them. The main thing is that the exercise has a timebox, and the creation is not a pity to throw away as soon as the standard appears.</p><p>Next will be the story of how I hit a wall, built three versions of integration, and in the end found a name for what I had already done.</p><p>Let's start with the wall.</p><h2>The Beginning: Tools Living in a Browser Tab</h2><p>I'm involved in implementing AI assistants for a company. I work with OpenWebUI. At the beginning of 2025, I hit a wall that I foresaw: the assistant confidently answers questions but can't do anything. And business needs not "tell me," but "do it": check bonus balance, find an order, check delivery status, retrieve a regulation, create a request.</p><p>The first thought was the most obvious. OpenWebUI has a "Tools" section where you can write a Python function with a docstring, and the model will call it. Fifteen minutes, and it works. That's enough for a demo.</p><p>Then came the details.</p><ul><li><p>The code lives in the web interface. Not in git, not in review, not in CI. Who changed it and when: a philosophical question.</p></li><li><p>Dependencies live in the platform container. Install a library, and pray it doesn't conflict with others.</p></li><li><p>The tool is not reusable between instances and models. Copy the script, get two versions that have already diverged.</p></li><li><p>Secrets are in the code or in the platform's environment variables, not where they belong.</p></li><li><p>A long operation blocks the chat. The user sees "thinking," while the tool waits for a response from someone else's API.</p></li><li><p>There's no audit. No one will tell you who, when, and with what parameters a write-off was made.</p></li></ul><p>In this scheme, the tool lives in the administrator's browser tab. One day someone will click "Save," and no one will remember what was there before.</p><p>It's fine for a pet project. Not for a company.</p><h3>Stage Two: Web Services and a Phone Directory</h3><p>The logical next step: move the tools into separate web services. The tool becomes an endpoint. An endpoint has a contract, the service is deployed separately, secrets are on the server, logs are collected properly.</p><p>It got better. Exactly until there were twenty tools.</p><pre><code>GET  /loyalty/balance?card=1234 
+GET  /orders/1042 
+GET  /orders/1042/status 
+GET  /orders/search?phone=... 
+POST /orders 
+POST /orders/1042/cancel 
+POST /payments 
+POST /payments/1042/confirm 
+GET  /delivery/slots?date=2025-06-01 
+POST /delivery/book 
+GET  /stores/MSK-07/schedule 
+GET  /customers/79990000000/bonuses</code><div><a href=
+  </main>
+  <footer>
+    Translation generated with Gemini 2.5 Flash-Lite.
+    The original article remains the source of record.
+  </footer>
+</body>
+</html>

@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Cloud.ru at AI Journey 2026: Key Takeaways from the Annual International AI Conference</title>
+  <meta name="description" content="From November 26-28, Moscow hosts AI Journey, one of the largest conferences dedicated to artificial intelligence. The event brings together developers, researchers, business representatives, and government officials to discuss the latest AI advancements and showcase practical solutions transforming">
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.65;
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 32px 20px 64px;
+      color: #1f2328;
+    }
+    header {
+      border-bottom: 1px solid #d8dee4;
+      margin-bottom: 28px;
+      padding-bottom: 20px;
+    }
+    .source {
+      color: #57606a;
+      font-size: 0.95rem;
+    }
+    img, video, iframe {
+      max-width: 100%;
+      height: auto;
+    }
+    pre {
+      overflow-x: auto;
+      padding: 16px;
+      background: #f6f8fa;
+      border-radius: 6px;
+    }
+    code {
+      font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+    }
+    blockquote {
+      border-left: 4px solid #d0d7de;
+      margin-left: 0;
+      padding-left: 16px;
+      color: #57606a;
+    }
+    footer {
+      border-top: 1px solid #d8dee4;
+      margin-top: 40px;
+      padding-top: 20px;
+      color: #57606a;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Cloud.ru at AI Journey 2026: Key Takeaways from the Annual International AI Conference</h1>
+    <p>From November 26-28, Moscow hosts AI Journey, one of the largest conferences dedicated to artificial intelligence. The event brings together developers, researchers, business representatives, and government officials to discuss the latest AI advancements and showcase practical solutions transforming science, industry, and society. We participated not only by attending sessions but also by presenting new capabilities for working with generative AI: a security architecture, AI budget management tools, and GPU cost-saving technology. Why is this important? Companies want to leverage AI, but face three main barriers: potential data leaks, unpredictable token costs, and expensive, scarce GPUs. We share how we plan to address all three challenges. Read more</p>
+    <p class="source">
+      Machine-translated from Habr.
+      <a href="https://habr.com/ru/companies/cloud_ru/articles/1113316/?utm_campaign=1113316&amp;utm_source=habrahabr&amp;utm_medium=rss">Read the original Russian article</a>.
+      Fri, 27 Nov 2026 14:13:57 GMT
+    </p>
+  </header>
+  <main>
+<div><p>From November 26-28, Moscow hosts AI Journey, one of the largest conferences dedicated to artificial intelligence. The event brings together developers, researchers, business representatives, and government officials to discuss the latest AI advancements and showcase practical solutions transforming science, industry, and society.</p><p>We participated not only by attending sessions but also by presenting new capabilities for working with generative AI: a security architecture, AI budget management tools, and GPU cost-saving technology.</p><p>Why is this important? Companies want to leverage AI, but face three main barriers: potential data leaks, unpredictable token costs, and expensive, scarce GPUs. We share how we plan to address all three challenges.</p><figure><img loading="lazy" src="https://habrastorage.org/r/w1560/extt/58/73/13/587313b2fc1d75684bae718eef0af7d3.png"/></figure><h2>Security: AI Won't See What It Shouldn't</h2><p>The <a href="https://cloud.ru/products/evolution-ml-inference?utm_source=habr&amp;utm_medium=news&amp;utm_campaign=aij_27112026">Evolution ML Inference</a> service now features a data protection architecture that combines access control, context management, computation isolation, and auditing.</p><p>Here's how it works step-by-step:</p><ol><li><p><strong>The API gateway authorizes every employee's request to the AI model.</strong> Direct access to the model server is blocked, and anonymous usage is impossible.</p></li><li><p><strong>All traffic travels via private routes with TLS and mTLS protection.</strong> Model service interfaces are only accessible to authorized components.</p></li><li><p><strong>The service checks the employee's access rights for each document.</strong> Only materials the employee is actually permitted to access are sent to the model.</p></li><li><p><strong>An end-to-end identifier links the application, search, and model invocation.</strong> The security service can see the complete chain: who initiated the request and how the processing concluded.</p></li></ol><p>The key business advantage is that a company can confirm compliance with security requirements before deploying an AI solution. This removes the main barrier to AI adoption in organizations with strict access control policies.</p><h2>Economics: Flexible AI Budget Management</h2><p>The <a href="https://cloud.ru/products/evolution-foundation-models?utm_source=habr&amp;utm_medium=news&amp;utm_campaign=aij_27112026">Evolution Foundation Models</a> service has introduced two new tools for more flexible AI spending management: reduced night-time rates and subscriptions for large language models with a fixed monthly fee.</p><p>Night-time rates are valid from 10 PM to 7 AM Moscow time and offer a reduced cost for four Evolution Foundation Models. The savings compared to daytime prices can be up to 20 times.</p><figure><img loading="lazy" src="https://habrastorage.org/r/w1560/extt/36/95/dc/3695dc8894c12526e435ecb08d7c5fa7.png"/></figure><p>Night-time rates are designed for tasks that don't require immediate responses: document analysis, mass text generation and summarization, synthetic data preparation, model testing, and report creation. Such operations can be automatically scheduled for night-time, reducing the cost of processing large volumes of data.</p><p>For regular AI work, monthly subscriptions for <a href="https://cloud.ru/products/evolution-foundation-models?utm_source=habr&amp;utm_medium=news&amp;utm_campaign=aij_27112026">Evolution Foundation Models</a> are available. Users choose a fixed monthly payment with a set consumption volume instead of paying for actually consumed tokens.</p><p>Three plans are available:</p><ul><li><p>Start — 2,400 rubles per month.</p></li><li><p>Pro — 12,000 rubles per month.</p></li><li><p>Max — 24,000 rubles per month.</p></li></ul><p>The subscription, which includes access to the DeepSeek V4.1 Flash model, is designed for AI coding and agentic scenarios where token consumption can be intensive and less predictable. After exhausting the limit, users can continue working under standard token-based pricing.</p><h2>Infrastructure: More Tasks on the Same GPUs</h2><p>The <a href="https://cloud.ru/products/evolution-ml-inference?utm_source=habr&amp;utm_medium=news&amp;utm_campaign=aij_27112026">Evolution ML Inference</a> service now supports CPU offloading. This technology allows a portion of a large language model to be loaded into the server's RAM, thereby reducing the number of GPUs required for its execution.</p><p>In a test scenario, the DeepSeek-V4.1-Flash model was run on two GPUs instead of eight.</p><p>This can be beneficial for large-scale tasks such as:</p><ul><li><p>processing documents and archives;</p></li><li><p>analyzing technical data;</p></li><li><p>batch computations.</p></li></ul><p>An important nuance: a part of the model is loaded into the server's RAM, so a sufficient amount of RAM is required, and processing speed may be lower than when the model is fully loaded into GPU memory. For tasks with strict response time requirements, more powerful GPU configurations remain preferable.</p><p>Evolution ML Inference also allows the use of previous generation GPUs and less powerful configurations where maximum performance is not required. This enables infrastructure optimization not by a single metric (e.g., token cost or peak speed), but by the total cost of completing a specific task within the required timeframe.</p><hr/><p>Read more about all the capabilities of the Evolution AI Factory digital environment services <a href="https://cloud.ru/products/evolution-ai-factory?utm_source=habr&amp;utm_medium=news&amp;utm_campaign=aij_27112026">on our website</a>.</p></div>
+  </main>
+  <footer>
+    Translation generated with Gemini 2.5 Flash-Lite.
+    The original article remains the source of record.
+  </footer>
+</body>
+</html>

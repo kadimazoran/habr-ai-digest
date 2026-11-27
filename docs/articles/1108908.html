@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Where is it more profitable to invest money - in leather bags or AI agents?</title>
+  <meta name="description" content="It seems that the more a developer spends on tokens, the more code they generate with an AI agent, and the faster the project develops. But this is not always the case. Perhaps the code is of such low quality that 90% has to be discarded at the correction stage - so much so that it&#x27;s easier to ">
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.65;
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 32px 20px 64px;
+      color: #1f2328;
+    }
+    header {
+      border-bottom: 1px solid #d8dee4;
+      margin-bottom: 28px;
+      padding-bottom: 20px;
+    }
+    .source {
+      color: #57606a;
+      font-size: 0.95rem;
+    }
+    img, video, iframe {
+      max-width: 100%;
+      height: auto;
+    }
+    pre {
+      overflow-x: auto;
+      padding: 16px;
+      background: #f6f8fa;
+      border-radius: 6px;
+    }
+    code {
+      font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+    }
+    blockquote {
+      border-left: 4px solid #d0d7de;
+      margin-left: 0;
+      padding-left: 16px;
+      color: #57606a;
+    }
+    footer {
+      border-top: 1px solid #d8dee4;
+      margin-top: 40px;
+      padding-top: 20px;
+      color: #57606a;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Where is it more profitable to invest money - in leather bags or AI agents?</h1>
+    <p>It seems that the more a developer spends on tokens, the more code they generate with an AI agent, and the faster the project develops. But this is not always the case. Perhaps the code is of such low quality that 90% has to be discarded at the correction stage - so much so that it&#x27;s easier to write from scratch. However, hiring a developer who will write without AI is also not a guarantee of savings and quality. They solve tasks slowly, make mistakes, and also need to be checked. Who is more profitable to pay: a person or an AI agent? Should the budget be split in half, or is it time to give most of the money to neural networks? To answer these questions, Steffen Herbold from the University of Passau (Germany) built a development model and tested 432 scenarios in search of the most economical team configurations. Spoiler: the dependence of project cost on the proportion of code written with AI is not so simple. But a team where the main part of the budget goes to AI agents is still a long way off. Read more</p>
+    <p class="source">
+      Machine-translated from Habr.
+      <a href="https://habr.com/ru/companies/ru_mts/articles/1108908/?utm_campaign=1108908&amp;utm_source=habrahabr&amp;utm_medium=rss">Read the original Russian article</a>.
+      Fri, 27 Nov 2026 12:15:45 GMT
+    </p>
+  </header>
+  <main>
+<div><figure><img loading="lazy" src="https://habrastorage.org/r/w1560/extt/96/ae/ba/96aebadcdf6aa467c4c958718c61d887.jpg"/></figure><p>It seems that the more a developer spends on tokens, the more code they generate with an AI agent, and the faster the project develops. But this is not always the case. Perhaps the code is of such low quality that 90% has to be discarded at the correction stage - so much so that it's easier to write from scratch.</p><p>However, hiring a developer who will write without AI is also not a guarantee of savings and quality. They solve tasks slowly, make mistakes, and also need to be checked.</p><p>Who is more profitable to pay: a person or an AI agent? Should the budget be split in half, or is it time to give most of the money to neural networks? To answer these questions, Steffen Herbold from the University of Passau (Germany) built a development model and tested 432 scenarios in search of the most economical team configurations.</p><p><strong>Spoiler:</strong> the dependence of project cost on the proportion of code written with AI is not so simple. But a team where the main part of the budget goes to AI agents is still a long way off.</p><h3>Why you can't calculate through time savings</h3><p>AI speeds up individual tasks - writes code, prepares tests, finds errors. But at the same time, it adds new problems to the team: the developer has to write prompts, track down tasks that AI agents cannot handle, and check the generated code.</p><p>Suppose a developer used to spend twenty hours on a function. Now they have a coffee break over the task, formulate a prompt, and the AI agent generates the required code in two hours. But this does not mean a 10-fold saving. The developer still spent time on architectural decisions, task definition, and context clarification. And after generation, they still have to check the result. The code may look convincing but not withstand the load or meet security requirements. And if the developer misses an error and it reaches production, fixing it can cost much more than was saved on working hours.</p><p>This is roughly what is <a href="https://arxiv.org/pdf/2610.20394">described</a> in Steffen Herbold's model. In the paper *What Should a Software Team Spend on Agents?*, he proposed comparing developers and AI agents not by hours spent, but by the final cost of delivering a working feature to the user. And to get precise figures, he modeled mixed teams of humans and AI agents as a discrete-time stochastic process.</p><h3>How the work was modeled</h3><p>In his work, Herbold considered over 400 scenarios of mixed team operations, varying the cost and capabilities of agents, developer productivity, the number of new tasks, and the rate of technical debt accumulation. Since AI can do more than just write code, the researcher divided the agents' work into eight specialized roles:</p><ul><li><p>Implementation of new features.</p></li><li><p>Preparation of architectural and design proposals.</p></li><li><p>Bug fixing.</p></li><li><p>Refactoring.</p></li><li><p>Code review.</p></li><li><p>Security audit.</p></li><li><p>Test development.</p></li><li><p>Preparation of documentation for developers.</p></li></ul><p>And to make the calculation realistic, in addition to the costs of writing code (both by humans and AI agents), he took into account the time developers spend on communication, agent supervision, and checking architectural proposals. The model also included the cost of errors for the business: if a bug, especially a security-related one, is not noticed before release and reaches the user, its correction can be very expensive.</p><p>In each of the 432 schemes, the task was to find a team configuration that could perform the required amount of work at minimal cost. The conclusions were quite curious and, frankly, encouraging.</p><h3>Research findings</h3><blockquote><p><em>Bad AI agents do not help save money, and humans claim the largest part of the budget. But there is no universal solution - it all depends on the agents' capabilities and the project's conditions.</em></p></blockquote><h4>AI agents are needed</h4><p>In most of the scenarios tested by Herbold, mixed teams with effective agents are cheaper than teams consisting only of humans. Comparisons with AI-only teams were not made - likely because of disbelief that such a scheme would work in a real business environment.</p><h4>A bad agent drains the budget</h4><p>It might seem that burning cheap agent tokens is more profitable. But the overall expenses are affected not only by the cost of tokens - more agent errors mean the team spends "human" time on checks and fixes. This increases the budget for salaries and covers the consequences of errors that reach production.</p><p>In Herbold's model, the agent's capabilities turn out to be more important than the cost of its use, because 61% of the budget for AI agents goes to error detection. The researcher did not see a stable economic advantage in using bad agents compared to purely human teams.</p><h4>Humans still get paid more</h4><p>At a realistic project development speed, optimal teams still spend more on developers than on agents. But the developer's role changes. Even in scenarios with the most capable agents (and as we found out above, there's no point in dealing with incapable ones), humans mainly switch to fixing errors. And the AI gets tasks for developing new, interesting features. In the experiment scenarios involving the most effective agents, developers (seemingly busy writing code) spent 88-90% of their time fixing errors.</p><h4>There is no universal formula</h4><p>Alas, even with such a model, it's impossible to derive a universal formula like "Spend half of the payroll on agents." The optimal budget allocation depends on the agents' capabilities, their cost, developer productivity, task inflow rate, technical debt, and error cost. This means that for each global task and workflow, a specific balance must be found. But humans remain the main and most expensive resource because they make decisions and take responsibility for them.</p><p>With his modeling, Steffen Herbold showed that, despite the rapid development of AI in conventionally typical tasks, agents do not replace developers and do not provide businesses with savings on payroll. They can speed up work and reduce the overall project cost, but the hours saved on code generation do not automatically translate into savings on the people who make development manageable.</p></div>
+  </main>
+  <footer>
+    Translation generated with Gemini 2.5 Flash-Lite.
+    The original article remains the source of record.
+  </footer>
+</body>
+</html>

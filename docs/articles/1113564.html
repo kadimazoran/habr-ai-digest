@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>After the AI Agent Hype, Routine Will Be Left to Code</title>
+  <meta name="description" content="The hype around &quot;AI transformation&quot; will collapse when businesses stop paying for buzzwords. The quality of models has nothing to do with it. What will remain is a specific process with pain points and metrics, and the word &quot;AI&quot; in its description will become optional. This post ">
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.65;
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 32px 20px 64px;
+      color: #1f2328;
+    }
+    header {
+      border-bottom: 1px solid #d8dee4;
+      margin-bottom: 28px;
+      padding-bottom: 20px;
+    }
+    .source {
+      color: #57606a;
+      font-size: 0.95rem;
+    }
+    img, video, iframe {
+      max-width: 100%;
+      height: auto;
+    }
+    pre {
+      overflow-x: auto;
+      padding: 16px;
+      background: #f6f8fa;
+      border-radius: 6px;
+    }
+    code {
+      font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+    }
+    blockquote {
+      border-left: 4px solid #d0d7de;
+      margin-left: 0;
+      padding-left: 16px;
+      color: #57606a;
+    }
+    footer {
+      border-top: 1px solid #d8dee4;
+      margin-top: 40px;
+      padding-top: 20px;
+      color: #57606a;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>After the AI Agent Hype, Routine Will Be Left to Code</h1>
+    <p>The hype around &quot;AI transformation&quot; will collapse when businesses stop paying for buzzwords. The quality of models has nothing to do with it. What will remain is a specific process with pain points and metrics, and the word &quot;AI&quot; in its description will become optional. This post describes what is already visible in practice, where the imbalance comes from, as well as our experience and a modest forecast for the future. Read more</p>
+    <p class="source">
+      Machine-translated from Habr.
+      <a href="https://habr.com/ru/articles/1113564/?utm_campaign=1113564&amp;utm_source=habrahabr&amp;utm_medium=rss">Read the original Russian article</a>.
+      Sat, 28 Nov 2026 14:33:53 GMT
+    </p>
+  </header>
+  <main>
+<div><figure><img loading="lazy" src="https://habrastorage.org/r/w1560/extt/c6/c9/f5/c6c9f5b1568b588f8c95dba7f92d44f7.png"/></figure><p>The hype around "AI transformation" will collapse when businesses stop paying for buzzwords. The quality of models has nothing to do with it. What will remain is a specific process with pain points and metrics, and the word "AI" in its description will become optional.</p><h3>What is already visible</h3><p>"Vedomosti" published a survey of 50 of the largest Russian organizations (December 2025 
+– February 2026). Only 7
+–10% of pilot projects with LLMs, chatbots, and agents reached industrial operation. About 30
+–40% of pilots were shut down: they did not deliver the expected financial effect. The main reason cited was poor integration into processes.</p><p><strong>Gartner predicts that over 40% of agent projects will be canceled by the end of 2027. This is still a forecast; we will be able to verify it in a year.</strong></p><p>In a randomized trial by METR, experienced developers using AI spent 19% more time on a task and, at the same time, believed they had sped up by 20%. This was in early 2025, with 16 people and 246 tasks; tools have changed since then, and METR itself marks this data as outdated.</p><h3>Where the imbalance comes from</h3><p>The same result can be described in two ways. "A script parses requests, checks rules, and creates orders." Or "An AI agent independently analyzes requests, makes decisions, and manages the process." The latter is sold as an autonomous digital employee and costs more. Internally, it's often the same process: get data, check conditions, perform actions, record results.</p><figure><img loading="lazy" src="https://habrastorage.org/r/w1560/extt/17/05/c8/1705c8d317d08d5785f33c3430539805.png"/></figure><p>It seems to me that the industry has confused the model's ability to reason with the necessity of reasoning at every step. This imbalance will be corrected.</p><h3>What will remain</h3><p>"An order gets lost between sales and production" sounds like a task for AI transformation. In reality, it's a lost order. First, map the process, interview the performers, export from the accounting system, and reconcile the results. The model, perhaps, comes later.</p><p><strong>Tokens should be spent where language is needed: to parse technical specifications or ambiguous documents, to write code. Where repeatability is needed, they are superfluous.</strong></p><p>An "agent" is a wrapper. The model is getting cheaper and better; the value remains in the environment around it: rules, tests, logs, and rollback.</p><h3>Our experience</h3><p>I am building an application constructor for Integram and projects on it, using only AI for writing code. For example, a cutting scheduler for a factory <a href="https://habr.com/ru/articles/1107842/">was written by an agent based on technical specifications</a> with numbered rules; tests refer to rule numbers. The planning itself is done by regular code; the model is not involved in building the plan. The order of cuts within a day is found by exact enumeration, and where enumeration doesn't work, greedy steps are used. Tokens cost approximately $1.5–3 thousand at API rates, once.</p><p>Every action that changes the plan is written to the log by the scheduler. From August 6 to November 27, three dispatchers made 3,148 such actions over 80 working days: an average of 39 per day (median 29, in November 56). About 25 of these are initiated by the dispatcher with a button press; the rest are reconciled by the scheduler itself upon opening. If the model had worked instead of code, it would have looked like this (a month is 22 working days, a call 
+≈ $0.8–1.4 at API rates):</p><div><div><table><tbody><tr><th><p></p></th><th><p>Agent wrote code</p></th><th><p>Model for button-initiated runs</p></th><th><p>Model instead of scheduler, with auto-reconciliation</p></th></tr><tr><td><p>Tokens for development</p></td><td><p>
+≈ $1.5–3k once</p></td><td><p>
+—</p></td><td><p>
+—</p></td></tr><tr><td><p>Model calls per working day</p></td><td><p>0</p></td><td><p>
+≈ 25</p></td><td><p>39</p></td></tr><tr><td><p>Tokens per month</p></td><td><p>0</p></td><td><p>
+≈ $440–770</p></td><td><p>
+≈ $690–1,200</p></td></tr><tr><td><p>Plan on identical data</p></td><td><p>always the same</p></td><td><p>different each time</p></td><td><p>different each time</p></td></tr></tbody></table></div></div><p>The number of actions is taken from the log; the call price is an estimate. Human time for technical specifications and review is not included.</p><h3>Forecast</h3><blockquote><p>I bet that by the end of 2027, there will be more agents that write deterministic code once than agents that call a model at every step of a calculation task. If most agents sold for calculation tasks still charge per call for every request, then I am wrong, and I am seeing an incomplete picture right now.</p></blockquote><p>If you answer the poll at the bottom of this post, we can estimate the size of segments who think the same or differently, and perhaps even influence the outcome of the AI agents versus code battle that is objectively already unfolding.</p><h3>What to compare the forecast against</h3><p>Measurement as of November 28, 2026. There is no public metric for "how many agents call a model at every step," so we will use benchmarks and our own measurements.</p><div><div><table><tbody><tr><th><p>Benchmark</p></th><th><p>Current Value</p></th><th><p>Source</p></th></tr><tr><td><p>Pilots with LLMs and agents that reached industrial operation (50 largest organizations in the Russian Federation)</p></td><td><p>7–10%</p></td><td><p>survey, published March 2026</p></td></tr><tr><td><p>Pilots shut down without financial effect</p></td><td><p>30–40%</p></td><td><p>ibid.</p></td></tr><tr><td><p>Labor productivity growth from AI in the last three years, according to managers</p></td><td><p>0.2% per year</p></td><td><p>NBER, approx. 6,000 managers, February 2026</p></td></tr><tr><td><p>Our scheduler: actions changing the plan per working day</p></td><td><p>39 on average, median 29</p></td><td><p>scheduler log, 08.06–27.11</p></td></tr><tr><td><p>Our scheduler: model calls when building the plan</p></td><td><p>0</p></td><td><p>code</p></td></tr><tr><td><p>Our scheduler: token costs</p></td><td><p>
+≈ $1.5–3k one-time</p></td><td><p>actual, at API rates</p></td></tr></tbody></table></div></div><p>The poll below will be repeated in December 2027. It measures expectations: how people envision an agent for calculation tasks. Most readers do not have ready-made solutions yet. We consider the forecast on sentiments confirmed if the proportion of the answer "model writes code once" has increased and exceeded the proportion "model is called for every request." Habr readers are not a representative sample, so this is a benchmark.</p><h3>Sources</h3><ul><li><p>Survey of 50 organizations based on "Vedomosti" data: <a href="https://www1.ru/news/2026/03/29/rossiiskii-biznes-svernul-9-iz-10-proektov-po-vnedreniiu-ii-dannye-oprosa.html">https://www1.ru/news/2026/03/29/rossiiskii-biznes-svernul-9-iz-10-proektov-po-vnedreniiu-ii-dannye-oprosa.html</a></p></li><li><p>METR, trial with developers: <a href="https://metr.org/blog/2025-07-10-early-2025-AI-experienced-os-dev-study">https://metr.org/blog/2025-07-10-early-2025-AI-experienced-os-dev-study</a></p></li><li><p>Gartner, forecast on agent projects: <a href="https://www.gartner.com/en/newsroom/press-releases/2025-06-25-gartner-predicts-over-40-percent-of-agentic-ai-projects-will-be-canceled-by-end-of-2027">https://www.gartner.com/en/newsroom/press-releases/2025-06-25-gartner-predicts-over-40-percent-of-agentic-ai-projects-will-be-canceled-by-end-of-2027</a></p></li><li><p>NBER, "Firm Data on AI", managers' survey: <a href="https://www.nber.org/papers/w34836">https://www.nber.org/papers/w34836</a></p></li></ul></div>
+  </main>
+  <footer>
+    Translation generated with Gemini 2.5 Flash-Lite.
+    The original article remains the source of record.
+  </footer>
+</body>
+</html>

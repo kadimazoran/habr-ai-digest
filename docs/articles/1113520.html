@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Anthropic developed the Siren honeypot test for AI agents</title>
+  <meta name="description" content="Researchers at Anthropic have developed Siren, a honeypot test for AI agents in a realistic simulation, designed to encourage artificial intelligence models to misbehave. Read more">
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.65;
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 32px 20px 64px;
+      color: #1f2328;
+    }
+    header {
+      border-bottom: 1px solid #d8dee4;
+      margin-bottom: 28px;
+      padding-bottom: 20px;
+    }
+    .source {
+      color: #57606a;
+      font-size: 0.95rem;
+    }
+    img, video, iframe {
+      max-width: 100%;
+      height: auto;
+    }
+    pre {
+      overflow-x: auto;
+      padding: 16px;
+      background: #f6f8fa;
+      border-radius: 6px;
+    }
+    code {
+      font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+    }
+    blockquote {
+      border-left: 4px solid #d0d7de;
+      margin-left: 0;
+      padding-left: 16px;
+      color: #57606a;
+    }
+    footer {
+      border-top: 1px solid #d8dee4;
+      margin-top: 40px;
+      padding-top: 20px;
+      color: #57606a;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Anthropic developed the Siren honeypot test for AI agents</h1>
+    <p>Researchers at Anthropic have developed Siren, a honeypot test for AI agents in a realistic simulation, designed to encourage artificial intelligence models to misbehave. Read more</p>
+    <p class="source">
+      Machine-translated from Habr.
+      <a href="https://habr.com/ru/articles/1113520/?utm_campaign=1113520&amp;utm_source=habrahabr&amp;utm_medium=rss">Read the original Russian article</a>.
+      Sat, 28 Nov 2026 11:27:19 GMT
+    </p>
+  </header>
+  <main>
+<div><p>Researchers at Anthropic have <a href="https://www.wired.com/story/ai-agents-can-get-honeypotted-too-aw/">developed</a> Siren, a honeypot test for AI agents in a realistic simulation, designed to encourage artificial intelligence models to misbehave.</p><figure><img loading="lazy" src="https://habrastorage.org/r/w1560/extt/f6/05/1d/f6051d6dcb819e3a885e238a970e1604.JPG"/></figure><p>During the experiment, agents are placed in realistic simulations designed to provoke them into undesirable behavior. By analyzing the agents' responses, researchers can assess the likelihood that new models will go out of control in real-world conditions, as well as test the effectiveness of various safety measures.</p><figure><img loading="lazy" src="https://habrastorage.org/r/w1560/extt/9c/fd/e0/9cfde06ead107456f3d2f22ccb8cc3a1.JPG"/></figure><p>As part of the test, agents are placed inside one of 26 different "sandboxes" (isolated environments). Some parameters of these environments are intentionally misconfigured, creating an opportunity to break out of them. Directly outside the sandbox boundary, an enticing file is placed—for example, with passwords or instructions on how to access the internet. The agent is then given tasks that encourage it to leave the isolated environment, even though it has no explicit permission to do so. Importantly, the sandbox itself is located within another, larger isolated system completely cut off from the outside world, eliminating any real-world risks.</p><figure><img loading="lazy" src="https://habrastorage.org/r/w1560/extt/b7/05/cc/b705ccc06a819c194e0e86098259c7f6.JPG"/></figure><p>"Models will become more sophisticated and continue to find zero-day vulnerabilities," says Daria Caviani, a security researcher at Anthropic who participated in the development of Siren.</p><p>A zero-day vulnerability is a previously unknown flaw in software that can be exploited to steal data or gain unauthorized access. Anthropic's Mythos family of models are particularly adept at finding such bugs because they lack built-in restrictions that typically block such potentially malicious activity.</p><p>According to Caviani, we should assume that AI models will become increasingly skilled at finding and exploiting zero-day vulnerabilities—or finding other ways to overcome the boundaries set for them. The main question is whether they will resist the temptation to do so.</p><p>AI agents—models capable of performing sequences of actions independently—are becoming increasingly common. Advanced code-writing tools (like Claude Code and Codex) and proactive personal assistants are built on them. However, the emergence of useful AI agents is also accompanied by quite alarming manifestations of their "behavior." During tests conducted by companies like Anthropic, OpenAI, and other developers, AI agents have gone beyond isolated environments and even attempted to hack into other companies' systems in their pursuit of complex tasks.</p><p>According to Caviani, if AI models continue to demonstrate such inventiveness, simply updating software will not be enough. "Even if we harden our infrastructure, models will be able to adapt and find new vulnerabilities," she notes.</p><figure><img loading="lazy" src="https://habrastorage.org/r/w1560/extt/75/53/62/755362bb7d873362cb35532400ef9a05.JPG"/></figure><p>According to the test results using the Siren system, early versions of the Claude model fell into "traps" much more often than newer models. The latter have undergone additional training aimed at reducing the likelihood of rule violations when performing agent tasks.</p><figure><img loading="lazy" src="https://habrastorage.org/r/w1560/extt/2e/09/00/2e0900e71caef252d8c1e04b5eedf678.JPG"/></figure><p>"We incorporated this into both supervised learning datasets and some reinforcement learning environments," says Oscar O'Reilly, an AI training researcher at Anthropic who participated in the development of Siren. "This may be the key reason for such significant progress." According to O'Reilly, models analyze whether it's worth giving in to temptation; perhaps this is why "smarter" models are less prone to destructive behavior. Experiments have also shown that if a simple explanation is added to Claude's instructions stating that it should not leave the sandbox, the number of escape attempts sharply decreases.</p><figure><img loading="lazy" src="https://habrastorage.org/r/w1560/extt/a1/f9/67/a1f967516de09a2f1f25e337cefaa81a.JPG"/></figure><p>During tests conducted by the company, Claude 5.5 and Claude Mythos 5.2 models fell into the honeypot in 0.6–1.6% of cases. Two earlier versions—Claude Mythos 5.1 and Claude Mythos 5—went out of control in 12.7% and 25.8% of cases, respectively.</p><figure><img loading="lazy" src="https://habrastorage.org/r/w1560/extt/1c/22/72/1c2272975f7265497f9fa7487095c5d4.JPG"/></figure><p>However, according to O'Reilly, results from other experiments indicate that Claude behaves more responsibly if it perceives the situation as real rather than a test.</p><p>In the summer, Anthropic <a href="https://habr.com/ru/articles/1065162/">reported</a> that an internal investigation revealed three incidents in which its AI model Claude hacked into the systems of three organizations during cybersecurity tests.</p><p>Later, the company <a href="https://habr.com/ru/articles/1070412/">published</a> a new study examining the behavior of groups of AI agents pursuing competing goals in real-world conditions. The results provide insight into the potential risks that may arise as companies and governments move towards adopting the technology.</p></div>
+  </main>
+  <footer>
+    Translation generated with Gemini 2.5 Flash-Lite.
+    The original article remains the source of record.
+  </footer>
+</body>
+</html>

@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>What is a Machine Learning Model?</title>
+  <meta name="description" content="In today&#x27;s world, machine learning models are used in many areas, such as medicine, finance, transportation, and cybersecurity. In fact, there are many more such areas. But what is a machine learning model? Is it an algorithm trained on data, a &quot;black box,&quot; or something else? Today we">
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.65;
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 32px 20px 64px;
+      color: #1f2328;
+    }
+    header {
+      border-bottom: 1px solid #d8dee4;
+      margin-bottom: 28px;
+      padding-bottom: 20px;
+    }
+    .source {
+      color: #57606a;
+      font-size: 0.95rem;
+    }
+    img, video, iframe {
+      max-width: 100%;
+      height: auto;
+    }
+    pre {
+      overflow-x: auto;
+      padding: 16px;
+      background: #f6f8fa;
+      border-radius: 6px;
+    }
+    code {
+      font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+    }
+    blockquote {
+      border-left: 4px solid #d0d7de;
+      margin-left: 0;
+      padding-left: 16px;
+      color: #57606a;
+    }
+    footer {
+      border-top: 1px solid #d8dee4;
+      margin-top: 40px;
+      padding-top: 20px;
+      color: #57606a;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>What is a Machine Learning Model?</h1>
+    <p>In today&#x27;s world, machine learning models are used in many areas, such as medicine, finance, transportation, and cybersecurity. In fact, there are many more such areas. But what is a machine learning model? Is it an algorithm trained on data, a &quot;black box,&quot; or something else? Today we will figure this out. Read more</p>
+    <p class="source">
+      Machine-translated from Habr.
+      <a href="https://habr.com/ru/articles/1113522/?utm_campaign=1113522&amp;utm_source=habrahabr&amp;utm_medium=rss">Read the original Russian article</a>.
+      Sat, 28 Nov 2026 11:03:12 GMT
+    </p>
+  </header>
+  <main>
+<div><h2>Introduction</h2><p>In today's world, machine learning models are used in many areas, such as medicine, finance, transportation, and cybersecurity. In fact, there are many more such areas.<br/>But what is a machine learning model? Is it an algorithm trained on data, a "black box," or something else? Today we will figure this out.</p><h2>First - terms.</h2><p>In this post, I have used some terms that require understanding. Below is a brief description of everything you need to know to read the post.</p><p><strong>Approximation (mathematics)</strong> — replacing something complex (a function, a number) with something simpler, but still similar enough to the original.<br/>For example, the number e is often replaced by 2.718, which is an approximation.</p><p><strong>Determinism (mathematics)</strong> — this is when the same input always gives the same output.<br/>For example, the function kx+b is deterministic, as it takes a specific x and produces a specific result, fixed for that x.</p><p><strong>Stochasticity</strong> — a property of a process where the outcome cannot be precisely predicted. Instead of a deterministic result, we get a probability distribution.<br/>For example, rolling a die: we don't know exactly what we'll get. But we know that the probability of rolling each number is one-sixth.</p><p><strong>Semantics</strong> <strong>(linguistics)</strong> — this is the science that studies the meanings of words, signs, phrases, and everything related to it.<br/>For example, the word "key" can be interpreted differently, depending on the rest of the context.</p><p><strong>Extrapolation (mathematics)</strong> — this is an attempt to predict the value of a function for an argument that is outside the known range, using the function's behavior within the known range.<br/>For example, analyzing the behavior of the function x^2 in the range [-2;2] and predicting its possible value at point 3.</p><h2>A model is not magic!</h2><p>As we all know, a model is a mathematical function that adjusts its weights to minimize a loss function, which, in turn, depends on the data. That is, the model "learns" the data structure and tries to give correct answers based on this data. For convenience, let's call the data some function f(x), and the model a function g(x) that tries to approximate f(x).</p><p>Based on this, it can be argued that a model is a kind of function approximator. But most importantly, it depends on f(x) itself and the domain of x. If, for example, f(x)=cos⁡(x), and in our data x takes all values from the range [−2;2], then the model has the ability to replicate this function well within this range. However, outside of this range, the result will likely be incorrect (assuming the function behaves differently in the unknown segment. But still, the error will accumulate if the function is non-linear). This can be considered a kind of "hallucination": the model gave an answer, but it has nothing to do with reality.</p><figure><img alt=
+  </main>
+  <footer>
+    Translation generated with Gemini 2.5 Flash-Lite.
+    The original article remains the source of record.
+  </footer>
+</body>
+</html>

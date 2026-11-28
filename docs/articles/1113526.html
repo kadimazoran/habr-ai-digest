@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Fallback LLM Provider: How to Implement Fallback Without Losing Meaning</title>
+  <meta name="description" content="Many projects rely on LLM providers for tasks like customer chat, document generation, and agent systems. However, this reliance on a few API endpoints you don&#x27;t control creates a single point of failure. When your provider goes down, your product goes down with it. While LLM providers boast hi">
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.65;
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 32px 20px 64px;
+      color: #1f2328;
+    }
+    header {
+      border-bottom: 1px solid #d8dee4;
+      margin-bottom: 28px;
+      padding-bottom: 20px;
+    }
+    .source {
+      color: #57606a;
+      font-size: 0.95rem;
+    }
+    img, video, iframe {
+      max-width: 100%;
+      height: auto;
+    }
+    pre {
+      overflow-x: auto;
+      padding: 16px;
+      background: #f6f8fa;
+      border-radius: 6px;
+    }
+    code {
+      font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+    }
+    blockquote {
+      border-left: 4px solid #d0d7de;
+      margin-left: 0;
+      padding-left: 16px;
+      color: #57606a;
+    }
+    footer {
+      border-top: 1px solid #d8dee4;
+      margin-top: 40px;
+      padding-top: 20px;
+      color: #57606a;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Fallback LLM Provider: How to Implement Fallback Without Losing Meaning</h1>
+    <p>Many projects rely on LLM providers for tasks like customer chat, document generation, and agent systems. However, this reliance on a few API endpoints you don&#x27;t control creates a single point of failure. When your provider goes down, your product goes down with it. While LLM providers boast high uptime (around 99.28%), this still translates to hours of downtime per month, and incidents can also manifest as degraded quality rather than complete outages. A common but flawed solution is to simply use a second API key. This restores availability but often breaks the meaning of the response, as different models, even of the same class, can have varying output formats, JSON schema adherence, tool call behavior, and prompt interpretations. This article explores how to build a truly seamless fallback system, covering layers of fault tolerance, error types, tools like LiteLLM, OpenRouter, and Portkey, and quality checks for backup model responses.</p>
+    <p class="source">
+      Machine-translated from Habr.
+      <a href="https://habr.com/ru/companies/bothub/articles/1113526/?utm_campaign=1113526&amp;utm_source=habrahabr&amp;utm_medium=rss">Read the original Russian article</a>.
+      Sat, 28 Nov 2026 11:26:22 GMT
+    </p>
+  </header>
+  <main>
+<div><p>Many projects use LLM providers. Customer chats, document generation, and even agent systems—all of this relies on one or two API endpoints that you don't control. And if your provider goes down, your product goes down with it.</p><p>The problem can be quite real—for example, on the <a href="https://status.openai.com/history">OpenAI status page</a>, you can see issues yourself. Anthropic has a similar history, though with fewer problems. According to statistics, the average uptime of LLM providers is 99.28%. It sounds good, but that's about five hours of non-working API per month. And in early 2026, OpenAI had an average of one incident every 2.5 days.</p><p>It's worth remembering that incidents don't always mean a complete service outage; it can also be a degradation of quality.</p><p>The standard response to all of this is to get a second API key and use it when the first one returns a 500. And this is where the fun begins—you've saved availability, but the meaning of the response is lost. Another model, even formally in the "same class," writes differently, adheres to JSON schema and tool calls differently, and understands your prompts differently. The application will continue to work. But it will work with foreign text that no one has verified for compliance with what you expected from the main model.</p><p>In this article, we'll break down how to build a fallback that is truly seamless. We'll explore fault tolerance layers, error types, tools (LiteLLM, OpenRouter, Portkey), and quality checks for the backup model's response.</p><hr/><blockquote><p>The figure 99.28% is taken from the <a href="https://therouter.ai/blog/llm-api-provider-reliability-uptime-comparison-2026-h2">independent ModelUptime report</a>, and "one incident every 2.5 days" is from the <a href="https://www.tierzero.ai/blog/ai-provider-outages-2026">2026 AI provider outage review</a>.</p></blockquote><p>And if you need to integrate AI or want to use AI yourself, our service <a href="https://bothub.chat/">BotHub</a> can help. It provides access to hundreds of the latest models, has an OpenAI-compatible gateway, and convenient payment in rubles without a VPN. Both GPT models and the latest Gemini 4 models, and even Claude, are available without the risk of a geo-blocking ban! And via the <a href="https://bothub.chat/?invitedBy=zx7xIePYIOcWHhTfgg6-O">referral link</a>, you'll get 300,000 CAPS for testing for free.</p><h3>Why One Provider Is a Risk</h3><p>There was Sauron, who seemed mighty, deceived everyone, gave rings to all, and kept the One Ring of Power for himself to enslave them all. And what happened? As soon as the ring was destroyed, his entire empire crumbled. It's the same with providers; you shouldn't rely solely on one.</p><p>Failures themselves can be different. For example, there are transport failures when there's a timeout, a broken connection, or 502/503 from the load balancer. The SDK usually retries them itself.</p><p>Then it gets more complex. There's 429 (rate limit)—you've hit a limit, which could be on requests per minute, tokens per minute, or tokens per day. Retrying with backoff helps somewhat, but it's unlikely to help with a daily limit. OpenAI has <code>quota exceeded</code>, Anthropic has a similar mechanism, and in both cases, you just have to wait until midnight. Or pay for a higher tier.</p><p>There are also 5xx and 529—problems on the provider's side. Anthropic has a separate 529 code (<code>overloaded_error</code>) when the provider honestly admits it's overloaded and can't handle the request. The SDK retries it with exponential backoff, and the ceiling is configurable. From a fallback perspective, this is the most correct trigger—the provider is definitely at fault, and your request is not.</p><p>And then there are such wonderful things as regional restrictions and sudden changes in terms. Your key stops working from your country. Or the tariff plan is redesigned, and RPM drops threefold. The model is completely removed from service (this has happened repeatedly with older versions of GPT and Claude in 2025–2026).</p><p>So, you need to understand that Retry is a repeated attempt to the same place, assuming the problem is temporary. Fallback is switching to a backup path, assuming the problem will not resolve itself.</p><h3>Fault Tolerance Layers</h3><p>Fault tolerance layers are like a pyramid. At the bottom is the cheapest and almost always sufficient layer, in the form of retry with exponential backoff and jitter. This layer fixes only transient issues; if the model is unavailable for a minute, three attempts at 1/2/4 second intervals will save you. But if not—you'll just keep hammering the API.</p><figure><img loading="lazy" src="https://habrastorage.org/r/w1560/webt/50/3e/ce/503ece71819e644a447aba92a35f6706.jpg"/></figure><p>The next level up is a different deployment of the same model. If you're working through Azure or self-hosting, you might have two instances of the same model, often even from different providers (GPT on Azure as primary, the same GPT on OpenAI as backup). The response format is identical, and everything transfers almost painlessly.</p><p>The next level is a different model from the same provider. For example, switching from Claude Sonnet to Claude Haiku. Cheap, effective, but differences in behavior emerge.</p><p>And the top level is a completely different provider. Maximum resilience, maximum risk of losing meaning. This is precisely why the architecture is built in cascades, each level is cheaper and safer than the previous one, and the request should reach the top level as rarely as possible.</p><p>It's worth retrying 429 (not forgetting the <code>Retry-After</code> header), 408, 409, 5xx, 529, as well as timeouts and connection errors. But there's no point in retrying 400/422 or 401/403/404. By the way, OpenAI SDK already has retries built-in (<code>max_retries</code>, defaulting to 2–3 attempts with backoff).</p><p>Here, for example, is how it might look in LiteLLM Router:</p><pre><code>router_settings: 
+  allowed_fails: 3        # after 3 failures, the deployment goes into cooldown
+  cooldown_time: 30       # for 30 seconds
+  fallbacks: [{
+  </main>
+  <footer>
+    Translation generated with Gemini 2.5 Flash-Lite.
+    The original article remains the source of record.
+  </footer>
+</body>
+</html>

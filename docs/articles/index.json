@@ -5975,6 +5975,86 @@
     "summary": "When working with Claude Code, I intuitively chose the reasoning level for the task type—high for planning, low for code based on a plan, to save tokens. Now I use local models, there are no limits, and we only pay with time: more reasoning tokens mean longer generation. I decided to test my intuition with measurements: I assembled a benchmark of three tasks with traps on a production stack, ran several models at different thinking levels—36 runs isolated in containers. In some measurements, I got results I didn't expect: models were revealed where increasing the reasoning level did not lead to a better outcome. If you are also interested in how much \"thinking\" a specific local model actually needs to fix bugs, welcome under the cut. Read more",
     "title": "Higher reasoning effort isn't always better: a benchmark of local LLMs on different thinking levels"
   },
+  "https://habr.com/ru/articles/1113448/?utm_campaign=1113448&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Sat, 28 Nov 2026 07:24:03 GMT",
+    "slug": "1113448",
+    "source_url": "https://habr.com/ru/articles/1113448/?utm_campaign=1113448&utm_source=habrahabr&utm_medium=rss",
+    "summary": "I'm writing this, surprised to my very core. Well, while you were worried that neural networks would take away your jobs, they pulled off a more interesting trick. They monetized your loneliness, went bankrupt, and put your dirtiest secrets up for auction. Officially, through the Federal Bankruptcy Court in Delaware (case No. 26-11603-BLS, if you need proof with your morning coffee). Meet the main horror of late 2026 – the bankruptcy of Character.AI! The scale of the tragedy: 21.6 million registered accounts in the US alone as of March 13, 2025 (of which 2.1 million are accounts of users who indicated they were under 18). At the time of bankruptcy, 12 million monthly active users were on the platform, chatting with chatbots for an average of two hours a day. For years, people poured their souls out there to virtual psychologists, doctors, and fictional partners: talking about illnesses, sex lives, family dramas, psychological crises, and fears. The promise was valued at exactly $10 million. This is the starting price for the auction of the platform along with this entire database of human souls. Interested?",
+    "title": "Love Black Mirror? Turn it off, you're about to get truly scared"
+  },
+  "https://habr.com/ru/articles/1113488/?utm_campaign=1113488&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Sat, 28 Nov 2026 08:31:23 GMT",
+    "slug": "1113488",
+    "source_url": "https://habr.com/ru/articles/1113488/?utm_campaign=1113488&utm_source=habrahabr&utm_medium=rss",
+    "summary": "When three to four console AI agents run simultaneously, a standard terminal quickly becomes unmanageable. Tabs in Windows Terminal lose clear titles, it's unclear which agent is still writing code and which has been waiting for command confirmation for ten minutes, and all processes are terminated when the window is closed. It turns out this problem has already been solved in the open-source project Herdr 2 (herdr-app and herdr-core) built with Rust and GPUI, but detailed reviews of this version, especially for Windows, are scarce. Below, I will break down the architecture of Herdr 2, test the OSC 7501 status protocol on omp and agy agents, answer the common question 'why use a terminal when there are proprietary desktop applications,' and showcase my JS mod, APSam, to which I've ported preset launching and provider quota monitoring. Read on.",
+    "title": "Herdr 2 on Windows: A Multi-AI Agent Environment in the Terminal"
+  },
+  "https://habr.com/ru/articles/1113502/?utm_campaign=1113502&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Sat, 28 Nov 2026 09:47:11 GMT",
+    "slug": "1113502",
+    "source_url": "https://habr.com/ru/articles/1113502/?utm_campaign=1113502&utm_source=habrahabr&utm_medium=rss",
+    "summary": "Google DeepMind is giving AI agents the ability to conduct experiments independently to create the next version of the Gemini model. Read more",
+    "title": "AI agents now control part of DeepMind's compute for Gemini experiments"
+  },
+  "https://habr.com/ru/articles/1113520/?utm_campaign=1113520&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Sat, 28 Nov 2026 11:27:19 GMT",
+    "slug": "1113520",
+    "source_url": "https://habr.com/ru/articles/1113520/?utm_campaign=1113520&utm_source=habrahabr&utm_medium=rss",
+    "summary": "Researchers at Anthropic have developed Siren, a honeypot test for AI agents in a realistic simulation, designed to encourage artificial intelligence models to misbehave. Read more",
+    "title": "Anthropic developed the Siren honeypot test for AI agents"
+  },
+  "https://habr.com/ru/articles/1113522/?utm_campaign=1113522&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Sat, 28 Nov 2026 11:03:12 GMT",
+    "slug": "1113522",
+    "source_url": "https://habr.com/ru/articles/1113522/?utm_campaign=1113522&utm_source=habrahabr&utm_medium=rss",
+    "summary": "In today's world, machine learning models are used in many areas, such as medicine, finance, transportation, and cybersecurity. In fact, there are many more such areas. But what is a machine learning model? Is it an algorithm trained on data, a \"black box,\" or something else? Today we will figure this out. Read more",
+    "title": "What is a Machine Learning Model?"
+  },
+  "https://habr.com/ru/articles/1113528/?utm_campaign=1113528&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Sat, 28 Nov 2026 11:47:21 GMT",
+    "slug": "1113528",
+    "source_url": "https://habr.com/ru/articles/1113528/?utm_campaign=1113528&utm_source=habrahabr&utm_medium=rss",
+    "summary": "TokenWave AI researchers tested how AI agents handle programmer tasks within a virtual IT company. Even the most powerful models, like Claude Opus 5.5 and GPT-6 Astra, completed less than 8% of tasks fully. Read more",
+    "title": "AI Agents in Virtual IT Companies Failed Over 90% of Real Work Tasks"
+  },
+  "https://habr.com/ru/articles/1113554/?utm_campaign=1113554&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Sat, 28 Nov 2026 13:19:55 GMT",
+    "slug": "1113554",
+    "source_url": "https://habr.com/ru/articles/1113554/?utm_campaign=1113554&utm_source=habrahabr&utm_medium=rss",
+    "summary": "During a call, a client asked: neural networks are citing YouTube more often – should we start making videos, and what should we optimize: the title, description, subtitles, or the link below the video? My team and I responded classically: create clear titles, add chapters to the description, and upload manual subtitles. The question intrigued me, so I decided to investigate: first, using fresh measurements from Fall 2026, then my own archival runs. Since June 2026, I've been measuring brand visibility in AI responses for clients across various industries. I previously analyzed a check of six hundred neural network links for accessibility on Habr, and now I've verified where the facts within the videos are located. It turns out that Google AI Overviews and ChatGPT with Perplexity work differently, and my data doesn't support the advice about manual subtitles. Read on.",
+    "title": "Neural Networks Increasingly Cite YouTube: Is the Answer in the Title, Description, Subtitles, or Below the Video?"
+  },
+  "https://habr.com/ru/articles/1113558/?utm_campaign=1113558&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Sat, 28 Nov 2026 13:56:06 GMT",
+    "slug": "1113558",
+    "source_url": "https://habr.com/ru/articles/1113558/?utm_campaign=1113558&utm_source=habrahabr&utm_medium=rss",
+    "summary": "A week ago, I completely switched from Claude Code and Opus 5.5 to Google Antigravity and Gemini 4 Neon for $200. The first two days I was on the verge of giving up and returning to Anthropic: the agent would freeze and corrupt file writes. But then I analyzed my local logs, and now I don't want to go back to Claude. Read more",
+    "title": "Switched from Claude Code to Antigravity, my impressions after a week of use"
+  },
+  "https://habr.com/ru/articles/1113562/?utm_campaign=1113562&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Sat, 28 Nov 2026 14:16:58 GMT",
+    "slug": "1113562",
+    "source_url": "https://habr.com/ru/articles/1113562/?utm_campaign=1113562&utm_source=habrahabr&utm_medium=rss",
+    "summary": "Imagine this: you have a dream workstation. Inside - a fresh i9 Core Ultra (285K), a professional NVIDIA RTX 4000 Ada / Blackwell graphics card (24GB VRAM), two high-speed 2TB Samsung 990 Pro drives, and a \"generous\" (but not yet \"royal\") 192GB of DDR5 RAM. It would seem that with such RAM capacity, you could forget about \"out of memory\" for at least five years. But as soon as a local environment for autonomous AI agents was set up on this machine, Windows 11 and VirtualBox staged a real technical detective story: with over 30GB of formally free memory, the hypervisor flatly refused to launch new virtual machines. I'll tell you how this quest unfolded, why disabling the page file on 192GB of RAM turned out to be a trap, and how a short call to an undocumented ntdll.dll kernel function solved the problem without performance loss. Level 1. Stand Architecture and Plot Setup. The hardware was chosen for a specific task: a completely local, autonomous development environment with AI agents without code leakage to the cloud. • Host (Windows 11): runs a single heavy local model in the Strata environment - Qwen 3.8 Unsloth Q8 (in the \"correct\" edition), shared over the local network in OpenAI Compatible API mode. • Virtual Machines (VirtualBox): several isolated environments based on Windows 11 and Kali Linux, running VS Code + Cline and Hermes Agent. The agents simultaneously ping the host's local API, write code, run tests, perform pentests, parse the environment, and collectively explore the world. To prevent agents from bumping elbows, many VMs are needed, and as mentioned earlier - 192GB of RAM. The page file, out of old habit \"I have a lot of RAM, why torture the SSD,\" was completely disabled. Read more",
+    "title": "Quest for 192GB RAM: How to Make Windows 11 and VirtualBox Give All RAM to Local AI and a \"Zoo\" of Agents"
+  },
+  "https://habr.com/ru/articles/1113564/?utm_campaign=1113564&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Sat, 28 Nov 2026 14:33:53 GMT",
+    "slug": "1113564",
+    "source_url": "https://habr.com/ru/articles/1113564/?utm_campaign=1113564&utm_source=habrahabr&utm_medium=rss",
+    "summary": "The hype around \"AI transformation\" will collapse when businesses stop paying for buzzwords. The quality of models has nothing to do with it. What will remain is a specific process with pain points and metrics, and the word \"AI\" in its description will become optional. This post describes what is already visible in practice, where the imbalance comes from, as well as our experience and a modest forecast for the future. Read more",
+    "title": "After the AI Agent Hype, Routine Will Be Left to Code"
+  },
   "https://habr.com/ru/companies/1c/articles/1071340/?utm_campaign=1071340&utm_source=habrahabr&utm_medium=rss": {
     "model": "gemini-2.5-flash-lite",
     "published": "Thu, 03 Sep 2026 07:18:11 GMT",
@@ -6390,6 +6470,14 @@
     "source_url": "https://habr.com/ru/companies/bothub/articles/1111458/?utm_campaign=1111458&utm_source=habrahabr&utm_medium=rss",
     "summary": "For years, code review was a bottleneck where teams spent more time than on feature creation. But now, code review has become the bottleneck. Thanks to the widespread adoption of AI agents, code is being created very quickly, perhaps too quickly. According to 2026 Faros telemetry (22,000 developers), teams with high AI agent adoption saw their average pull request size increase by 51%. Coupled with this growth, the number of bugs per developer increased by 54%. The PR itself becomes the bottleneck; they can linger for days in your company or open-source project, context can be lost, and evaluation time is spent, sometimes in vain. Review is an important part of finding bugs that tests or developers couldn't catch, or deviations from code style, violations of clean code, and so on. A human could review, but unfortunately, they aren't always capable of handling even a regular large PR, and when the quantity and size increase, it becomes simply difficult. In this article, I'll discuss how to help your corporate or open-source project if it's drowning in code reviews, and I'll cover existing solutions like Devin AI, Context7, DeepWiki, Rabbit Code Review, and others. Read more",
     "title": "Harness and AI Review: How Modern AI Agents Review Your Code"
+  },
+  "https://habr.com/ru/companies/bothub/articles/1113526/?utm_campaign=1113526&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Sat, 28 Nov 2026 11:26:22 GMT",
+    "slug": "1113526",
+    "source_url": "https://habr.com/ru/companies/bothub/articles/1113526/?utm_campaign=1113526&utm_source=habrahabr&utm_medium=rss",
+    "summary": "Many projects rely on LLM providers for tasks like customer chat, document generation, and agent systems. However, this reliance on a few API endpoints you don't control creates a single point of failure. When your provider goes down, your product goes down with it. While LLM providers boast high uptime (around 99.28%), this still translates to hours of downtime per month, and incidents can also manifest as degraded quality rather than complete outages. A common but flawed solution is to simply use a second API key. This restores availability but often breaks the meaning of the response, as different models, even of the same class, can have varying output formats, JSON schema adherence, tool call behavior, and prompt interpretations. This article explores how to build a truly seamless fallback system, covering layers of fault tolerance, error types, tools like LiteLLM, OpenRouter, and Portkey, and quality checks for backup model responses.",
+    "title": "Fallback LLM Provider: How to Implement Fallback Without Losing Meaning"
   },
   "https://habr.com/ru/companies/cinimex/articles/1088534/?utm_campaign=1088534&utm_source=habrahabr&utm_medium=rss": {
     "model": "gemini-2.5-flash-lite",
@@ -7366,6 +7454,14 @@
     "source_url": "https://habr.com/ru/companies/otus/articles/1107714/?utm_campaign=1107714&utm_source=habrahabr&utm_medium=rss",
     "summary": "An AI agent can independently discover a vulnerability, exploit it, and perform an action that the user never intended. Moreover, the model's built-in limitations and human oversight do not always help prevent consequences. We examine real incidents to understand why traditional security approaches fail and what architectural measures can keep agents within their granted permissions. Protecting AI Agents",
     "title": "When an AI agent starts misbehaving"
+  },
+  "https://habr.com/ru/companies/otus/articles/1108096/?utm_campaign=1108096&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Sat, 28 Nov 2026 13:05:28 GMT",
+    "slug": "1108096",
+    "source_url": "https://habr.com/ru/companies/otus/articles/1108096/?utm_campaign=1108096&utm_source=habrahabr&utm_medium=rss",
+    "summary": "64 pull requests in two hours is an impressive result of AI agents' work. But the faster agents write and merge code, the more acute the quality control issue becomes: how to ensure that the changes are truly ready for release? We will examine the experience of organizing parallel development with 11 Claude Code agents on three projects, analyze errors, review issues, and the limitations of automated testing. We will also find out why a human can become the main bottleneck in agent-based development. Read about the experiment",
+    "title": "[Translation] 64 PRs Before Lunch: How AI Agents Accelerated Development, and I Became the Bottleneck"
   },
   "https://habr.com/ru/companies/ozontech/articles/1094882/?utm_campaign=1094882&utm_source=habrahabr&utm_medium=rss": {
     "model": "gemini-2.5-flash-lite",
@@ -8590,6 +8686,14 @@
     "source_url": "https://habr.com/ru/companies/studyai/articles/1103606/?utm_campaign=1103606&utm_source=habrahabr&utm_medium=rss",
     "summary": "Nano Banana 2 Lite is a spartanly budget-friendly model. Let's test it on generating assets for a pixel art economic strategy game. Read more",
     "title": "Creating Super-Budget Game Assets with Nano Banana 2 Lite"
+  },
+  "https://habr.com/ru/companies/studyai/articles/1113498/?utm_campaign=1113498&utm_source=habrahabr&utm_medium=rss": {
+    "model": "gemini-2.5-flash-lite",
+    "published": "Sat, 28 Nov 2026 09:18:15 GMT",
+    "slug": "1113498",
+    "source_url": "https://habr.com/ru/companies/studyai/articles/1113498/?utm_campaign=1113498&utm_source=habrahabr&utm_medium=rss",
+    "summary": "Today we'll revisit another old-school legend that consumed many hours of gameplay. Our own crude drawings made in MS Paint will serve as references, and Nano Banana 2 Lite will help bring them into a presentable state. As always: we draw as best we can. Read more",
+    "title": "Creating Heroes III-style Game Assets with Paint and Nano Banana 2 Lite"
   },
   "https://habr.com/ru/companies/svoi_ru/articles/1078124/?utm_campaign=1078124&utm_source=habrahabr&utm_medium=rss": {
     "model": "gemini-2.5-flash-lite",

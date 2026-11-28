@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Herdr 2 on Windows: A Multi-AI Agent Environment in the Terminal</title>
+  <meta name="description" content="When three to four console AI agents run simultaneously, a standard terminal quickly becomes unmanageable. Tabs in Windows Terminal lose clear titles, it&#x27;s unclear which agent is still writing code and which has been waiting for command confirmation for ten minutes, and all processes are termin">
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.65;
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 32px 20px 64px;
+      color: #1f2328;
+    }
+    header {
+      border-bottom: 1px solid #d8dee4;
+      margin-bottom: 28px;
+      padding-bottom: 20px;
+    }
+    .source {
+      color: #57606a;
+      font-size: 0.95rem;
+    }
+    img, video, iframe {
+      max-width: 100%;
+      height: auto;
+    }
+    pre {
+      overflow-x: auto;
+      padding: 16px;
+      background: #f6f8fa;
+      border-radius: 6px;
+    }
+    code {
+      font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+    }
+    blockquote {
+      border-left: 4px solid #d0d7de;
+      margin-left: 0;
+      padding-left: 16px;
+      color: #57606a;
+    }
+    footer {
+      border-top: 1px solid #d8dee4;
+      margin-top: 40px;
+      padding-top: 20px;
+      color: #57606a;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Herdr 2 on Windows: A Multi-AI Agent Environment in the Terminal</h1>
+    <p>When three to four console AI agents run simultaneously, a standard terminal quickly becomes unmanageable. Tabs in Windows Terminal lose clear titles, it&#x27;s unclear which agent is still writing code and which has been waiting for command confirmation for ten minutes, and all processes are terminated when the window is closed. It turns out this problem has already been solved in the open-source project Herdr 2 (herdr-app and herdr-core) built with Rust and GPUI, but detailed reviews of this version, especially for Windows, are scarce. Below, I will break down the architecture of Herdr 2, test the OSC 7501 status protocol on omp and agy agents, answer the common question &#x27;why use a terminal when there are proprietary desktop applications,&#x27; and showcase my JS mod, APSam, to which I&#x27;ve ported preset launching and provider quota monitoring. Read on.</p>
+    <p class="source">
+      Machine-translated from Habr.
+      <a href="https://habr.com/ru/articles/1113488/?utm_campaign=1113488&amp;utm_source=habrahabr&amp;utm_medium=rss">Read the original Russian article</a>.
+      Sat, 28 Nov 2026 08:31:23 GMT
+    </p>
+  </header>
+  <main>
+<div><figure><img loading="lazy" src="https://habrastorage.org/r/w1560/extt/d6/44/29/d644299fd66653e8b83f01d0a7f8f27e.png"/></figure><p>When three to four console AI agents run simultaneously, a standard terminal quickly becomes unmanageable. Tabs in Windows Terminal lose clear titles, it's unclear which agent is still writing code and which has been waiting for command confirmation for ten minutes, and all processes are terminated when the window is closed. It turns out this problem has already been solved in the open-source project Herdr 2 (<a href="https://github.com/herdrdev/herdr-app">herdr-app</a> and <a href="https://github.com/herdrdev/herdr-core">herdr-core</a>) built with Rust and GPUI, but detailed reviews of this version, especially for Windows, are scarce.</p><p>Below, I will break down the architecture of Herdr 2, test the OSC 7501 status protocol on omp and agy agents, answer the common question 'why use a terminal when there are proprietary desktop applications,' and showcase my JS mod, <a href="https://github.com/OleksiyPenkov/APSam">APSam</a>, to which I've ported preset launching and provider quota monitoring.</p><hr/><h2>From Attempting to Write My Own Manager to a Zoo of Utilities</h2><p>My transition to Herdr began with an attempt to invent it myself. In early March 2026, three weeks before the first appearance of <a href="https://github.com/herdrdev/herdr">herdrdev/herdr</a> on GitHub, I started a project called ClaudeAgent in Delphi. I wanted to create a simple window that launches console agents by folders and shows who is busy with what. It didn't get past the prototype stage because everything came down to emulating a terminal (VT) within my own window.</p><p>Instead of a unified environment, a combination of three tools around Windows Terminal (wt.exe) gradually emerged. Dozens of tabs with console agents omp (oh-my-pi), agy (antigravity-cli), PowerShell shells, and SSH sessions lived in Windows Terminal itself. Nearby, a custom dashboard <a href="https://github.com/OleksiyPenkov/omp-usage-dashboard">omp-usage-dashboard</a> running on Node.js 24 spun in the browser, displaying remaining provider quotas, DeepSeek balance, token counters from stats.db, and a list of active sessions. To see open tabs and switch to the desired one with a Focus button, the Windows server would query PowerShell UI Automation (tabs.ps1 and focus.ps1) and match sessions by their title text. The third part was a floating launcher, OmpLauncher, written in Delphi 13 VCL, featuring a folder tree, a list of the last 15 projects, model presets for omp (--config), plugin presets for agy (--add-dir), selection of agy orchestrator models, and a button to open folders in Total Commander. Upon clicking a button, it would assemble an argument string and open a new tab via wt.exe -w 0 nt ....</p><p>This setup worked for three to four projects, but it started to fall apart as the number of sessions grew. If two agents had similar titles, UI Automation might switch to the wrong tab. When an agent got stuck waiting for permission or a user question, it wasn't visible in the general tab feed, and I had to check them manually. Remote machines were in separate SSH windows, and accidentally closing Windows Terminal or restarting the shell would kill all running processes.</p><h2>Why a Terminal and Herdr, Not Antigravity, Codex, or Claude Desktop</h2><p>When it comes to terminal multiplexers for agents, people usually ask why bother with the console and shells like Herdr when providers already have their own graphical applications (Claude Desktop, Codex, Antigravity, Cursor).</p><p>In practice, it's rare to stay within the tools of a single vendor. During a workday, different combinations run in parallel across various folders: sometimes omp with DeepSeek or a local model in Strata is more convenient, sometimes agy in orchestrator mode with Gemini 4, sometimes Claude Code, and alongside them, PowerShell, git, msbuild, and a remote SSH terminal on a lab bench are open. Proprietary desktop clients either tie you to one provider or turn your desktop into three to four heavy Electron windows, which you still have to jump between.</p><p>Even more essential is a live pseudo-terminal (PTY) next to the agent. When an agent is building a project, running tests, or editing a config, the built-in chat without a full shell is inconvenient. A tab where the agent works on the left, and a build log, Far file manager, or a Python script in the same directory is open in a neighboring panel (split) is much more useful.</p><p>Finally, herdr-app is written in Rust and the GPUI framework without Electron or WebView, keeps the entire interface in understandable text files, and aggregates agents from all machines into a single list. Table 1 summarizes the differences between the three approaches.</p><div><div><table><tbody><tr><td><p><strong>Criterion</strong></p></td><td><p><strong>Windows Terminal + External Utilities</strong></p></td><td><p><strong>Vendor Desktop Applications</strong></p></td><td><p><strong>Herdr 2 (herdr-core + herdr-app)</strong></p></td></tr><tr><td><p>Working with Different Agents and Providers</p></td><td><p>Any CLI, but without unified control</p></td><td><p>Tied to a single vendor's ecosystem</p></td><td><p>Any CLI agents in one window</p></td></tr><tr><td><p>Live Terminal, Git, Build, and CLI Nearby</p></td><td><p>Yes, in adjacent tabs</p></td><td><p>Limited to built-in view or separate terminal</p></td><td><p>Native PTY in the same workspace's adjacent split panel</p></td></tr><tr><td><p>Remote Machines via SSH</p></td><td><p>Separate tabs/windows without a unified overview</p></td><td><p>Usually only local machine or proprietary cloud runner</p></td><td><p>Unified tree of local and SSH spaces (hc machine)</p></td></tr><tr><td><p>Process Survival on UI Close</p></td><td><p>Processes die with the window</p></td><td><p>Session usually tied to the window</p></td><td><p>herdr-core keeps PTYs alive during window close and updates</p></td></tr><tr><td><p>'Waiting for Human' Status</p></td><td><p>Only via UI Automation or manual check</p></td><td><p>Available within the specific application</p></td><td><p>Native OSC 7501 in the general Agents sidebar</p></td></tr><tr><td><p>Interface Customization</p></td><td><p>Limited to settings and colors</p></td><td><p>Closed UI</p></td><td><p>JSON layouts and JS mods with gpui-kit and hot reload</p></td></tr></tbody></table></div></div><p><em>Table 1. Comparison of approaches for parallel work with multiple AI agents on Windows.</em></p><h2>How Herdr 2 Works: herdr-core and herdr-app</h2><p>Under the name Herdr on GitHub, there are two different branches under the Apache-2.0 license. The original <a href="https://github.com/herdrdev/herdr">herdrdev/herdr</a> (over 50 thousand stars) remains a console TUI multiplexer with its own built-in server. In the fall of 2026, Herdr 2 was released, divided into a background core <a href="https://github.com/herdrdev/herdr-core">herdrdev/herdr-core</a> (the hc command) and a native desktop client <a href="https://github.com/herdrdev/herdr-app">herdrdev/herdr-app</a> using Rust and GPUI. Sessions from the old TUI do not appear in the new herdr-app because the application only works with herdr-core. On my Windows 11, I currently have hc 0.1.22 and herdr-app 0.1.18 installed.</p><p>The herdr-core itself draws nothing. It runs a background daemon, owns all local and remote PTYs, parses terminal states, and maintains the tree of spaces, tabs, and panes. The herdr-app window acts as one of the core's clients. If you close the window, update herdr-app, or the graphical interface crashes, the running agents and shells continue to operate within herdr-core, and upon reopening the window, they will be back in their places.</p><p>The workspace within the window is divided into spaces (Space—usually a project or folder on a specific machine; if no name is given, it inherits the repository name or current directory), tabs (Tab), and panes (Pane), which host either a terminal or a mod panel (file tree, git diff viewer, third-party panel). Panes can be split horizontally and vertically, dragged by their top handle, and maximized (zoom).</p><p>Remote machines can be connected to a single window via SSH through Settings -> Machines or the command hc machine add. Figure 1 shows my working herdr-app 0.1.18 window: in the Spaces block under This computer, the local spaces MultilayerLab and cleanyourtv are open, and immediately below them is the remote machine workpc (hc 0.1.22, connected state). Everything is consolidated in one sidebar and one overall Agents list.</p><figure><img alt=
+  </main>
+  <footer>
+    Translation generated with Gemini 2.5 Flash-Lite.
+    The original article remains the source of record.
+  </footer>
+</body>
+</html>

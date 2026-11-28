@@ -1,0 +1,150 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Quest for 192GB RAM: How to Make Windows 11 and VirtualBox Give All RAM to Local AI and a &quot;Zoo&quot; of Agents</title>
+  <meta name="description" content="Imagine this: you have a dream workstation. Inside - a fresh i9 Core Ultra (285K), a professional NVIDIA RTX 4000 Ada / Blackwell graphics card (24GB VRAM), two high-speed 2TB Samsung 990 Pro drives, and a &quot;generous&quot; (but not yet &quot;royal&quot;) 192GB of DDR5 RAM. It would seem that wit">
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.65;
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 32px 20px 64px;
+      color: #1f2328;
+    }
+    header {
+      border-bottom: 1px solid #d8dee4;
+      margin-bottom: 28px;
+      padding-bottom: 20px;
+    }
+    .source {
+      color: #57606a;
+      font-size: 0.95rem;
+    }
+    img, video, iframe {
+      max-width: 100%;
+      height: auto;
+    }
+    pre {
+      overflow-x: auto;
+      padding: 16px;
+      background: #f6f8fa;
+      border-radius: 6px;
+    }
+    code {
+      font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+    }
+    blockquote {
+      border-left: 4px solid #d0d7de;
+      margin-left: 0;
+      padding-left: 16px;
+      color: #57606a;
+    }
+    footer {
+      border-top: 1px solid #d8dee4;
+      margin-top: 40px;
+      padding-top: 20px;
+      color: #57606a;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Quest for 192GB RAM: How to Make Windows 11 and VirtualBox Give All RAM to Local AI and a &quot;Zoo&quot; of Agents</h1>
+    <p>Imagine this: you have a dream workstation. Inside - a fresh i9 Core Ultra (285K), a professional NVIDIA RTX 4000 Ada / Blackwell graphics card (24GB VRAM), two high-speed 2TB Samsung 990 Pro drives, and a &quot;generous&quot; (but not yet &quot;royal&quot;) 192GB of DDR5 RAM. It would seem that with such RAM capacity, you could forget about &quot;out of memory&quot; for at least five years. But as soon as a local environment for autonomous AI agents was set up on this machine, Windows 11 and VirtualBox staged a real technical detective story: with over 30GB of formally free memory, the hypervisor flatly refused to launch new virtual machines. I&#x27;ll tell you how this quest unfolded, why disabling the page file on 192GB of RAM turned out to be a trap, and how a short call to an undocumented ntdll.dll kernel function solved the problem without performance loss. Level 1. Stand Architecture and Plot Setup. The hardware was chosen for a specific task: a completely local, autonomous development environment with AI agents without code leakage to the cloud. • Host (Windows 11): runs a single heavy local model in the Strata environment - Qwen 3.8 Unsloth Q8 (in the &quot;correct&quot; edition), shared over the local network in OpenAI Compatible API mode. • Virtual Machines (VirtualBox): several isolated environments based on Windows 11 and Kali Linux, running VS Code + Cline and Hermes Agent. The agents simultaneously ping the host&#x27;s local API, write code, run tests, perform pentests, parse the environment, and collectively explore the world. To prevent agents from bumping elbows, many VMs are needed, and as mentioned earlier - 192GB of RAM. The page file, out of old habit &quot;I have a lot of RAM, why torture the SSD,&quot; was completely disabled. Read more</p>
+    <p class="source">
+      Machine-translated from Habr.
+      <a href="https://habr.com/ru/articles/1113562/?utm_campaign=1113562&amp;utm_source=habrahabr&amp;utm_medium=rss">Read the original Russian article</a>.
+      Sat, 28 Nov 2026 14:16:58 GMT
+    </p>
+  </header>
+  <main>
+<div><p>Imagine this: you have a dream workstation. Inside - a fresh i9 Core Ultra (285K), a professional NVIDIA RTX 4000 Ada / Blackwell graphics card (24GB VRAM), two high-speed 2TB Samsung 990 Pro drives, and a "generous" (but not yet "royal") 192GB of DDR5 RAM. It would seem that with such RAM capacity, you could forget about "out of memory" for at least five years. But as soon as a local environment for autonomous AI agents was set up on this machine, Windows 11 and VirtualBox staged a real technical detective story: with over 30GB of formally free memory, the hypervisor flatly refused to launch new virtual machines. I'll tell you how this quest unfolded, why disabling the page file on 192GB of RAM turned out to be a trap, and how a short call to an undocumented ntdll.dll kernel function solved the problem without performance loss.</p><p><strong>Level 1. Stand Architecture and Plot Setup.</strong></p><p>The hardware was chosen for a specific task: a completely local, autonomous development environment with AI agents without code leakage to the cloud.</p><p>• Host (Windows 11): runs a single heavy local model in the Strata environment - Qwen 3.8 Unsloth Q8 (in the "correct" edition), shared over the local network in OpenAI Compatible API mode.<br/>• Virtual Machines (VirtualBox): several isolated environments based on Windows 11 and Kali Linux, running VS Code + Cline and Hermes Agent.<br/><br/>The agents simultaneously ping the host's local API, write code, run tests, perform pentests, parse the environment, <s>make coffee, discuss RAM module prices, and collectively explore the world. </s>To prevent agents from bumping elbows, many VMs are needed, and as mentioned earlier - 192GB of RAM. The page file, out of old habit "I have a lot of RAM, why torture the SSD," was completely disabled.</p><p>And that's when the strangeness began.</p><p><strong>Level 2. "Phantom 30 Gigabytes"</strong></p><p>I start the host, bring up the local model in Strata, and launch the first batch of VMs with Kali and Windows 11. Everything flies. I try to launch a couple more machines - and VirtualBox throws the classic humiliating error: VERR_NO_MEMORY / "Insufficient physical memory". I open Task Manager -> Performance -> Memory and see an absurd picture:</p><p>• About 145 GB used. • Over 30 GB still available!</p><p>Plenty of space - for at least 4-5 virtual machines! Why is VirtualBox saying there's no memory?! My gaze falls slightly below the graph, to the "Cached" line, and there proudly sit those 30+ gigabytes.</p><p><strong>Level 3. Unraveling the Mechanics: Why Didn't Windows and VirtualBox Understand Each Other?</strong></p><p>It turned out that we encountered two architectural features simultaneously that, with 192GB of RAM, work against the user:</p><ol><li><p>Aggressive Standby List in Windows 11. Windows believes that empty memory is useless memory. Any read .vdi image, model cache, or system file is placed by the kernel into the standby list - also known as "Cached" in Task Manager. For a regular browser, this memory is conditionally free: if a program runs out of space, the kernel instantly evicts the cache.</p></li><li><p>VirtualBox Driver Paranoia and Large Pages. A virtual machine is not a regular process. The VirtualBox kernel driver (VMMR0.r0), upon VM startup, attempts to hard-lock the entire allocated volume in physical memory and, by default, looks for continuous 2MB blocks (Large Pages). When 30GB of Standby List is "smeared" across DDR5 modules mixed with occupied pages, VirtualBox can't find contiguous chunks, gets scared, and refuses to start.</p></li><li><p>The Trap of the Disabled Page File. Without pagefile.sys, the "Commit Limit" parameter is capped exactly at the physical 192GB. As soon as the VMs and host processes collectively request a megabyte more virtual memory (even if it's not physically filled yet!), Windows strictly cuts off allocation.</p></li></ol><p><strong>Level 4. The First Solution and an Unexpected Twist with the SSD.</strong></p><p>First, the page file was restored to 192GB (equal to the RAM volume) on the Samsung 990 Pro. The Commit Limit doubled to 383GB, and the system's stubbornness noticeably decreased. The second step involved a "heavy caliber" - a PowerShell script calling the system kernel function NtSetSystemInformation (class 80 - SystemMemoryListInformation, command 4 - MemoryPurgeStandbyList), after first enabling the SeProfileSingleProcessPrivilege via RtlAdjustPrivilege. This is exactly the same magic that the RAMMap utility performs under the hood when you click "Empty Standby List." The script worked in fractions of a second: the 30GB in the "Cached" field turned into 600MB, and VirtualBox happily swallowed and launched the missing VMs! But a new mystery arose: when launching VMs "to the brim," the LED and activity graphs of the Samsung 990 Pro started to noticeably flicker, even though there were still about 10-12GB of free RAM left in Task Manager! Did the script break caching and push the system into swapping, killing the NVMe resource? A check through Resource Monitor (resmon.exe) put everything in its place:</p><p>• The system wasn't writing to pagefile.sys - the load was solely on the virtual disk files (.vdi) themselves.<br/>• The reason was crystal clear: while the host cache was full, Windows served frequently read VM disk blocks directly from DDR5. When we cleared the Standby List to launch new VMs, there was almost no free memory left for the file buffer - and the guest OSs (with their VS Codes, Clines, and indexers) started reading data directly from the SSD.</p><p><strong>Level 5. Why I Had to Abandon VirtualBox's "Magic" Tweaks.</strong></p><p>During the search for perfection, built-in memory compression mechanisms in VirtualBox itself were considered:<br/>• --pagefusion on (deduplication of identical memory pages between similar VMs);</p><p> • --largepages off (disabling large 2MB pages to combat fragmentation).</p><p>I consciously abandoned both options. Page Fusion works only for 64-bit Windows guests and is useless for Kali Linux. And most importantly - background page hashing and Copy-on-Write during writes cause noticeable micro-freezes in the AI agents' operation. Disabling Large Pages hits the processor's address translation cache (TLB). It proved much more effective to leave VirtualBox in its fastest factory mode and turn the Standby List cleanup from a "background demon" into a targeted manual tool.</p><p><strong>The Final Artifact: A Smart "One-Click" Script.</strong></p><p>The main takeaway from the entire quest: do not run Standby List cleanup on a timer every 5 minutes. As long as all necessary VMs are already running, the cache is your friend, saving the SSD from unnecessary reads. The script is needed only as an "ignition key" immediately before launching another VM, and only until the actual memory consumption reaches the threshold of ~178GB (leaving a 12-14GB inviolable reserve for Windows 11 itself). Here is the final script <a href="http://CleanRAM.ps">CleanRAM.ps</a>1, which automatically requests administrator rights, resets the stuck cache, and honestly tells you whether you can launch the next machine or it's time to stop:</p><pre><code># Automatic restart as administrator if rights are insufficient
+if (-not ([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltInRole]::Administrator)) {
+    Start-Process powershell.exe -ArgumentList "-NoProfile -ExecutionPolicy Bypass -File `"$PSCommandPath`"" -Verb RunAs
+    exit
+}
+
+$code = @"
+using System;
+using System.Runtime.InteropServices;
+
+public class MemClean {
+    [DllImport("ntdll.dll")]
+    public static extern int NtSetSystemInformation(int InfoClass, ref int Info, int Length);
+
+    [DllImport("ntdll.dll")]
+    public static extern int RtlAdjustPrivilege(int Privilege, bool Enable, bool CurrentThread, out bool Enabled);
+
+    public static int ClearStandby() {
+        bool prevState;
+        // 13 = SeProfileSingleProcessPrivilege
+        int privStatus = RtlAdjustPrivilege(13, true, false, out prevState);
+        if (privStatus != 0) return privStatus;
+
+        int cmd = 4; // MemoryPurgeStandbyList
+        return NtSetSystemInformation(80, ref cmd, 4);
+    }
+}
+"@
+
+Add-Type -TypeDefinition $code
+
+function Get-MemStats {
+    $os = Get-CimInstance Win32_OperatingSystem
+    $totalGB = [math]::Round($os.TotalVisibleMemorySize / 1MB, 1)
+    $availGB = [math]::Round($os.FreePhysicalMemory / 1MB, 1)
+    $usedGB  = [math]::Round($totalGB - $availGB, 1)
+    # Available memory (Free + Standby) via performance counters
+    $standbyBytes = (Get-Counter '\Memory\Standby Cache Normal Priority Bytes','\Memory\Standby Cache Reserve Bytes','\Memory\Standby Cache Core Bytes' -ErrorAction SilentlyContinue).CounterSamples.CookedValue | Measure-Object -Sum
+    $standbyGB = [math]::Round($standbyBytes.Sum / 1GB, 1)
+    return [PSCustomObject]@{ 
+        Used    = $usedGB
+        Standby = $standbyGB
+        Avail   = $availGB
+    }
+}
+
+Clear-Host
+Write-Host "=== Очистка Standby List перед запуском ВМ ===" -ForegroundColor Cyan
+
+$before = Get-MemStats
+Write-Host "`n[ДО ОЧИСТКИ]" -ForegroundColor Yellow
+Write-Host "  Реально занято ВМ и системой : $($before.Used) ГБ"
+Write-Host "  В кэше (Standby List)         : $($before.Standby) ГБ"
+
+$status = [MemClean]::ClearStandby()
+
+if ($status -eq 0) {
+    Start-Sleep -Milliseconds 500
+    $after = Get-MemStats
+    $freed = [math]::Round($before.Standby - $after.Standby, 1)
+    if ($freed -lt 0) { $freed = 0 }
+
+    Write-Host "`n[ПОСЛЕ ОЧИСТКИ]" -ForegroundColor Green
+    Write-Host "  Освобождено из кэша           : ~$freed ГБ" -ForegroundColor Green
+    Write-Host "  Осталось в кэше               : $($after.Standby) ГБ"
+    Write-Host "  Реально занято сейчас         : $($after.Used) ГБ из 191,4 ГБ"
+
+    if ($after.Used -ge 178) {
+        Write-Host "`n[!] ВНИМАНИЕ: Занято уже $($after.Used) ГБ! Пора остановиться, иначе начнется своп на SSD." -ForegroundColor Red
+    } else {
+        $safeLeft = [math]::Round(178 - $after.Used, 1)
+        Write-Host "`n[OK] Можно смело запускать ВМ (до безопасного порога ~178 ГБ еще есть $safeLeft ГБ)." -ForegroundColor Cyan
+    }
+} else {
+    Write-Host "`n[ОШИБКА] Не удалось очистить память. Код: 0x$($status.ToString('X'))" -ForegroundColor Red
+}
+
+Write-Host "`nНажмите любую клавишу для выхода..." -ForegroundColor DarkGray
+$null = $Host.UI.RawUI.ReadKey("NoEcho,IncludeKeyDown")</code><div><a href="https://sourcecraft.dev/"><span></span></a></div></pre><p><strong>Quest Conclusions.</strong></p><ol><li><p>Even with 192GB of RAM, do not disable pagefile.sys - Windows needs it for correct virtual address space accounting (Commit Limit) and it doesn't consume SSD resources until you exceed physical memory limits.</p></li><li><p>RAM and SSD are completely safe: calling MemoryPurgeStandbyList does not rewrite memory cells and does not touch active processes - it only moves page pointers from the standby list to the free list.</p></li><li><p>179GB used / 12.7GB free / 0% SSD load - at precisely these figures, the stand with the local Qwen 3.8 Unsloth q8 and a swarm of VMs with Cline and Hermes Agent reached a plateau of ideal stability with the specified "heavy" and smart model operating at a "brisk" 40 tokens per second (on average) even with a 512k context.</p></li></ol><p>But it's important to remember that a miracle won't happen if there's no cached memory in the system at a given moment that the system simply hasn't allocated yet! In this case, the script will be powerless.</p><p><strong>Bonus - Checklist:</strong></p><p>Step 1. Open Task Manager -> Performance -> Memory.</p><p>Step 2. Check the "In Use (Compressed)" graph: - If 162–172 GB -> there is space, up to 2 VMs (4GB each) can be launched. - If it reaches ~178–180 GB -> Stop! Do not launch new VMs.</p><p>Step 3. Look below at the "Cached" graph (do not confuse with "Available"): - If there is 1–10 GB -> no cleaning needed, the script won't help. - If 15–20+ GB has accumulated and VirtualBox complains about insufficient memory when launching VMs -> proceed to Step 4.</p><p>Step 4. Run the memory cleaning script as administrator.</p><p>Step 5. Ensure "Cached" has reset to ~0.5–1 GB, then immediately launch the virtual machine.</p><p>Overall, the described quest was worth undertaking, and I got everything out of the "hardware" that it was capable of. Well, or what I simply want from it at the moment :-)</p></div>
+  </main>
+  <footer>
+    Translation generated with Gemini 2.5 Flash-Lite.
+    The original article remains the source of record.
+  </footer>
+</body>
+</html>

@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>AI Agents in Virtual IT Companies Failed Over 90% of Real Work Tasks</title>
+  <meta name="description" content="TokenWave AI researchers tested how AI agents handle programmer tasks within a virtual IT company. Even the most powerful models, like Claude Opus 5.5 and GPT-6 Astra, completed less than 8% of tasks fully. Read more">
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.65;
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 32px 20px 64px;
+      color: #1f2328;
+    }
+    header {
+      border-bottom: 1px solid #d8dee4;
+      margin-bottom: 28px;
+      padding-bottom: 20px;
+    }
+    .source {
+      color: #57606a;
+      font-size: 0.95rem;
+    }
+    img, video, iframe {
+      max-width: 100%;
+      height: auto;
+    }
+    pre {
+      overflow-x: auto;
+      padding: 16px;
+      background: #f6f8fa;
+      border-radius: 6px;
+    }
+    code {
+      font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+    }
+    blockquote {
+      border-left: 4px solid #d0d7de;
+      margin-left: 0;
+      padding-left: 16px;
+      color: #57606a;
+    }
+    footer {
+      border-top: 1px solid #d8dee4;
+      margin-top: 40px;
+      padding-top: 20px;
+      color: #57606a;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>AI Agents in Virtual IT Companies Failed Over 90% of Real Work Tasks</h1>
+    <p>TokenWave AI researchers tested how AI agents handle programmer tasks within a virtual IT company. Even the most powerful models, like Claude Opus 5.5 and GPT-6 Astra, completed less than 8% of tasks fully. Read more</p>
+    <p class="source">
+      Machine-translated from Habr.
+      <a href="https://habr.com/ru/articles/1113528/?utm_campaign=1113528&amp;utm_source=habrahabr&amp;utm_medium=rss">Read the original Russian article</a>.
+      Sat, 28 Nov 2026 11:47:21 GMT
+    </p>
+  </header>
+  <main>
+<div><p>TokenWave AI researchers <a href="https://arxiv.org/abs/2611.20218">tested</a> how AI agents handle programmer tasks within a virtual IT company. As a result, even the most powerful models, such as Claude Opus 5.5 and GPT-6 Astra, fully completed less than 8% of the tasks.</p><figure><img loading="lazy" src="https://habrastorage.org/r/w1560/extt/ac/89/f6/ac89f673495baaedc12ffa97b2bd79c3.JPG"/></figure><p>At the same time, they successfully passed about 63% of individual tests.</p><p>TokenWave AI introduced a new benchmark, SWE-CoWork. It evaluates not only an AI's ability to write code but also its capacity to work in a team. The researchers prepared 101 tasks based on real software projects, covering 11 programming languages and 12 development areas.</p><figure><img loading="lazy" src="https://habrastorage.org/r/w1560/extt/af/54/45/af5445678abdc7bd15138e0204a10489.JPG"/></figure><p>For each task, a virtual IT company was created with 26 employees who had different responsibilities and varying levels of project knowledge. The agent received a brief task description, after which it had to independently study documentation, correspondence, change history, and task boards, contact relevant colleagues, clarify requirements, write code, and verify the result.</p><p>Eleven models participated in the experiment. GPT-6 Astra from OpenAI showed the best result in fully completed tasks – 7.92%. Claude Opus 5.5 from Anthropic managed 6.93%. The remaining nine models were able to fully complete no more than 0.99% of the tasks.</p><figure><img loading="lazy" src="https://habrastorage.org/r/w1560/extt/56/07/df/5607df470cbb6e870dfea359ddb2d6f7.JPG"/></figure><p>However, agents performed individual parts of the work better. Claude Opus 5.5 passed 63.84% of the tests for implementing new requirements, and GPT-6 Astra passed 62.91%. However, to successfully complete the entire task, all requirements had to be met without breaking existing functionality.</p><p>The researchers found that the main problems arise not only in writing code but also in organizing work. For instance, Claude Opus 5.5, on average, correctly identified the responsible employee in 93% of cases when asking the first question about a specific task, but ultimately only managed to obtain 64% of the requirements that colleagues had.</p><figure><img loading="lazy" src="https://habrastorage.org/r/w1560/extt/68/2a/4b/682a4bdc1f373b54095cf4828834a902.JPG"/></figure><p>Agents also forgot to return to unresolved issues. Out of 450 instances, Claude Opus 5.5 forgot to re-address the task 153 times. At the time of the initial refusal, the agent had, on average (median), 7.1 hours of allocated time remaining.</p><p>Even obtaining all necessary requirements did not guarantee success. The researchers separately tested GPT-6 Astra and Seed Evolving, providing them with complete instructions from the outset. The percentage of successfully passed tests for new requirements increased for GPT-6 Astra from 62.91% to 78.84%, and for Seed Evolving from 39.09% to 55.76%. However, the number of fully completed tasks did not change.</p><figure><img loading="lazy" src="https://habrastorage.org/r/w1560/extt/c7/22/c4/c722c4e2ae363518db559b8ab04c6e9c.JPG"/></figure><p>Another problem was that agents overestimated the results of their own work. Analysis of Claude Opus 5.5 showed that 31% of the requirements the model marked as completed did not actually pass the corresponding tests. In some cases, the agent declared the work complete, even though tasks remained in its own logs.</p><figure><img loading="lazy" src="https://habrastorage.org/r/w1560/extt/a4/3f/35/a43f35ed5f0ca2a9f1f21af7b567a42c.JPG"/></figure><p>According to the study's authors, for reliable autonomous development, it is not enough for AI to write code well and find the necessary information; agents need to learn to consistently track each requirement – from initial clarification to implementation, testing, and delivery of the finished work.</p><p>Meanwhile, OpenAI is <a href="https://habr.com/ru/articles/1075580/">testing</a> a "persistent work" mode for the AI agent Codex, which will allow it to work until explicitly put into "sleep mode." The AI will also proactively plan subsequent tasks in different sessions, using previous interactions and user knowledge.</p></div>
+  </main>
+  <footer>
+    Translation generated with Gemini 2.5 Flash-Lite.
+    The original article remains the source of record.
+  </footer>
+</body>
+</html>
